@@ -34,11 +34,13 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/
+    - assets/image/
 
   fonts:
     - family: pretendard
       fonts:
+        - asset: assets/font/pretendard/Pretendard-ExtraBold.otf
+          weight: 800
         - asset: assets/font/pretendard/Pretendard-Bold.otf
           weight: 700
         - asset: assets/font/pretendard/Pretendard-SemiBold.otf

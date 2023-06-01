@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 
 void main() {
   runApp(
@@ -12,13 +14,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+    return ScreenUtilInit(
+      designSize: const Size(360, 640),
+      builder: (BuildContext context, Widget? child) {
+        return MaterialApp.router(
+          routerConfig: router,
+          title: 'Flutter Demo',
+          theme: themeData(context),
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }
