@@ -13,6 +13,10 @@ ThemeData themeData(context) => ThemeData(
           color: kTextSubTitleColor,
         ),
       ),
+      dividerTheme: const DividerThemeData(
+        color: kNeutralColor200,
+        thickness: 2,
+      ),
       inputDecorationTheme: const InputDecorationTheme(
         filled: true,
         fillColor: Colors.transparent,
