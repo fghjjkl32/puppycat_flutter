@@ -23,6 +23,8 @@ dependencies:
   carousel_slider: ^4.2.1
   smooth_page_indicator: ^1.1.0
   bubble: ^1.2.1
+  linkfy_text: ^1.1.5
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
