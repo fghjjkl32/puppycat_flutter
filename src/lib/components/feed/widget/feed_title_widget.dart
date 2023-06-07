@@ -7,16 +7,16 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 class FeedTitleWidget extends StatelessWidget {
   const FeedTitleWidget({
     required this.profileImage,
-    required this.name,
-    required this.position,
+    required this.userName,
+    required this.address,
     required this.time,
     required this.isEdit,
     Key? key,
   }) : super(key: key);
 
   final String? profileImage;
-  final String name;
-  final String position;
+  final String userName;
+  final String address;
   final DateTime time;
   final bool isEdit;
 
@@ -55,7 +55,7 @@ class FeedTitleWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    userName,
                     style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
                   ),
                   SizedBox(
@@ -64,7 +64,7 @@ class FeedTitleWidget extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        position,
+                        address,
                         style:
                             kBody11RegularStyle.copyWith(color: kTextBodyColor),
                       ),

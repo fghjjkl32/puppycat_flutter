@@ -15,8 +15,8 @@ class FeedMainWidget extends StatelessWidget {
         //feed title
         FeedTitleWidget(
           profileImage: 'assets/image/feed/image/sample_image1.png',
-          name: '아지다멍',
-          position: '강원도 평창군 평창읍',
+          userName: '아지다멍',
+          address: '강원도 평창군 평창읍',
           time: DateTime(2023, 4, 12),
           isEdit: true,
         ),

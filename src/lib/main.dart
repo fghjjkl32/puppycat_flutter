@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pet_mobile_social_flutter/components/favorite_list/favorite_list_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
@@ -53,6 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
           FeedFollowWidget(),
           FeedDetailWidget(),
           FeedMainWidget(),
+          FavoriteListWidget(),
         ],
       ),
     );
