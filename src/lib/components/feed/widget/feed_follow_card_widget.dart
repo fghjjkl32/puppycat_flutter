@@ -10,6 +10,8 @@ class FeedFollowCardWidget extends StatelessWidget {
     required this.userName,
     required this.imageList,
     required this.followCount,
+    required this.isSpecialUser,
+    required this.imageCount,
     Key? key,
   }) : super(key: key);
 
@@ -17,6 +19,8 @@ class FeedFollowCardWidget extends StatelessWidget {
   final String? profileImage;
   final String userName;
   final int followCount;
+  final bool isSpecialUser;
+  final List<int> imageCount;
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +72,19 @@ class FeedFollowCardWidget extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Image.asset(
-                          'assets/image/feed/icon/small_size/icon_special.png',
-                          height: 13.h,
-                        ),
-                        SizedBox(
-                          width: 4.w,
-                        ),
+                        isSpecialUser
+                            ? Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/image/feed/icon/small_size/icon_special.png',
+                                    height: 13.h,
+                                  ),
+                                  SizedBox(
+                                    width: 4.w,
+                                  ),
+                                ],
+                              )
+                            : Container(),
                         Text(
                           userName,
                           style:
@@ -108,15 +118,39 @@ class FeedFollowCardWidget extends StatelessWidget {
               children: [
                 Flexible(
                   flex: 10,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(12.0),
-                    ),
-                    child: Image.asset(
-                      imageList[0],
-                      fit: BoxFit.cover,
-                      height: 147.h,
-                    ),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(12.0),
+                        ),
+                        child: Image.asset(
+                          imageList[0],
+                          fit: BoxFit.cover,
+                          height: 147.h,
+                        ),
+                      ),
+                      Positioned(
+                        right: 4.w,
+                        top: 4.w,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xff414348).withOpacity(0.75),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(5.0)),
+                          ),
+                          width: 18.w,
+                          height: 14.w,
+                          child: Center(
+                            child: Text(
+                              "${imageCount[0]}",
+                              style: kBadge9RegularStyle.copyWith(
+                                  color: kNeutralColor100),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(
@@ -126,10 +160,35 @@ class FeedFollowCardWidget extends StatelessWidget {
                   flex: 7,
                   child: Column(
                     children: [
-                      Image.asset(
-                        imageList[1],
-                        fit: BoxFit.cover,
-                        height: 73.h,
+                      Stack(
+                        children: [
+                          Image.asset(
+                            imageList[1],
+                            fit: BoxFit.cover,
+                            height: 73.h,
+                          ),
+                          Positioned(
+                            right: 4.w,
+                            top: 4.w,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color:
+                                    const Color(0xff414348).withOpacity(0.75),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(5.0)),
+                              ),
+                              width: 18.w,
+                              height: 14.w,
+                              child: Center(
+                                child: Text(
+                                  "${imageCount[1]}",
+                                  style: kBadge9RegularStyle.copyWith(
+                                      color: kNeutralColor100),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: 1.h,
@@ -138,10 +197,35 @@ class FeedFollowCardWidget extends StatelessWidget {
                         borderRadius: const BorderRadius.only(
                           bottomRight: Radius.circular(12.0),
                         ),
-                        child: Image.asset(
-                          imageList[2],
-                          fit: BoxFit.cover,
-                          height: 73.h,
+                        child: Stack(
+                          children: [
+                            Image.asset(
+                              imageList[2],
+                              fit: BoxFit.cover,
+                              height: 73.h,
+                            ),
+                            Positioned(
+                              right: 4.w,
+                              top: 4.w,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color:
+                                      const Color(0xff414348).withOpacity(0.75),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(5.0)),
+                                ),
+                                width: 18.w,
+                                height: 14.w,
+                                child: Center(
+                                  child: Text(
+                                    "${imageCount[2]}",
+                                    style: kBadge9RegularStyle.copyWith(
+                                        color: kNeutralColor100),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

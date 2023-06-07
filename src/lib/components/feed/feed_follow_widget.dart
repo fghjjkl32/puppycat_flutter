@@ -25,6 +25,8 @@ class FeedFollowWidget extends StatelessWidget {
                 profileImage: 'assets/image/feed/image/sample_image1.png',
                 userName: 'user',
                 followCount: 11820,
+                isSpecialUser: true,
+                imageCount: [6, 2, 3],
               ),
               FeedFollowCardWidget(
                 imageList: [
@@ -35,6 +37,8 @@ class FeedFollowWidget extends StatelessWidget {
                 profileImage: null,
                 userName: 'name',
                 followCount: 182,
+                isSpecialUser: false,
+                imageCount: [6, 2, 3],
               ),
               FeedFollowCardWidget(
                 imageList: [
@@ -45,6 +49,8 @@ class FeedFollowWidget extends StatelessWidget {
                 profileImage: 'assets/image/feed/image/sample_image1.png',
                 userName: 'Username',
                 followCount: 1182,
+                isSpecialUser: false,
+                imageCount: [6, 2, 3],
               ),
             ],
           ),
