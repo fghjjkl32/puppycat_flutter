@@ -25,6 +25,8 @@ dependencies:
   bubble: ^1.2.1
   linkfy_text: ^1.1.5
   intl: ^0.18.1
+  flutter_svg: ^2.0.6
+  widget_mask: ^1.0.0+0
 
 dev_dependencies:
   flutter_test:

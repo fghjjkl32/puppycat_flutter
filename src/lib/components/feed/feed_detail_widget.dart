@@ -48,9 +48,10 @@ class FeedDetailWidget extends StatelessWidget {
           commentCount: 13,
         ),
         const FeedCommentWidget(
-          image: 'assets/image/feed/image/sample_image1.png',
+          profileImage: 'assets/image/feed/image/sample_image1.png',
           name: 'bichon_딩동',
           comment: '헤엑😍 넘 귀엽자농~ 모자 쓴거야? 귀여미!!! 너무 행복해...',
+          isSpecialUser: true,
         ),
         Padding(
           padding: EdgeInsets.all(12.0.h),

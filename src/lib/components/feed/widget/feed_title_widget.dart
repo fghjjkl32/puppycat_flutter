@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:widget_mask/widget_mask.dart';
 
 class FeedTitleWidget extends StatelessWidget {
   const FeedTitleWidget({
@@ -31,21 +33,35 @@ class FeedTitleWidget extends StatelessWidget {
           Row(
             children: [
               profileImage == null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: Container(
-                        color: kNeutralColor300,
+                  ? WidgetMask(
+                      blendMode: BlendMode.srcATop,
+                      childSaveLayer: true,
+                      mask: Center(
                         child: Image.asset(
                           'assets/image/feed/icon/large_size/icon_taguser.png',
                           height: 32.h,
+                          fit: BoxFit.fill,
                         ),
                       ),
-                    )
-                  : ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: Image.asset(
-                        profileImage!,
+                      child: SvgPicture.asset(
+                        'assets/image/feed/image/squircle.svg',
                         height: 32.h,
+                      ),
+                    )
+                  : WidgetMask(
+                      blendMode: BlendMode.srcATop,
+                      childSaveLayer: true,
+                      mask: Center(
+                        child: Image.asset(
+                          profileImage!,
+                          height: 32.h,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/image/feed/image/squircle.svg',
+                        height: 32.h,
+                        fit: BoxFit.fill,
                       ),
                     ),
               SizedBox(
