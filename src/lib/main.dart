@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
@@ -49,8 +50,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView(
         children: const <Widget>[
+          FeedFollowWidget(),
           FeedDetailWidget(),
-          //feed title
           FeedMainWidget(),
         ],
       ),

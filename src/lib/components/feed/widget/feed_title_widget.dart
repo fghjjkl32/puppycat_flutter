@@ -6,7 +6,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
 class FeedTitleWidget extends StatelessWidget {
   const FeedTitleWidget({
-    required this.image,
+    required this.profileImage,
     required this.name,
     required this.position,
     required this.time,
@@ -14,7 +14,7 @@ class FeedTitleWidget extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final String? image;
+  final String? profileImage;
   final String name;
   final String position;
   final DateTime time;
@@ -30,7 +30,7 @@ class FeedTitleWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              image == null
+              profileImage == null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Container(
@@ -44,7 +44,7 @@ class FeedTitleWidget extends StatelessWidget {
                   : ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Image.asset(
-                        image!,
+                        profileImage!,
                         height: 32.h,
                       ),
                     ),
