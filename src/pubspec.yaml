@@ -27,6 +27,7 @@ dependencies:
   intl: ^0.18.1
   flutter_svg: ^2.0.6
   widget_mask: ^1.0.0+0
+  fluttertoast: ^8.2.2
 
 dev_dependencies:
   flutter_test:
@@ -54,6 +55,8 @@ flutter:
     - assets/image/message/icon/small_size/
     - assets/image/mypage/icon/
     - assets/image/search/icon/
+    - assets/image/toast/icon/
+
 
 
   fonts:

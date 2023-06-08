@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_deatil_list_widget.dart';
 import 'package:pet_mobile_social_flutter/components/favorite_list/favorite_list_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
+import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -114,6 +116,27 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             },
             child: const Text("태그된 대상"),
+          ),
+          TextButton(
+            onPressed: () {
+              toast(
+                  context: context,
+                  text: '광고성 정보 수신 여부가 ‘동의’로 변경되었습니다.',
+                  type: ToastType.purple,
+                  secondText:
+                      "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+            },
+            child: const Text("수신 동의 토스트"),
+          ),
+          TextButton(
+            onPressed: () {
+              toast(
+                context: context,
+                text: '광고성 정보 수신 여부가 ‘거부’로 변경되었습니다.',
+                type: ToastType.red,
+              );
+            },
+            child: const Text("수신 거부 토스트"),
           ),
         ],
       ),
