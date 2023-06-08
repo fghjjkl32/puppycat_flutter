@@ -45,6 +45,15 @@ flutter:
     - assets/image/feed/icon/
     - assets/image/feed/icon/large_size/
     - assets/image/feed/icon/small_size/
+    - assets/image/camera/icon/
+    - assets/image/etc/icon/large_size/
+    - assets/image/etc/icon/small_size/
+    - assets/image/header/icon/large_size/
+    - assets/image/header/icon/small_size/
+    - assets/image/message/icon/large_size/
+    - assets/image/message/icon/small_size/
+    - assets/image/mypage/icon/
+    - assets/image/search/icon/
 
 
   fonts:

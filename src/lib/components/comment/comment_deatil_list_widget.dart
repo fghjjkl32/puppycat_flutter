@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item.dart';
+import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
 
-class CommentDetailList extends StatelessWidget {
-  const CommentDetailList({Key? key}) : super(key: key);
+class CommentDetailListWidget extends StatelessWidget {
+  const CommentDetailListWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommentDetailItem(
+        CommentDetailItemWidget(
           profileImage: 'assets/image/feed/image/sample_image1.png',
           name: 'bichon_딩동',
           comment: '헤엑😍 넘 귀엽자농~ 모자 쓴거야? 귀여미!!! 너무 행복해...',
@@ -18,7 +18,7 @@ class CommentDetailList extends StatelessWidget {
           isReply: false,
           likeCount: 42,
         ),
-        CommentDetailItem(
+        CommentDetailItemWidget(
           profileImage: 'assets/image/feed/image/sample_image2.png',
           name: 'bichon_딩동',
           comment: '@baejji 시켜쨔나욧❕❕🐶',
