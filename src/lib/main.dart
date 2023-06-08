@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
@@ -49,6 +50,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  void onTap() {
+    setState(() {
+      testValue = !testValue;
+    });
+  }
+
+  bool testValue = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,6 +145,60 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             },
             child: const Text("수신 거부 토스트"),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Checkbox(
+                activeColor: kPrimaryLightColor,
+                visualDensity: VisualDensity.standard,
+                value: testValue,
+                checkColor: kPrimaryColor,
+                onChanged: (value) {
+                  if (value != null) onTap();
+                },
+              ),
+              Checkbox(
+                visualDensity: VisualDensity.compact,
+                activeColor: kPrimaryLightColor,
+                value: !testValue,
+                checkColor: kPrimaryColor,
+                onChanged: (value) {
+                  if (value != null) onTap();
+                },
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FlutterSwitch(
+                padding: 4,
+                width: 48.w,
+                height: 20.h,
+                activeColor: Theme.of(context).primaryColor,
+                inactiveColor: kNeutralColor500,
+                toggleSize: 20.0.w,
+                value: testValue,
+                borderRadius: 50.0.w,
+                onToggle: (value) async {
+                  onTap();
+                },
+              ),
+              FlutterSwitch(
+                padding: 4,
+                width: 48.w,
+                height: 20.h,
+                activeColor: Theme.of(context).primaryColor,
+                inactiveColor: kNeutralColor500,
+                toggleSize: 20.0.w,
+                value: !testValue,
+                borderRadius: 50.0.w,
+                onToggle: (value) async {
+                  onTap();
+                },
+              ),
+            ],
           ),
         ],
       ),

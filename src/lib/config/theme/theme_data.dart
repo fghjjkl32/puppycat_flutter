@@ -3,6 +3,18 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
 ThemeData themeData(context) => ThemeData(
+      checkboxTheme: CheckboxThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+        side: MaterialStateBorderSide.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) {
+            return const BorderSide(width: 1.0, color: kPrimaryLightColor);
+          } else {
+            return const BorderSide(width: 1.0, color: kNeutralColor400);
+          }
+        }),
+      ),
       scaffoldBackgroundColor: kNeutralColor100,
       primaryColor: kPrimaryColor,
       appBarTheme: AppBarTheme(
