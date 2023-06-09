@@ -30,6 +30,15 @@ dependencies:
   fluttertoast: ^8.2.2
   flutter_switch: ^0.3.2
 
+  # 이미지 선택 기능의 의존성 라이브러리
+  insta_assets_crop: ^0.0.2 # custom package from image_crop
+  fraction: ^5.0.0 # to show crop ratio in crop view
+  provider: ^6.0.5 # match with wechat_assets_picker package
+  extended_image: ^8.0.1 # match with wechat_assets_picker package
+  photo_manager: ^2.6.0
+  video_player: ^2.6.0
+  image_picker: ^0.8.7+5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -7,6 +7,6 @@
     <!-- <item>
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/launch_image" />
+            android:wechat_assets_picker="@mipmap/launch_image" />
     </item> -->
 </layer-list>

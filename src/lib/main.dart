@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
@@ -9,6 +10,7 @@ import 'package:pet_mobile_social_flutter/components/favorite_list/favorite_list
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
+import 'package:pet_mobile_social_flutter/config/library/insta_assets_picker/assets_picker.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -59,6 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool testValue = false;
   @override
   Widget build(BuildContext context) {
+    final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -199,6 +203,35 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
             ],
+          ),
+          TextButton(
+            onPressed: () => InstaAssetPicker.pickAssets(
+              context,
+              maxAssets: 12,
+              pickerTheme: themeData(context).copyWith(
+                canvasColor: kNeutralColor100, // body background color
+                colorScheme: theme.colorScheme.copyWith(
+                  background: kNeutralColor100, // albums list background color
+                ),
+                appBarTheme: theme.appBarTheme.copyWith(
+                  backgroundColor: kNeutralColor100,
+                ),
+              ),
+              onCompleted: (cropStream) {},
+            ),
+            child: const Text(
+              '이미지 선택',
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              final ImagePicker picker = ImagePicker();
+
+              await picker.pickImage(source: ImageSource.camera);
+            },
+            child: const Text(
+              '카메라 연결',
+            ),
           ),
         ],
       ),
