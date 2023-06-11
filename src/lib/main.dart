@@ -1,52 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_switch/flutter_switch.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/components/comment/comment_deatil_list_widget.dart';
+import 'package:pet_mobile_social_flutter/components/favorite_list/favorite_list_widget.dart';
+import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
+import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
+import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
+import 'package:pet_mobile_social_flutter/config/library/insta_assets_picker/assets_picker.dart';
+import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
+import 'components/feed/feed_detail_widget.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    return ScreenUtilInit(
+      designSize: const Size(360, 640),
+      builder: (BuildContext context, Widget? child) {
+        return MaterialApp.router(
+          routerConfig: router,
+          title: 'Flutter Demo',
+          theme: themeData(context),
+          debugShowCheckedModeBanner: false,
+        );
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -55,71 +52,189 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
+  void onTap() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      testValue = !testValue;
     });
   }
 
+  bool testValue = false;
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
+
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      body: ListView(
+        children: <Widget>[
+          const FeedFollowWidget(),
+          const FeedDetailWidget(),
+          const FeedMainWidget(),
+          const FavoriteListWidget(),
+          const CommentDetailListWidget(),
+          TextButton(
+            onPressed: () {
+              showCustomModalBottomSheet(
+                context: context,
+                widget: Column(
+                  children: [
+                    BottomSheetButtonItem(
+                      iconImage:
+                          'assets/image/feed/icon/small_size/icon_user_de.png',
+                      title: '숨기기',
+                      titleStyle: kButton14BoldStyle.copyWith(
+                          color: kTextSubTitleColor),
+                    ),
+                    BottomSheetButtonItem(
+                      iconImage:
+                          'assets/image/feed/icon/small_size/icon_user_block_on.png',
+                      title: '차단하기',
+                      titleStyle: kButton14BoldStyle.copyWith(
+                          color: kTextSubTitleColor),
+                    ),
+                    BottomSheetButtonItem(
+                      iconImage:
+                          'assets/image/feed/icon/small_size/icon_report.png',
+                      title: '신고하기',
+                      titleStyle:
+                          kButton14BoldStyle.copyWith(color: kBadgeColor),
+                    ),
+                  ],
+                ),
+              );
+            },
+            child: const Text("feed bottom sheet button"),
+          ),
+          TextButton(
+            onPressed: () {
+              showCustomModalBottomSheet(
+                context: context,
+                widget: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.h),
+                      child: Text(
+                        "태그된 대상",
+                        style: kBody16BoldStyle.copyWith(
+                            color: kTextSubTitleColor),
+                      ),
+                    ),
+                    const FavoriteListWidget(),
+                  ],
+                ),
+              );
+            },
+            child: const Text("태그된 대상"),
+          ),
+          TextButton(
+            onPressed: () {
+              toast(
+                  context: context,
+                  text: '광고성 정보 수신 여부가 ‘동의’로 변경되었습니다.',
+                  type: ToastType.purple,
+                  secondText:
+                      "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+            },
+            child: const Text("수신 동의 토스트"),
+          ),
+          TextButton(
+            onPressed: () {
+              toast(
+                context: context,
+                text: '광고성 정보 수신 여부가 ‘거부’로 변경되었습니다.',
+                type: ToastType.red,
+              );
+            },
+            child: const Text("수신 거부 토스트"),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Checkbox(
+                activeColor: kPrimaryLightColor,
+                visualDensity: VisualDensity.standard,
+                value: testValue,
+                checkColor: kPrimaryColor,
+                onChanged: (value) {
+                  if (value != null) onTap();
+                },
+              ),
+              Checkbox(
+                visualDensity: VisualDensity.compact,
+                activeColor: kPrimaryLightColor,
+                value: !testValue,
+                checkColor: kPrimaryColor,
+                onChanged: (value) {
+                  if (value != null) onTap();
+                },
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FlutterSwitch(
+                padding: 4,
+                width: 48.w,
+                height: 20.h,
+                activeColor: Theme.of(context).primaryColor,
+                inactiveColor: kNeutralColor500,
+                toggleSize: 20.0.w,
+                value: testValue,
+                borderRadius: 50.0.w,
+                onToggle: (value) async {
+                  onTap();
+                },
+              ),
+              FlutterSwitch(
+                padding: 4,
+                width: 48.w,
+                height: 20.h,
+                activeColor: Theme.of(context).primaryColor,
+                inactiveColor: kNeutralColor500,
+                toggleSize: 20.0.w,
+                value: !testValue,
+                borderRadius: 50.0.w,
+                onToggle: (value) async {
+                  onTap();
+                },
+              ),
+            ],
+          ),
+          TextButton(
+            onPressed: () => InstaAssetPicker.pickAssets(
+              context,
+              maxAssets: 12,
+              pickerTheme: themeData(context).copyWith(
+                canvasColor: kNeutralColor100, // body background color
+                colorScheme: theme.colorScheme.copyWith(
+                  background: kNeutralColor100, // albums list background color
+                ),
+                appBarTheme: theme.appBarTheme.copyWith(
+                  backgroundColor: kNeutralColor100,
+                ),
+              ),
+              onCompleted: (cropStream) {},
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            child: const Text(
+              '이미지 선택',
             ),
-          ],
-        ),
+          ),
+          TextButton(
+            onPressed: () async {
+              final ImagePicker picker = ImagePicker();
+
+              await picker.pickImage(source: ImageSource.camera);
+            },
+            child: const Text(
+              '카메라 연결',
+            ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
