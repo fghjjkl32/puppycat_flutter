@@ -1,6 +1,9 @@
+import 'package:appspector/appspector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
@@ -17,17 +20,23 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'components/feed/feed_detail_widget.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runAppSpector();
   runApp(
-    const MyApp(),
+    const ProviderScope(
+      child : MyApp(),
+    ),
   );
 }
-
-class MyApp extends StatelessWidget {
+final routerProvider = Provider<GoRouter>((ref) => AppRouter().router);
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
     return ScreenUtilInit(
       designSize: const Size(360, 640),
       builder: (BuildContext context, Widget? child) {
@@ -40,6 +49,23 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+}
+
+
+Future runAppSpector() async {
+  final config = Config()
+    ..androidApiKey =
+        "android_ODg1YjU5NmEtMTcwYi00M2NiLWIxMTYtMjIyN2VjY2M5OTk5";
+
+  // If you don't want to start all monitors you can specify a list of necessary ones
+  // config.monitors = [Monitors.http, Monitors.sqLite, Monitors.fileSystem];
+  AppSpectorPlugin.run(config);
+  Future(() async {
+    final isStarted = await AppSpectorPlugin.shared().isStarted();
+    if (!isStarted) {
+      await AppSpectorPlugin.shared().start();
+    }
+  },) ;
 }
 
 class MyHomePage extends StatefulWidget {

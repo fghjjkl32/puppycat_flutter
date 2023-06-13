@@ -1,4 +1,4 @@
-import 'package:pet_mobile_social_flutter/data/remote_data/profile_api.dart';
+import 'package:pet_mobile_social_flutter/services/remote_data/profile_api.dart';
 import 'package:pet_mobile_social_flutter/models/profile/profile.dart';
 
 import 'profile_interface.dart';
