@@ -1,9 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/components/feed/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/config/theme/size_data.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class FeedImageDetailWidget extends StatelessWidget {
   FeedImageDetailWidget({
@@ -47,20 +46,9 @@ class FeedImageDetailWidget extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.symmetric(vertical: 8.0.h),
-          child: ValueListenableBuilder<int>(
-            valueListenable: _counter,
-            builder: (BuildContext context, int index, Widget? child) =>
-                AnimatedSmoothIndicator(
-              activeIndex: index,
-              axisDirection: Axis.horizontal,
-              count: imageList.length,
-              effect: ScrollingDotsEffect(
-                dotColor: kNeutralColor400,
-                activeDotColor: kPrimaryColor,
-                dotWidth: 6.h,
-                dotHeight: 6.h,
-              ),
-            ),
+          child: DotIndicator(
+            counter: _counter,
+            imageListLength: imageList.length,
           ),
         ),
       ],

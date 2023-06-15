@@ -1,9 +1,9 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_assets_crop/insta_assets_crop.dart';
-import 'package:pet_mobile_social_flutter/config/library/insta_assets_picker/insta_assets_crop_controller.dart';
-import 'package:pet_mobile_social_flutter/config/library/wechat_assets_picker/delegates/asset_picker_text_delegate.dart';
-import 'package:pet_mobile_social_flutter/config/library/wechat_assets_picker/provider/asset_picker_provider.dart';
+import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/delegates/asset_picker_text_delegate.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/provider/asset_picker_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../internal/singleton.dart';
-import '../../widget/scale_text.dart';
+import '../scale_text.dart';
 
 class AssetEntityGridItemBuilder extends StatefulWidget {
   const AssetEntityGridItemBuilder({

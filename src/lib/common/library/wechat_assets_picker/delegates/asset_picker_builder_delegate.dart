@@ -22,7 +22,7 @@ import '../constants/constants.dart';
 import '../constants/enums.dart';
 import '../constants/extensions.dart';
 import '../constants/typedefs.dart';
-import '../delegates/asset_picker_text_delegate.dart';
+import 'asset_picker_text_delegate.dart';
 import '../internal/singleton.dart';
 import '../models/path_wrapper.dart';
 import '../provider/asset_picker_provider.dart';

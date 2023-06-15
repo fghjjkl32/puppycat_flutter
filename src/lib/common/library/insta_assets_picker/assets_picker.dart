@@ -1,15 +1,15 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:pet_mobile_social_flutter/config/library/insta_assets_picker/insta_assets_crop_controller.dart';
-import 'package:pet_mobile_social_flutter/config/library/insta_assets_picker/widget/insta_asset_picker_delegate.dart';
-import 'package:pet_mobile_social_flutter/config/library/wechat_assets_picker/constants/constants.dart';
-import 'package:pet_mobile_social_flutter/config/library/wechat_assets_picker/constants/enums.dart';
-import 'package:pet_mobile_social_flutter/config/library/wechat_assets_picker/delegates/asset_picker_text_delegate.dart';
-import 'package:pet_mobile_social_flutter/config/library/wechat_assets_picker/delegates/sort_path_delegate.dart';
-import 'package:pet_mobile_social_flutter/config/library/wechat_assets_picker/provider/asset_picker_provider.dart';
-import 'package:pet_mobile_social_flutter/config/library/wechat_assets_picker/widget/asset_picker.dart';
-import 'package:pet_mobile_social_flutter/config/library/wechat_assets_picker/widget/asset_picker_page_route.dart';
+import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
+import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/widget/insta_asset_picker_delegate.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/constants/constants.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/constants/enums.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/delegates/asset_picker_text_delegate.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/delegates/sort_path_delegate.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/provider/asset_picker_provider.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/widget/asset_picker.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/widget/asset_picker_page_route.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 const _kGridCount = 4;

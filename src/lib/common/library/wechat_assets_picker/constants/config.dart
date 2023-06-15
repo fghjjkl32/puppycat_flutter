@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-import '../constants/typedefs.dart';
+import 'typedefs.dart';
 import '../delegates/asset_picker_text_delegate.dart';
 import '../delegates/sort_path_delegate.dart';
 import 'constants.dart';
