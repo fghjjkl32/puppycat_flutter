@@ -10,11 +10,11 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/carousel_controller_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/cropped_files_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/current_tag_count_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/current_view_count_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/post_feed_write_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_carousel_controller_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_cropped_files_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_current_tag_count_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_current_view_count_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_provider.dart';
 
 class CroppedImagesListView extends ConsumerStatefulWidget {
   const CroppedImagesListView({
@@ -36,14 +36,16 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
   @override
   Widget build(BuildContext context) {
     if (widget.progress == 1.0 && !alreadyLoaded) {
-      ref.read(croppedFilesProvider.notifier).addAll(widget.croppedFiles);
+      ref
+          .read(feedWriteCroppedFilesProvider.notifier)
+          .addAll(widget.croppedFiles);
       alreadyLoaded = true;
     }
 
-    PostFeedState state = ref.watch(postFeedWriteProvider);
+    PostFeedState state = ref.watch(feedWriteProvider);
     List<TagImages> taggedImages = state.tagImage;
 
-    final providerCroppedFiles = ref.watch(croppedFilesProvider);
+    final providerCroppedFiles = ref.watch(feedWriteCroppedFilesProvider);
 
     if (widget.progress == null) {
       return const SizedBox.shrink();
@@ -54,21 +56,23 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
         alignment: Alignment.centerLeft,
         children: [
           CarouselSlider.builder(
-            carouselController: ref.watch(carouselControllerProvider),
+            carouselController: ref.watch(feedWriteCarouselControllerProvider),
             options: CarouselOptions(
-              initialPage: ref.watch(currentViewCountProvider),
+              initialPage: ref.watch(feedWriteCurrentViewCountProvider),
               height: 260.0.h,
               enableInfiniteScroll: false,
               aspectRatio: 1,
               padEnds: false,
               onPageChanged: (index, reason) {
-                ref.watch(currentTagCountProvider.notifier).state = taggedImages
-                    .firstWhere((tagImage) => tagImage.index == index,
-                        orElse: () => TagImages(index: index, tag: []))
-                    .tag
-                    .length;
+                ref.watch(feedWriteCurrentTagCountProvider.notifier).state =
+                    taggedImages
+                        .firstWhere((tagImage) => tagImage.index == index,
+                            orElse: () => TagImages(index: index, tag: []))
+                        .tag
+                        .length;
 
-                ref.watch(currentViewCountProvider.notifier).state = index;
+                ref.watch(feedWriteCurrentViewCountProvider.notifier).state =
+                    index;
               },
             ),
             itemCount: providerCroppedFiles.length,
@@ -105,24 +109,26 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                           ? GestureDetector(
                               onTap: () {
                                 ref
-                                    .read(croppedFilesProvider.notifier)
+                                    .read(
+                                        feedWriteCroppedFilesProvider.notifier)
                                     .removeAt(index);
 
                                 ref
-                                    .read(postFeedWriteProvider.notifier)
+                                    .read(feedWriteProvider.notifier)
                                     .removeTagsFromImage(index);
 
                                 if (index >= 0 &&
                                     index < taggedImages.length - 1) {
                                   ref
-                                      .watch(currentTagCountProvider.notifier)
-                                      .state = taggedImages[
-                                          index + 1]
-                                      .tag
-                                      .length;
+                                          .watch(
+                                              feedWriteCurrentTagCountProvider
+                                                  .notifier)
+                                          .state =
+                                      taggedImages[index + 1].tag.length;
                                 } else {
                                   ref
-                                      .watch(currentTagCountProvider.notifier)
+                                      .watch(feedWriteCurrentTagCountProvider
+                                          .notifier)
                                       .state = 0;
                                 }
                               },
@@ -149,10 +155,11 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                         child: GestureDetector(
                           onTap: () {
                             ref
-                                .read(postFeedWriteProvider.notifier)
+                                .read(feedWriteProvider.notifier)
                                 .removeTag(item);
                             ref
-                                .watch(currentTagCountProvider.notifier)
+                                .watch(
+                                    feedWriteCurrentTagCountProvider.notifier)
                                 .state = taggedImages
                                     .firstWhere(
                                         (tagImage) => tagImage.index == index,
@@ -169,11 +176,12 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                             text: item.username,
                             onDelete: () {
                               ref
-                                  .read(postFeedWriteProvider.notifier)
+                                  .read(feedWriteProvider.notifier)
                                   .removeTag(item);
 
                               ref
-                                  .watch(currentTagCountProvider.notifier)
+                                  .watch(
+                                      feedWriteCurrentTagCountProvider.notifier)
                                   .state = taggedImages
                                       .firstWhere(
                                           (tagImage) => tagImage.index == index,

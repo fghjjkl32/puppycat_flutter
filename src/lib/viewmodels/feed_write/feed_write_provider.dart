@@ -4,7 +4,7 @@ import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart'
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
 
-final postFeedWriteProvider =
+final feedWriteProvider =
     StateNotifierProvider<PostFeedWriteNotifier, PostFeedState>((ref) {
   return PostFeedWriteNotifier();
 });

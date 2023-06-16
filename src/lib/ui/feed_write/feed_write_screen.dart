@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/ui/post_feed_write/componenet/post_feed_view.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/post_feed_write_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/post_feed_view.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_provider.dart';
 
-class PostFeedWriteScreen extends ConsumerWidget {
-  const PostFeedWriteScreen({super.key, required this.cropStream});
+class FeedWriteScreen extends ConsumerWidget {
+  const FeedWriteScreen({super.key, required this.cropStream});
 
   final Stream<InstaAssetsExportDetails> cropStream;
 
@@ -22,7 +22,7 @@ class PostFeedWriteScreen extends ConsumerWidget {
           onPressed: () {
             Navigator.of(context).pop();
 
-            ref.read(postFeedWriteProvider.notifier).resetTag();
+            ref.read(feedWriteProvider.notifier).resetTag();
           },
           icon: const Icon(Icons.close),
         ),

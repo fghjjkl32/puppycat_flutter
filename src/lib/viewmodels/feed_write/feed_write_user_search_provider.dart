@@ -26,6 +26,7 @@ class UserSearchNotifier extends StateNotifier<String> {
   }
 }
 
-final userSearchProvider = StateNotifierProvider<UserSearchNotifier, String>(
+final feedWriteUserSearchProvider =
+    StateNotifierProvider<UserSearchNotifier, String>(
   (ref) => UserSearchNotifier(),
 );

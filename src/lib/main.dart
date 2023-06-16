@@ -16,7 +16,7 @@ import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
-import 'package:pet_mobile_social_flutter/ui/post_feed_write/post_feed_write_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'components/feed/feed_detail_widget.dart';
 
 void main() {
@@ -226,7 +226,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        PostFeedWriteScreen(cropStream: cropStream),
+                        FeedWriteScreen(cropStream: cropStream),
                   ),
                 );
               },

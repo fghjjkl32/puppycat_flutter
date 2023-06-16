@@ -6,9 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/ui/post_feed_write/componenet/cropped_images_list_view.dart';
-import 'package:pet_mobile_social_flutter/ui/post_feed_write/tag_screen.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/current_tag_count_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/cropped_images_list_view.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/tag_screen.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_button_selected_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_current_tag_count_provider.dart';
 
 class PostFeedView extends ConsumerStatefulWidget {
   const PostFeedView({
@@ -27,6 +28,8 @@ class PostFeedView extends ConsumerStatefulWidget {
 class PostFeedViewState extends ConsumerState<PostFeedView> {
   @override
   Widget build(BuildContext context) {
+    final buttonSelected = ref.watch(feedWriteButtonSelectedProvider);
+
     return ListView(
       children: <Widget>[
         AnimatedContainer(
@@ -101,7 +104,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                                     color: kTextBodyColor),
                               ),
                               Text(
-                                "${ref.watch(currentTagCountProvider)}",
+                                "${ref.watch(feedWriteCurrentTagCountProvider)}",
                                 style: kBody12SemiBoldStyle.copyWith(
                                     color: kTextSubTitleColor),
                               ),
@@ -191,28 +194,41 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
           child: Row(
             children: [
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: kNeutralColor400),
-                  ),
-                  height: 44.h,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/image/feed/icon/small_size/icon_view_all.png',
-                        height: 26.w,
-                      ),
-                      SizedBox(
-                        width: 9.w,
-                      ),
-                      Text(
-                        "전체 공개",
-                        style:
-                            kButton14BoldStyle.copyWith(color: kTextBodyColor),
-                      ),
-                    ],
+                child: GestureDetector(
+                  onTap: () {
+                    ref.watch(feedWriteButtonSelectedProvider.notifier).state =
+                        0;
+                  },
+                  child: Container(
+                    decoration: buttonSelected == 0
+                        ? BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: kPrimaryLightColor,
+                          )
+                        : BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: kNeutralColor400),
+                          ),
+                    height: 44.h,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/image/feed/icon/small_size/icon_view_all.png',
+                          height: 26.w,
+                        ),
+                        SizedBox(
+                          width: 9.w,
+                        ),
+                        Text(
+                          "전체 공개",
+                          style: kButton14BoldStyle.copyWith(
+                              color: buttonSelected == 0
+                                  ? kPrimaryColor
+                                  : kTextBodyColor),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -220,28 +236,41 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                 width: 10,
               ),
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: kPrimaryLightColor,
-                  ),
-                  height: 44.h,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/image/feed/icon/small_size/icon_view_follow.png',
-                        height: 26.w,
-                      ),
-                      SizedBox(
-                        width: 9.w,
-                      ),
-                      Text(
-                        "팔로우 공개",
-                        style:
-                            kButton14BoldStyle.copyWith(color: kPrimaryColor),
-                      ),
-                    ],
+                child: GestureDetector(
+                  onTap: () {
+                    ref.watch(feedWriteButtonSelectedProvider.notifier).state =
+                        1;
+                  },
+                  child: Container(
+                    decoration: buttonSelected == 1
+                        ? BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: kPrimaryLightColor,
+                          )
+                        : BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: kNeutralColor400),
+                          ),
+                    height: 44.h,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          'assets/image/feed/icon/small_size/icon_view_follow.png',
+                          height: 26.w,
+                        ),
+                        SizedBox(
+                          width: 9.w,
+                        ),
+                        Text(
+                          "팔로우 공개",
+                          style: kButton14BoldStyle.copyWith(
+                              color: buttonSelected == 1
+                                  ? kPrimaryColor
+                                  : kTextBodyColor),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

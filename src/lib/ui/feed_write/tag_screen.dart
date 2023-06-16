@@ -11,12 +11,12 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
-import 'package:pet_mobile_social_flutter/ui/post_feed_write/feed_write_tag_search.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/carousel_controller_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/cropped_files_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/current_tag_count_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/current_view_count_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/post_feed_write_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_tag_search.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_carousel_controller_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_cropped_files_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_current_tag_count_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_current_view_count_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_provider.dart';
 
 class TagScreen extends ConsumerWidget {
   TagScreen({
@@ -27,7 +27,7 @@ class TagScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<File> croppedFiles = ref.watch(croppedFilesProvider);
+    List<File> croppedFiles = ref.watch(feedWriteCroppedFilesProvider);
 
     return Scaffold(
       backgroundColor: Colors.black.withOpacity(0.8),
@@ -60,21 +60,25 @@ class TagScreen extends ConsumerWidget {
                     style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
                   ),
                   onPressed: () {
-                    ref.read(postFeedWriteProvider.notifier).saveTag();
-                    ref.watch(carouselControllerProvider.notifier).jumpToPage(
-                        ref.watch(currentViewCountProvider.notifier).state);
+                    ref.read(feedWriteProvider.notifier).saveTag();
+                    ref
+                        .watch(feedWriteCarouselControllerProvider.notifier)
+                        .jumpToPage(ref
+                            .watch(feedWriteCurrentViewCountProvider.notifier)
+                            .state);
 
-                    int currentIndex =
-                        ref.watch(currentViewCountProvider.notifier).state;
+                    int currentIndex = ref
+                        .watch(feedWriteCurrentViewCountProvider.notifier)
+                        .state;
                     List<TagImages> tagImages =
-                        ref.watch(postFeedWriteProvider).tagImage;
+                        ref.watch(feedWriteProvider).tagImage;
 
                     TagImages? currentTagImage = tagImages.firstWhere(
                       (tagImage) => tagImage.index == currentIndex,
                       orElse: () => TagImages(index: 0, tag: []),
                     );
 
-                    ref.watch(currentTagCountProvider.notifier).state =
+                    ref.watch(feedWriteCurrentTagCountProvider.notifier).state =
                         currentTagImage.tag.length;
 
                     Navigator.of(context).pop();
@@ -98,10 +102,11 @@ class TagScreen extends ConsumerWidget {
                 padEnds: false,
                 onPageChanged: (index) {
                   _counter.value = index;
-                  ref.watch(currentViewCountProvider.notifier).state = index;
+                  ref.watch(feedWriteCurrentViewCountProvider.notifier).state =
+                      index;
                 },
                 controller: PageController(
-                    initialPage: ref.watch(currentViewCountProvider)),
+                    initialPage: ref.watch(feedWriteCurrentViewCountProvider)),
                 scrollDirection: Axis.horizontal,
                 children: croppedFiles.asMap().entries.map((entry) {
                   var imageIndex = entry.key;
@@ -119,8 +124,9 @@ class TagScreen extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0.h),
               child: DotIndicator(
-                counter: ValueNotifier<int>(
-                    ref.watch(currentViewCountProvider.notifier).state),
+                counter: ValueNotifier<int>(ref
+                    .watch(feedWriteCurrentViewCountProvider.notifier)
+                    .state),
                 imageListLength: croppedFiles.length,
               ),
             ),
@@ -147,7 +153,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    PostFeedState state = ref.watch(postFeedWriteProvider);
+    PostFeedState state = ref.watch(feedWriteProvider);
     List<TagImages> taggedImages = state.tagImage;
     TagImages tagImages = taggedImages.firstWhere(
         (tagImage) => tagImage.index == widget.imageIndex,
@@ -207,7 +213,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
                     left: tag.position.dx,
                     child: GestureDetector(
                       onTap: () {
-                        ref.read(postFeedWriteProvider.notifier).removeTag(tag);
+                        ref.read(feedWriteProvider.notifier).removeTag(tag);
                       },
                       child: MentionTagWidget(
                         color: kTextSubTitleColor.withOpacity(0.8),
@@ -215,9 +221,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
                             color: kNeutralColor100),
                         text: tag.username,
                         onDelete: () {
-                          ref
-                              .read(postFeedWriteProvider.notifier)
-                              .removeTag(tag);
+                          ref.read(feedWriteProvider.notifier).removeTag(tag);
                         },
                       ),
                     ),

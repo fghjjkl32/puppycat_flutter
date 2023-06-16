@@ -6,8 +6,8 @@ import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_i
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/post_feed_write_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/post_feed/user_search_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_provider.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_user_search_provider.dart';
 
 class FeedWriteTagSearch extends ConsumerWidget {
   final Offset offset;
@@ -21,7 +21,8 @@ class FeedWriteTagSearch extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userSearchController = ref.watch(userSearchProvider.notifier);
+    final userSearchController =
+        ref.watch(feedWriteUserSearchProvider.notifier);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -37,11 +38,11 @@ class FeedWriteTagSearch extends ConsumerWidget {
                         vertical: 8.0, horizontal: 12.0),
                     child: FormBuilderTextField(
                       name: 'search',
-                      initialValue: ref.watch(userSearchProvider),
+                      initialValue: ref.watch(feedWriteUserSearchProvider),
                       style: kBody13RegularStyle.copyWith(
                           color: kTextSubTitleColor),
                       onChanged: (value) => ref
-                          .read(userSearchProvider.notifier)
+                          .read(feedWriteUserSearchProvider.notifier)
                           .onTextChanged(value!),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
@@ -80,7 +81,8 @@ class FeedWriteTagSearch extends ConsumerWidget {
                             : GestureDetector(
                                 onTap: () {
                                   ref
-                                      .read(userSearchProvider.notifier)
+                                      .read(
+                                          feedWriteUserSearchProvider.notifier)
                                       .onTextChanged('');
                                 },
                                 child: Padding(
@@ -156,9 +158,7 @@ class FeedWriteTagSearch extends ConsumerWidget {
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {
-                                  ref
-                                      .watch(postFeedWriteProvider.notifier)
-                                      .addTag(
+                                  ref.watch(feedWriteProvider.notifier).addTag(
                                         Tag(
                                             username: userSearchController
                                                 .searchResult[index],

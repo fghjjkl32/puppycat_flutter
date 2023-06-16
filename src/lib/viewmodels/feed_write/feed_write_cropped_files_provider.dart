@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final croppedFilesProvider =
+final feedWriteCroppedFilesProvider =
     StateNotifierProvider<CroppedFilesNotifier, List<File>>((ref) {
   return CroppedFilesNotifier();
 });
