@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/ui/post_feed/componenet/post_feed_view.dart';
+import 'package:pet_mobile_social_flutter/ui/post_feed_write/componenet/post_feed_view.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/post_feed/post_feed_write_provider.dart';
 
 class PostFeedWriteScreen extends ConsumerWidget {

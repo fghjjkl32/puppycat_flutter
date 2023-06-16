@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widge
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
+import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/post_feed/carousel_controller_provider.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/post_feed/cropped_files_provider.dart';
@@ -63,8 +64,8 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
               onPageChanged: (index, reason) {
                 ref.watch(currentTagCountProvider.notifier).state = taggedImages
                     .firstWhere((tagImage) => tagImage.index == index,
-                        orElse: () => TagImages(index: index, tags: []))
-                    .tags
+                        orElse: () => TagImages(index: index, tag: []))
+                    .tag
                     .length;
 
                 ref.watch(currentViewCountProvider.notifier).state = index;
@@ -76,9 +77,9 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
 
               TagImages tagImages = taggedImages.firstWhere(
                   (tagImage) => tagImage.index == index,
-                  orElse: () => TagImages(index: index, tags: []));
+                  orElse: () => TagImages(index: index, tag: []));
 
-              List<Offset> tags = tagImages.tags;
+              List<Tag> tags = tagImages.tag;
 
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 9.0),
@@ -117,7 +118,7 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                                       .watch(currentTagCountProvider.notifier)
                                       .state = taggedImages[
                                           index + 1]
-                                      .tags
+                                      .tag
                                       .length;
                                 } else {
                                   ref
@@ -143,8 +144,8 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                     ),
                     ...tags.map((item) {
                       return Positioned(
-                        top: item.dy,
-                        left: item.dx,
+                        top: item.position.dy,
+                        left: item.position.dx,
                         child: GestureDetector(
                           onTap: () {
                             ref
@@ -156,8 +157,8 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                                     .firstWhere(
                                         (tagImage) => tagImage.index == index,
                                         orElse: () =>
-                                            TagImages(index: index, tags: []))
-                                    .tags
+                                            TagImages(index: index, tag: []))
+                                    .tag
                                     .length -
                                 1;
                           },
@@ -165,7 +166,7 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                             color: kTextSubTitleColor.withOpacity(0.8),
                             textStyle: kBody11RegularStyle.copyWith(
                                 color: kNeutralColor100),
-                            text: 'bearhat',
+                            text: item.username,
                             onDelete: () {
                               ref
                                   .read(postFeedWriteProvider.notifier)
@@ -177,8 +178,8 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                                       .firstWhere(
                                           (tagImage) => tagImage.index == index,
                                           orElse: () =>
-                                              TagImages(index: index, tags: []))
-                                      .tags
+                                              TagImages(index: index, tag: []))
+                                      .tag
                                       .length -
                                   1;
                             },

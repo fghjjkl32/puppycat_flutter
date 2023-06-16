@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
+import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
 
 final postFeedWriteProvider =
@@ -13,7 +13,7 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
   PostFeedWriteNotifier()
       : super(PostFeedState(tagList: [], tagImage: [], offsetCount: 0));
 
-  void addTag(Offset offset, int imageIndex, BuildContext context) {
+  void addTag(Tag tag, int imageIndex, BuildContext context) {
     List<TagImages> newTagImage = List.from(state.tagImage);
     int existingIndex = -1;
 
@@ -25,20 +25,11 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     }
 
     if (existingIndex != -1) {
-      if (newTagImage[existingIndex].tags.length >= 10) {
-        toast(
-          context: context,
-          text: '한 이미지에는 태그를 10개까지만 할 수 있습니다.',
-          type: ToastType.red,
-        );
-        return;
-      }
-      List<Offset> newTags = List.from(newTagImage[existingIndex].tags)
-        ..add(offset);
+      List<Tag> newTags = List.from(newTagImage[existingIndex].tag)..add(tag);
       newTagImage[existingIndex] =
-          newTagImage[existingIndex].copyWith(tags: newTags);
+          newTagImage[existingIndex].copyWith(tag: newTags);
     } else {
-      newTagImage.add(TagImages(index: imageIndex, tags: [offset]));
+      newTagImage.add(TagImages(index: imageIndex, tag: [tag]));
     }
 
     state = state.copyWith(
@@ -53,13 +44,13 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     state = state.copyWith(tagList: [], tagImage: [], offsetCount: 0);
   }
 
-  void removeTag(Offset offset) {
+  void removeTag(Tag tag) {
     List<TagImages> newTagImage = [];
 
     for (var tagImages in state.tagImage) {
-      List<Offset> newTags = List.from(tagImages.tags)..remove(offset);
+      List<Tag> newTags = List.from(tagImages.tag)..remove(tag);
       if (newTags.isNotEmpty) {
-        newTagImage.add(TagImages(index: tagImages.index, tags: newTags));
+        newTagImage.add(TagImages(index: tagImages.index, tag: newTags));
       }
     }
 

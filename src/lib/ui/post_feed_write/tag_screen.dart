@@ -5,10 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
+import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
+import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
+import 'package:pet_mobile_social_flutter/ui/post_feed_write/feed_write_tag_search.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/post_feed/carousel_controller_provider.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/post_feed/cropped_files_provider.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/post_feed/current_tag_count_provider.dart';
@@ -68,11 +71,11 @@ class TagScreen extends ConsumerWidget {
 
                     TagImages? currentTagImage = tagImages.firstWhere(
                       (tagImage) => tagImage.index == currentIndex,
-                      orElse: () => TagImages(index: 0, tags: []),
+                      orElse: () => TagImages(index: 0, tag: []),
                     );
 
                     ref.watch(currentTagCountProvider.notifier).state =
-                        currentTagImage.tags.length;
+                        currentTagImage.tag.length;
 
                     Navigator.of(context).pop();
                   },
@@ -148,17 +151,44 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
     List<TagImages> taggedImages = state.tagImage;
     TagImages tagImages = taggedImages.firstWhere(
         (tagImage) => tagImage.index == widget.imageIndex,
-        orElse: () => TagImages(index: widget.imageIndex, tags: []));
+        orElse: () => TagImages(index: widget.imageIndex, tag: []));
 
-    List<Offset> tags = tagImages.tags;
+    List<Tag> tags = tagImages.tag;
 
     return GestureDetector(
       onTapDown: (details) {
         RenderBox box = context.findRenderObject() as RenderBox;
         Offset tapLocation = box.globalToLocal(details.globalPosition);
-        ref
-            .read(postFeedWriteProvider.notifier)
-            .addTag(tapLocation, widget.imageIndex, context);
+
+        List<TagImages> newTagImage = List.from(state.tagImage);
+        int existingIndex = -1;
+
+        for (int i = 0; i < newTagImage.length; i++) {
+          if (newTagImage[i].index == widget.imageIndex) {
+            existingIndex = i;
+            break;
+          }
+        }
+
+        if (existingIndex != -1) {
+          if (newTagImage[existingIndex].tag.length >= 10) {
+            toast(
+              context: context,
+              text: '한 이미지에는 태그를 10개까지만 할 수 있습니다.',
+              type: ToastType.red,
+            );
+            return;
+          }
+        }
+        Navigator.of(context).push(
+          PageRouteBuilder(
+            opaque: false, // set to false
+            pageBuilder: (_, __, ___) => FeedWriteTagSearch(
+              offset: tapLocation,
+              imageIndex: widget.imageIndex,
+            ),
+          ),
+        );
       },
       child: Stack(
         children: [
@@ -173,8 +203,8 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
           ),
           ...tags
               .map((tag) => Positioned(
-                    top: tag.dy,
-                    left: tag.dx,
+                    top: tag.position.dy,
+                    left: tag.position.dx,
                     child: GestureDetector(
                       onTap: () {
                         ref.read(postFeedWriteProvider.notifier).removeTag(tag);
@@ -183,7 +213,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
                         color: kTextSubTitleColor.withOpacity(0.8),
                         textStyle: kBody11RegularStyle.copyWith(
                             color: kNeutralColor100),
-                        text: 'bearhat',
+                        text: tag.username,
                         onDelete: () {
                           ref
                               .read(postFeedWriteProvider.notifier)

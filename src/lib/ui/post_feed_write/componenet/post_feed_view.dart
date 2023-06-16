@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/ui/post_feed/componenet/cropped_images_list_view.dart';
-import 'package:pet_mobile_social_flutter/ui/post_feed/tag_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/post_feed_write/componenet/cropped_images_list_view.dart';
+import 'package:pet_mobile_social_flutter/ui/post_feed_write/tag_screen.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/post_feed/current_tag_count_provider.dart';
 
 class PostFeedView extends ConsumerStatefulWidget {

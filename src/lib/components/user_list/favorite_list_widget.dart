@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pet_mobile_social_flutter/components/favorite_list/widget/favorite_item_widget.dart';
+import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 
 class FavoriteListWidget extends StatelessWidget {
   const FavoriteListWidget({Key? key}) : super(key: key);

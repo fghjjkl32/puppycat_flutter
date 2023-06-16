@@ -21,7 +21,7 @@ TagImages _$TagImagesFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$TagImages {
   int get index => throw _privateConstructorUsedError;
-  List<Offset> get tags => throw _privateConstructorUsedError;
+  List<Tag> get tag => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -34,7 +34,7 @@ abstract class $TagImagesCopyWith<$Res> {
   factory $TagImagesCopyWith(TagImages value, $Res Function(TagImages) then) =
       _$TagImagesCopyWithImpl<$Res, TagImages>;
   @useResult
-  $Res call({int index, List<Offset> tags});
+  $Res call({int index, List<Tag> tag});
 }
 
 /// @nodoc
@@ -51,17 +51,17 @@ class _$TagImagesCopyWithImpl<$Res, $Val extends TagImages>
   @override
   $Res call({
     Object? index = null,
-    Object? tags = null,
+    Object? tag = null,
   }) {
     return _then(_value.copyWith(
       index: null == index
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
               as int,
-      tags: null == tags
-          ? _value.tags
-          : tags // ignore: cast_nullable_to_non_nullable
-              as List<Offset>,
+      tag: null == tag
+          ? _value.tag
+          : tag // ignore: cast_nullable_to_non_nullable
+              as List<Tag>,
     ) as $Val);
   }
 }
@@ -73,7 +73,7 @@ abstract class _$$_TagImagesCopyWith<$Res> implements $TagImagesCopyWith<$Res> {
       __$$_TagImagesCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int index, List<Offset> tags});
+  $Res call({int index, List<Tag> tag});
 }
 
 /// @nodoc
@@ -88,17 +88,17 @@ class __$$_TagImagesCopyWithImpl<$Res>
   @override
   $Res call({
     Object? index = null,
-    Object? tags = null,
+    Object? tag = null,
   }) {
     return _then(_$_TagImages(
       index: null == index
           ? _value.index
           : index // ignore: cast_nullable_to_non_nullable
               as int,
-      tags: null == tags
-          ? _value._tags
-          : tags // ignore: cast_nullable_to_non_nullable
-              as List<Offset>,
+      tag: null == tag
+          ? _value._tag
+          : tag // ignore: cast_nullable_to_non_nullable
+              as List<Tag>,
     ));
   }
 }
@@ -107,25 +107,25 @@ class __$$_TagImagesCopyWithImpl<$Res>
 @JsonSerializable()
 @OffsetConverter()
 class _$_TagImages implements _TagImages {
-  _$_TagImages({required this.index, required final List<Offset> tags})
-      : _tags = tags;
+  _$_TagImages({required this.index, required final List<Tag> tag})
+      : _tag = tag;
 
   factory _$_TagImages.fromJson(Map<String, dynamic> json) =>
       _$$_TagImagesFromJson(json);
 
   @override
   final int index;
-  final List<Offset> _tags;
+  final List<Tag> _tag;
   @override
-  List<Offset> get tags {
-    if (_tags is EqualUnmodifiableListView) return _tags;
+  List<Tag> get tag {
+    if (_tag is EqualUnmodifiableListView) return _tag;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_tags);
+    return EqualUnmodifiableListView(_tag);
   }
 
   @override
   String toString() {
-    return 'TagImages(index: $index, tags: $tags)';
+    return 'TagImages(index: $index, tag: $tag)';
   }
 
   @override
@@ -134,13 +134,13 @@ class _$_TagImages implements _TagImages {
         (other.runtimeType == runtimeType &&
             other is _$_TagImages &&
             (identical(other.index, index) || other.index == index) &&
-            const DeepCollectionEquality().equals(other._tags, _tags));
+            const DeepCollectionEquality().equals(other._tag, _tag));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, index, const DeepCollectionEquality().hash(_tags));
+      runtimeType, index, const DeepCollectionEquality().hash(_tag));
 
   @JsonKey(ignore: true)
   @override
@@ -157,9 +157,8 @@ class _$_TagImages implements _TagImages {
 }
 
 abstract class _TagImages implements TagImages {
-  factory _TagImages(
-      {required final int index,
-      required final List<Offset> tags}) = _$_TagImages;
+  factory _TagImages({required final int index, required final List<Tag> tag}) =
+      _$_TagImages;
 
   factory _TagImages.fromJson(Map<String, dynamic> json) =
       _$_TagImages.fromJson;
@@ -167,7 +166,7 @@ abstract class _TagImages implements TagImages {
   @override
   int get index;
   @override
-  List<Offset> get tags;
+  List<Tag> get tag;
   @override
   @JsonKey(ignore: true)
   _$$_TagImagesCopyWith<_$_TagImages> get copyWith =>

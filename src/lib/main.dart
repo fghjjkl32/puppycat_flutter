@@ -8,15 +8,15 @@ import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/ass
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_deatil_list_widget.dart';
-import 'package:pet_mobile_social_flutter/components/favorite_list/favorite_list_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
+import 'package:pet_mobile_social_flutter/components/user_list/favorite_list_widget.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
-import 'package:pet_mobile_social_flutter/ui/post_feed/post_feed_write_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/post_feed_write/post_feed_write_screen.dart';
 import 'components/feed/feed_detail_widget.dart';
 
 void main() {
