@@ -9,11 +9,11 @@ import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_provider.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_user_search_provider.dart';
 
-class FeedWriteTagSearch extends ConsumerWidget {
+class FeedWriteTagSearchScreen extends ConsumerWidget {
   final Offset offset;
   final int imageIndex;
 
-  const FeedWriteTagSearch({
+  const FeedWriteTagSearchScreen({
     Key? key,
     required this.offset,
     required this.imageIndex,

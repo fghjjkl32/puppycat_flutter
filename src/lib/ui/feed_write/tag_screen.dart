@@ -11,7 +11,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_tag_search.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_tag_search_screen.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_carousel_controller_provider.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_cropped_files_provider.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_current_tag_count_provider.dart';
@@ -189,7 +189,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
         Navigator.of(context).push(
           PageRouteBuilder(
             opaque: false, // set to false
-            pageBuilder: (_, __, ___) => FeedWriteTagSearch(
+            pageBuilder: (_, __, ___) => FeedWriteTagSearchScreen(
               offset: tapLocation,
               imageIndex: widget.imageIndex,
             ),

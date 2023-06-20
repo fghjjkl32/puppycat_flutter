@@ -42,6 +42,8 @@ dependencies:
   rxdart: ^0.27.7
   flutter_social_textfield: ^0.1.2
   sliding_up_panel: ^2.0.0+1
+  path_provider: ^2.0.15
+  drift: ^2.9.0
 
 dev_dependencies:
   flutter_test:
