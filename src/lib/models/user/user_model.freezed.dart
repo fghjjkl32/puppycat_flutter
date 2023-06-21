@@ -20,6 +20,9 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserModel {
+  LoginStatus get loginStatus => throw _privateConstructorUsedError;
+  int get idx => throw _privateConstructorUsedError;
+  String get nick => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError; //email
   String get simpleId => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
@@ -46,7 +49,10 @@ abstract class $UserModelCopyWith<$Res> {
       _$UserModelCopyWithImpl<$Res, UserModel>;
   @useResult
   $Res call(
-      {String id,
+      {LoginStatus loginStatus,
+      int idx,
+      String nick,
+      String id,
       String simpleId,
       String? name,
       String? gender,
@@ -74,6 +80,9 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? loginStatus = null,
+    Object? idx = null,
+    Object? nick = null,
     Object? id = null,
     Object? simpleId = null,
     Object? name = freezed,
@@ -89,6 +98,18 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? partner = freezed,
   }) {
     return _then(_value.copyWith(
+      loginStatus: null == loginStatus
+          ? _value.loginStatus
+          : loginStatus // ignore: cast_nullable_to_non_nullable
+              as LoginStatus,
+      idx: null == idx
+          ? _value.idx
+          : idx // ignore: cast_nullable_to_non_nullable
+              as int,
+      nick: null == nick
+          ? _value.nick
+          : nick // ignore: cast_nullable_to_non_nullable
+              as String,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -153,7 +174,10 @@ abstract class _$$_UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String id,
+      {LoginStatus loginStatus,
+      int idx,
+      String nick,
+      String id,
       String simpleId,
       String? name,
       String? gender,
@@ -179,6 +203,9 @@ class __$$_UserModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? loginStatus = null,
+    Object? idx = null,
+    Object? nick = null,
     Object? id = null,
     Object? simpleId = null,
     Object? name = freezed,
@@ -194,6 +221,18 @@ class __$$_UserModelCopyWithImpl<$Res>
     Object? partner = freezed,
   }) {
     return _then(_$_UserModel(
+      loginStatus: null == loginStatus
+          ? _value.loginStatus
+          : loginStatus // ignore: cast_nullable_to_non_nullable
+              as LoginStatus,
+      idx: null == idx
+          ? _value.idx
+          : idx // ignore: cast_nullable_to_non_nullable
+              as int,
+      nick: null == nick
+          ? _value.nick
+          : nick // ignore: cast_nullable_to_non_nullable
+              as String,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -254,7 +293,10 @@ class __$$_UserModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_UserModel implements _UserModel {
   _$_UserModel(
-      {required this.id,
+      {required this.loginStatus,
+      required this.idx,
+      required this.nick,
+      required this.id,
       required this.simpleId,
       this.name,
       this.gender,
@@ -271,6 +313,12 @@ class _$_UserModel implements _UserModel {
   factory _$_UserModel.fromJson(Map<String, dynamic> json) =>
       _$$_UserModelFromJson(json);
 
+  @override
+  final LoginStatus loginStatus;
+  @override
+  final int idx;
+  @override
+  final String nick;
   @override
   final String id;
 //email
@@ -301,7 +349,7 @@ class _$_UserModel implements _UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, simpleId: $simpleId, name: $name, gender: $gender, birth: $birth, phone: $phone, refreshToken: $refreshToken, isSimple: $isSimple, simpleType: $simpleType, accessToken: $accessToken, password: $password, passwordConfirm: $passwordConfirm, partner: $partner)';
+    return 'UserModel(loginStatus: $loginStatus, idx: $idx, nick: $nick, id: $id, simpleId: $simpleId, name: $name, gender: $gender, birth: $birth, phone: $phone, refreshToken: $refreshToken, isSimple: $isSimple, simpleType: $simpleType, accessToken: $accessToken, password: $password, passwordConfirm: $passwordConfirm, partner: $partner)';
   }
 
   @override
@@ -309,6 +357,10 @@ class _$_UserModel implements _UserModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_UserModel &&
+            (identical(other.loginStatus, loginStatus) ||
+                other.loginStatus == loginStatus) &&
+            (identical(other.idx, idx) || other.idx == idx) &&
+            (identical(other.nick, nick) || other.nick == nick) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.simpleId, simpleId) ||
                 other.simpleId == simpleId) &&
@@ -335,6 +387,9 @@ class _$_UserModel implements _UserModel {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      loginStatus,
+      idx,
+      nick,
       id,
       simpleId,
       name,
@@ -365,7 +420,10 @@ class _$_UserModel implements _UserModel {
 
 abstract class _UserModel implements UserModel {
   factory _UserModel(
-      {required final String id,
+      {required final LoginStatus loginStatus,
+      required final int idx,
+      required final String nick,
+      required final String id,
       required final String simpleId,
       final String? name,
       final String? gender,
@@ -382,6 +440,12 @@ abstract class _UserModel implements UserModel {
   factory _UserModel.fromJson(Map<String, dynamic> json) =
       _$_UserModel.fromJson;
 
+  @override
+  LoginStatus get loginStatus;
+  @override
+  int get idx;
+  @override
+  String get nick;
   @override
   String get id;
   @override //email

@@ -9,6 +9,7 @@ class ResponseModel with _$ResponseModel {
   factory ResponseModel({
     required bool result,
     required String code,
+    @Default(null) Map<String, dynamic>? data,
     required String message,
   }) = _ResponseModel;
 

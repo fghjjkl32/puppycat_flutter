@@ -7,6 +7,9 @@ part of 'user_model.dart';
 // **************************************************************************
 
 _$_UserModel _$$_UserModelFromJson(Map<String, dynamic> json) => _$_UserModel(
+      loginStatus: $enumDecode(_$LoginStatusEnumMap, json['loginStatus']),
+      idx: json['idx'] as int,
+      nick: json['nick'] as String,
       id: json['id'] as String,
       simpleId: json['simpleId'] as String,
       name: json['name'] as String?,
@@ -24,6 +27,9 @@ _$_UserModel _$$_UserModelFromJson(Map<String, dynamic> json) => _$_UserModel(
 
 Map<String, dynamic> _$$_UserModelToJson(_$_UserModel instance) =>
     <String, dynamic>{
+      'loginStatus': _$LoginStatusEnumMap[instance.loginStatus]!,
+      'idx': instance.idx,
+      'nick': instance.nick,
       'id': instance.id,
       'simpleId': instance.simpleId,
       'name': instance.name,
@@ -38,3 +44,13 @@ Map<String, dynamic> _$$_UserModelToJson(_$_UserModel instance) =>
       'passwordConfirm': instance.passwordConfirm,
       'partner': instance.partner,
     };
+
+const _$LoginStatusEnumMap = {
+  LoginStatus.none: 'none',
+  LoginStatus.success: 'success',
+  LoginStatus.failure: 'failure',
+  LoginStatus.needSignUp: 'needSignUp',
+  LoginStatus.restriction: 'restriction',
+  LoginStatus.withdrawalPending: 'withdrawalPending',
+  LoginStatus.fourteen: 'fourteen',
+};

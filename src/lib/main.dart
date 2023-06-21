@@ -1,5 +1,6 @@
 import 'package:appspector/appspector.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -18,10 +19,20 @@ import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'components/feed/feed_detail_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.white,
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.light,
+    systemNavigationBarColor: Colors.white,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  ));
 
   runAppSpector();
   runApp(
@@ -29,14 +40,18 @@ void main() async {
       child : MyApp(),
     ),
   );
+  // runApp(MyApp());
 }
-final routerProvider = Provider<GoRouter>((ref) => AppRouter().router);
+
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    // final loginState = ref.watch(loginStateProvider);
+    // print('loginState : $loginState');
+
     return ScreenUtilInit(
       designSize: const Size(360, 640),
       builder: (BuildContext context, Widget? child) {

@@ -1,17 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/main.dart';
+import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
+
+// import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
+
+final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref: ref).router);
 
 class AppRouter {
   GoRouter get router => _goRouter;
+  var _loginRouteState = LoginRoute.none;
 
-  AppRouter();
+  final Ref ref;
+
+  AppRouter({
+    required this.ref,
+  }) {
+    _loginRouteState = ref.watch(loginRouteStateProvider);
+  }
 
   late final GoRouter _goRouter = GoRouter(
     // refreshListenable: AppService(),//redirect 시 사용되는 리스너 이다.
-    initialLocation: '/loginScreen', //제일 처음 보여 줄 route
+    initialLocation: '/signupScreen', //제일 처음 보여 줄 route
     debugLogDiagnostics: true, //router 정보 콘솔에 출력
     // errorBuilder: (BuildContext context, GoRouterState state) =>
     // const ErrorPage(),
@@ -36,6 +52,15 @@ class AppRouter {
         path: '/loginScreen',
         name: 'loginScreen',
         builder: (_, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/signupScreen',
+        name: 'signupScreen',
+        builder: (_, state) {
+          ref.read(policyStateProvider.notifier).getPolicies();
+          return SignUpScreen();
+
+        },
       ),
       GoRoute(
         path: '/splash',
@@ -63,7 +88,21 @@ class AppRouter {
     //redirect: 에서 앱 init되었는지, 로그인 여부, 세팅 등을 체크후 route한다.
     redirect: (BuildContext context, GoRouterState state) {
       const homeLocation = '/home';
+      const loginLocation = '/loginScreen';
       const splashLocation = '/splash';
+      const signUpLocation = '/signupScreen';
+
+      bool isLoginPage = state.matchedLocation == loginLocation;
+      if (isLoginPage) {
+        if (_loginRouteState == LoginRoute.success) {
+          return homeLocation;
+        } else if (_loginRouteState == LoginRoute.signUpScreen) {
+          return signUpLocation;
+        } else {
+          print('run????');
+          return null;
+        }
+      }
 
       // final isInitialized = AppService().initialized;
       // //appService에서는 app 시작전 필요한 것들을 인스턴스화하는 과정을 포함한다.

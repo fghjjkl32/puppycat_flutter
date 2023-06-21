@@ -21,26 +21,29 @@ class _LoginService implements LoginService {
   String? baseUrl;
 
   @override
-  Future<LoginResponseModel> socialLogin(Map<String, dynamic> queries) async {
+  Future<ResponseModel?> socialLogin(Map<String, dynamic> body) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    queryParameters.addAll(queries);
-    final _headers = <String, dynamic>{};
-    final Map<String, dynamic>? _data = null;
+    final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<LoginResponseModel>(Options(
-      method: 'GET',
+        .fetch<Map<String, dynamic>?>(_setStreamType<ResponseModel>(Options(
+      method: 'POST',
       headers: _headers,
       extra: _extra,
+      contentType: 'application/json',
     )
             .compose(
               _dio.options,
-              '/auth',
+              '/login/social',
               queryParameters: queryParameters,
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = LoginResponseModel.fromJson(_result.data!);
+    final value =
+        _result.data == null ? null : ResponseModel.fromJson(_result.data!);
     return value;
   }
 
@@ -61,7 +64,7 @@ class _LoginService implements LoginService {
     )
             .compose(
               _dio.options,
-              '/auth/join',
+              '/join/social',
               queryParameters: queryParameters,
               data: _data,
             )

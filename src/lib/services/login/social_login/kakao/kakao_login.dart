@@ -12,7 +12,7 @@ class KakaoLoginService implements SocialLoginService {
   KakaoLoginService() {
     KakaoSdk.init(
       nativeAppKey: '7c08c783bcbdb1ef34a88b51e2dc0fde',
-      loggingEnabled: true,
+      loggingEnabled: false,
     );
   }
 
@@ -64,11 +64,16 @@ class KakaoLoginService implements SocialLoginService {
 
     User userInfo = await UserApi.instance.me();
 
-    UserModel userodel = UserModel(
+    UserModel userModel = UserModel(
+      loginStatus: LoginStatus.none,
+      idx: 0,
+      nick: userInfo.kakaoAccount?.name ?? '',
+
       id: userInfo.kakaoAccount?.email ?? '',
+      // id: "thirdnso2v@gmail.com",
       simpleId: userInfo.id.toString(),
       name: userInfo.kakaoAccount?.name,
-      gender: userInfo.kakaoAccount?.gender.toString(),
+      // gender: userInfo.kakaoAccount?.gender.toString(),
       birth: userInfo.kakaoAccount?.birthday,
       phone: userInfo.kakaoAccount?.phoneNumber,
       refreshToken: _accessToken?.refreshToken?? '',
@@ -79,6 +84,6 @@ class KakaoLoginService implements SocialLoginService {
       passwordConfirm: userInfo.id.toString(),
     );
 
-    return userodel;
+    return userModel;
   }
 }

@@ -22,6 +22,7 @@ ResponseModel _$ResponseModelFromJson(Map<String, dynamic> json) {
 mixin _$ResponseModel {
   bool get result => throw _privateConstructorUsedError;
   String get code => throw _privateConstructorUsedError;
+  Map<String, dynamic>? get data => throw _privateConstructorUsedError;
   String get message => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -36,7 +37,8 @@ abstract class $ResponseModelCopyWith<$Res> {
           ResponseModel value, $Res Function(ResponseModel) then) =
       _$ResponseModelCopyWithImpl<$Res, ResponseModel>;
   @useResult
-  $Res call({bool result, String code, String message});
+  $Res call(
+      {bool result, String code, Map<String, dynamic>? data, String message});
 }
 
 /// @nodoc
@@ -54,6 +56,7 @@ class _$ResponseModelCopyWithImpl<$Res, $Val extends ResponseModel>
   $Res call({
     Object? result = null,
     Object? code = null,
+    Object? data = freezed,
     Object? message = null,
   }) {
     return _then(_value.copyWith(
@@ -65,6 +68,10 @@ class _$ResponseModelCopyWithImpl<$Res, $Val extends ResponseModel>
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as String,
+      data: freezed == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -81,7 +88,8 @@ abstract class _$$_ResponseModelCopyWith<$Res>
       __$$_ResponseModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool result, String code, String message});
+  $Res call(
+      {bool result, String code, Map<String, dynamic>? data, String message});
 }
 
 /// @nodoc
@@ -97,6 +105,7 @@ class __$$_ResponseModelCopyWithImpl<$Res>
   $Res call({
     Object? result = null,
     Object? code = null,
+    Object? data = freezed,
     Object? message = null,
   }) {
     return _then(_$_ResponseModel(
@@ -108,6 +117,10 @@ class __$$_ResponseModelCopyWithImpl<$Res>
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
               as String,
+      data: freezed == data
+          ? _value._data
+          : data // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -120,7 +133,11 @@ class __$$_ResponseModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ResponseModel implements _ResponseModel {
   _$_ResponseModel(
-      {required this.result, required this.code, required this.message});
+      {required this.result,
+      required this.code,
+      final Map<String, dynamic>? data = null,
+      required this.message})
+      : _data = data;
 
   factory _$_ResponseModel.fromJson(Map<String, dynamic> json) =>
       _$$_ResponseModelFromJson(json);
@@ -129,12 +146,23 @@ class _$_ResponseModel implements _ResponseModel {
   final bool result;
   @override
   final String code;
+  final Map<String, dynamic>? _data;
+  @override
+  @JsonKey()
+  Map<String, dynamic>? get data {
+    final value = _data;
+    if (value == null) return null;
+    if (_data is EqualUnmodifiableMapView) return _data;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
   @override
   final String message;
 
   @override
   String toString() {
-    return 'ResponseModel(result: $result, code: $code, message: $message)';
+    return 'ResponseModel(result: $result, code: $code, data: $data, message: $message)';
   }
 
   @override
@@ -144,12 +172,14 @@ class _$_ResponseModel implements _ResponseModel {
             other is _$_ResponseModel &&
             (identical(other.result, result) || other.result == result) &&
             (identical(other.code, code) || other.code == code) &&
+            const DeepCollectionEquality().equals(other._data, _data) &&
             (identical(other.message, message) || other.message == message));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, result, code, message);
+  int get hashCode => Object.hash(runtimeType, result, code,
+      const DeepCollectionEquality().hash(_data), message);
 
   @JsonKey(ignore: true)
   @override
@@ -169,6 +199,7 @@ abstract class _ResponseModel implements ResponseModel {
   factory _ResponseModel(
       {required final bool result,
       required final String code,
+      final Map<String, dynamic>? data,
       required final String message}) = _$_ResponseModel;
 
   factory _ResponseModel.fromJson(Map<String, dynamic> json) =
@@ -178,6 +209,8 @@ abstract class _ResponseModel implements ResponseModel {
   bool get result;
   @override
   String get code;
+  @override
+  Map<String, dynamic>? get data;
   @override
   String get message;
   @override

@@ -45,6 +45,8 @@ dependencies:
 
   #Social Login
   kakao_flutter_sdk: ^1.4.3
+  flutter_naver_login: ^1.8.0
+  google_sign_in: ^6.1.4
 
   appspector: ^0.9.0
 
@@ -78,6 +80,9 @@ flutter:
     - assets/image/mypage/icon/
     - assets/image/search/icon/
     - assets/image/toast/icon/
+    - assets/image/loginScreen/
+    - assets/image/signUpScreen/
+    - assets/image/common/
 
 
 
