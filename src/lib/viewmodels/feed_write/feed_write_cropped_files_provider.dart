@@ -10,6 +10,10 @@ final feedWriteCroppedFilesProvider =
 class CroppedFilesNotifier extends StateNotifier<List<File>> {
   CroppedFilesNotifier() : super([]);
 
+  void removeAll() {
+    state = [];
+  }
+
   void removeAt(int index) {
     state = [...state]..removeAt(index);
   }

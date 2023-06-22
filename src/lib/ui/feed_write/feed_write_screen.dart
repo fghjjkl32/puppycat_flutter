@@ -4,6 +4,7 @@ import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/ins
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/post_feed_view.dart';
+import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_cropped_files_provider.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_location_information_provider.dart';
 import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_provider.dart';
 
@@ -20,6 +21,7 @@ class FeedWriteScreen extends ConsumerWidget {
 
         ref.read(feedWriteProvider.notifier).resetTag();
         ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+        ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
 
         return false;
       },
@@ -35,6 +37,7 @@ class FeedWriteScreen extends ConsumerWidget {
               ref.read(feedWriteProvider.notifier).resetTag();
               ref.watch(feedWriteLocationInformationProvider.notifier).state =
                   "";
+              ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
             },
             icon: const Icon(Icons.close),
           ),
@@ -47,6 +50,7 @@ class FeedWriteScreen extends ConsumerWidget {
               onPressed: () {
                 ref.watch(feedWriteLocationInformationProvider.notifier).state =
                     "";
+                ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
               },
             ),
           ],

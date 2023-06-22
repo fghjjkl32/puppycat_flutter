@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -1123,7 +1124,17 @@ class DefaultAssetPickerBuilderDelegate
                       onTap: () async {
                         final ImagePicker picker = ImagePicker();
 
-                        await picker.pickImage(source: ImageSource.camera);
+                        final pickedFile =
+                            await picker.pickImage(source: ImageSource.camera);
+
+                        if (pickedFile != null) {
+                          await ImageGallerySaver.saveFile(pickedFile.path);
+
+                          await provider.getAssetsFromCurrentPath();
+
+                          // ignore: use_build_context_synchronously
+                          selectAsset(context, assets[0], 1, false);
+                        }
                       },
                       child: Container(
                         decoration: const BoxDecoration(
@@ -1140,26 +1151,28 @@ class DefaultAssetPickerBuilderDelegate
                         ),
                       ),
                     );
-                  }
-                  return MergeSemantics(
-                    child: Directionality(
-                      textDirection: Directionality.of(context),
-                      child: assetGridItemBuilder(
-                        context,
-                        index,
-                        assets,
-                        specialItem: specialItem,
+                  } else {
+                    return MergeSemantics(
+                      child: Directionality(
+                        textDirection: Directionality.of(context),
+                        child: assetGridItemBuilder(
+                          context,
+                          index - 1,
+                          assets,
+                          specialItem: specialItem,
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  }
                 },
               ),
               childCount: assetsGridItemCount(
-                context: context,
-                assets: assets,
-                placeholderCount: placeholderCount,
-                specialItem: specialItem,
-              ),
+                    context: context,
+                    assets: assets,
+                    placeholderCount: placeholderCount,
+                    specialItem: specialItem,
+                  ) +
+                  1,
               findChildIndexCallback: (Key? key) {
                 if (key is ValueKey<String>) {
                   return findChildIndexBuilder(
