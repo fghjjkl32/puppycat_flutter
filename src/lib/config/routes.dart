@@ -32,22 +32,22 @@ class AppRouter {
     // errorBuilder: (BuildContext context, GoRouterState state) =>
     // const ErrorPage(),
     routes: <GoRoute>[
-      GoRoute(
-        path: '/home',
-        name: 'home',
-        builder: (BuildContext context, GoRouterState state) {
-          return const MyHomePage(title: 'test');
-        },
-        // routes: [
-        //   /// sub Page를 설정할수 있다.
-        //   GoRoute(
-        //     path: 'geo',//sub page는 '/'를 생략해야 한다. 아니면 error
-        //     builder: (BuildContext context, GoRouterState state) {
-        //       return const GeoPage();
-        //     },
-        //   ),
-        // ],
-      ),
+      // GoRoute(
+      //   path: '/home',
+      //   name: 'home',
+      //   builder: (BuildContext context, GoRouterState state) {
+      //     return const MyHomePage(title: 'test');
+      //   },
+      //   // routes: [
+      //   //   /// sub Page를 설정할수 있다.
+      //   //   GoRoute(
+      //   //     path: 'geo',//sub page는 '/'를 생략해야 한다. 아니면 error
+      //   //     builder: (BuildContext context, GoRouterState state) {
+      //   //       return const GeoPage();
+      //   //     },
+      //   //   ),
+      //   // ],
+      // ),
       GoRoute(
         path: '/loginScreen',
         name: 'loginScreen',
