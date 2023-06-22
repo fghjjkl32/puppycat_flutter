@@ -23,3 +23,9 @@ const kBadgeColor = Color(0xffe14952);
 const kTextTitleColor = Color(0xff292a2a);
 const kTextSubTitleColor = Color(0xff414348);
 const kTextBodyColor = Color(0xff98a0b0);
+
+//Login Button Color
+const kKakaoLoginColor = Color(0xffffd84f);
+const kNaverLoginColor = Color(0xff03cf5d);
+const kGoogleLoginColor = kNeutralColor100;
+const kAppleLoginColor = Color(0xff000000);
