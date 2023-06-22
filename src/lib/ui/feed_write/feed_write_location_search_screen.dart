@@ -6,7 +6,7 @@ import 'package:pet_mobile_social_flutter/components/post_feed/location_item_wid
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/location_item.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_location_search_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_search_provider.dart';
 
 class FeedWriteLocationSearchScreen extends ConsumerWidget {
   const FeedWriteLocationSearchScreen({

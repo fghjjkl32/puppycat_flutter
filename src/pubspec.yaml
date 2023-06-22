@@ -23,7 +23,7 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   bubble: ^1.2.1
   linkfy_text: ^1.1.5
-  intl: ^0.18.1
+  intl: ^0.18.0
   flutter_svg: ^2.0.6
   widget_mask: ^1.0.0+0
   fluttertoast: ^8.2.2
@@ -55,6 +55,9 @@ dependencies:
   google_sign_in: ^6.1.4
 
   appspector: ^0.9.0
+
+  #localization
+  easy_localization: ^3.0.2
 
 dev_dependencies:
   flutter_test:
@@ -90,6 +93,7 @@ flutter:
     - assets/image/loginScreen/
     - assets/image/signUpScreen/
     - assets/image/common/
+    - assets/translations/
 
 
 

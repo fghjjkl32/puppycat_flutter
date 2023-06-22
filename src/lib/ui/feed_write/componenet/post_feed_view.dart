@@ -12,10 +12,10 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/cropped_images_list_view.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_location_search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/tag_screen.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_button_selected_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_current_tag_count_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_location_information_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_text_field_height_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button_selected_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_information_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_text_field_height_provider.dart';
 
 class PostFeedView extends ConsumerStatefulWidget {
   const PostFeedView({
