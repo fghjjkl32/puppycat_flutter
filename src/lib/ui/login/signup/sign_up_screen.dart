@@ -1,199 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/policy_checkbox_widget.dart';
 
-//
-// class SignUpScreen extends ConsumerStatefulWidget {
-//   const SignUpScreen({Key? key}) : super(key: key);
-//
-//   @override
-//   ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
-// }
-//
-// class _SignUpScreenState extends ConsumerState<SignUpScreen> {
-//   TextEditingController nickController = TextEditingController();
-//   late final List<PolicyItemModel> policies;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//
-//   }
-//
-//   Widget _buildTop() {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: [
-//         const Column(
-//           children: [
-//             Text('퍼피캣에 오신 걸 환영합니다!'),
-//             Text('원활한 퍼피캣 서비스를 이용하시려면\n닉네임 생성 및 동의가 필요해요!'),
-//           ],
-//         ),
-//         Image.asset('assets/image/signUpScreen/right_top.png'),
-//       ],
-//     );
-//   }
-//
-//   Widget _buildAUthBody() {
-//     return Column(
-//       children: [
-//         const Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             Text('본인 인증'),
-//             Text('필수'),
-//           ],
-//         ),
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//           children: [
-//             ElevatedButton(
-//               onPressed: () {},
-//               child: const Text('kakao auth'),
-//             ),
-//             ElevatedButton(
-//               onPressed: () {},
-//               child: const Text('naver auth'),
-//             ),
-//             ElevatedButton(
-//               onPressed: () {},
-//               child: const Text('pass auth'),
-//             ),
-//           ],
-//         ),
-//       ],
-//     );
-//   }
-//
-//   Widget _buildNickBody() {
-//     return Column(
-//       children: [
-//         const Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             Text('닉네임'),
-//             Text('필수'),
-//           ],
-//         ),
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             Expanded(
-//               child: TextField(
-//                 controller: nickController,
-//                 decoration: const InputDecoration(hintText: '닉네임을 입력해주세요.'),
-//               ),
-//             ),
-//             ElevatedButton(
-//               onPressed: () {},
-//               child: const Text('중복확인'),
-//             ),
-//           ],
-//         ),
-//       ],
-//     );
-//   }
-//
-//   Widget _buildPolicyBody() {
-//     // final policiesProvider = ref.watch(policyListProvider);
-//
-//     // return Column(
-//     //   children: [
-//     //     policiesProvider.when(
-//     //       data: (policies) {
-//     //         if (policies.isEmpty) {
-//     //           return const Text('Policy Empty');
-//     //         }
-//     //         PolicyItemModel model = policies.first;
-//     //         return Column(
-//     //           children: [
-//     //             PolicyCheckBoxWidget(
-//     //               idx: model.idx,
-//     //               onChanged: (value) {
-//     //                   // policyCheckedMap[model.idx] = value;
-//     //               },
-//     //               isEssential: model.required == 'Y' ? true : false,
-//     //               title: model.title ?? 'unknown title.',
-//     //               detail: model.detail ?? 'unknown detail.',
-//     //             ),
-//     //             PolicyCheckBoxWidget(
-//     //               idx: model.idx,
-//     //               onChanged: (value) {
-//     //                 // policyCheckedMap[model.idx] = value;
-//     //               },
-//     //               isEssential: model.required == 'Y' ? true : false,
-//     //               title: model.title ?? 'unknown title.',
-//     //               detail: model.detail ?? 'unknown detail.',
-//     //             ),
-//     //           ],
-//     //         );
-//     //         // return CheckboxListTile(value: value, onChanged: onChanged)
-//     //       },
-//     //       error: (error, stack) => Text('policy error $error'),
-//     //       loading: () => const CircularProgressIndicator(),
-//     //     )
-//     //   ],
-//     // );
-//   }
-//
-//   Widget _buildBody() {
-//     return SizedBox(
-//       width: double.infinity,
-//       child: Container(
-//           decoration: BoxDecoration(
-//             color: Colors.white,
-//             borderRadius: const BorderRadius.only(
-//               topLeft: Radius.circular(20.0),
-//               topRight: Radius.circular(20.0),
-//             ),
-//             boxShadow: [
-//               BoxShadow(
-//                 color: Colors.grey.withOpacity(0.5),
-//                 spreadRadius: -5,
-//                 blurRadius: 7,
-//                 offset: const Offset(0, -6), // 그림자의 위치 조정 (x, y)
-//               ),
-//             ],
-//           ),
-//           child: Padding(
-//             padding: const EdgeInsets.fromLTRB(24, 32, 24, 0),
-//             child: Column(
-//               children: [
-//                 _buildAUthBody(),
-//                 _buildNickBody(ref),
-//                 const Divider(),
-//                 _buildPolicyBody(ref),
-//               ],
-//             ),
-//           )),
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       // bottomSheet: const Text('aaa'),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             _buildTop(),
-//             _buildBody(),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-// //
-//
 class SignUpScreen extends ConsumerWidget {
   SignUpScreen({Key? key}) : super(key: key);
 
   TextEditingController nickController = TextEditingController();
+  final RegExp _emojiRegExp = RegExp(r'[\uac00-\ud7af]', unicode: true);
+  final RegExp _letterRegExp = RegExp(r'[ㄱ-ㅎ가-힣a-zA-Z0-9._]');
+  final _formKey = GlobalKey<FormState>();
 
   Widget _buildTop() {
     return Row(
@@ -242,6 +61,8 @@ class SignUpScreen extends ConsumerWidget {
   }
 
   Widget _buildNickBody(WidgetRef ref) {
+    final nickProvider = ref.watch(nickNameProvider);
+
     return Column(
       children: [
         const Row(
@@ -255,19 +76,75 @@ class SignUpScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: TextField(
-                controller: nickController,
-                decoration: const InputDecoration(hintText: '닉네임을 입력해주세요.'),
+              child: Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: nickController,
+                  // inputFormatters: [FilteringTextInputFormatter.allow(_emojiRegExp)],
+                  decoration: const InputDecoration(
+                    hintText: '닉네임을 입력해주세요.',
+                    // errorStyle:
+                    errorMaxLines: 2,
+                    counterText: '',
+                  ),
+                  maxLength: 20,
+                  autovalidateMode: AutovalidateMode.always,
+                  onChanged: (value) {
+                    print(value);
+                    nickController.value = TextEditingValue(
+                        text: value.toLowerCase(),
+                        selection: nickController.selection
+                    );
+                  },
+                  validator: (value) {
+                    if (value != null) {
+                      // if (_emojiRegExp.allMatches(value).length != value.length) {
+                      if (_letterRegExp.allMatches(value).length != value.length) { // || _emojiRegExp.allMatches(value).length != value.length) {
+                        // ref.read(nickNameProvider)
+                        return '닉네임은 숫자/한글/영어/언더바(_)/온점(.)만 입력 가능합니다.';
+                      } else if (value.length > 0 && value.length < 2) {
+                        return '닉네임은 최소 2자 이상 설정 가능합니다.';
+                      } else {
+                        return null;
+                      }
+                    }
+                  },
+                ),
               ),
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                }
+              },
               child: const Text('중복확인'),
             ),
           ],
         ),
+        Visibility(
+          visible: nickProvider != NickNameStatus.none,
+          child: _getNickDescription(nickProvider),
+        ),
       ],
     );
+  }
+
+  Widget _getNickDescription(NickNameStatus nickNameStatus) {
+    switch (nickNameStatus) {
+      case NickNameStatus.duplication:
+        return const Text('이미 존재하는 닉네임입니다.');
+      case NickNameStatus.maxLength:
+        return const Text('닉네임은 20자를 초과할 수 없습니다.');
+      case NickNameStatus.minLength:
+        return const Text('닉네임은 최소 2자 이상 설정 가능합니다.');
+      case NickNameStatus.invalidLetter:
+        return const Text('닉네임은 숫자/한글/영어/언더바(_)/온점(.)만 입력 가능합니다.');
+      case NickNameStatus.valid:
+        return const Text('사용 가능한 닉네임입니다.');
+      default:
+        return const Text('');
+    }
   }
 
   Widget _buildPolicyBody(WidgetRef ref) {
@@ -332,7 +209,6 @@ class SignUpScreen extends ConsumerWidget {
                 _buildNickBody(ref),
                 const Divider(),
                 _buildPolicyBody(ref),
-
               ],
             ),
           )),

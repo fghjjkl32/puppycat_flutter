@@ -14,7 +14,6 @@ part 'policy_state_provider.g.dart';
 // });
 
 final policyAllAgreeStateProvider = StateProvider<bool>((ref) => false);
-
 final policyAgreeStateProvider = StateProvider<bool>((ref) => false);
 
 // @Riverpod(keepAlive: true)

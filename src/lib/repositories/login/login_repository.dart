@@ -27,33 +27,6 @@ class LoginRepository {
     _socialLoginService = _setSocialLoginService(provider);
   }
 
-  Future signUp() async {
-    if (await _socialLogin()) {
-      // await _loginService.socialLogin(provider);
-      UserModel? userModel = await _socialLoginService?.getUserInfo();
-
-      if (userModel == null) {
-        return false;
-      }
-
-      var result = await _loginService.socialSignUp(userModel.toJson()).catchError((Object obj) {
-        // var result = await _loginService.socialLogin(queries.toJson()).catchError((Object obj) {
-        // non-200 error goes here.
-        switch (obj.runtimeType) {
-          case DioException:
-            // Here's the sample to get the failed response error code and message
-            final res = (obj as DioException).response;
-            // LoginResponseModel responseModel;
-            print('responseModel $res');
-            break;
-          default:
-            break;
-        }
-        return obj;
-      });
-    }
-  }
-
   /// UserModel이 null이면 로그인 실패로 간주
   Future<UserModel?> login() async {
     if (await _socialLogin()) {

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'login_service.dart';
+part of 'sign_up_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'login_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _LoginService implements LoginService {
-  _LoginService(
+class _SignUpService implements SignUpService {
+  _SignUpService(
     this._dio, {
     this.baseUrl,
   }) {
@@ -21,13 +21,39 @@ class _LoginService implements LoginService {
   String? baseUrl;
 
   @override
-  Future<ResponseModel?> socialLogin(Map<String, dynamic> body) async {
+  Future<ResponseModel> socialSignUp(Map<String, dynamic> queries) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
     _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
-    _data.addAll(body);
+    _data.addAll(queries);
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<ResponseModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'application/json',
+    )
+            .compose(
+              _dio.options,
+              '/join/social',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ResponseModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ResponseModel?> checkNickName(Map<String, dynamic> queries) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(queries);
     final _result = await _dio
         .fetch<Map<String, dynamic>?>(_setStreamType<ResponseModel>(Options(
       method: 'POST',
@@ -37,7 +63,7 @@ class _LoginService implements LoginService {
     )
             .compose(
               _dio.options,
-              '/login/social',
+              '/member/nick/check',
               queryParameters: queryParameters,
               data: _data,
             )

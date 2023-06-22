@@ -18,11 +18,4 @@ abstract class LoginService {
     "Content-Type": "application/json",
   })
   Future<ResponseModel?> socialLogin(@Body() Map<String, dynamic> body);
-
-  @POST('/join/social')
-  @Headers(<String, dynamic>{
-    "Content-Type": "application/json",
-  })
-  Future<LoginResponseModel> socialSignUp(@Body() Map<String, dynamic> queries);
-
 }
