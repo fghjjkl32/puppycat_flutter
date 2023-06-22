@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/policy_checkbox_widget.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SignUpScreen extends ConsumerWidget {
   SignUpScreen({Key? key}) : super(key: key);
@@ -32,10 +34,10 @@ class SignUpScreen extends ConsumerWidget {
   Widget _buildAUthBody() {
     return Column(
       children: [
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('본인 인증'),
+            Text('회원가입.본인 인증'.tr()),
             Text('필수'),
           ],
         ),
@@ -91,15 +93,13 @@ class SignUpScreen extends ConsumerWidget {
                   autovalidateMode: AutovalidateMode.always,
                   onChanged: (value) {
                     print(value);
-                    nickController.value = TextEditingValue(
-                        text: value.toLowerCase(),
-                        selection: nickController.selection
-                    );
+                    nickController.value = TextEditingValue(text: value.toLowerCase(), selection: nickController.selection);
                   },
                   validator: (value) {
                     if (value != null) {
                       // if (_emojiRegExp.allMatches(value).length != value.length) {
-                      if (_letterRegExp.allMatches(value).length != value.length) { // || _emojiRegExp.allMatches(value).length != value.length) {
+                      if (_letterRegExp.allMatches(value).length != value.length) {
+                        // || _emojiRegExp.allMatches(value).length != value.length) {
                         // ref.read(nickNameProvider)
                         return '닉네임은 숫자/한글/영어/언더바(_)/온점(.)만 입력 가능합니다.';
                       } else if (value.length > 0 && value.length < 2) {

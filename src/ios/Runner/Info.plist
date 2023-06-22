@@ -119,5 +119,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleLocalizations</key>
+    <array>
+    	<string>ko</string>
+    </array>
 </dict>
 </plist>

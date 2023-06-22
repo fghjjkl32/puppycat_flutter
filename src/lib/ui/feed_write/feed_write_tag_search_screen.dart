@@ -6,8 +6,8 @@ import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_i
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_provider.dart';
-import 'package:pet_mobile_social_flutter/viewmodels/feed_write/feed_write_user_search_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_user_search_provider.dart';
 
 class FeedWriteTagSearchScreen extends ConsumerWidget {
   final Offset offset;
