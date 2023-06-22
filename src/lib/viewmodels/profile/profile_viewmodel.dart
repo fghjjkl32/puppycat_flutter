@@ -1,4 +1,4 @@
-import 'package:pet_mobile_social_flutter/di/di.dart';
+import 'package:pet_mobile_social_flutter/common/di.dart';
 import 'package:pet_mobile_social_flutter/models/profile/profile.dart';
 import 'package:riverpod/riverpod.dart';
 
