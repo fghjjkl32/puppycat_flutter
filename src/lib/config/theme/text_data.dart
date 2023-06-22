@@ -88,6 +88,12 @@ TextStyle kBody12RegularStyle = const TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+TextStyle kBody12RegularStyle400 = const TextStyle(
+  fontFamily: pretendard,
+  fontSize: 12,
+  fontWeight: FontWeight.w400,
+);
+
 TextStyle kBody11SemiBoldStyle = const TextStyle(
   fontFamily: pretendard,
   fontSize: 11,
