@@ -9,6 +9,9 @@ import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/mypage/my_page_feed_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/mypage/my_page_feed_tag_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/mypage/my_page_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref: ref).router);
@@ -27,7 +30,7 @@ class AppRouter {
 
   late final GoRouter _goRouter = GoRouter(
     // refreshListenable: AppService(),//redirect 시 사용되는 리스너 이다.
-    initialLocation: '/signupScreen', //제일 처음 보여 줄 route
+    initialLocation: '/test', //제일 처음 보여 줄 route
     debugLogDiagnostics: true, //router 정보 콘솔에 출력
     // errorBuilder: (BuildContext context, GoRouterState state) =>
     // const ErrorPage(),
@@ -59,7 +62,6 @@ class AppRouter {
         builder: (_, state) {
           ref.read(policyStateProvider.notifier).getPolicies();
           return SignUpScreen();
-
         },
       ),
       GoRoute(
@@ -69,6 +71,39 @@ class AppRouter {
           return const SplashScreen();
         },
       ),
+      GoRoute(
+          path: '/test',
+          name: 'test',
+          builder: (BuildContext context, GoRouterState state) {
+            return const MyHomePage(
+              title: 'test',
+            );
+          },
+          routes: [
+            GoRoute(
+              path: 'mypage',
+              name: 'mypage',
+              builder: (BuildContext context, GoRouterState state) {
+                return const MyPageMainScreen();
+              },
+              routes: [
+                GoRoute(
+                  path: 'detail',
+                  name: 'detail',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const MyPageFeedDetailScreen();
+                  },
+                ),
+                GoRoute(
+                  path: 'tag',
+                  name: 'tag',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const MyPageFeedTagScreen();
+                  },
+                )
+              ],
+            ),
+          ]),
       // GoRoute(//id를 넘겨주어 navigarion 하는 방법
       //   path: '/book/:id',
       //   builder: (BuildContext context, GoRouterState state) {
