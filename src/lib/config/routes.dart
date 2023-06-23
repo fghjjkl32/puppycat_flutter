@@ -57,7 +57,7 @@ class AppRouter {
         path: '/signupScreen',
         name: 'signupScreen',
         builder: (_, state) {
-          ref.read(policyStateProvider.notifier).getPolicies();
+          print('run////////////');
           return SignUpScreen();
 
         },

@@ -25,6 +25,7 @@ class PolicyState extends _$PolicyState {
   }
 
   void getPolicies() async {
+    print('run???????');
     final PolicyRepository policyRepository = PolicyRepository();
     try {
       var result = await policyRepository.getPolicies();
@@ -77,8 +78,8 @@ class PolicyState extends _$PolicyState {
 
   void toggleAll(bool isAgreed) {
     List<PolicyItemModel> policies = state;
-    state = policies.map((e) => e.copyWith(isAgreed: isAgreed)).toList();
     _setAllAgreed(isAgreed);
     _setEssentialAgreed(isAgreed);
+    state = policies.map((e) => e.copyWith(isAgreed: isAgreed)).toList();
   }
 }

@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/signUp/sign_up_service.dart';
 
 
@@ -16,7 +17,7 @@ class SignUpRepository {
   //
   // }
 
-  Future<bool> checkNickName(String nick) async {
+  Future<NickNameStatus> checkNickName(String nick) async {
     Map<String, dynamic> queries = {
       "nick": nick,
     };
@@ -30,11 +31,24 @@ class SignUpRepository {
       return responseModel;
     });
 
+    ///https://www.notion.so/a9eda34e44a5456daf3d9ec7939b2061?pvs=4
+    ///닉네임 중복, 금칙어에 대한 status code 400 -> 200  변경 필요
     if(res == null || isError) {
       throw 'API Response is Null.';
     }
-    
-    return res.result;
+
+    if(res.result) {
+      return NickNameStatus.valid;
+    } else {
+      switch(res.code) {
+        case "ENIC-3998":
+          return NickNameStatus.invalidWord;
+        case "ENIC-3997":
+          return NickNameStatus.duplication;
+        default:
+          return NickNameStatus.failure;
+      }
+    }
   }
 
   Future<(ResponseModel?, bool)> errorHandler(Object obj) async {

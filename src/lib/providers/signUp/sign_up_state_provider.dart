@@ -14,6 +14,7 @@ enum NickNameStatus {
   maxLength,
   invalidLetter,
   invalidWord,
+  failure,
 }
 
 final nickNameProvider = StateProvider<NickNameStatus>((ref) => NickNameStatus.none);
@@ -46,12 +47,6 @@ class SignUpState extends _$SignUpState {
 
     ///InvalidWord
 
-    bool result = await _signUpRepository.checkNickName(nick);
-    if (!result) {
-      ref.read(nickNameProvider.notifier).state = NickNameStatus.duplication;
-      return;
-    } else {
-      ref.read(nickNameProvider.notifier).state = NickNameStatus.valid;
-    }
+    ref.read(nickNameProvider.notifier).state = await _signUpRepository.checkNickName(nick);
   }
 }
