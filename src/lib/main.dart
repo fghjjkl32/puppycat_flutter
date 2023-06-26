@@ -21,6 +21,7 @@ import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -270,7 +271,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   backgroundColor: kNeutralColor100,
                 ),
               ),
-              onCompleted: (cropStream) {},
+              onCompleted: (cropStream) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => FeedWriteScreen(
+                      cropStream: cropStream,
+                    ),
+                  ),
+                );
+              },
             ),
             child: const Text(
               '이미지 선택',

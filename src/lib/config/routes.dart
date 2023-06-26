@@ -9,9 +9,11 @@ import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/mypage/my_page_feed_detail_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/mypage/my_page_feed_tag_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/mypage/my_page_main_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_feed_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_feed_tag_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref: ref).router);
@@ -99,6 +101,20 @@ class AppRouter {
                   name: 'tag',
                   builder: (BuildContext context, GoRouterState state) {
                     return const MyPageFeedTagScreen();
+                  },
+                ),
+                GoRoute(
+                  path: 'profileEdit',
+                  name: 'profileEdit',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const MyPageProfileEditScreen();
+                  },
+                ),
+                GoRoute(
+                  path: 'followList',
+                  name: 'followList',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const MyPageFollowListScreen();
                   },
                 )
               ],

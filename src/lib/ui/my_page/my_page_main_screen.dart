@@ -329,7 +329,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                       isReply: true,
                                       likeCount: 32,
                                     ),
-                                    CustomTextField(),
+                                    const CustomTextField(),
                                   ],
                                 ),
                               );
@@ -382,7 +382,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
       crossAxisCount: 2,
       children: List.generate(10, (index) {
         return Container(
-          margin: EdgeInsets.all(10.0),
+          margin: const EdgeInsets.all(10.0),
           child: GestureDetector(
             onTap: () {
               context.go("/test/mypage/tag");
@@ -467,13 +467,18 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                       style: kTitle16ExtraBoldStyle.copyWith(
                           color: kTextTitleColor),
                     ),
-                    SizedBox(
-                      width: 3.w,
-                    ),
-                    Icon(
-                      Icons.edit,
-                      color: kNeutralColor500,
-                      size: 20,
+                    GestureDetector(
+                      onTap: () {
+                        context.go("/test/mypage/profileEdit");
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(5.0),
+                        child: Icon(
+                          Icons.edit,
+                          color: kNeutralColor500,
+                          size: 20,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -484,36 +489,41 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                   "딸기🍓를 좋아하는 왕큰 말티즈🐶 왕왕이💛🤍 ",
                   style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 8.0.h),
-                  child: Row(
-                    children: [
-                      Text(
-                        "팔로워 ",
-                        style:
-                            kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                      ),
-                      Text(
-                        "265",
-                        style: kBody11SemiBoldStyle.copyWith(
-                            color: kTextSubTitleColor),
-                      ),
-                      Text(
-                        "  ·  ",
-                        style:
-                            kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                      ),
-                      Text(
-                        "팔로잉 ",
-                        style:
-                            kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                      ),
-                      Text(
-                        "165",
-                        style: kBody11SemiBoldStyle.copyWith(
-                            color: kTextSubTitleColor),
-                      ),
-                    ],
+                GestureDetector(
+                  onTap: () {
+                    context.go("/test/mypage/followList");
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 8.0.h),
+                    child: Row(
+                      children: [
+                        Text(
+                          "팔로워 ",
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                        Text(
+                          "265",
+                          style: kBody11SemiBoldStyle.copyWith(
+                              color: kTextSubTitleColor),
+                        ),
+                        Text(
+                          "  ·  ",
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                        Text(
+                          "팔로잉 ",
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                        Text(
+                          "165",
+                          style: kBody11SemiBoldStyle.copyWith(
+                              color: kTextSubTitleColor),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -569,7 +579,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                   color: Colors.grey.withOpacity(0.4),
                   spreadRadius: -5,
                   blurRadius: 7,
-                  offset: Offset(0, -6), // 그림자의 위치 조정 (x, y)
+                  offset: const Offset(0, -6),
                 ),
               ],
             )
@@ -621,10 +631,10 @@ class CustomTextField extends StatefulWidget {
   const CustomTextField({super.key});
 
   @override
-  _CustomTextFieldState createState() => _CustomTextFieldState();
+  CustomTextFieldState createState() => CustomTextFieldState();
 }
 
-class _CustomTextFieldState extends State<CustomTextField> {
+class CustomTextFieldState extends State<CustomTextField> {
   final TextEditingController _controller = TextEditingController();
   int lineCount = 0;
   bool hasInput = false;
