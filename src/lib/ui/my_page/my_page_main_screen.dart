@@ -89,7 +89,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                       PopupMenuButton(
                         icon: const Icon(Icons.more_horiz),
                         onSelected: (id) {
-                          if (id == 'myAction') {}
+                          if (id == 'myActivity') {
+                            context.go("/test/mypage/myActivity");
+                          }
                           if (id == 'postsManagement') {}
                           if (id == 'setting') {}
                         },
@@ -105,7 +107,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                           final list = <PopupMenuEntry>[];
                           list.add(
                             diaryPopUpMenuItem(
-                              'myAction',
+                              'myActivity',
                               '내 활동',
                               const Icon(Icons.person),
                               context,

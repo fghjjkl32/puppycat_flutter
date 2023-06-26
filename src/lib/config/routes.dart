@@ -13,6 +13,8 @@ import 'package:pet_mobile_social_flutter/ui/my_page/my_page_feed_detail_screen.
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_feed_tag_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
 
@@ -116,7 +118,25 @@ class AppRouter {
                   builder: (BuildContext context, GoRouterState state) {
                     return const MyPageFollowListScreen();
                   },
-                )
+                ),
+                GoRoute(
+                    path: 'myActivity',
+                    name: 'myActivity',
+                    builder: (BuildContext context, GoRouterState state) {
+                      return const MyPageMyActivityListScreen();
+                    },
+                    routes: [
+                      GoRoute(
+                        path: 'detail/:title',
+                        name: 'detail/:title',
+                        builder: (BuildContext context, GoRouterState state) {
+                          final title = state.pathParameters['title']!;
+                          return MyPageMyActivityDetailScreen(
+                            title: title,
+                          );
+                        },
+                      )
+                    ])
               ],
             ),
           ]),

@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/follower_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/following_item_widget.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_page_follower_user_search_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_page_following_user_search_provider.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class MyPageFollowListScreen extends ConsumerStatefulWidget {
   const MyPageFollowListScreen({super.key});
@@ -139,6 +136,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen>
                       minWidth: 24,
                       minHeight: 24,
                     ),
+                    // ignore: invalid_use_of_protected_member
                     suffixIcon: userFollowerSearchController.state.isEmpty
                         ? Padding(
                             padding: const EdgeInsets.symmetric(
@@ -261,6 +259,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen>
                       minWidth: 24,
                       minHeight: 24,
                     ),
+                    // ignore: invalid_use_of_protected_member
                     suffixIcon: userFollowingSearchController.state.isEmpty
                         ? Padding(
                             padding: const EdgeInsets.symmetric(

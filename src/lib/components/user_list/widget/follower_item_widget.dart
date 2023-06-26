@@ -170,12 +170,12 @@ class FollowerItemWidget extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "${userName} 님은 팔로워 리스트에서 삭제되며",
+                          "$userName 님은 팔로워 리스트에서 삭제되며",
                           style: kBody12RegularStyle.copyWith(
                               color: kTextBodyColor),
                         ),
                         Text(
-                          "나중에 ${userName} 님을 다시 팔로우 할 수 있습니다.",
+                          "나중에 $userName 님을 다시 팔로우 할 수 있습니다.",
                           style: kBody12RegularStyle.copyWith(
                               color: kTextBodyColor),
                         ),
