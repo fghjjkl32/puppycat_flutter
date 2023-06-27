@@ -9,13 +9,13 @@ import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_feed_detail_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_feed_tag_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_post_list_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_one_title_feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_two_title_feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref: ref).router);
@@ -85,24 +85,22 @@ class AppRouter {
           },
           routes: [
             GoRoute(
-              path: 'mypage',
-              name: 'mypage',
+              path: 'myPage',
+              name: 'myPage',
               builder: (BuildContext context, GoRouterState state) {
                 return const MyPageMainScreen();
               },
               routes: [
                 GoRoute(
-                  path: 'detail',
-                  name: 'detail',
+                  path: 'detail/:firstTitle/:secondTitle',
+                  name: 'detail/:firstTitle/:secondTitle',
                   builder: (BuildContext context, GoRouterState state) {
-                    return const MyPageFeedDetailScreen();
-                  },
-                ),
-                GoRoute(
-                  path: 'tag',
-                  name: 'tag',
-                  builder: (BuildContext context, GoRouterState state) {
-                    return const MyPageFeedTagScreen();
+                    final firstTitle = state.pathParameters['firstTitle']!;
+                    final secondTitle = state.pathParameters['secondTitle']!;
+                    return MyPageTwoTitleFeedDetailScreen(
+                      firstTitle: firstTitle,
+                      secondTitle: secondTitle,
+                    );
                   },
                 ),
                 GoRoute(
@@ -120,23 +118,43 @@ class AppRouter {
                   },
                 ),
                 GoRoute(
-                    path: 'myActivity',
-                    name: 'myActivity',
-                    builder: (BuildContext context, GoRouterState state) {
-                      return const MyPageMyActivityListScreen();
-                    },
-                    routes: [
-                      GoRoute(
-                        path: 'detail/:title',
-                        name: 'detail/:title',
-                        builder: (BuildContext context, GoRouterState state) {
-                          final title = state.pathParameters['title']!;
-                          return MyPageMyActivityDetailScreen(
-                            title: title,
-                          );
-                        },
-                      )
-                    ])
+                  path: 'myActivity',
+                  name: 'myActivity',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const MyPageMyActivityListScreen();
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'myActivityDetail/:title',
+                      name: 'myActivityDetail/:title',
+                      builder: (BuildContext context, GoRouterState state) {
+                        final title = state.pathParameters['title']!;
+                        return MyPageOneTitleFeedDetailScreen(
+                          title: title,
+                        );
+                      },
+                    )
+                  ],
+                ),
+                GoRoute(
+                  path: 'myPost',
+                  name: 'myPost',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const MyPageMyPostListScreen();
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'myPostDetail/:title',
+                      name: 'myPostDetail/:title',
+                      builder: (BuildContext context, GoRouterState state) {
+                        final title = state.pathParameters['title']!;
+                        return MyPageOneTitleFeedDetailScreen(
+                          title: title,
+                        );
+                      },
+                    )
+                  ],
+                ),
               ],
             ),
           ]),

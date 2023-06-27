@@ -90,9 +90,11 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                         icon: const Icon(Icons.more_horiz),
                         onSelected: (id) {
                           if (id == 'myActivity') {
-                            context.go("/test/mypage/myActivity");
+                            context.go("/test/myPage/myActivity");
                           }
-                          if (id == 'postsManagement') {}
+                          if (id == 'postsManagement') {
+                            context.go("/test/myPage/myPost");
+                          }
                           if (id == 'setting') {}
                         },
                         shape: const RoundedRectangleBorder(
@@ -171,7 +173,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
           margin: const EdgeInsets.all(10.0),
           child: GestureDetector(
             onTap: () {
-              context.go("/test/mypage/detail");
+              context.go("/test/myPage/detail/왕티즈왕왕/게시물");
             },
             child: Center(
               child: Stack(
@@ -387,7 +389,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
           margin: const EdgeInsets.all(10.0),
           child: GestureDetector(
             onTap: () {
-              context.go("/test/mypage/tag");
+              context.go("/test/myPage/detail/왕티즈왕왕/태그됨");
             },
             child: Center(
               child: Stack(
@@ -471,7 +473,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                     ),
                     GestureDetector(
                       onTap: () {
-                        context.go("/test/mypage/profileEdit");
+                        context.go("/test/myPage/profileEdit");
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(5.0),
@@ -493,7 +495,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 ),
                 GestureDetector(
                   onTap: () {
-                    context.go("/test/mypage/followList");
+                    context.go("/test/myPage/followList");
                   },
                   child: Padding(
                     padding: EdgeInsets.only(top: 8.0.h),

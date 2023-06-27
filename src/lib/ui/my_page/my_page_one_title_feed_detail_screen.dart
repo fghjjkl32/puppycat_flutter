@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
-import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
-import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
-class MyPageFeedTagScreen extends StatelessWidget {
-  const MyPageFeedTagScreen({super.key});
+class MyPageOneTitleFeedDetailScreen extends StatelessWidget {
+  final String title;
+  const MyPageOneTitleFeedDetailScreen({required this.title, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +22,8 @@ class MyPageFeedTagScreen extends StatelessWidget {
           child: Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: Column(
-                children: [
-                  Text(
-                    "왕티즈왕왕",
-                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                  ),
-                  const Text('태그됨'),
-                ],
+              title: Text(
+                title,
               ),
               leading: IconButton(
                 onPressed: () {

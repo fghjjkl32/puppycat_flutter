@@ -297,7 +297,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           TextButton(
             onPressed: () async {
-              context.go("/test/mypage");
+              context.go("/test/myPage");
             },
             child: const Text(
               '마이페이지 이동',

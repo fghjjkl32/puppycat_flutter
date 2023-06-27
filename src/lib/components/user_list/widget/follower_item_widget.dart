@@ -162,7 +162,7 @@ class FollowerItemWidget extends StatelessWidget {
                                     color: kPrimaryColor),
                               ),
                               Text(
-                                " 님을 삭제 하시겠어요?",
+                                " 님을 삭제하시겠어요?",
                                 style: kBody16BoldStyle.copyWith(
                                     color: kTextTitleColor),
                               ),
@@ -185,7 +185,7 @@ class FollowerItemWidget extends StatelessWidget {
                           children: [
                             Container(
                               width: 152.w,
-                              height: 46.h,
+                              height: 36.h,
                               decoration: const BoxDecoration(
                                 color: kPrimaryLightColor,
                                 borderRadius: BorderRadius.all(
@@ -205,7 +205,7 @@ class FollowerItemWidget extends StatelessWidget {
                             ),
                             Container(
                               width: 152.w,
-                              height: 46.h,
+                              height: 36.h,
                               decoration: const BoxDecoration(
                                 color: kBadgeColor,
                                 borderRadius: BorderRadius.all(

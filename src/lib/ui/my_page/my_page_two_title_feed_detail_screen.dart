@@ -3,8 +3,12 @@ import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dar
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
-class MyPageFeedDetailScreen extends StatelessWidget {
-  const MyPageFeedDetailScreen({super.key});
+class MyPageTwoTitleFeedDetailScreen extends StatelessWidget {
+  final String firstTitle;
+  final String secondTitle;
+
+  const MyPageTwoTitleFeedDetailScreen(
+      {required this.firstTitle, required this.secondTitle, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +30,10 @@ class MyPageFeedDetailScreen extends StatelessWidget {
               title: Column(
                 children: [
                   Text(
-                    "왕티즈왕왕",
+                    firstTitle,
                     style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                   ),
-                  const Text('게시물'),
+                  Text(secondTitle),
                 ],
               ),
               leading: IconButton(

@@ -143,7 +143,7 @@ class MyPageFollowListScreenState
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () {
-              context.go("/test/mypage/myActivity/detail/좋아요한 게시물");
+              context.go("/test/myPage/myActivity/myActivityDetail/좋아요한 게시물");
             },
             child: Stack(
               children: [
@@ -242,7 +242,7 @@ class MyPageFollowListScreenState
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () {
-              context.go("/test/mypage/myActivity/detail/보관한 게시물");
+              context.go("/test/myPage/myActivity/myActivityDetail/보관한 게시물");
             },
             child: Stack(
               children: [

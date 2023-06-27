@@ -88,7 +88,7 @@ flutter:
     - assets/image/header/icon/small_size/
     - assets/image/message/icon/large_size/
     - assets/image/message/icon/small_size/
-    - assets/image/mypage/icon/
+    - assets/image/my_page/icon/
     - assets/image/search/icon/
     - assets/image/toast/icon/
     - assets/image/feed_write/image/
