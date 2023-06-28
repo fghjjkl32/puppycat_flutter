@@ -21,6 +21,7 @@ class UserModel with _$UserModel {
   factory UserModel({
     required LoginStatus loginStatus,
     required int idx,
+    @Default('') String appKey,
     required String nick,
     required String id, //email
     required String simpleId,
@@ -29,12 +30,12 @@ class UserModel with _$UserModel {
     String? birth,
     String? phone,
     required String refreshToken,
-    required String isSimple,
+    required int isSimple,
     required String simpleType,
     required String accessToken,
     required String password,
     required String passwordConfirm,
-    String? partner,
+    @Default('') String? partner,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);

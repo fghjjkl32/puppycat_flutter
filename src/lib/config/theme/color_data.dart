@@ -31,5 +31,6 @@ const kGoogleLoginColor = kNeutralColor100;
 const kAppleLoginColor = Color(0xff000000);
 
 //SignUp Color
-const kSignUpNickValidColor = Color(0xff6D5DE1);
+// const kSignUpPrimaryColor = Color(0xff6D5DE1);
 const kSignUpNickInvalidColor = Color(0xffE14952);
+const kSignUpPassColor = Color(0xffff3a4a);

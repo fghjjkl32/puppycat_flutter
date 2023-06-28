@@ -22,6 +22,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
 mixin _$UserModel {
   LoginStatus get loginStatus => throw _privateConstructorUsedError;
   int get idx => throw _privateConstructorUsedError;
+  String get appKey => throw _privateConstructorUsedError;
   String get nick => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError; //email
   String get simpleId => throw _privateConstructorUsedError;
@@ -30,7 +31,7 @@ mixin _$UserModel {
   String? get birth => throw _privateConstructorUsedError;
   String? get phone => throw _privateConstructorUsedError;
   String get refreshToken => throw _privateConstructorUsedError;
-  String get isSimple => throw _privateConstructorUsedError;
+  int get isSimple => throw _privateConstructorUsedError;
   String get simpleType => throw _privateConstructorUsedError;
   String get accessToken => throw _privateConstructorUsedError;
   String get password => throw _privateConstructorUsedError;
@@ -51,6 +52,7 @@ abstract class $UserModelCopyWith<$Res> {
   $Res call(
       {LoginStatus loginStatus,
       int idx,
+      String appKey,
       String nick,
       String id,
       String simpleId,
@@ -59,7 +61,7 @@ abstract class $UserModelCopyWith<$Res> {
       String? birth,
       String? phone,
       String refreshToken,
-      String isSimple,
+      int isSimple,
       String simpleType,
       String accessToken,
       String password,
@@ -82,6 +84,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   $Res call({
     Object? loginStatus = null,
     Object? idx = null,
+    Object? appKey = null,
     Object? nick = null,
     Object? id = null,
     Object? simpleId = null,
@@ -106,6 +109,10 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.idx
           : idx // ignore: cast_nullable_to_non_nullable
               as int,
+      appKey: null == appKey
+          ? _value.appKey
+          : appKey // ignore: cast_nullable_to_non_nullable
+              as String,
       nick: null == nick
           ? _value.nick
           : nick // ignore: cast_nullable_to_non_nullable
@@ -141,7 +148,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
       isSimple: null == isSimple
           ? _value.isSimple
           : isSimple // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       simpleType: null == simpleType
           ? _value.simpleType
           : simpleType // ignore: cast_nullable_to_non_nullable
@@ -176,6 +183,7 @@ abstract class _$$_UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
   $Res call(
       {LoginStatus loginStatus,
       int idx,
+      String appKey,
       String nick,
       String id,
       String simpleId,
@@ -184,7 +192,7 @@ abstract class _$$_UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
       String? birth,
       String? phone,
       String refreshToken,
-      String isSimple,
+      int isSimple,
       String simpleType,
       String accessToken,
       String password,
@@ -205,6 +213,7 @@ class __$$_UserModelCopyWithImpl<$Res>
   $Res call({
     Object? loginStatus = null,
     Object? idx = null,
+    Object? appKey = null,
     Object? nick = null,
     Object? id = null,
     Object? simpleId = null,
@@ -229,6 +238,10 @@ class __$$_UserModelCopyWithImpl<$Res>
           ? _value.idx
           : idx // ignore: cast_nullable_to_non_nullable
               as int,
+      appKey: null == appKey
+          ? _value.appKey
+          : appKey // ignore: cast_nullable_to_non_nullable
+              as String,
       nick: null == nick
           ? _value.nick
           : nick // ignore: cast_nullable_to_non_nullable
@@ -264,7 +277,7 @@ class __$$_UserModelCopyWithImpl<$Res>
       isSimple: null == isSimple
           ? _value.isSimple
           : isSimple // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       simpleType: null == simpleType
           ? _value.simpleType
           : simpleType // ignore: cast_nullable_to_non_nullable
@@ -295,6 +308,7 @@ class _$_UserModel implements _UserModel {
   _$_UserModel(
       {required this.loginStatus,
       required this.idx,
+      this.appKey = '',
       required this.nick,
       required this.id,
       required this.simpleId,
@@ -308,7 +322,7 @@ class _$_UserModel implements _UserModel {
       required this.accessToken,
       required this.password,
       required this.passwordConfirm,
-      this.partner});
+      this.partner = ''});
 
   factory _$_UserModel.fromJson(Map<String, dynamic> json) =>
       _$$_UserModelFromJson(json);
@@ -317,6 +331,9 @@ class _$_UserModel implements _UserModel {
   final LoginStatus loginStatus;
   @override
   final int idx;
+  @override
+  @JsonKey()
+  final String appKey;
   @override
   final String nick;
   @override
@@ -335,7 +352,7 @@ class _$_UserModel implements _UserModel {
   @override
   final String refreshToken;
   @override
-  final String isSimple;
+  final int isSimple;
   @override
   final String simpleType;
   @override
@@ -345,11 +362,12 @@ class _$_UserModel implements _UserModel {
   @override
   final String passwordConfirm;
   @override
+  @JsonKey()
   final String? partner;
 
   @override
   String toString() {
-    return 'UserModel(loginStatus: $loginStatus, idx: $idx, nick: $nick, id: $id, simpleId: $simpleId, name: $name, gender: $gender, birth: $birth, phone: $phone, refreshToken: $refreshToken, isSimple: $isSimple, simpleType: $simpleType, accessToken: $accessToken, password: $password, passwordConfirm: $passwordConfirm, partner: $partner)';
+    return 'UserModel(loginStatus: $loginStatus, idx: $idx, appKey: $appKey, nick: $nick, id: $id, simpleId: $simpleId, name: $name, gender: $gender, birth: $birth, phone: $phone, refreshToken: $refreshToken, isSimple: $isSimple, simpleType: $simpleType, accessToken: $accessToken, password: $password, passwordConfirm: $passwordConfirm, partner: $partner)';
   }
 
   @override
@@ -360,6 +378,7 @@ class _$_UserModel implements _UserModel {
             (identical(other.loginStatus, loginStatus) ||
                 other.loginStatus == loginStatus) &&
             (identical(other.idx, idx) || other.idx == idx) &&
+            (identical(other.appKey, appKey) || other.appKey == appKey) &&
             (identical(other.nick, nick) || other.nick == nick) &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.simpleId, simpleId) ||
@@ -389,6 +408,7 @@ class _$_UserModel implements _UserModel {
       runtimeType,
       loginStatus,
       idx,
+      appKey,
       nick,
       id,
       simpleId,
@@ -422,6 +442,7 @@ abstract class _UserModel implements UserModel {
   factory _UserModel(
       {required final LoginStatus loginStatus,
       required final int idx,
+      final String appKey,
       required final String nick,
       required final String id,
       required final String simpleId,
@@ -430,7 +451,7 @@ abstract class _UserModel implements UserModel {
       final String? birth,
       final String? phone,
       required final String refreshToken,
-      required final String isSimple,
+      required final int isSimple,
       required final String simpleType,
       required final String accessToken,
       required final String password,
@@ -444,6 +465,8 @@ abstract class _UserModel implements UserModel {
   LoginStatus get loginStatus;
   @override
   int get idx;
+  @override
+  String get appKey;
   @override
   String get nick;
   @override
@@ -461,7 +484,7 @@ abstract class _UserModel implements UserModel {
   @override
   String get refreshToken;
   @override
-  String get isSimple;
+  int get isSimple;
   @override
   String get simpleType;
   @override

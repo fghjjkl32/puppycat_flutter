@@ -27,7 +27,7 @@ class NaverLoginService implements SocialLoginService {
       birth: _accountResult.birthday,
       phone: _accountResult.mobile,
       refreshToken: _accessToken.refreshToken,
-      isSimple: "1",
+      isSimple: 1,
       simpleType: 'naver',
       accessToken: _accessToken.accessToken,
       password: _accountResult.id,

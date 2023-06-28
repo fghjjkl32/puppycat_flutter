@@ -18,7 +18,12 @@ class KakaoLoginService implements SocialLoginService {
 
   @override
   Future<dynamic> logout() async {
-    return null;
+    try {
+      await UserApi.instance.logout();
+      print('로그아웃 성공, SDK에서 토큰 삭제');
+    } catch (error) {
+      print('로그아웃 실패, SDK에서 토큰 삭제 $error');
+    }
   }
 
   @override
@@ -69,15 +74,15 @@ class KakaoLoginService implements SocialLoginService {
       idx: 0,
       nick: userInfo.kakaoAccount?.name ?? '',
 
-      id: userInfo.kakaoAccount?.email ?? '',
+      id: userInfo.kakaoAccount?.email ?? 'thirdnsov.dev@gmail.com',
       // id: "thirdnso2v@gmail.com",
       simpleId: userInfo.id.toString(),
-      name: userInfo.kakaoAccount?.name,
-      // gender: userInfo.kakaoAccount?.gender.toString(),
-      birth: userInfo.kakaoAccount?.birthday,
-      phone: userInfo.kakaoAccount?.phoneNumber,
+      name: userInfo.kakaoAccount?.name ?? '테스트이름', //TODO 바꿔야함
+      gender: userInfo.kakaoAccount?.gender == Gender.female ? 'F' : 'M', //TODO 바꿔야함
+      birth: userInfo.kakaoAccount?.birthday ?? '19900101', //TODO 바꿔야함
+      phone: userInfo.kakaoAccount?.phoneNumber ?? '010-1234-4321', //TODO 바꿔야함
       refreshToken: _accessToken?.refreshToken?? '',
-      isSimple: "1",
+      isSimple: 1,
       simpleType: 'kakao',
       accessToken: _accessToken?.accessToken ?? '',
       password: userInfo.id.toString(),

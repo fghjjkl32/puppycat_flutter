@@ -36,7 +36,7 @@ class GoogleLoginService implements SocialLoginService {
       // birth: _accountResult.birthday,
       // phone: _accountResult.mobile,
       refreshToken: _authentication!.idToken ?? '',
-      isSimple: "1",
+      isSimple: 1,
       simpleType: 'google',
       accessToken: _authentication!.accessToken ?? '',
       password: _accountResult!.id,

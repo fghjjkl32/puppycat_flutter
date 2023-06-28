@@ -9,6 +9,7 @@ part of 'user_model.dart';
 _$_UserModel _$$_UserModelFromJson(Map<String, dynamic> json) => _$_UserModel(
       loginStatus: $enumDecode(_$LoginStatusEnumMap, json['loginStatus']),
       idx: json['idx'] as int,
+      appKey: json['appKey'] as String? ?? '',
       nick: json['nick'] as String,
       id: json['id'] as String,
       simpleId: json['simpleId'] as String,
@@ -17,18 +18,19 @@ _$_UserModel _$$_UserModelFromJson(Map<String, dynamic> json) => _$_UserModel(
       birth: json['birth'] as String?,
       phone: json['phone'] as String?,
       refreshToken: json['refreshToken'] as String,
-      isSimple: json['isSimple'] as String,
+      isSimple: json['isSimple'] as int,
       simpleType: json['simpleType'] as String,
       accessToken: json['accessToken'] as String,
       password: json['password'] as String,
       passwordConfirm: json['passwordConfirm'] as String,
-      partner: json['partner'] as String?,
+      partner: json['partner'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$_UserModelToJson(_$_UserModel instance) =>
     <String, dynamic>{
       'loginStatus': _$LoginStatusEnumMap[instance.loginStatus]!,
       'idx': instance.idx,
+      'appKey': instance.appKey,
       'nick': instance.nick,
       'id': instance.id,
       'simpleId': instance.simpleId,

@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/signUp/sign_up_service.dart';
@@ -10,12 +13,36 @@ import 'package:pet_mobile_social_flutter/services/signUp/sign_up_service.dart';
 
 // final policyRepositoryProvider = Provider.autoDispose((ref) => PolicyRepository());
 
-class SignUpRepository {
-  final SignUpService _signUpService = SignUpService(Dio());
 
-  // Future socialSignUp(UserModel userModel) {
-  //
-  // }
+class SignUpRepository {
+  final SignUpService _signUpService = SignUpService(DioWrap.getDioWithCookie());
+
+  Future<bool> socialSignUp(UserModel userModel, List<PolicyItemModel> policyIdxList) async {
+
+
+    Map<String, dynamic> body = {
+      ...userModel.toJson(),
+    };
+
+    for (var element in policyIdxList) {
+      body['selectPolicy_${element.idx}'] = element.isAgreed ? 1 : 0;
+    }
+
+    bool isError = false;
+    ResponseModel? res = await _signUpService.socialSignUp(body).catchError((Object obj) async {
+      (ResponseModel?, bool) errorResult = await errorHandler(obj);
+      var responseModel = errorResult.$1;
+      isError = errorResult.$2;
+
+      return responseModel;
+    });
+
+    if (res == null || isError) {
+      throw 'API Response is Null.';
+    }
+
+    return true;
+  }
 
   Future<NickNameStatus> checkNickName(String nick) async {
     Map<String, dynamic> queries = {
@@ -31,16 +58,14 @@ class SignUpRepository {
       return responseModel;
     });
 
-    ///https://www.notion.so/a9eda34e44a5456daf3d9ec7939b2061?pvs=4
-    ///닉네임 중복, 금칙어에 대한 status code 400 -> 200  변경 필요
-    if(res == null || isError) {
+    if (res == null || isError) {
       throw 'API Response is Null.';
     }
 
-    if(res.result) {
+    if (res.result) {
       return NickNameStatus.valid;
     } else {
-      switch(res.code) {
+      switch (res.code) {
         case "ENIC-3998":
           return NickNameStatus.invalidWord;
         case "ENIC-3997":
