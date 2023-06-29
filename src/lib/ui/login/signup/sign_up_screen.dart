@@ -433,6 +433,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final essentialAgreeProvider = ref.watch(policyAgreeStateProvider);
+    final credentialToken = ref.read(authTokenProvider);
     ref.listen(nickNameProvider, (previous, next) {
       if (next == NickNameStatus.valid) {
         isValidNickName = true;
@@ -468,7 +469,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                       width: 320.w,
                       height: 48.h,
                       child: ElevatedButton(
-                        onPressed: essentialAgreeProvider && isValidNickName
+                        onPressed: essentialAgreeProvider && isValidNickName && credentialToken.isNotEmpty
                             ? () {
                                 var userModel = ref.read(userModelProvider.notifier).state;
                                 if (userModel == null) {
@@ -476,7 +477,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                                 }
                                 userModel = userModel.copyWith(
                                   nick: nickController.text,
-                                  credentialToken: ref.read(authTokenProvider),
+                                  credentialToken: credentialToken,
                                 );
                                 // ref.read(userModelProvider.notifier).state = userModel;
                                 ref.read(signUpStateProvider.notifier).socialSignUp(userModel);
