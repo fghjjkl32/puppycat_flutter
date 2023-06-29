@@ -14,10 +14,10 @@ class MyPageMyPostListScreen extends ConsumerStatefulWidget {
   const MyPageMyPostListScreen({super.key});
 
   @override
-  MyPageFollowListScreenState createState() => MyPageFollowListScreenState();
+  MyPageMyPostListScreenState createState() => MyPageMyPostListScreenState();
 }
 
-class MyPageFollowListScreenState extends ConsumerState<MyPageMyPostListScreen>
+class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
 
@@ -278,7 +278,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageMyPostListScreen>
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -290,7 +290,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageMyPostListScreen>
                         color: myPageMyPostController.hasSelectedImage()
                             ? kPrimaryLightColor
                             : kNeutralColor400,
-                        borderRadius: BorderRadius.all(
+                        borderRadius: const BorderRadius.all(
                           Radius.circular(8.0),
                         ),
                       ),
@@ -718,7 +718,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageMyPostListScreen>
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -730,7 +730,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageMyPostListScreen>
                         color: myPageMyPostController.hasSelectedImage()
                             ? kPrimaryLightColor
                             : kNeutralColor400,
-                        borderRadius: BorderRadius.all(
+                        borderRadius: const BorderRadius.all(
                           Radius.circular(8.0),
                         ),
                       ),

@@ -15,7 +15,15 @@ import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_sc
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_post_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_one_title_feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_alarm_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_blocked_user_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_faq_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_notice_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_privacy_policy_accepted_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_privacy_policy_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_two_title_feed_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_terms_of_service_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref: ref).router);
@@ -153,6 +161,64 @@ class AppRouter {
                         );
                       },
                     )
+                  ],
+                ),
+                GoRoute(
+                  path: 'setting',
+                  name: 'setting',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const MyPageSettingScreen();
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'settingAlarm',
+                      name: 'settingAlarm',
+                      builder: (BuildContext context, GoRouterState state) {
+                        return const MyPageSettingAlarmScreen();
+                      },
+                    ),
+                    GoRoute(
+                      path: 'settingBlockedUser',
+                      name: 'settingBlockedUser',
+                      builder: (BuildContext context, GoRouterState state) {
+                        return const MyPageSettingBlockedUserScreen();
+                      },
+                    ),
+                    GoRoute(
+                      path: 'TermsOfService',
+                      name: 'TermsOfService',
+                      builder: (BuildContext context, GoRouterState state) {
+                        return const MyPageSettingTermsOfServiceScreen();
+                      },
+                    ),
+                    GoRoute(
+                      path: 'PrivacyPolicy',
+                      name: 'PrivacyPolicy',
+                      builder: (BuildContext context, GoRouterState state) {
+                        return const MyPageSettingPrivacyPolicyScreen();
+                      },
+                    ),
+                    GoRoute(
+                      path: 'PrivacyPolicyAccepted',
+                      name: 'PrivacyPolicyAccepted',
+                      builder: (BuildContext context, GoRouterState state) {
+                        return const MyPageSettingPrivacyPolicyAcceptedScreen();
+                      },
+                    ),
+                    GoRoute(
+                      path: 'FAQ',
+                      name: 'FAQ',
+                      builder: (BuildContext context, GoRouterState state) {
+                        return const MyPageSettingFaqScreen();
+                      },
+                    ),
+                    GoRoute(
+                      path: 'notice',
+                      name: 'notice',
+                      builder: (BuildContext context, GoRouterState state) {
+                        return const MyPageSettingNoticeScreen();
+                      },
+                    ),
                   ],
                 ),
               ],

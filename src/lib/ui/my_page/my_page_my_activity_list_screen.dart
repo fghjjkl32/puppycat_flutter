@@ -11,10 +11,11 @@ class MyPageMyActivityListScreen extends ConsumerStatefulWidget {
   const MyPageMyActivityListScreen({super.key});
 
   @override
-  MyPageFollowListScreenState createState() => MyPageFollowListScreenState();
+  MyPageMyActivityListScreenState createState() =>
+      MyPageMyActivityListScreenState();
 }
 
-class MyPageFollowListScreenState
+class MyPageMyActivityListScreenState
     extends ConsumerState<MyPageMyActivityListScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;

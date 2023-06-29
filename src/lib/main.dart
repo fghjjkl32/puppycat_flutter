@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/ass
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_deatil_list_widget.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
@@ -245,12 +246,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               FlutterSwitch(
                 padding: 4,
-                width: 48.w,
-                height: 20.h,
+                width: 34.w,
+                height: 16.h,
                 activeColor: Theme.of(context).primaryColor,
                 inactiveColor: kNeutralColor500,
-                toggleSize: 20.0.w,
-                value: !testValue,
+                toggleSize: 12.0.w,
+                value: testValue,
                 borderRadius: 50.0.w,
                 onToggle: (value) async {
                   onTap();
@@ -303,6 +304,36 @@ class _MyHomePageState extends State<MyHomePage> {
               '마이페이지 이동',
             ),
           ),
+          TextButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomDialog(
+                      content: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                        child: Text(
+                          "캐시를 삭제하시겠습니까?",
+                          style:
+                              kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                        ),
+                      ),
+                      confirmTap: () {
+                        context.pop();
+                      },
+                      cancelTap: () {
+                        context.pop();
+                      },
+                      confirmWidget: Text(
+                        "삭제",
+                        style:
+                            kButton14MediumStyle.copyWith(color: kBadgeColor),
+                      ));
+                },
+              );
+            },
+            child: Text('팝업 버튼'),
+          )
         ],
       ),
     );

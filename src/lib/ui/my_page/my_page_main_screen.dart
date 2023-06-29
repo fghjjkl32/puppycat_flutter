@@ -95,7 +95,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                           if (id == 'postsManagement') {
                             context.go("/test/myPage/myPost");
                           }
-                          if (id == 'setting') {}
+                          if (id == 'setting') {
+                            context.go("/test/myPage/setting");
+                          }
                         },
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(

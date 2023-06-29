@@ -28,6 +28,7 @@ ThemeData themeData(context) => ThemeData(
       dividerTheme: const DividerThemeData(
         color: kNeutralColor200,
         thickness: 2,
+        space: 0,
       ),
       inputDecorationTheme: const InputDecorationTheme(
         filled: true,
