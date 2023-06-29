@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:widget_mask/widget_mask.dart';
@@ -124,6 +125,12 @@ class MyPageProfileEditScreen extends StatelessWidget {
                           style: kTitle16ExtraBoldStyle,
                         ),
                       ),
+                      TextButton(
+                          onPressed: () {
+                            context.go(
+                                "/test/myPage/profileEdit/withdrawalSelect");
+                          },
+                          child: const Text("회원탈퇴")),
                     ],
                   ),
                 ),

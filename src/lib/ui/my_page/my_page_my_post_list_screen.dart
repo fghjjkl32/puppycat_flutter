@@ -7,7 +7,6 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_cu
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_page_my_activity_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_page_my_post_provider.dart';
 
 class MyPageMyPostListScreen extends ConsumerStatefulWidget {

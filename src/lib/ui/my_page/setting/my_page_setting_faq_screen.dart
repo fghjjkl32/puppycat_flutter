@@ -121,6 +121,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen>
                         ),
                         suffixIcon: ref
                                 .watch(myPageSettingFaqProvider.notifier)
+                                // ignore: invalid_use_of_protected_member
                                 .state
                                 .isEmpty
                             ? Padding(

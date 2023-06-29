@@ -13,7 +13,7 @@ import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_post_list_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_one_title_feed_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/my_page_one_title_feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_alarm_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_blocked_user_screen.dart';
@@ -22,8 +22,11 @@ import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_not
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_privacy_policy_accepted_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_privacy_policy_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_two_title_feed_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/my_page_two_title_feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_terms_of_service_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_select_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref: ref).router);
@@ -112,12 +115,38 @@ class AppRouter {
                   },
                 ),
                 GoRoute(
-                  path: 'profileEdit',
-                  name: 'profileEdit',
-                  builder: (BuildContext context, GoRouterState state) {
-                    return const MyPageProfileEditScreen();
-                  },
-                ),
+                    path: 'profileEdit',
+                    name: 'profileEdit',
+                    builder: (BuildContext context, GoRouterState state) {
+                      return const MyPageProfileEditScreen();
+                    },
+                    routes: [
+                      GoRoute(
+                          path: 'withdrawalSelect',
+                          name: 'withdrawalSelect',
+                          builder: (BuildContext context, GoRouterState state) {
+                            return const MyPageWithdrawalSelectScreen();
+                          },
+                          routes: [
+                            GoRoute(
+                                path: 'withdrawalDetail',
+                                name: 'withdrawalDetail',
+                                builder: (BuildContext context,
+                                    GoRouterState state) {
+                                  return const MyPageWithdrawalDetailScreen();
+                                },
+                                routes: [
+                                  GoRoute(
+                                    path: 'withdrawalSuccess',
+                                    name: 'withdrawalSuccess',
+                                    builder: (BuildContext context,
+                                        GoRouterState state) {
+                                      return const MyPageWithdrawalSuccessScreen();
+                                    },
+                                  ),
+                                ]),
+                          ]),
+                    ]),
                 GoRoute(
                   path: 'followList',
                   name: 'followList',

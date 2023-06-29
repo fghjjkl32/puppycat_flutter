@@ -56,16 +56,17 @@ class MyPageSettingPrivacyPolicyScreenState
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 5,
                           blurRadius: 10,
-                          offset: Offset(0, 3), // changes position of shadow
+                          offset:
+                              const Offset(0, 3), // changes position of shadow
                         ),
                       ],
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: dropdownValue,
-                        icon: Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: const Icon(Icons.keyboard_arrow_down),
+                        icon: const Padding(
+                          padding: EdgeInsets.only(right: 20.0),
+                          child: Icon(Icons.keyboard_arrow_down),
                         ),
                         isExpanded: true,
                         iconSize: 24,
