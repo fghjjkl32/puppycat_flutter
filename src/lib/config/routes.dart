@@ -13,6 +13,7 @@ import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_complete_scree
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/web_view/webview_widget.dart';
 
 final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref: ref).router);
 
@@ -59,23 +60,34 @@ class AppRouter {
         path: '/loginScreen',
         name: 'loginScreen',
         builder: (_, state) => LoginScreen(),
-      ),
-      GoRoute(
-        path: '/signupScreen',
-        name: 'signupScreen',
-        builder: (_, state) {
-          return SignUpScreen();
-        },
-        routes: <GoRoute>[
+        routes: [
           GoRoute(
-            path: 'signupCompleteScreen',
-            name: 'signupCompleteScreen',
+            path: 'signupScreen',
+            name: 'signupScreen',
             builder: (_, state) {
-              return SignUpCompleteScreen();
+              return SignUpScreen();
             },
+            routes: <GoRoute>[
+              GoRoute(
+                path: 'signupCompleteScreen',
+                name: 'signupCompleteScreen',
+                builder: (_, state) {
+                  return SignUpCompleteScreen();
+                },
+              ),
+              GoRoute(
+                path: 'webview/:url',
+                name: 'webview',
+                builder: (BuildContext context, GoRouterState state) {
+                  final url = Uri.decodeComponent(state.pathParameters['url']!);
+                  return WebViewWidget(url : url);
+                },
+              ),
+            ],
           ),
-        ],
+        ]
       ),
+
       GoRoute(
         path: '/splash',
         name: 'splash',
@@ -83,28 +95,13 @@ class AppRouter {
           return const SplashScreen();
         },
       ),
-      // GoRoute(//id를 넘겨주어 navigarion 하는 방법
-      //   path: '/book/:id',
-      //   builder: (BuildContext context, GoRouterState state) {
-      //     return const BookPage(id : state.params['id']);
-      //   },
-      //   routes: [
-      //     /// sub Page를 설정할수 있다.
-      //     GoRoute(
-      //       path: 'review',//동일하게 sub rout를 가질 수 있다.
-      //       builder: (BuildContext context, GoRouterState state) {
-      //         return const ReviewPage();
-      //       },
-      //     ),
-      //   ],
-      // ),
     ],
     //redirect: 에서 앱 init되었는지, 로그인 여부, 세팅 등을 체크후 route한다.
     redirect: (BuildContext context, GoRouterState state) {
       const homeLocation = '/home';
       const loginLocation = '/loginScreen';
       const splashLocation = '/splash';
-      const signUpLocation = '/signupScreen';
+      const signUpLocation = '$loginLocation/signupScreen';
       const signUpCompleteLocation = '$signUpLocation/signupCompleteScreen';
 
       InitializationApp.initialize(ref);

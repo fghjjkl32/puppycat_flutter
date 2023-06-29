@@ -26,10 +26,11 @@ mixin _$UserModel {
   String get nick => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError; //email
   String get simpleId => throw _privateConstructorUsedError;
-  String? get name => throw _privateConstructorUsedError;
-  String? get gender => throw _privateConstructorUsedError;
-  String? get birth => throw _privateConstructorUsedError;
-  String? get phone => throw _privateConstructorUsedError;
+  String? get credentialToken =>
+      throw _privateConstructorUsedError; // String? name,
+// String? gender,
+// String? birth,
+// String? phone,
   String get refreshToken => throw _privateConstructorUsedError;
   int get isSimple => throw _privateConstructorUsedError;
   String get simpleType => throw _privateConstructorUsedError;
@@ -56,10 +57,7 @@ abstract class $UserModelCopyWith<$Res> {
       String nick,
       String id,
       String simpleId,
-      String? name,
-      String? gender,
-      String? birth,
-      String? phone,
+      String? credentialToken,
       String refreshToken,
       int isSimple,
       String simpleType,
@@ -88,10 +86,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? nick = null,
     Object? id = null,
     Object? simpleId = null,
-    Object? name = freezed,
-    Object? gender = freezed,
-    Object? birth = freezed,
-    Object? phone = freezed,
+    Object? credentialToken = freezed,
     Object? refreshToken = null,
     Object? isSimple = null,
     Object? simpleType = null,
@@ -125,21 +120,9 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.simpleId
           : simpleId // ignore: cast_nullable_to_non_nullable
               as String,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      gender: freezed == gender
-          ? _value.gender
-          : gender // ignore: cast_nullable_to_non_nullable
-              as String?,
-      birth: freezed == birth
-          ? _value.birth
-          : birth // ignore: cast_nullable_to_non_nullable
-              as String?,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
+      credentialToken: freezed == credentialToken
+          ? _value.credentialToken
+          : credentialToken // ignore: cast_nullable_to_non_nullable
               as String?,
       refreshToken: null == refreshToken
           ? _value.refreshToken
@@ -187,10 +170,7 @@ abstract class _$$_UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
       String nick,
       String id,
       String simpleId,
-      String? name,
-      String? gender,
-      String? birth,
-      String? phone,
+      String? credentialToken,
       String refreshToken,
       int isSimple,
       String simpleType,
@@ -217,10 +197,7 @@ class __$$_UserModelCopyWithImpl<$Res>
     Object? nick = null,
     Object? id = null,
     Object? simpleId = null,
-    Object? name = freezed,
-    Object? gender = freezed,
-    Object? birth = freezed,
-    Object? phone = freezed,
+    Object? credentialToken = freezed,
     Object? refreshToken = null,
     Object? isSimple = null,
     Object? simpleType = null,
@@ -254,21 +231,9 @@ class __$$_UserModelCopyWithImpl<$Res>
           ? _value.simpleId
           : simpleId // ignore: cast_nullable_to_non_nullable
               as String,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      gender: freezed == gender
-          ? _value.gender
-          : gender // ignore: cast_nullable_to_non_nullable
-              as String?,
-      birth: freezed == birth
-          ? _value.birth
-          : birth // ignore: cast_nullable_to_non_nullable
-              as String?,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
+      credentialToken: freezed == credentialToken
+          ? _value.credentialToken
+          : credentialToken // ignore: cast_nullable_to_non_nullable
               as String?,
       refreshToken: null == refreshToken
           ? _value.refreshToken
@@ -312,10 +277,7 @@ class _$_UserModel implements _UserModel {
       required this.nick,
       required this.id,
       required this.simpleId,
-      this.name,
-      this.gender,
-      this.birth,
-      this.phone,
+      this.credentialToken,
       required this.refreshToken,
       required this.isSimple,
       required this.simpleType,
@@ -342,13 +304,11 @@ class _$_UserModel implements _UserModel {
   @override
   final String simpleId;
   @override
-  final String? name;
-  @override
-  final String? gender;
-  @override
-  final String? birth;
-  @override
-  final String? phone;
+  final String? credentialToken;
+// String? name,
+// String? gender,
+// String? birth,
+// String? phone,
   @override
   final String refreshToken;
   @override
@@ -367,7 +327,7 @@ class _$_UserModel implements _UserModel {
 
   @override
   String toString() {
-    return 'UserModel(loginStatus: $loginStatus, idx: $idx, appKey: $appKey, nick: $nick, id: $id, simpleId: $simpleId, name: $name, gender: $gender, birth: $birth, phone: $phone, refreshToken: $refreshToken, isSimple: $isSimple, simpleType: $simpleType, accessToken: $accessToken, password: $password, passwordConfirm: $passwordConfirm, partner: $partner)';
+    return 'UserModel(loginStatus: $loginStatus, idx: $idx, appKey: $appKey, nick: $nick, id: $id, simpleId: $simpleId, credentialToken: $credentialToken, refreshToken: $refreshToken, isSimple: $isSimple, simpleType: $simpleType, accessToken: $accessToken, password: $password, passwordConfirm: $passwordConfirm, partner: $partner)';
   }
 
   @override
@@ -383,10 +343,8 @@ class _$_UserModel implements _UserModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.simpleId, simpleId) ||
                 other.simpleId == simpleId) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.gender, gender) || other.gender == gender) &&
-            (identical(other.birth, birth) || other.birth == birth) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.credentialToken, credentialToken) ||
+                other.credentialToken == credentialToken) &&
             (identical(other.refreshToken, refreshToken) ||
                 other.refreshToken == refreshToken) &&
             (identical(other.isSimple, isSimple) ||
@@ -412,10 +370,7 @@ class _$_UserModel implements _UserModel {
       nick,
       id,
       simpleId,
-      name,
-      gender,
-      birth,
-      phone,
+      credentialToken,
       refreshToken,
       isSimple,
       simpleType,
@@ -446,10 +401,7 @@ abstract class _UserModel implements UserModel {
       required final String nick,
       required final String id,
       required final String simpleId,
-      final String? name,
-      final String? gender,
-      final String? birth,
-      final String? phone,
+      final String? credentialToken,
       required final String refreshToken,
       required final int isSimple,
       required final String simpleType,
@@ -474,14 +426,11 @@ abstract class _UserModel implements UserModel {
   @override //email
   String get simpleId;
   @override
-  String? get name;
-  @override
-  String? get gender;
-  @override
-  String? get birth;
-  @override
-  String? get phone;
-  @override
+  String? get credentialToken;
+  @override // String? name,
+// String? gender,
+// String? birth,
+// String? phone,
   String get refreshToken;
   @override
   int get isSimple;

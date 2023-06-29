@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
@@ -86,64 +88,93 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
           ],
         ),
         SizedBox(height: 8.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Stack(
           children: [
-            SizedBox(
-              width: 100.w,
-              height: 40.h,
-              child: ElevatedButton.icon(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+            Visibility(
+              visible: ref.watch(authTokenProvider).isEmpty,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 100.w,
+                    height: 40.h,
+                    child: ElevatedButton.icon(
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                        ),
+                        backgroundColor: MaterialStateProperty.all<Color>(kKakaoLoginColor),
+                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
+                      ),
+                      onPressed: () {},
+                      label: Text(
+                        '회원가입.카카오 인증'.tr(),
+                        style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                      ),
+                      icon: Image.asset('assets/image/signUpScreen/kakao_icon.png'),
+                    ),
                   ),
-                  backgroundColor: MaterialStateProperty.all<Color>(kKakaoLoginColor),
-                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
-                ),
-                onPressed: () {},
-                label: Text(
-                  '회원가입.카카오 인증'.tr(),
-                  style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
-                ),
-                icon: Image.asset('assets/image/signUpScreen/kakao_icon.png'),
+                  SizedBox(
+                    width: 100.w,
+                    height: 40.h,
+                    child: ElevatedButton.icon(
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                        ),
+                        backgroundColor: MaterialStateProperty.all<Color>(kNaverLoginColor),
+                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
+                      ),
+                      onPressed: () {},
+                      label: Text(
+                        '회원가입.네이버 인증'.tr(),
+                        style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
+                      ),
+                      icon: Image.asset('assets/image/signUpScreen/naver_icon.png'),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 100.w,
+                    height: 40.h,
+                    child: ElevatedButton.icon(
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                        ),
+                        backgroundColor: MaterialStateProperty.all<Color>(kSignUpPassColor),
+                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
+                      ),
+                      onPressed: () {
+                        ref.read(authStateProvider.notifier).getPassAuthUrl();
+                      },
+                      label: Text(
+                        '회원가입.휴대폰 인증'.tr(),
+                        style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
+                      ),
+                      icon: Image.asset('assets/image/signUpScreen/pass_icon.png'),
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(
-              width: 100.w,
-              height: 40.h,
-              child: ElevatedButton.icon(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+            Visibility(
+              visible: ref.watch(authTokenProvider).isNotEmpty,
+              child: SizedBox(
+                width: 320.w,
+                height: 48.h,
+                child: ElevatedButton(
+                  onPressed: null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kPrimaryColor,
+                    disabledBackgroundColor: kNeutralColor400,
+                    disabledForegroundColor: kTextBodyColor,
+                    elevation: 0,
                   ),
-                  backgroundColor: MaterialStateProperty.all<Color>(kNaverLoginColor),
-                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
-                ),
-                onPressed: () {},
-                label: Text(
-                  '회원가입.네이버 인증'.tr(),
-                  style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
-                ),
-                icon: Image.asset('assets/image/signUpScreen/naver_icon.png'),
-              ),
-            ),
-            SizedBox(
-              width: 100.w,
-              height: 40.h,
-              child: ElevatedButton.icon(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                  child: Text(
+                    '회원가입.인증 완료'.tr(),
+                    style: kButton14BoldStyle,
                   ),
-                  backgroundColor: MaterialStateProperty.all<Color>(kSignUpPassColor),
-                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
                 ),
-                onPressed: () {},
-                label: Text(
-                  '회원가입.휴대폰 인증'.tr(),
-                  style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
-                ),
-                icon: Image.asset('assets/image/signUpScreen/pass_icon.png'),
               ),
             ),
           ],
@@ -249,7 +280,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                     }
                   },
                   onSaved: (val) {
-                    if(isCheckableNickName) {
+                    if (isCheckableNickName) {
                       ref.read(signUpStateProvider.notifier).checkNickName(val!);
                     }
                   },
@@ -408,6 +439,12 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
       }
     });
 
+    ref.listen(passUrlProvider, (previous, next) {
+      final url = Uri.encodeComponent(next);
+      // context.go('/webview/$url');
+      context.goNamed('webview', pathParameters: {"url": url});
+    });
+
     return GestureDetector(
       onTap: () {
         _nickFocusNode.unfocus();
@@ -439,6 +476,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                                 }
                                 userModel = userModel.copyWith(
                                   nick: nickController.text,
+                                  credentialToken: ref.read(authTokenProvider),
                                 );
                                 // ref.read(userModelProvider.notifier).state = userModel;
                                 ref.read(signUpStateProvider.notifier).socialSignUp(userModel);

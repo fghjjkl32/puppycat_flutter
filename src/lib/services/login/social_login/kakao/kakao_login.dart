@@ -77,10 +77,6 @@ class KakaoLoginService implements SocialLoginService {
       id: userInfo.kakaoAccount?.email ?? 'thirdnsov.dev@gmail.com',
       // id: "thirdnso2v@gmail.com",
       simpleId: userInfo.id.toString(),
-      name: userInfo.kakaoAccount?.name ?? '테스트이름', //TODO 바꿔야함
-      gender: userInfo.kakaoAccount?.gender == Gender.female ? 'F' : 'M', //TODO 바꿔야함
-      birth: userInfo.kakaoAccount?.birthday ?? '19900101', //TODO 바꿔야함
-      phone: userInfo.kakaoAccount?.phoneNumber ?? '010-1234-4321', //TODO 바꿔야함
       refreshToken: _accessToken?.refreshToken?? '',
       isSimple: 1,
       simpleType: 'kakao',

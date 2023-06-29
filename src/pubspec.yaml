@@ -66,6 +66,10 @@ dependencies:
   dio_cookie_manager: ^3.1.0
   cookie_jar: ^4.0.5
 
+  #WebView
+  flutter_inappwebview: ^6.0.0-beta.23
+  url_launcher: ^6.1.10
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
