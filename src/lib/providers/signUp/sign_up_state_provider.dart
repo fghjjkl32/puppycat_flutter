@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/signUp/sign_up_repository.dart';
 import 'package:pet_mobile_social_flutter/services/signUp/sign_up_service.dart';
 import 'package:riverpod/riverpod.dart';
@@ -14,18 +16,36 @@ enum NickNameStatus {
   maxLength,
   invalidLetter,
   invalidWord,
+  failure,
+}
+
+
+enum SignUpStatus {
+  none,
+  success,
+  failure,
 }
 
 final nickNameProvider = StateProvider<NickNameStatus>((ref) => NickNameStatus.none);
 
-// @Riverpod(keepAlive: true)
-@riverpod
+@Riverpod(keepAlive: true)
+// @riverpod
 class SignUpState extends _$SignUpState {
   final SignUpRepository _signUpRepository = SignUpRepository();
 
   @override
-  bool build() {
-    return false;
+  SignUpStatus build() {
+    return SignUpStatus.none;
+  }
+
+  void socialSignUp(UserModel userModel) async {
+    var idxList = ref.read(policyStateProvider.notifier).getSelectPolicy();
+    bool result = await _signUpRepository.socialSignUp(userModel, idxList);
+    if(result) {
+      state = SignUpStatus.success;
+    } else {
+      state = SignUpStatus.failure;
+    }
   }
 
   ///230621 smkang
@@ -46,12 +66,6 @@ class SignUpState extends _$SignUpState {
 
     ///InvalidWord
 
-    bool result = await _signUpRepository.checkNickName(nick);
-    if (!result) {
-      ref.read(nickNameProvider.notifier).state = NickNameStatus.duplication;
-      return;
-    } else {
-      ref.read(nickNameProvider.notifier).state = NickNameStatus.valid;
-    }
+    ref.read(nickNameProvider.notifier).state = await _signUpRepository.checkNickName(nick);
   }
 }

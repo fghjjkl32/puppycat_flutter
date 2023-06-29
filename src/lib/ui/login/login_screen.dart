@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_cu
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/providers/account/account_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/kakao/kakao_login.dart';
@@ -53,7 +54,6 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(loginStateProvider, (previous, next) {
       if (next == LoginStatus.withdrawalPending) {
-        print('run?');
         showCustomModalBottomSheet(context: context, widget: const WithDrawalPendingSheetItem());
       } else if(next == LoginStatus.restriction) {
         ///TODO
@@ -63,6 +63,13 @@ class LoginScreen extends ConsumerWidget {
           context: context,
           builder: (context) => const RestrictionDialog( isForever: false,),
         );
+      }
+    });
+
+    ref.listen(accountRestoreStateProvider, (previous, next) {
+      if(next) {
+        var userModel = ref.read(userModelProvider);
+        ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel!);
       }
     });
 

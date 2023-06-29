@@ -1,9 +1,14 @@
 import 'package:appspector/appspector.dart';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
+import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
+import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
@@ -20,6 +25,17 @@ void main() async {
     systemNavigationBarColor: Colors.white,
     systemNavigationBarIconBrightness: Brightness.dark,
   ));
+
+  /// Get It
+  /// SingleTon
+  GetIt.I.registerSingleton<UuidUtil>(UuidUtil());
+  await GetIt.I<UuidUtil>().init();
+
+  GetIt.I.registerSingleton<PackageInformationUtil>(PackageInformationUtil());
+  await GetIt.I<PackageInformationUtil>().init();
+
+  GetIt.I.registerSingleton<CookieJar>(CookieJar());
+
 
   runAppSpector();
   runApp(
@@ -45,8 +61,17 @@ class PuppycatApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     // final loginState = ref.watch(loginStateProvider);
     // print('loginState : $loginState');
-
+    // return MaterialApp.router(
+    //   localizationsDelegates: context.localizationDelegates,
+    //   supportedLocales: context.supportedLocales,
+    //   locale: context.locale,
+    //   routerConfig: router,
+    //   title: 'Flutter Demo',
+    //   theme: themeData(context),
+    //   debugShowCheckedModeBanner: false,
+    // );
     return ScreenUtilInit(
+      // useInheritedMediaQuery: true,
       designSize: const Size(360, 640),
       builder: (BuildContext context, Widget? child) {
         return MaterialApp.router(

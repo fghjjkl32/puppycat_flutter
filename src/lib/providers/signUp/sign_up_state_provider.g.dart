@@ -6,12 +6,12 @@ part of 'sign_up_state_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$signUpStateHash() => r'42d6ef2cb520a4aa8b861e1dd9775f41539b79c2';
+String _$signUpStateHash() => r'36898ae401999ac669f9b4b3571f98c5770db3d7';
 
 /// See also [SignUpState].
 @ProviderFor(SignUpState)
 final signUpStateProvider =
-    AutoDisposeNotifierProvider<SignUpState, bool>.internal(
+    NotifierProvider<SignUpState, SignUpStatus>.internal(
   SignUpState.new,
   name: r'signUpStateProvider',
   debugGetCreateSourceHash:
@@ -20,5 +20,5 @@ final signUpStateProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$SignUpState = AutoDisposeNotifier<bool>;
+typedef _$SignUpState = Notifier<SignUpStatus>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

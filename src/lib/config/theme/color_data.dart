@@ -29,3 +29,8 @@ const kKakaoLoginColor = Color(0xffffd84f);
 const kNaverLoginColor = Color(0xff03cf5d);
 const kGoogleLoginColor = kNeutralColor100;
 const kAppleLoginColor = Color(0xff000000);
+
+//SignUp Color
+// const kSignUpPrimaryColor = Color(0xff6D5DE1);
+const kSignUpNickInvalidColor = Color(0xffE14952);
+const kSignUpPassColor = Color(0xffff3a4a);

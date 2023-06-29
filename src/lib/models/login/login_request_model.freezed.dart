@@ -24,6 +24,11 @@ mixin _$LoginRequestModel {
   String get simpleId => throw _privateConstructorUsedError;
   int get isSimple => throw _privateConstructorUsedError;
   String get simpleType => throw _privateConstructorUsedError;
+  String get appKey => throw _privateConstructorUsedError;
+  String get appVer => throw _privateConstructorUsedError;
+  String get domain => throw _privateConstructorUsedError; // puppycat.co.kr  임시
+  String get iso => throw _privateConstructorUsedError;
+  String get fcmToken => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -37,7 +42,16 @@ abstract class $LoginRequestModelCopyWith<$Res> {
           LoginRequestModel value, $Res Function(LoginRequestModel) then) =
       _$LoginRequestModelCopyWithImpl<$Res, LoginRequestModel>;
   @useResult
-  $Res call({String id, String simpleId, int isSimple, String simpleType});
+  $Res call(
+      {String id,
+      String simpleId,
+      int isSimple,
+      String simpleType,
+      String appKey,
+      String appVer,
+      String domain,
+      String iso,
+      String fcmToken});
 }
 
 /// @nodoc
@@ -57,6 +71,11 @@ class _$LoginRequestModelCopyWithImpl<$Res, $Val extends LoginRequestModel>
     Object? simpleId = null,
     Object? isSimple = null,
     Object? simpleType = null,
+    Object? appKey = null,
+    Object? appVer = null,
+    Object? domain = null,
+    Object? iso = null,
+    Object? fcmToken = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -75,6 +94,26 @@ class _$LoginRequestModelCopyWithImpl<$Res, $Val extends LoginRequestModel>
           ? _value.simpleType
           : simpleType // ignore: cast_nullable_to_non_nullable
               as String,
+      appKey: null == appKey
+          ? _value.appKey
+          : appKey // ignore: cast_nullable_to_non_nullable
+              as String,
+      appVer: null == appVer
+          ? _value.appVer
+          : appVer // ignore: cast_nullable_to_non_nullable
+              as String,
+      domain: null == domain
+          ? _value.domain
+          : domain // ignore: cast_nullable_to_non_nullable
+              as String,
+      iso: null == iso
+          ? _value.iso
+          : iso // ignore: cast_nullable_to_non_nullable
+              as String,
+      fcmToken: null == fcmToken
+          ? _value.fcmToken
+          : fcmToken // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -87,7 +126,16 @@ abstract class _$$_LoginRequestModelCopyWith<$Res>
       __$$_LoginRequestModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String simpleId, int isSimple, String simpleType});
+  $Res call(
+      {String id,
+      String simpleId,
+      int isSimple,
+      String simpleType,
+      String appKey,
+      String appVer,
+      String domain,
+      String iso,
+      String fcmToken});
 }
 
 /// @nodoc
@@ -105,6 +153,11 @@ class __$$_LoginRequestModelCopyWithImpl<$Res>
     Object? simpleId = null,
     Object? isSimple = null,
     Object? simpleType = null,
+    Object? appKey = null,
+    Object? appVer = null,
+    Object? domain = null,
+    Object? iso = null,
+    Object? fcmToken = null,
   }) {
     return _then(_$_LoginRequestModel(
       id: null == id
@@ -123,6 +176,26 @@ class __$$_LoginRequestModelCopyWithImpl<$Res>
           ? _value.simpleType
           : simpleType // ignore: cast_nullable_to_non_nullable
               as String,
+      appKey: null == appKey
+          ? _value.appKey
+          : appKey // ignore: cast_nullable_to_non_nullable
+              as String,
+      appVer: null == appVer
+          ? _value.appVer
+          : appVer // ignore: cast_nullable_to_non_nullable
+              as String,
+      domain: null == domain
+          ? _value.domain
+          : domain // ignore: cast_nullable_to_non_nullable
+              as String,
+      iso: null == iso
+          ? _value.iso
+          : iso // ignore: cast_nullable_to_non_nullable
+              as String,
+      fcmToken: null == fcmToken
+          ? _value.fcmToken
+          : fcmToken // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -134,7 +207,12 @@ class _$_LoginRequestModel implements _LoginRequestModel {
       {required this.id,
       required this.simpleId,
       this.isSimple = 1,
-      required this.simpleType});
+      required this.simpleType,
+      required this.appKey,
+      required this.appVer,
+      this.domain = 'puppycat.co.kr',
+      this.iso = 'ko',
+      required this.fcmToken});
 
   factory _$_LoginRequestModel.fromJson(Map<String, dynamic> json) =>
       _$$_LoginRequestModelFromJson(json);
@@ -148,10 +226,23 @@ class _$_LoginRequestModel implements _LoginRequestModel {
   final int isSimple;
   @override
   final String simpleType;
+  @override
+  final String appKey;
+  @override
+  final String appVer;
+  @override
+  @JsonKey()
+  final String domain;
+// puppycat.co.kr  임시
+  @override
+  @JsonKey()
+  final String iso;
+  @override
+  final String fcmToken;
 
   @override
   String toString() {
-    return 'LoginRequestModel(id: $id, simpleId: $simpleId, isSimple: $isSimple, simpleType: $simpleType)';
+    return 'LoginRequestModel(id: $id, simpleId: $simpleId, isSimple: $isSimple, simpleType: $simpleType, appKey: $appKey, appVer: $appVer, domain: $domain, iso: $iso, fcmToken: $fcmToken)';
   }
 
   @override
@@ -165,13 +256,19 @@ class _$_LoginRequestModel implements _LoginRequestModel {
             (identical(other.isSimple, isSimple) ||
                 other.isSimple == isSimple) &&
             (identical(other.simpleType, simpleType) ||
-                other.simpleType == simpleType));
+                other.simpleType == simpleType) &&
+            (identical(other.appKey, appKey) || other.appKey == appKey) &&
+            (identical(other.appVer, appVer) || other.appVer == appVer) &&
+            (identical(other.domain, domain) || other.domain == domain) &&
+            (identical(other.iso, iso) || other.iso == iso) &&
+            (identical(other.fcmToken, fcmToken) ||
+                other.fcmToken == fcmToken));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, simpleId, isSimple, simpleType);
+  int get hashCode => Object.hash(runtimeType, id, simpleId, isSimple,
+      simpleType, appKey, appVer, domain, iso, fcmToken);
 
   @JsonKey(ignore: true)
   @override
@@ -193,7 +290,12 @@ abstract class _LoginRequestModel implements LoginRequestModel {
       {required final String id,
       required final String simpleId,
       final int isSimple,
-      required final String simpleType}) = _$_LoginRequestModel;
+      required final String simpleType,
+      required final String appKey,
+      required final String appVer,
+      final String domain,
+      final String iso,
+      required final String fcmToken}) = _$_LoginRequestModel;
 
   factory _LoginRequestModel.fromJson(Map<String, dynamic> json) =
       _$_LoginRequestModel.fromJson;
@@ -206,6 +308,16 @@ abstract class _LoginRequestModel implements LoginRequestModel {
   int get isSimple;
   @override
   String get simpleType;
+  @override
+  String get appKey;
+  @override
+  String get appVer;
+  @override
+  String get domain;
+  @override // puppycat.co.kr  임시
+  String get iso;
+  @override
+  String get fcmToken;
   @override
   @JsonKey(ignore: true)
   _$$_LoginRequestModelCopyWith<_$_LoginRequestModel> get copyWith =>
