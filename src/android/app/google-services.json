@@ -1,11 +1,4 @@
 {
-  "installed": {
-    "client_id": "575237342278-j99l5tr064rm3oids1t4trhhi8no9h33.apps.googleusercontent.com",
-    "project_id": "social-login-test-389810",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs"
-  },
   "project_info": {
     "project_number": "749563510570",
     "project_id": "pet-mobile-social-flutter",
@@ -36,6 +29,13 @@
             {
               "client_id": "749563510570-dgg49k93dhgbvmm319a48ccft3jqugri.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "749563510570-3je9kstd42unntoi8no8ds13ohg4og3a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.uxplus.test.puppycat"
+              }
             }
           ]
         }
