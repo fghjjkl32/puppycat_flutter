@@ -70,6 +70,18 @@ dependencies:
   flutter_inappwebview: ^6.0.0-beta.23
   url_launcher: ^6.1.10
 
+  #Firebase
+  firebase_core: ^2.14.0
+  firebase_messaging: ^14.6.4
+
+  #notification(push)
+  flutter_local_notifications: ^14.1.1
+
+  #permission
+  permission_handler: ^10.3.0
+
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

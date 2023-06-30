@@ -14,6 +14,10 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ko</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>pet_mobile_social_flutter</string>
 	<key>CFBundlePackageType</key>
@@ -33,43 +37,31 @@
 			</array>
 		</dict>
 		<dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>petnaverlogin</string>
-            </array>
-        </dict>
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <!-- TODO Replace this value: -->
-                <!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
-                <string>com.googleusercontent.apps.575237342278-h6tpqgibbaeqlrk2ttp9j4vlv4ggradq</string>
-            </array>
-        </dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>petnaverlogin</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.575237342278-h6tpqgibbaeqlrk2ttp9j4vlv4ggradq</string>
+			</array>
+		</dict>
 	</array>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>naversearchapp</string>
-        <string>naversearchthirdlogin</string>
-    </array>
-    <key>naverServiceAppUrlScheme</key>
-    <string>petnaverlogin</string>
-    <key>naverConsumerKey</key>
-    <string>2XDXECQ2wRiTyGQL82eh</string>
-    <key>naverConsumerSecret</key>
-    <string>Z1DdndK6ei</string>
-    <key>naverServiceAppName</key>
-    <string>Pet_test</string>
-
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>7c08c783bcbdb1ef34a88b51e2dc0fde</string>
-
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>naversearchapp</string>
+		<string>naversearchthirdlogin</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -77,22 +69,22 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 		<key>NSExceptionDomains</key>
-       <dict>
-          <key>naver.com</key>
-          <dict>
-             <key>NSExceptionRequiresForwardSecrecy</key>
-             <false/>
-             <key>NSIncludesSubdomains</key>
-             <true/>
-          </dict>
-          <key>naver.net</key>
-          <dict>
-             <key>NSExceptionRequiresForwardSecrecy</key>
-             <false/>
-             <key>NSIncludesSubdomains</key>
-             <true/>
-          </dict>
-       </dict>
+		<dict>
+			<key>naver.com</key>
+			<dict>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+			<key>naver.net</key>
+			<dict>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>카메라 사용을 위해 카메라 접근을 허용해 주세요.</string>
@@ -119,9 +111,27 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CFBundleLocalizations</key>
-    <array>
-    	<string>ko</string>
-    </array>
+	<key>naverConsumerKey</key>
+	<string>2XDXECQ2wRiTyGQL82eh</string>
+	<key>naverConsumerSecret</key>
+	<string>Z1DdndK6ei</string>
+	<key>naverServiceAppName</key>
+	<string>Pet_test</string>
+	<key>naverServiceAppUrlScheme</key>
+	<string>petnaverlogin</string>
+
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>앱 사용 중에만 위치에 액세스하도록 허용하시겠습니까?</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>항상 혹은 앱 사용 중에만 위치에 액세스하도록 허용하시겠습니까?</string>
+    <key>NSLocationUsageDescription</key>
+    <string>내 기기 위치에 액세스하도록 허용하시겠습니까?</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>내 기기 위치에 항상 액세스하도록 허용하시겠습니까?</string>
+
+    <key>PermissionGroupNotification</key>
+    <true/>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>맞춤광고를 위해 사용자의 개인정보에 접근합니다.</string>
 </dict>
 </plist>
