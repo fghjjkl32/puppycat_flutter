@@ -5,5 +5,42 @@
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs"
-  }
+  },
+  "project_info": {
+    "project_number": "749563510570",
+    "project_id": "pet-mobile-social-flutter",
+    "storage_bucket": "pet-mobile-social-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749563510570:android:9cabecdac32bfe144a2853",
+        "android_client_info": {
+          "package_name": "com.uxplus.test.puppycat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "749563510570-dgg49k93dhgbvmm319a48ccft3jqugri.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoErAInXE9HT9iTKR9nzCtSp13a6KnGDc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "749563510570-dgg49k93dhgbvmm319a48ccft3jqugri.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
 }

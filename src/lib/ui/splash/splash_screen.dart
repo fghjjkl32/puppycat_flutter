@@ -1,15 +1,92 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-class SplashScreen extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+
+final splashStateProvider = StateProvider<bool>((ref) => false);
+final splashProgressStateProvider = StateProvider<double>((ref) => 0.0);
+final _initStateProvider = StateProvider<bool>((ref) => false);
+
+class InitializationApp {
+  static void initialize(Ref ref) async {
+    if(ref.read(_initStateProvider)) {
+      return;
+    }
+    if (await _checkNetwork()) {
+      if (await _checkServers()) {
+        if (await _initFirebase()) {
+          ref.read(_initStateProvider.notifier).state = true;
+          await ref.read(loginStateProvider.notifier).autoLogin();
+        }
+      }
+    }
+  }
+
+  static Future<bool> _initFirebase() async {
+    var result = Future.delayed(Duration(milliseconds: 300), () {
+      print('fire');
+      return true;
+    });
+
+    return result;
+  }
+
+  static Future<bool> _checkNetwork() async {
+    var result = Future.delayed(Duration(milliseconds: 300), () {
+      print('net');
+      return true;
+    });
+
+    return result;
+  }
+
+  static Future<bool> _checkServers() async {
+    var result = Future.delayed(Duration(milliseconds: 300), () {
+      print('ser');
+      return true;
+    });
+
+    return result;
+  }
+}
+
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  SplashScreenState createState() => SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class SplashScreenState extends ConsumerState<SplashScreen> {
+  late Timer _splashTimer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _splashTimer = Timer(const Duration(seconds: 3), () {
+      if(ref.read(_initStateProvider)) {
+        ref.read(splashStateProvider.notifier).state = true;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _splashTimer?.cancel();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    ref.listen(_initStateProvider, (previous, next) {
+      if(!_splashTimer.isActive) {
+        ref.read(splashStateProvider.notifier).state = true;
+      }
+    });
+
     return WillPopScope(
       onWillPop: () async => false,
       child: const Scaffold(

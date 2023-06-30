@@ -1,139 +1,140 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 const pretendard = 'pretendard';
 
 //Title Style
-TextStyle kTitle20BoldStyle = const TextStyle(
+TextStyle kTitle20BoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 20,
+  fontSize: 20.sp,
   fontWeight: FontWeight.w700,
 );
 
-TextStyle kTitle18BoldStyle = const TextStyle(
+TextStyle kTitle18BoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 18,
+  fontSize: 18.sp,
   fontWeight: FontWeight.w700,
 );
 
-TextStyle kTitle18MediumStyle = const TextStyle(
+TextStyle kTitle18MediumStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 18,
+  fontSize: 18.sp,
   fontWeight: FontWeight.w500,
 );
 
-TextStyle kTitle16ExtraBoldStyle = const TextStyle(
+TextStyle kTitle16ExtraBoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 16,
+  fontSize: 16.sp,
   fontWeight: FontWeight.w800,
 );
 
-TextStyle kTitle14BoldStyle = const TextStyle(
+TextStyle kTitle14BoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 14,
+  fontSize: 14.sp,
   fontWeight: FontWeight.w700,
 );
 
 //Body Style
-TextStyle kBody16BoldStyle = const TextStyle(
+TextStyle kBody16BoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 16,
+  fontSize: 16.sp,
   fontWeight: FontWeight.w700,
 );
 
-TextStyle kBody16MediumStyle = const TextStyle(
+TextStyle kBody16MediumStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 16,
+  fontSize: 16.sp,
   fontWeight: FontWeight.w500,
 );
 
-TextStyle kBody14BoldStyle = const TextStyle(
+TextStyle kBody14BoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 14,
+  fontSize: 14.sp,
   fontWeight: FontWeight.w700,
 );
 
-TextStyle kBody14RegularStyle = const TextStyle(
+TextStyle kBody14RegularStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 14,
+  fontSize: 14.sp,
   fontWeight: FontWeight.w400,
 );
 
-TextStyle kBody13BoldStyle = const TextStyle(
+TextStyle kBody13BoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 13,
+  fontSize: 13.sp,
   fontWeight: FontWeight.w700,
 );
 
-TextStyle kBody13RegularStyle = const TextStyle(
+TextStyle kBody13RegularStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 13,
+  fontSize: 13.sp,
   fontWeight: FontWeight.w400,
 );
 
-TextStyle kBody12ExtraBoldStyle = const TextStyle(
+TextStyle kBody12ExtraBoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 12,
+  fontSize: 12.sp,
   fontWeight: FontWeight.w800,
 );
 
-TextStyle kBody12SemiBoldStyle = const TextStyle(
+TextStyle kBody12SemiBoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 12,
+  fontSize: 12.sp,
   fontWeight: FontWeight.w600,
 );
 
-TextStyle kBody12RegularStyle = const TextStyle(
+TextStyle kBody12RegularStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 12,
+  fontSize: 12.sp,
   fontWeight: FontWeight.w500,
 );
 
-TextStyle kBody12RegularStyle400 = const TextStyle(
+TextStyle kBody12RegularStyle400 = TextStyle(
   fontFamily: pretendard,
-  fontSize: 12,
+  fontSize: 12.sp,
   fontWeight: FontWeight.w400,
 );
 
-TextStyle kBody11SemiBoldStyle = const TextStyle(
+TextStyle kBody11SemiBoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 11,
+  fontSize: 11.sp,
   fontWeight: FontWeight.w600,
 );
 
-TextStyle kBody11RegularStyle = const TextStyle(
+TextStyle kBody11RegularStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 11,
+  fontSize: 11.sp,
   fontWeight: FontWeight.w500,
 );
 
 // Button Style
-TextStyle kButton14BoldStyle = const TextStyle(
+TextStyle kButton14BoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 14,
+  fontSize: 14.sp,
   fontWeight: FontWeight.w700,
 );
 
-TextStyle kButton14MediumStyle = const TextStyle(
+TextStyle kButton14MediumStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 14,
+  fontSize: 14.sp,
   fontWeight: FontWeight.w500,
 );
 
-TextStyle kButton12BoldStyle = const TextStyle(
+TextStyle kButton12BoldStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 12,
+  fontSize: 12.sp,
   fontWeight: FontWeight.w700,
 );
 
 // Badge Style
-TextStyle kBadge10MediumStyle = const TextStyle(
+TextStyle kBadge10MediumStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 10,
+  fontSize: 10.sp,
   fontWeight: FontWeight.w500,
 );
 
-TextStyle kBadge9RegularStyle = const TextStyle(
+TextStyle kBadge9RegularStyle = TextStyle(
   fontFamily: pretendard,
-  fontSize: 9,
+  fontSize: 9.sp,
   fontWeight: FontWeight.w400,
 );

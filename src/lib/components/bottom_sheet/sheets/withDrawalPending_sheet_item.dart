@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/providers/account/account_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 
-class WithDrawalPendingSheetItem extends StatelessWidget {
+class WithDrawalPendingSheetItem extends ConsumerWidget {
   const WithDrawalPendingSheetItem({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         Padding(
@@ -28,7 +32,15 @@ class WithDrawalPendingSheetItem extends StatelessWidget {
           width: 336,
           height: 46,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              var userModel = ref.read(userModelProvider);
+              if(userModel == null) {
+                ///TODO
+                ///Error Proc
+                return;
+              }
+              ref.read(accountRestoreStateProvider.notifier).restoreAccount("71", "2809229088");
+            },
             style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
@@ -49,7 +61,10 @@ class WithDrawalPendingSheetItem extends StatelessWidget {
             width: 336,
             height: 46,
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                ref.read(loginStateProvider.notifier).state = LoginStatus.none;
+                Navigator.pop(context);
+              },
               child: Text(
                 '7일 후 회원가입',
                 style: kBody12SemiBoldStyle.copyWith(

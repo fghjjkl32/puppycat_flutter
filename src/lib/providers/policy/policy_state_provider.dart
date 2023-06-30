@@ -15,6 +15,7 @@ part 'policy_state_provider.g.dart';
 
 final policyAllAgreeStateProvider = StateProvider<bool>((ref) => false);
 final policyAgreeStateProvider = StateProvider<bool>((ref) => false);
+final policyMarketingStateProvider = StateProvider<bool>((ref) => false);
 
 // @Riverpod(keepAlive: true)
 @riverpod
@@ -77,8 +78,21 @@ class PolicyState extends _$PolicyState {
 
   void toggleAll(bool isAgreed) {
     List<PolicyItemModel> policies = state;
-    state = policies.map((e) => e.copyWith(isAgreed: isAgreed)).toList();
     _setAllAgreed(isAgreed);
     _setEssentialAgreed(isAgreed);
+    state = policies.map((e) => e.copyWith(isAgreed: isAgreed)).toList();
+  }
+
+  List<PolicyItemModel> getSelectPolicy() {
+    List<PolicyItemModel> policies = state;
+    // List<String> result = policies.where((e) {
+    //   if(e.required == 'N' && e.isAgreed) {
+    //     return e.idx.toString();
+    //   }
+    // }).toList();
+
+    // List<String> result = policies.where((element) => element.required == 'N').map((e) => e.idx.toString()).toList();
+    List<PolicyItemModel> result = policies.where((element) => element.required == 'N').toList();
+    return result;
   }
 }
