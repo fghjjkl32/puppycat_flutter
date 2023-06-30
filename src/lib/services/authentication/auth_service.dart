@@ -10,5 +10,5 @@ abstract class AuthService {
   factory AuthService(Dio dio, {String baseUrl}) = _AuthService;
 
   @GET('/certification/popup')
-  Future<ResponseModel?> getPassAuthUrl();
+  Future<ResponseModel?> getPassAuthUrl(@Queries() Map<String, dynamic> queries);
 }

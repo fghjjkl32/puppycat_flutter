@@ -80,6 +80,7 @@ dependencies:
   #permission
   permission_handler: ^10.3.0
 
+  encrypt: ^5.0.1
 
 
 dev_dependencies:
