@@ -335,7 +335,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                       isReply: true,
                                       likeCount: 32,
                                     ),
-                                    const CustomTextField(),
+                                    const CommentCustomTextField(),
                                   ],
                                 ),
                               );
@@ -633,14 +633,14 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-class CustomTextField extends StatefulWidget {
-  const CustomTextField({super.key});
+class CommentCustomTextField extends StatefulWidget {
+  const CommentCustomTextField({super.key});
 
   @override
-  CustomTextFieldState createState() => CustomTextFieldState();
+  CommentCustomTextFieldState createState() => CommentCustomTextFieldState();
 }
 
-class CustomTextFieldState extends State<CustomTextField> {
+class CommentCustomTextFieldState extends State<CommentCustomTextField> {
   final TextEditingController _controller = TextEditingController();
   int lineCount = 0;
   bool hasInput = false;

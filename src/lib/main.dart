@@ -52,7 +52,6 @@ void main() async {
 
   GetIt.I.registerSingleton<CookieJar>(CookieJar());
 
-
   runAppSpector();
   runApp(
     ProviderScope(
@@ -167,6 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       title: '숨기기',
                       titleStyle: kButton14BoldStyle.copyWith(
                           color: kTextSubTitleColor),
+                      onTap: () {},
                     ),
                     BottomSheetButtonItem(
                       iconImage:
@@ -174,6 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       title: '차단하기',
                       titleStyle: kButton14BoldStyle.copyWith(
                           color: kTextSubTitleColor),
+                      onTap: () {},
                     ),
                     BottomSheetButtonItem(
                       iconImage:
@@ -181,6 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       title: '신고하기',
                       titleStyle:
                           kButton14BoldStyle.copyWith(color: kBadgeColor),
+                      onTap: () {},
                     ),
                   ],
                 ),

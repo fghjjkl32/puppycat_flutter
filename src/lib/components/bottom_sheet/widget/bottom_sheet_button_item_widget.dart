@@ -6,19 +6,20 @@ class BottomSheetButtonItem extends StatelessWidget {
     required this.iconImage,
     required this.title,
     required this.titleStyle,
+    required this.onTap,
     Key? key,
   }) : super(key: key);
 
   final String iconImage;
   final String title;
   final TextStyle titleStyle;
-
+  final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 32.w),
           child: Row(
