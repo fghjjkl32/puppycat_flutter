@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 part 'login_state_provider.g.dart';
 
 final userModelProvider = StateProvider<UserModel?>((ref) => null);
-final cookieProvider = StateProvider<CookieJar?>((ref) => null);
+// final cookieProvider = StateProvider<CookieJar?>((ref) => null);
 
 // final accountRestoreProvider = StateProvider.family<Future<bool>, (String, String)>((ref, restoreInfo) {
 //   return ref.read(accountRepositoryProvider).restoreAccount(restoreInfo.$1, restoreInfo.$2);

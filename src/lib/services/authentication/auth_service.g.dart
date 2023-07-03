@@ -21,9 +21,15 @@ class _AuthService implements AuthService {
   String? baseUrl;
 
   @override
-  Future<ResponseModel?> getPassAuthUrl() async {
+  Future<ResponseModel?> getPassAuthUrl({
+    required String appKey,
+    required String token,
+  }) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'appKey': appKey,
+      r'token': token,
+    };
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio

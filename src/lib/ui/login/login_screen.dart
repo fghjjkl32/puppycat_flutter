@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -195,12 +196,9 @@ class LoginScreen extends ConsumerWidget {
               ],
             ),
             ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) => const RestrictionDialog( isForever: false,),
-                );
+              onPressed: () async {
+                // var test = await EncryptUtil.getPassAPIEncrypt();
+                // print('test : $test');
               },
               child: const Text('test'),
             ),
