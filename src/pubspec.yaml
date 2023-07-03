@@ -17,7 +17,7 @@ dependencies:
   freezed: ^2.3.4
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.1
-  flutter_screenutil: ^5.8.3
+  flutter_screenutil: ^5.7.0
   flutter_dotenv: ^5.0.2
   carousel_slider: ^4.2.1
   smooth_page_indicator: ^1.1.0
@@ -58,6 +58,10 @@ dependencies:
 
   #localization
   easy_localization: ^3.0.2
+
+  flutter_staggered_grid_view: ^0.6.2
+  flutter_cache_manager: ^3.3.0
+  flutter_markdown: ^0.6.15
 
   #Utils
   get_it: ^7.6.0
@@ -109,7 +113,7 @@ flutter:
     - assets/image/header/icon/small_size/
     - assets/image/message/icon/large_size/
     - assets/image/message/icon/small_size/
-    - assets/image/mypage/icon/
+    - assets/image/my_page/icon/
     - assets/image/search/icon/
     - assets/image/toast/icon/
     - assets/image/feed_write/image/

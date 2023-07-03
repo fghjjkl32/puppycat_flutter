@@ -3,6 +3,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
 ThemeData themeData(context) => ThemeData(
+      disabledColor: kNeutralColor300,
       checkboxTheme: CheckboxThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.0),
@@ -28,10 +29,18 @@ ThemeData themeData(context) => ThemeData(
       dividerTheme: const DividerThemeData(
         color: kNeutralColor200,
         thickness: 2,
+        space: 0,
       ),
       inputDecorationTheme: const InputDecorationTheme(
         filled: true,
         fillColor: Colors.transparent,
+        disabledBorder: OutlineInputBorder(
+          gapPadding: 10,
+          borderRadius: BorderRadius.all(
+            Radius.circular(10.0),
+          ),
+          borderSide: BorderSide(color: Colors.transparent),
+        ),
         enabledBorder: OutlineInputBorder(
           gapPadding: 10,
           borderRadius: BorderRadius.all(
