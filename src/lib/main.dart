@@ -369,7 +369,15 @@ class _MyHomePageState extends State<MyHomePage> {
               );
             },
             child: Text('팝업 버튼'),
-          )
+          ),
+          TextButton(
+            onPressed: () async {
+              context.go("/test/notification");
+            },
+            child: const Text(
+              '알림함 이동',
+            ),
+          ),
         ],
       ),
     );
