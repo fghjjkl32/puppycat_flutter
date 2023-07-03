@@ -49,7 +49,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen>
               appBar: AppBar(
                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                 title: const Text(
-                  "자주 하는 질문",
+                  "자주하는 질문",
                 ),
                 leading: IconButton(
                   onPressed: () {

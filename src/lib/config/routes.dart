@@ -30,6 +30,7 @@ import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdraw
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_select_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/notification/notification_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/web_view/webview_widget.dart';
 
@@ -105,7 +106,6 @@ class AppRouter {
               ],
             ),
           ]),
-
       GoRoute(
         path: '/splash',
         name: 'splash',
@@ -278,6 +278,13 @@ class AppRouter {
                   ],
                 ),
               ],
+            ),
+            GoRoute(
+              path: 'notification',
+              name: 'notification',
+              builder: (BuildContext context, GoRouterState state) {
+                return const NotificationScreen();
+              },
             ),
           ]),
       // GoRoute(//id를 넘겨주어 navigarion 하는 방법
