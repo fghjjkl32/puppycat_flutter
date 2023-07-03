@@ -8,11 +8,11 @@ part 'user_model.g.dart';
 
 enum LoginStatus {
   none,
-  success,
-  failure,
-  needSignUp,
-  restriction,
-  withdrawalPending,
+  success, //페이지 이동
+  failure,  // 팝업 다이얼로그
+  needSignUp, // 화면 전환
+  restriction, // 팝업 다이얼로그
+  withdrawalPending, // 바텀 시트 띄워
   fourteen,
 }
 

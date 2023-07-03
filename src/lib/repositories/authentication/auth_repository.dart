@@ -16,11 +16,15 @@ class AuthRepository {
 
     Map<String, dynamic> queries = {
       'appKey' : appKey,
-      'token' : token,
+      'token' : ListParam<String>([token], ListFormat.multi),
     };
+    print('pass url token : $token');
 
-    ResponseModel? responseModel = await _authService.getPassAuthUrl(queries).catchError((obj) => throw 'some error.');
+    // final response = await DioWrap.getDioWithCookie().get('https://sns-api.devlabs.co.kr:28080/v1/certification/popup?appKey=$appKey&token=$token');
+    // print('test : $response');
 
+    // ResponseModel? responseModel = await _authService.getPassAuthUrl(queries).catchError((obj) => throw 'some error.');
+    ResponseModel? responseModel = await _authService.getPassAuthUrl(appKey: appKey, token: token).catchError((obj) => throw 'some error.');
     if(responseModel == null) {
       throw 'response body is null';
     }
