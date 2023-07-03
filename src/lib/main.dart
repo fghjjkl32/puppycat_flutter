@@ -2,6 +2,7 @@ import 'package:appspector/appspector.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,11 +28,16 @@ import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
+import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
+import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -44,6 +50,9 @@ void main() async {
 
   /// Get It
   /// SingleTon
+  GetIt.I.registerSingleton<FireBaseMessageController>(
+      FireBaseMessageController());
+
   GetIt.I.registerSingleton<UuidUtil>(UuidUtil());
   await GetIt.I<UuidUtil>().init();
 
