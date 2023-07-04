@@ -99,11 +99,11 @@ const String _kEllipsis = '\u2026';
 const String _kLineSeparator = '\u2028';
 
 class ReadMoreTextState extends State<ReadMoreText> {
-  final bool _readMore = true;
+  bool _readMore = true;
 
   void _onTapLink() {
     setState(() {
-      // _readMore = !_readMore;
+      _readMore = !_readMore;
       widget.callback?.call(_readMore);
     });
   }

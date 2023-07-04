@@ -54,72 +54,16 @@ class AppRouter {
 
   late final GoRouter _goRouter = GoRouter(
     // refreshListenable: AppService(),//redirect 시 사용되는 리스너 이다.
-    initialLocation: '/test', //제일 처음 보여 줄 route
+    initialLocation: '/home', //제일 처음 보여 줄 route
     debugLogDiagnostics: true, //router 정보 콘솔에 출력
     // errorBuilder: (BuildContext context, GoRouterState state) =>
     // const ErrorPage(),
     routes: <GoRoute>[
       GoRoute(
-        path: '/home',
-        name: 'home',
-        builder: (BuildContext context, GoRouterState state) {
-          return const PuppyCatMain();
-        },
-        // routes: [
-        //   /// sub Page를 설정할수 있다.
-        //   GoRoute(
-        //     path: 'geo',//sub page는 '/'를 생략해야 한다. 아니면 error
-        //     builder: (BuildContext context, GoRouterState state) {
-        //       return const GeoPage();
-        //     },
-        //   ),
-        // ],
-      ),
-      GoRoute(
-          path: '/loginScreen',
-          name: 'loginScreen',
-          builder: (_, state) => LoginScreen(),
-          routes: [
-            GoRoute(
-              path: 'signupScreen',
-              name: 'signupScreen',
-              builder: (_, state) {
-                return SignUpScreen();
-              },
-              routes: <GoRoute>[
-                GoRoute(
-                  path: 'signupCompleteScreen',
-                  name: 'signupCompleteScreen',
-                  builder: (_, state) {
-                    return SignUpCompleteScreen();
-                  },
-                ),
-                GoRoute(
-                  path: 'webview/:url',
-                  name: 'webview',
-                  builder: (BuildContext context, GoRouterState state) {
-                    final url =
-                        Uri.decodeComponent(state.pathParameters['url']!);
-                    return WebViewWidget(url: url);
-                  },
-                ),
-              ],
-            ),
-          ]),
-      GoRoute(
-        path: '/splash',
-        name: 'splash',
-        builder: (BuildContext context, GoRouterState state) {
-          return const SplashScreen();
-        },
-      ),
-      GoRoute(
-          path: '/test',
-          name: 'test',
+          path: '/home',
+          name: 'home',
           builder: (BuildContext context, GoRouterState state) {
-            return const MyHomePage(
-              title: 'test',
-            );
+            return const PuppyCatMain();
           },
           routes: [
             GoRoute(
@@ -286,7 +230,55 @@ class AppRouter {
                 return const NotificationScreen();
               },
             ),
+          ]
+          // routes: [
+          //   /// sub Page를 설정할수 있다.
+          //   GoRoute(
+          //     path: 'geo',//sub page는 '/'를 생략해야 한다. 아니면 error
+          //     builder: (BuildContext context, GoRouterState state) {
+          //       return const GeoPage();
+          //     },
+          //   ),
+          // ],
+          ),
+      GoRoute(
+          path: '/loginScreen',
+          name: 'loginScreen',
+          builder: (_, state) => LoginScreen(),
+          routes: [
+            GoRoute(
+              path: 'signupScreen',
+              name: 'signupScreen',
+              builder: (_, state) {
+                return SignUpScreen();
+              },
+              routes: <GoRoute>[
+                GoRoute(
+                  path: 'signupCompleteScreen',
+                  name: 'signupCompleteScreen',
+                  builder: (_, state) {
+                    return SignUpCompleteScreen();
+                  },
+                ),
+                GoRoute(
+                  path: 'webview/:url',
+                  name: 'webview',
+                  builder: (BuildContext context, GoRouterState state) {
+                    final url =
+                        Uri.decodeComponent(state.pathParameters['url']!);
+                    return WebViewWidget(url: url);
+                  },
+                ),
+              ],
+            ),
           ]),
+      GoRoute(
+        path: '/splash',
+        name: 'splash',
+        builder: (BuildContext context, GoRouterState state) {
+          return const SplashScreen();
+        },
+      ),
       // GoRoute(//id를 넘겨주어 navigarion 하는 방법
       //   path: '/book/:id',
       //   builder: (BuildContext context, GoRouterState state) {
