@@ -335,7 +335,7 @@ class MyPageWithdrawalDetailScreenState
                         onPressed: isAgree
                             ? () {
                                 context.go(
-                                    "/test/myPage/profileEdit/withdrawalSelect/withdrawalDetail/withdrawalSuccess");
+                                    "/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail/withdrawalSuccess");
                               }
                             : null,
                         child: Padding(

@@ -484,7 +484,7 @@ class MyPageProfileEditScreenState
                           child: TextButton(
                             onPressed: () {
                               context.go(
-                                  "/test/myPage/profileEdit/withdrawalSelect");
+                                  "/home/myPage/profileEdit/withdrawalSelect");
                             },
                             child: Text(
                               "회원 탈퇴",

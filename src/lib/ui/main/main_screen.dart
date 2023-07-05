@@ -1,15 +1,19 @@
+import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_write_show_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_deatil_list_widget.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
+import 'package:pet_mobile_social_flutter/components/feed/feed_best_post_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
@@ -20,6 +24,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 // class PuppyCatMain extends ConsumerWidget {
@@ -142,44 +147,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
                       "PUUPYCAT",
                       style: kTitle18BoldStyle,
                     ),
-                    Row(
-                      children: [
-                        Image.asset(
-                          'assets/image/header/icon/large_size/icon_camera.png',
-                          height: 26.h,
-                        ),
-                        Image.asset(
-                          'assets/image/header/icon/large_size/icon_feed.png',
-                          height: 26.h,
-                        ),
-                        Image.asset(
-                          'assets/image/header/icon/large_size/icon_more_h.png',
-                          height: 26.h,
-                        ),
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          width: _showIcon ? 36.0 : 0.0,
-                          child: Opacity(
-                            opacity: _showIcon ? 1.0 : 0.0,
-                            child: WidgetMask(
-                              blendMode: BlendMode.srcATop,
-                              childSaveLayer: true,
-                              mask: Center(
-                                child: Image.asset(
-                                  'assets/image/feed/icon/large_size/icon_taguser.png',
-                                  height: 22.h,
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                              child: SvgPicture.asset(
-                                'assets/image/feed/image/squircle.svg',
-                                height: 22.h,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    _buttonWidget(),
                   ],
                 ),
                 backgroundColor: Colors.transparent,
@@ -209,47 +177,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
                             const Spacer(),
                             Padding(
                               padding: const EdgeInsets.only(top: 4.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.start, // 변경된 부분
-                                mainAxisSize: MainAxisSize.min, // 변경된 부분
-                                children: [
-                                  Image.asset(
-                                    'assets/image/header/icon/large_size/icon_camera.png',
-                                    height: 26.h,
-                                  ),
-                                  Image.asset(
-                                    'assets/image/header/icon/large_size/icon_feed.png',
-                                    height: 26.h,
-                                  ),
-                                  Image.asset(
-                                    'assets/image/header/icon/large_size/icon_more_h.png',
-                                    height: 26.h,
-                                  ),
-                                  AnimatedContainer(
-                                    duration: const Duration(milliseconds: 200),
-                                    width: _showIcon ? 36.0 : 0.0,
-                                    child: Opacity(
-                                      opacity: _showIcon ? 1.0 : 0.0,
-                                      child: WidgetMask(
-                                        blendMode: BlendMode.srcATop,
-                                        childSaveLayer: true,
-                                        mask: Center(
-                                          child: Image.asset(
-                                            'assets/image/feed/icon/large_size/icon_taguser.png',
-                                            height: 22.h,
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                        child: SvgPicture.asset(
-                                          'assets/image/feed/image/squircle.svg',
-                                          height: 22.h,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              child: _buttonWidget(),
                             ),
                           ],
                         ),
@@ -310,15 +238,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
             body: TabBarView(
               children: [
                 _firstTab(),
-                Container(
-                  color: Colors.redAccent,
-                ),
+                _secondTab(),
                 Container(
                   color: Colors.blue,
                 ),
-                Container(
-                  color: Colors.yellow,
-                ),
+                _fourthTab(),
               ],
             ),
           ),
@@ -327,173 +251,254 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
     );
   }
 
-  Widget _firstTab() {
-    final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
+  Widget _buttonWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: () async {
+            final theme =
+                InstaAssetPicker.themeData(Theme.of(context).primaryColor);
 
-    return ListView(
-      children: <Widget>[
-        const FeedFollowWidget(),
-        const FeedDetailWidget(),
-        const FeedMainWidget(),
-        const FavoriteListWidget(),
-        const CommentDetailListWidget(),
-        TextButton(
-          onPressed: () {
-            showCustomModalBottomSheet(
-              context: context,
-              widget: Column(
-                children: [
-                  BottomSheetButtonItem(
-                    iconImage:
-                        'assets/image/feed/icon/small_size/icon_user_de.png',
-                    title: '숨기기',
-                    titleStyle:
-                        kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
-                    onTap: () {},
-                  ),
-                  BottomSheetButtonItem(
-                    iconImage:
-                        'assets/image/feed/icon/small_size/icon_user_block_on.png',
-                    title: '차단하기',
-                    titleStyle:
-                        kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
-                    onTap: () {},
-                  ),
-                  BottomSheetButtonItem(
-                    iconImage:
-                        'assets/image/feed/icon/small_size/icon_report.png',
-                    title: '신고하기',
-                    titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            );
-          },
-          child: const Text("feed bottom sheet button"),
-        ),
-        TextButton(
-          onPressed: () {
-            showCustomModalBottomSheet(
-              context: context,
-              widget: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
-                    child: Text(
-                      "태그된 대상",
-                      style:
-                          kBody16BoldStyle.copyWith(color: kTextSubTitleColor),
-                    ),
-                  ),
-                  const FavoriteListWidget(),
-                ],
-              ),
-            );
-          },
-          child: const Text("태그된 대상"),
-        ),
-        TextButton(
-          onPressed: () {
-            toast(
-                context: context,
-                text: '광고성 정보 수신 여부가 ‘동의’로 변경되었습니다.',
-                type: ToastType.purple,
-                secondText:
-                    "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
-          },
-          child: const Text("수신 동의 토스트"),
-        ),
-        TextButton(
-          onPressed: () {
-            toast(
-              context: context,
-              text: '광고성 정보 수신 여부가 ‘거부’로 변경되었습니다.',
-              type: ToastType.red,
-            );
-          },
-          child: const Text("수신 거부 토스트"),
-        ),
-        TextButton(
-          onPressed: () => InstaAssetPicker.pickAssets(
-            context,
-            maxAssets: 12,
-            pickerTheme: themeData(context).copyWith(
-              canvasColor: kNeutralColor100, // body background color
-              colorScheme: theme.colorScheme.copyWith(
-                background: kNeutralColor100, // albums list background color
-              ),
-              appBarTheme: theme.appBarTheme.copyWith(
-                backgroundColor: kNeutralColor100,
-              ),
-            ),
-            onCompleted: (cropStream) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => FeedWriteScreen(
-                    cropStream: cropStream,
-                  ),
-                ),
-              );
-            },
-          ),
-          child: const Text(
-            '이미지 선택',
-          ),
-        ),
-        TextButton(
-          onPressed: () async {
             final ImagePicker picker = ImagePicker();
 
-            await picker.pickImage(source: ImageSource.camera);
-          },
-          child: const Text(
-            '카메라 연결',
-          ),
-        ),
-        TextButton(
-          onPressed: () async {
-            context.go("/test/myPage");
-          },
-          child: const Text(
-            '마이페이지 이동',
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomDialog(
-                    content: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                      child: Text(
-                        "캐시를 삭제하시겠습니까?",
-                        style:
-                            kBody16BoldStyle.copyWith(color: kTextTitleColor),
+            final pickedFile =
+                await picker.pickImage(source: ImageSource.camera);
+
+            if (pickedFile != null) {
+              await ImageGallerySaver.saveFile(pickedFile.path);
+
+              // ignore: use_build_context_synchronously
+              InstaAssetPicker.pickAssets(
+                context,
+                maxAssets: 12,
+                // ignore: use_build_context_synchronously
+                pickerTheme: themeData(context).copyWith(
+                  canvasColor: kNeutralColor100,
+                  colorScheme: theme.colorScheme.copyWith(
+                    background: kNeutralColor100,
+                  ),
+                  appBarTheme: theme.appBarTheme.copyWith(
+                    backgroundColor: kNeutralColor100,
+                  ),
+                ),
+                onCompleted: (cropStream) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => FeedWriteScreen(
+                        cropStream: cropStream,
                       ),
                     ),
-                    confirmTap: () {
-                      context.pop();
-                    },
-                    cancelTap: () {
-                      context.pop();
-                    },
-                    confirmWidget: Text(
-                      "삭제",
-                      style: kButton14MediumStyle.copyWith(color: kBadgeColor),
-                    ));
-              },
+                  );
+                },
+              );
+            }
+          },
+          child: Image.asset(
+            'assets/image/header/icon/large_size/icon_camera.png',
+            height: 26.h,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            feedWriteShowBottomSheet(
+              context: context,
             );
           },
-          child: Text('팝업 버튼'),
+          child: Image.asset(
+            'assets/image/header/icon/large_size/icon_feed.png',
+            height: 26.h,
+          ),
         ),
-        TextButton(
-          onPressed: () async {
-            context.go("/test/notification");
+        PopupMenuButton(
+          padding: EdgeInsets.zero,
+          icon: Image.asset(
+            'assets/image/header/icon/large_size/icon_more_h.png',
+            height: 26.h,
+          ),
+          onSelected: (id) {
+            if (id == 'notification') {
+              context.go("/home/notification");
+            }
+            if (id == 'search') {}
+            if (id == 'message') {}
+            if (id == 'setting') {
+              context.push("/home/myPage/setting");
+            }
           },
-          child: const Text(
-            '알림함 이동',
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(16.0),
+              bottomRight: Radius.circular(16.0),
+              topLeft: Radius.circular(16.0),
+              topRight: Radius.circular(16.0),
+            ),
+          ),
+          itemBuilder: (context) {
+            final list = <PopupMenuEntry>[];
+            list.add(
+              diaryPopUpMenuItem(
+                'notification',
+                '알림',
+                const Icon(Icons.notifications),
+                context,
+              ),
+            );
+            list.add(
+              const PopupMenuDivider(
+                height: 5,
+              ),
+            );
+            list.add(
+              diaryPopUpMenuItem(
+                'search',
+                '검색',
+                const Icon(Icons.search),
+                context,
+              ),
+            );
+            list.add(
+              const PopupMenuDivider(
+                height: 5,
+              ),
+            );
+            list.add(
+              diaryPopUpMenuItem(
+                'message',
+                '메세지',
+                const Icon(Icons.message),
+                context,
+              ),
+            );
+            list.add(
+              const PopupMenuDivider(
+                height: 5,
+              ),
+            );
+            list.add(
+              diaryPopUpMenuItem(
+                'setting',
+                '설정',
+                const Icon(Icons.settings),
+                context,
+              ),
+            );
+            return list;
+          },
+        ),
+        GestureDetector(
+          onTap: () {
+            context.go("/home/myPage");
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: _showIcon ? 36.0 : 0.0,
+            child: Opacity(
+              opacity: _showIcon ? 1.0 : 0.0,
+              child: WidgetMask(
+                blendMode: BlendMode.srcATop,
+                childSaveLayer: true,
+                mask: Center(
+                  child: Image.asset(
+                    'assets/image/feed/icon/large_size/icon_taguser.png',
+                    height: 22.h,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: SvgPicture.asset(
+                  'assets/image/feed/image/squircle.svg',
+                  height: 22.h,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _firstTab() {
+    return ListView(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top: 16.0.h),
+          child: const FeedMainWidget(),
+        ),
+        const FeedMainWidget(),
+        const FeedMainWidget(),
+        const FeedMainWidget(),
+        const FeedBestPostWidget(),
+        const FeedMainWidget(),
+        const FeedMainWidget(),
+        const FeedMainWidget(),
+        const FeedMainWidget(),
+      ],
+    );
+  }
+
+  Widget _secondTab() {
+    return ListView(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top: 16.0.h, left: 12.w, bottom: 14.h),
+          child: Text(
+            "인기있는 펫 집사들",
+            style: kTitle16ExtraBoldStyle.copyWith(color: kNeutralColor600),
+          ),
+        ),
+        const FeedFollowWidget(),
+        const FeedMainWidget(),
+        const FeedMainWidget(),
+        const FeedMainWidget(),
+        const FeedMainWidget(),
+        const FeedBestPostWidget(),
+        const FeedMainWidget(),
+      ],
+    );
+  }
+
+  Widget _fourthTab() {
+    return ListView(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 16.0.h),
+          child: const FeedMainWidget(),
+        ),
+        const FeedMainWidget(),
+        const FeedMainWidget(),
+        const FeedMainWidget(),
+        Padding(
+          padding: EdgeInsets.only(
+            left: 20.0.w,
+            right: 20.0.w,
+            bottom: 20.0.h,
+          ),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                disabledBackgroundColor: kNeutralColor400,
+                backgroundColor: kPrimaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              onPressed: () {
+                feedWriteShowBottomSheet(
+                  context: context,
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Text(
+                  '게시글 등록하기',
+                  style: kBody14BoldStyle.copyWith(
+                    color: kNeutralColor100,
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ],
@@ -506,40 +511,51 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
     return Padding(
       padding: EdgeInsets.only(
         top: isBigDevice ? 50 : 5,
-      ), // 50
+      ),
       child: ListView.builder(
         itemCount: stories.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                WidgetMask(
-                  blendMode: BlendMode.srcATop,
-                  childSaveLayer: true,
-                  mask: Center(
-                    child: Image.network(
-                      stories[index].imageUrl,
-                      height: 46.h,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                  child: SvgPicture.asset(
-                    'assets/image/feed/image/squircle.svg',
-                    height: 46.h,
-                    fit: BoxFit.fill,
-                  ),
-                ),
+                index == 0
+                    ? GestureDetector(
+                        onTap: () {
+                          context.go("/home/myPage");
+                        },
+                        child: buildWidgetMask(stories[index]),
+                      )
+                    : buildWidgetMask(stories[index]),
                 const SizedBox(height: 4.0),
                 Text(
-                  stories[index].name,
+                  index == 0 ? "my" : stories[index].name,
                   style: kBody12RegularStyle.copyWith(color: kTextTitleColor),
                 ),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget buildWidgetMask(Story story) {
+    return WidgetMask(
+      blendMode: BlendMode.srcATop,
+      childSaveLayer: true,
+      mask: Center(
+        child: Image.network(
+          story.imageUrl,
+          height: 46.h,
+          fit: BoxFit.fill,
+        ),
+      ),
+      child: SvgPicture.asset(
+        'assets/image/feed/image/squircle.svg',
+        height: 46.h,
+        fit: BoxFit.fill,
       ),
     );
   }
@@ -563,7 +579,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
                   color: Colors.grey.withOpacity(0.4),
                   spreadRadius: -5,
                   blurRadius: 7,
-                  offset: Offset(0, -6),
+                  offset: const Offset(0, -6),
                 ),
               ],
             ),
@@ -587,7 +603,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
                     style: kBody16MediumStyle,
                   ),
                   Text(
-                    "작성글",
+                    "팔로잉",
                     style: kBody16MediumStyle,
                   ),
                   Text(
@@ -600,7 +616,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
                   ),
                 ]),
           ),
-          Spacer(),
+          const Spacer(),
         ],
       ),
     );

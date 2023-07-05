@@ -11,6 +11,8 @@ import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provide
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_complete_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/main/comment/main_comment_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_screen.dart';
@@ -54,7 +56,7 @@ class AppRouter {
 
   late final GoRouter _goRouter = GoRouter(
     // refreshListenable: AppService(),//redirect 시 사용되는 리스너 이다.
-    initialLocation: '/home', //제일 처음 보여 줄 route
+    initialLocation: '/loginScreen', //제일 처음 보여 줄 route
     debugLogDiagnostics: true, //router 정보 콘솔에 출력
     // errorBuilder: (BuildContext context, GoRouterState state) =>
     // const ErrorPage(),
@@ -66,6 +68,23 @@ class AppRouter {
             return const PuppyCatMain();
           },
           routes: [
+            GoRoute(
+              path: 'report/:isComment',
+              name: 'report/:isComment',
+              builder: (BuildContext context, GoRouterState state) {
+                final isComment = state.pathParameters['isComment']!;
+                return ReportScreen(
+                  isComment: bool.parse(isComment),
+                );
+              },
+            ),
+            GoRoute(
+              path: 'commentDetail',
+              name: 'commentDetail',
+              builder: (BuildContext context, GoRouterState state) {
+                return const MainCommentDetailScreen();
+              },
+            ),
             GoRoute(
               path: 'myPage',
               name: 'myPage',

@@ -150,7 +150,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {
-                  context.go("/test/myPage/myPost/myPostDetail/일상글 게시물");
+                  context.go("/home/myPage/myPost/myPostDetail/일상글 게시물");
                 },
                 child: Stack(
                   children: [
@@ -590,7 +590,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {
-                  context.go("/test/myPage/myPost/myPostDetail/저장한 게시물");
+                  context.go("/home/myPage/myPost/myPostDetail/저장한 게시물");
                 },
                 child: Stack(
                   children: [
