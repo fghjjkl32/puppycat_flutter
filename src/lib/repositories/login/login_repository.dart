@@ -78,7 +78,7 @@ class LoginRepository {
         return null;
       }
 
-      if (!result!.result) {
+      if (!result!.result && loginStatus != LoginStatus.needSignUp) {
         loginStatus = parseResponse(result);
       }
 
@@ -89,7 +89,6 @@ class LoginRepository {
           loginStatus: loginStatus,
           idx: int.parse(_getMemberIdx(result) ?? '0'),
           appKey: appKey);
-      print('userModel $userModel');
 
       return userModel;
     } else {
@@ -131,7 +130,7 @@ class LoginRepository {
       return null;
     }
 
-    if (!result!.result) {
+    if (!result!.result && loginStatus != LoginStatus.needSignUp) {
       loginStatus = parseResponse(result);
     }
 

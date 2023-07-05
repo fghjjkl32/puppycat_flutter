@@ -56,7 +56,7 @@ class AppRouter {
 
   late final GoRouter _goRouter = GoRouter(
     // refreshListenable: AppService(),//redirect 시 사용되는 리스너 이다.
-    initialLocation: '/loginScreen', //제일 처음 보여 줄 route
+    initialLocation: '/splash', //제일 처음 보여 줄 route
     debugLogDiagnostics: true, //router 정보 콘솔에 출력
     // errorBuilder: (BuildContext context, GoRouterState state) =>
     // const ErrorPage(),

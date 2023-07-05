@@ -22,6 +22,7 @@ import 'package:pet_mobile_social_flutter/components/user_list/favorite_list_wid
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
+import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
@@ -112,6 +113,36 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
   late ScrollController _scrollController;
   bool _showIcon = false;
 
+  List<Widget> getTabs() {
+    final loginState = ref.watch(loginStateProvider);
+
+    List<Widget> tabs = [
+      Text(
+        "최신",
+        style: kBody16MediumStyle,
+      ),
+      Text(
+        "산책",
+        style: kBody16MediumStyle,
+      ),
+    ];
+
+    if (loginState == LoginStatus.success) {
+      tabs.addAll([
+        Text(
+          "팔로잉",
+          style: kBody16MediumStyle,
+        ),
+        Text(
+          "작성글",
+          style: kBody16MediumStyle,
+        ),
+      ]);
+    }
+
+    return tabs;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -132,6 +163,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
   @override
   Widget build(BuildContext context) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 320;
+    final loginState = ref.watch(loginStateProvider);
 
     return Scaffold(
       appBar: isBigDevice
@@ -156,7 +188,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
             ),
       body: SafeArea(
         child: DefaultTabController(
-          length: 4,
+          length: loginState == LoginStatus.success ? 4 : 2,
           child: NestedScrollView(
             controller: _scrollController,
             headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -238,11 +270,15 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
             body: TabBarView(
               children: [
                 _firstTab(),
-                _secondTab(),
+                if (loginState == LoginStatus.success) ...[
+                  _secondTab(),
+                ],
                 Container(
                   color: Colors.blue,
                 ),
-                _fourthTab(),
+                if (loginState == LoginStatus.success) ...[
+                  _fourthTab(),
+                ],
               ],
             ),
           ),
@@ -508,36 +544,66 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
   Widget _buildBackGround() {
     bool isBigDevice = MediaQuery.of(context).size.width >= 320;
 
+    final loginState = ref.watch(loginStateProvider);
+
     return Padding(
       padding: EdgeInsets.only(
         top: isBigDevice ? 50 : 5,
       ),
-      child: ListView.builder(
-        itemCount: stories.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                index == 0
-                    ? GestureDetector(
-                        onTap: () {
-                          context.go("/home/myPage");
-                        },
-                        child: buildWidgetMask(stories[index]),
-                      )
-                    : buildWidgetMask(stories[index]),
-                const SizedBox(height: 4.0),
-                Text(
-                  index == 0 ? "my" : stories[index].name,
-                  style: kBody12RegularStyle.copyWith(color: kTextTitleColor),
-                ),
-              ],
+      child: loginState == LoginStatus.success
+          ? ListView.builder(
+              itemCount: stories.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      index == 0
+                          ? GestureDetector(
+                              onTap: () {
+                                context.go("/home/myPage");
+                              },
+                              child: buildWidgetMask(stories[index]),
+                            )
+                          : buildWidgetMask(stories[index]),
+                      const SizedBox(height: 4.0),
+                      Text(
+                        index == 0 ? "my" : stories[index].name,
+                        style: kBody12RegularStyle.copyWith(
+                            color: kTextTitleColor),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            )
+          : GestureDetector(
+              onTap: () {
+                context.pushReplacement("/loginScreen");
+              },
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  Image.asset(
+                    'assets/image/feed_write/image/corgi-2 1.png',
+                    height: 36.h,
+                  ),
+                  SizedBox(
+                    height: 2.h,
+                  ),
+                  Center(
+                    child: Text(
+                      "로그인 하고 나랑 딱! 맞는 친구 보기",
+                      style:
+                          kBody13RegularStyle.copyWith(color: kTextBodyColor),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          );
-        },
-      ),
     );
   }
 
@@ -562,6 +628,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
 
   Widget _buildTabbar(bool innerBoxIsScrolled) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 320;
+    final loginState = ref.watch(loginStateProvider);
 
     return Container(
       decoration: innerBoxIsScrolled
@@ -588,33 +655,17 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
           Flexible(
             flex: isBigDevice ? 1 : 2,
             child: TabBar(
-                indicatorWeight: 3,
-                labelColor: kNeutralColor600,
-                indicatorColor: kNeutralColor600,
-                unselectedLabelColor: kNeutralColor500,
-                indicatorSize: TabBarIndicatorSize.tab,
-                labelPadding: EdgeInsets.only(
-                  top: 10.h,
-                  bottom: 10.h,
-                ),
-                tabs: [
-                  Text(
-                    "최신",
-                    style: kBody16MediumStyle,
-                  ),
-                  Text(
-                    "팔로잉",
-                    style: kBody16MediumStyle,
-                  ),
-                  Text(
-                    "산책",
-                    style: kBody16MediumStyle,
-                  ),
-                  Text(
-                    "작성글",
-                    style: kBody16MediumStyle,
-                  ),
-                ]),
+              indicatorWeight: 3,
+              labelColor: kNeutralColor600,
+              indicatorColor: kNeutralColor600,
+              unselectedLabelColor: kNeutralColor500,
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelPadding: EdgeInsets.only(
+                top: 10.h,
+                bottom: 10.h,
+              ),
+              tabs: getTabs(),
+            ),
           ),
           const Spacer(),
         ],

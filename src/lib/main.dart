@@ -79,17 +79,6 @@ class PuppycatApp extends ConsumerWidget {
           title: 'Flutter Demo',
           theme: themeData(context),
           debugShowCheckedModeBanner: false,
-          builder: (BuildContext context, Widget? child) {
-            //모든 위젯을 Overlay 위젯의 초기 엔트리로 설정가능.
-            //이렇게 하면 나중에 overlayKey를 통해 Overlay 위젯에 접근하고,
-            //새로운 OverlayEntry를 추가하거나 제거할 수 있습니다. 이를 통해 앱의 어느 위치에서든 새로운 위젯을 띄울 수 있습니다.
-            return Overlay(
-              key: overlayKey,
-              initialEntries: [
-                OverlayEntry(builder: (context) => child!),
-              ],
-            );
-          },
         );
       },
     );
