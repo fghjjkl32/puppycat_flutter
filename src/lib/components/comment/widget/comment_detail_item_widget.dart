@@ -1,14 +1,20 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:linkfy_text/linkfy_text.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class CommentDetailItemWidget extends StatelessWidget {
+class CommentDetailItemWidget extends ConsumerWidget {
   const CommentDetailItemWidget({
     required this.profileImage,
     required this.name,
@@ -29,7 +35,9 @@ class CommentDetailItemWidget extends StatelessWidget {
   final int likeCount;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    OverlayEntry? overlayEntry;
+
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 12.h),
       child: Row(
@@ -123,9 +131,49 @@ class CommentDetailItemWidget extends StatelessWidget {
                                 style: kBody11RegularStyle.copyWith(
                                     color: kTextBodyColor),
                               ),
-                              Image.asset(
-                                'assets/image/feed/icon/small_size/icon_more.png',
-                                height: 26.w,
+                              GestureDetector(
+                                onTap: () {
+                                  showCustomModalBottomSheet(
+                                    context: context,
+                                    widget: Column(
+                                      children: [
+                                        BottomSheetButtonItem(
+                                          iconImage:
+                                              'assets/image/feed/icon/small_size/icon_user_de.png',
+                                          title: '차단하기',
+                                          titleStyle:
+                                              kButton14BoldStyle.copyWith(
+                                                  color: kTextSubTitleColor),
+                                          onTap: () {},
+                                        ),
+                                        BottomSheetButtonItem(
+                                          iconImage:
+                                              'assets/image/feed/icon/small_size/icon_report.png',
+                                          title: '신고하기',
+                                          titleStyle:
+                                              kButton14BoldStyle.copyWith(
+                                                  color: kTextSubTitleColor),
+                                          onTap: () {
+                                            context.pop();
+                                            context.push("/home/report/true");
+                                          },
+                                        ),
+                                        BottomSheetButtonItem(
+                                          iconImage:
+                                              'assets/image/feed/icon/small_size/icon_report.png',
+                                          title: '삭제하기',
+                                          titleStyle: kButton14BoldStyle
+                                              .copyWith(color: kBadgeColor),
+                                          onTap: () {},
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: Image.asset(
+                                  'assets/image/feed/icon/small_size/icon_more.png',
+                                  height: 26.w,
+                                ),
                               ),
                             ],
                           ),
@@ -164,21 +212,29 @@ class CommentDetailItemWidget extends StatelessWidget {
                       style:
                           kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                     ),
-                    Padding(
-                      padding:
-                          EdgeInsets.only(left: 12.0.w, top: 2.h, right: 2.w),
-                      child: InkWell(
-                        onTap: () {},
-                        child: Image.asset(
-                          'assets/image/feed/icon/small_size/icon_comment_comment.png',
-                          height: 24.w,
-                        ),
+                    GestureDetector(
+                      onTap: () {
+                        ref
+                            .watch(commentHeaderProvider.notifier)
+                            .addCommentHeader(name);
+                      },
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: 12.0.w, top: 2.h, right: 2.w),
+                            child: Image.asset(
+                              'assets/image/feed/icon/small_size/icon_comment_comment.png',
+                              height: 24.w,
+                            ),
+                          ),
+                          Text(
+                            '답글쓰기',
+                            style: kBody11SemiBoldStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                        ],
                       ),
-                    ),
-                    Text(
-                      '답글쓰기',
-                      style:
-                          kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                     ),
                   ],
                 ),

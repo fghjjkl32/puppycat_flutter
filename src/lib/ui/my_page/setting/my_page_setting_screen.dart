@@ -54,7 +54,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 icon: const Icon(Icons.notifications),
                 title: '알림',
                 onPressed: () {
-                  context.go("/test/myPage/setting/settingAlarm");
+                  context.go("/home/myPage/setting/settingAlarm");
                 },
               ),
               Padding(
@@ -65,7 +65,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 icon: const Icon(Icons.block),
                 title: '차단 친구 관리',
                 onPressed: () {
-                  context.go("/test/myPage/setting/settingBlockedUser");
+                  context.go("/home/myPage/setting/settingBlockedUser");
                 },
               ),
               Padding(
@@ -99,7 +99,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          context.go("/test/myPage/setting/TermsOfService");
+                          context.go("/home/myPage/setting/TermsOfService");
                         },
                         child: Container(
                           decoration: const BoxDecoration(
@@ -125,7 +125,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          context.go("/test/myPage/setting/PrivacyPolicy");
+                          context.go("/home/myPage/setting/PrivacyPolicy");
                         },
                         child: Container(
                           decoration: const BoxDecoration(
@@ -152,7 +152,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       GestureDetector(
                         onTap: () {
                           context
-                              .go("/test/myPage/setting/PrivacyPolicyAccepted");
+                              .go("/home/myPage/setting/PrivacyPolicyAccepted");
                         },
                         child: Container(
                           decoration: const BoxDecoration(
@@ -485,7 +485,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            context.go("/test/myPage/setting/FAQ");
+                            context.go("/home/myPage/setting/FAQ");
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -524,7 +524,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            context.go("/test/myPage/setting/notice");
+                            context.go("/home/myPage/setting/notice");
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,

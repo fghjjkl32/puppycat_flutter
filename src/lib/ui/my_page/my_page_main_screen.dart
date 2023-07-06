@@ -90,13 +90,13 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                         icon: const Icon(Icons.more_horiz),
                         onSelected: (id) {
                           if (id == 'myActivity') {
-                            context.go("/test/myPage/myActivity");
+                            context.go("/home/myPage/myActivity");
                           }
                           if (id == 'postsManagement') {
-                            context.go("/test/myPage/myPost");
+                            context.go("/home/myPage/myPost");
                           }
                           if (id == 'setting') {
-                            context.go("/test/myPage/setting");
+                            context.go("/home/myPage/setting");
                           }
                         },
                         shape: const RoundedRectangleBorder(
@@ -175,7 +175,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
           margin: const EdgeInsets.all(10.0),
           child: GestureDetector(
             onTap: () {
-              context.go("/test/myPage/detail/왕티즈왕왕/게시물");
+              context.go("/home/myPage/detail/왕티즈왕왕/게시물");
             },
             child: Center(
               child: Stack(
@@ -335,7 +335,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                       isReply: true,
                                       likeCount: 32,
                                     ),
-                                    const CommentCustomTextField(),
+                                    // const CommentCustomTextField(),
                                   ],
                                 ),
                               );
@@ -391,7 +391,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
           margin: const EdgeInsets.all(10.0),
           child: GestureDetector(
             onTap: () {
-              context.go("/test/myPage/detail/왕티즈왕왕/태그됨");
+              context.go("/home/myPage/detail/왕티즈왕왕/태그됨");
             },
             child: Center(
               child: Stack(
@@ -475,7 +475,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                     ),
                     GestureDetector(
                       onTap: () {
-                        context.go("/test/myPage/profileEdit");
+                        context.go("/home/myPage/profileEdit");
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(5.0),
@@ -497,7 +497,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 ),
                 GestureDetector(
                   onTap: () {
-                    context.go("/test/myPage/followList");
+                    context.go("/home/myPage/followList");
                   },
                   child: Padding(
                     padding: EdgeInsets.only(top: 8.0.h),
@@ -630,84 +630,5 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
     return false;
-  }
-}
-
-class CommentCustomTextField extends StatefulWidget {
-  const CommentCustomTextField({super.key});
-
-  @override
-  CommentCustomTextFieldState createState() => CommentCustomTextFieldState();
-}
-
-class CommentCustomTextFieldState extends State<CommentCustomTextField> {
-  final TextEditingController _controller = TextEditingController();
-  int lineCount = 0;
-  bool hasInput = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() {
-      setState(() {
-        lineCount = _controller.value.text.split('\n').length;
-        hasInput = _controller.text.isNotEmpty;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      data: ThemeData(
-        inputDecorationTheme: const InputDecorationTheme(
-          border: InputBorder.none,
-        ),
-      ),
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: kNeutralColor400, width: 1),
-                borderRadius: BorderRadius.all(lineCount <= 2
-                    ? const Radius.circular(50)
-                    : const Radius.circular(10)),
-              ),
-              child: FormBuilderTextField(
-                controller: _controller,
-                scrollPhysics: const ClampingScrollPhysics(),
-                maxLength: 200,
-                maxLines: null,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  border: InputBorder.none,
-                  counterText: "",
-                  hintText: '댓글을 입력해주세요.',
-                  hintStyle:
-                      kBody12RegularStyle.copyWith(color: kNeutralColor500),
-                  contentPadding: const EdgeInsets.all(16),
-                  suffixIcon: hasInput
-                      ? const Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                        )
-                      : const Icon(
-                          Icons.check_circle,
-                          color: Colors.grey,
-                        ),
-                ),
-                name: 'comment',
-                style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-                keyboardType: TextInputType.multiline,
-                textAlignVertical: TextAlignVertical.center,
-              ),
-            ),
-          );
-        },
-      ),
-    );
   }
 }

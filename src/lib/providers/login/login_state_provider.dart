@@ -8,7 +8,6 @@ import 'package:pet_mobile_social_flutter/repositories/login/login_repository.da
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 part 'login_state_provider.g.dart';
 
 final userModelProvider = StateProvider<UserModel?>((ref) => null);
@@ -17,8 +16,6 @@ final userModelProvider = StateProvider<UserModel?>((ref) => null);
 // final accountRestoreProvider = StateProvider.family<Future<bool>, (String, String)>((ref, restoreInfo) {
 //   return ref.read(accountRepositoryProvider).restoreAccount(restoreInfo.$1, restoreInfo.$2);
 // });
-
-
 
 @Riverpod(keepAlive: true)
 class LoginState extends _$LoginState {
@@ -34,7 +31,6 @@ class LoginState extends _$LoginState {
     // final loginRepository = ref.watch(loginRepositoryProvider(provider));
     var loginResult = await loginRepository.login();
     _procLogin(loginResult);
-
   }
 
   ///NOTE
@@ -44,14 +40,14 @@ class LoginState extends _$LoginState {
   }) async {
     final loginRepository = LoginRepository(provider: userModel.simpleType);
     // final loginRepository = ref.watch(loginRepositoryProvider(userModel.simpleType));
-    var loginResult = await loginRepository.loginByUserModel(userModel: userModel);
+    var loginResult =
+        await loginRepository.loginByUserModel(userModel: userModel);
 
     _procLogin(loginResult);
-
   }
 
   void _procLogin(UserModel? userModel) {
-    if(userModel == null) {
+    if (userModel == null) {
       state = LoginStatus.failure;
       return;
     }
@@ -62,18 +58,24 @@ class LoginState extends _$LoginState {
     ref.read(userModelProvider.notifier).state = userModel;
 
     ///Login Route State 관련
-    switch(userModel.loginStatus) {
+    switch (userModel.loginStatus) {
       case LoginStatus.success:
         _saveUserModel(userModel);
-        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
+        ref
+            .read(loginRouteStateProvider.notifier)
+            .changeLoginRoute(LoginRoute.success);
       case LoginStatus.needSignUp:
-        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.signUpScreen);
-    // case LoginStatus.withdrawalPending:
-    // case LoginStatus.failure:
-    // case LoginStatus.restriction:
+        ref
+            .read(loginRouteStateProvider.notifier)
+            .changeLoginRoute(LoginRoute.signUpScreen);
+      // case LoginStatus.withdrawalPending:
+      // case LoginStatus.failure:
+      // case LoginStatus.restriction:
       case LoginStatus.none:
       default:
-        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.none);
+        ref
+            .read(loginRouteStateProvider.notifier)
+            .changeLoginRoute(LoginRoute.none);
     }
   }
 
@@ -82,7 +84,7 @@ class LoginState extends _$LoginState {
     // final loginRepository = ref.watch(loginRepositoryProvider(provider));
 
     var result = await loginRepository.logout(appKey);
-    if(result) {
+    if (result) {
       ref.read(userModelProvider.notifier).state = null;
       _saveUserModel(null);
       state = LoginStatus.none;
@@ -93,7 +95,7 @@ class LoginState extends _$LoginState {
     final prefs = await SharedPreferences.getInstance();
     String userModelKey = 'userModel';
 
-    if(userModel == null) {
+    if (userModel == null) {
       await prefs.remove(userModelKey);
       return;
     }
@@ -116,7 +118,7 @@ class LoginState extends _$LoginState {
 
   Future autoLogin() async {
     UserModel? userModel = await _getUserModel();
-    if(userModel == null) {
+    if (userModel == null) {
       print('aa');
       state = LoginStatus.failure;
       return;

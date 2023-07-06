@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
@@ -55,22 +56,27 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(loginStateProvider, (previous, next) {
       if (next == LoginStatus.withdrawalPending) {
-        showCustomModalBottomSheet(context: context, widget: const WithDrawalPendingSheetItem());
-      } else if(next == LoginStatus.restriction) {
+        showCustomModalBottomSheet(
+            context: context, widget: const WithDrawalPendingSheetItem());
+      } else if (next == LoginStatus.restriction) {
         ///TODO
         ///API 호출
         showDialog(
           barrierDismissible: false,
           context: context,
-          builder: (context) => const RestrictionDialog( isForever: false,),
+          builder: (context) => const RestrictionDialog(
+            isForever: false,
+          ),
         );
       }
     });
 
     ref.listen(accountRestoreStateProvider, (previous, next) {
-      if(next) {
+      if (next) {
         var userModel = ref.read(userModelProvider);
-        ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel!);
+        ref
+            .read(loginStateProvider.notifier)
+            .loginByUserModel(userModel: userModel!);
       }
     });
 
@@ -82,7 +88,9 @@ class LoginScreen extends ConsumerWidget {
             child: IconButton(
               icon: Image.asset('assets/image/common/close.png'),
               splashRadius: 20,
-              onPressed: () {},
+              onPressed: () {
+                context.pushReplacement("/home");
+              },
             )),
         backgroundColor: Colors.transparent,
       ),
@@ -99,7 +107,8 @@ class LoginScreen extends ConsumerWidget {
               padding: const EdgeInsets.only(top: 12.0, bottom: 94),
               child: Text(
                 '소중한 내 아이의 추억을\n기록하고 공유해보세요!',
-                style: kTitle18BoldStyle.copyWith(color: kTextTitleColor, height: 1.4),
+                style: kTitle18BoldStyle.copyWith(
+                    color: kTextTitleColor, height: 1.4),
               ),
             ),
             Wrap(
@@ -113,18 +122,24 @@ class LoginScreen extends ConsumerWidget {
                   child: ElevatedButton.icon(
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
                       ),
-                      backgroundColor: MaterialStateProperty.all<Color>(kKakaoLoginColor),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(kKakaoLoginColor),
                     ),
                     onPressed: () {
-                      ref.read(loginStateProvider.notifier).login(provider: 'kakao');
+                      ref
+                          .read(loginStateProvider.notifier)
+                          .login(provider: 'kakao');
                     },
                     label: Text(
                       "카카오로 시작하기",
-                      style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                      style: kButton14MediumStyle.copyWith(
+                          color: kTextSubTitleColor),
                     ),
-                    icon: Image.asset('assets/image/loginScreen/kakao_icon.png'),
+                    icon:
+                        Image.asset('assets/image/loginScreen/kakao_icon.png'),
                   ),
                 ),
                 SizedBox(
@@ -133,18 +148,24 @@ class LoginScreen extends ConsumerWidget {
                   child: ElevatedButton.icon(
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
                       ),
-                      backgroundColor: MaterialStateProperty.all<Color>(kNaverLoginColor),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(kNaverLoginColor),
                     ),
                     onPressed: () {
-                      ref.read(loginStateProvider.notifier).login(provider: 'naver');
+                      ref
+                          .read(loginStateProvider.notifier)
+                          .login(provider: 'naver');
                     },
                     label: Text(
                       "네이버로 시작하기",
-                      style: kButton14MediumStyle.copyWith(color: kNeutralColor100),
+                      style: kButton14MediumStyle.copyWith(
+                          color: kNeutralColor100),
                     ),
-                    icon: Image.asset('assets/image/loginScreen/naver_icon.png'),
+                    icon:
+                        Image.asset('assets/image/loginScreen/naver_icon.png'),
                   ),
                 ),
                 SizedBox(
@@ -153,9 +174,11 @@ class LoginScreen extends ConsumerWidget {
                   child: ElevatedButton.icon(
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
                       ),
-                      backgroundColor: MaterialStateProperty.all<Color>(kGoogleLoginColor),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(kGoogleLoginColor),
                       side: MaterialStateProperty.all<BorderSide>(
                         const BorderSide(
                           width: 1,
@@ -164,13 +187,17 @@ class LoginScreen extends ConsumerWidget {
                       ),
                     ),
                     onPressed: () {
-                      ref.read(loginStateProvider.notifier).login(provider: 'google');
+                      ref
+                          .read(loginStateProvider.notifier)
+                          .login(provider: 'google');
                     },
                     label: Text(
                       "구글로 시작하기",
-                      style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                      style: kButton14MediumStyle.copyWith(
+                          color: kTextSubTitleColor),
                     ),
-                    icon: Image.asset('assets/image/loginScreen/google_icon.png'),
+                    icon:
+                        Image.asset('assets/image/loginScreen/google_icon.png'),
                   ),
                 ),
                 SizedBox(
@@ -179,18 +206,22 @@ class LoginScreen extends ConsumerWidget {
                   child: ElevatedButton.icon(
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
                       ),
-                      backgroundColor: MaterialStateProperty.all<Color>(kAppleLoginColor),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(kAppleLoginColor),
                     ),
                     onPressed: () {
                       // ref.read(loginStateProvider.notifier).login(provider: 'apple');
                     },
                     label: Text(
                       "애플로 시작하기",
-                      style: kButton14MediumStyle.copyWith(color: kNeutralColor100),
+                      style: kButton14MediumStyle.copyWith(
+                          color: kNeutralColor100),
                     ),
-                    icon: Image.asset('assets/image/loginScreen/apple_icon.png'),
+                    icon:
+                        Image.asset('assets/image/loginScreen/apple_icon.png'),
                   ),
                 ),
               ],
