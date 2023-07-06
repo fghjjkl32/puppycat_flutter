@@ -357,7 +357,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
             if (id == 'notification') {
               context.go("/home/notification");
             }
-            if (id == 'search') {}
+            if (id == 'search') {
+              context.go("/home/search");
+            }
             if (id == 'message') {}
             if (id == 'setting') {
               context.push("/home/myPage/setting");

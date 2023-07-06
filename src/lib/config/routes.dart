@@ -33,6 +33,7 @@ import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdraw
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/notification/notification_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/web_view/webview_widget.dart';
 
@@ -83,6 +84,13 @@ class AppRouter {
               name: 'commentDetail',
               builder: (BuildContext context, GoRouterState state) {
                 return const MainCommentDetailScreen();
+              },
+            ),
+            GoRoute(
+              path: 'search',
+              name: 'search',
+              builder: (BuildContext context, GoRouterState state) {
+                return SearchScreen();
               },
             ),
             GoRoute(
