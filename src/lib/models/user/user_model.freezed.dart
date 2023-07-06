@@ -26,11 +26,6 @@ mixin _$UserModel {
   String get nick => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError; //email
   String get simpleId => throw _privateConstructorUsedError;
-  String? get credentialToken =>
-      throw _privateConstructorUsedError; // String? name,
-// String? gender,
-// String? birth,
-// String? phone,
   String get refreshToken => throw _privateConstructorUsedError;
   int get isSimple => throw _privateConstructorUsedError;
   String get simpleType => throw _privateConstructorUsedError;
@@ -38,6 +33,13 @@ mixin _$UserModel {
   String get password => throw _privateConstructorUsedError;
   String get passwordConfirm => throw _privateConstructorUsedError;
   String? get partner => throw _privateConstructorUsedError;
+  ChatUserRegisterModel? get chatInfo => throw _privateConstructorUsedError;
+  String? get ci => throw _privateConstructorUsedError;
+  String? get di => throw _privateConstructorUsedError;
+  String? get name => throw _privateConstructorUsedError;
+  String? get phone => throw _privateConstructorUsedError;
+  String? get birth => throw _privateConstructorUsedError;
+  String? get gender => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -57,14 +59,22 @@ abstract class $UserModelCopyWith<$Res> {
       String nick,
       String id,
       String simpleId,
-      String? credentialToken,
       String refreshToken,
       int isSimple,
       String simpleType,
       String accessToken,
       String password,
       String passwordConfirm,
-      String? partner});
+      String? partner,
+      ChatUserRegisterModel? chatInfo,
+      String? ci,
+      String? di,
+      String? name,
+      String? phone,
+      String? birth,
+      String? gender});
+
+  $ChatUserRegisterModelCopyWith<$Res>? get chatInfo;
 }
 
 /// @nodoc
@@ -86,7 +96,6 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? nick = null,
     Object? id = null,
     Object? simpleId = null,
-    Object? credentialToken = freezed,
     Object? refreshToken = null,
     Object? isSimple = null,
     Object? simpleType = null,
@@ -94,6 +103,13 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? password = null,
     Object? passwordConfirm = null,
     Object? partner = freezed,
+    Object? chatInfo = freezed,
+    Object? ci = freezed,
+    Object? di = freezed,
+    Object? name = freezed,
+    Object? phone = freezed,
+    Object? birth = freezed,
+    Object? gender = freezed,
   }) {
     return _then(_value.copyWith(
       loginStatus: null == loginStatus
@@ -120,10 +136,6 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.simpleId
           : simpleId // ignore: cast_nullable_to_non_nullable
               as String,
-      credentialToken: freezed == credentialToken
-          ? _value.credentialToken
-          : credentialToken // ignore: cast_nullable_to_non_nullable
-              as String?,
       refreshToken: null == refreshToken
           ? _value.refreshToken
           : refreshToken // ignore: cast_nullable_to_non_nullable
@@ -152,7 +164,47 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.partner
           : partner // ignore: cast_nullable_to_non_nullable
               as String?,
+      chatInfo: freezed == chatInfo
+          ? _value.chatInfo
+          : chatInfo // ignore: cast_nullable_to_non_nullable
+              as ChatUserRegisterModel?,
+      ci: freezed == ci
+          ? _value.ci
+          : ci // ignore: cast_nullable_to_non_nullable
+              as String?,
+      di: freezed == di
+          ? _value.di
+          : di // ignore: cast_nullable_to_non_nullable
+              as String?,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      birth: freezed == birth
+          ? _value.birth
+          : birth // ignore: cast_nullable_to_non_nullable
+              as String?,
+      gender: freezed == gender
+          ? _value.gender
+          : gender // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ChatUserRegisterModelCopyWith<$Res>? get chatInfo {
+    if (_value.chatInfo == null) {
+      return null;
+    }
+
+    return $ChatUserRegisterModelCopyWith<$Res>(_value.chatInfo!, (value) {
+      return _then(_value.copyWith(chatInfo: value) as $Val);
+    });
   }
 }
 
@@ -170,14 +222,23 @@ abstract class _$$_UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
       String nick,
       String id,
       String simpleId,
-      String? credentialToken,
       String refreshToken,
       int isSimple,
       String simpleType,
       String accessToken,
       String password,
       String passwordConfirm,
-      String? partner});
+      String? partner,
+      ChatUserRegisterModel? chatInfo,
+      String? ci,
+      String? di,
+      String? name,
+      String? phone,
+      String? birth,
+      String? gender});
+
+  @override
+  $ChatUserRegisterModelCopyWith<$Res>? get chatInfo;
 }
 
 /// @nodoc
@@ -197,7 +258,6 @@ class __$$_UserModelCopyWithImpl<$Res>
     Object? nick = null,
     Object? id = null,
     Object? simpleId = null,
-    Object? credentialToken = freezed,
     Object? refreshToken = null,
     Object? isSimple = null,
     Object? simpleType = null,
@@ -205,6 +265,13 @@ class __$$_UserModelCopyWithImpl<$Res>
     Object? password = null,
     Object? passwordConfirm = null,
     Object? partner = freezed,
+    Object? chatInfo = freezed,
+    Object? ci = freezed,
+    Object? di = freezed,
+    Object? name = freezed,
+    Object? phone = freezed,
+    Object? birth = freezed,
+    Object? gender = freezed,
   }) {
     return _then(_$_UserModel(
       loginStatus: null == loginStatus
@@ -231,10 +298,6 @@ class __$$_UserModelCopyWithImpl<$Res>
           ? _value.simpleId
           : simpleId // ignore: cast_nullable_to_non_nullable
               as String,
-      credentialToken: freezed == credentialToken
-          ? _value.credentialToken
-          : credentialToken // ignore: cast_nullable_to_non_nullable
-              as String?,
       refreshToken: null == refreshToken
           ? _value.refreshToken
           : refreshToken // ignore: cast_nullable_to_non_nullable
@@ -263,6 +326,34 @@ class __$$_UserModelCopyWithImpl<$Res>
           ? _value.partner
           : partner // ignore: cast_nullable_to_non_nullable
               as String?,
+      chatInfo: freezed == chatInfo
+          ? _value.chatInfo
+          : chatInfo // ignore: cast_nullable_to_non_nullable
+              as ChatUserRegisterModel?,
+      ci: freezed == ci
+          ? _value.ci
+          : ci // ignore: cast_nullable_to_non_nullable
+              as String?,
+      di: freezed == di
+          ? _value.di
+          : di // ignore: cast_nullable_to_non_nullable
+              as String?,
+      name: freezed == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      phone: freezed == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String?,
+      birth: freezed == birth
+          ? _value.birth
+          : birth // ignore: cast_nullable_to_non_nullable
+              as String?,
+      gender: freezed == gender
+          ? _value.gender
+          : gender // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -277,14 +368,20 @@ class _$_UserModel implements _UserModel {
       required this.nick,
       required this.id,
       required this.simpleId,
-      this.credentialToken,
       required this.refreshToken,
       required this.isSimple,
       required this.simpleType,
       required this.accessToken,
       required this.password,
       required this.passwordConfirm,
-      this.partner = ''});
+      this.partner = '',
+      this.chatInfo,
+      this.ci,
+      this.di,
+      this.name,
+      this.phone,
+      this.birth,
+      this.gender});
 
   factory _$_UserModel.fromJson(Map<String, dynamic> json) =>
       _$$_UserModelFromJson(json);
@@ -304,12 +401,6 @@ class _$_UserModel implements _UserModel {
   @override
   final String simpleId;
   @override
-  final String? credentialToken;
-// String? name,
-// String? gender,
-// String? birth,
-// String? phone,
-  @override
   final String refreshToken;
   @override
   final int isSimple;
@@ -324,10 +415,24 @@ class _$_UserModel implements _UserModel {
   @override
   @JsonKey()
   final String? partner;
+  @override
+  final ChatUserRegisterModel? chatInfo;
+  @override
+  final String? ci;
+  @override
+  final String? di;
+  @override
+  final String? name;
+  @override
+  final String? phone;
+  @override
+  final String? birth;
+  @override
+  final String? gender;
 
   @override
   String toString() {
-    return 'UserModel(loginStatus: $loginStatus, idx: $idx, appKey: $appKey, nick: $nick, id: $id, simpleId: $simpleId, credentialToken: $credentialToken, refreshToken: $refreshToken, isSimple: $isSimple, simpleType: $simpleType, accessToken: $accessToken, password: $password, passwordConfirm: $passwordConfirm, partner: $partner)';
+    return 'UserModel(loginStatus: $loginStatus, idx: $idx, appKey: $appKey, nick: $nick, id: $id, simpleId: $simpleId, refreshToken: $refreshToken, isSimple: $isSimple, simpleType: $simpleType, accessToken: $accessToken, password: $password, passwordConfirm: $passwordConfirm, partner: $partner, chatInfo: $chatInfo, ci: $ci, di: $di, name: $name, phone: $phone, birth: $birth, gender: $gender)';
   }
 
   @override
@@ -343,8 +448,6 @@ class _$_UserModel implements _UserModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.simpleId, simpleId) ||
                 other.simpleId == simpleId) &&
-            (identical(other.credentialToken, credentialToken) ||
-                other.credentialToken == credentialToken) &&
             (identical(other.refreshToken, refreshToken) ||
                 other.refreshToken == refreshToken) &&
             (identical(other.isSimple, isSimple) ||
@@ -357,27 +460,42 @@ class _$_UserModel implements _UserModel {
                 other.password == password) &&
             (identical(other.passwordConfirm, passwordConfirm) ||
                 other.passwordConfirm == passwordConfirm) &&
-            (identical(other.partner, partner) || other.partner == partner));
+            (identical(other.partner, partner) || other.partner == partner) &&
+            (identical(other.chatInfo, chatInfo) ||
+                other.chatInfo == chatInfo) &&
+            (identical(other.ci, ci) || other.ci == ci) &&
+            (identical(other.di, di) || other.di == di) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.birth, birth) || other.birth == birth) &&
+            (identical(other.gender, gender) || other.gender == gender));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      loginStatus,
-      idx,
-      appKey,
-      nick,
-      id,
-      simpleId,
-      credentialToken,
-      refreshToken,
-      isSimple,
-      simpleType,
-      accessToken,
-      password,
-      passwordConfirm,
-      partner);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        loginStatus,
+        idx,
+        appKey,
+        nick,
+        id,
+        simpleId,
+        refreshToken,
+        isSimple,
+        simpleType,
+        accessToken,
+        password,
+        passwordConfirm,
+        partner,
+        chatInfo,
+        ci,
+        di,
+        name,
+        phone,
+        birth,
+        gender
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -401,14 +519,20 @@ abstract class _UserModel implements UserModel {
       required final String nick,
       required final String id,
       required final String simpleId,
-      final String? credentialToken,
       required final String refreshToken,
       required final int isSimple,
       required final String simpleType,
       required final String accessToken,
       required final String password,
       required final String passwordConfirm,
-      final String? partner}) = _$_UserModel;
+      final String? partner,
+      final ChatUserRegisterModel? chatInfo,
+      final String? ci,
+      final String? di,
+      final String? name,
+      final String? phone,
+      final String? birth,
+      final String? gender}) = _$_UserModel;
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
       _$_UserModel.fromJson;
@@ -426,11 +550,6 @@ abstract class _UserModel implements UserModel {
   @override //email
   String get simpleId;
   @override
-  String? get credentialToken;
-  @override // String? name,
-// String? gender,
-// String? birth,
-// String? phone,
   String get refreshToken;
   @override
   int get isSimple;
@@ -444,6 +563,20 @@ abstract class _UserModel implements UserModel {
   String get passwordConfirm;
   @override
   String? get partner;
+  @override
+  ChatUserRegisterModel? get chatInfo;
+  @override
+  String? get ci;
+  @override
+  String? get di;
+  @override
+  String? get name;
+  @override
+  String? get phone;
+  @override
+  String? get birth;
+  @override
+  String? get gender;
   @override
   @JsonKey(ignore: true)
   _$$_UserModelCopyWith<_$_UserModel> get copyWith =>

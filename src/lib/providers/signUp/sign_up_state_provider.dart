@@ -1,6 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
+import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
+import 'package:pet_mobile_social_flutter/models/user/chat_user_register_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/signUp/sign_up_repository.dart';
 import 'package:pet_mobile_social_flutter/services/signUp/sign_up_service.dart';
 import 'package:riverpod/riverpod.dart';
@@ -24,6 +29,8 @@ enum SignUpStatus {
   none,
   success,
   failure,
+  failedAuth,
+  duplication,
 }
 
 final nickNameProvider = StateProvider<NickNameStatus>((ref) => NickNameStatus.none);
@@ -40,12 +47,14 @@ class SignUpState extends _$SignUpState {
 
   void socialSignUp(UserModel userModel) async {
     var idxList = ref.read(policyStateProvider.notifier).getSelectPolicy();
-    bool result = await _signUpRepository.socialSignUp(userModel, idxList);
-    if(result) {
-      state = SignUpStatus.success;
-    } else {
-      state = SignUpStatus.failure;
+    var result = await _signUpRepository.socialSignUp(userModel, idxList);
+
+    if(result == SignUpStatus.success) {
+      ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.success;
+      ref.read(chatRegisterStateProvider.notifier).register(userModel.id, userModel.password, userModel.nick);
     }
+    state = result;
+    // state = SignUpStatus.failedAuth;
   }
 
   ///230621 smkang

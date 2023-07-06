@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
+import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.dart';
 
@@ -43,6 +44,8 @@ void main() async {
   await GetIt.I<PackageInformationUtil>().init();
 
   GetIt.I.registerSingleton<CookieJar>(CookieJar());
+
+  // GetIt.I.registerSingleton<ChatClientController>(ChatClientController());
 
   runAppSpector();
   runApp(

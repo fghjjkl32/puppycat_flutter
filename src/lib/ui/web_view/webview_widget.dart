@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -53,11 +55,10 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
     controller.addJavaScriptHandler(
         handlerName: 'setPassAuthToken',
         callback: (args) {
-           print('run???????????');
           String? data = args.first;
 
           if (data != null) {
-            ref.read(authTokenProvider.notifier).state = data;
+            ref.read(authStateProvider.notifier).setPassAuthData(data);
             context.pop();
           } else {
             return false;
