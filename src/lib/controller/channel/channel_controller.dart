@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 
 class ChannelController {
-  static const platform = MethodChannel('ggultoon-ch');
+  static const platform = MethodChannel('puppycat-ch');
 
   static Future<String> getAppUrl(String url) async {
     if (Platform.isAndroid) {

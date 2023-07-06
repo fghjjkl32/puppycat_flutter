@@ -5,7 +5,9 @@ import 'package:pet_mobile_social_flutter/main.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/chat/chat_main_screen.dart';
 
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
@@ -41,7 +43,7 @@ final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref: ref).router);
 class AppRouter {
   GoRouter get router => _goRouter;
   var _loginRouteState = LoginRoute.none;
-  var _signUpState = SignUpStatus.none;
+  var _signUpState = SignUpRoute.none;
   bool _splashState = false;
 
   final Ref ref;
@@ -50,7 +52,7 @@ class AppRouter {
     required this.ref,
   }) {
     _loginRouteState = ref.watch(loginRouteStateProvider);
-    _signUpState = ref.watch(signUpStateProvider);
+    _signUpState = ref.watch(signUpRouteStateProvider);
     _splashState = ref.watch(splashStateProvider);
   }
 
@@ -121,16 +123,14 @@ class AppRouter {
                             GoRoute(
                                 path: 'withdrawalDetail',
                                 name: 'withdrawalDetail',
-                                builder: (BuildContext context,
-                                    GoRouterState state) {
+                                builder: (BuildContext context, GoRouterState state) {
                                   return const MyPageWithdrawalDetailScreen();
                                 },
                                 routes: [
                                   GoRoute(
                                     path: 'withdrawalSuccess',
                                     name: 'withdrawalSuccess',
-                                    builder: (BuildContext context,
-                                        GoRouterState state) {
+                                    builder: (BuildContext context, GoRouterState state) {
                                       return const MyPageWithdrawalSuccessScreen();
                                     },
                                   ),
@@ -314,6 +314,18 @@ class AppRouter {
       //   ],
       // ),
     ],
+    //   routes: [
+    //     /// sub Page를 설정할수 있다.
+    //     GoRoute(
+    //       path: 'chatRoom',
+    //       name: 'chatRoom',
+    //       builder: (BuildContext context, GoRouterState state) {
+    //         return const ReviewPage();
+    //       },
+    //     ),
+    //   ],
+    // ),
+    // ],
     //redirect: 에서 앱 init되었는지, 로그인 여부, 세팅 등을 체크후 route한다.
     redirect: (BuildContext context, GoRouterState state) {
       const homeLocation = '/home';
@@ -321,22 +333,20 @@ class AppRouter {
       const splashLocation = '/splash';
       const signUpLocation = '$loginLocation/signupScreen';
       const signUpCompleteLocation = '$signUpLocation/signupCompleteScreen';
+      const chatMainLocation = '/chatMain';
+
+      ///NOTE 테스트용 임시
 
       InitializationApp.initialize(ref);
 
-      print('run?');
       bool isSplashPage = state.matchedLocation == splashLocation;
       if (isSplashPage) {
-        print('run?2');
         if (_splashState) {
-          print('run?3');
           if (_loginRouteState == LoginRoute.success) {
             return homeLocation;
           }
-          print('aaaa');
           return loginLocation;
         } else {
-          print('run?4');
           return null;
         }
       }
@@ -348,14 +358,13 @@ class AppRouter {
         } else if (_loginRouteState == LoginRoute.signUpScreen) {
           return signUpLocation;
         } else {
-          print('run????');
           return null;
         }
       }
 
       bool isSignUpPage = state.matchedLocation == signUpLocation;
       if (isSignUpPage) {
-        if (_signUpState == SignUpStatus.success) {
+        if (_signUpState == SignUpRoute.success) {
           return signUpCompleteLocation;
         } else {
           return null;

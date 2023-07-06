@@ -14,7 +14,7 @@ class CustomDialog extends StatelessWidget {
     Key? key,
     required this.content,
     required this.confirmTap,
-    required this.cancelTap,
+    this.cancelTap,
     required this.confirmWidget,
   }) : super(key: key);
 
@@ -48,23 +48,26 @@ class CustomDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Expanded(
-                    child: InkWell(
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(20)),
-                      onTap: cancelTap,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            right:
-                                BorderSide(width: 1.0, color: kNeutralColor300),
+                  Visibility(
+                    visible: cancelTap != null,
+                    child: Expanded(
+                      child: InkWell(
+                        borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(20)),
+                        onTap: cancelTap,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              right:
+                                  BorderSide(width: 1.0, color: kNeutralColor300),
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "취소",
-                            style: kButton14MediumStyle.copyWith(
-                                color: kTextSubTitleColor),
+                          child: Center(
+                            child: Text(
+                              "취소",
+                              style: kButton14MediumStyle.copyWith(
+                                  color: kTextSubTitleColor),
+                            ),
                           ),
                         ),
                       ),

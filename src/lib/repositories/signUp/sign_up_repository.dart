@@ -4,8 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
+import 'package:pet_mobile_social_flutter/models/user/chat_user_register_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/signUp/sign_up_service.dart';
@@ -17,9 +19,7 @@ import 'package:pet_mobile_social_flutter/services/signUp/sign_up_service.dart';
 class SignUpRepository {
   final SignUpService _signUpService = SignUpService(DioWrap.getDioWithCookie());
 
-  Future<bool> socialSignUp(UserModel userModel, List<PolicyItemModel> policyIdxList) async {
-
-
+  Future<SignUpStatus> socialSignUp(UserModel userModel, List<PolicyItemModel> policyIdxList) async {
     Map<String, dynamic> body = {
       ...userModel.toJson(),
     };
@@ -41,7 +41,26 @@ class SignUpRepository {
       throw 'API Response is Null.';
     }
 
-    return true;
+    if (res.result) {
+      // // ///Chat Register
+      // ChatClientController chatClientController = GetIt.I<ChatClientController>();
+      // print(chatClientController.createPassword(userModel.password));
+      // ChatUserRegisterModel? chatUserRegisterModel = await chatClientController.register(chatClientController.createAccount(userModel.id, userModel.appKey), chatClientController.createPassword(userModel.password), userModel.nick);
+      //
+      // if(chatUserRegisterModel != null) {
+      //   userModel = userModel.copyWith(chatInfo: chatUserRegisterModel);
+      // }
+      return SignUpStatus.success;
+    } else {
+      switch (res.code) {
+        case "JCER-8888": // 본인인증 실패
+          return SignUpStatus.failedAuth;
+        case "EJOI-3998":
+          return SignUpStatus.duplication;
+        default:
+          return SignUpStatus.failure;
+      }
+    }
   }
 
   Future<NickNameStatus> checkNickName(String nick) async {
