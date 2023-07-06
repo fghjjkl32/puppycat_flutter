@@ -7,33 +7,35 @@ import 'package:pet_mobile_social_flutter/components/feed/widget/select_button.d
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
-enum WithdrawalSelectEnum {
-  deleteRecord,
-  inconvenientUse,
-  privacyConcern,
-  lowUsage,
-  contentDissatisfaction,
-  preferOtherSite,
+enum ReportSelectEnum {
+  adOrPromotion,
+  adultContent,
+  offensiveLanguage,
+  spam,
+  personalInfo,
+  legalIssue,
+  solicitation,
   directInput
 }
 
-class MyPageWithdrawalSelectScreen extends ConsumerStatefulWidget {
-  const MyPageWithdrawalSelectScreen({super.key});
+class ReportScreen extends ConsumerStatefulWidget {
+  const ReportScreen({required this.isComment, super.key});
+
+  final bool isComment;
 
   @override
-  MyPageWithdrawalSelectScreenState createState() =>
-      MyPageWithdrawalSelectScreenState();
+  ReportScreenState createState() => ReportScreenState();
 }
 
-class MyPageWithdrawalSelectScreenState
-    extends ConsumerState<MyPageWithdrawalSelectScreen> {
-  final List<String> selectList = [
-    "기록을 삭제하고 싶어요.",
-    "이용이 불편하고 장애가 많아요.",
-    "개인정보 유출이 우려돼요.",
-    "사용 빈도가 낮아요.",
-    "콘텐츠가 불만스러워요.",
-    "다른 사이트가 더 좋아요.",
+class ReportScreenState extends ConsumerState<ReportScreen> {
+  final List<String> reportList = [
+    "광고/홍보 글이에요.",
+    "음란물이에요.",
+    "욕설/비방/차별/혐오적 표현이 있어요.",
+    "중복/도배 글이에요.",
+    "개인정보 포함(노출)된 글이에요.",
+    "명예훼손/저작권을 침해하는 글이에요.",
+    "금전/물품/후원을 요구하는 글이에요.",
     "직접 입력할게요.",
   ];
 
@@ -42,7 +44,7 @@ class MyPageWithdrawalSelectScreenState
     super.initState();
   }
 
-  WithdrawalSelectEnum? withdrawalSelectStatus;
+  ReportSelectEnum? reportSelectStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +63,8 @@ class MyPageWithdrawalSelectScreenState
           child: Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: const Text(
-                "게시물 신고",
+              title: Text(
+                widget.isComment ? "댓글 신고" : "게시물 신고",
               ),
               leading: IconButton(
                 onPressed: () {
@@ -79,17 +81,9 @@ class MyPageWithdrawalSelectScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "탈퇴하시려는 이유를 알려주세요!",
+                        "어떤 점이 불편하셨나요?",
                         style: kTitle16ExtraBoldStyle.copyWith(
                             color: kTextTitleColor),
-                      ),
-                      SizedBox(
-                        height: 2.h,
-                      ),
-                      Text(
-                        "더 발전하는 포레스트의 중요한 자료로 활용하겠습니다.",
-                        style:
-                            kBody12RegularStyle.copyWith(color: kTextBodyColor),
                       ),
                       SizedBox(
                         height: 14.h,
@@ -97,18 +91,17 @@ class MyPageWithdrawalSelectScreenState
                       ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: WithdrawalSelectEnum.values.length,
+                        itemCount: ReportSelectEnum.values.length,
                         itemBuilder: (BuildContext context, int i) {
                           return SelectButton(
-                            isDirectInput: withdrawalSelectStatus ==
-                                WithdrawalSelectEnum.directInput,
-                            title: selectList[i],
-                            isSelected: withdrawalSelectStatus ==
-                                WithdrawalSelectEnum.values[i],
+                            isDirectInput: reportSelectStatus ==
+                                ReportSelectEnum.directInput,
+                            title: reportList[i],
+                            isSelected: reportSelectStatus ==
+                                ReportSelectEnum.values[i],
                             onPressed: () {
                               setState(() {
-                                withdrawalSelectStatus =
-                                    WithdrawalSelectEnum.values[i];
+                                reportSelectStatus = ReportSelectEnum.values[i];
                               });
                             },
                           );
@@ -124,25 +117,6 @@ class MyPageWithdrawalSelectScreenState
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  withdrawalSelectStatus == null
-                      ? Container()
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/image/feed_write/image/corgi-2 1.png',
-                              height: 68.h,
-                            ),
-                            Text(
-                              "정말 탈퇴하시겠어요?",
-                              style: kBody12SemiBoldStyle.copyWith(
-                                  color: kTextTitleColor),
-                            ),
-                          ],
-                        ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
                   Padding(
                     padding: EdgeInsets.only(
                       left: 20.0.w,
@@ -159,18 +133,13 @@ class MyPageWithdrawalSelectScreenState
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
-                        onPressed: withdrawalSelectStatus == null
-                            ? null
-                            : () {
-                                context.go(
-                                    "/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail");
-                              },
+                        onPressed: reportSelectStatus == null ? null : () {},
                         child: Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Text(
-                            '다음',
+                            '신고하기',
                             style: kBody14BoldStyle.copyWith(
-                                color: withdrawalSelectStatus == null
+                                color: reportSelectStatus == null
                                     ? kTextSubTitleColor
                                     : kNeutralColor100),
                           ),

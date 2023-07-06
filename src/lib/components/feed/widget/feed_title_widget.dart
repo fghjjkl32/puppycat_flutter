@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -120,9 +123,47 @@ class FeedTitleWidget extends StatelessWidget {
               ),
             ],
           ),
-          Image.asset(
-            'assets/image/feed/icon/small_size/icon_more.png',
-            height: 32.w,
+          GestureDetector(
+            onTap: () {
+              showCustomModalBottomSheet(
+                context: context,
+                widget: Column(
+                  children: [
+                    BottomSheetButtonItem(
+                      iconImage:
+                          'assets/image/feed/icon/small_size/icon_user_de.png',
+                      title: '숨기기',
+                      titleStyle: kButton14BoldStyle.copyWith(
+                          color: kTextSubTitleColor),
+                      onTap: () {},
+                    ),
+                    BottomSheetButtonItem(
+                      iconImage:
+                          'assets/image/feed/icon/small_size/icon_user_block_on.png',
+                      title: '차단하기',
+                      titleStyle: kButton14BoldStyle.copyWith(
+                          color: kTextSubTitleColor),
+                      onTap: () {},
+                    ),
+                    BottomSheetButtonItem(
+                      iconImage:
+                          'assets/image/feed/icon/small_size/icon_report.png',
+                      title: '신고하기',
+                      titleStyle:
+                          kButton14BoldStyle.copyWith(color: kBadgeColor),
+                      onTap: () {
+                        context.pop();
+                        context.push("/home/report/false");
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+            child: Image.asset(
+              'assets/image/feed/icon/small_size/icon_more.png',
+              height: 32.w,
+            ),
           ),
         ],
       ),

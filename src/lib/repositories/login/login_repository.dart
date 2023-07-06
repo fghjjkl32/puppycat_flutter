@@ -22,7 +22,8 @@ import 'package:pet_mobile_social_flutter/services/login/social_login/social_log
 //   return ref.read(accountRepositoryProvider).restoreAccount(restoreInfo.$1, restoreInfo.$2);
 // });
 
-final loginRepositoryProvider = StateProvider.family<LoginRepository, String>((ref, provider) => LoginRepository(provider: provider));
+final loginRepositoryProvider = StateProvider.family<LoginRepository, String>(
+    (ref, provider) => LoginRepository(provider: provider));
 
 class LoginRepository {
   final LoginService _loginService = LoginService(DioWrap.getDioWithCookie());
@@ -52,16 +53,16 @@ class LoginRepository {
         simpleId: userModel!.simpleId,
         simpleType: userModel!.simpleType ?? provider,
         appKey: appKey,
-        appVer: GetIt.I
-            .get<PackageInformationUtil>()
-            .appVersion,
+        appVer: GetIt.I.get<PackageInformationUtil>().appVersion,
         // domain: "11",
         fcmToken: "12343535463",
       );
 
       // var isNeedSignUp = false;
       LoginStatus loginStatus = LoginStatus.success;
-      ResponseModel? result = await _loginService.socialLogin(reqModel.toJson()).catchError((Object obj) async {
+      ResponseModel? result = await _loginService
+          .socialLogin(reqModel.toJson())
+          .catchError((Object obj) async {
         (ResponseModel?, LoginStatus) errorResult = await errorHandler(obj);
         var responseModel = errorResult.$1;
         loginStatus = errorResult.$2;
@@ -77,16 +78,17 @@ class LoginRepository {
         return null;
       }
 
-      if (!result!.result) {
+      if (!result!.result && loginStatus != LoginStatus.needSignUp) {
         loginStatus = parseResponse(result);
       }
 
       print('result : $result');
 
       print('loginStatus 2 $loginStatus');
-      userModel = userModel.copyWith(loginStatus: loginStatus, idx: int.parse(_getMemberIdx(result) ?? '0'), appKey: appKey);
-      print('userModel $userModel');
-
+      userModel = userModel.copyWith(
+          loginStatus: loginStatus,
+          idx: int.parse(_getMemberIdx(result) ?? '0'),
+          appKey: appKey);
 
       return userModel;
     } else {
@@ -94,9 +96,7 @@ class LoginRepository {
     }
   }
 
-  Future<UserModel?> loginByUserModel({
-    required UserModel userModel
-  }) async {
+  Future<UserModel?> loginByUserModel({required UserModel userModel}) async {
     // UserModel? userModel = await _socialLoginService?.getUserInfo();
 
     var appKey = await GetIt.I.get<UuidUtil>().getUUID();
@@ -105,16 +105,16 @@ class LoginRepository {
       simpleId: userModel!.simpleId,
       simpleType: userModel!.simpleType ?? provider,
       appKey: appKey,
-      appVer: GetIt.I
-          .get<PackageInformationUtil>()
-          .appVersion,
+      appVer: GetIt.I.get<PackageInformationUtil>().appVersion,
       // domain: "11",
       fcmToken: "12343535463",
     );
 
     // var isNeedSignUp = false;
     LoginStatus loginStatus = LoginStatus.success;
-    ResponseModel? result = await _loginService.socialLogin(reqModel.toJson()).catchError((Object obj) async {
+    ResponseModel? result = await _loginService
+        .socialLogin(reqModel.toJson())
+        .catchError((Object obj) async {
       (ResponseModel?, LoginStatus) errorResult = await errorHandler(obj);
       var responseModel = errorResult.$1;
       loginStatus = errorResult.$2;
@@ -130,25 +130,27 @@ class LoginRepository {
       return null;
     }
 
-    if (!result!.result) {
+    if (!result!.result && loginStatus != LoginStatus.needSignUp) {
       loginStatus = parseResponse(result);
     }
 
     print('result : $result');
 
     print('loginStatus 2 $loginStatus');
-    userModel = userModel.copyWith(loginStatus: loginStatus, idx: int.parse(_getMemberIdx(result) ?? '0'), appKey: appKey);
+    userModel = userModel.copyWith(
+        loginStatus: loginStatus,
+        idx: int.parse(_getMemberIdx(result) ?? '0'),
+        appKey: appKey);
     print('userModel $userModel');
-
 
     return userModel;
   }
 
   LoginStatus parseResponse(ResponseModel responseModel) {
     switch (responseModel.code) {
-      case 'ERES-9999' :
+      case 'ERES-9999':
         return LoginStatus.restriction;
-      case 'EOUT-7777' :
+      case 'EOUT-7777':
         return LoginStatus.withdrawalPending;
       default:
         return LoginStatus.failure;
@@ -171,28 +173,27 @@ class LoginRepository {
       jsonData = jsonDecode(responseModel.data.toString());
     }
 
-    if(jsonData.containsKey('memberIdx')) {
+    if (jsonData.containsKey('memberIdx')) {
       return jsonData['memberIdx'].toString();
     } else {
       return null;
     }
   }
 
-
   Future<bool> logout(String appKey) async {
-    if(appKey == '') {
+    if (appKey == '') {
       return false;
     }
 
     Map<String, dynamic> body = {
-      "appKey" : appKey,
+      "appKey": appKey,
     };
 
     ///NOTE
     ///errorHandler를 사용하려면 새로 작성해야해서 그냥 try/catch로 ,,
     try {
       var result = await _loginService.logout(body);
-      if(result == null) {
+      if (result == null) {
         return false;
       }
 
@@ -264,5 +265,4 @@ class LoginRepository {
 
     return socialService;
   }
-
 }

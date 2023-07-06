@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
@@ -22,30 +23,40 @@ class FeedBottomIconWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/image/feed/icon/large_size/icon_like_off.png',
-                    height: 32.w,
-                  ),
-                  Text(
-                    '$likeCount',
-                    style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                  ),
-                ],
+              GestureDetector(
+                onTap: () {},
+                child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/image/feed/icon/large_size/icon_like_off.png',
+                      height: 32.w,
+                    ),
+                    Text(
+                      '$likeCount',
+                      style:
+                          kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(width: 12.w),
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/image/feed/icon/large_size/icon_comment.png',
-                    height: 32.w,
-                  ),
-                  Text(
-                    '$commentCount',
-                    style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                  ),
-                ],
+              GestureDetector(
+                onTap: () {
+                  context.push("/home/commentDetail");
+                },
+                child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/image/feed/icon/large_size/icon_comment.png',
+                      height: 32.w,
+                    ),
+                    Text(
+                      '$commentCount',
+                      style:
+                          kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

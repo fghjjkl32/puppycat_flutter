@@ -1,36 +1,19 @@
 import 'package:appspector/appspector.dart';
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_switch/flutter_switch.dart';
-import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/comment/comment_deatil_list_widget.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
-import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
-import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
-import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
-import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/favorite_list_widget.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 
 import 'package:pet_mobile_social_flutter/config/routes.dart';
-import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
-import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,25 +60,15 @@ void main() async {
   // runApp(MyApp());
 }
 
+final GlobalKey<OverlayState> overlayKey = GlobalKey<OverlayState>();
+
 class PuppycatApp extends ConsumerWidget {
-  const PuppycatApp({super.key});
+  const PuppycatApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
-    // final loginState = ref.watch(loginStateProvider);
-    // print('loginState : $loginState');
-    // return MaterialApp.router(
-    //   localizationsDelegates: context.localizationDelegates,
-    //   supportedLocales: context.supportedLocales,
-    //   locale: context.locale,
-    //   routerConfig: router,
-    //   title: 'Flutter Demo',
-    //   theme: themeData(context),
-    //   debugShowCheckedModeBanner: false,
-    // );
     return ScreenUtilInit(
-      // useInheritedMediaQuery: true,
       designSize: const Size(360, 640),
       builder: (BuildContext context, Widget? child) {
         return MaterialApp.router(
@@ -128,258 +101,4 @@ Future runAppSpector() async {
       }
     },
   );
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  void onTap() {
-    setState(() {
-      testValue = !testValue;
-    });
-  }
-
-  bool testValue = false;
-  @override
-  Widget build(BuildContext context) {
-    final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: ListView(
-        children: <Widget>[
-          const FeedFollowWidget(),
-          const FeedDetailWidget(),
-          const FeedMainWidget(),
-          const FavoriteListWidget(),
-          const CommentDetailListWidget(),
-          TextButton(
-            onPressed: () {
-              showCustomModalBottomSheet(
-                context: context,
-                widget: Column(
-                  children: [
-                    BottomSheetButtonItem(
-                      iconImage:
-                          'assets/image/feed/icon/small_size/icon_user_de.png',
-                      title: '숨기기',
-                      titleStyle: kButton14BoldStyle.copyWith(
-                          color: kTextSubTitleColor),
-                      onTap: () {},
-                    ),
-                    BottomSheetButtonItem(
-                      iconImage:
-                          'assets/image/feed/icon/small_size/icon_user_block_on.png',
-                      title: '차단하기',
-                      titleStyle: kButton14BoldStyle.copyWith(
-                          color: kTextSubTitleColor),
-                      onTap: () {},
-                    ),
-                    BottomSheetButtonItem(
-                      iconImage:
-                          'assets/image/feed/icon/small_size/icon_report.png',
-                      title: '신고하기',
-                      titleStyle:
-                          kButton14BoldStyle.copyWith(color: kBadgeColor),
-                      onTap: () {},
-                    ),
-                  ],
-                ),
-              );
-            },
-            child: const Text("feed bottom sheet button"),
-          ),
-          TextButton(
-            onPressed: () {
-              showCustomModalBottomSheet(
-                context: context,
-                widget: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10.h),
-                      child: Text(
-                        "태그된 대상",
-                        style: kBody16BoldStyle.copyWith(
-                            color: kTextSubTitleColor),
-                      ),
-                    ),
-                    const FavoriteListWidget(),
-                  ],
-                ),
-              );
-            },
-            child: const Text("태그된 대상"),
-          ),
-          TextButton(
-            onPressed: () {
-              toast(
-                  context: context,
-                  text: '광고성 정보 수신 여부가 ‘동의’로 변경되었습니다.',
-                  type: ToastType.purple,
-                  secondText:
-                      "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
-            },
-            child: const Text("수신 동의 토스트"),
-          ),
-          TextButton(
-            onPressed: () {
-              toast(
-                context: context,
-                text: '광고성 정보 수신 여부가 ‘거부’로 변경되었습니다.',
-                type: ToastType.red,
-              );
-            },
-            child: const Text("수신 거부 토스트"),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Checkbox(
-                activeColor: kPrimaryLightColor,
-                visualDensity: VisualDensity.standard,
-                value: testValue,
-                checkColor: kPrimaryColor,
-                onChanged: (value) {
-                  if (value != null) onTap();
-                },
-              ),
-              Checkbox(
-                visualDensity: VisualDensity.compact,
-                activeColor: kPrimaryLightColor,
-                value: !testValue,
-                checkColor: kPrimaryColor,
-                onChanged: (value) {
-                  if (value != null) onTap();
-                },
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FlutterSwitch(
-                padding: 4,
-                width: 48.w,
-                height: 20.h,
-                activeColor: Theme.of(context).primaryColor,
-                inactiveColor: kNeutralColor500,
-                toggleSize: 20.0.w,
-                value: testValue,
-                borderRadius: 50.0.w,
-                onToggle: (value) async {
-                  onTap();
-                },
-              ),
-              FlutterSwitch(
-                padding: 4,
-                width: 34.w,
-                height: 16.h,
-                activeColor: Theme.of(context).primaryColor,
-                inactiveColor: kNeutralColor500,
-                toggleSize: 12.0.w,
-                value: testValue,
-                borderRadius: 50.0.w,
-                onToggle: (value) async {
-                  onTap();
-                },
-              ),
-            ],
-          ),
-          TextButton(
-            onPressed: () => InstaAssetPicker.pickAssets(
-              context,
-              maxAssets: 12,
-              pickerTheme: themeData(context).copyWith(
-                canvasColor: kNeutralColor100, // body background color
-                colorScheme: theme.colorScheme.copyWith(
-                  background: kNeutralColor100, // albums list background color
-                ),
-                appBarTheme: theme.appBarTheme.copyWith(
-                  backgroundColor: kNeutralColor100,
-                ),
-              ),
-              onCompleted: (cropStream) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => FeedWriteScreen(
-                      cropStream: cropStream,
-                    ),
-                  ),
-                );
-              },
-            ),
-            child: const Text(
-              '이미지 선택',
-            ),
-          ),
-          TextButton(
-            onPressed: () async {
-              final ImagePicker picker = ImagePicker();
-
-              await picker.pickImage(source: ImageSource.camera);
-            },
-            child: const Text(
-              '카메라 연결',
-            ),
-          ),
-          TextButton(
-            onPressed: () async {
-              context.go("/test/myPage");
-            },
-            child: const Text(
-              '마이페이지 이동',
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomDialog(
-                      content: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                        child: Text(
-                          "캐시를 삭제하시겠습니까?",
-                          style:
-                              kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                        ),
-                      ),
-                      confirmTap: () {
-                        context.pop();
-                      },
-                      cancelTap: () {
-                        context.pop();
-                      },
-                      confirmWidget: Text(
-                        "삭제",
-                        style:
-                            kButton14MediumStyle.copyWith(color: kBadgeColor),
-                      ));
-                },
-              );
-            },
-            child: Text('팝업 버튼'),
-          ),
-          TextButton(
-            onPressed: () async {
-              context.go("/test/notification");
-            },
-            child: const Text(
-              '알림함 이동',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
