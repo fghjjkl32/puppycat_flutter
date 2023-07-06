@@ -13,7 +13,6 @@ _$_UserModel _$$_UserModelFromJson(Map<String, dynamic> json) => _$_UserModel(
       nick: json['nick'] as String,
       id: json['id'] as String,
       simpleId: json['simpleId'] as String,
-      credentialToken: json['credentialToken'] as String?,
       refreshToken: json['refreshToken'] as String,
       isSimple: json['isSimple'] as int,
       simpleType: json['simpleType'] as String,
@@ -21,6 +20,16 @@ _$_UserModel _$$_UserModelFromJson(Map<String, dynamic> json) => _$_UserModel(
       password: json['password'] as String,
       passwordConfirm: json['passwordConfirm'] as String,
       partner: json['partner'] as String? ?? '',
+      chatInfo: json['chatInfo'] == null
+          ? null
+          : ChatUserRegisterModel.fromJson(
+              json['chatInfo'] as Map<String, dynamic>),
+      ci: json['ci'] as String?,
+      di: json['di'] as String?,
+      name: json['name'] as String?,
+      phone: json['phone'] as String?,
+      birth: json['birth'] as String?,
+      gender: json['gender'] as String?,
     );
 
 Map<String, dynamic> _$$_UserModelToJson(_$_UserModel instance) =>
@@ -31,7 +40,6 @@ Map<String, dynamic> _$$_UserModelToJson(_$_UserModel instance) =>
       'nick': instance.nick,
       'id': instance.id,
       'simpleId': instance.simpleId,
-      'credentialToken': instance.credentialToken,
       'refreshToken': instance.refreshToken,
       'isSimple': instance.isSimple,
       'simpleType': instance.simpleType,
@@ -39,6 +47,13 @@ Map<String, dynamic> _$$_UserModelToJson(_$_UserModel instance) =>
       'password': instance.password,
       'passwordConfirm': instance.passwordConfirm,
       'partner': instance.partner,
+      'chatInfo': instance.chatInfo,
+      'ci': instance.ci,
+      'di': instance.di,
+      'name': instance.name,
+      'phone': instance.phone,
+      'birth': instance.birth,
+      'gender': instance.gender,
     };
 
 const _$LoginStatusEnumMap = {

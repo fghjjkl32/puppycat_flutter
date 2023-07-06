@@ -1,13 +1,21 @@
+import 'dart:convert';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
+import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
+import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
@@ -71,7 +79,8 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
   }
 
-  Widget _buildAUthBody() {
+  Widget _buildAuthBody() {
+    bool isAuth = ref.watch(authStateProvider);
     return Column(
       children: [
         Row(
@@ -91,7 +100,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
         Stack(
           children: [
             Visibility(
-              visible: ref.watch(authTokenProvider).isEmpty,
+              visible: !isAuth,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -158,7 +167,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
               ),
             ),
             Visibility(
-              visible: ref.watch(authTokenProvider).isNotEmpty,
+              visible: isAuth,
               child: SizedBox(
                 width: 320.w,
                 height: 48.h,
@@ -417,7 +426,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
             padding: EdgeInsets.fromLTRB(24.w, 32.h, 24.w, 0),
             child: Column(
               children: [
-                _buildAUthBody(),
+                _buildAuthBody(),
                 SizedBox(height: 8.h),
                 _buildNickBody(),
                 SizedBox(height: 24.h),
@@ -433,7 +442,8 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final essentialAgreeProvider = ref.watch(policyAgreeStateProvider);
-    final credentialToken = ref.read(authTokenProvider);
+    final SignUpAuthModel? signUpAuthModel = ref.watch(authModelProvider);
+
     ref.listen(nickNameProvider, (previous, next) {
       if (next == NickNameStatus.valid) {
         isValidNickName = true;
@@ -444,6 +454,61 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
       final url = Uri.encodeComponent(next);
       // context.go('/webview/$url');
       context.goNamed('webview', pathParameters: {"url": url});
+    });
+
+    ref.listen(signUpStateProvider, (previous, next) {
+      if (next == SignUpStatus.failedAuth) {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return CustomDialog(
+                content: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                  child: Text(
+                    "본인 인증에 실패하였습니다.",
+                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                  ),
+                ),
+                confirmTap: () {
+                  // context.go('/loginScreen');
+                  ref.read(loginStateProvider.notifier).state = LoginStatus.none;
+                  ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+                  ref.read(signUpStateProvider.notifier).state = SignUpStatus.none;
+                  context.pop();
+                },
+                confirmWidget: Text(
+                  "확인",
+                  style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+                ));
+          },
+        );
+      } else if (next == SignUpStatus.duplication) {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return CustomDialog(
+                content: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                  child: Text(
+                    "이미 퍼피캣에 가입된 계정이 있습니다.",
+                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                  ),
+                ),
+                confirmTap: () {
+                  ref.read(loginStateProvider.notifier).state = LoginStatus.none;
+                  ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+                  ref.read(signUpStateProvider.notifier).state = SignUpStatus.none;
+                  context.pop();
+                },
+                confirmWidget: Text(
+                  "확인",
+                  style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+                ));
+          },
+        );
+      }
     });
 
     return GestureDetector(
@@ -469,7 +534,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                       width: 320.w,
                       height: 48.h,
                       child: ElevatedButton(
-                        onPressed: essentialAgreeProvider && isValidNickName && credentialToken.isNotEmpty
+                        onPressed: essentialAgreeProvider && isValidNickName && ref.watch(authStateProvider)
                             ? () {
                                 var userModel = ref.read(userModelProvider.notifier).state;
                                 if (userModel == null) {
@@ -477,10 +542,16 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                                 }
                                 userModel = userModel.copyWith(
                                   nick: nickController.text,
-                                  credentialToken: credentialToken,
+                                  ci: signUpAuthModel?.ci ?? '',
+                                  di: signUpAuthModel?.di ?? '',
+                                  name: signUpAuthModel?.name ?? '',
+                                  phone: signUpAuthModel?.phone ?? '',
+                                  gender: signUpAuthModel?.gender ?? '',
+                                  birth: signUpAuthModel?.birth ?? '',
                                 );
                                 // ref.read(userModelProvider.notifier).state = userModel;
-                                ref.read(signUpStateProvider.notifier).socialSignUp(userModel);
+                                ref.read(signUpStateProvider.notifier).socialSignUp(userModel); // ㅇㅇㅇ
+                                // chatClientController.changeDisplayName(userModel.id, userModel.nick);
                               }
                             : null,
                         style: ElevatedButton.styleFrom(

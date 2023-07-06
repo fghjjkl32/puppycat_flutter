@@ -77,7 +77,7 @@ class LoginRepository {
         return null;
       }
 
-      if (!result!.result) {
+      if (!result!.result && loginStatus != LoginStatus.needSignUp) {
         loginStatus = parseResponse(result);
       }
 
@@ -129,8 +129,7 @@ class LoginRepository {
       ///result == null 이면 실제 통신 에러 발생으로 추측할 수 있음
       return null;
     }
-
-    if (!result!.result) {
+    if (!result!.result && loginStatus != LoginStatus.needSignUp) {
       loginStatus = parseResponse(result);
     }
 

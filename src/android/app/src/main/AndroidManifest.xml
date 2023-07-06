@@ -69,4 +69,10 @@
             android:name="com.naver.sdk.clientName"
             android:value="@string/client_name" />
     </application>
+
+    <queries>
+        <package android:name="com.kt.ktauth" /> <!-- PASS(KT) -->
+        <package android:name="com.sktelecom.tauth" /> <!-- PASS(SKT) -->
+        <package android:name="com.lguplus.smartotp" /> <!-- PASS(LG) -->
+    </queries>
 </manifest>
