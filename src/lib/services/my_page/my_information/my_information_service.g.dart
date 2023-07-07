@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'account_service.dart';
+part of 'my_information_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'account_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _AccountService implements AccountService {
-  _AccountService(
+class _MyInformationService implements MyInformationService {
+  _MyInformationService(
     this._dio, {
     this.baseUrl,
   }) {
@@ -21,23 +21,20 @@ class _AccountService implements AccountService {
   String? baseUrl;
 
   @override
-  Future<ResponseModel?> restoreAccount(Map<String, dynamic> body) async {
+  Future<MyInformationResponseModel?> getMyInformation(int memberIdx) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
-    _headers.removeWhere((k, v) => v == null);
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
-    final _result = await _dio
-        .fetch<Map<String, dynamic>?>(_setStreamType<ResponseModel>(Options(
-      method: 'PATCH',
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<MyInformationResponseModel>(Options(
+      method: 'GET',
       headers: _headers,
       extra: _extra,
-      contentType: 'application/json',
     )
             .compose(
               _dio.options,
-              '/member/restore',
+              '/my/info?memberIdx=${memberIdx}',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -46,8 +43,9 @@ class _AccountService implements AccountService {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value =
-        _result.data == null ? null : ResponseModel.fromJson(_result.data!);
+    final value = _result.data == null
+        ? null
+        : MyInformationResponseModel.fromJson(_result.data!);
     return value;
   }
 

@@ -9,6 +9,9 @@ import 'package:pet_mobile_social_flutter/components/comment/widget/comment_deta
 import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/my_information/my_information_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/my_information/my_information_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class MyPageMainScreen extends ConsumerStatefulWidget {
@@ -33,6 +36,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
       length: 2,
       vsync: this,
     );
+    ref.read(myInformationStateProvider.notifier).getMyInformation(
+          ref.read(userModelProvider)!.idx,
+        );
     super.initState();
   }
 
@@ -73,82 +79,247 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
             physics: const ClampingScrollPhysics(),
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
-                SliverAppBar(
-                    pinned: true,
-                    floating: false,
-                    backgroundColor: appBarColor,
-                    title: const Text('마이페이지'),
-                    leading: IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      icon: const Icon(Icons.arrow_back),
-                    ),
-                    forceElevated: innerBoxIsScrolled,
-                    actions: [
-                      PopupMenuButton(
-                        icon: const Icon(Icons.more_horiz),
-                        onSelected: (id) {
-                          if (id == 'myActivity') {
-                            context.go("/home/myPage/myActivity");
-                          }
-                          if (id == 'postsManagement') {
-                            context.go("/home/myPage/myPost");
-                          }
-                          if (id == 'setting') {
-                            context.go("/home/myPage/setting");
-                          }
-                        },
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(16.0),
-                            bottomRight: Radius.circular(16.0),
-                            topLeft: Radius.circular(16.0),
-                            topRight: Radius.circular(16.0),
+                Consumer(builder: (context, ref, _) {
+                  AsyncValue<List<MyInformationItemModel>> myInfo =
+                      ref.watch(myInformationFutureProvider);
+
+                  return myInfo.when(
+                    data: (data) {
+                      return SliverAppBar(
+                          pinned: true,
+                          floating: false,
+                          backgroundColor: appBarColor,
+                          title: const Text('마이페이지'),
+                          leading: IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(Icons.arrow_back),
                           ),
-                        ),
-                        itemBuilder: (context) {
-                          final list = <PopupMenuEntry>[];
-                          list.add(
-                            diaryPopUpMenuItem(
-                              'myActivity',
-                              '내 활동',
-                              const Icon(Icons.person),
-                              context,
+                          forceElevated: innerBoxIsScrolled,
+                          actions: [
+                            PopupMenuButton(
+                              icon: const Icon(Icons.more_horiz),
+                              onSelected: (id) {
+                                if (id == 'myActivity') {
+                                  context.go("/home/myPage/myActivity");
+                                }
+                                if (id == 'postsManagement') {
+                                  context.go("/home/myPage/myPost");
+                                }
+                                if (id == 'setting') {
+                                  context.go("/home/myPage/setting");
+                                }
+                              },
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(16.0),
+                                  bottomRight: Radius.circular(16.0),
+                                  topLeft: Radius.circular(16.0),
+                                  topRight: Radius.circular(16.0),
+                                ),
+                              ),
+                              itemBuilder: (context) {
+                                final list = <PopupMenuEntry>[];
+                                list.add(
+                                  diaryPopUpMenuItem(
+                                    'myActivity',
+                                    '내 활동',
+                                    const Icon(Icons.person),
+                                    context,
+                                  ),
+                                );
+                                list.add(
+                                  const PopupMenuDivider(
+                                    height: 5,
+                                  ),
+                                );
+                                list.add(
+                                  diaryPopUpMenuItem(
+                                    'postsManagement',
+                                    '내 글 관리',
+                                    const Icon(Icons.post_add_outlined),
+                                    context,
+                                  ),
+                                );
+                                list.add(
+                                  const PopupMenuDivider(
+                                    height: 5,
+                                  ),
+                                );
+                                list.add(
+                                  diaryPopUpMenuItem(
+                                    'setting',
+                                    '설정',
+                                    const Icon(Icons.settings),
+                                    context,
+                                  ),
+                                );
+                                return list;
+                              },
                             ),
-                          );
-                          list.add(
-                            const PopupMenuDivider(
-                              height: 5,
+                          ],
+                          expandedHeight: 130.h,
+                          flexibleSpace: _myPageSuccessProfile(data[0]));
+                    },
+                    loading: () {
+                      return SliverAppBar(
+                          pinned: true,
+                          floating: false,
+                          backgroundColor: appBarColor,
+                          title: const Text('마이페이지'),
+                          leading: IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(Icons.arrow_back),
+                          ),
+                          forceElevated: innerBoxIsScrolled,
+                          actions: [
+                            PopupMenuButton(
+                              icon: const Icon(Icons.more_horiz),
+                              onSelected: (id) {
+                                if (id == 'myActivity') {
+                                  context.go("/home/myPage/myActivity");
+                                }
+                                if (id == 'postsManagement') {
+                                  context.go("/home/myPage/myPost");
+                                }
+                                if (id == 'setting') {
+                                  context.go("/home/myPage/setting");
+                                }
+                              },
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(16.0),
+                                  bottomRight: Radius.circular(16.0),
+                                  topLeft: Radius.circular(16.0),
+                                  topRight: Radius.circular(16.0),
+                                ),
+                              ),
+                              itemBuilder: (context) {
+                                final list = <PopupMenuEntry>[];
+                                list.add(
+                                  diaryPopUpMenuItem(
+                                    'myActivity',
+                                    '내 활동',
+                                    const Icon(Icons.person),
+                                    context,
+                                  ),
+                                );
+                                list.add(
+                                  const PopupMenuDivider(
+                                    height: 5,
+                                  ),
+                                );
+                                list.add(
+                                  diaryPopUpMenuItem(
+                                    'postsManagement',
+                                    '내 글 관리',
+                                    const Icon(Icons.post_add_outlined),
+                                    context,
+                                  ),
+                                );
+                                list.add(
+                                  const PopupMenuDivider(
+                                    height: 5,
+                                  ),
+                                );
+                                list.add(
+                                  diaryPopUpMenuItem(
+                                    'setting',
+                                    '설정',
+                                    const Icon(Icons.settings),
+                                    context,
+                                  ),
+                                );
+                                return list;
+                              },
                             ),
-                          );
-                          list.add(
-                            diaryPopUpMenuItem(
-                              'postsManagement',
-                              '내 글 관리',
-                              const Icon(Icons.post_add_outlined),
-                              context,
+                          ],
+                          expandedHeight: 130.h,
+                          flexibleSpace: _myPageProfile());
+                    },
+                    error: (error, stackTrace) {
+                      return SliverAppBar(
+                          pinned: true,
+                          floating: false,
+                          backgroundColor: appBarColor,
+                          title: const Text('마이페이지'),
+                          leading: IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(Icons.arrow_back),
+                          ),
+                          forceElevated: innerBoxIsScrolled,
+                          actions: [
+                            PopupMenuButton(
+                              icon: const Icon(Icons.more_horiz),
+                              onSelected: (id) {
+                                if (id == 'myActivity') {
+                                  context.go("/home/myPage/myActivity");
+                                }
+                                if (id == 'postsManagement') {
+                                  context.go("/home/myPage/myPost");
+                                }
+                                if (id == 'setting') {
+                                  context.go("/home/myPage/setting");
+                                }
+                              },
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(16.0),
+                                  bottomRight: Radius.circular(16.0),
+                                  topLeft: Radius.circular(16.0),
+                                  topRight: Radius.circular(16.0),
+                                ),
+                              ),
+                              itemBuilder: (context) {
+                                final list = <PopupMenuEntry>[];
+                                list.add(
+                                  diaryPopUpMenuItem(
+                                    'myActivity',
+                                    '내 활동',
+                                    const Icon(Icons.person),
+                                    context,
+                                  ),
+                                );
+                                list.add(
+                                  const PopupMenuDivider(
+                                    height: 5,
+                                  ),
+                                );
+                                list.add(
+                                  diaryPopUpMenuItem(
+                                    'postsManagement',
+                                    '내 글 관리',
+                                    const Icon(Icons.post_add_outlined),
+                                    context,
+                                  ),
+                                );
+                                list.add(
+                                  const PopupMenuDivider(
+                                    height: 5,
+                                  ),
+                                );
+                                list.add(
+                                  diaryPopUpMenuItem(
+                                    'setting',
+                                    '설정',
+                                    const Icon(Icons.settings),
+                                    context,
+                                  ),
+                                );
+                                return list;
+                              },
                             ),
-                          );
-                          list.add(
-                            const PopupMenuDivider(
-                              height: 5,
-                            ),
-                          );
-                          list.add(
-                            diaryPopUpMenuItem(
-                              'setting',
-                              '설정',
-                              const Icon(Icons.settings),
-                              context,
-                            ),
-                          );
-                          return list;
-                        },
-                      ),
-                    ],
-                    expandedHeight: 130.h,
-                    flexibleSpace: _myPageProfile()),
+                          ],
+                          expandedHeight: 130.h,
+                          flexibleSpace: _myPageProfile());
+                    },
+                  );
+                }),
                 const SliverPersistentHeader(
                   delegate: TabBarDelegate(),
                   pinned: true,
@@ -426,6 +597,125 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
           ),
         );
       }),
+    );
+  }
+
+  Widget _myPageSuccessProfile(MyInformationItemModel data) {
+    return FlexibleSpaceBar(
+      centerTitle: true,
+      expandedTitleScale: 1.0,
+      background: Padding(
+        padding: const EdgeInsets.only(top: kToolbarHeight),
+        child: Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              child: WidgetMask(
+                blendMode: BlendMode.srcATop,
+                childSaveLayer: true,
+                mask: data.profileImgUrl == null
+                    ? Center(
+                        child: Image.asset(
+                          'assets/image/feed/image/sample_image3.png',
+                          height: 48.h,
+                          fit: BoxFit.fill,
+                        ),
+                      )
+                    : Center(
+                        child: Image.asset(
+                          data.profileImgUrl!,
+                          height: 48.h,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                child: SvgPicture.asset(
+                  'assets/image/feed/image/squircle.svg',
+                  height: 48.h,
+                ),
+              ),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      'assets/image/feed/icon/small_size/icon_special.png',
+                      height: 13.h,
+                    ),
+                    SizedBox(
+                      width: 4.w,
+                    ),
+                    Text(
+                      "${data.nick}",
+                      style: kTitle16ExtraBoldStyle.copyWith(
+                          color: kTextTitleColor),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        context.go("/home/myPage/profileEdit");
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(5.0),
+                        child: Icon(
+                          Icons.edit,
+                          color: kNeutralColor500,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 3.h,
+                ),
+                Text(
+                  data.intro == null ? "소개글이 없습니다." : "${data.intro}",
+                  style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    context.go("/home/myPage/followList");
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 8.0.h),
+                    child: Row(
+                      children: [
+                        Text(
+                          "팔로워 ",
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                        Text(
+                          "265",
+                          style: kBody11SemiBoldStyle.copyWith(
+                              color: kTextSubTitleColor),
+                        ),
+                        Text(
+                          "  ·  ",
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                        Text(
+                          "팔로잉 ",
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                        Text(
+                          "165",
+                          style: kBody11SemiBoldStyle.copyWith(
+                              color: kTextSubTitleColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 

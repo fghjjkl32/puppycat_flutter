@@ -8,17 +8,17 @@ import 'package:pet_mobile_social_flutter/services/account/account_service.dart'
 final accountRepositoryProvider = Provider((ref) => AccountRepository());
 
 class AccountRepository {
-  final AccountService _accountService = AccountService(DioWrap.getDioWithCookie());
+  final AccountService _accountService =
+      AccountService(DioWrap.getDioWithCookie());
 
-  Future<bool> restoreAccount(String memberIdx, String simpleId) async {
+  Future<bool> restoreAccount(String simpleId) async {
     Map<String, dynamic> body = {
-      "memberIdx" : memberIdx,
-      "simpleId" : simpleId,
+      "simpleId": simpleId,
     };
 
-    ResponseModel? responseModel = await _accountService.restoreAccount(memberIdx, body);
+    ResponseModel? responseModel = await _accountService.restoreAccount(body);
 
-    if(responseModel == null) {
+    if (responseModel == null) {
       ///TODO
       ///throw로 할지 그냥 return null로 할지 생각해보기
       throw "error";

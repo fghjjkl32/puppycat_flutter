@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'account_service.dart';
+part of 'withdrawal_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'account_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _AccountService implements AccountService {
-  _AccountService(
+class _WithdrawalService implements WithdrawalService {
+  _WithdrawalService(
     this._dio, {
     this.baseUrl,
   }) {
@@ -21,7 +21,7 @@ class _AccountService implements AccountService {
   String? baseUrl;
 
   @override
-  Future<ResponseModel?> restoreAccount(Map<String, dynamic> body) async {
+  Future<ResponseModel?> withdrawalUser(Map<String, dynamic> body) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
@@ -30,14 +30,14 @@ class _AccountService implements AccountService {
     _data.addAll(body);
     final _result = await _dio
         .fetch<Map<String, dynamic>?>(_setStreamType<ResponseModel>(Options(
-      method: 'PATCH',
+      method: 'PUT',
       headers: _headers,
       extra: _extra,
       contentType: 'application/json',
     )
             .compose(
               _dio.options,
-              '/member/restore',
+              '/member/out',
               queryParameters: queryParameters,
               data: _data,
             )

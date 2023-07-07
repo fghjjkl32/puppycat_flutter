@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_cu
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/my_page_setting_provider.dart';
 
 class MyPageSettingScreen extends ConsumerStatefulWidget {
@@ -549,12 +550,20 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 60.0.h, bottom: 20.h),
-                child: Center(
-                  child: Text(
-                    "로그아웃",
-                    style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+              GestureDetector(
+                onTap: () {
+                  ref.read(loginStateProvider.notifier).logout(
+                        ref.read(userModelProvider)!.simpleType,
+                        ref.read(userModelProvider)!.appKey,
+                      );
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(top: 60.0.h, bottom: 20.h),
+                  child: Center(
+                    child: Text(
+                      "로그아웃",
+                      style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                    ),
                   ),
                 ),
               ),

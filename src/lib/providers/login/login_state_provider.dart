@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
@@ -60,7 +62,7 @@ class LoginState extends _$LoginState {
     ///Login Route State 관련
     switch (userModel.loginStatus) {
       case LoginStatus.success:
-        _saveUserModel(userModel);
+        saveUserModel(userModel);
         ref
             .read(loginRouteStateProvider.notifier)
             .changeLoginRoute(LoginRoute.success);
@@ -85,13 +87,14 @@ class LoginState extends _$LoginState {
 
     var result = await loginRepository.logout(appKey);
     if (result) {
+      ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
       ref.read(userModelProvider.notifier).state = null;
-      _saveUserModel(null);
+      saveUserModel(null);
       state = LoginStatus.none;
     }
   }
 
-  void _saveUserModel(UserModel? userModel) async {
+  void saveUserModel(UserModel? userModel) async {
     final prefs = await SharedPreferences.getInstance();
     String userModelKey = 'userModel';
 

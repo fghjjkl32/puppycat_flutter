@@ -628,7 +628,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
 
   Widget _buildTabbar(bool innerBoxIsScrolled) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 320;
-    final loginState = ref.watch(loginStateProvider);
 
     return Container(
       decoration: innerBoxIsScrolled

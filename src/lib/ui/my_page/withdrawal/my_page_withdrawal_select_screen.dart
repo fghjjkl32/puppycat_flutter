@@ -42,6 +42,9 @@ class MyPageWithdrawalSelectScreenState
     super.initState();
   }
 
+  String? directInputText = "";
+  int code = 0;
+
   WithdrawalSelectEnum? withdrawalSelectStatus;
 
   @override
@@ -110,6 +113,11 @@ class MyPageWithdrawalSelectScreenState
                                 withdrawalSelectStatus =
                                     WithdrawalSelectEnum.values[i];
                               });
+                              code = i;
+                            },
+                            onTextChanged: (text) {
+                              directInputText = text ?? "";
+                              setState(() {});
                             },
                           );
                         },
@@ -124,7 +132,10 @@ class MyPageWithdrawalSelectScreenState
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  withdrawalSelectStatus == null
+                  withdrawalSelectStatus == null ||
+                          (withdrawalSelectStatus ==
+                                  WithdrawalSelectEnum.directInput &&
+                              directInputText!.isEmpty)
                       ? Container()
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -159,11 +170,17 @@ class MyPageWithdrawalSelectScreenState
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
-                        onPressed: withdrawalSelectStatus == null
+                        onPressed: withdrawalSelectStatus == null ||
+                                (withdrawalSelectStatus ==
+                                        WithdrawalSelectEnum.directInput &&
+                                    directInputText!.isEmpty)
                             ? null
                             : () {
+                                if (directInputText == "") {
+                                  directInputText = null;
+                                }
                                 context.go(
-                                    "/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail");
+                                    "/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail/$code/$directInputText");
                               },
                         child: Padding(
                           padding: const EdgeInsets.all(18.0),

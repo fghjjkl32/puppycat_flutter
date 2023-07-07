@@ -1,4 +1,3 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/repositories/account/account_repository.dart';
 import 'package:riverpod/riverpod.dart';
@@ -18,11 +17,10 @@ class AccountRestoreState extends _$AccountRestoreState {
     return false;
   }
 
-  void restoreAccount(String memberIdx, String simpleId) async {
-    state = await ref.read(accountRepositoryProvider).restoreAccount(memberIdx, simpleId);
+  void restoreAccount(String simpleId) async {
+    state = await ref.read(accountRepositoryProvider).restoreAccount(simpleId);
   }
 }
-
 
 // @Riverpod(keepAlive: true)
 // class AccountState extends _$AccountState {
