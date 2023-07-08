@@ -358,7 +358,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
               context.go("/home/notification");
             }
             if (id == 'search') {}
-            if (id == 'message') {}
+            if (id == 'message') {
+              context.push('/chatMain');
+            }
             if (id == 'setting') {
               context.push("/home/myPage/setting");
             }
@@ -402,7 +404,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
             list.add(
               diaryPopUpMenuItem(
                 'message',
-                '메세지',
+                '메시지',
                 const Icon(Icons.message),
                 context,
               ),

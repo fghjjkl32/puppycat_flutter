@@ -42,6 +42,4 @@ class ChatRegisterState extends _$ChatRegisterState {
     ref.read(chatRegisterInfoProvider.notifier).state = result;
     return result;
   }
-
-
 }

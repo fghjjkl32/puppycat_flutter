@@ -1,5 +1,4 @@
-
-
+import 'dart:async';
 import 'dart:math';
 
 import 'package:matrix/matrix.dart';
@@ -10,7 +9,11 @@ import 'package:pet_mobile_social_flutter/models/user/chat_user_register_model.d
 class MatrixChatClientController implements AbstractChatController {
   late Client _chatClient;
 
-  MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://sns-chat.devlabs.co.kr:8008']) {
+  Client get client => _chatClient;
+
+  // MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://sns-chat.devlabs.co.kr:8008']) {
+  MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://dev2.office.uxplus.kr']) {
+    print('homeServer $homeServer');
     init(clientName, homeServer);
   }
 
@@ -18,8 +21,6 @@ class MatrixChatClientController implements AbstractChatController {
     _chatClient = Client(clientName);
     await client.checkHomeserver(Uri.parse(homeServer));
   }
-
-  Client get client => _chatClient;
 
   @override
   Future<LoginResponse> login(String id, String pw, [LoginType type = LoginType.mLoginPassword]) async {
@@ -33,32 +34,35 @@ class MatrixChatClientController implements AbstractChatController {
 
   @override
   Future<ChatUserRegisterModel?> register(String id, String pw, String displayName, [AccountKind kind = AccountKind.user]) async {
-    if(id.contains('@')) {
+    if (id.contains('@')) {
       id = id.replaceAll('@', '_');
     }
-    if(id.contains('#')) {
+    if (id.contains('#')) {
       id = id.replaceAll('#', '_');
     }
 
-    var result = await _chatClient.register(
+    var result = await _chatClient
+        .register(
       auth: AuthenticationData(
         type: "m.login.dummy",
       ),
       kind: kind,
       username: id,
       password: pw,
-    ).catchError((obj) {
+    )
+        .catchError((obj) {
       return null;
     });
+
     ///TODO
     ///error  처리 필요
     print('register result : $result');
 
-    if(result == null) {
+    if (result == null) {
       return null;
     }
 
-    if(result.accessToken != null) {
+    if (result.accessToken != null) {
       _chatClient.accessToken = result.accessToken;
       setDisplayName(result.userId, displayName);
     }
@@ -79,16 +83,16 @@ class MatrixChatClientController implements AbstractChatController {
   }
 
   String createAccount(String id, String extra) {
-    if(id.contains('@')) {
+    if (id.contains('@')) {
       id = id.replaceAll('@', '_');
     }
-    if(id.contains('#')) {
+    if (id.contains('#')) {
       id = id.replaceAll('#', '_');
     }
 
     String subStringExtra;
-    if(extra.length > 5) {
-      if(extra.contains('-')) {
+    if (extra.length > 5) {
+      if (extra.contains('-')) {
         subStringExtra = extra.split('-').first;
       } else {
         subStringExtra = extra.substring(0, 5);
@@ -99,8 +103,7 @@ class MatrixChatClientController implements AbstractChatController {
 
     const ch = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
     Random r = Random();
-    String strRandom = String.fromCharCodes(Iterable.generate(
-        5, (_) => ch.codeUnitAt(r.nextInt(ch.length))));
+    String strRandom = String.fromCharCodes(Iterable.generate(5, (_) => ch.codeUnitAt(r.nextInt(ch.length))));
 
     String strAccount = id + subStringExtra + strRandom;
     print('strAccount $strAccount');
@@ -124,11 +127,21 @@ class MatrixChatClientController implements AbstractChatController {
   }
 
   @override
-  Future<List<String>> getRoomList() async {
-    return await _chatClient.getJoinedRooms();
+  Future<List<Room>> getRoomList() async {
+    return _chatClient.rooms;
   }
 
-  void getRoomState(String roomId) {
-    _chatClient.getRoomState(roomId);
+  Stream<List<Room>> getRoomListStream() {
+    StreamController<List<Room>> controller = StreamController();
+
+    _chatClient.onSync.stream.listen((event) {
+      controller.add(_chatClient.rooms);
+    });
+
+    return controller.stream;
+  }
+
+  Future<List<MatrixEvent>> getRoomState(String roomId) async {
+    return await _chatClient.getRoomState(roomId);
   }
 }
