@@ -21,10 +21,7 @@ class _AccountService implements AccountService {
   String? baseUrl;
 
   @override
-  Future<ResponseModel?> restoreAccount(
-    String memberIdx,
-    Map<String, dynamic> body,
-  ) async {
+  Future<ResponseModel?> restoreAccount(Map<String, dynamic> body) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
@@ -40,7 +37,7 @@ class _AccountService implements AccountService {
     )
             .compose(
               _dio.options,
-              '/member/restore/${memberIdx}',
+              '/member/restore',
               queryParameters: queryParameters,
               data: _data,
             )

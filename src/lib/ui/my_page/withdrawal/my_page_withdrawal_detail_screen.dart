@@ -4,9 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/withdrawal/withdrawal_provider.dart';
 
 class MyPageWithdrawalDetailScreen extends ConsumerStatefulWidget {
-  const MyPageWithdrawalDetailScreen({super.key});
+  const MyPageWithdrawalDetailScreen(
+      {required this.code, this.reason, super.key});
+
+  final int code;
+  final String? reason;
 
   @override
   MyPageWithdrawalDetailScreenState createState() =>
@@ -333,9 +339,21 @@ class MyPageWithdrawalDetailScreenState
                           ),
                         ),
                         onPressed: isAgree
-                            ? () {
-                                context.go(
-                                    "/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail/withdrawalSuccess");
+                            ? () async {
+                                final result = ref
+                                    .read(withdrawalStateProvider.notifier)
+                                    .withdrawalUser(
+                                      idx: ref.read(userModelProvider)!.idx,
+                                      code: widget.code + 1,
+                                      reason: widget.reason == "null"
+                                          ? null
+                                          : widget.reason,
+                                    );
+
+                                await result
+                                    ? context.push(
+                                        "/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail/withdrawalSuccess")
+                                    : print("fail");
                               }
                             : null,
                         child: Padding(

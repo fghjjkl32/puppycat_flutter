@@ -123,16 +123,24 @@ class AppRouter {
                           },
                           routes: [
                             GoRoute(
-                                path: 'withdrawalDetail',
-                                name: 'withdrawalDetail',
-                                builder: (BuildContext context, GoRouterState state) {
-                                  return const MyPageWithdrawalDetailScreen();
+                                path: 'withdrawalDetail/:code/:reason',
+                                name: 'withdrawalDetail/:code/:reason',
+                                builder: (BuildContext context,
+                                    GoRouterState state) {
+                                  final code = state.pathParameters['code']!;
+                                  final reason =
+                                      state.pathParameters['reason']!;
+                                  return MyPageWithdrawalDetailScreen(
+                                    code: int.parse(code),
+                                    reason: reason,
+                                  );
                                 },
                                 routes: [
                                   GoRoute(
                                     path: 'withdrawalSuccess',
                                     name: 'withdrawalSuccess',
-                                    builder: (BuildContext context, GoRouterState state) {
+                                    builder: (BuildContext context,
+                                        GoRouterState state) {
                                       return const MyPageWithdrawalSuccessScreen();
                                     },
                                   ),
