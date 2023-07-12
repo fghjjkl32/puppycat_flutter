@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
-import 'package:pet_mobile_social_flutter/models/user/chat_user_register_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
@@ -51,7 +50,7 @@ class SignUpState extends _$SignUpState {
 
     if(result == SignUpStatus.success) {
       ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.success;
-      ref.read(chatRegisterStateProvider.notifier).register(userModel.id, userModel.password, userModel.nick);
+      // ref.read(chatRegisterStateProvider.notifier).register(userModel);
     }
     state = result;
     // state = SignUpStatus.failedAuth;

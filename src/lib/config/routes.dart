@@ -313,7 +313,8 @@ class AppRouter {
             builder: (BuildContext context, GoRouterState state) {
               print('aaa');
               if(state.extra is Room) {
-                return ChatRoomScreen(room: state.extra! as Room);
+                // return ChatRoomScreen(room: state.extra! as Room);
+                return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
               } else {
                 print('???');
                 return const ChatMainScreen();
@@ -322,6 +323,15 @@ class AppRouter {
           ),
         ]
       ),
+      GoRoute(
+        path: '/chatRoomTest',
+        name: 'chatRoomTest',
+        builder: (BuildContext context, GoRouterState state) {
+            // return ChatRoomScreen(room: state.extra! as Room);
+            return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
+        },
+      ),
+
       // GoRoute(//id를 넘겨주어 navigarion 하는 방법
       //   path: '/book/:id',
       //   builder: (BuildContext context, GoRouterState state) {

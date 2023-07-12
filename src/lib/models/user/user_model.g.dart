@@ -20,10 +20,6 @@ _$_UserModel _$$_UserModelFromJson(Map<String, dynamic> json) => _$_UserModel(
       password: json['password'] as String,
       passwordConfirm: json['passwordConfirm'] as String,
       partner: json['partner'] as String? ?? '',
-      chatInfo: json['chatInfo'] == null
-          ? null
-          : ChatUserRegisterModel.fromJson(
-              json['chatInfo'] as Map<String, dynamic>),
       ci: json['ci'] as String?,
       di: json['di'] as String?,
       name: json['name'] as String?,
@@ -47,7 +43,6 @@ Map<String, dynamic> _$$_UserModelToJson(_$_UserModel instance) =>
       'password': instance.password,
       'passwordConfirm': instance.passwordConfirm,
       'partner': instance.partner,
-      'chatInfo': instance.chatInfo,
       'ci': instance.ci,
       'di': instance.di,
       'name': instance.name,

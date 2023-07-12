@@ -1,151 +1,98 @@
+import 'dart:math';
+
+import 'package:bubble/bubble.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:matrix/matrix.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
+import 'package:pet_mobile_social_flutter/ui/chat/chat_msg_item.dart';
+import 'package:widget_mask/widget_mask.dart';
 
-class ChatRoomScreen extends StatefulWidget {
-  final Room room;
-  const ChatRoomScreen({required this.room, Key? key}) : super(key: key);
+class ChatRoomScreen extends ConsumerWidget {
+  final String titleNick;
+  final List<ChatMessageModel> msgList;
 
-  @override
-  _ChatRoomScreenState createState() => _ChatRoomScreenState();
-}
+  ChatRoomScreen({
+    Key? key,
+    required this.titleNick,
+    required this.msgList,
+  }) : super(key: key);
 
-class _ChatRoomScreenState extends State<ChatRoomScreen> {
-  late final Future<Timeline> _timelineFuture;
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-  int _count = 0;
-
-  @override
-  void initState() {
-    _timelineFuture = widget.room.getTimeline(onChange: (i) {
-      print('on change! $i');
-      _listKey.currentState?.setState(() {});
-    }, onInsert: (i) {
-      print('on insert! $i');
-      _listKey.currentState?.insertItem(i);
-      _count++;
-    }, onRemove: (i) {
-      print('On remove $i');
-      _count--;
-      _listKey.currentState?.removeItem(i, (_, __) => const ListTile());
-    }, onUpdate: () {
-      print('On update');
-    });
-    super.initState();
-  }
-
-  final TextEditingController _sendController = TextEditingController();
-
-  void _send() {
-    widget.room.sendTextEvent(_sendController.text.trim());
-    _sendController.clear();
-  }
+  final TextEditingController _inputTextController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.room.displayname),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: FutureBuilder<Timeline>(
-                future: _timelineFuture,
-                builder: (context, snapshot) {
-                  final timeline = snapshot.data;
-                  if (timeline == null) {
-                    return const Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    );
-                  }
-                  _count = timeline.events.length;
-                  return Column(
-                    children: [
-                      Center(
-                        child: TextButton(
-                            onPressed: timeline.requestHistory,
-                            child: const Text('Load more...')),
-                      ),
-                      const Divider(height: 1),
-                      Expanded(
-                        child: AnimatedList(
-                          key: _listKey,
-                          reverse: true,
-                          initialItemCount: timeline.events.length,
-                          itemBuilder: (context, i, animation) => timeline
-                              .events[i].relationshipEventId !=
-                              null
-                              ? Container()
-                              : ScaleTransition(
-                            scale: animation,
-                            child: Opacity(
-                              opacity: timeline.events[i].status.isSent
-                                  ? 1
-                                  : 0.5,
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  foregroundImage: timeline.events[i]
-                                      .sender.avatarUrl ==
-                                      null
-                                      ? null
-                                      : NetworkImage(timeline
-                                      .events[i].sender.avatarUrl!
-                                      .getThumbnail(
-                                    widget.room.client,
-                                    width: 56,
-                                    height: 56,
-                                  )
-                                      .toString()),
-                                ),
-                                title: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(timeline
-                                          .events[i].sender
-                                          .calcDisplayname()),
-                                    ),
-                                    Text(
-                                      timeline.events[i].originServerTs
-                                          .toIso8601String(),
-                                      style:
-                                      const TextStyle(fontSize: 10),
-                                    ),
-                                  ],
-                                ),
-                                subtitle: Text(timeline.events[i]
-                                    .getDisplayEvent(timeline)
-                                    .body),
-                              ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SafeArea(
+      child: Material(
+        child: Theme(
+          data: themeData(context).copyWith(
+            inputDecorationTheme: InputDecorationTheme(
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(100)),
+            ),
+          ),
+          child: Scaffold(
+            body: Scaffold(
+              appBar: AppBar(
+                title: Text(titleNick),
+                backgroundColor: kNeutralColor100,
+              ),
+              extendBody: true,
+              resizeToAvoidBottomInset: false,
+              bottomNavigationBar: false ? null : Padding(
+                padding: EdgeInsets.only(top: 7.0.h),
+                child: Container(
+                  decoration: BoxDecoration(
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            color: Colors.white,
+                            blurRadius: 18.0,
+                            spreadRadius: 35,
+                            offset: Offset(0.0, 20.h)
+                        )
+                      ],
+                      color: Colors.white,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(12.0.w, 0.0.h, 12.0.w, 24.0.h),
+                    child: TextField(
+                      controller: _inputTextController,
+                      decoration: InputDecoration(
+                        hintText: '메시지.메시지를 입력해 주세요'.tr(),
+                        suffixIcon: Padding(
+                          padding: EdgeInsets.only(left: 24.0.w),
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.send_outlined,
+                              color: kPrimaryColor,
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            const Divider(height: 1),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: TextField(
-                        controller: _sendController,
-                        decoration: const InputDecoration(
-                          hintText: 'Send message',
-                        ),
-                      )),
-                  IconButton(
-                    icon: const Icon(Icons.send_outlined),
-                    onPressed: _send,
+                    ),
                   ),
-                ],
+                ),
+              ),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(14.0.w, 4.0.h, 14.0.w, 4.0.h),
+                  child: ListView.builder(
+                    physics:  const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: msgList.length,
+                    reverse: true,
+                    itemBuilder: (context, index) {
+                      return ChatMessageItem(chatMessageModel: msgList[index]);
+                    },
+                  ),
+                ),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

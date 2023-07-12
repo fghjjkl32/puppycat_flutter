@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 // import 'package:flutter_gen/gen_l10n/l10n.dart';
@@ -70,6 +71,48 @@ extension DateTimeExtension on DateTime {
       // );
     }
     return '${year.toString()}--${month.toString().padLeft(2, '0')}--${day.toString().padLeft(2, '0')}';
+
+    // return L10n.of(context)!.dateWithYear(
+    //   year.toString(),
+    //   month.toString().padLeft(2, '0'),
+    //   day.toString().padLeft(2, '0'),
+    // );
+  }
+
+  String localizedTimeDayDiff() {
+    final now = DateTime.now();
+    final targetDT = DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
+
+    final sameYear = now.year == year;
+    final sameDay = sameYear && now.month == month && now.day == day;
+
+    Duration difference = targetDT.difference(now);
+    int days = difference.inDays.abs();
+    int hours = difference.inHours.abs();
+    int minutes = difference.inMinutes.abs();
+    int seconds = difference.inSeconds.abs();
+
+    if (sameDay) {
+      if(hours > 0) {
+        return '$hours${'메시지.시간 전'.tr()}';
+      } else {
+        if(minutes > 0) {
+          return '$minutes${'메시지.분 전'.tr()}';
+        } else {
+          if(seconds > 0) {
+            return '$seconds${'메시지.초 전'.tr()}';
+          } else {
+            return '메시지.방금'.tr();
+          }
+        }
+      }
+    } else {
+      if(days > 30) {
+        return '${year.toString()}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
+      } else {
+        return '$days${'메시지.일 전'.tr()}';
+      }
+    }
 
     // return L10n.of(context)!.dateWithYear(
     //   year.toString(),

@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/abstract_chat_controller.dart';
+import 'package:pet_mobile_social_flutter/controller/chat/chat_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
-import 'package:pet_mobile_social_flutter/models/user/chat_user_register_model.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_user_model.dart';
+import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -20,14 +22,11 @@ enum ChatControllerStatus {
 // });
 
 final chatControllerProvider = StateProvider.family<AbstractChatController, String>((ref, provider) {
-  switch(provider) {
-    case "matrix" :
-    default:
-      return MatrixChatClientController();
-  }
+  // ChatController chatController = ChatController(provider: provider);
+  return ChatController(provider: provider).chatController;
 });
 
-final chatRegisterInfoProvider = StateProvider<ChatUserRegisterModel?>((ref) => null);
+final chatRegisterInfoProvider = StateProvider<ChatUserModel?>((ref) => null);
 
 @Riverpod(keepAlive: true)
 class ChatRegisterState extends _$ChatRegisterState {
@@ -36,9 +35,9 @@ class ChatRegisterState extends _$ChatRegisterState {
     return ChatControllerStatus.none;
   }
 
-  Future<ChatUserRegisterModel?> register(String id, String pw, String nick) async {
+  Future<ChatUserModel?> register(UserModel userModel) async {
     var chatController = ref.read(chatControllerProvider('matrix'));
-    var result = await chatController.register(id, pw, nick);
+    var result = await chatController.register(chatController.createAccount(userModel.id, userModel.appKey), chatController.createPassword(userModel.password), userModel.nick);
     ref.read(chatRegisterInfoProvider.notifier).state = result;
     return result;
   }
