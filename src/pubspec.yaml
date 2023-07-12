@@ -90,7 +90,12 @@ dependencies:
 
   #chat
   matrix: ^0.21.2
-  flutter_slidable: ^3.0.0
+#  flutter_slidable: ^3.0.0
+  flutter_slidable:
+    git:
+      url: https://github.com/engine-smkang-uxplus/flutter_slidable
+  flutter_gen: ^5.3.1
+  flutter_app_badger: ^1.5.0
 
 dev_dependencies:
   flutter_test:

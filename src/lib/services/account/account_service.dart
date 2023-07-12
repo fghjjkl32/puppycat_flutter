@@ -15,4 +15,10 @@ abstract class AccountService {
     "Content-Type": "application/json",
   })
   Future<ResponseModel?> restoreAccount(@Path("memberIdx") String memberIdx, @Body() Map<String, dynamic> body);
+
+  @GET('/my/info')
+  @Headers(<String, dynamic>{
+    "Content-Type": "application/json",
+  })
+  Future<ResponseModel?> getAccountInfo(@Query("memberIdx") String memberIdx);
 }

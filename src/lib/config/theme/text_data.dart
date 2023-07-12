@@ -138,3 +138,9 @@ TextStyle kBadge9RegularStyle = TextStyle(
   fontSize: 9.sp,
   fontWeight: FontWeight.w400,
 );
+
+TextStyle kBadge8RegularStyle = TextStyle(
+  fontFamily: pretendard,
+  fontSize: 8.sp,
+  fontWeight: FontWeight.w500,
+);

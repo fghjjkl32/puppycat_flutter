@@ -7,7 +7,6 @@ import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
-import 'package:pet_mobile_social_flutter/models/user/chat_user_register_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/signUp/sign_up_service.dart';
@@ -42,14 +41,6 @@ class SignUpRepository {
     }
 
     if (res.result) {
-      // // ///Chat Register
-      // ChatClientController chatClientController = GetIt.I<ChatClientController>();
-      // print(chatClientController.createPassword(userModel.password));
-      // ChatUserRegisterModel? chatUserRegisterModel = await chatClientController.register(chatClientController.createAccount(userModel.id, userModel.appKey), chatClientController.createPassword(userModel.password), userModel.nick);
-      //
-      // if(chatUserRegisterModel != null) {
-      //   userModel = userModel.copyWith(chatInfo: chatUserRegisterModel);
-      // }
       return SignUpStatus.success;
     } else {
       switch (res.code) {

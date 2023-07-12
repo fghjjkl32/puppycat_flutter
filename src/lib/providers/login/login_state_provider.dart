@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 part 'login_state_provider.g.dart';
 
 final userModelProvider = StateProvider<UserModel?>((ref) => null);
+final userInfoProvider = StateProvider<UserInfoModel>((ref) => UserInfoModel());
 // final cookieProvider = StateProvider<CookieJar?>((ref) => null);
 
 // final accountRestoreProvider = StateProvider.family<Future<bool>, (String, String)>((ref, restoreInfo) {
@@ -61,9 +64,10 @@ class LoginState extends _$LoginState {
     switch (userModel.loginStatus) {
       case LoginStatus.success:
         _saveUserModel(userModel);
-        ref
-            .read(loginRouteStateProvider.notifier)
-            .changeLoginRoute(LoginRoute.success);
+        UserInfoModel userInfoModel = UserInfoModel(userModel: userModel);
+        ref.read(userInfoProvider.notifier).state = UserInfoModel(userModel: userModel);
+        ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
+        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
       case LoginStatus.needSignUp:
         ref
             .read(loginRouteStateProvider.notifier)

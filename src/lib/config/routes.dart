@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:matrix/matrix.dart';
 import 'package:pet_mobile_social_flutter/main.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
@@ -8,6 +9,7 @@ import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_main_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/chat/chat_room_screen.dart';
 
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
@@ -298,6 +300,38 @@ class AppRouter {
           return const SplashScreen();
         },
       ),
+      GoRoute(
+        path: '/chatMain',
+        name: 'chatMain',
+        builder: (BuildContext context, GoRouterState state) {
+          return const ChatMainScreen();
+        },
+        routes: [
+          GoRoute(
+            path: 'chatRoom',
+            name: 'chatRoom',
+            builder: (BuildContext context, GoRouterState state) {
+              print('aaa');
+              if(state.extra is Room) {
+                // return ChatRoomScreen(room: state.extra! as Room);
+                return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
+              } else {
+                print('???');
+                return const ChatMainScreen();
+              }
+            },
+          ),
+        ]
+      ),
+      GoRoute(
+        path: '/chatRoomTest',
+        name: 'chatRoomTest',
+        builder: (BuildContext context, GoRouterState state) {
+            // return ChatRoomScreen(room: state.extra! as Room);
+            return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
+        },
+      ),
+
       // GoRoute(//id를 넘겨주어 navigarion 하는 방법
       //   path: '/book/:id',
       //   builder: (BuildContext context, GoRouterState state) {

@@ -33,7 +33,6 @@ mixin _$UserModel {
   String get password => throw _privateConstructorUsedError;
   String get passwordConfirm => throw _privateConstructorUsedError;
   String? get partner => throw _privateConstructorUsedError;
-  ChatUserRegisterModel? get chatInfo => throw _privateConstructorUsedError;
   String? get ci => throw _privateConstructorUsedError;
   String? get di => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
@@ -66,15 +65,12 @@ abstract class $UserModelCopyWith<$Res> {
       String password,
       String passwordConfirm,
       String? partner,
-      ChatUserRegisterModel? chatInfo,
       String? ci,
       String? di,
       String? name,
       String? phone,
       String? birth,
       String? gender});
-
-  $ChatUserRegisterModelCopyWith<$Res>? get chatInfo;
 }
 
 /// @nodoc
@@ -103,7 +99,6 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? password = null,
     Object? passwordConfirm = null,
     Object? partner = freezed,
-    Object? chatInfo = freezed,
     Object? ci = freezed,
     Object? di = freezed,
     Object? name = freezed,
@@ -164,10 +159,6 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.partner
           : partner // ignore: cast_nullable_to_non_nullable
               as String?,
-      chatInfo: freezed == chatInfo
-          ? _value.chatInfo
-          : chatInfo // ignore: cast_nullable_to_non_nullable
-              as ChatUserRegisterModel?,
       ci: freezed == ci
           ? _value.ci
           : ci // ignore: cast_nullable_to_non_nullable
@@ -194,18 +185,6 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
               as String?,
     ) as $Val);
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $ChatUserRegisterModelCopyWith<$Res>? get chatInfo {
-    if (_value.chatInfo == null) {
-      return null;
-    }
-
-    return $ChatUserRegisterModelCopyWith<$Res>(_value.chatInfo!, (value) {
-      return _then(_value.copyWith(chatInfo: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -229,16 +208,12 @@ abstract class _$$_UserModelCopyWith<$Res> implements $UserModelCopyWith<$Res> {
       String password,
       String passwordConfirm,
       String? partner,
-      ChatUserRegisterModel? chatInfo,
       String? ci,
       String? di,
       String? name,
       String? phone,
       String? birth,
       String? gender});
-
-  @override
-  $ChatUserRegisterModelCopyWith<$Res>? get chatInfo;
 }
 
 /// @nodoc
@@ -265,7 +240,6 @@ class __$$_UserModelCopyWithImpl<$Res>
     Object? password = null,
     Object? passwordConfirm = null,
     Object? partner = freezed,
-    Object? chatInfo = freezed,
     Object? ci = freezed,
     Object? di = freezed,
     Object? name = freezed,
@@ -326,10 +300,6 @@ class __$$_UserModelCopyWithImpl<$Res>
           ? _value.partner
           : partner // ignore: cast_nullable_to_non_nullable
               as String?,
-      chatInfo: freezed == chatInfo
-          ? _value.chatInfo
-          : chatInfo // ignore: cast_nullable_to_non_nullable
-              as ChatUserRegisterModel?,
       ci: freezed == ci
           ? _value.ci
           : ci // ignore: cast_nullable_to_non_nullable
@@ -375,7 +345,6 @@ class _$_UserModel implements _UserModel {
       required this.password,
       required this.passwordConfirm,
       this.partner = '',
-      this.chatInfo,
       this.ci,
       this.di,
       this.name,
@@ -416,8 +385,6 @@ class _$_UserModel implements _UserModel {
   @JsonKey()
   final String? partner;
   @override
-  final ChatUserRegisterModel? chatInfo;
-  @override
   final String? ci;
   @override
   final String? di;
@@ -432,7 +399,7 @@ class _$_UserModel implements _UserModel {
 
   @override
   String toString() {
-    return 'UserModel(loginStatus: $loginStatus, idx: $idx, appKey: $appKey, nick: $nick, id: $id, simpleId: $simpleId, refreshToken: $refreshToken, isSimple: $isSimple, simpleType: $simpleType, accessToken: $accessToken, password: $password, passwordConfirm: $passwordConfirm, partner: $partner, chatInfo: $chatInfo, ci: $ci, di: $di, name: $name, phone: $phone, birth: $birth, gender: $gender)';
+    return 'UserModel(loginStatus: $loginStatus, idx: $idx, appKey: $appKey, nick: $nick, id: $id, simpleId: $simpleId, refreshToken: $refreshToken, isSimple: $isSimple, simpleType: $simpleType, accessToken: $accessToken, password: $password, passwordConfirm: $passwordConfirm, partner: $partner, ci: $ci, di: $di, name: $name, phone: $phone, birth: $birth, gender: $gender)';
   }
 
   @override
@@ -461,8 +428,6 @@ class _$_UserModel implements _UserModel {
             (identical(other.passwordConfirm, passwordConfirm) ||
                 other.passwordConfirm == passwordConfirm) &&
             (identical(other.partner, partner) || other.partner == partner) &&
-            (identical(other.chatInfo, chatInfo) ||
-                other.chatInfo == chatInfo) &&
             (identical(other.ci, ci) || other.ci == ci) &&
             (identical(other.di, di) || other.di == di) &&
             (identical(other.name, name) || other.name == name) &&
@@ -488,7 +453,6 @@ class _$_UserModel implements _UserModel {
         password,
         passwordConfirm,
         partner,
-        chatInfo,
         ci,
         di,
         name,
@@ -526,7 +490,6 @@ abstract class _UserModel implements UserModel {
       required final String password,
       required final String passwordConfirm,
       final String? partner,
-      final ChatUserRegisterModel? chatInfo,
       final String? ci,
       final String? di,
       final String? name,
@@ -563,8 +526,6 @@ abstract class _UserModel implements UserModel {
   String get passwordConfirm;
   @override
   String? get partner;
-  @override
-  ChatUserRegisterModel? get chatInfo;
   @override
   String? get ci;
   @override
