@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'my_information_item_model.dart';
+part of 'user_information_item_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_MyInformationItemModel _$$_MyInformationItemModelFromJson(
+_$_UserInformationItemModel _$$_UserInformationItemModelFromJson(
         Map<String, dynamic> json) =>
-    _$_MyInformationItemModel(
+    _$_UserInformationItemModel(
       memberIdx: json['memberIdx'] as int?,
       nick: json['nick'] as String?,
       simpleType: json['simpleType'] as String?,
@@ -17,10 +17,12 @@ _$_MyInformationItemModel _$$_MyInformationItemModelFromJson(
       intro: json['intro'] as String?,
       profileImgUrl: json['profileImgUrl'] as String?,
       email: json['email'] as String?,
+      followerCnt: json['followerCnt'] as int?,
+      followCnt: json['followCnt'] as int?,
     );
 
-Map<String, dynamic> _$$_MyInformationItemModelToJson(
-        _$_MyInformationItemModel instance) =>
+Map<String, dynamic> _$$_UserInformationItemModelToJson(
+        _$_UserInformationItemModel instance) =>
     <String, dynamic>{
       'memberIdx': instance.memberIdx,
       'nick': instance.nick,
@@ -30,4 +32,6 @@ Map<String, dynamic> _$$_MyInformationItemModelToJson(
       'intro': instance.intro,
       'profileImgUrl': instance.profileImgUrl,
       'email': instance.email,
+      'followerCnt': instance.followerCnt,
+      'followCnt': instance.followCnt,
     };

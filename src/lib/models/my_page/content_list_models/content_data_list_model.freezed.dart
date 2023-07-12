@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'my_post_state.dart';
+part of 'content_data_list_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,12 +14,12 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-MyPostState _$MyPostStateFromJson(Map<String, dynamic> json) {
-  return _MyPostState.fromJson(json);
+ContentDataListModel _$ContentDataListModelFromJson(Map<String, dynamic> json) {
+  return _ContentDataListModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$MyPostState {
+mixin _$ContentDataListModel {
   List<ContentImageData> get list => throw _privateConstructorUsedError;
   ParamsModel? get params => throw _privateConstructorUsedError;
   int get page => throw _privateConstructorUsedError;
@@ -27,20 +27,18 @@ mixin _$MyPostState {
   bool get isLoadMoreError => throw _privateConstructorUsedError;
   bool get isLoadMoreDone => throw _privateConstructorUsedError;
   int get totalCount => throw _privateConstructorUsedError;
-  List<int> get selectOrder => throw _privateConstructorUsedError; // 추가
-  int get currentOrder => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $MyPostStateCopyWith<MyPostState> get copyWith =>
+  $ContentDataListModelCopyWith<ContentDataListModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $MyPostStateCopyWith<$Res> {
-  factory $MyPostStateCopyWith(
-          MyPostState value, $Res Function(MyPostState) then) =
-      _$MyPostStateCopyWithImpl<$Res, MyPostState>;
+abstract class $ContentDataListModelCopyWith<$Res> {
+  factory $ContentDataListModelCopyWith(ContentDataListModel value,
+          $Res Function(ContentDataListModel) then) =
+      _$ContentDataListModelCopyWithImpl<$Res, ContentDataListModel>;
   @useResult
   $Res call(
       {List<ContentImageData> list,
@@ -49,17 +47,16 @@ abstract class $MyPostStateCopyWith<$Res> {
       bool isLoading,
       bool isLoadMoreError,
       bool isLoadMoreDone,
-      int totalCount,
-      List<int> selectOrder,
-      int currentOrder});
+      int totalCount});
 
   $ParamsModelCopyWith<$Res>? get params;
 }
 
 /// @nodoc
-class _$MyPostStateCopyWithImpl<$Res, $Val extends MyPostState>
-    implements $MyPostStateCopyWith<$Res> {
-  _$MyPostStateCopyWithImpl(this._value, this._then);
+class _$ContentDataListModelCopyWithImpl<$Res,
+        $Val extends ContentDataListModel>
+    implements $ContentDataListModelCopyWith<$Res> {
+  _$ContentDataListModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -76,8 +73,6 @@ class _$MyPostStateCopyWithImpl<$Res, $Val extends MyPostState>
     Object? isLoadMoreError = null,
     Object? isLoadMoreDone = null,
     Object? totalCount = null,
-    Object? selectOrder = null,
-    Object? currentOrder = null,
   }) {
     return _then(_value.copyWith(
       list: null == list
@@ -108,14 +103,6 @@ class _$MyPostStateCopyWithImpl<$Res, $Val extends MyPostState>
           ? _value.totalCount
           : totalCount // ignore: cast_nullable_to_non_nullable
               as int,
-      selectOrder: null == selectOrder
-          ? _value.selectOrder
-          : selectOrder // ignore: cast_nullable_to_non_nullable
-              as List<int>,
-      currentOrder: null == currentOrder
-          ? _value.currentOrder
-          : currentOrder // ignore: cast_nullable_to_non_nullable
-              as int,
     ) as $Val);
   }
 
@@ -133,11 +120,11 @@ class _$MyPostStateCopyWithImpl<$Res, $Val extends MyPostState>
 }
 
 /// @nodoc
-abstract class _$$_MyPostStateCopyWith<$Res>
-    implements $MyPostStateCopyWith<$Res> {
-  factory _$$_MyPostStateCopyWith(
-          _$_MyPostState value, $Res Function(_$_MyPostState) then) =
-      __$$_MyPostStateCopyWithImpl<$Res>;
+abstract class _$$_ContentDataListModelCopyWith<$Res>
+    implements $ContentDataListModelCopyWith<$Res> {
+  factory _$$_ContentDataListModelCopyWith(_$_ContentDataListModel value,
+          $Res Function(_$_ContentDataListModel) then) =
+      __$$_ContentDataListModelCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -147,20 +134,18 @@ abstract class _$$_MyPostStateCopyWith<$Res>
       bool isLoading,
       bool isLoadMoreError,
       bool isLoadMoreDone,
-      int totalCount,
-      List<int> selectOrder,
-      int currentOrder});
+      int totalCount});
 
   @override
   $ParamsModelCopyWith<$Res>? get params;
 }
 
 /// @nodoc
-class __$$_MyPostStateCopyWithImpl<$Res>
-    extends _$MyPostStateCopyWithImpl<$Res, _$_MyPostState>
-    implements _$$_MyPostStateCopyWith<$Res> {
-  __$$_MyPostStateCopyWithImpl(
-      _$_MyPostState _value, $Res Function(_$_MyPostState) _then)
+class __$$_ContentDataListModelCopyWithImpl<$Res>
+    extends _$ContentDataListModelCopyWithImpl<$Res, _$_ContentDataListModel>
+    implements _$$_ContentDataListModelCopyWith<$Res> {
+  __$$_ContentDataListModelCopyWithImpl(_$_ContentDataListModel _value,
+      $Res Function(_$_ContentDataListModel) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -173,10 +158,8 @@ class __$$_MyPostStateCopyWithImpl<$Res>
     Object? isLoadMoreError = null,
     Object? isLoadMoreDone = null,
     Object? totalCount = null,
-    Object? selectOrder = null,
-    Object? currentOrder = null,
   }) {
-    return _then(_$_MyPostState(
+    return _then(_$_ContentDataListModel(
       list: null == list
           ? _value._list
           : list // ignore: cast_nullable_to_non_nullable
@@ -205,36 +188,25 @@ class __$$_MyPostStateCopyWithImpl<$Res>
           ? _value.totalCount
           : totalCount // ignore: cast_nullable_to_non_nullable
               as int,
-      selectOrder: null == selectOrder
-          ? _value._selectOrder
-          : selectOrder // ignore: cast_nullable_to_non_nullable
-              as List<int>,
-      currentOrder: null == currentOrder
-          ? _value.currentOrder
-          : currentOrder // ignore: cast_nullable_to_non_nullable
-              as int,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$_MyPostState implements _MyPostState {
-  _$_MyPostState(
+class _$_ContentDataListModel implements _ContentDataListModel {
+  const _$_ContentDataListModel(
       {final List<ContentImageData> list = const [],
       this.params,
       this.page = 1,
       this.isLoading = true,
       this.isLoadMoreError = false,
       this.isLoadMoreDone = false,
-      this.totalCount = 0,
-      final List<int> selectOrder = const [],
-      this.currentOrder = 1})
-      : _list = list,
-        _selectOrder = selectOrder;
+      this.totalCount = 0})
+      : _list = list;
 
-  factory _$_MyPostState.fromJson(Map<String, dynamic> json) =>
-      _$$_MyPostStateFromJson(json);
+  factory _$_ContentDataListModel.fromJson(Map<String, dynamic> json) =>
+      _$$_ContentDataListModelFromJson(json);
 
   final List<ContentImageData> _list;
   @override
@@ -262,30 +234,17 @@ class _$_MyPostState implements _MyPostState {
   @override
   @JsonKey()
   final int totalCount;
-  final List<int> _selectOrder;
-  @override
-  @JsonKey()
-  List<int> get selectOrder {
-    if (_selectOrder is EqualUnmodifiableListView) return _selectOrder;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_selectOrder);
-  }
-
-// 추가
-  @override
-  @JsonKey()
-  final int currentOrder;
 
   @override
   String toString() {
-    return 'MyPostState(list: $list, params: $params, page: $page, isLoading: $isLoading, isLoadMoreError: $isLoadMoreError, isLoadMoreDone: $isLoadMoreDone, totalCount: $totalCount, selectOrder: $selectOrder, currentOrder: $currentOrder)';
+    return 'ContentDataListModel(list: $list, params: $params, page: $page, isLoading: $isLoading, isLoadMoreError: $isLoadMoreError, isLoadMoreDone: $isLoadMoreDone, totalCount: $totalCount)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_MyPostState &&
+            other is _$_ContentDataListModel &&
             const DeepCollectionEquality().equals(other._list, _list) &&
             (identical(other.params, params) || other.params == params) &&
             (identical(other.page, page) || other.page == page) &&
@@ -296,11 +255,7 @@ class _$_MyPostState implements _MyPostState {
             (identical(other.isLoadMoreDone, isLoadMoreDone) ||
                 other.isLoadMoreDone == isLoadMoreDone) &&
             (identical(other.totalCount, totalCount) ||
-                other.totalCount == totalCount) &&
-            const DeepCollectionEquality()
-                .equals(other._selectOrder, _selectOrder) &&
-            (identical(other.currentOrder, currentOrder) ||
-                other.currentOrder == currentOrder));
+                other.totalCount == totalCount));
   }
 
   @JsonKey(ignore: true)
@@ -313,38 +268,35 @@ class _$_MyPostState implements _MyPostState {
       isLoading,
       isLoadMoreError,
       isLoadMoreDone,
-      totalCount,
-      const DeepCollectionEquality().hash(_selectOrder),
-      currentOrder);
+      totalCount);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_MyPostStateCopyWith<_$_MyPostState> get copyWith =>
-      __$$_MyPostStateCopyWithImpl<_$_MyPostState>(this, _$identity);
+  _$$_ContentDataListModelCopyWith<_$_ContentDataListModel> get copyWith =>
+      __$$_ContentDataListModelCopyWithImpl<_$_ContentDataListModel>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_MyPostStateToJson(
+    return _$$_ContentDataListModelToJson(
       this,
     );
   }
 }
 
-abstract class _MyPostState implements MyPostState {
-  factory _MyPostState(
+abstract class _ContentDataListModel implements ContentDataListModel {
+  const factory _ContentDataListModel(
       {final List<ContentImageData> list,
       final ParamsModel? params,
       final int page,
       final bool isLoading,
       final bool isLoadMoreError,
       final bool isLoadMoreDone,
-      final int totalCount,
-      final List<int> selectOrder,
-      final int currentOrder}) = _$_MyPostState;
+      final int totalCount}) = _$_ContentDataListModel;
 
-  factory _MyPostState.fromJson(Map<String, dynamic> json) =
-      _$_MyPostState.fromJson;
+  factory _ContentDataListModel.fromJson(Map<String, dynamic> json) =
+      _$_ContentDataListModel.fromJson;
 
   @override
   List<ContentImageData> get list;
@@ -361,11 +313,7 @@ abstract class _MyPostState implements MyPostState {
   @override
   int get totalCount;
   @override
-  List<int> get selectOrder;
-  @override // 추가
-  int get currentOrder;
-  @override
   @JsonKey(ignore: true)
-  _$$_MyPostStateCopyWith<_$_MyPostState> get copyWith =>
+  _$$_ContentDataListModelCopyWith<_$_ContentDataListModel> get copyWith =>
       throw _privateConstructorUsedError;
 }

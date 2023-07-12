@@ -91,6 +91,7 @@ dependencies:
   #chat
   matrix: ^0.21.2
   flutter_slidable: ^3.0.0
+  flutter_hooks: ^0.18.6
 
 dev_dependencies:
   flutter_test:

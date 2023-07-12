@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'my_information_item_model.dart';
+part of 'user_information_item_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,13 +14,13 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-MyInformationItemModel _$MyInformationItemModelFromJson(
+UserInformationItemModel _$UserInformationItemModelFromJson(
     Map<String, dynamic> json) {
-  return _MyInformationItemModel.fromJson(json);
+  return _UserInformationItemModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$MyInformationItemModel {
+mixin _$UserInformationItemModel {
   int? get memberIdx => throw _privateConstructorUsedError;
   String? get nick => throw _privateConstructorUsedError;
   String? get simpleType => throw _privateConstructorUsedError;
@@ -29,18 +29,20 @@ mixin _$MyInformationItemModel {
   String? get intro => throw _privateConstructorUsedError;
   String? get profileImgUrl => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
+  int? get followerCnt => throw _privateConstructorUsedError;
+  int? get followCnt => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $MyInformationItemModelCopyWith<MyInformationItemModel> get copyWith =>
+  $UserInformationItemModelCopyWith<UserInformationItemModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $MyInformationItemModelCopyWith<$Res> {
-  factory $MyInformationItemModelCopyWith(MyInformationItemModel value,
-          $Res Function(MyInformationItemModel) then) =
-      _$MyInformationItemModelCopyWithImpl<$Res, MyInformationItemModel>;
+abstract class $UserInformationItemModelCopyWith<$Res> {
+  factory $UserInformationItemModelCopyWith(UserInformationItemModel value,
+          $Res Function(UserInformationItemModel) then) =
+      _$UserInformationItemModelCopyWithImpl<$Res, UserInformationItemModel>;
   @useResult
   $Res call(
       {int? memberIdx,
@@ -50,14 +52,16 @@ abstract class $MyInformationItemModelCopyWith<$Res> {
       String? phone,
       String? intro,
       String? profileImgUrl,
-      String? email});
+      String? email,
+      int? followerCnt,
+      int? followCnt});
 }
 
 /// @nodoc
-class _$MyInformationItemModelCopyWithImpl<$Res,
-        $Val extends MyInformationItemModel>
-    implements $MyInformationItemModelCopyWith<$Res> {
-  _$MyInformationItemModelCopyWithImpl(this._value, this._then);
+class _$UserInformationItemModelCopyWithImpl<$Res,
+        $Val extends UserInformationItemModel>
+    implements $UserInformationItemModelCopyWith<$Res> {
+  _$UserInformationItemModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -75,6 +79,8 @@ class _$MyInformationItemModelCopyWithImpl<$Res,
     Object? intro = freezed,
     Object? profileImgUrl = freezed,
     Object? email = freezed,
+    Object? followerCnt = freezed,
+    Object? followCnt = freezed,
   }) {
     return _then(_value.copyWith(
       memberIdx: freezed == memberIdx
@@ -109,16 +115,25 @@ class _$MyInformationItemModelCopyWithImpl<$Res,
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
+      followerCnt: freezed == followerCnt
+          ? _value.followerCnt
+          : followerCnt // ignore: cast_nullable_to_non_nullable
+              as int?,
+      followCnt: freezed == followCnt
+          ? _value.followCnt
+          : followCnt // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$_MyInformationItemModelCopyWith<$Res>
-    implements $MyInformationItemModelCopyWith<$Res> {
-  factory _$$_MyInformationItemModelCopyWith(_$_MyInformationItemModel value,
-          $Res Function(_$_MyInformationItemModel) then) =
-      __$$_MyInformationItemModelCopyWithImpl<$Res>;
+abstract class _$$_UserInformationItemModelCopyWith<$Res>
+    implements $UserInformationItemModelCopyWith<$Res> {
+  factory _$$_UserInformationItemModelCopyWith(
+          _$_UserInformationItemModel value,
+          $Res Function(_$_UserInformationItemModel) then) =
+      __$$_UserInformationItemModelCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -129,16 +144,18 @@ abstract class _$$_MyInformationItemModelCopyWith<$Res>
       String? phone,
       String? intro,
       String? profileImgUrl,
-      String? email});
+      String? email,
+      int? followerCnt,
+      int? followCnt});
 }
 
 /// @nodoc
-class __$$_MyInformationItemModelCopyWithImpl<$Res>
-    extends _$MyInformationItemModelCopyWithImpl<$Res,
-        _$_MyInformationItemModel>
-    implements _$$_MyInformationItemModelCopyWith<$Res> {
-  __$$_MyInformationItemModelCopyWithImpl(_$_MyInformationItemModel _value,
-      $Res Function(_$_MyInformationItemModel) _then)
+class __$$_UserInformationItemModelCopyWithImpl<$Res>
+    extends _$UserInformationItemModelCopyWithImpl<$Res,
+        _$_UserInformationItemModel>
+    implements _$$_UserInformationItemModelCopyWith<$Res> {
+  __$$_UserInformationItemModelCopyWithImpl(_$_UserInformationItemModel _value,
+      $Res Function(_$_UserInformationItemModel) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -152,8 +169,10 @@ class __$$_MyInformationItemModelCopyWithImpl<$Res>
     Object? intro = freezed,
     Object? profileImgUrl = freezed,
     Object? email = freezed,
+    Object? followerCnt = freezed,
+    Object? followCnt = freezed,
   }) {
-    return _then(_$_MyInformationItemModel(
+    return _then(_$_UserInformationItemModel(
       memberIdx: freezed == memberIdx
           ? _value.memberIdx
           : memberIdx // ignore: cast_nullable_to_non_nullable
@@ -186,14 +205,22 @@ class __$$_MyInformationItemModelCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
+      followerCnt: freezed == followerCnt
+          ? _value.followerCnt
+          : followerCnt // ignore: cast_nullable_to_non_nullable
+              as int?,
+      followCnt: freezed == followCnt
+          ? _value.followCnt
+          : followCnt // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$_MyInformationItemModel implements _MyInformationItemModel {
-  _$_MyInformationItemModel(
+class _$_UserInformationItemModel implements _UserInformationItemModel {
+  _$_UserInformationItemModel(
       {this.memberIdx,
       this.nick,
       this.simpleType,
@@ -201,10 +228,12 @@ class _$_MyInformationItemModel implements _MyInformationItemModel {
       this.phone,
       this.intro,
       this.profileImgUrl,
-      this.email});
+      this.email,
+      this.followerCnt,
+      this.followCnt});
 
-  factory _$_MyInformationItemModel.fromJson(Map<String, dynamic> json) =>
-      _$$_MyInformationItemModelFromJson(json);
+  factory _$_UserInformationItemModel.fromJson(Map<String, dynamic> json) =>
+      _$$_UserInformationItemModelFromJson(json);
 
   @override
   final int? memberIdx;
@@ -222,17 +251,21 @@ class _$_MyInformationItemModel implements _MyInformationItemModel {
   final String? profileImgUrl;
   @override
   final String? email;
+  @override
+  final int? followerCnt;
+  @override
+  final int? followCnt;
 
   @override
   String toString() {
-    return 'MyInformationItemModel(memberIdx: $memberIdx, nick: $nick, simpleType: $simpleType, name: $name, phone: $phone, intro: $intro, profileImgUrl: $profileImgUrl, email: $email)';
+    return 'UserInformationItemModel(memberIdx: $memberIdx, nick: $nick, simpleType: $simpleType, name: $name, phone: $phone, intro: $intro, profileImgUrl: $profileImgUrl, email: $email, followerCnt: $followerCnt, followCnt: $followCnt)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_MyInformationItemModel &&
+            other is _$_UserInformationItemModel &&
             (identical(other.memberIdx, memberIdx) ||
                 other.memberIdx == memberIdx) &&
             (identical(other.nick, nick) || other.nick == nick) &&
@@ -243,31 +276,35 @@ class _$_MyInformationItemModel implements _MyInformationItemModel {
             (identical(other.intro, intro) || other.intro == intro) &&
             (identical(other.profileImgUrl, profileImgUrl) ||
                 other.profileImgUrl == profileImgUrl) &&
-            (identical(other.email, email) || other.email == email));
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.followerCnt, followerCnt) ||
+                other.followerCnt == followerCnt) &&
+            (identical(other.followCnt, followCnt) ||
+                other.followCnt == followCnt));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, memberIdx, nick, simpleType,
-      name, phone, intro, profileImgUrl, email);
+      name, phone, intro, profileImgUrl, email, followerCnt, followCnt);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_MyInformationItemModelCopyWith<_$_MyInformationItemModel> get copyWith =>
-      __$$_MyInformationItemModelCopyWithImpl<_$_MyInformationItemModel>(
-          this, _$identity);
+  _$$_UserInformationItemModelCopyWith<_$_UserInformationItemModel>
+      get copyWith => __$$_UserInformationItemModelCopyWithImpl<
+          _$_UserInformationItemModel>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_MyInformationItemModelToJson(
+    return _$$_UserInformationItemModelToJson(
       this,
     );
   }
 }
 
-abstract class _MyInformationItemModel implements MyInformationItemModel {
-  factory _MyInformationItemModel(
+abstract class _UserInformationItemModel implements UserInformationItemModel {
+  factory _UserInformationItemModel(
       {final int? memberIdx,
       final String? nick,
       final String? simpleType,
@@ -275,10 +312,12 @@ abstract class _MyInformationItemModel implements MyInformationItemModel {
       final String? phone,
       final String? intro,
       final String? profileImgUrl,
-      final String? email}) = _$_MyInformationItemModel;
+      final String? email,
+      final int? followerCnt,
+      final int? followCnt}) = _$_UserInformationItemModel;
 
-  factory _MyInformationItemModel.fromJson(Map<String, dynamic> json) =
-      _$_MyInformationItemModel.fromJson;
+  factory _UserInformationItemModel.fromJson(Map<String, dynamic> json) =
+      _$_UserInformationItemModel.fromJson;
 
   @override
   int? get memberIdx;
@@ -297,7 +336,11 @@ abstract class _MyInformationItemModel implements MyInformationItemModel {
   @override
   String? get email;
   @override
+  int? get followerCnt;
+  @override
+  int? get followCnt;
+  @override
   @JsonKey(ignore: true)
-  _$$_MyInformationItemModelCopyWith<_$_MyInformationItemModel> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$_UserInformationItemModelCopyWith<_$_UserInformationItemModel>
+      get copyWith => throw _privateConstructorUsedError;
 }

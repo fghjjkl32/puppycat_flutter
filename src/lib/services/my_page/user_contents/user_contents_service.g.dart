@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'my_information_service.dart';
+part of 'user_contents_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'my_information_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _MyInformationService implements MyInformationService {
-  _MyInformationService(
+class _UserContentsService implements UserContentsService {
+  _UserContentsService(
     this._dio, {
     this.baseUrl,
   }) {
@@ -21,20 +21,23 @@ class _MyInformationService implements MyInformationService {
   String? baseUrl;
 
   @override
-  Future<MyInformationResponseModel?> getMyInformation(int memberIdx) async {
+  Future<ContentResponseModel?> getUserContents(
+    int memberIdx,
+    int page,
+  ) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>?>(
-        _setStreamType<MyInformationResponseModel>(Options(
+        _setStreamType<ContentResponseModel>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              '/my/info?memberIdx=${memberIdx}',
+              '/my/contents?memberIdx=${memberIdx}&page=${page}',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -45,7 +48,7 @@ class _MyInformationService implements MyInformationService {
             ))));
     final value = _result.data == null
         ? null
-        : MyInformationResponseModel.fromJson(_result.data!);
+        : ContentResponseModel.fromJson(_result.data!);
     return value;
   }
 

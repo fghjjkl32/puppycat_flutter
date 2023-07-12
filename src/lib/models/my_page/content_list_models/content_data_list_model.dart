@@ -2,13 +2,12 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
 
-part 'my_post_state.freezed.dart';
-
-part 'my_post_state.g.dart';
+part 'content_data_list_model.freezed.dart';
+part 'content_data_list_model.g.dart';
 
 @freezed
-class MyPostState with _$MyPostState {
-  factory MyPostState({
+class ContentDataListModel with _$ContentDataListModel {
+  const factory ContentDataListModel({
     @Default([]) List<ContentImageData> list,
     ParamsModel? params,
     @Default(1) int page,
@@ -16,10 +15,8 @@ class MyPostState with _$MyPostState {
     @Default(false) bool isLoadMoreError,
     @Default(false) bool isLoadMoreDone,
     @Default(0) int totalCount,
-    @Default([]) List<int> selectOrder, // 추가
-    @Default(1) int currentOrder,
-  }) = _MyPostState;
+  }) = _ContentDataListModel;
 
-  factory MyPostState.fromJson(Map<String, dynamic> json) =>
-      _$MyPostStateFromJson(json);
+  factory ContentDataListModel.fromJson(Map<String, dynamic> json) =>
+      _$ContentDataListModelFromJson(json);
 }

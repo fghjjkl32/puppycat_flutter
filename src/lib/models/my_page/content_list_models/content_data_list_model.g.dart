@@ -1,13 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'my_post_state.dart';
+part of 'content_data_list_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_MyPostState _$$_MyPostStateFromJson(Map<String, dynamic> json) =>
-    _$_MyPostState(
+_$_ContentDataListModel _$$_ContentDataListModelFromJson(
+        Map<String, dynamic> json) =>
+    _$_ContentDataListModel(
       list: (json['list'] as List<dynamic>?)
               ?.map((e) => ContentImageData.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -20,14 +21,10 @@ _$_MyPostState _$$_MyPostStateFromJson(Map<String, dynamic> json) =>
       isLoadMoreError: json['isLoadMoreError'] as bool? ?? false,
       isLoadMoreDone: json['isLoadMoreDone'] as bool? ?? false,
       totalCount: json['totalCount'] as int? ?? 0,
-      selectOrder: (json['selectOrder'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList() ??
-          const [],
-      currentOrder: json['currentOrder'] as int? ?? 1,
     );
 
-Map<String, dynamic> _$$_MyPostStateToJson(_$_MyPostState instance) =>
+Map<String, dynamic> _$$_ContentDataListModelToJson(
+        _$_ContentDataListModel instance) =>
     <String, dynamic>{
       'list': instance.list,
       'params': instance.params,
@@ -36,6 +33,4 @@ Map<String, dynamic> _$$_MyPostStateToJson(_$_MyPostState instance) =>
       'isLoadMoreError': instance.isLoadMoreError,
       'isLoadMoreDone': instance.isLoadMoreDone,
       'totalCount': instance.totalCount,
-      'selectOrder': instance.selectOrder,
-      'currentOrder': instance.currentOrder,
     };
