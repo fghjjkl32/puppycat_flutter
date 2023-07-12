@@ -6,7 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_activity_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_save_state_provider.dart';
 
 class MyPageMyActivityListScreen extends ConsumerStatefulWidget {
   const MyPageMyActivityListScreen({super.key});
@@ -20,32 +21,50 @@ class MyPageMyActivityListScreenState
     extends ConsumerState<MyPageMyActivityListScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
-  ScrollController myActivityContentController = ScrollController();
+  ScrollController myLikeContentController = ScrollController();
+  ScrollController mySaveContentController = ScrollController();
 
-  int myActivityOldLength = 0;
+  int myLikeOldLength = 0;
+  int mySaveOldLength = 0;
 
   @override
   void initState() {
-    myActivityContentController.addListener(_myActivityContentsScrollListener);
+    myLikeContentController.addListener(_myLikeContentsScrollListener);
+    mySaveContentController.addListener(_mySaveContentsScrollListener);
+
     tabController = TabController(
       initialIndex: 0,
       length: 2,
       vsync: this,
     );
     ref
-        .read(myActivityStateProvider.notifier)
+        .read(myLikeStateProvider.notifier)
+        .initPosts(ref.read(userModelProvider)!.idx, 1);
+    ref
+        .read(mySaveStateProvider.notifier)
         .initPosts(ref.read(userModelProvider)!.idx, 1);
     super.initState();
   }
 
-  void _myActivityContentsScrollListener() {
-    if (myActivityContentController.position.pixels >
-        myActivityContentController.position.maxScrollExtent -
+  void _myLikeContentsScrollListener() {
+    if (myLikeContentController.position.pixels >
+        myLikeContentController.position.maxScrollExtent -
             MediaQuery.of(context).size.height) {
-      if (myActivityOldLength ==
-          ref.read(myActivityStateProvider).list.length) {
+      if (myLikeOldLength == ref.read(myLikeStateProvider).list.length) {
         ref
-            .read(myActivityStateProvider.notifier)
+            .read(myLikeStateProvider.notifier)
+            .loadMorePost(ref.read(userModelProvider)!.idx);
+      }
+    }
+  }
+
+  void _mySaveContentsScrollListener() {
+    if (mySaveContentController.position.pixels >
+        mySaveContentController.position.maxScrollExtent -
+            MediaQuery.of(context).size.height) {
+      if (mySaveOldLength == ref.read(mySaveStateProvider).list.length) {
+        ref
+            .read(mySaveStateProvider.notifier)
             .loadMorePost(ref.read(userModelProvider)!.idx);
       }
     }
@@ -53,9 +72,10 @@ class MyPageMyActivityListScreenState
 
   @override
   void dispose() {
-    myActivityContentController
-        .removeListener(_myActivityContentsScrollListener);
-    myActivityContentController.dispose();
+    myLikeContentController.removeListener(_myLikeContentsScrollListener);
+    myLikeContentController.dispose();
+    mySaveContentController.removeListener(_mySaveContentsScrollListener);
+    mySaveContentController.dispose();
     super.dispose();
   }
 
@@ -97,14 +117,44 @@ class MyPageMyActivityListScreenState
                     bottom: 10.h,
                   ),
                   tabs: [
-                    Text(
-                      "좋아요",
-                      style: kBody14BoldStyle,
-                    ),
-                    Text(
-                      "저장",
-                      style: kBody14BoldStyle,
-                    ),
+                    Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "좋아요",
+                            style: kBody14BoldStyle,
+                          ),
+                          SizedBox(
+                            width: 6.w,
+                          ),
+                          Text(
+                            "${ref.watch(myLikeStateProvider).totalCount}",
+                            style: kBadge10MediumStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
+                    Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "저장",
+                            style: kBody14BoldStyle,
+                          ),
+                          SizedBox(
+                            width: 6.w,
+                          ),
+                          Text(
+                            "${ref.watch(mySaveStateProvider).totalCount}",
+                            style: kBadge10MediumStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
                   ]),
             ),
             body: TabBarView(
@@ -146,22 +196,22 @@ class MyPageMyActivityListScreenState
     // }
     return Consumer(
       builder: (ctx, ref, child) {
-        final myActivityContentState = ref.watch(myActivityStateProvider);
-        final isLoadMoreError = myActivityContentState.isLoadMoreError;
-        final isLoadMoreDone = myActivityContentState.isLoadMoreDone;
-        final isLoading = myActivityContentState.isLoading;
-        final lists = myActivityContentState.list;
+        final myLikeContentState = ref.watch(myLikeStateProvider);
+        final isLoadMoreError = myLikeContentState.isLoadMoreError;
+        final isLoadMoreDone = myLikeContentState.isLoadMoreDone;
+        final isLoading = myLikeContentState.isLoading;
+        final lists = myLikeContentState.list;
 
-        myActivityOldLength = lists.length ?? 0;
+        myLikeOldLength = lists.length ?? 0;
 
         return RefreshIndicator(
           onRefresh: () {
-            return ref.read(myActivityStateProvider.notifier).refresh(
+            return ref.read(myLikeStateProvider.notifier).refresh(
                   ref.read(userModelProvider)!.idx,
                 );
           },
           child: GridView.builder(
-            controller: myActivityContentController,
+            controller: myLikeContentController,
             gridDelegate: SliverQuiltedGridDelegate(
               crossAxisCount: 3,
               mainAxisSpacing: 4,
@@ -251,22 +301,22 @@ class MyPageMyActivityListScreenState
   Widget _secondTabBody() {
     return Consumer(
       builder: (ctx, ref, child) {
-        final myActivityContentState = ref.watch(myActivityStateProvider);
-        final isLoadMoreError = myActivityContentState.isLoadMoreError;
-        final isLoadMoreDone = myActivityContentState.isLoadMoreDone;
-        final isLoading = myActivityContentState.isLoading;
-        final lists = myActivityContentState.list;
+        final mySaveContentState = ref.watch(mySaveStateProvider);
+        final isLoadMoreError = mySaveContentState.isLoadMoreError;
+        final isLoadMoreDone = mySaveContentState.isLoadMoreDone;
+        final isLoading = mySaveContentState.isLoading;
+        final lists = mySaveContentState.list;
 
-        myActivityOldLength = lists.length ?? 0;
+        mySaveOldLength = lists.length ?? 0;
 
         return RefreshIndicator(
           onRefresh: () {
-            return ref.read(myActivityStateProvider.notifier).refresh(
+            return ref.read(mySaveStateProvider.notifier).refresh(
                   ref.read(userModelProvider)!.idx,
                 );
           },
           child: GridView.builder(
-            controller: myActivityContentController,
+            controller: mySaveContentController,
             gridDelegate: SliverQuiltedGridDelegate(
               crossAxisCount: 3,
               mainAxisSpacing: 4,

@@ -46,9 +46,6 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
       vsync: this,
     );
     ref
-        .read(userInformationStateProvider.notifier)
-        .getUserInformation(ref.read(userModelProvider)!.idx);
-    ref
         .read(userContentStateProvider.notifier)
         .initPosts(ref.read(userModelProvider)!.idx, 1);
     ref

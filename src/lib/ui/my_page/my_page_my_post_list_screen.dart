@@ -8,7 +8,8 @@ import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_page_my_post_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_keep_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
 
 class MyPageMyPostListScreen extends ConsumerStatefulWidget {
   const MyPageMyPostListScreen({super.key});
@@ -21,11 +22,16 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
   ScrollController myPostContentController = ScrollController();
+  ScrollController myKeepContentController = ScrollController();
+
   int myPostOldLength = 0;
+  int myKeepOldLength = 0;
 
   @override
   void initState() {
     myPostContentController.addListener(_myPostContentsScrollListener);
+    myKeepContentController.addListener(_myKeepContentsScrollListener);
+
     tabController = TabController(
       initialIndex: 0,
       length: 2,
@@ -34,6 +40,9 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
 
     ref
         .read(myPostStateProvider.notifier)
+        .initPosts(ref.read(userModelProvider)!.idx, 1);
+    ref
+        .read(myKeepStateProvider.notifier)
         .initPosts(ref.read(userModelProvider)!.idx, 1);
 
     Future(() {
@@ -49,6 +58,18 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
       if (myPostOldLength == ref.read(myPostStateProvider).list.length) {
         ref
             .read(myPostStateProvider.notifier)
+            .loadMorePost(ref.read(userModelProvider)!.idx);
+      }
+    }
+  }
+
+  void _myKeepContentsScrollListener() {
+    if (myKeepContentController.position.pixels >
+        myKeepContentController.position.maxScrollExtent -
+            MediaQuery.of(context).size.height) {
+      if (myKeepOldLength == ref.read(myKeepStateProvider).list.length) {
+        ref
+            .read(myKeepStateProvider.notifier)
             .loadMorePost(ref.read(userModelProvider)!.idx);
       }
     }
@@ -99,22 +120,51 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                     bottom: 10.h,
                   ),
                   tabs: [
-                    Text(
-                      "일상글",
-                      style: kBody14BoldStyle,
-                    ),
-                    Text(
-                      "보관글",
-                      style: kBody14BoldStyle,
-                    ),
+                    Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "일상글",
+                            style: kBody14BoldStyle,
+                          ),
+                          SizedBox(
+                            width: 6.w,
+                          ),
+                          Text(
+                            "${ref.watch(myPostStateProvider).totalCount}",
+                            style: kBadge10MediumStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
+                    Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "보관글",
+                            style: kBody14BoldStyle,
+                          ),
+                          SizedBox(
+                            width: 6.w,
+                          ),
+                          Text(
+                            "${ref.watch(myKeepStateProvider).totalCount}",
+                            style: kBadge10MediumStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
                   ]),
             ),
             body: TabBarView(
               controller: tabController,
               children: [
                 _firstTabBody(),
-                Text("test"),
-                // _secondTabBody(),
+                _secondTabBody(),
               ],
             ),
           ),
@@ -128,11 +178,11 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
     final myPageMyPostState = ref.watch(myPostStateProvider);
     return Consumer(
       builder: (ctx, ref, child) {
-        final myContentState = ref.watch(myPostStateProvider);
-        final isLoadMoreError = myContentState.isLoadMoreError;
-        final isLoadMoreDone = myContentState.isLoadMoreDone;
-        final isLoading = myContentState.isLoading;
-        final lists = myContentState.list;
+        final myPostState = ref.watch(myPostStateProvider);
+        final isLoadMoreError = myPostState.isLoadMoreError;
+        final isLoadMoreDone = myPostState.isLoadMoreDone;
+        final isLoading = myPostState.isLoading;
+        final lists = myPostState.list;
 
         myPostOldLength = lists.length ?? 0;
 
@@ -573,347 +623,377 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
     );
   }
 
-  // Widget _secondTabBody() {
-  //   final myPageMyPostController = ref.watch(myPageMyPostProvider.notifier);
-  //   final myPageMyPostState = ref.watch(myPageMyPostProvider);
-  //   if (imageResult.isEmpty) {
-  //     return Column(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       children: [
-  //         Image.asset(
-  //           'assets/image/feed_write/image/corgi-2 1.png',
-  //           height: 68.h,
-  //         ),
-  //         SizedBox(
-  //           height: 12.h,
-  //         ),
-  //         Text(
-  //           "게시물이 없습니다.",
-  //           style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-  //         ),
-  //         Text(
-  //           "보관한 게시물이 여기에 표시됩니다.",
-  //           style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-  //         ),
-  //       ],
-  //     );
-  //   }
-  //   return Stack(
-  //     children: [
-  //       Padding(
-  //         padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
-  //         child: GridView.builder(
-  //           gridDelegate: SliverQuiltedGridDelegate(
-  //             crossAxisCount: 3,
-  //             mainAxisSpacing: 4,
-  //             crossAxisSpacing: 4,
-  //             repeatPattern: QuiltedGridRepeatPattern.same,
-  //             pattern: [
-  //               const QuiltedGridTile(2, 2),
-  //               const QuiltedGridTile(1, 1),
-  //               const QuiltedGridTile(1, 1),
-  //               const QuiltedGridTile(1, 1),
-  //               const QuiltedGridTile(1, 1),
-  //               const QuiltedGridTile(1, 1),
-  //               const QuiltedGridTile(1, 1),
-  //               const QuiltedGridTile(2, 2),
-  //               const QuiltedGridTile(1, 1),
-  //               const QuiltedGridTile(1, 1),
-  //               const QuiltedGridTile(1, 1),
-  //               const QuiltedGridTile(1, 1),
-  //             ],
-  //           ),
-  //           itemCount: imageResult.length,
-  //           itemBuilder: (BuildContext context, int index) {
-  //             return GestureDetector(
-  //               onTap: () {
-  //                 context.go("/home/myPage/myPost/myPostDetail/저장한 게시물");
-  //               },
-  //               child: Stack(
-  //                 children: [
-  //                   Container(
-  //                     decoration: BoxDecoration(
-  //                       borderRadius: (index == 0)
-  //                           ? const BorderRadius.only(
-  //                               topLeft: Radius.circular(10))
-  //                           : index == 1
-  //                               ? const BorderRadius.only(
-  //                                   topRight: Radius.circular(10))
-  //                               : BorderRadius.circular(0),
-  //                       image: DecorationImage(
-  //                           image: NetworkImage(imageResult[index]),
-  //                           fit: BoxFit.cover),
-  //                     ),
-  //                   ),
-  //                   Positioned(
-  //                     right: 4.w,
-  //                     top: 4.w,
-  //                     child: Container(
-  //                       decoration: BoxDecoration(
-  //                         color: const Color(0xff414348).withOpacity(0.75),
-  //                         borderRadius:
-  //                             const BorderRadius.all(Radius.circular(5.0)),
-  //                       ),
-  //                       width: 18.w,
-  //                       height: 14.w,
-  //                       child: Center(
-  //                         child: Text(
-  //                           "3",
-  //                           style: kBadge9RegularStyle.copyWith(
-  //                               color: kNeutralColor100),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   Positioned.fill(
-  //                     child: Container(
-  //                       padding: const EdgeInsets.all(4),
-  //                       child: Align(
-  //                         alignment: AlignmentDirectional.topStart,
-  //                         child: GestureDetector(
-  //                           behavior: HitTestBehavior.opaque,
-  //                           onTap: () =>
-  //                               myPageMyPostController.updateNumber(index),
-  //                           child: AnimatedContainer(
-  //                             duration:
-  //                                 const Duration(milliseconds: 300) * 0.75,
-  //                             width: 20,
-  //                             height: 20,
-  //                             decoration: BoxDecoration(
-  //                               border: myPageMyPostState.selectOrder[index] !=
-  //                                       -1
-  //                                   ? Border.all(
-  //                                       color: kPrimaryColor.withOpacity(0.7),
-  //                                       width: 2.w)
-  //                                   : Border.all(
-  //                                       color:
-  //                                           kNeutralColor100.withOpacity(0.7),
-  //                                       width: 2.w),
-  //                               shape: BoxShape.circle,
-  //                             ),
-  //                             child: Container(
-  //                               decoration: BoxDecoration(
-  //                                 shape: BoxShape.circle,
-  //                                 color:
-  //                                     myPageMyPostState.selectOrder[index] != -1
-  //                                         ? kPrimaryColor
-  //                                         : kNeutralColor100,
-  //                               ),
-  //                               child: FittedBox(
-  //                                 child: AnimatedSwitcher(
-  //                                   duration:
-  //                                       const Duration(milliseconds: 300) *
-  //                                           0.75,
-  //                                   reverseDuration:
-  //                                       const Duration(milliseconds: 300) *
-  //                                           0.75,
-  //                                   child: myPageMyPostState
-  //                                               .selectOrder[index] !=
-  //                                           -1
-  //                                       ? Center(
-  //                                           child: Text(
-  //                                             (myPageMyPostState
-  //                                                     .selectOrder[index])
-  //                                                 .toString(),
-  //                                             style:
-  //                                                 kBadge10MediumStyle.copyWith(
-  //                                                     color: kNeutralColor100),
-  //                                           ),
-  //                                         )
-  //                                       : const SizedBox.shrink(),
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             );
-  //           },
-  //         ),
-  //       ),
-  //       Positioned(
-  //         bottom: 0,
-  //         right: 0,
-  //         left: 0,
-  //         child: Container(
-  //           decoration: BoxDecoration(
-  //             gradient: LinearGradient(
-  //               begin: Alignment.topCenter,
-  //               end: Alignment.bottomCenter,
-  //               colors: <Color>[
-  //                 kNeutralColor100.withOpacity(0.0),
-  //                 kNeutralColor100.withOpacity(0.7),
-  //                 kNeutralColor100.withOpacity(1.0),
-  //                 kNeutralColor100.withOpacity(1.0),
-  //                 kNeutralColor100.withOpacity(1.0),
-  //               ],
-  //             ),
-  //           ),
-  //           child: Padding(
-  //             padding: const EdgeInsets.all(8.0),
-  //             child: Row(
-  //               mainAxisAlignment: MainAxisAlignment.center,
-  //               children: [
-  //                 GestureDetector(
-  //                   child: Container(
-  //                     width: 152.w,
-  //                     height: 36.h,
-  //                     decoration: BoxDecoration(
-  //                       color: myPageMyPostController.hasSelectedImage()
-  //                           ? kPrimaryLightColor
-  //                           : kNeutralColor400,
-  //                       borderRadius: const BorderRadius.all(
-  //                         Radius.circular(8.0),
-  //                       ),
-  //                     ),
-  //                     child: Center(
-  //                       child: Text(
-  //                         '프로필 표시',
-  //                         style: kButton14BoldStyle.copyWith(
-  //                           color: myPageMyPostController.hasSelectedImage()
-  //                               ? kPrimaryColor
-  //                               : kTextBodyColor,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   onTap: () {},
-  //                 ),
-  //                 SizedBox(
-  //                   width: 10.w,
-  //                 ),
-  //                 GestureDetector(
-  //                   child: Container(
-  //                     width: 152.w,
-  //                     height: 36.h,
-  //                     decoration: BoxDecoration(
-  //                       color: myPageMyPostController.hasSelectedImage()
-  //                           ? kBadgeColor
-  //                           : kNeutralColor400,
-  //                       borderRadius: const BorderRadius.all(
-  //                         Radius.circular(8.0),
-  //                       ),
-  //                     ),
-  //                     child: Center(
-  //                       child: Text(
-  //                         '삭제하기',
-  //                         style: kButton14BoldStyle.copyWith(
-  //                           color: myPageMyPostController.hasSelectedImage()
-  //                               ? kNeutralColor100
-  //                               : kTextBodyColor,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   onTap: () {
-  //                     myPageMyPostController.hasSelectedImage()
-  //                         ? showCustomModalBottomSheet(
-  //                             context: context,
-  //                             widget: Column(
-  //                               children: [
-  //                                 Padding(
-  //                                   padding: EdgeInsets.only(
-  //                                       top: 20.h, bottom: 10.h),
-  //                                   child: Row(
-  //                                     mainAxisAlignment:
-  //                                         MainAxisAlignment.center,
-  //                                     children: [
-  //                                       Text(
-  //                                         "게시물을 삭제하시겠어요?",
-  //                                         style: kBody16BoldStyle.copyWith(
-  //                                             color: kTextTitleColor),
-  //                                       ),
-  //                                     ],
-  //                                   ),
-  //                                 ),
-  //                                 Text(
-  //                                   "삭제한 게시물은",
-  //                                   style: kBody12RegularStyle.copyWith(
-  //                                       color: kTextBodyColor),
-  //                                 ),
-  //                                 Text(
-  //                                   "복구할 수 없습니다.",
-  //                                   style: kBody12RegularStyle.copyWith(
-  //                                       color: kTextBodyColor),
-  //                                 ),
-  //                                 SizedBox(height: 20.h),
-  //                                 Row(
-  //                                   mainAxisAlignment: MainAxisAlignment.center,
-  //                                   children: [
-  //                                     GestureDetector(
-  //                                       onTap: () {
-  //                                         context.pop();
-  //                                       },
-  //                                       child: Container(
-  //                                         width: 152.w,
-  //                                         height: 36.h,
-  //                                         decoration: const BoxDecoration(
-  //                                           color: kPrimaryLightColor,
-  //                                           borderRadius: BorderRadius.all(
-  //                                             Radius.circular(8.0),
-  //                                           ),
-  //                                         ),
-  //                                         child: Center(
-  //                                           child: Text(
-  //                                             "취소",
-  //                                             style:
-  //                                                 kButton14BoldStyle.copyWith(
-  //                                                     color: kPrimaryColor),
-  //                                           ),
-  //                                         ),
-  //                                       ),
-  //                                     ),
-  //                                     SizedBox(
-  //                                       width: 8.w,
-  //                                     ),
-  //                                     GestureDetector(
-  //                                       onTap: () {
-  //                                         context.pop();
-  //
-  //                                         toast(
-  //                                           context: context,
-  //                                           text: '게시물 삭제가 완료되었습니다.',
-  //                                           type: ToastType.purple,
-  //                                         );
-  //                                       },
-  //                                       child: Container(
-  //                                         width: 152.w,
-  //                                         height: 36.h,
-  //                                         decoration: const BoxDecoration(
-  //                                           color: kBadgeColor,
-  //                                           borderRadius: BorderRadius.all(
-  //                                             Radius.circular(8.0),
-  //                                           ),
-  //                                         ),
-  //                                         child: Center(
-  //                                           child: Text(
-  //                                             "삭제",
-  //                                             style:
-  //                                                 kButton14BoldStyle.copyWith(
-  //                                                     color: kNeutralColor100),
-  //                                           ),
-  //                                         ),
-  //                                       ),
-  //                                     ),
-  //                                   ],
-  //                                 )
-  //                               ],
-  //                             ),
-  //                           )
-  //                         : null;
-  //                   },
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget _secondTabBody() {
+    final myPageMyPostController = ref.watch(myKeepStateProvider.notifier);
+    final myPageMyPostState = ref.watch(myKeepStateProvider);
+    // if (imageResult.isEmpty) {
+    //   return Column(
+    //     mainAxisAlignment: MainAxisAlignment.center,
+    //     crossAxisAlignment: CrossAxisAlignment.center,
+    //     children: [
+    //       Image.asset(
+    //         'assets/image/feed_write/image/corgi-2 1.png',
+    //         height: 68.h,
+    //       ),
+    //       SizedBox(
+    //         height: 12.h,
+    //       ),
+    //       Text(
+    //         "게시물이 없습니다.",
+    //         style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+    //       ),
+    //       Text(
+    //         "보관한 게시물이 여기에 표시됩니다.",
+    //         style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+    //       ),
+    //     ],
+    //   );
+    // }
+    return Consumer(
+      builder: (ctx, ref, child) {
+        final myContentState = ref.watch(myKeepStateProvider);
+        final isLoadMoreError = myContentState.isLoadMoreError;
+        final isLoadMoreDone = myContentState.isLoadMoreDone;
+        final isLoading = myContentState.isLoading;
+        final lists = myContentState.list;
+
+        myKeepOldLength = lists.length ?? 0;
+
+        return Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
+              child: GridView.builder(
+                gridDelegate: SliverQuiltedGridDelegate(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 4,
+                  repeatPattern: QuiltedGridRepeatPattern.same,
+                  pattern: [
+                    const QuiltedGridTile(2, 2),
+                    const QuiltedGridTile(1, 1),
+                    const QuiltedGridTile(1, 1),
+                    const QuiltedGridTile(1, 1),
+                    const QuiltedGridTile(1, 1),
+                    const QuiltedGridTile(1, 1),
+                    const QuiltedGridTile(1, 1),
+                    const QuiltedGridTile(2, 2),
+                    const QuiltedGridTile(1, 1),
+                    const QuiltedGridTile(1, 1),
+                    const QuiltedGridTile(1, 1),
+                    const QuiltedGridTile(1, 1),
+                  ],
+                ),
+                itemCount: lists.length + 1,
+                itemBuilder: (BuildContext context, int index) {
+                  if (index == lists.length) {
+                    if (isLoadMoreError) {
+                      return const Center(
+                        child: Text('Error'),
+                      );
+                    }
+                    if (isLoadMoreDone) {
+                      return Container();
+                    }
+                    return Container();
+                  }
+                  return GestureDetector(
+                    onTap: () {
+                      context.go("/home/myPage/myPost/myPostDetail/저장한 게시물");
+                    },
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: (index == 0)
+                                ? const BorderRadius.only(
+                                    topLeft: Radius.circular(10))
+                                : index == 1
+                                    ? const BorderRadius.only(
+                                        topRight: Radius.circular(10))
+                                    : BorderRadius.circular(0),
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                    "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}"),
+                                fit: BoxFit.cover),
+                          ),
+                        ),
+                        Positioned(
+                          right: 4.w,
+                          top: 4.w,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xff414348).withOpacity(0.75),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            width: 18.w,
+                            height: 14.w,
+                            child: Center(
+                              child: Text(
+                                "${lists[index].imageCnt}",
+                                style: kBadge9RegularStyle.copyWith(
+                                    color: kNeutralColor100),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            child: Align(
+                              alignment: AlignmentDirectional.topStart,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () =>
+                                    myPageMyPostController.updateNumber(index),
+                                child: AnimatedContainer(
+                                  duration:
+                                      const Duration(milliseconds: 300) * 0.75,
+                                  width: 20,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    border: myPageMyPostState
+                                                .selectOrder[index] !=
+                                            -1
+                                        ? Border.all(
+                                            color:
+                                                kPrimaryColor.withOpacity(0.7),
+                                            width: 2.w)
+                                        : Border.all(
+                                            color: kNeutralColor100
+                                                .withOpacity(0.7),
+                                            width: 2.w),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: myPageMyPostState
+                                                  .selectOrder[index] !=
+                                              -1
+                                          ? kPrimaryColor
+                                          : kNeutralColor100,
+                                    ),
+                                    child: FittedBox(
+                                      child: AnimatedSwitcher(
+                                        duration:
+                                            const Duration(milliseconds: 300) *
+                                                0.75,
+                                        reverseDuration:
+                                            const Duration(milliseconds: 300) *
+                                                0.75,
+                                        child: myPageMyPostState
+                                                    .selectOrder[index] !=
+                                                -1
+                                            ? Center(
+                                                child: Text(
+                                                  (myPageMyPostState
+                                                          .selectOrder[index])
+                                                      .toString(),
+                                                  style: kBadge10MediumStyle
+                                                      .copyWith(
+                                                          color:
+                                                              kNeutralColor100),
+                                                ),
+                                              )
+                                            : const SizedBox.shrink(),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              left: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[
+                      kNeutralColor100.withOpacity(0.0),
+                      kNeutralColor100.withOpacity(0.7),
+                      kNeutralColor100.withOpacity(1.0),
+                      kNeutralColor100.withOpacity(1.0),
+                      kNeutralColor100.withOpacity(1.0),
+                    ],
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        child: Container(
+                          width: 152.w,
+                          height: 36.h,
+                          decoration: BoxDecoration(
+                            color: myPageMyPostController.hasSelectedImage()
+                                ? kPrimaryLightColor
+                                : kNeutralColor400,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8.0),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '프로필 표시',
+                              style: kButton14BoldStyle.copyWith(
+                                color: myPageMyPostController.hasSelectedImage()
+                                    ? kPrimaryColor
+                                    : kTextBodyColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        onTap: () {},
+                      ),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      GestureDetector(
+                        child: Container(
+                          width: 152.w,
+                          height: 36.h,
+                          decoration: BoxDecoration(
+                            color: myPageMyPostController.hasSelectedImage()
+                                ? kBadgeColor
+                                : kNeutralColor400,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8.0),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '삭제하기',
+                              style: kButton14BoldStyle.copyWith(
+                                color: myPageMyPostController.hasSelectedImage()
+                                    ? kNeutralColor100
+                                    : kTextBodyColor,
+                              ),
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          myPageMyPostController.hasSelectedImage()
+                              ? showCustomModalBottomSheet(
+                                  context: context,
+                                  widget: Column(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 20.h, bottom: 10.h),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "게시물을 삭제하시겠어요?",
+                                              style: kBody16BoldStyle.copyWith(
+                                                  color: kTextTitleColor),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        "삭제한 게시물은",
+                                        style: kBody12RegularStyle.copyWith(
+                                            color: kTextBodyColor),
+                                      ),
+                                      Text(
+                                        "복구할 수 없습니다.",
+                                        style: kBody12RegularStyle.copyWith(
+                                            color: kTextBodyColor),
+                                      ),
+                                      SizedBox(height: 20.h),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              context.pop();
+                                            },
+                                            child: Container(
+                                              width: 152.w,
+                                              height: 36.h,
+                                              decoration: const BoxDecoration(
+                                                color: kPrimaryLightColor,
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(8.0),
+                                                ),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  "취소",
+                                                  style: kButton14BoldStyle
+                                                      .copyWith(
+                                                          color: kPrimaryColor),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 8.w,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              context.pop();
+
+                                              toast(
+                                                context: context,
+                                                text: '게시물 삭제가 완료되었습니다.',
+                                                type: ToastType.purple,
+                                              );
+                                            },
+                                            child: Container(
+                                              width: 152.w,
+                                              height: 36.h,
+                                              decoration: const BoxDecoration(
+                                                color: kBadgeColor,
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(8.0),
+                                                ),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  "삭제",
+                                                  style: kButton14BoldStyle
+                                                      .copyWith(
+                                                          color:
+                                                              kNeutralColor100),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : null;
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

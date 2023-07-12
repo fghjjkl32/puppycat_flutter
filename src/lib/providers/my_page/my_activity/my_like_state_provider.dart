@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/user_contents/user_contents_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/like_contents/like_contents_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
-final myActivityStateProvider =
-    StateNotifierProvider<MyActivityStateNotifier, ContentDataListModel>((ref) {
-  return MyActivityStateNotifier();
+final myLikeStateProvider =
+    StateNotifierProvider<MyLikeStateNotifier, ContentDataListModel>((ref) {
+  return MyLikeStateNotifier();
 });
 
-class MyActivityStateNotifier extends StateNotifier<ContentDataListModel> {
-  MyActivityStateNotifier() : super(const ContentDataListModel());
+class MyLikeStateNotifier extends StateNotifier<ContentDataListModel> {
+  MyLikeStateNotifier() : super(const ContentDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
@@ -18,8 +18,8 @@ class MyActivityStateNotifier extends StateNotifier<ContentDataListModel> {
     int? initPage,
   ]) async {
     final page = initPage ?? state.page;
-    final lists = await UserContentsRepository()
-        .getUserContents(memberIdx: memberIdx, page: page);
+    final lists = await LikeContentsRepository()
+        .getLikeContents(memberIdx: memberIdx, page: page);
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
@@ -51,8 +51,8 @@ class MyActivityStateNotifier extends StateNotifier<ContentDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await UserContentsRepository()
-        .getUserContents(memberIdx: memberIdx, page: state.page + 1);
+    final lists = await LikeContentsRepository()
+        .getLikeContents(memberIdx: memberIdx, page: state.page + 1);
 
     if (lists == null) {
       state = state.copyWith(isLoadMoreError: true, isLoading: false);
