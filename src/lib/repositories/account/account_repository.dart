@@ -26,4 +26,16 @@ class AccountRepository {
 
     return responseModel.result;
   }
+
+  Future<bool> getAccountInfo(String memberIdx) async {
+    ResponseModel? responseModel = await _accountService.getAccountInfo(memberIdx);
+
+    if(responseModel == null) {
+      ///TODO
+      ///throw로 할지 그냥 return null로 할지 생각해보기
+      throw "error";
+    }
+
+    return responseModel.result;
+  }
 }

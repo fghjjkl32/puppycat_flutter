@@ -19,7 +19,7 @@ class MainActivity: FlutterFragmentActivity() {
     var methodChannelResult: MethodChannel.Result? = null
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
-        window.addFlags(LayoutParams.FLAG_SECURE)
+//        window.addFlags(LayoutParams.FLAG_SECURE)
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,

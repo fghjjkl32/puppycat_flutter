@@ -24,7 +24,9 @@ class AuthRepository {
     // print('test : $response');
 
     // ResponseModel? responseModel = await _authService.getPassAuthUrl(queries).catchError((obj) => throw 'some error.');
-    ResponseModel? responseModel = await _authService.getPassAuthUrl(appKey: appKey, token: token).catchError((obj) => throw 'some error.');
+    ResponseModel? responseModel = await _authService.getPassAuthUrl(appKey: appKey, token: token).catchError((obj) =>
+      throw 'some error.'
+    );
     if(responseModel == null) {
       throw 'response body is null';
     }
