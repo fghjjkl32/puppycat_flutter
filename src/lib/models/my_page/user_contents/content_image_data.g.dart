@@ -13,6 +13,7 @@ _$_ContentImageData _$$_ContentImageDataFromJson(Map<String, dynamic> json) =>
       commentCnt: json['commentCnt'] as int?,
       likeCnt: json['likeCnt'] as int?,
       imageCnt: json['imageCnt'] as int,
+      selfLike: json['selfLike'] as int?,
     );
 
 Map<String, dynamic> _$$_ContentImageDataToJson(_$_ContentImageData instance) =>
@@ -22,4 +23,5 @@ Map<String, dynamic> _$$_ContentImageDataToJson(_$_ContentImageData instance) =>
       'commentCnt': instance.commentCnt,
       'likeCnt': instance.likeCnt,
       'imageCnt': instance.imageCnt,
+      'selfLike': instance.selfLike,
     };

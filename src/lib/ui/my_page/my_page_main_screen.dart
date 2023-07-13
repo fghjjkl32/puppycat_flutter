@@ -522,10 +522,15 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                       ),
                                     );
                                   },
-                                  child: Image.asset(
-                                    'assets/image/feed/icon/small_size/icon_comment_like_off.png',
-                                    height: 26.w,
-                                  ),
+                                  child: lists[index].likeCnt == 1
+                                      ? Image.asset(
+                                          'assets/image/feed/icon/small_size/icon_comment_like_on.png',
+                                          height: 26.w,
+                                        )
+                                      : Image.asset(
+                                          'assets/image/feed/icon/small_size/icon_comment_like_off.png',
+                                          height: 26.w,
+                                        ),
                                 ),
                               ),
                               Text(

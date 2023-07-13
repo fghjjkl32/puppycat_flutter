@@ -8,8 +8,7 @@ import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_keep_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_test_state_provider.dart';
 
 class MyPageMyPostListScreen extends ConsumerStatefulWidget {
   const MyPageMyPostListScreen({super.key});
@@ -40,14 +39,16 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
 
     ref
         .read(myPostStateProvider.notifier)
-        .initPosts(ref.read(userModelProvider)!.idx, 1);
+        .initMyPosts(ref.read(userModelProvider)!.idx, 1);
     ref
-        .read(myKeepStateProvider.notifier)
-        .initPosts(ref.read(userModelProvider)!.idx, 1);
+        .read(myPostStateProvider.notifier)
+        .initMyKeeps(ref.read(userModelProvider)!.idx, 1);
 
     Future(() {
-      ref.watch(myPostStateProvider.notifier).resetSelection();
+      ref.watch(myPostStateProvider.notifier).resetMyPostSelection();
+      ref.watch(myPostStateProvider.notifier).resetMyKeepSelection();
     });
+
     super.initState();
   }
 
@@ -55,10 +56,11 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
     if (myPostContentController.position.pixels >
         myPostContentController.position.maxScrollExtent -
             MediaQuery.of(context).size.height) {
-      if (myPostOldLength == ref.read(myPostStateProvider).list.length) {
+      if (myPostOldLength ==
+          ref.read(myPostStateProvider).myPostState.list.length) {
         ref
             .read(myPostStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx);
+            .loadMoreMyPost(ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -67,10 +69,11 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
     if (myKeepContentController.position.pixels >
         myKeepContentController.position.maxScrollExtent -
             MediaQuery.of(context).size.height) {
-      if (myKeepOldLength == ref.read(myKeepStateProvider).list.length) {
+      if (myKeepOldLength ==
+          ref.read(myPostStateProvider).myKeepState.list.length) {
         ref
-            .read(myKeepStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx);
+            .read(myPostStateProvider.notifier)
+            .loadMoreMyKeeps(ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -132,7 +135,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                             width: 6.w,
                           ),
                           Text(
-                            "${ref.watch(myPostStateProvider).totalCount}",
+                            "${ref.watch(myPostStateProvider).myPostState.totalCount}",
                             style: kBadge10MediumStyle.copyWith(
                                 color: kTextBodyColor),
                           ),
@@ -151,7 +154,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                             width: 6.w,
                           ),
                           Text(
-                            "${ref.watch(myKeepStateProvider).totalCount}",
+                            "${ref.watch(myPostStateProvider).myKeepState.totalCount}",
                             style: kBadge10MediumStyle.copyWith(
                                 color: kTextBodyColor),
                           ),
@@ -179,10 +182,10 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
     return Consumer(
       builder: (ctx, ref, child) {
         final myPostState = ref.watch(myPostStateProvider);
-        final isLoadMoreError = myPostState.isLoadMoreError;
-        final isLoadMoreDone = myPostState.isLoadMoreDone;
-        final isLoading = myPostState.isLoading;
-        final lists = myPostState.list;
+        final isLoadMoreError = myPostState.myPostState.isLoadMoreError;
+        final isLoadMoreDone = myPostState.myPostState.isLoadMoreDone;
+        final isLoading = myPostState.myPostState.isLoading;
+        final lists = myPostState.myPostState.list;
 
         myPostOldLength = lists.length ?? 0;
 
@@ -273,15 +276,15 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                               alignment: AlignmentDirectional.topStart,
                               child: GestureDetector(
                                 behavior: HitTestBehavior.opaque,
-                                onTap: () =>
-                                    myPageMyPostController.updateNumber(index),
+                                onTap: () => myPageMyPostController
+                                    .updateMyPostNumber(index),
                                 child: AnimatedContainer(
                                   duration:
                                       const Duration(milliseconds: 300) * 0.75,
                                   width: 20,
                                   height: 20,
                                   decoration: BoxDecoration(
-                                    border: myPageMyPostState
+                                    border: myPageMyPostState.myPostState
                                                 .selectOrder[index] !=
                                             -1
                                         ? Border.all(
@@ -297,7 +300,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                                   child: Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: myPageMyPostState
+                                      color: myPageMyPostState.myPostState
                                                   .selectOrder[index] !=
                                               -1
                                           ? kPrimaryColor
@@ -311,12 +314,12 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                                         reverseDuration:
                                             const Duration(milliseconds: 300) *
                                                 0.75,
-                                        child: myPageMyPostState
+                                        child: myPageMyPostState.myPostState
                                                     .selectOrder[index] !=
                                                 -1
                                             ? Center(
                                                 child: Text(
-                                                  (myPageMyPostState
+                                                  (myPageMyPostState.myPostState
                                                           .selectOrder[index])
                                                       .toString(),
                                                   style: kBadge10MediumStyle
@@ -368,9 +371,10 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                           width: 152.w,
                           height: 36.h,
                           decoration: BoxDecoration(
-                            color: myPageMyPostController.hasSelectedImage()
-                                ? kPrimaryLightColor
-                                : kNeutralColor400,
+                            color:
+                                myPageMyPostController.hasMyPostSelectedImage()
+                                    ? kPrimaryLightColor
+                                    : kNeutralColor400,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(8.0),
                             ),
@@ -379,7 +383,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                             child: Text(
                               '보관하기',
                               style: kButton14BoldStyle.copyWith(
-                                color: myPageMyPostController.hasSelectedImage()
+                                color: myPageMyPostController
+                                        .hasMyPostSelectedImage()
                                     ? kPrimaryColor
                                     : kTextBodyColor,
                               ),
@@ -387,7 +392,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                           ),
                         ),
                         onTap: () {
-                          myPageMyPostController.hasSelectedImage()
+                          myPageMyPostController.hasMyPostSelectedImage()
                               ? showCustomModalBottomSheet(
                                   context: context,
                                   widget: Column(
@@ -449,14 +454,36 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                                             width: 8.w,
                                           ),
                                           GestureDetector(
-                                            onTap: () {
+                                            onTap: () async {
                                               context.pop();
 
-                                              toast(
-                                                context: context,
-                                                text: '게시물 보관이 완료되었습니다.',
-                                                type: ToastType.purple,
+                                              // final result =
+                                              //     await contentManager
+                                              //         .postKeepContents(
+                                              //   memberIdx: ref
+                                              //       .read(userModelProvider)!
+                                              //       .idx,
+                                              //   idxList: myPageMyPostController
+                                              //       .getSelectedImageIdx(),
+                                              // );
+
+                                              final result =
+                                                  await myPageMyPostController
+                                                      .postKeepContents(
+                                                memberIdx: ref
+                                                    .read(userModelProvider)!
+                                                    .idx,
+                                                idxList: myPageMyPostController
+                                                    .getSelectedMyPostImageIdx(),
                                               );
+
+                                              if (result.result) {
+                                                toast(
+                                                  context: context,
+                                                  text: '게시물 보관이 완료되었습니다.',
+                                                  type: ToastType.purple,
+                                                );
+                                              }
                                             },
                                             child: Container(
                                               width: 152.w,
@@ -494,9 +521,10 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                           width: 152.w,
                           height: 36.h,
                           decoration: BoxDecoration(
-                            color: myPageMyPostController.hasSelectedImage()
-                                ? kBadgeColor
-                                : kNeutralColor400,
+                            color:
+                                myPageMyPostController.hasMyPostSelectedImage()
+                                    ? kBadgeColor
+                                    : kNeutralColor400,
                             borderRadius: const BorderRadius.all(
                               Radius.circular(8.0),
                             ),
@@ -505,7 +533,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                             child: Text(
                               '삭제하기',
                               style: kButton14BoldStyle.copyWith(
-                                color: myPageMyPostController.hasSelectedImage()
+                                color: myPageMyPostController
+                                        .hasMyPostSelectedImage()
                                     ? kNeutralColor100
                                     : kTextBodyColor,
                               ),
@@ -513,7 +542,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                           ),
                         ),
                         onTap: () {
-                          myPageMyPostController.hasSelectedImage()
+                          myPageMyPostController.hasMyPostSelectedImage()
                               ? showCustomModalBottomSheet(
                                   context: context,
                                   widget: Column(
@@ -575,14 +604,27 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                                             width: 8.w,
                                           ),
                                           GestureDetector(
-                                            onTap: () {
+                                            onTap: () async {
                                               context.pop();
 
-                                              toast(
-                                                context: context,
-                                                text: '게시물 삭제가 완료되었습니다.',
-                                                type: ToastType.purple,
+                                              final result =
+                                                  await myPageMyPostController
+                                                      .deleteContents(
+                                                memberIdx: ref
+                                                    .read(userModelProvider)!
+                                                    .idx,
+                                                idx: myPageMyPostController
+                                                    .getSelectedImageIndices(
+                                                        isKeepSelect: false),
                                               );
+
+                                              if (result.result) {
+                                                toast(
+                                                  context: context,
+                                                  text: '게시물 삭제가 완료되었습니다.',
+                                                  type: ToastType.purple,
+                                                );
+                                              }
                                             },
                                             child: Container(
                                               width: 152.w,
@@ -624,8 +666,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
   }
 
   Widget _secondTabBody() {
-    final myPageMyPostController = ref.watch(myKeepStateProvider.notifier);
-    final myPageMyPostState = ref.watch(myKeepStateProvider);
+    final myKeepController = ref.watch(myPostStateProvider.notifier);
+    final myKeepState = ref.watch(myPostStateProvider);
     // if (imageResult.isEmpty) {
     //   return Column(
     //     mainAxisAlignment: MainAxisAlignment.center,
@@ -651,11 +693,11 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
     // }
     return Consumer(
       builder: (ctx, ref, child) {
-        final myContentState = ref.watch(myKeepStateProvider);
-        final isLoadMoreError = myContentState.isLoadMoreError;
-        final isLoadMoreDone = myContentState.isLoadMoreDone;
-        final isLoading = myContentState.isLoading;
-        final lists = myContentState.list;
+        final myKeepState = ref.watch(myPostStateProvider);
+        final isLoadMoreError = myKeepState.myKeepState.isLoadMoreError;
+        final isLoadMoreDone = myKeepState.myKeepState.isLoadMoreDone;
+        final isLoading = myKeepState.myKeepState.isLoading;
+        final lists = myKeepState.myKeepState.list;
 
         myKeepOldLength = lists.length ?? 0;
 
@@ -746,14 +788,14 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                               child: GestureDetector(
                                 behavior: HitTestBehavior.opaque,
                                 onTap: () =>
-                                    myPageMyPostController.updateNumber(index),
+                                    myKeepController.updateMyKeepNumber(index),
                                 child: AnimatedContainer(
                                   duration:
                                       const Duration(milliseconds: 300) * 0.75,
                                   width: 20,
                                   height: 20,
                                   decoration: BoxDecoration(
-                                    border: myPageMyPostState
+                                    border: myKeepState.myKeepState
                                                 .selectOrder[index] !=
                                             -1
                                         ? Border.all(
@@ -769,7 +811,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                                   child: Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: myPageMyPostState
+                                      color: myKeepState.myKeepState
                                                   .selectOrder[index] !=
                                               -1
                                           ? kPrimaryColor
@@ -783,12 +825,12 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                                         reverseDuration:
                                             const Duration(milliseconds: 300) *
                                                 0.75,
-                                        child: myPageMyPostState
+                                        child: myKeepState.myKeepState
                                                     .selectOrder[index] !=
                                                 -1
                                             ? Center(
                                                 child: Text(
-                                                  (myPageMyPostState
+                                                  (myKeepState.myKeepState
                                                           .selectOrder[index])
                                                       .toString(),
                                                   style: kBadge10MediumStyle
@@ -840,7 +882,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                           width: 152.w,
                           height: 36.h,
                           decoration: BoxDecoration(
-                            color: myPageMyPostController.hasSelectedImage()
+                            color: myKeepController.hasMyKeepSelectedImage()
                                 ? kPrimaryLightColor
                                 : kNeutralColor400,
                             borderRadius: const BorderRadius.all(
@@ -851,14 +893,29 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                             child: Text(
                               '프로필 표시',
                               style: kButton14BoldStyle.copyWith(
-                                color: myPageMyPostController.hasSelectedImage()
+                                color: myKeepController.hasMyKeepSelectedImage()
                                     ? kPrimaryColor
                                     : kTextBodyColor,
                               ),
                             ),
                           ),
                         ),
-                        onTap: () {},
+                        onTap: () async {
+                          final result =
+                              await myKeepController.deleteKeepContents(
+                            memberIdx: ref.read(userModelProvider)!.idx,
+                            idx: myKeepController.getSelectedImageIndices(
+                                isKeepSelect: true),
+                          );
+
+                          if (result.result) {
+                            toast(
+                              context: context,
+                              text: '프로필 표시가 완료되었습니다.',
+                              type: ToastType.purple,
+                            );
+                          }
+                        },
                       ),
                       SizedBox(
                         width: 10.w,
@@ -868,7 +925,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                           width: 152.w,
                           height: 36.h,
                           decoration: BoxDecoration(
-                            color: myPageMyPostController.hasSelectedImage()
+                            color: myKeepController.hasMyKeepSelectedImage()
                                 ? kBadgeColor
                                 : kNeutralColor400,
                             borderRadius: const BorderRadius.all(
@@ -879,7 +936,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                             child: Text(
                               '삭제하기',
                               style: kButton14BoldStyle.copyWith(
-                                color: myPageMyPostController.hasSelectedImage()
+                                color: myKeepController.hasMyKeepSelectedImage()
                                     ? kNeutralColor100
                                     : kTextBodyColor,
                               ),
@@ -887,7 +944,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                           ),
                         ),
                         onTap: () {
-                          myPageMyPostController.hasSelectedImage()
+                          myKeepController.hasMyKeepSelectedImage()
                               ? showCustomModalBottomSheet(
                                   context: context,
                                   widget: Column(
@@ -949,14 +1006,27 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                                             width: 8.w,
                                           ),
                                           GestureDetector(
-                                            onTap: () {
+                                            onTap: () async {
                                               context.pop();
 
-                                              toast(
-                                                context: context,
-                                                text: '게시물 삭제가 완료되었습니다.',
-                                                type: ToastType.purple,
+                                              final result =
+                                                  await myKeepController
+                                                      .deleteContents(
+                                                memberIdx: ref
+                                                    .read(userModelProvider)!
+                                                    .idx,
+                                                idx: myKeepController
+                                                    .getSelectedImageIndices(
+                                                        isKeepSelect: true),
                                               );
+
+                                              if (result.result) {
+                                                toast(
+                                                  context: context,
+                                                  text: '게시물 삭제가 완료되었습니다.',
+                                                  type: ToastType.purple,
+                                                );
+                                              }
                                             },
                                             child: Container(
                                               width: 152.w,
