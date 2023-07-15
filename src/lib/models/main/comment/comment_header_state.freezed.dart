@@ -22,6 +22,7 @@ CommentHeaderState _$CommentHeaderStateFromJson(Map<String, dynamic> json) {
 mixin _$CommentHeaderState {
   bool get isReply => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  int? get parentIdx => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +36,7 @@ abstract class $CommentHeaderStateCopyWith<$Res> {
           CommentHeaderState value, $Res Function(CommentHeaderState) then) =
       _$CommentHeaderStateCopyWithImpl<$Res, CommentHeaderState>;
   @useResult
-  $Res call({bool isReply, String name});
+  $Res call({bool isReply, String name, int? parentIdx});
 }
 
 /// @nodoc
@@ -53,6 +54,7 @@ class _$CommentHeaderStateCopyWithImpl<$Res, $Val extends CommentHeaderState>
   $Res call({
     Object? isReply = null,
     Object? name = null,
+    Object? parentIdx = freezed,
   }) {
     return _then(_value.copyWith(
       isReply: null == isReply
@@ -63,6 +65,10 @@ class _$CommentHeaderStateCopyWithImpl<$Res, $Val extends CommentHeaderState>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      parentIdx: freezed == parentIdx
+          ? _value.parentIdx
+          : parentIdx // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -75,7 +81,7 @@ abstract class _$$_CommentHeaderStateCopyWith<$Res>
       __$$_CommentHeaderStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool isReply, String name});
+  $Res call({bool isReply, String name, int? parentIdx});
 }
 
 /// @nodoc
@@ -91,6 +97,7 @@ class __$$_CommentHeaderStateCopyWithImpl<$Res>
   $Res call({
     Object? isReply = null,
     Object? name = null,
+    Object? parentIdx = freezed,
   }) {
     return _then(_$_CommentHeaderState(
       isReply: null == isReply
@@ -101,6 +108,10 @@ class __$$_CommentHeaderStateCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      parentIdx: freezed == parentIdx
+          ? _value.parentIdx
+          : parentIdx // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -108,7 +119,8 @@ class __$$_CommentHeaderStateCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_CommentHeaderState implements _CommentHeaderState {
-  _$_CommentHeaderState({this.isReply = false, this.name = ""});
+  _$_CommentHeaderState(
+      {this.isReply = false, this.name = "", this.parentIdx = null});
 
   factory _$_CommentHeaderState.fromJson(Map<String, dynamic> json) =>
       _$$_CommentHeaderStateFromJson(json);
@@ -119,10 +131,13 @@ class _$_CommentHeaderState implements _CommentHeaderState {
   @override
   @JsonKey()
   final String name;
+  @override
+  @JsonKey()
+  final int? parentIdx;
 
   @override
   String toString() {
-    return 'CommentHeaderState(isReply: $isReply, name: $name)';
+    return 'CommentHeaderState(isReply: $isReply, name: $name, parentIdx: $parentIdx)';
   }
 
   @override
@@ -131,12 +146,14 @@ class _$_CommentHeaderState implements _CommentHeaderState {
         (other.runtimeType == runtimeType &&
             other is _$_CommentHeaderState &&
             (identical(other.isReply, isReply) || other.isReply == isReply) &&
-            (identical(other.name, name) || other.name == name));
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.parentIdx, parentIdx) ||
+                other.parentIdx == parentIdx));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, isReply, name);
+  int get hashCode => Object.hash(runtimeType, isReply, name, parentIdx);
 
   @JsonKey(ignore: true)
   @override
@@ -154,8 +171,10 @@ class _$_CommentHeaderState implements _CommentHeaderState {
 }
 
 abstract class _CommentHeaderState implements CommentHeaderState {
-  factory _CommentHeaderState({final bool isReply, final String name}) =
-      _$_CommentHeaderState;
+  factory _CommentHeaderState(
+      {final bool isReply,
+      final String name,
+      final int? parentIdx}) = _$_CommentHeaderState;
 
   factory _CommentHeaderState.fromJson(Map<String, dynamic> json) =
       _$_CommentHeaderState.fromJson;
@@ -164,6 +183,8 @@ abstract class _CommentHeaderState implements CommentHeaderState {
   bool get isReply;
   @override
   String get name;
+  @override
+  int? get parentIdx;
   @override
   @JsonKey(ignore: true)
   _$$_CommentHeaderStateCopyWith<_$_CommentHeaderState> get copyWith =>

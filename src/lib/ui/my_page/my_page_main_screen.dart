@@ -4,12 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
@@ -27,18 +29,22 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
   ScrollController scrollController = ScrollController();
   ScrollController userContentController = ScrollController();
   ScrollController tagContentController = ScrollController();
+  ScrollController commentController = ScrollController();
 
   late TabController tabController;
   Color appBarColor = Colors.transparent;
   int userOldLength = 0;
   int tagOldLength = 0;
+  int commentOldLength = 0;
 
   @override
   void initState() {
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
+
     userContentController.addListener(_userContentsScrollListener);
     tagContentController.addListener(_tagContentsScrollListener);
+    commentController.addListener(_commentScrollListener);
 
     tabController = TabController(
       initialIndex: 0,
@@ -91,6 +97,20 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
     }
   }
 
+  void _commentScrollListener() {
+    if (commentController.position.extentAfter < 200) {
+      if (commentOldLength == ref.read(commentStateProvider).list.length) {
+        print("DASKSDOMADSMDSMKLAMSADMKLADS");
+        print("DASKSDOMADSMDSMKLAMSADMKLADS");
+        print("DASKSDOMADSMDSMKLAMSADMKLADS");
+        print("DASKSDOMADSMDSMKLAMSADMKLADS");
+
+        ref.read(commentStateProvider.notifier).loadMoreComment(
+            ref.watch(commentStateProvider).list[0].contentsIdx);
+      }
+    }
+  }
+
   @override
   void dispose() {
     scrollController.removeListener(_scrollListener);
@@ -99,6 +119,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
     userContentController.dispose();
     tagContentController.removeListener(_userContentsScrollListener);
     tagContentController.dispose();
+    commentController.removeListener(_commentScrollListener);
+    commentController.dispose();
     super.dispose();
   }
 
@@ -541,66 +563,110 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                               Padding(
                                 padding: EdgeInsets.only(
                                     left: 6.0.w, top: 2.h, right: 2.w),
-                                child: InkWell(
-                                  onTap: () {
-                                    showCustomModalBottomSheet(
-                                      context: context,
-                                      widget: Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              top: 8.0.h,
-                                              bottom: 10.0.h,
+                                child: Builder(builder: (context) {
+                                  return InkWell(
+                                    onTap: () async {
+                                      await ref
+                                          .read(commentStateProvider.notifier)
+                                          .initPosts(lists[index].idx, 1);
+
+                                      // ignore: use_build_context_synchronously
+                                      showCustomModalBottomSheet(
+                                        context: context,
+                                        widget: Consumer(
+                                            builder: (context, ref, child) {
+                                          final commentContentState =
+                                              ref.watch(commentStateProvider);
+                                          final lists =
+                                              commentContentState.list;
+
+                                          commentOldLength = lists.length ?? 0;
+                                          return SizedBox(
+                                            height: 500.h,
+                                            child: Stack(
+                                              children: [
+                                                Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                        top: 8.0.h,
+                                                        bottom: 10.0.h,
+                                                      ),
+                                                      child: Text(
+                                                        "댓글",
+                                                        style: kTitle16ExtraBoldStyle
+                                                            .copyWith(
+                                                                color:
+                                                                    kTextSubTitleColor),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: ListView.builder(
+                                                        controller:
+                                                            commentController,
+                                                        itemCount: lists.length,
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                bottom: 80.h),
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                int index) {
+                                                          return CommentDetailItemWidget(
+                                                            commentIdx:
+                                                                lists[index]
+                                                                    .idx,
+                                                            profileImage: lists[
+                                                                        index]
+                                                                    .url ??
+                                                                'assets/image/feed/image/sample_image1.png',
+                                                            name: lists[index]
+                                                                .nick,
+                                                            comment:
+                                                                lists[index]
+                                                                    .contents,
+                                                            isSpecialUser: lists[
+                                                                        index]
+                                                                    .isBadge ==
+                                                                1,
+                                                            time: DateTime
+                                                                .parse(lists[
+                                                                        index]
+                                                                    .regDate),
+                                                            isReply: false,
+                                                            likeCount:
+                                                                lists[index]
+                                                                    .likeCnt,
+                                                            replies: lists[
+                                                                    index]
+                                                                .childCommentData,
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Positioned(
+                                                  left: 0,
+                                                  right: 0,
+                                                  bottom: 0,
+                                                  child: CommentCustomTextField(
+                                                    contentIdx:
+                                                        lists[0].contentsIdx,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            child: Text(
-                                              "댓글",
-                                              style: kTitle16ExtraBoldStyle
-                                                  .copyWith(
-                                                      color:
-                                                          kTextSubTitleColor),
-                                            ),
-                                          ),
-                                          CommentDetailItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            name: 'bichon_딩동',
-                                            comment:
-                                                '헤엑😍 넘 귀엽자농~ 모자 쓴거야? 귀여미!!! 너무 행복해...',
-                                            isSpecialUser: true,
-                                            time: DateTime(2023, 5, 28),
-                                            isReply: false,
-                                            likeCount: 42,
-                                          ),
-                                          CommentDetailItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image2.png',
-                                            name: 'baejji',
-                                            comment: '사장님 저희 백설기 안시켰는데여??',
-                                            isSpecialUser: false,
-                                            time: DateTime(2023, 5, 28),
-                                            isReply: false,
-                                            likeCount: 32,
-                                          ),
-                                          CommentDetailItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image2.png',
-                                            name: 'bichon_딩동',
-                                            comment: '@baejji 시켜쨔나욧❕❕🐶',
-                                            isSpecialUser: true,
-                                            time: DateTime(2023, 5, 28),
-                                            isReply: true,
-                                            likeCount: 32,
-                                          ),
-                                          // const CommentCustomTextField(),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  child: Image.asset(
-                                    'assets/image/feed/icon/small_size/icon_comment_comment.png',
-                                    height: 24.w,
-                                  ),
-                                ),
+                                          );
+                                        }),
+                                      );
+                                    },
+                                    child: Image.asset(
+                                      'assets/image/feed/icon/small_size/icon_comment_comment.png',
+                                      height: 24.w,
+                                    ),
+                                  );
+                                }),
                               ),
                               Text(
                                 '${lists[index].commentCnt}',

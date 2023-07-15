@@ -8,6 +8,7 @@ class CommentHeaderState with _$CommentHeaderState {
   factory CommentHeaderState({
     @Default(false) bool isReply,
     @Default("") String name,
+    @Default(null) int? parentIdx,
   }) = _CommentHeaderState;
 
   factory CommentHeaderState.fromJson(Map<String, dynamic> json) =>
