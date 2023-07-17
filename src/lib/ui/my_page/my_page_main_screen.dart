@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
@@ -100,11 +101,6 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
   void _commentScrollListener() {
     if (commentController.position.extentAfter < 200) {
       if (commentOldLength == ref.read(commentStateProvider).list.length) {
-        print("DASKSDOMADSMDSMKLAMSADMKLADS");
-        print("DASKSDOMADSMDSMKLAMSADMKLADS");
-        print("DASKSDOMADSMDSMKLAMSADMKLADS");
-        print("DASKSDOMADSMDSMKLAMSADMKLADS");
-
         ref.read(commentStateProvider.notifier).loadMoreComment(
             ref.watch(commentStateProvider).list[0].contentsIdx);
       }
@@ -422,7 +418,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
             ),
-            itemCount: lists.length + 1,
+            itemCount: lists.length,
             itemBuilder: (context, index) {
               if (index == lists.length) {
                 if (isLoadMoreError) {
@@ -445,12 +441,14 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                   child: Center(
                     child: Stack(
                       children: [
-                        ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(12)),
-                          child: Image.network(
-                            "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
-                            fit: BoxFit.fill,
+                        Positioned.fill(
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                            child: Image.network(
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         Positioned(
@@ -482,66 +480,83 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                 padding: EdgeInsets.only(
                                     left: 6.0.w, top: 2.h, right: 2.w),
                                 child: InkWell(
-                                  onTap: () {
+                                  onTap: () async {
+                                    await ref
+                                        .read(contentLikeUserListStateProvider
+                                            .notifier)
+                                        .initContentLikeUserList(
+                                          lists[index].idx,
+                                          ref.read(userModelProvider)!.idx,
+                                          1,
+                                        );
+
+                                    // ignore: use_build_context_synchronously
                                     showCustomModalBottomSheet(
                                       context: context,
-                                      widget: Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              top: 8.0.h,
-                                              bottom: 10.0.h,
-                                            ),
-                                            child: Text(
-                                              "좋아요",
-                                              style: kTitle16ExtraBoldStyle
-                                                  .copyWith(
-                                                      color:
-                                                          kTextSubTitleColor),
-                                            ),
+                                      widget: Consumer(
+                                          builder: (context, ref, child) {
+                                        final contentLikeUserListContentState =
+                                            ref.watch(
+                                                contentLikeUserListStateProvider);
+                                        final lists =
+                                            contentLikeUserListContentState
+                                                .list;
+
+                                        commentOldLength = lists.length ?? 0;
+                                        return SizedBox(
+                                          height: 500.h,
+                                          child: Stack(
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                      top: 8.0.h,
+                                                      bottom: 10.0.h,
+                                                    ),
+                                                    child: Text(
+                                                      "좋아요",
+                                                      style: kTitle16ExtraBoldStyle
+                                                          .copyWith(
+                                                              color:
+                                                                  kTextSubTitleColor),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: ListView.builder(
+                                                      controller:
+                                                          commentController,
+                                                      itemCount: lists.length,
+                                                      padding: EdgeInsets.only(
+                                                          bottom: 80.h),
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int index) {
+                                                        return FavoriteItemWidget(
+                                                          profileImage: lists[
+                                                                  index]
+                                                              .profileImgUrl,
+                                                          userName:
+                                                              lists[index].nick,
+                                                          content: lists[index]
+                                                              .intro,
+                                                          isSpecialUser: lists[
+                                                                      index]
+                                                                  .isBadge ==
+                                                              0,
+                                                          isFollow: lists[index]
+                                                                  .isFollow ==
+                                                              0,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
-                                          const FavoriteItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            userName: '말티푸달콩',
-                                            content: '사용자가 설정한 소개글',
-                                            isSpecialUser: false,
-                                            isFollow: true,
-                                          ),
-                                          const FavoriteItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            userName: '말티푸달콩',
-                                            content: '사용자가 설정한 소개글',
-                                            isSpecialUser: false,
-                                            isFollow: true,
-                                          ),
-                                          const FavoriteItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            userName: '말티푸달콩',
-                                            content: '사용자가 설정한 소개글',
-                                            isSpecialUser: false,
-                                            isFollow: true,
-                                          ),
-                                          const FavoriteItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            userName: '말티푸달콩',
-                                            content: '사용자가 설정한 소개글',
-                                            isSpecialUser: false,
-                                            isFollow: true,
-                                          ),
-                                          const FavoriteItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            userName: '말티푸달콩',
-                                            content: '사용자가 설정한 소개글',
-                                            isSpecialUser: false,
-                                            isFollow: true,
-                                          ),
-                                        ],
-                                      ),
+                                        );
+                                      }),
                                     );
                                   },
                                   child: lists[index].likeCnt == 1
@@ -577,10 +592,11 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                             builder: (context, ref, child) {
                                           final commentContentState =
                                               ref.watch(commentStateProvider);
-                                          final lists =
+                                          final commentLists =
                                               commentContentState.list;
 
-                                          commentOldLength = lists.length ?? 0;
+                                          commentOldLength =
+                                              commentLists.length ?? 0;
                                           return SizedBox(
                                             height: 500.h,
                                             child: Stack(
@@ -604,7 +620,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                       child: ListView.builder(
                                                         controller:
                                                             commentController,
-                                                        itemCount: lists.length,
+                                                        itemCount:
+                                                            commentLists.length,
                                                         padding:
                                                             EdgeInsets.only(
                                                                 bottom: 80.h),
@@ -614,32 +631,41 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                                 int index) {
                                                           return CommentDetailItemWidget(
                                                             commentIdx:
-                                                                lists[index]
-                                                                    .idx,
-                                                            profileImage: lists[
+                                                                commentLists[
                                                                         index]
-                                                                    .url ??
-                                                                'assets/image/feed/image/sample_image1.png',
-                                                            name: lists[index]
+                                                                    .idx,
+                                                            profileImage:
+                                                                commentLists[
+                                                                            index]
+                                                                        .url ??
+                                                                    'assets/image/feed/image/sample_image1.png',
+                                                            name: commentLists[
+                                                                    index]
                                                                 .nick,
                                                             comment:
-                                                                lists[index]
-                                                                    .contents,
-                                                            isSpecialUser: lists[
+                                                                commentLists[
                                                                         index]
-                                                                    .isBadge ==
-                                                                1,
-                                                            time: DateTime
-                                                                .parse(lists[
+                                                                    .contents,
+                                                            isSpecialUser:
+                                                                commentLists[
+                                                                            index]
+                                                                        .isBadge ==
+                                                                    1,
+                                                            time: DateTime.parse(
+                                                                commentLists[
                                                                         index]
                                                                     .regDate),
                                                             isReply: false,
                                                             likeCount:
-                                                                lists[index]
+                                                                commentLists[
+                                                                        index]
                                                                     .likeCnt,
-                                                            replies: lists[
+                                                            replies: commentLists[
                                                                     index]
                                                                 .childCommentData,
+                                                            contentIdx:
+                                                                commentLists[0]
+                                                                    .contentsIdx,
                                                           );
                                                         },
                                                       ),
@@ -652,7 +678,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                   bottom: 0,
                                                   child: CommentCustomTextField(
                                                     contentIdx:
-                                                        lists[0].contentsIdx,
+                                                        lists[index].idx,
                                                   ),
                                                 ),
                                               ],
@@ -730,7 +756,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
             ),
-            itemCount: lists.length + 1,
+            itemCount: lists.length,
             itemBuilder: (context, index) {
               if (index == lists.length) {
                 if (isLoadMoreError) {
@@ -753,9 +779,11 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                   child: Center(
                     child: Stack(
                       children: [
-                        Image.network(
-                          "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
-                          fit: BoxFit.fill,
+                        Positioned.fill(
+                          child: Image.network(
+                            "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
+                            fit: BoxFit.cover,
+                          ),
                         ),
                         Positioned(
                           right: 6.w,

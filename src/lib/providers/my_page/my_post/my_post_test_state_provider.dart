@@ -25,6 +25,8 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
   int myKeepCurrentPage = 1;
 
   initMyPosts([memberIdx, int? initPage]) async {
+    myCurrentPage = 1;
+
     final page = initPage ?? state.myPostState.page;
     final lists = await UserContentsRepository()
         .getUserContents(memberIdx: memberIdx, page: page);
@@ -161,6 +163,8 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
   }
 
   initMyKeeps([memberIdx, int? initPage]) async {
+    myKeepCurrentPage = 1;
+
     final page = initPage ?? state.myKeepState.page;
     final lists = await KeepContentsRepository()
         .getKeepContents(memberIdx: memberIdx, page: page);

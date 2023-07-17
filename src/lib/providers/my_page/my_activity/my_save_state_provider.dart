@@ -17,6 +17,8 @@ class MySaveStateNotifier extends StateNotifier<ContentDataListModel> {
     memberIdx,
     int? initPage,
   ]) async {
+    currentPage = 1;
+
     final page = initPage ?? state.page;
     final lists = await SaveContentsRepository()
         .getSaveContents(memberIdx: memberIdx, page: page);

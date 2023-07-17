@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
@@ -83,8 +86,11 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     currentPage = 1;
   }
 
-  Future<ResponseModel> deleteContents(
-      {required memberIdx, required contentsIdx, required commentIdx}) async {
+  Future<ResponseModel> deleteContents({
+    required memberIdx,
+    required contentsIdx,
+    required commentIdx,
+  }) async {
     final result = await CommentRepository().deleteComment(
       memberIdx: memberIdx,
       contentsIdx: contentsIdx,

@@ -11,12 +11,15 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class CommentDetailItemWidget extends ConsumerWidget {
   const CommentDetailItemWidget({
+    required this.contentIdx,
     required this.commentIdx,
     required this.profileImage,
     required this.name,
@@ -29,6 +32,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
     Key? key,
   }) : super(key: key);
 
+  final int contentIdx;
   final int commentIdx;
   final String? profileImage;
   final String name;
@@ -172,7 +176,23 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                               title: '삭제하기',
                                               titleStyle: kButton14BoldStyle
                                                   .copyWith(color: kBadgeColor),
-                                              onTap: () {},
+                                              onTap: () async {
+                                                final result = await ref
+                                                    .watch(commentStateProvider
+                                                        .notifier)
+                                                    .deleteContents(
+                                                      memberIdx: ref
+                                                          .read(
+                                                              userModelProvider)!
+                                                          .idx,
+                                                      contentsIdx: contentIdx,
+                                                      commentIdx: commentIdx,
+                                                    );
+
+                                                if (result.result) {
+                                                  context.pop();
+                                                }
+                                              },
                                             ),
                                           ],
                                         ),
@@ -274,6 +294,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         isReply: true,
                         likeCount: replies!.list[index].likeCnt,
                         replies: replies!.list[index].childCommentData,
+                        contentIdx: replies!.list[0].contentsIdx,
                       );
                     },
                   ),

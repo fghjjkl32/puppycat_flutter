@@ -21,8 +21,7 @@ abstract class CommentService {
     @Body() Map<String, dynamic> body,
   );
 
-  @DELETE(
-      '/v1/contents/{contentsIdx}/comment/{commentIdx}?memberIdx={memberIdx}')
+  @DELETE('/contents/{contentsIdx}/comment/{commentIdx}?memberIdx={memberIdx}')
   Future<ResponseModel?> deleteComment({
     @Path("contentsIdx") required int contentsIdx,
     @Path("commentIdx") required int commentIdx,

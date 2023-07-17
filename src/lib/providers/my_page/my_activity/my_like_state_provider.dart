@@ -17,6 +17,8 @@ class MyLikeStateNotifier extends StateNotifier<ContentDataListModel> {
     memberIdx,
     int? initPage,
   ]) async {
+    currentPage = 1;
+
     final page = initPage ?? state.page;
     final lists = await LikeContentsRepository()
         .getLikeContents(memberIdx: memberIdx, page: page);

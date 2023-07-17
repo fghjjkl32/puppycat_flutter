@@ -18,6 +18,8 @@ class UserContentStateNotifier extends StateNotifier<ContentDataListModel> {
     memberIdx,
     int? initPage,
   ]) async {
+    currentPage = 1;
+
     final page = initPage ?? state.page;
     final lists = await UserContentsRepository()
         .getUserContents(memberIdx: memberIdx, page: page);

@@ -102,7 +102,7 @@ class _CommentService implements CommentService {
     )
             .compose(
               _dio.options,
-              '/v1/contents/${contentsIdx}/comment/${commentIdx}?memberIdx=${memberIdx}',
+              '/contents/${contentsIdx}/comment/${commentIdx}?memberIdx=${memberIdx}',
               queryParameters: queryParameters,
               data: _data,
             )
