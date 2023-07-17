@@ -16,6 +16,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 class ChatRoomItem extends ConsumerWidget {
   final void Function()? onTap;
   final void Function()? onLongPress;
+  final void Function()? onLeave;
   // final String avatarUrl;
   // final String nick;
   // final String lastMsg;
@@ -30,6 +31,7 @@ class ChatRoomItem extends ConsumerWidget {
     Key? key,
     this.onTap,
     this.onLongPress,
+    this.onLeave,
     // required this.avatarUrl,
     // required this.nick,
     // required this.lastMsg,
@@ -105,6 +107,9 @@ class ChatRoomItem extends ConsumerWidget {
               ///TODO
               ///provider call -> leave
               // await room.leave();
+              if(onLeave != null) {
+                onLeave!();
+              }
             },
             backgroundColor: kBadgeColor,
             foregroundColor: kPrimaryLightColor,

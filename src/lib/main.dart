@@ -73,6 +73,8 @@ class PuppycatApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     return ScreenUtilInit(
       designSize: const Size(360, 640),
+      // scaleByHeight: true,
+      // useInheritedMediaQuery: true,
       builder: (BuildContext context, Widget? child) {
         return MaterialApp.router(
           localizationsDelegates: context.localizationDelegates,

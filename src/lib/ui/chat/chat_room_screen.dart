@@ -12,11 +12,11 @@ import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_msg_item.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class ChatRoomScreen extends ConsumerWidget {
+class ChatRoomScreen2 extends ConsumerWidget {
   final String titleNick;
   final List<ChatMessageModel> msgList;
 
-  ChatRoomScreen({
+  ChatRoomScreen2({
     Key? key,
     required this.titleNick,
     required this.msgList,

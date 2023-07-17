@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:matrix/matrix.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/date_time_extension.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/abstract_chat_controller.dart';
@@ -20,7 +21,15 @@ class MatrixChatClientController implements AbstractChatController {
   }
 
   void init(String clientName, String homeServer) async {
-    _chatClient = Client(clientName);
+    _chatClient = Client(
+      clientName,
+      databaseBuilder: (_) async {
+        final dir = await getApplicationSupportDirectory();
+        final db = HiveCollectionsDatabase('matrix_example_chat', dir.path);
+        await db.open();
+        return db;
+      },
+    );
     await client.checkHomeserver(Uri.parse(homeServer));
   }
 
@@ -165,9 +174,9 @@ class MatrixChatClientController implements AbstractChatController {
     StreamController<List<ChatRoomModel>> controller = StreamController();
 
     _chatClient.onSync.stream.listen((event) {
-      print('aaa');
+      print('update????');
       controller.add(_chatClient.rooms.map((e) {
-        if(e.membership == Membership.invite) {
+        if (e.membership == Membership.invite) {
           e.join();
         }
 

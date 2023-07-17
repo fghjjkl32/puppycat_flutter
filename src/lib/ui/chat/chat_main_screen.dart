@@ -101,6 +101,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
   }
 
   Widget _buildRoomList() {
+    print('aaaaaaaaaa');
     AbstractChatController chatController = ref.watch(chatControllerProvider('matrix'));
 
     return StreamBuilder(
@@ -122,16 +123,33 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
           itemCount: roomList.length,
           itemBuilder: (BuildContext context, int index) {
             ChatRoomModel room = roomList[index];
-            print('room id : ${room.id} / membership ${room.isJoined}');
+            // print('room id : ${room.id} / membership ${room.isJoined}');
+            ///NOTE 2023. 07. 12.
+            ///여기부터 우선 의존성, 확장성 무시하고 결과 먼저 보기로
+            var matrixController = chatController as MatrixChatClientController;
             return Padding(
               padding: EdgeInsets.only(bottom: 6.0.h),
               child: ChatRoomItem(
                 roomModel: room,
+                onLeave: () async {
+                  await matrixController.client.rooms[index].leave();
+                },
                 onTap: () {
-                  context.push('/chatMain/chatRoom', extra: room);
+
+                  Room matrixRoom = matrixController.client.getRoomById(matrixController.client.rooms[index].id) ?? matrixController.client.rooms[index];
+                  context.push('/chatMain/chatRoom', extra: matrixRoom);
                 },
               ),
             );
+            // return Padding(
+            //   padding: EdgeInsets.only(bottom: 6.0.h),
+            //   child: ChatRoomItem(
+            //     roomModel: room,
+            //     onTap: () {
+            //       context.push('/chatMain/chatRoom', extra: room);
+            //     },
+            //   ),
+            // );
           },
         );
       },
