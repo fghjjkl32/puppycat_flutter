@@ -148,10 +148,13 @@ class AppRouter {
                           ]),
                     ]),
                 GoRoute(
-                  path: 'followList',
-                  name: 'followList',
+                  path: 'followList/:memberIdx',
+                  name: 'followList/:memberIdx',
                   builder: (BuildContext context, GoRouterState state) {
-                    return const MyPageFollowListScreen();
+                    final memberIdx = state.pathParameters['memberIdx']!;
+                    return MyPageFollowListScreen(
+                      memberIdx: int.parse(memberIdx),
+                    );
                   },
                 ),
                 GoRoute(
@@ -309,34 +312,39 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: '/chatMain',
-        name: 'chatMain',
-        builder: (BuildContext context, GoRouterState state) {
-          return const ChatMainScreen();
-        },
-        routes: [
-          GoRoute(
-            path: 'chatRoom',
-            name: 'chatRoom',
-            builder: (BuildContext context, GoRouterState state) {
-              print('aaa');
-              if(state.extra is Room) {
-                // return ChatRoomScreen(room: state.extra! as Room);
-                return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
-              } else {
-                print('???');
-                return const ChatMainScreen();
-              }
-            },
-          ),
-        ]
-      ),
+          path: '/chatMain',
+          name: 'chatMain',
+          builder: (BuildContext context, GoRouterState state) {
+            return const ChatMainScreen();
+          },
+          routes: [
+            GoRoute(
+              path: 'chatRoom',
+              name: 'chatRoom',
+              builder: (BuildContext context, GoRouterState state) {
+                print('aaa');
+                if (state.extra is Room) {
+                  // return ChatRoomScreen(room: state.extra! as Room);
+                  return ChatRoomScreen(
+                    titleNick: 'testNick',
+                    msgList: [],
+                  );
+                } else {
+                  print('???');
+                  return const ChatMainScreen();
+                }
+              },
+            ),
+          ]),
       GoRoute(
         path: '/chatRoomTest',
         name: 'chatRoomTest',
         builder: (BuildContext context, GoRouterState state) {
-            // return ChatRoomScreen(room: state.extra! as Room);
-            return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
+          // return ChatRoomScreen(room: state.extra! as Room);
+          return ChatRoomScreen(
+            titleNick: 'testNick',
+            msgList: [],
+          );
         },
       ),
 

@@ -6,11 +6,12 @@ import 'package:pet_mobile_social_flutter/components/user_list/widget/follower_i
 import 'package:pet_mobile_social_flutter/components/user_list/widget/following_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_page_follower_user_search_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_page_following_user_search_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 
 class MyPageFollowListScreen extends ConsumerStatefulWidget {
-  const MyPageFollowListScreen({super.key});
+  const MyPageFollowListScreen({super.key, required this.memberIdx});
+  final int memberIdx;
 
   @override
   MyPageFollowListScreenState createState() => MyPageFollowListScreenState();
@@ -20,14 +21,84 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
 
+  ScrollController followerController = ScrollController();
+  ScrollController followController = ScrollController();
+  final TextEditingController followerSearchController =
+      TextEditingController();
+  final TextEditingController followSearchController = TextEditingController();
+
+  int followerOldLength = 0;
+  int followOldLength = 0;
+
+  int userMemberIdx = 0;
+
   @override
   void initState() {
+    Future(() {
+      ref.watch(followStateProvider.notifier).userMemberIdx = widget.memberIdx;
+    });
+    userMemberIdx = widget.memberIdx;
+
+    followerController.addListener(_followerScrollListener);
+    followController.addListener(_followScrollListener);
+    followerSearchController.addListener(() {
+      ref
+          .watch(followStateProvider.notifier)
+          .followerSearchQuery
+          .add(followerSearchController.text);
+    });
+
+    followSearchController.addListener(() {
+      ref
+          .watch(followStateProvider.notifier)
+          .followSearchQuery
+          .add(followSearchController.text);
+    });
+
     tabController = TabController(
       initialIndex: 0,
       length: 2,
       vsync: this,
     );
     super.initState();
+
+    ref.read(followStateProvider.notifier).initFollowerList(userMemberIdx, 1);
+    ref.read(followStateProvider.notifier).initFollowList(userMemberIdx, 1);
+  }
+
+  void _followerScrollListener() {
+    if (followerController.position.pixels >
+        followerController.position.maxScrollExtent -
+            MediaQuery.of(context).size.height) {
+      if (followerOldLength ==
+          ref.read(followStateProvider).followerListState.list.length) {
+        ref
+            .read(followStateProvider.notifier)
+            .loadMoreFollowerList(userMemberIdx);
+      }
+    }
+  }
+
+  void _followScrollListener() {
+    if (followController.position.pixels >
+        followController.position.maxScrollExtent -
+            MediaQuery.of(context).size.height) {
+      if (followOldLength ==
+          ref.read(followStateProvider).followListState.list.length) {
+        ref
+            .read(followStateProvider.notifier)
+            .loadMoreFollowList(userMemberIdx);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    followerController.removeListener(_followerScrollListener);
+    followerController.dispose();
+    followController.removeListener(_followScrollListener);
+    followController.dispose();
+    super.dispose();
   }
 
   @override
@@ -68,14 +139,44 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen>
                     bottom: 10.h,
                   ),
                   tabs: [
-                    Text(
-                      "팔로워",
-                      style: kBody14BoldStyle,
-                    ),
-                    Text(
-                      "팔로잉",
-                      style: kBody14BoldStyle,
-                    ),
+                    Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "팔로워",
+                            style: kBody14BoldStyle,
+                          ),
+                          SizedBox(
+                            width: 6.w,
+                          ),
+                          Text(
+                            "${ref.watch(followStateProvider).followerListState.totalCount}",
+                            style: kBadge10MediumStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
+                    Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "팔로잉",
+                            style: kBody14BoldStyle,
+                          ),
+                          SizedBox(
+                            width: 6.w,
+                          ),
+                          Text(
+                            "${ref.watch(followStateProvider).followListState.totalCount}",
+                            style: kBadge10MediumStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
                   ]),
             ),
             body: TabBarView(
@@ -92,249 +193,276 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen>
   }
 
   Widget _firstTabBody() {
-    final userFollowerSearchController =
-        ref.watch(myPageFollowerUserSearchProvider.notifier);
-    return Column(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                child: FormBuilderTextField(
-                  name: 'follower',
-                  initialValue: ref.watch(myPageFollowerUserSearchProvider),
-                  style:
-                      kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-                  onChanged: (value) => ref
-                      .read(myPageFollowerUserSearchProvider.notifier)
-                      .onTextChanged(value!),
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: kNeutralColor200,
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 16),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(100.0),
-                      gapPadding: 10.0,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(100.0),
-                      gapPadding: 10.0,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(100.0),
-                      gapPadding: 10.0,
-                    ),
-                    suffixIconConstraints: const BoxConstraints(
-                      minWidth: 24,
-                      minHeight: 24,
-                    ),
-                    // ignore: invalid_use_of_protected_member
-                    suffixIcon: userFollowerSearchController.state.isEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 8.0),
-                            child: Icon(
-                              Icons.search,
-                              color: Colors.grey[600],
-                            ),
-                          )
-                        : GestureDetector(
-                            onTap: () {
-                              ref
-                                  .read(
-                                      myPageFollowerUserSearchProvider.notifier)
-                                  .onTextChanged('');
-                            },
-                            child: Padding(
+    return Consumer(builder: (ctx, ref, child) {
+      final followerState = ref.watch(followStateProvider);
+      final isLoadMoreError = followerState.followerListState.isLoadMoreError;
+      final isLoadMoreDone = followerState.followerListState.isLoadMoreDone;
+      final isLoading = followerState.followerListState.isLoading;
+      final lists = followerState.followerListState.list;
+
+      followerOldLength = lists.length ?? 0;
+
+      return Column(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 12.0),
+                  child: FormBuilderTextField(
+                    name: 'follower',
+                    controller: followerSearchController,
+                    style:
+                        kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: kNeutralColor200,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 16),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(100.0),
+                        gapPadding: 10.0,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(100.0),
+                        gapPadding: 10.0,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(100.0),
+                        gapPadding: 10.0,
+                      ),
+                      suffixIconConstraints: const BoxConstraints(
+                        minWidth: 24,
+                        minHeight: 24,
+                      ),
+                      // ignore: invalid_use_of_protected_member
+                      suffixIcon: followerSearchController.text.isEmpty
+                          ? Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8.0, vertical: 8.0),
                               child: Icon(
-                                Icons.close,
+                                Icons.search,
                                 color: Colors.grey[600],
                               ),
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                followerSearchController.text = "";
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 8.0),
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
                             ),
-                          ),
-                    hintText: "닉네임을 입력해 주세요.",
-                    hintStyle:
-                        kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                      hintText: "닉네임을 입력해 주세요.",
+                      hintStyle:
+                          kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 4.h,
-              ),
-              Expanded(
-                child: userFollowerSearchController.searchResult.isEmpty
-                    ? Center(
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              'assets/image/feed_write/image/corgi-2 1.png',
-                              height: 68.h,
-                            ),
-                            SizedBox(
-                              height: 12.h,
-                            ),
-                            Text(
-                              "유저를 찾을 수 없습니다.",
-                              style: kBody12RegularStyle.copyWith(
-                                  color: kTextBodyColor),
-                            ),
-                          ],
+                SizedBox(
+                  height: 4.h,
+                ),
+                Expanded(
+                  child: lists.isEmpty
+                      ? Center(
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                'assets/image/feed_write/image/corgi-2 1.png',
+                                height: 68.h,
+                              ),
+                              SizedBox(
+                                height: 12.h,
+                              ),
+                              Text(
+                                "유저를 찾을 수 없습니다.",
+                                style: kBody12RegularStyle.copyWith(
+                                    color: kTextBodyColor),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: lists.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == lists.length) {
+                              if (isLoadMoreError) {
+                                return const Center(
+                                  child: Text('Error'),
+                                );
+                              }
+                              if (isLoadMoreDone) {
+                                return Container();
+                              }
+                              return Container();
+                            }
+
+                            return FollowerItemWidget(
+                              profileImage:
+                                  "https://dev-imgs.devlabs.co.kr${lists[index].url}",
+                              userName: lists[index].followerNick!,
+                              content: lists[index].intro == ""
+                                  ? '소개글이 없습니다.'
+                                  : lists[index].intro!,
+                              isSpecialUser: lists[index].isBadge! == 1,
+                              isFollow: lists[index].isFollow == 0,
+                              followerIdx: lists[index].followerIdx!,
+                            );
+                          },
                         ),
-                      )
-                    : ListView.builder(
-                        itemCount:
-                            userFollowerSearchController.searchResult.length,
-                        itemBuilder: (context, index) {
-                          return FollowerItemWidget(
-                            profileImage:
-                                'assets/image/feed/image/sample_image1.png',
-                            userName: userFollowerSearchController
-                                .searchResult[index],
-                            content: '사용자가 설정한 소개글',
-                            isSpecialUser: true,
-                            isFollow: true,
-                          );
-                        },
-                      ),
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 
   Widget _secondTabBody() {
-    final userFollowingSearchController =
-        ref.watch(myPageFollowingUserSearchProvider.notifier);
-    return Column(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                child: FormBuilderTextField(
-                  name: 'follower',
-                  initialValue: ref.watch(myPageFollowingUserSearchProvider),
-                  style:
-                      kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-                  onChanged: (value) => ref
-                      .read(myPageFollowingUserSearchProvider.notifier)
-                      .onTextChanged(value!),
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: kNeutralColor200,
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 16),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(100.0),
-                      gapPadding: 10.0,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(100.0),
-                      gapPadding: 10.0,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(100.0),
-                      gapPadding: 10.0,
-                    ),
-                    suffixIconConstraints: const BoxConstraints(
-                      minWidth: 24,
-                      minHeight: 24,
-                    ),
-                    // ignore: invalid_use_of_protected_member
-                    suffixIcon: userFollowingSearchController.state.isEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 8.0),
-                            child: Icon(
-                              Icons.search,
-                              color: Colors.grey[600],
-                            ),
-                          )
-                        : GestureDetector(
-                            onTap: () {
-                              ref
-                                  .read(
-                                      myPageFollowerUserSearchProvider.notifier)
-                                  .onTextChanged('');
-                            },
-                            child: Padding(
+    return Consumer(builder: (ctx, ref, child) {
+      final followState = ref.watch(followStateProvider);
+      final isLoadMoreError = followState.followListState.isLoadMoreError;
+      final isLoadMoreDone = followState.followListState.isLoadMoreDone;
+      final isLoading = followState.followListState.isLoading;
+      final lists = followState.followListState.list;
+      return Column(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 12.0),
+                  child: FormBuilderTextField(
+                    name: 'follower',
+                    style:
+                        kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    controller: followSearchController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: kNeutralColor200,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 16),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(100.0),
+                        gapPadding: 10.0,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(100.0),
+                        gapPadding: 10.0,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(100.0),
+                        gapPadding: 10.0,
+                      ),
+                      suffixIconConstraints: const BoxConstraints(
+                        minWidth: 24,
+                        minHeight: 24,
+                      ),
+                      // ignore: invalid_use_of_protected_member
+                      suffixIcon: followSearchController.text.isEmpty
+                          ? Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8.0, vertical: 8.0),
                               child: Icon(
-                                Icons.close,
+                                Icons.search,
                                 color: Colors.grey[600],
                               ),
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                followSearchController.text = "";
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 8.0),
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
                             ),
-                          ),
-                    hintText: "닉네임을 입력해 주세요.",
-                    hintStyle:
-                        kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                      hintText: "닉네임을 입력해 주세요.",
+                      hintStyle:
+                          kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 4.h,
-              ),
-              Expanded(
-                child: userFollowingSearchController.searchResult.isEmpty
-                    ? Center(
-                        child: Column(
-                          children: [
-                            Image.asset(
-                              'assets/image/feed_write/image/corgi-2 1.png',
-                              height: 68.h,
-                            ),
-                            SizedBox(
-                              height: 12.h,
-                            ),
-                            Text(
-                              "유저를 찾을 수 없습니다.",
-                              style: kBody12RegularStyle.copyWith(
-                                  color: kTextBodyColor),
-                            ),
-                          ],
+                SizedBox(
+                  height: 4.h,
+                ),
+                Expanded(
+                  child: lists.isEmpty
+                      ? Center(
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                'assets/image/feed_write/image/corgi-2 1.png',
+                                height: 68.h,
+                              ),
+                              SizedBox(
+                                height: 12.h,
+                              ),
+                              Text(
+                                "유저를 찾을 수 없습니다.",
+                                style: kBody12RegularStyle.copyWith(
+                                    color: kTextBodyColor),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: lists.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == lists.length) {
+                              if (isLoadMoreError) {
+                                return const Center(
+                                  child: Text('Error'),
+                                );
+                              }
+                              if (isLoadMoreDone) {
+                                return Container();
+                              }
+                              return Container();
+                            }
+                            return FollowingItemWidget(
+                              profileImage:
+                                  "https://dev-imgs.devlabs.co.kr${lists[index].url}",
+                              userName: lists[index].followNick!,
+                              content: lists[index].intro == "" ||
+                                      lists[index].intro == null
+                                  ? '소개글이 없습니다.'
+                                  : lists[index].intro!,
+                              isSpecialUser: lists[index].isBadge! == 1,
+                              isFollow: lists[index].isFollow == 0,
+                              isNewUser: lists[index].newState! == 1,
+                              followIdx: lists[index].followIdx!,
+                            );
+                          },
                         ),
-                      )
-                    : ListView.builder(
-                        itemCount:
-                            userFollowingSearchController.searchResult.length,
-                        itemBuilder: (context, index) {
-                          return FollowingItemWidget(
-                            profileImage:
-                                'assets/image/feed/image/sample_image1.png',
-                            userName: userFollowingSearchController
-                                .searchResult[index],
-                            content: '사용자가 설정한 소개글',
-                            isSpecialUser: true,
-                            isFollow: true,
-                            isNewUser: true,
-                          );
-                        },
-                      ),
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }

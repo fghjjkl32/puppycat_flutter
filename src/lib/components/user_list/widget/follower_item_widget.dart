@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class FollowerItemWidget extends StatelessWidget {
+class FollowerItemWidget extends ConsumerWidget {
   const FollowerItemWidget({
     required this.profileImage,
     required this.userName,
     required this.content,
     required this.isSpecialUser,
     required this.isFollow,
+    required this.followerIdx,
     Key? key,
   }) : super(key: key);
 
@@ -21,9 +26,10 @@ class FollowerItemWidget extends StatelessWidget {
   final String content;
   final bool isSpecialUser;
   final bool isFollow;
+  final int followerIdx;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 16.h),
       child: Row(
@@ -108,37 +114,57 @@ class FollowerItemWidget extends StatelessWidget {
           Row(
             children: [
               isFollow
-                  ? Container(
-                      width: 56.w,
-                      height: 32.h,
-                      decoration: const BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8.0),
+                  ? GestureDetector(
+                      onTap: () async {
+                        await ref
+                            .watch(followStateProvider.notifier)
+                            .postFollow(
+                              memberIdx: ref.read(userModelProvider)!.idx,
+                              followIdx: followerIdx,
+                            );
+                      },
+                      child: Container(
+                        width: 56.w,
+                        height: 32.h,
+                        decoration: const BoxDecoration(
+                          color: kPrimaryColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8.0),
+                          ),
                         ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "팔로우",
-                          style: kButton12BoldStyle.copyWith(
-                              color: kNeutralColor100),
+                        child: Center(
+                          child: Text(
+                            "팔로우",
+                            style: kButton12BoldStyle.copyWith(
+                                color: kNeutralColor100),
+                          ),
                         ),
                       ),
                     )
-                  : Container(
-                      width: 56.w,
-                      height: 32.h,
-                      decoration: const BoxDecoration(
-                        color: kNeutralColor300,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8.0),
+                  : GestureDetector(
+                      onTap: () async {
+                        await ref
+                            .watch(followStateProvider.notifier)
+                            .deleteFollow(
+                              memberIdx: ref.read(userModelProvider)!.idx,
+                              followIdx: followerIdx,
+                            );
+                      },
+                      child: Container(
+                        width: 56.w,
+                        height: 32.h,
+                        decoration: const BoxDecoration(
+                          color: kNeutralColor300,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8.0),
+                          ),
                         ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "팔로잉",
-                          style: kButton12BoldStyle.copyWith(
-                              color: kTextBodyColor),
+                        child: Center(
+                          child: Text(
+                            "팔로잉",
+                            style: kButton12BoldStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
                         ),
                       ),
                     ),
@@ -183,40 +209,57 @@ class FollowerItemWidget extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Container(
-                              width: 152.w,
-                              height: 36.h,
-                              decoration: const BoxDecoration(
-                                color: kPrimaryLightColor,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(8.0),
+                            GestureDetector(
+                              onTap: () {
+                                context.pop();
+                              },
+                              child: Container(
+                                width: 152.w,
+                                height: 36.h,
+                                decoration: const BoxDecoration(
+                                  color: kPrimaryLightColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8.0),
+                                  ),
                                 ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "취소",
-                                  style: kButton14BoldStyle.copyWith(
-                                      color: kPrimaryColor),
+                                child: Center(
+                                  child: Text(
+                                    "취소",
+                                    style: kButton14BoldStyle.copyWith(
+                                        color: kPrimaryColor),
+                                  ),
                                 ),
                               ),
                             ),
                             SizedBox(
                               width: 8.w,
                             ),
-                            Container(
-                              width: 152.w,
-                              height: 36.h,
-                              decoration: const BoxDecoration(
-                                color: kBadgeColor,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(8.0),
+                            GestureDetector(
+                              onTap: () async {
+                                context.pop();
+                                await ref
+                                    .watch(followStateProvider.notifier)
+                                    .deleteFollower(
+                                      memberIdx:
+                                          ref.read(userModelProvider)!.idx,
+                                      followIdx: followerIdx,
+                                    );
+                              },
+                              child: Container(
+                                width: 152.w,
+                                height: 36.h,
+                                decoration: const BoxDecoration(
+                                  color: kBadgeColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8.0),
+                                  ),
                                 ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "삭제",
-                                  style: kButton14BoldStyle.copyWith(
-                                      color: kNeutralColor100),
+                                child: Center(
+                                  child: Text(
+                                    "삭제",
+                                    style: kButton14BoldStyle.copyWith(
+                                        color: kNeutralColor100),
+                                  ),
                                 ),
                               ),
                             ),

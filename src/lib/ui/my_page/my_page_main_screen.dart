@@ -893,7 +893,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 ),
                 GestureDetector(
                   onTap: () {
-                    context.go("/home/myPage/followList");
+                    context.go(
+                        "/home/myPage/followList/${ref.read(userModelProvider)!.idx}");
                   },
                   child: Padding(
                     padding: EdgeInsets.only(top: 8.0.h),
@@ -1003,9 +1004,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                   style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    context.go("/home/myPage/followList");
-                  },
+                  onTap: () {},
                   child: Padding(
                     padding: EdgeInsets.only(top: 8.0.h),
                     child: Row(
