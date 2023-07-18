@@ -17,6 +17,7 @@ class ChatRoomItem extends ConsumerWidget {
   final void Function()? onTap;
   final void Function()? onLongPress;
   final void Function()? onLeave;
+
   // final String avatarUrl;
   // final String nick;
   // final String lastMsg;

@@ -23,6 +23,7 @@ class ChatMessageModel with _$ChatMessageModel {
     required bool isRead,
     required bool isConsecutively,
     @Default([]) List<String> reactions,
+    // required bool isError,
   }) = _ChatMessageModel;
 
   factory ChatMessageModel.fromJson(Map<String, dynamic> json) => _$ChatMessageModelFromJson(json);

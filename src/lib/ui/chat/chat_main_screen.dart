@@ -101,7 +101,6 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
   }
 
   Widget _buildRoomList() {
-    print('aaaaaaaaaa');
     AbstractChatController chatController = ref.watch(chatControllerProvider('matrix'));
 
     return StreamBuilder(

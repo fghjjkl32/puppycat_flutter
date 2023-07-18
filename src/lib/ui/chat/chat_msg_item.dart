@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:bubble/bubble.dart';
+import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
+import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,18 +21,40 @@ enum ContextMenuType {
   edit,
   copy,
   delete,
+  reaction,
+  resend,
 }
 
 class ChatMessageItem extends ConsumerWidget {
   final ChatMessageModel chatMessageModel;
   final ValueKey _sliderKey = const ValueKey('slider');
-  final ValueChanged<bool>? onSlide;
   Offset? _lastPointerDownPosition;
+  final ValueChanged<bool>? onSlide;
+  final void Function()? onTap;
+  final void Function(Offset?)? onLongPress;
+  final void Function()? onCopy;
+  final void Function(ChatMessageModel)? onLeave;
+  final void Function(ChatMessageModel)? onReply;
+  final void Function(ChatMessageModel)? onEdit;
+  final void Function(ChatMessageModel)? onDelete;
+  final void Function(ChatMessageModel, String reactionKey)? onReaction;
+  final void Function(ChatMessageModel)? onError;
+  final bool isError;
 
   ChatMessageItem({
     Key? key,
     required this.chatMessageModel,
     this.onSlide,
+    this.onTap,
+    this.onLongPress,
+    this.onCopy,
+    this.onLeave,
+    this.onReply,
+    this.onEdit,
+    this.onDelete,
+    this.onReaction,
+    this.onError,
+    required this.isError,
   }) : super(key: key);
 
   Widget _getAvatar(String avatarUrl) {
@@ -87,6 +111,59 @@ class ChatMessageItem extends ConsumerWidget {
           value: ContextMenuType.delete,
           child: Text('메시지.삭제'.tr()),
         ),
+        PopupMenuItem<ContextMenuType>(
+          value: ContextMenuType.resend,
+          child: Text('재전송'),
+        ),
+        PopupMenuItem<ContextMenuType>(
+          value: ContextMenuType.reaction,
+          child: Row(
+            children: [
+              InkWell(
+                child: Text('😀'),
+                onTap: () {
+                  _reaction('😀');
+                  Navigator.pop(context);
+                },
+              ),
+              InkWell(
+                child: Text('😃'),
+                onTap: () {
+                  _reaction('😃');
+                  Navigator.pop(context);
+                },
+              ),
+              InkWell(
+                child: Text('😄'),
+                onTap: () {
+                  _reaction('😀');
+                  Navigator.pop(context);
+                },
+              ),
+              InkWell(
+                child: Text('😁'),
+                onTap: () {
+                  _reaction('😁');
+                  Navigator.pop(context);
+                },
+              ),
+              InkWell(
+                child: Text('😆'),
+                onTap: () {
+                  _reaction('😆');
+                  Navigator.pop(context);
+                },
+              ),
+              InkWell(
+                child: Text('😅'),
+                onTap: () {
+                  _reaction('😅');
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ),
       ];
     }
 
@@ -107,38 +184,82 @@ class ChatMessageItem extends ConsumerWidget {
       if (newValue == null) return;
       switch (newValue) {
         case ContextMenuType.reply:
-          _reply(ref);
+          _reply();
         case ContextMenuType.edit:
-          _edit(ref);
+          _edit();
         case ContextMenuType.copy:
           Clipboard.setData(ClipboardData(text: chatMessageModel.msg));
         case ContextMenuType.delete:
-          _delete(ref);
+          _delete();
+        case ContextMenuType.resend:
+          _resend();
+        case ContextMenuType.reaction:
       }
     });
   }
 
   ///TODO
   ///얘네는 나중에 다 밖에서 함수 받기
-  void _reply(WidgetRef ref) {
-    ref
-        .read(chatReplyProvider.notifier)
-        .state = chatMessageModel;
+  void _reply() {
+    // ref
+    //     .read(chatReplyProvider.notifier)
+    //     .state = chatMessageModel;
+    if (onReply != null) {
+      onReply!(chatMessageModel);
+    }
   }
 
-  void _edit(WidgetRef ref) {
-    ref
-        .read(chatEditProvider.notifier)
-        .state = chatMessageModel;
+  void _edit() {
+    // ref
+    //     .read(chatEditProvider.notifier)
+    //     .state = chatMessageModel;
+    if (onEdit != null) {
+      onEdit!(chatMessageModel);
+    }
   }
 
-  void _delete(WidgetRef ref) {
-    if(!chatMessageModel.isMine) {
+  void _delete() {
+    if (!chatMessageModel.isMine) {
       return;
     }
-    ref
-        .read(chatDeleteProvider.notifier)
-        .state = chatMessageModel;
+    // ref
+    //     .read(chatDeleteProvider.notifier)
+    //     .state = chatMessageModel;
+    if (onDelete != null) {
+      onDelete!(chatMessageModel);
+    }
+  }
+
+  void _reaction(String reactionKey) {
+    if (onReaction != null) {
+      onReaction!(chatMessageModel, reactionKey);
+    }
+  }
+
+  void _resend() {
+    if (onError != null) {
+      onError!(chatMessageModel);
+    }
+  }
+
+  Widget _hashTagText(String text) {
+    return DetectableText(
+      text: text,
+      detectionRegExp: detectionRegExp(atSign: false) ?? RegExp(
+        "(?!\\n)(?:^|\\s)([#]([$detectionContentLetters]+))|$urlRegexContent",
+        multiLine: true,
+      ),
+      detectedStyle: TextStyle(
+        fontSize: 20,
+        color: Colors.blue,
+      ),
+      basicStyle: TextStyle(
+        fontSize: 20,
+      ),
+      onTap: (tappedText){
+        print(tappedText);
+      },
+    );
   }
 
   @override
@@ -152,7 +273,11 @@ class ChatMessageItem extends ConsumerWidget {
       onPointerDown: (details) => _lastPointerDownPosition = details.position,
       child: InkWell(
         onLongPress: () {
-          _showMenu(context, ref, _lastPointerDownPosition!);
+          if (onLongPress != null) {
+            onLongPress!(_lastPointerDownPosition);
+          } else {
+            _showMenu(context, ref, _lastPointerDownPosition!);
+          }
         },
         child: Swipeable(
           key: const ValueKey(0),
@@ -164,9 +289,12 @@ class ChatMessageItem extends ConsumerWidget {
             } else {
               // do something else
               print('end to start');
-              ref
-                  .read(chatReplyProvider.notifier)
-                  .state = chatMessageModel;
+              // ref
+              //     .read(chatReplyProvider.notifier)
+              //     .state = chatMessageModel;
+              if (onReply != null) {
+                onReply!(chatMessageModel);
+              }
             }
           },
           background: const Center(
@@ -213,73 +341,20 @@ class ChatMessageItem extends ConsumerWidget {
                       nip: chatMessageModel.isConsecutively
                           ? BubbleNip.no
                           : isMineXorReply
-                          ? BubbleNip.rightTop
-                          : BubbleNip.leftTop,
+                              ? BubbleNip.rightTop
+                              : BubbleNip.leftTop,
                       //BubbleNip.leftBottom,
-                      child: chatMessageModel.isReply ? Text('${chatMessageModel.replyTargetNick}에게 답장\n${chatMessageModel.replyTargetMsg}\n${chatMessageModel.msg}') : Text(chatMessageModel.msg),
+                      child: chatMessageModel.isReply ? Text('${chatMessageModel.replyTargetNick}에게 답장\n${chatMessageModel.replyTargetMsg}\n${chatMessageModel.msg}') : _hashTagText(chatMessageModel.msg),
                     ),
                   ),
                 ),
                 hasReaction ? Text(chatMessageModel.reactions.first) : const SizedBox.shrink(),
+                isError ? Text('error') : const SizedBox.shrink(),
               ],
             ),
           ),
         ),
       ),
     );
-
-    // return Slidable(
-    //   key: _sliderKey,
-    //   onOpen: (status) {
-    //     print('slidable state $status');
-    //     if(onSlide != null) {
-    //       onSlide!(status);
-    //     }
-    //     Slidable.of(context)?.close();
-    //   },
-    //   endActionPane: ActionPane(
-    //     extentRatio: 0.21.w,
-    //     motion: const DrawerMotion(),
-    //     children: [
-    //       SlidableAction(
-    //         autoClose: true,
-    //         onPressed: (_) {
-    //           // Slidable.of(context)?.close();
-    //         },
-    //         backgroundColor: kNeutralColor100,
-    //         icon: Icons.reply,
-    //       ),
-    //     ],
-    //   ),
-    //   child: Row(
-    //     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //     children: [
-    //       isAvatarCondition
-    //           ? Padding(
-    //               padding: const EdgeInsets.only(right: 12.0),
-    //               child: _getAvatar(chatMessageModel.avatarUrl),
-    //             )
-    //           : const SizedBox.shrink(),
-    //       chatMessageModel.hasReaction ? const Text('rr') : const SizedBox.shrink(),
-    //       chatMessageModel.isEdited ? const Text('vvv') : const SizedBox.shrink(),
-    //       Expanded(
-    //         child: Bubble(
-    //           color: isMine ? kPrimaryLightColor : kNeutralColor200,
-    //           borderColor: Colors.transparent,
-    //           shadowColor: Colors.transparent,
-    //           margin: BubbleEdges.only(top: 4.h),
-    //           alignment: isMine ? Alignment.topRight : Alignment.topLeft,
-    //           nip: chatMessageModel.isConsecutively
-    //               ? BubbleNip.no
-    //               : isMine
-    //                   ? BubbleNip.rightTop
-    //                   : BubbleNip.leftTop,
-    //           //BubbleNip.leftBottom,
-    //           child: chatMessageModel.isReply ? Text('replay - ${chatMessageModel.msg}') : Text(chatMessageModel.msg),
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }

@@ -102,6 +102,8 @@ dependencies:
 #    git:
 #      url: https://github.com/engine-smkang-uxplus/flutter_chatview
 #  chat_bubbles: ^1.4.1
+  collection: ^1.17.1
+  detectable_text_field: ^2.1.0
 
 dev_dependencies:
   flutter_test:

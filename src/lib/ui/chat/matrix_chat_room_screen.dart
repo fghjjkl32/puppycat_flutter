@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,14 +37,16 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   final TextEditingController _sendController = TextEditingController();
   final FocusNode _inputFocus = FocusNode();
   int _count = 0;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
+    super.initState();
     _client = (ref.read(chatControllerProvider('matrix')) as MatrixChatClientController).client;
     readMarkerEventId = widget.room.fullyRead;
     print('readMarkerEventId $readMarkerEventId');
-    super.initState();
 
+    // _scrollController.addListener(() { })
     // readMarkerEventId = widget.room.fullyRead;
     // print('run?222222222 : $readMarkerEventId');
 
@@ -107,18 +110,35 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     setState(() {});
   }
 
-  void _send() {
+  void _send(String msg) {
+    if(msg.isEmpty) {
+      return ;
+    }
+    
     ChatMessageModel? replyModel = ref.read(chatReplyProvider);
     ChatMessageModel? editModel = ref.read(chatEditProvider);
     Event? replyEvent;
     if (replyModel != null) {
       replyEvent = _timeline?.events[replyModel.idx];
     }
-    widget.room.sendTextEvent(_sendController.text.trim(), inReplyTo: replyEvent, editEventId: editModel?.id);
+    widget.room.sendTextEvent(msg, inReplyTo: replyEvent, editEventId: editModel?.id);
     _sendController.clear();
     _inputFocus.unfocus();
     ref.read(chatReplyProvider.notifier).state = null;
     ref.read(chatEditProvider.notifier).state = null;
+  }
+
+  void _resend(Event event, Timeline timeline) {
+    // final event = selectedEvents.first;
+    if (event.status.isError) {
+      event.sendAgain();
+    }
+    final allEditEvents = event
+        .aggregatedEvents(timeline, RelationshipTypes.edit)
+        .where((e) => e.status.isError);
+    for (final e in allEditEvents) {
+      e.sendAgain();
+    }
   }
 
   void _delete(ChatMessageModel chatMessageModel) async {
@@ -126,7 +146,14 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     if (event == null) {
       return;
     }
-    await event.redactEvent();
+
+    if(event.status.isError) {
+      await event.redactEvent();
+      await event.remove();
+      // await _client.database!.removeEvent(event.eventId, event.room.id);
+    } else {
+      await event.redactEvent();
+    }
   }
 
   void requestHistory(Timeline timeline) async {
@@ -168,7 +195,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     _setReadMarkerFuture = timeline.setReadMarker(eventId: eventId).then((_) {
       _setReadMarkerFuture = null;
     });
-    widget.room.client.updateIosBadge();
+    // widget.room.client.updateIosBadge();
   }
 
   bool _checkConsecutively(List<Event> events, int index) {
@@ -185,16 +212,51 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     }
 
     try {
+      /// NOTE
+      /// Next 가 이전 메시지
       Event curEvent = events[index];
       Event nextEvent = events[index + 1];
 
       if (curEvent.senderId == nextEvent.senderId) {
-        // if(curEvent.relationshipType == RelationshipTypes.reply || nextEvent.relationshipType == RelationshipTypes.reply) {
-        //   return false;
-        // }
+        if (curEvent.originServerTs.minute.compareTo(nextEvent.originServerTs.minute) > 0) {
+          return false;
+        }
         return true;
       }
       return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  bool _checkNeedDateRow(List<Event> events, int index) {
+    print('date index : $index');
+    if (events.length <= index + 1) {
+      return false;
+    }
+
+    if (index < 0) {
+      return false;
+    }
+
+    if (events[index] == events.last) {
+      return true;
+    }
+
+    try {
+      /// NOTE
+      /// Next 가 이전 메시지
+      Event curEvent = events[index];
+      Event nextEvent = events[index + 1];
+
+      DateTime curDateTime = DateTime(curEvent.originServerTs.year, curEvent.originServerTs.month, curEvent.originServerTs.day);
+      DateTime nextDateTime = DateTime(nextEvent.originServerTs.year, nextEvent.originServerTs.month, nextEvent.originServerTs.day);
+
+      if (curDateTime.isAfter(nextDateTime)) {
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       return false;
     }
@@ -205,6 +267,10 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     String? lastReadEventId;
     int fullyReadIdx = -1;
     int lastReadEventIdx = -1;
+
+    if(curEvent.status.isError) {
+      return false;
+    }
 
     if (fullyReadId == null) {
       return false;
@@ -222,7 +288,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       lastReadEventIdx = events.indexWhere((element) => element.eventId == lastReadEventId!);
     }
 
-    if(lastReadEventIdx < fullyReadIdx) {
+    if (lastReadEventIdx < fullyReadIdx) {
       fullyReadIdx = lastReadEventIdx;
       readMarkerEventId = lastReadEventId;
       setReadMarker(eventId: lastReadEventId);
@@ -255,15 +321,12 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   List<String> _getReactions(Event event, Timeline timeline) {
-    final allReactionEvents =
-    event.aggregatedEvents(timeline, RelationshipTypes.reaction);
+    final allReactionEvents = event.aggregatedEvents(timeline, RelationshipTypes.reaction);
     List<String> reactions = [];
 
     for (final e in allReactionEvents) {
-      final key = e.content
-          .tryGetMap<String, dynamic>('m.relates_to')
-          ?.tryGet<String>('key');
-      if(key == null) {
+      final key = e.content.tryGetMap<String, dynamic>('m.relates_to')?.tryGet<String>('key');
+      if (key == null) {
         continue;
       }
       reactions.add(key);
@@ -271,6 +334,58 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
     return reactions;
   }
+
+  void _onReply(ChatMessageModel chatMessageModel) {
+    ref.read(chatReplyProvider.notifier).state = chatMessageModel;
+  }
+
+  void _onEdit(ChatMessageModel chatMessageModel) {
+    ref.read(chatEditProvider.notifier).state = chatMessageModel;
+  }
+
+  void _onDelete(ChatMessageModel chatMessageModel) {
+    if (!chatMessageModel.isMine) {
+      return;
+    }
+    ref.read(chatDeleteProvider.notifier).state = chatMessageModel;
+  }
+
+  void _onReaction(ChatMessageModel chatMessageModel, String reactionKey, Timeline timeline) async {
+    Event event = timeline.events[chatMessageModel.idx];
+    Room room = event.room;
+
+    final allReactionEvents = event.aggregatedEvents(timeline, RelationshipTypes.reaction); //_getReactions(event, timeline);
+    final reactionList = _getReactions(event, timeline);
+
+    bool isExist = reactionList.contains(reactionKey);
+
+    for (var reaction in reactionList) {
+      final evt = allReactionEvents.firstWhereOrNull(
+        (e) => e.senderId == e.room.client.userID && e.content.tryGetMap<String, dynamic>('m.relates_to')?.tryGet<String>('key') == reaction,
+      );
+      if (evt != null) {
+        print('_onReaction 1');
+        await evt.redactEvent();
+      }
+    }
+
+    if (!isExist) {
+      print('_onReaction 2');
+      event.room.sendReaction(event.eventId, reactionKey);
+    }
+  }
+
+  // void _scrollListener() {
+  //   if (_scrollController.position.pixels >
+  //       _scrollController.position.maxScrollExtent -
+  //           MediaQuery.of(context).size.height) {
+  //     if (userOldLength == ref.read(userContentStateProvider).list.length) {
+  //       ref
+  //           .read(userContentStateProvider.notifier)
+  //           .loadMorePost(ref.read(userModelProvider)!.idx);
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -313,186 +428,202 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 children: [
                   Expanded(
                     child: StreamBuilder(
-                      stream: widget.room.onUpdate.stream,
-                      builder: (context, _) {
-                        return FutureBuilder(
-                          future: loadTimelineFuture,
-                          builder: (context, snapshot) {
-                            final timeline = _timeline;
-                            if (timeline == null) {
-                              return const Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              );
-                            }
-                            _count = timeline.events.length;
-                            return Column(
-                              children: [
-                                // Center(
-                                //   child: TextButton(onPressed: timeline.requestHistory, child: const Text('Load more...')),
-                                // ),
-                                // const Divider(height: 1),
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.fromLTRB(14.0.w, 4.0.h, 14.0.w, 4.0.h),
-                                    child: AnimatedList(
-                                      key: _listKey,
-                                      reverse: true,
-                                      shrinkWrap: true,
-                                      initialItemCount: timeline.events.length,
-                                      itemBuilder: (context, i, animation) {
-                                        if (i == 0) {
-                                          if (timeline!.isRequestingFuture) {
-                                            return const Center(
-                                              child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-                                            );
+                        stream: widget.room.onUpdate.stream,
+                        builder: (context, _) {
+                          return FutureBuilder(
+                            future: loadTimelineFuture,
+                            builder: (context, snapshot) {
+                              final timeline = _timeline;
+                              if (timeline == null) {
+                                return const Center(
+                                  child: CircularProgressIndicator.adaptive(),
+                                );
+                              }
+                              _count = timeline.events.length;
+                              print('_count $_count');
+                              return Column(
+                                children: [
+                                  // Center(
+                                  //   child: TextButton(onPressed: timeline.requestHistory, child: const Text('Load more...')),
+                                  // ),
+                                  // const Divider(height: 1),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(14.0.w, 4.0.h, 14.0.w, 4.0.h),
+                                      child: AnimatedList(
+                                        key: _listKey,
+                                        reverse: true,
+                                        shrinkWrap: true,
+                                        initialItemCount: _count,
+                                        itemBuilder: (context, i, animation) {
+                                          if (i == 0) {
+                                            if (timeline!.isRequestingFuture) {
+                                              return const Center(
+                                                child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+                                              );
+                                            }
+                                            if (timeline!.canRequestFuture) {
+                                              return Builder(
+                                                builder: (context) {
+                                                  WidgetsBinding.instance.addPostFrameCallback(
+                                                    (_) => requestFuture(),
+                                                  );
+                                                  return Center(
+                                                    child: IconButton(
+                                                      onPressed: () {},
+                                                      icon: const Icon(Icons.refresh_outlined),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            }
+                                          } else if (i == timeline!.events.length - 5) {
+                                            if (timeline!.isRequestingHistory) {
+                                              return const Center(
+                                                child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+                                              );
+                                            }
+                                            if (timeline!.canRequestHistory) {
+                                              return Builder(
+                                                builder: (context) {
+                                                  WidgetsBinding.instance.addPostFrameCallback(
+                                                    (_) => requestHistory(timeline),
+                                                  );
+                                                  return Center(
+                                                    child: IconButton(
+                                                      onPressed: () => requestHistory(timeline),
+                                                      icon: const Icon(Icons.refresh_outlined),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            }
                                           }
-                                          if (timeline!.canRequestFuture) {
-                                            return Builder(
-                                              builder: (context) {
-                                                WidgetsBinding.instance.addPostFrameCallback(
-                                                  (_) => requestFuture(),
-                                                );
-                                                return Center(
-                                                  child: IconButton(
-                                                    onPressed: () {},
-                                                    icon: const Icon(Icons.refresh_outlined),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          }
-                                        } else if (i == timeline!.events.length + 1) {
-                                          if (timeline!.isRequestingHistory) {
-                                            return const Center(
-                                              child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-                                            );
-                                          }
-                                          if (timeline!.canRequestHistory) {
-                                            return Builder(
-                                              builder: (context) {
-                                                WidgetsBinding.instance.addPostFrameCallback(
-                                                  (_) => requestHistory(timeline),
-                                                );
-                                                return Center(
-                                                  child: IconButton(
-                                                    onPressed: () => requestHistory(timeline),
-                                                    icon: const Icon(Icons.refresh_outlined),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          }
-                                        }
 
-                                        Event event = timeline.events[i];
-                                        Event displayEvent = event.getDisplayEvent(timeline);
-                                        print('event type : ${event.type} / ${displayEvent.type}');
+                                          Event event = timeline.events[i];
+                                          Event displayEvent = event.getDisplayEvent(timeline);
 
-                                        if (event.relationshipEventId != null) {
-                                          if (event.relationshipType == RelationshipTypes.reply) {
-                                            // if(event.relationshipType == RelationshipTypes.edit) {
-                                            //   print('aaa');
-                                            // }
-                                            return FutureBuilder<Event?>(
-                                              future: event.getReplyEvent(timeline),
-                                              builder: (BuildContext context, snapshot) {
-                                                final replyEvent = snapshot.hasData
-                                                    ? snapshot.data!
-                                                    : Event(
-                                                        eventId: event.relationshipEventId!,
-                                                        content: {'msgtype': 'm.text', 'body': '...'},
-                                                        senderId: event.senderId,
-                                                        type: 'm.room.message',
-                                                        room: event.room,
-                                                        status: EventStatus.sent,
-                                                        originServerTs: DateTime.now(),
-                                                      );
-                                                ChatMessageModel chatMessageModel = ChatMessageModel(
-                                                  idx: i,
-                                                  id: event.eventId,
-                                                  // 답글은 보낸이가 달라야 내꺼
-                                                  isMine: event.senderId != _client.userID,
-                                                  userID: event.senderId,
-                                                  avatarUrl: event.senderFromMemoryOrFallback.avatarUrl.toString(),
-                                                  // msg: event.calcUnlocalizedBody(
-                                                  //   // hideReply: true ,
-                                                  //   // hideEdit: true,
-                                                  //   // plaintextBody: true,
-                                                  //   // removeMarkdown: true,
-                                                  // ),
-                                                  msg: displayEvent.plaintextBody,
-                                                  dateTime: event.originServerTs.toIso8601String(),
-                                                  isEdited: event.hasAggregatedEvents(timeline, RelationshipTypes.edit),
-                                                  reaction: 0,
-                                                  reactions: event.hasAggregatedEvents(timeline, RelationshipTypes.reaction) ? _getReactions(event, timeline) : [],
-                                                  hasReaction: event.hasAggregatedEvents(timeline, RelationshipTypes.reaction),
-                                                  isReply: true,
-                                                  isRead: _checkReadMsg(displayEvent, timeline.events, i),
-                                                  isConsecutively: _checkConsecutively(timeline.events, i),
-                                                  replyTargetMsg: replyEvent.getDisplayEvent(timeline).plaintextBody,
-                                                  replyTargetNick: replyEvent.senderFromMemoryOrFallback.calcDisplayname(),
-                                                );
-                                                // ChatMessageModel chatMessageModel = ChatMessageModel(
-                                                //   idx: i,
-                                                //   id: replyEvent.eventId,
-                                                //   isMine: replyEvent.senderId == _client.userID,
-                                                //   userID: timeline.events[i].senderId,
-                                                //   avatarUrl: replyEvent.senderFromMemoryOrFallback.avatarUrl.toString(),
-                                                //   msg: replyEvent.getDisplayEvent(timeline).body,
-                                                //   dateTime: replyEvent.originServerTs.toIso8601String(),
-                                                //   isEdited: timeline.events[i].hasAggregatedEvents(timeline, RelationshipTypes.edit),
-                                                //   reaction: 0,
-                                                //   hasReaction: timeline.events[i].hasAggregatedEvents(timeline, RelationshipTypes.reaction),
-                                                //   isReply: true,
-                                                //   isRead: false,
-                                                //   isConsecutively: _checkConsecutively(timeline.events, i),
-                                                // );
-                                                return InkWell(
-                                                  onTap: () {
-                                                    print('move!');
-                                                  },
-                                                  child: ChatMessageItem(key: ValueKey<String>(chatMessageModel.id), chatMessageModel: chatMessageModel),
-                                                );
-                                              },
-                                            );
-                                          } else if (displayEvent.relationshipType == RelationshipTypes.edit) {
+                                          // if(displayEvent.status == EventStatus.error) {
+                                          //   print('aaaa');
+                                          //   // return Center(child: Text('메세지 전송에 실패했습니다.'),);
+                                          // }
+
+                                          if (!displayEvent.isVisibleInGui) {
+                                            if(displayEvent.type == EventTypes.RoomCreate) {
+                                              return Center(child: Text(DateTime(displayEvent.originServerTs.year, displayEvent.originServerTs.month, displayEvent.originServerTs.day).toString()));
+                                            }
                                             return const SizedBox.shrink();
                                           }
-                                        }
 
-                                        ChatMessageModel chatMessageModel = ChatMessageModel(
-                                          idx: i,
-                                          id: displayEvent.eventId,
-                                          isMine: displayEvent.senderId == _client.userID,
-                                          userID: displayEvent.senderId,
-                                          avatarUrl: displayEvent.senderFromMemoryOrFallback.avatarUrl.toString(),
-                                          msg: displayEvent.calcUnlocalizedBody(
-                                            hideReply: true,
-                                            hideEdit: false,
-                                            plaintextBody: true,
-                                            removeMarkdown: true,
-                                          ),
-                                          dateTime: displayEvent.originServerTs.toIso8601String(),
-                                          isEdited: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.edit),
-                                          reaction: 0,
-                                          reactions: event.hasAggregatedEvents(timeline, RelationshipTypes.reaction) ? _getReactions(event, timeline) : [],
-                                          hasReaction: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.reaction),
-                                          isReply: false,
-                                          isRead: _checkReadMsg(displayEvent, timeline.events, i),
-                                          isConsecutively: _checkConsecutively(timeline.events, i),
-                                        );
 
-                                        return displayEvent.isVisibleInGui ? ChatMessageItem(key: ValueKey<String>(chatMessageModel.id), chatMessageModel: chatMessageModel) : const SizedBox.shrink();
-                                      },
+
+                                          bool isNeedDateTime = _checkNeedDateRow(timeline.events, i);
+
+                                          if (event.relationshipEventId != null) {
+                                            if (event.relationshipType == RelationshipTypes.reply) {
+                                              return FutureBuilder<Event?>(
+                                                future: event.getReplyEvent(timeline),
+                                                builder: (BuildContext context, snapshot) {
+                                                  final replyEvent = snapshot.hasData
+                                                      ? snapshot.data!
+                                                      : Event(
+                                                          eventId: event.relationshipEventId!,
+                                                          content: {'msgtype': 'm.text', 'body': '...'},
+                                                          senderId: event.senderId,
+                                                          type: 'm.room.message',
+                                                          room: event.room,
+                                                          status: EventStatus.sent,
+                                                          originServerTs: DateTime.now(),
+                                                        );
+                                                  ChatMessageModel chatMessageModel = ChatMessageModel(
+                                                    idx: i,
+                                                    id: displayEvent.eventId,
+                                                    // 답글은 보낸이가 달라야 내꺼
+                                                    isMine: displayEvent.senderId != _client.userID,
+                                                    userID: displayEvent.senderId,
+                                                    avatarUrl: displayEvent.senderFromMemoryOrFallback.avatarUrl.toString(),
+                                                    msg: displayEvent.plaintextBody,
+                                                    dateTime: displayEvent.originServerTs.toIso8601String(),
+                                                    isEdited: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.edit),
+                                                    reaction: 0,
+                                                    reactions: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.reaction) ? _getReactions(event, timeline) : [],
+                                                    hasReaction: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.reaction),
+                                                    isReply: true,
+                                                    isRead: _checkReadMsg(displayEvent, timeline.events, i),
+                                                    isConsecutively: _checkConsecutively(timeline.events, i),
+                                                    replyTargetMsg: replyEvent.getDisplayEvent(timeline).plaintextBody,
+                                                    replyTargetNick: replyEvent.senderFromMemoryOrFallback.calcDisplayname(),
+                                                  );
+                                                  return Column(
+                                                    children: [
+                                                      isNeedDateTime ? Text(displayEvent.originServerTs.toString()) : const SizedBox.shrink(),
+                                                      ChatMessageItem(
+                                                        key: ValueKey<String>(chatMessageModel.id),
+                                                        chatMessageModel: chatMessageModel,
+                                                        onReply: _onReply,
+                                                        onEdit: _onEdit,
+                                                        onDelete: _onDelete,
+                                                        onReaction: (chatMessageModel, reactionKey) => _onReaction(chatMessageModel, reactionKey, timeline),
+                                                        onError: (chatMessageModel) => _resend(displayEvent, timeline),
+                                                        isError: displayEvent.status.isError,
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            } else if (displayEvent.relationshipType == RelationshipTypes.edit) {
+                                              return const SizedBox.shrink();
+                                            }
+                                          }
+
+                                          ChatMessageModel chatMessageModel = ChatMessageModel(
+                                            idx: i,
+                                            id: displayEvent.eventId,
+                                            isMine: displayEvent.senderId == _client.userID,
+                                            userID: displayEvent.senderId,
+                                            avatarUrl: displayEvent.senderFromMemoryOrFallback.avatarUrl.toString(),
+                                            msg: displayEvent.calcUnlocalizedBody(
+                                              hideReply: true,
+                                              hideEdit: false,
+                                              plaintextBody: true,
+                                              removeMarkdown: true,
+                                            ),
+                                            dateTime: displayEvent.originServerTs.toIso8601String(),
+                                            isEdited: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.edit),
+                                            reaction: 0,
+                                            reactions: event.hasAggregatedEvents(timeline, RelationshipTypes.reaction) ? _getReactions(event, timeline) : [],
+                                            hasReaction: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.reaction),
+                                            isReply: false,
+                                            isRead: _checkReadMsg(displayEvent, timeline.events, i),
+                                            isConsecutively: _checkConsecutively(timeline.events, i),
+                                          );
+
+                                          return Column(
+                                            children: [
+                                              isNeedDateTime
+                                                  ? Text(DateTime(displayEvent.originServerTs.year, displayEvent.originServerTs.month, displayEvent.originServerTs.day).toString())
+                                                  : const SizedBox.shrink(),
+                                              ChatMessageItem(
+                                                key: ValueKey<String>(chatMessageModel.id),
+                                                chatMessageModel: chatMessageModel,
+                                                onReply: _onReply,
+                                                onEdit: _onEdit,
+                                                onDelete: _onDelete,
+                                                onReaction: (chatMessageModel, reactionKey) => _onReaction(chatMessageModel, reactionKey, timeline),
+                                                onError: (chatMessageModel) => _resend(displayEvent, timeline),
+                                                isError: displayEvent.status.isError,
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    ),
+                                ],
+                              );
+                            },
+                          );
+                        }),
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -540,7 +671,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                               Positioned(
                                 right: 0,
                                 child: IconButton(
-                                  onPressed: _send,
+                                  onPressed: () => _send(_sendController.text.trim()),
                                   icon: const Icon(
                                     Icons.send_outlined,
                                     color: kPrimaryColor,
