@@ -61,7 +61,7 @@ class ChatLoginState extends _$ChatLoginState {
 
     try {
       // LoginResponse result = await chatController.login(id, chatController.createPassword(pw));
-      LoginResponse result = await chatController.login(id, pw);
+      LoginResponse result = await chatController.controller.login(id, pw);
       ChatUserModel chatUserModel = ChatUserModel(
         chatMemberId: result.userId,
         accessToken: result.accessToken,

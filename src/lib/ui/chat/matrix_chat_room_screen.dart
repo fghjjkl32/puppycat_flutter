@@ -42,7 +42,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   @override
   void initState() {
     super.initState();
-    _client = (ref.read(chatControllerProvider('matrix')) as MatrixChatClientController).client;
+    _client = (ref.read(chatControllerProvider('matrix')).controller as MatrixChatClientController).client;
     readMarkerEventId = widget.room.fullyRead;
     print('readMarkerEventId $readMarkerEventId');
 
@@ -269,32 +269,39 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     int lastReadEventIdx = -1;
 
     if(curEvent.status.isError) {
+      print('_checkReadMsg 1');
       return false;
     }
 
     if (fullyReadId == null) {
+      print('_checkReadMsg 2');
       return false;
     }
 
     fullyReadIdx = events.indexWhere((element) => element.eventId == fullyReadId!);
     if (fullyReadIdx < 0) {
+      print('_checkReadMsg 3');
       return false;
     }
 
     lastReadEventId = _getReadEventId(curEvent.room);
     if (lastReadEventId == null) {
+      print('_checkReadMsg 4');
       lastReadEventIdx = fullyReadIdx;
     } else {
+      print('_checkReadMsg 5');
       lastReadEventIdx = events.indexWhere((element) => element.eventId == lastReadEventId!);
     }
 
     if (lastReadEventIdx < fullyReadIdx) {
+      print('_checkReadMsg 6 $lastReadEventId / $readMarkerEventId');
       fullyReadIdx = lastReadEventIdx;
       readMarkerEventId = lastReadEventId;
       setReadMarker(eventId: lastReadEventId);
     }
 
     if (index < fullyReadIdx) {
+      print('_checkReadMsg 7');
       return false;
     } else {
       return true;
@@ -503,10 +510,10 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                           Event event = timeline.events[i];
                                           Event displayEvent = event.getDisplayEvent(timeline);
 
-                                          // if(displayEvent.status == EventStatus.error) {
-                                          //   print('aaaa');
-                                          //   // return Center(child: Text('메세지 전송에 실패했습니다.'),);
-                                          // }
+                                          if(displayEvent.status == EventStatus.error) {
+                                            print('aaaa');
+                                            // return Center(child: Text('메세지 전송에 실패했습니다.'),);
+                                          }
 
                                           if (!displayEvent.isVisibleInGui) {
                                             if(displayEvent.type == EventTypes.RoomCreate) {
@@ -542,7 +549,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                                     isMine: displayEvent.senderId != _client.userID,
                                                     userID: displayEvent.senderId,
                                                     avatarUrl: displayEvent.senderFromMemoryOrFallback.avatarUrl.toString(),
-                                                    msg: displayEvent.plaintextBody,
+                                                    msg: displayEvent.redacted ? '메시지.삭제된 메시지 입니다'.tr() : displayEvent.plaintextBody,
                                                     dateTime: displayEvent.originServerTs.toIso8601String(),
                                                     isEdited: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.edit),
                                                     reaction: 0,
@@ -566,6 +573,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                                         onReaction: (chatMessageModel, reactionKey) => _onReaction(chatMessageModel, reactionKey, timeline),
                                                         onError: (chatMessageModel) => _resend(displayEvent, timeline),
                                                         isError: displayEvent.status.isError,
+                                                        isSending : displayEvent.status.isSending,
                                                       ),
                                                     ],
                                                   );
@@ -582,7 +590,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                             isMine: displayEvent.senderId == _client.userID,
                                             userID: displayEvent.senderId,
                                             avatarUrl: displayEvent.senderFromMemoryOrFallback.avatarUrl.toString(),
-                                            msg: displayEvent.calcUnlocalizedBody(
+                                            msg: displayEvent.redacted ? '메시지.삭제된 메시지 입니다'.tr() : displayEvent.calcUnlocalizedBody(
                                               hideReply: true,
                                               hideEdit: false,
                                               plaintextBody: true,
@@ -612,6 +620,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                                 onReaction: (chatMessageModel, reactionKey) => _onReaction(chatMessageModel, reactionKey, timeline),
                                                 onError: (chatMessageModel) => _resend(displayEvent, timeline),
                                                 isError: displayEvent.status.isError,
+                                                isSending : displayEvent.status.isSending,
                                               ),
                                             ],
                                           );

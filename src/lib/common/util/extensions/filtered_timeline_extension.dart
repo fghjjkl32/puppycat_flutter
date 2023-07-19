@@ -2,7 +2,7 @@ import 'package:matrix/matrix.dart';
 
 extension IsStateExtension on Event {
   bool get isVisibleInGui =>
-      EventTypes.Message == type && !redacted;
+      EventTypes.Message == type; // && !redacted;
       // always filter out edit and reaction relationships
       // !{RelationshipTypes.edit, RelationshipTypes.reaction}
       //     .contains(relationshipType) &&

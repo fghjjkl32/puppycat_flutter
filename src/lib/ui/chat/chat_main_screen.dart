@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,10 @@ import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/abstract_chat_controller.dart';
+import 'package:pet_mobile_social_flutter/controller/chat/chat_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_room_model.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_favorite_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_room_item.dart';
@@ -29,12 +32,19 @@ class ChatMainScreen extends ConsumerStatefulWidget {
 class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
   late ScrollController _scrollController;
   // MatrixChatClientController clientController = MatrixChatClientController();
+  late ChatController _chatController ;
 
   @override
   void initState() {
-    super.initState();
     _scrollController = ScrollController();
-    // listenChatEvent();
+    _chatController = ref.read(chatControllerProvider('matrix'));
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    ref.read(chatFavoriteStateProvider.notifier).getChatFavorite();
+    super.didChangeDependencies();
   }
 
   @override
@@ -43,68 +53,65 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
     super.dispose();
   }
 
-  // void listenChatEvent() async {
-  //   // MatrixChatClientController clientController = MatrixChatClientController();
-  //   Client client = clientController.client;
-  //
-  //   // await client.checkHomeserver(Uri.parse("https://sns-chat.devlabs.co.kr:8008"));
-  //   await client.checkHomeserver(Uri.parse("https://dev2.office.uxplus.kr"));
-  //   var result = await client.login(
-  //     LoginType.mLoginPassword,
-  //     identifier: AuthenticationUserIdentifier(user: 'test2'),
-  //     password: 'test2',
-  //   );
-  //
-  //   client.accessToken = result.accessToken;
-  //   print('client.accessToken ${client.accessToken}');
-  //
-  //   // ref.read(chatRoomStateProvider.notifier).listenRoomState();
-  // }
-
   Widget _buildFavorite() {
+    var chatFavoriteList = ref.watch(chatFavoriteStateProvider);
+
     return ListView.separated(
-      itemCount: 8,
+      itemCount: chatFavoriteList.length,
       shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       separatorBuilder: (context, index) {
         return SizedBox(width: 12.0.w,);
       },
       itemBuilder: (BuildContext context, int index) {
-        return Column(
-          children: [
-            WidgetMask(
-              blendMode: BlendMode.srcATop,
-              childSaveLayer: true,
-              mask: Center(
-                child: Image.network(
-                  'https://via.placeholder.com/150/f66b97',
+        return InkWell(
+          onTap: () async {
+            if(chatFavoriteList[index].chatInfo.chatMemberId != null) {
+              var roomId = await _chatController.client.startDirectChat(chatFavoriteList[index].chatInfo.chatMemberId!, enableEncryption: false);
+              Room? room = _chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
+              if(room != null) {
+                if(mounted) {
+                  context.push('/chatMain/chatRoom', extra: room);
+                }
+              }
+            }
+          },
+          child: Column(
+            children: [
+              WidgetMask(
+                blendMode: BlendMode.srcATop,
+                childSaveLayer: true,
+                mask: Center(
+                  child: Image.network(
+                    chatFavoriteList[index].profileImgUrl.isEmpty ? 'https://via.placeholder.com/150/f66b97' : chatFavoriteList[index].profileImgUrl,
+                    height: 48.h,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: SvgPicture.asset(
+                  'assets/image/feed/image/squircle.svg',
                   height: 48.h,
                   fit: BoxFit.fill,
                 ),
               ),
-              child: SvgPicture.asset(
-                'assets/image/feed/image/squircle.svg',
-                height: 48.h,
-                fit: BoxFit.fill,
+              SizedBox(height: 6.0.h),
+              Text(
+                chatFavoriteList[index].nick,
+                style: kBody12RegularStyle.copyWith(color: kTextTitleColor),
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
-            SizedBox(height: 6.0.h),
-            Text(
-              'test',
-              style: kBody12RegularStyle.copyWith(color: kTextTitleColor),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
   }
 
   Widget _buildRoomList() {
-    AbstractChatController chatController = ref.watch(chatControllerProvider('matrix'));
+    // AbstractChatController chatController = ref.watch(chatControllerProvider('matrix'));
 
     return StreamBuilder(
-      stream: chatController.getRoomListStream(),
+      stream: _chatController.controller.getRoomListStream(),
       builder: (context, snapshot) {
         if(snapshot.hasError) {
           return const Center(child: CircularProgressIndicator(),);
@@ -114,7 +121,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
         //   return const Center(child: CircularProgressIndicator(),);
         // }
 
-        List<ChatRoomModel> roomList = chatController.getRoomList();
+        List<ChatRoomModel> roomList = _chatController.controller.getRoomList();
         return ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -125,7 +132,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
             // print('room id : ${room.id} / membership ${room.isJoined}');
             ///NOTE 2023. 07. 12.
             ///여기부터 우선 의존성, 확장성 무시하고 결과 먼저 보기로
-            var matrixController = chatController as MatrixChatClientController;
+            var matrixController = _chatController.controller as MatrixChatClientController;
             return Padding(
               padding: EdgeInsets.only(bottom: 6.0.h),
               child: ChatRoomItem(
@@ -134,7 +141,6 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                   await matrixController.client.rooms[index].leave();
                 },
                 onTap: () {
-
                   Room matrixRoom = matrixController.client.getRoomById(matrixController.client.rooms[index].id) ?? matrixController.client.rooms[index];
                   context.push('/chatMain/chatRoom', extra: matrixRoom);
                 },

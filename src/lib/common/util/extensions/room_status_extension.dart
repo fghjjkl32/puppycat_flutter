@@ -5,15 +5,12 @@ import 'package:matrix/matrix.dart';
 import 'date_time_extension.dart';
 
 extension RoomStatusExtension on Room {
-  CachedPresence? get directChatPresence =>
-      client.presences[directChatMatrixID];
+  CachedPresence? get directChatPresence => client.presences[directChatMatrixID];
 
   String getLocalizedStatus(BuildContext context) {
     if (isDirectChat) {
       final directChatPresence = this.directChatPresence;
-      if (directChatPresence != null &&
-          (directChatPresence.lastActiveTimestamp != null ||
-              directChatPresence.currentlyActive != null)) {
+      if (directChatPresence != null && (directChatPresence.lastActiveTimestamp != null || directChatPresence.currentlyActive != null)) {
         if (directChatPresence.statusMsg?.isNotEmpty ?? false) {
           return directChatPresence.statusMsg!;
         }
@@ -75,9 +72,40 @@ extension RoomStatusExtension on Room {
       }
     }
     lastReceipts.removeWhere(
-      (user) =>
-          user.id == client.userID || user.id == timeline.events.first.senderId,
+      (user) => user.id == client.userID || user.id == timeline.events.first.senderId,
     );
     return lastReceipts.toList();
+  }
+
+  Event? get lastMessageEvent {
+    var lastTime = DateTime.fromMillisecondsSinceEpoch(0);
+    final lastEvents = client.roomPreviewLastEvents.map(getState).whereType<Event>();
+
+    var lastMsgEvents = lastEvents.where((element) {
+      return element.type == EventTypes.Message && !element.redacted;
+    });
+
+    var lastEvent = lastMsgEvents.isEmpty
+        ? null
+        : lastMsgEvents.reduce((a, b) {
+            if (a.originServerTs == b.originServerTs) {
+              // if two events have the same sort order we want to give encrypted events a lower priority
+              // This is so that if the same event exists in the state both encrypted *and* unencrypted,
+              // the unencrypted one is picked
+              return a.type == EventTypes.Encrypted ? b : a;
+            }
+            return a.originServerTs.millisecondsSinceEpoch > b.originServerTs.millisecondsSinceEpoch ? a : b;
+          });
+    if (lastEvent == null) {
+      states.forEach((final String key, final entry) {
+        final state = entry[''];
+        if (state == null) return;
+        if (state.originServerTs.millisecondsSinceEpoch > lastTime.millisecondsSinceEpoch) {
+          lastTime = state.originServerTs;
+          lastEvent = state;
+        }
+      });
+    }
+    return lastEvent;
   }
 }

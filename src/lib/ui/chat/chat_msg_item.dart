@@ -40,6 +40,7 @@ class ChatMessageItem extends ConsumerWidget {
   final void Function(ChatMessageModel, String reactionKey)? onReaction;
   final void Function(ChatMessageModel)? onError;
   final bool isError;
+  final bool isSending;
 
   ChatMessageItem({
     Key? key,
@@ -55,6 +56,7 @@ class ChatMessageItem extends ConsumerWidget {
     this.onReaction,
     this.onError,
     required this.isError,
+    required this.isSending,
   }) : super(key: key);
 
   Widget _getAvatar(String avatarUrl) {
@@ -350,6 +352,7 @@ class ChatMessageItem extends ConsumerWidget {
                 ),
                 hasReaction ? Text(chatMessageModel.reactions.first) : const SizedBox.shrink(),
                 isError ? Text('error') : const SizedBox.shrink(),
+                isSending ? const CircularProgressIndicator() : const SizedBox.shrink(),
               ],
             ),
           ),

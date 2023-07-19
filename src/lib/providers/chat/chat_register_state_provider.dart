@@ -21,9 +21,9 @@ enum ChatControllerStatus {
 //   return ref.read(accountRepositoryProvider).restoreAccount(restoreInfo.$1, restoreInfo.$2);
 // });
 
-final chatControllerProvider = StateProvider.family<AbstractChatController, String>((ref, provider) {
+final chatControllerProvider = StateProvider.family<ChatController, String>((ref, provider) {
   // ChatController chatController = ChatController(provider: provider);
-  return ChatController(provider: provider).chatController;
+  return ChatController(provider: provider);
 });
 
 final chatRegisterInfoProvider = StateProvider<ChatUserModel?>((ref) => null);
@@ -36,7 +36,7 @@ class ChatRegisterState extends _$ChatRegisterState {
   }
 
   Future<ChatUserModel?> register(UserModel userModel) async {
-    var chatController = ref.read(chatControllerProvider('matrix'));
+    var chatController = ref.read(chatControllerProvider('matrix')).controller;
     var result = await chatController.register(chatController.createAccount(userModel.id, userModel.appKey), chatController.createPassword(userModel.password), userModel.nick);
     ref.read(chatRegisterInfoProvider.notifier).state = result;
     return result;
