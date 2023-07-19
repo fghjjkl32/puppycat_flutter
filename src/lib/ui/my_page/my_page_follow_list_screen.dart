@@ -307,10 +307,8 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen>
                               }
                               return Container();
                             }
-
                             return FollowerItemWidget(
-                              profileImage:
-                                  "https://dev-imgs.devlabs.co.kr${lists[index].url}",
+                              profileImage: "${lists[index].url}",
                               userName: lists[index].followerNick!,
                               content: lists[index].intro == ""
                                   ? '소개글이 없습니다.'
@@ -318,6 +316,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen>
                               isSpecialUser: lists[index].isBadge! == 1,
                               isFollow: lists[index].isFollow == 0,
                               followerIdx: lists[index].followerIdx!,
+                              memberIdx: lists[index].memberIdx!,
                             );
                           },
                         ),
@@ -443,8 +442,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen>
                               return Container();
                             }
                             return FollowingItemWidget(
-                              profileImage:
-                                  "https://dev-imgs.devlabs.co.kr${lists[index].url}",
+                              profileImage: "${lists[index].url}",
                               userName: lists[index].followNick!,
                               content: lists[index].intro == "" ||
                                       lists[index].intro == null
@@ -454,6 +452,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen>
                               isFollow: lists[index].isFollow == 0,
                               isNewUser: lists[index].newState! == 1,
                               followIdx: lists[index].followIdx!,
+                              memberIdx: lists[index].memberIdx!,
                             );
                           },
                         ),

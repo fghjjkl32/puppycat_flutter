@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
+import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -15,18 +17,24 @@ import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_p
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class MyPageMainScreen extends ConsumerStatefulWidget {
-  const MyPageMainScreen({super.key});
+class UserMainScreen extends ConsumerStatefulWidget {
+  const UserMainScreen({
+    super.key,
+    required this.memberIdx,
+    required this.nick,
+  });
+
+  final int memberIdx;
+  final String nick;
 
   @override
-  MyPageMainState createState() => MyPageMainState();
+  UserMainScreenState createState() => UserMainScreenState();
 }
 
-class MyPageMainState extends ConsumerState<MyPageMainScreen>
+class UserMainScreenState extends ConsumerState<UserMainScreen>
     with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
   ScrollController userContentController = ScrollController();
@@ -53,16 +61,11 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
       length: 2,
       vsync: this,
     );
-
     ref
-        .read(myInformationStateProvider.notifier)
-        .getInitUserInformation(ref.read(userModelProvider)!.idx);
-    ref
-        .read(userContentStateProvider.notifier)
-        .initPosts(ref.read(userModelProvider)!.idx, 1);
-    ref
-        .read(tagContentStateProvider.notifier)
-        .initPosts(ref.read(userModelProvider)!.idx, 1);
+        .read(userInformationStateProvider.notifier)
+        .getInitUserInformation(widget.memberIdx);
+    ref.read(userContentStateProvider.notifier).initPosts(widget.memberIdx, 1);
+    ref.read(tagContentStateProvider.notifier).initPosts(widget.memberIdx, 1);
     super.initState();
   }
 
@@ -86,7 +89,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
       if (userOldLength == ref.read(userContentStateProvider).list.length) {
         ref
             .read(userContentStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx);
+            .loadMorePost(widget.memberIdx);
       }
     }
   }
@@ -98,7 +101,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
       if (userOldLength == ref.read(tagContentStateProvider).list.length) {
         ref
             .read(tagContentStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx);
+            .loadMorePost(widget.memberIdx);
       }
     }
   }
@@ -146,7 +149,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                     pinned: true,
                     floating: false,
                     backgroundColor: appBarColor,
-                    title: const Text('마이페이지'),
+                    title: Text(widget.nick),
                     leading: IconButton(
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -158,14 +161,73 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                       PopupMenuButton(
                         icon: const Icon(Icons.more_horiz),
                         onSelected: (id) {
-                          if (id == 'myActivity') {
-                            context.go("/home/myPage/myActivity");
-                          }
-                          if (id == 'postsManagement') {
-                            context.go("/home/myPage/myPost");
-                          }
-                          if (id == 'setting') {
-                            context.go("/home/myPage/setting");
+                          if (id == 'block') {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CustomDialog(
+                                    content: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 24.0.h),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            "‘${widget.nick}’님을\n차단하시겠어요?",
+                                            style: kBody16BoldStyle.copyWith(
+                                                color: kTextTitleColor),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(
+                                            height: 8.h,
+                                          ),
+                                          Text(
+                                            "‘${widget.nick}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
+                                            style: kBody12RegularStyle.copyWith(
+                                                color: kTextBodyColor),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(
+                                            height: 8.h,
+                                          ),
+                                          Text(
+                                            " ‘${widget.nick}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
+                                            style: kBody12RegularStyle.copyWith(
+                                                color: kTextBodyColor),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    confirmTap: () async {
+                                      context.pop();
+                                      final result = await ref
+                                          .read(userInformationStateProvider
+                                              .notifier)
+                                          .postBlock(
+                                            memberIdx: ref
+                                                .watch(userModelProvider)!
+                                                .idx,
+                                            blockIdx: widget.memberIdx,
+                                          );
+
+                                      if (result.result) {
+                                        toast(
+                                          context: context,
+                                          text: "‘${widget.nick}’님을 차단하였습니다.",
+                                          type: ToastType.purple,
+                                        );
+                                      }
+                                    },
+                                    cancelTap: () {
+                                      context.pop();
+                                    },
+                                    confirmWidget: Text(
+                                      "프로필 차단",
+                                      style: kButton14MediumStyle.copyWith(
+                                          color: kBadgeColor),
+                                    ));
+                              },
+                            );
                           }
                         },
                         shape: const RoundedRectangleBorder(
@@ -180,35 +242,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                           final list = <PopupMenuEntry>[];
                           list.add(
                             diaryPopUpMenuItem(
-                              'myActivity',
-                              '내 활동',
-                              const Icon(Icons.person),
-                              context,
-                            ),
-                          );
-                          list.add(
-                            const PopupMenuDivider(
-                              height: 5,
-                            ),
-                          );
-                          list.add(
-                            diaryPopUpMenuItem(
-                              'postsManagement',
-                              '내 글 관리',
-                              const Icon(Icons.post_add_outlined),
-                              context,
-                            ),
-                          );
-                          list.add(
-                            const PopupMenuDivider(
-                              height: 5,
-                            ),
-                          );
-                          list.add(
-                            diaryPopUpMenuItem(
-                              'setting',
-                              '설정',
-                              const Icon(Icons.settings),
+                              'block',
+                              '차단하기',
+                              const Icon(Icons.block),
                               context,
                             ),
                           );
@@ -219,7 +255,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                     expandedHeight: 130.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
                       final userInformationState =
-                          ref.watch(myInformationStateProvider);
+                          ref.watch(userInformationStateProvider);
                       final lists = userInformationState.list;
 
                       return _myPageSuccessProfile(lists[0]);
@@ -256,7 +292,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
         return RefreshIndicator(
           onRefresh: () {
             return ref.read(userContentStateProvider.notifier).refresh(
-                  ref.read(userModelProvider)!.idx,
+                  widget.memberIdx,
                 );
           },
           child: GridView.builder(
@@ -332,7 +368,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                             .notifier)
                                         .initContentLikeUserList(
                                           lists[index].idx,
-                                          ref.read(userModelProvider)!.idx,
+                                          widget.memberIdx,
                                           1,
                                         );
 
@@ -594,7 +630,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
         return RefreshIndicator(
           onRefresh: () {
             return ref.read(tagContentStateProvider.notifier).refresh(
-                  ref.read(userModelProvider)!.idx,
+                  widget.memberIdx,
                 );
           },
           child: GridView.builder(
@@ -739,8 +775,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 ),
                 GestureDetector(
                   onTap: () {
-                    context.go(
-                        "/home/myPage/followList/${ref.read(userModelProvider)!.idx}");
+                    context.push("/home/myPage/followList/${widget.memberIdx}");
                   },
                   child: Padding(
                     padding: EdgeInsets.only(top: 8.0.h),
@@ -768,6 +803,115 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                         ),
                         Text(
                           "${data.followCnt}",
+                          style: kBody11SemiBoldStyle.copyWith(
+                              color: kTextSubTitleColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _myPageProfile() {
+    return FlexibleSpaceBar(
+      centerTitle: true,
+      expandedTitleScale: 1.0,
+      background: Padding(
+        padding: const EdgeInsets.only(top: kToolbarHeight),
+        child: Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              child: WidgetMask(
+                blendMode: BlendMode.srcATop,
+                childSaveLayer: true,
+                mask: Center(
+                  child: Image.asset(
+                    'assets/image/feed/image/sample_image3.png',
+                    height: 48.h,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: SvgPicture.asset(
+                  'assets/image/feed/image/squircle.svg',
+                  height: 48.h,
+                ),
+              ),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      'assets/image/feed/icon/small_size/icon_special.png',
+                      height: 13.h,
+                    ),
+                    SizedBox(
+                      width: 4.w,
+                    ),
+                    Text(
+                      "왕티즈왕왕",
+                      style: kTitle16ExtraBoldStyle.copyWith(
+                          color: kTextTitleColor),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        context.go("/home/myPage/profileEdit");
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(5.0),
+                        child: Icon(
+                          Icons.edit,
+                          color: kNeutralColor500,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 3.h,
+                ),
+                Text(
+                  "딸기🍓를 좋아하는 왕큰 말티즈🐶 왕왕이💛🤍 ",
+                  style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                ),
+                GestureDetector(
+                  onTap: () {},
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 8.0.h),
+                    child: Row(
+                      children: [
+                        Text(
+                          "팔로워 ",
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                        Text(
+                          "265",
+                          style: kBody11SemiBoldStyle.copyWith(
+                              color: kTextSubTitleColor),
+                        ),
+                        Text(
+                          "  ·  ",
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                        Text(
+                          "팔로잉 ",
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                        Text(
+                          "165",
                           style: kBody11SemiBoldStyle.copyWith(
                               color: kTextSubTitleColor),
                         ),

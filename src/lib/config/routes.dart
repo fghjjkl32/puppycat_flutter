@@ -32,6 +32,7 @@ import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_pri
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/my_page_two_title_feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_terms_of_service_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_select_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
@@ -148,15 +149,28 @@ class AppRouter {
                           ]),
                     ]),
                 GoRoute(
-                  path: 'followList/:memberIdx',
-                  name: 'followList/:memberIdx',
-                  builder: (BuildContext context, GoRouterState state) {
-                    final memberIdx = state.pathParameters['memberIdx']!;
-                    return MyPageFollowListScreen(
-                      memberIdx: int.parse(memberIdx),
-                    );
-                  },
-                ),
+                    path: 'followList/:memberIdx',
+                    name: 'followList/:memberIdx',
+                    builder: (BuildContext context, GoRouterState state) {
+                      final memberIdx = state.pathParameters['memberIdx']!;
+                      return MyPageFollowListScreen(
+                        memberIdx: int.parse(memberIdx),
+                      );
+                    },
+                    routes: [
+                      GoRoute(
+                        path: 'userPage/:nick/:userIdx',
+                        name: 'userPage/:nick/:userIdx',
+                        builder: (BuildContext context, GoRouterState state) {
+                          final memberIdx = state.pathParameters['userIdx']!;
+                          final nick = state.pathParameters['nick']!;
+                          return UserMainScreen(
+                            memberIdx: int.parse(memberIdx),
+                            nick: nick,
+                          );
+                        },
+                      )
+                    ]),
                 GoRoute(
                   path: 'myActivity',
                   name: 'myActivity',

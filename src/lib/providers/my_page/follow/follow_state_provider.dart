@@ -108,7 +108,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
             list: [...state.followerListState.list, ...lists.data.list],
           ),
         );
-        searchFollowCurrentPage++;
+        searchFollowerCurrentPage++;
       } else {
         state = state.copyWith(
             followerListState:
