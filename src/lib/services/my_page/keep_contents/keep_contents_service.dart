@@ -9,7 +9,7 @@ part 'keep_contents_service.g.dart';
 abstract class KeepContentsService {
   factory KeepContentsService(Dio dio, {String baseUrl}) = _KeepContentsService;
 
-  @GET('/my/keep/contents?memberIdx={memberIdx}&page={page}')
+  @GET('/my/keep/contents?memberIdx={memberIdx}&page={page}&limit=15')
   Future<ContentResponseModel?> getKeepContents(
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,

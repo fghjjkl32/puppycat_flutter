@@ -65,6 +65,16 @@ class BlockStateNotifier extends StateNotifier<BlockDataListModel> {
         return;
       }
 
+      StringBuffer bf = StringBuffer();
+
+      bf.write(
+          'try to request loading ${state.isLoading} at ${state.page + 1}');
+      if (state.isLoading) {
+        bf.write(' fail');
+        return;
+      }
+      bf.write(' success');
+
       state = state.copyWith(
           isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
@@ -93,6 +103,16 @@ class BlockStateNotifier extends StateNotifier<BlockDataListModel> {
         state = state.copyWith(isLoadMoreDone: true);
         return;
       }
+
+      StringBuffer bf = StringBuffer();
+
+      bf.write(
+          'try to request loading ${state.isLoading} at ${state.page + 1}');
+      if (state.isLoading) {
+        bf.write(' fail');
+        return;
+      }
+      bf.write(' success');
 
       state = state.copyWith(
           isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);

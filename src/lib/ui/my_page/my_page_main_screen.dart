@@ -222,7 +222,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                           ref.watch(myInformationStateProvider);
                       final lists = userInformationState.list;
 
-                      return _myPageSuccessProfile(lists[0]);
+                      return lists.isEmpty
+                          ? Container()
+                          : _myPageSuccessProfile(lists[0]);
                     })),
                 const SliverPersistentHeader(
                   delegate: TabBarDelegate(),

@@ -83,6 +83,16 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
         return;
       }
 
+      StringBuffer bf = StringBuffer();
+
+      bf.write(
+          'try to request loading ${state.followerListState.isLoading} at ${state.followerListState.page + 1}');
+      if (state.followerListState.isLoading) {
+        bf.write(' fail');
+        return;
+      }
+      bf.write(' success');
+
       state = state.copyWith(
           followerListState: state.followerListState.copyWith(
               isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
@@ -121,6 +131,16 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
                 state.followerListState.copyWith(isLoadMoreDone: true));
         return;
       }
+
+      StringBuffer bf = StringBuffer();
+
+      bf.write(
+          'try to request loading ${state.followerListState.isLoading} at ${state.followerListState.page + 1}');
+      if (state.followerListState.isLoading) {
+        bf.write(' fail');
+        return;
+      }
+      bf.write(' success');
 
       state = state.copyWith(
           followerListState: state.followerListState.copyWith(
@@ -198,6 +218,16 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
         return;
       }
 
+      StringBuffer bf = StringBuffer();
+
+      bf.write(
+          'try to request loading ${state.followListState.isLoading} at ${state.followListState.page + 1}');
+      if (state.followListState.isLoading) {
+        bf.write(' fail');
+        return;
+      }
+      bf.write(' success');
+
       state = state.copyWith(
           followListState: state.followListState.copyWith(
               isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
@@ -235,6 +265,16 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
                 state.followListState.copyWith(isLoadMoreDone: true));
         return;
       }
+
+      StringBuffer bf = StringBuffer();
+
+      bf.write(
+          'try to request loading ${state.followListState.isLoading} at ${state.followListState.page + 1}');
+      if (state.followListState.isLoading) {
+        bf.write(' fail');
+        return;
+      }
+      bf.write(' success');
 
       state = state.copyWith(
           followListState: state.followListState.copyWith(

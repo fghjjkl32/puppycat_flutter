@@ -100,6 +100,16 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
       return;
     }
 
+    StringBuffer bf = StringBuffer();
+
+    bf.write(
+        'try to request loading ${state.myPostState.isLoading} at ${state.myPostState.page + 1}');
+    if (state.myPostState.isLoading) {
+      bf.write(' fail');
+      return;
+    }
+    bf.write(' success');
+
     state = state.copyWith(
         myPostState: state.myPostState.copyWith(
             isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
@@ -238,6 +248,16 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
           myKeepState: state.myKeepState.copyWith(isLoadMoreDone: true));
       return;
     }
+
+    StringBuffer bf = StringBuffer();
+
+    bf.write(
+        'try to request loading ${state.myKeepState.isLoading} at ${state.myKeepState.page + 1}');
+    if (state.myKeepState.isLoading) {
+      bf.write(' fail');
+      return;
+    }
+    bf.write(' success');
 
     state = state.copyWith(
         myKeepState: state.myKeepState.copyWith(

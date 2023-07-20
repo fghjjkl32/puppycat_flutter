@@ -37,7 +37,7 @@ class _KeepContentsService implements KeepContentsService {
     )
             .compose(
               _dio.options,
-              '/my/keep/contents?memberIdx=${memberIdx}&page=${page}',
+              '/my/keep/contents?memberIdx=${memberIdx}&page=${page}&limit=15',
               queryParameters: queryParameters,
               data: _data,
             )

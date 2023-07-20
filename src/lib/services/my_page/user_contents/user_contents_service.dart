@@ -8,7 +8,7 @@ part 'user_contents_service.g.dart';
 abstract class UserContentsService {
   factory UserContentsService(Dio dio, {String baseUrl}) = _UserContentsService;
 
-  @GET('/my/contents?memberIdx={memberIdx}&page={page}')
+  @GET('/my/contents?memberIdx={memberIdx}&page={page}&limit=15')
   Future<ContentResponseModel?> getUserContents(
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
