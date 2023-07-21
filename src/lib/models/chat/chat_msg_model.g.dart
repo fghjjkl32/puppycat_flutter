@@ -27,6 +27,7 @@ _$_ChatMessageModel _$$_ChatMessageModelFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      isViewTime: json['isViewTime'] as bool,
     );
 
 Map<String, dynamic> _$$_ChatMessageModelToJson(_$_ChatMessageModel instance) =>
@@ -47,4 +48,5 @@ Map<String, dynamic> _$$_ChatMessageModelToJson(_$_ChatMessageModel instance) =>
       'isRead': instance.isRead,
       'isConsecutively': instance.isConsecutively,
       'reactions': instance.reactions,
+      'isViewTime': instance.isViewTime,
     };

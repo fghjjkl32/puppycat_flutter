@@ -31,8 +31,9 @@ class ChatMainScreen extends ConsumerStatefulWidget {
 
 class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
   late ScrollController _scrollController;
+
   // MatrixChatClientController clientController = MatrixChatClientController();
-  late ChatController _chatController ;
+  late ChatController _chatController;
 
   @override
   void initState() {
@@ -58,41 +59,58 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
 
     return ListView.separated(
       itemCount: chatFavoriteList.length,
-      shrinkWrap: true,
+      // shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       separatorBuilder: (context, index) {
-        return SizedBox(width: 12.0.w,);
+        return SizedBox(
+          width: 12.0.w,
+        );
       },
       itemBuilder: (BuildContext context, int index) {
         return InkWell(
           onTap: () async {
-            if(chatFavoriteList[index].chatInfo.chatMemberId != null) {
+            if (chatFavoriteList[index].chatInfo.chatMemberId != null) {
               var roomId = await _chatController.client.startDirectChat(chatFavoriteList[index].chatInfo.chatMemberId!, enableEncryption: false);
               Room? room = _chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
-              if(room != null) {
-                if(mounted) {
+              if (room != null) {
+                if (mounted) {
                   context.push('/chatMain/chatRoom', extra: room);
                 }
               }
             }
           },
           child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              WidgetMask(
-                blendMode: BlendMode.srcATop,
-                childSaveLayer: true,
-                mask: Center(
-                  child: Image.network(
-                    chatFavoriteList[index].profileImgUrl.isEmpty ? 'https://via.placeholder.com/150/f66b97' : chatFavoriteList[index].profileImgUrl,
-                    height: 48.h,
-                    fit: BoxFit.fill,
+              Stack(
+                children: [
+                  WidgetMask(
+                    blendMode: BlendMode.srcATop,
+                    childSaveLayer: true,
+                    mask: Center(
+                      child: chatFavoriteList[index].profileImgUrl.isNotEmpty
+                          ? Image.network(
+                              chatFavoriteList[index].profileImgUrl,
+                              // width: 42.w,
+                              height: 48.h,
+                              fit: BoxFit.fill,
+                            )
+                          : Image.asset('assets/image/common/icon_profile_medium.png'),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/image/feed/image/squircle.svg',
+                      height: 48.h,
+                      fit: BoxFit.fill,
+                    ),
                   ),
-                ),
-                child: SvgPicture.asset(
-                  'assets/image/feed/image/squircle.svg',
-                  height: 48.h,
-                  fit: BoxFit.fill,
-                ),
+                  chatFavoriteList[index].isBadge == 1
+                      ? Positioned(
+                          top: 1.h,
+                          right: 1.w,
+                          child: Image.asset('assets/image/common/icon_special.png', width: 12.w),
+                        )
+                      : const SizedBox.shrink(),
+                ],
               ),
               SizedBox(height: 6.0.h),
               Text(
@@ -108,24 +126,20 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
   }
 
   Widget _buildRoomList() {
-    // AbstractChatController chatController = ref.watch(chatControllerProvider('matrix'));
-
     return StreamBuilder(
       stream: _chatController.controller.getRoomListStream(),
       builder: (context, snapshot) {
-        if(snapshot.hasError) {
-          return const Center(child: CircularProgressIndicator(),);
+        if (snapshot.hasError) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         }
-
-        // if(!snapshot.hasData) {
-        //   return const Center(child: CircularProgressIndicator(),);
-        // }
 
         List<ChatRoomModel> roomList = _chatController.controller.getRoomList();
         return ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          padding: EdgeInsets.only( top: 16.0.h),
+          // padding: EdgeInsets.only(top: 16.0.h),
           itemCount: roomList.length,
           itemBuilder: (BuildContext context, int index) {
             ChatRoomModel room = roomList[index];
@@ -133,16 +147,19 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
             ///NOTE 2023. 07. 12.
             ///여기부터 우선 의존성, 확장성 무시하고 결과 먼저 보기로
             var matrixController = _chatController.controller as MatrixChatClientController;
+            Room matrixRoom = matrixController.client.getRoomById(matrixController.client.rooms[index].id) ?? matrixController.client.rooms[index];
             return Padding(
               padding: EdgeInsets.only(bottom: 6.0.h),
               child: ChatRoomItem(
                 roomModel: room,
                 onLeave: () async {
-                  await matrixController.client.rooms[index].leave();
+                  await matrixRoom.leave();
                 },
                 onTap: () {
-                  Room matrixRoom = matrixController.client.getRoomById(matrixController.client.rooms[index].id) ?? matrixController.client.rooms[index];
                   context.push('/chatMain/chatRoom', extra: matrixRoom);
+                },
+                onPin: (pinState) async {
+                  await matrixRoom.setFavourite(!pinState);
                 },
               ),
             );
@@ -184,7 +201,11 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
         ),
         backgroundColor: kNeutralColor100,
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.chat)),
+          IconButton(
+            onPressed: () {},
+            icon: Image.asset('assets/image/chat/icon_choice.png'),
+            iconSize: 40.w,
+          ),
         ],
       ),
       body: SafeArea(
@@ -203,7 +224,9 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                         style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2.h),
                       ),
                     ),
-                    SizedBox(height: 8.0.h,),
+                    SizedBox(
+                      height: 8.0.h,
+                    ),
                     SizedBox(
                       height: 72.h,
                       child: _buildFavorite(),
@@ -211,7 +234,23 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                   ],
                 ),
               ),
-              const Divider(),
+              // const Divider(),
+              SizedBox(
+                width: double.infinity,
+                height: 16.h,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: <Color>[
+                        kNeutralColor300,
+                        kNeutralColor100
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               _buildRoomList(),
             ],
           ),

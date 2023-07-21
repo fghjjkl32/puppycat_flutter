@@ -160,13 +160,17 @@ class MatrixChatClientController implements AbstractChatController {
             plaintextBody: true,
             removeMarkdown: true,
           );
+
+          // print('${e.getLocalizedDisplayname()} / _getReadEventId(e) ${_getReadEventId(e)} / ${e.fullyRead } / ${lastEvent.eventId}');
+
           return ChatRoomModel(
             id: e.id,
             avatarUrl: e.avatar?.toString(),
             nick: e.getLocalizedDisplayname(),
             lastMsg: lastMsg,
+            isLastMsgMine: lastEvent.senderId == client.userID,
             newCount: e.notificationCount,
-            isRead: !e.isUnread,
+            isRead: e.fullyRead == lastEvent.eventId || e.fullyRead == _getReadEventId(e) ||  _getReadEventId(e) ==  lastEvent.eventId,
             isPin: e.membership == Membership.invite ? false : e.isFavourite,
             msgDateTime: e.timeCreated.localizedTimeDayDiff(),
             isMine: e.lastEvent?.senderId == client.userID,
@@ -185,7 +189,8 @@ class MatrixChatClientController implements AbstractChatController {
         if (e.membership == Membership.invite) {
           e.join();
         }
-
+// print('update');
+        // print('_getReadEventId(e) ${_getReadEventId(e)}');
         Event? lastEvent = e.lastMessageEvent ?? e.lastEvent;
         String lastMsg = lastEvent!.redacted ? '메시지.삭제된 메시지 입니다'.tr() : lastEvent!.calcUnlocalizedBody(
           hideReply: true,
@@ -193,13 +198,16 @@ class MatrixChatClientController implements AbstractChatController {
           plaintextBody: true,
           removeMarkdown: true,
         );
+
+
         return ChatRoomModel(
           id: e.id,
           avatarUrl: e.avatar?.toString(),
           nick: e.getLocalizedDisplayname(),
           lastMsg: lastMsg,
+          isLastMsgMine: lastEvent.senderId == client.userID,
           newCount: e.notificationCount,
-          isRead: !e.isUnread,
+          isRead: e.fullyRead == lastEvent.eventId || e.fullyRead == _getReadEventId(e) ||  _getReadEventId(e) ==  lastEvent.eventId,
           isPin: e.membership == Membership.invite ? false : e.isFavourite,
           msgDateTime: e.timeCreated.localizedTimeDayDiff(),
           isMine: e.lastEvent?.senderId == client.userID,
@@ -229,5 +237,24 @@ class MatrixChatClientController implements AbstractChatController {
   Future<bool> send(String roomId, String msg) async {
     var result = await _chatClient.getRoomById(roomId)?.sendTextEvent(msg.trim());
     return result == null ? false : true;
+  }
+
+  String? _getReadEventId(Room room) {
+    if (room.ephemerals == null || !room.ephemerals!.containsKey('m.receipt')) {
+      return null;
+    }
+
+    Map<String, Object?> receipts = room.ephemerals['m.receipt']!.content;
+    String? readEventId;
+    // receipts.forEach((key, value) {
+    for (MapEntry e in receipts.entries) {
+      Map<String, dynamic> contentMap = e.value as Map<String, dynamic>;
+      if (contentMap.containsKey('m.read')) {
+        readEventId = e.key;
+        break;
+      }
+    }
+
+    return readEventId;
   }
 }

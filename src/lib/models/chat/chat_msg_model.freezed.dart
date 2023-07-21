@@ -36,6 +36,7 @@ mixin _$ChatMessageModel {
   bool get isRead => throw _privateConstructorUsedError;
   bool get isConsecutively => throw _privateConstructorUsedError;
   List<String> get reactions => throw _privateConstructorUsedError;
+  bool get isViewTime => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -65,7 +66,8 @@ abstract class $ChatMessageModelCopyWith<$Res> {
       String? replyTargetMsg,
       bool isRead,
       bool isConsecutively,
-      List<String> reactions});
+      List<String> reactions,
+      bool isViewTime});
 }
 
 /// @nodoc
@@ -97,6 +99,7 @@ class _$ChatMessageModelCopyWithImpl<$Res, $Val extends ChatMessageModel>
     Object? isRead = null,
     Object? isConsecutively = null,
     Object? reactions = null,
+    Object? isViewTime = null,
   }) {
     return _then(_value.copyWith(
       idx: null == idx
@@ -163,6 +166,10 @@ class _$ChatMessageModelCopyWithImpl<$Res, $Val extends ChatMessageModel>
           ? _value.reactions
           : reactions // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      isViewTime: null == isViewTime
+          ? _value.isViewTime
+          : isViewTime // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -191,7 +198,8 @@ abstract class _$$_ChatMessageModelCopyWith<$Res>
       String? replyTargetMsg,
       bool isRead,
       bool isConsecutively,
-      List<String> reactions});
+      List<String> reactions,
+      bool isViewTime});
 }
 
 /// @nodoc
@@ -221,6 +229,7 @@ class __$$_ChatMessageModelCopyWithImpl<$Res>
     Object? isRead = null,
     Object? isConsecutively = null,
     Object? reactions = null,
+    Object? isViewTime = null,
   }) {
     return _then(_$_ChatMessageModel(
       idx: null == idx
@@ -287,6 +296,10 @@ class __$$_ChatMessageModelCopyWithImpl<$Res>
           ? _value._reactions
           : reactions // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      isViewTime: null == isViewTime
+          ? _value.isViewTime
+          : isViewTime // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -310,7 +323,8 @@ class _$_ChatMessageModel implements _ChatMessageModel {
       this.replyTargetMsg,
       required this.isRead,
       required this.isConsecutively,
-      final List<String> reactions = const []})
+      final List<String> reactions = const [],
+      required this.isViewTime})
       : _reactions = reactions;
 
   factory _$_ChatMessageModel.fromJson(Map<String, dynamic> json) =>
@@ -356,8 +370,11 @@ class _$_ChatMessageModel implements _ChatMessageModel {
   }
 
   @override
+  final bool isViewTime;
+
+  @override
   String toString() {
-    return 'ChatMessageModel(idx: $idx, id: $id, isMine: $isMine, userID: $userID, avatarUrl: $avatarUrl, msg: $msg, dateTime: $dateTime, isEdited: $isEdited, reaction: $reaction, hasReaction: $hasReaction, isReply: $isReply, replyTargetNick: $replyTargetNick, replyTargetMsg: $replyTargetMsg, isRead: $isRead, isConsecutively: $isConsecutively, reactions: $reactions)';
+    return 'ChatMessageModel(idx: $idx, id: $id, isMine: $isMine, userID: $userID, avatarUrl: $avatarUrl, msg: $msg, dateTime: $dateTime, isEdited: $isEdited, reaction: $reaction, hasReaction: $hasReaction, isReply: $isReply, replyTargetNick: $replyTargetNick, replyTargetMsg: $replyTargetMsg, isRead: $isRead, isConsecutively: $isConsecutively, reactions: $reactions, isViewTime: $isViewTime)';
   }
 
   @override
@@ -389,7 +406,9 @@ class _$_ChatMessageModel implements _ChatMessageModel {
             (identical(other.isConsecutively, isConsecutively) ||
                 other.isConsecutively == isConsecutively) &&
             const DeepCollectionEquality()
-                .equals(other._reactions, _reactions));
+                .equals(other._reactions, _reactions) &&
+            (identical(other.isViewTime, isViewTime) ||
+                other.isViewTime == isViewTime));
   }
 
   @JsonKey(ignore: true)
@@ -411,7 +430,8 @@ class _$_ChatMessageModel implements _ChatMessageModel {
       replyTargetMsg,
       isRead,
       isConsecutively,
-      const DeepCollectionEquality().hash(_reactions));
+      const DeepCollectionEquality().hash(_reactions),
+      isViewTime);
 
   @JsonKey(ignore: true)
   @override
@@ -444,7 +464,8 @@ abstract class _ChatMessageModel implements ChatMessageModel {
       final String? replyTargetMsg,
       required final bool isRead,
       required final bool isConsecutively,
-      final List<String> reactions}) = _$_ChatMessageModel;
+      final List<String> reactions,
+      required final bool isViewTime}) = _$_ChatMessageModel;
 
   factory _ChatMessageModel.fromJson(Map<String, dynamic> json) =
       _$_ChatMessageModel.fromJson;
@@ -481,6 +502,8 @@ abstract class _ChatMessageModel implements ChatMessageModel {
   bool get isConsecutively;
   @override
   List<String> get reactions;
+  @override
+  bool get isViewTime;
   @override
   @JsonKey(ignore: true)
   _$$_ChatMessageModelCopyWith<_$_ChatMessageModel> get copyWith =>

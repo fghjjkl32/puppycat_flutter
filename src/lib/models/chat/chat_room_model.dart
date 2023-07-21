@@ -11,12 +11,14 @@ class ChatRoomModel with _$ChatRoomModel {
     required String? avatarUrl,
     required String nick,
     required String lastMsg,
+    required bool isLastMsgMine,
     required int newCount,
     required bool isRead,
     required bool isPin,
     required String msgDateTime,
     required bool isMine,
     required bool isJoined,
+    @Default(false) bool isFavorite,
   }) = _ChatRoomModel;
 
   factory ChatRoomModel.fromJson(Map<String, dynamic> json) => _$ChatRoomModelFromJson(json);

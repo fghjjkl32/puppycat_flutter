@@ -24,12 +24,14 @@ mixin _$ChatRoomModel {
   String? get avatarUrl => throw _privateConstructorUsedError;
   String get nick => throw _privateConstructorUsedError;
   String get lastMsg => throw _privateConstructorUsedError;
+  bool get isLastMsgMine => throw _privateConstructorUsedError;
   int get newCount => throw _privateConstructorUsedError;
   bool get isRead => throw _privateConstructorUsedError;
   bool get isPin => throw _privateConstructorUsedError;
   String get msgDateTime => throw _privateConstructorUsedError;
   bool get isMine => throw _privateConstructorUsedError;
   bool get isJoined => throw _privateConstructorUsedError;
+  bool get isFavorite => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -48,12 +50,14 @@ abstract class $ChatRoomModelCopyWith<$Res> {
       String? avatarUrl,
       String nick,
       String lastMsg,
+      bool isLastMsgMine,
       int newCount,
       bool isRead,
       bool isPin,
       String msgDateTime,
       bool isMine,
-      bool isJoined});
+      bool isJoined,
+      bool isFavorite});
 }
 
 /// @nodoc
@@ -73,12 +77,14 @@ class _$ChatRoomModelCopyWithImpl<$Res, $Val extends ChatRoomModel>
     Object? avatarUrl = freezed,
     Object? nick = null,
     Object? lastMsg = null,
+    Object? isLastMsgMine = null,
     Object? newCount = null,
     Object? isRead = null,
     Object? isPin = null,
     Object? msgDateTime = null,
     Object? isMine = null,
     Object? isJoined = null,
+    Object? isFavorite = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -97,6 +103,10 @@ class _$ChatRoomModelCopyWithImpl<$Res, $Val extends ChatRoomModel>
           ? _value.lastMsg
           : lastMsg // ignore: cast_nullable_to_non_nullable
               as String,
+      isLastMsgMine: null == isLastMsgMine
+          ? _value.isLastMsgMine
+          : isLastMsgMine // ignore: cast_nullable_to_non_nullable
+              as bool,
       newCount: null == newCount
           ? _value.newCount
           : newCount // ignore: cast_nullable_to_non_nullable
@@ -120,6 +130,10 @@ class _$ChatRoomModelCopyWithImpl<$Res, $Val extends ChatRoomModel>
       isJoined: null == isJoined
           ? _value.isJoined
           : isJoined // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isFavorite: null == isFavorite
+          ? _value.isFavorite
+          : isFavorite // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -138,12 +152,14 @@ abstract class _$$_ChatRoomModelCopyWith<$Res>
       String? avatarUrl,
       String nick,
       String lastMsg,
+      bool isLastMsgMine,
       int newCount,
       bool isRead,
       bool isPin,
       String msgDateTime,
       bool isMine,
-      bool isJoined});
+      bool isJoined,
+      bool isFavorite});
 }
 
 /// @nodoc
@@ -161,12 +177,14 @@ class __$$_ChatRoomModelCopyWithImpl<$Res>
     Object? avatarUrl = freezed,
     Object? nick = null,
     Object? lastMsg = null,
+    Object? isLastMsgMine = null,
     Object? newCount = null,
     Object? isRead = null,
     Object? isPin = null,
     Object? msgDateTime = null,
     Object? isMine = null,
     Object? isJoined = null,
+    Object? isFavorite = null,
   }) {
     return _then(_$_ChatRoomModel(
       id: null == id
@@ -185,6 +203,10 @@ class __$$_ChatRoomModelCopyWithImpl<$Res>
           ? _value.lastMsg
           : lastMsg // ignore: cast_nullable_to_non_nullable
               as String,
+      isLastMsgMine: null == isLastMsgMine
+          ? _value.isLastMsgMine
+          : isLastMsgMine // ignore: cast_nullable_to_non_nullable
+              as bool,
       newCount: null == newCount
           ? _value.newCount
           : newCount // ignore: cast_nullable_to_non_nullable
@@ -209,6 +231,10 @@ class __$$_ChatRoomModelCopyWithImpl<$Res>
           ? _value.isJoined
           : isJoined // ignore: cast_nullable_to_non_nullable
               as bool,
+      isFavorite: null == isFavorite
+          ? _value.isFavorite
+          : isFavorite // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -221,12 +247,14 @@ class _$_ChatRoomModel implements _ChatRoomModel {
       required this.avatarUrl,
       required this.nick,
       required this.lastMsg,
+      required this.isLastMsgMine,
       required this.newCount,
       required this.isRead,
       required this.isPin,
       required this.msgDateTime,
       required this.isMine,
-      required this.isJoined});
+      required this.isJoined,
+      this.isFavorite = false});
 
   factory _$_ChatRoomModel.fromJson(Map<String, dynamic> json) =>
       _$$_ChatRoomModelFromJson(json);
@@ -240,6 +268,8 @@ class _$_ChatRoomModel implements _ChatRoomModel {
   @override
   final String lastMsg;
   @override
+  final bool isLastMsgMine;
+  @override
   final int newCount;
   @override
   final bool isRead;
@@ -251,10 +281,13 @@ class _$_ChatRoomModel implements _ChatRoomModel {
   final bool isMine;
   @override
   final bool isJoined;
+  @override
+  @JsonKey()
+  final bool isFavorite;
 
   @override
   String toString() {
-    return 'ChatRoomModel(id: $id, avatarUrl: $avatarUrl, nick: $nick, lastMsg: $lastMsg, newCount: $newCount, isRead: $isRead, isPin: $isPin, msgDateTime: $msgDateTime, isMine: $isMine, isJoined: $isJoined)';
+    return 'ChatRoomModel(id: $id, avatarUrl: $avatarUrl, nick: $nick, lastMsg: $lastMsg, isLastMsgMine: $isLastMsgMine, newCount: $newCount, isRead: $isRead, isPin: $isPin, msgDateTime: $msgDateTime, isMine: $isMine, isJoined: $isJoined, isFavorite: $isFavorite)';
   }
 
   @override
@@ -267,6 +300,8 @@ class _$_ChatRoomModel implements _ChatRoomModel {
                 other.avatarUrl == avatarUrl) &&
             (identical(other.nick, nick) || other.nick == nick) &&
             (identical(other.lastMsg, lastMsg) || other.lastMsg == lastMsg) &&
+            (identical(other.isLastMsgMine, isLastMsgMine) ||
+                other.isLastMsgMine == isLastMsgMine) &&
             (identical(other.newCount, newCount) ||
                 other.newCount == newCount) &&
             (identical(other.isRead, isRead) || other.isRead == isRead) &&
@@ -275,13 +310,27 @@ class _$_ChatRoomModel implements _ChatRoomModel {
                 other.msgDateTime == msgDateTime) &&
             (identical(other.isMine, isMine) || other.isMine == isMine) &&
             (identical(other.isJoined, isJoined) ||
-                other.isJoined == isJoined));
+                other.isJoined == isJoined) &&
+            (identical(other.isFavorite, isFavorite) ||
+                other.isFavorite == isFavorite));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, avatarUrl, nick, lastMsg,
-      newCount, isRead, isPin, msgDateTime, isMine, isJoined);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      avatarUrl,
+      nick,
+      lastMsg,
+      isLastMsgMine,
+      newCount,
+      isRead,
+      isPin,
+      msgDateTime,
+      isMine,
+      isJoined,
+      isFavorite);
 
   @JsonKey(ignore: true)
   @override
@@ -303,12 +352,14 @@ abstract class _ChatRoomModel implements ChatRoomModel {
       required final String? avatarUrl,
       required final String nick,
       required final String lastMsg,
+      required final bool isLastMsgMine,
       required final int newCount,
       required final bool isRead,
       required final bool isPin,
       required final String msgDateTime,
       required final bool isMine,
-      required final bool isJoined}) = _$_ChatRoomModel;
+      required final bool isJoined,
+      final bool isFavorite}) = _$_ChatRoomModel;
 
   factory _ChatRoomModel.fromJson(Map<String, dynamic> json) =
       _$_ChatRoomModel.fromJson;
@@ -322,6 +373,8 @@ abstract class _ChatRoomModel implements ChatRoomModel {
   @override
   String get lastMsg;
   @override
+  bool get isLastMsgMine;
+  @override
   int get newCount;
   @override
   bool get isRead;
@@ -333,6 +386,8 @@ abstract class _ChatRoomModel implements ChatRoomModel {
   bool get isMine;
   @override
   bool get isJoined;
+  @override
+  bool get isFavorite;
   @override
   @JsonKey(ignore: true)
   _$$_ChatRoomModelCopyWith<_$_ChatRoomModel> get copyWith =>

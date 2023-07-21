@@ -1,216 +1,184 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:bubble/bubble.dart';
+import 'package:bubble/issue_clipper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-void main() => runApp(const ContextMenuControllerExampleApp());
+void main() => runApp(MyApp());
 
-/// A builder that includes an Offset to draw the context menu at.
-typedef ContextMenuBuilder = Widget Function(
-    BuildContext context, Offset offset);
-
-class ContextMenuControllerExampleApp extends StatefulWidget {
-  const ContextMenuControllerExampleApp({super.key});
+class MyApp extends StatelessWidget {
+  static const title = 'Bubble Demo';
 
   @override
-  State<ContextMenuControllerExampleApp> createState() =>
-      _ContextMenuControllerExampleAppState();
+  Widget build(BuildContext context) => MaterialApp(
+    title: title,
+    theme: ThemeData(
+      primarySwatch: Colors.teal,
+    ),
+    home: const MyHomePage(
+      title: title,
+    ),
+  );
 }
 
-class _ContextMenuControllerExampleAppState
-    extends State<ContextMenuControllerExampleApp> {
-  void _showDialog(BuildContext context) {
-    Navigator.of(context).push(
-      DialogRoute<void>(
-        context: context,
-        builder: (BuildContext context) =>
-        const AlertDialog(title: Text('You clicked print!')),
-      ),
-    );
-  }
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
+
+  final String title;
 
   @override
-  void initState() {
-    super.initState();
-    // On web, disable the browser's context menu since this example uses a custom
-    // Flutter-rendered context menu.
-    if (kIsWeb) {
-      BrowserContextMenu.disableContextMenu();
-    }
-  }
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  static const styleSomebody = BubbleStyle(
+    nip: BubbleNip.leftCenter,
+    color: Colors.white,
+    borderColor: Colors.blue,
+    borderWidth: 1,
+    elevation: 4,
+    margin: BubbleEdges.only(top: 8, right: 50),
+    alignment: Alignment.topLeft,
+  );
+
+  static const styleMe = BubbleStyle(
+    nip: BubbleNip.rightCenter,
+    color: Color.fromARGB(255, 225, 255, 199),
+    borderColor: Colors.blue,
+    borderWidth: 1,
+    elevation: 4,
+    margin: BubbleEdges.only(top: 8, left: 50),
+    alignment: Alignment.topRight,
+  );
 
   @override
-  void dispose() {
-    if (kIsWeb) {
-      BrowserContextMenu.enableContextMenu();
-    }
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Context menu outside of text'),
-        ),
-        body: _ContextMenuRegion(
-          contextMenuBuilder: (BuildContext context, Offset offset) {
-            // The custom context menu will look like the default context menu
-            // on the current platform with a single 'Print' button.
-            return AdaptiveTextSelectionToolbar.buttonItems(
-              anchors: TextSelectionToolbarAnchors(
-                primaryAnchor: offset,
-              ),
-              buttonItems: <ContextMenuButtonItem>[
-                ContextMenuButtonItem(
-                  onPressed: () {
-                    ContextMenuController.removeAny();
-                    _showDialog(context);
-                  },
-                  label: 'Print',
-                ),
-                ContextMenuButtonItem(
-                  onPressed: () {
-                    ContextMenuController.removeAny();
-                    _showDialog(context);
-                  },
-                  label: 'Print',
-                ),
-                ContextMenuButtonItem(
-                  onPressed: () {
-                    ContextMenuController.removeAny();
-                    _showDialog(context);
-                  },
-                  label: 'Print',
-                ),
-                ContextMenuButtonItem(
-                  onPressed: () {
-                    ContextMenuController.removeAny();
-                    _showDialog(context);
-                  },
-                  label: 'Print',
-                ),
-                ContextMenuButtonItem(
-                  onPressed: () {
-                    ContextMenuController.removeAny();
-                    _showDialog(context);
-                  },
-                  label: 'Print',
-                ),
-                ContextMenuButtonItem(
-                  onPressed: () {
-                    ContextMenuController.removeAny();
-                    _showDialog(context);
-                  },
-                  label: 'Print',
-                ),
-
-              ],
-            );
-          },
-          // In this case this wraps a big open space in a GestureDetector in
-          // order to show the context menu, but it could also wrap a single
-          // widget like an Image to give it a context menu.
-          child: ListView(
-            children: <Widget>[
-              Container(height: 20.0),
-              const Text(
-                  'Right click (desktop) or long press (mobile) anywhere, not just on this text, to show the custom menu.'),
-            ],
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(
+      title: Text(widget.title),
+    ),
+    body: Container(
+      color: Colors.yellow.withAlpha(64),
+      child: ListView(
+        padding: const EdgeInsets.all(8),
+        children: [
+          Bubble(
+            alignment: Alignment.center,
+            color: const Color.fromARGB(255, 212, 234, 244),
+            borderColor: Colors.black,
+            borderWidth: 2,
+            margin: const BubbleEdges.only(top: 8),
+            child: const Text(
+              'TODAY',
+              style: TextStyle(fontSize: 10),
+            ),
           ),
-        ),
+          Bubble(
+            style: styleSomebody,
+            child: const Text(
+                'Hi Jason. Sorry to bother you. I have a queston for you.'),
+          ),
+          Bubble(
+            style: styleMe,
+            child: const Text("Whats'up?"),
+          ),
+          Bubble(
+            style: styleSomebody,
+            child:
+            const Text("I've been having a problem with my computer."),
+          ),
+          Bubble(
+            style: styleSomebody,
+            margin: const BubbleEdges.only(top: 4),
+            showNip: false,
+            child: const Text('Can you help me?'),
+          ),
+          Bubble(
+            style: styleMe,
+            child: const Text('Ok'),
+          ),
+          Bubble(
+            style: styleMe,
+            showNip: false,
+            margin: const BubbleEdges.only(top: 4),
+            child: const Text("What's the problem?"),
+          ),
+          Bubble(
+            alignment: Alignment.center,
+            color: const Color.fromARGB(255, 212, 234, 244),
+            margin: const BubbleEdges.only(top: 32, bottom: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'The failed shadow',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                // Platform.,
+                MaterialButton(
+                  onPressed: () async {
+                    const url =
+                        'https://github.com/flutter/flutter/issues/37779';
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      throw Exception('Could not launch $url');
+                    }
+                  },
+                  child: const Text(
+                    'https://github.com/flutter/flutter/issues/37779',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          PhysicalShape(
+            clipBehavior: Clip.antiAlias,
+            clipper: IssueClipper(0),
+            color: Colors.lightGreen,
+            elevation: 2,
+            child: const SizedBox(width: 80, height: 40),
+          ),
+          const Divider(),
+          PhysicalShape(
+            clipBehavior: Clip.antiAlias,
+            clipper: IssueClipper(1),
+            color: Colors.lightGreen,
+            elevation: 2,
+            child: const SizedBox(width: 80, height: 40),
+          ),
+          const Divider(),
+          PhysicalShape(
+            clipBehavior: Clip.antiAlias,
+            clipper: IssueClipper(2),
+            color: Colors.lightGreen.withAlpha(64),
+            elevation: 2,
+            child: const SizedBox(width: 80, height: 40),
+          ),
+          const Divider(),
+          PhysicalShape(
+            clipBehavior: Clip.antiAlias,
+            clipper: IssueClipper(3),
+            color: Colors.lightGreen.withAlpha(64),
+            elevation: 2,
+            child: const SizedBox(width: 80, height: 40),
+          ),
+          Bubble(
+            margin: const BubbleEdges.only(top: 5),
+            elevation: 10,
+            shadowColor: Colors.red[900],
+            alignment: Alignment.topRight,
+            nip: BubbleNip.rightTop,
+            color: Colors.green,
+            child: const Text('dsfdfdfg'),
+          )
+        ],
       ),
-    );
-  }
-}
-
-/// Shows and hides the context menu based on user gestures.
-///
-/// By default, shows the menu on right clicks and long presses.
-class _ContextMenuRegion extends StatefulWidget {
-  /// Creates an instance of [_ContextMenuRegion].
-  const _ContextMenuRegion({
-    required this.child,
-    required this.contextMenuBuilder,
-  });
-
-  /// Builds the context menu.
-  final ContextMenuBuilder contextMenuBuilder;
-
-  /// The child widget that will be listened to for gestures.
-  final Widget child;
-
-  @override
-  State<_ContextMenuRegion> createState() => _ContextMenuRegionState();
-}
-
-class _ContextMenuRegionState extends State<_ContextMenuRegion> {
-  Offset? _longPressOffset;
-
-  final ContextMenuController _contextMenuController = ContextMenuController();
-
-  static bool get _longPressEnabled {
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-      case TargetPlatform.iOS:
-        return true;
-      case TargetPlatform.macOS:
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.linux:
-      case TargetPlatform.windows:
-        return false;
-    }
-  }
-
-  void _onSecondaryTapUp(TapUpDetails details) {
-    _show(details.globalPosition);
-  }
-
-  void _onTap() {
-    if (!_contextMenuController.isShown) {
-      return;
-    }
-    _hide();
-  }
-
-  void _onLongPressStart(LongPressStartDetails details) {
-    _longPressOffset = details.globalPosition;
-  }
-
-  void _onLongPress() {
-    assert(_longPressOffset != null);
-    _show(_longPressOffset!);
-    _longPressOffset = null;
-  }
-
-  void _show(Offset position) {
-    _contextMenuController.show(
-      context: context,
-      contextMenuBuilder: (BuildContext context) {
-        return widget.contextMenuBuilder(context, position);
-      },
-    );
-  }
-
-  void _hide() {
-    _contextMenuController.remove();
-  }
-
-  @override
-  void dispose() {
-    _hide();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onSecondaryTapUp: _onSecondaryTapUp,
-      onTap: _onTap,
-      onLongPress: _longPressEnabled ? _onLongPress : null,
-      onLongPressStart: _longPressEnabled ? _onLongPressStart : null,
-      child: widget.child,
-    );
-  }
+    ),
+  );
 }

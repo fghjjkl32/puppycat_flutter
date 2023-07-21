@@ -9,12 +9,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
 import 'package:swipe_to_action/swipe_to_action.dart';
 import 'package:widget_mask/widget_mask.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/date_time_extension.dart';
 
 enum ContextMenuType {
   reply,
@@ -41,6 +44,8 @@ class ChatMessageItem extends ConsumerWidget {
   final void Function(ChatMessageModel)? onError;
   final bool isError;
   final bool isSending;
+  final bool isRedacted;
+  final String redactedMsg;
 
   ChatMessageItem({
     Key? key,
@@ -57,6 +62,8 @@ class ChatMessageItem extends ConsumerWidget {
     this.onError,
     required this.isError,
     required this.isSending,
+    required this.isRedacted,
+    this.redactedMsg = '',
   }) : super(key: key);
 
   Widget _getAvatar(String avatarUrl) {
@@ -67,8 +74,8 @@ class ChatMessageItem extends ConsumerWidget {
         child: Image.asset(
           'assets/image/feed/image/sample_image3.png',
           // avatarUrl != '' ? 'assets/image/feed/image/sample_image3.png' : 'https://via.placeholder.com/150/f66b97',
-          // width: 42.w,
-          height: 41.h,
+          // width: 42,
+          height: 28,
           fit: BoxFit.fill,
         ),
       ),
@@ -82,8 +89,8 @@ class ChatMessageItem extends ConsumerWidget {
       // ),
       child: SvgPicture.asset(
         'assets/image/feed/image/squircle.svg',
-        width: 41.w,
-        height: 41.h,
+        // width: 28,
+        height: 28,
         fit: BoxFit.fill,
       ),
     );
@@ -99,71 +106,160 @@ class ChatMessageItem extends ConsumerWidget {
       return <PopupMenuEntry<ContextMenuType>>[
         PopupMenuItem<ContextMenuType>(
           value: ContextMenuType.reply,
-          child: Text('메시지.답장'.tr()),
+          child: SizedBox(
+            width: 212.w,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(14.w, 8.h, 14.w, 8.h),
+              child: Row(
+                children: [
+                  Text(
+                    '메시지.답장'.tr(),
+                    style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                  ),
+                  Spacer(),
+                  Image.asset(
+                    'assets/image/chat/icon_re-comment.png',
+                    color: kTextSubTitleColor,
+                    width: 20.w,
+                    height: 20.h,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
         PopupMenuItem<ContextMenuType>(
-          value: ContextMenuType.edit,
-          child: Text('메시지.수정'.tr()),
+          value: ContextMenuType.reply,
+          child: SizedBox(
+            width: 212.w,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(14.w, 8.h, 14.w, 8.h),
+              child: Row(
+                children: [
+                  Text(
+                    '메시지.수정'.tr(),
+                    style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                  ),
+                  Spacer(),
+                  Image.asset(
+                    'assets/image/chat/icon_modify.png',
+                    color: kTextSubTitleColor,
+                    width: 20.w,
+                    height: 20.h,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
         PopupMenuItem<ContextMenuType>(
-          value: ContextMenuType.copy,
-          child: Text('메시지.복사'.tr()),
+          value: ContextMenuType.reply,
+          child: SizedBox(
+            width: 212.w,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(14.w, 8.h, 14.w, 8.h),
+              child: Row(
+                children: [
+                  Text(
+                    '메시지.복사'.tr(),
+                    style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                  ),
+                  Spacer(),
+                  Image.asset(
+                    'assets/image/chat/icon_copy.png',
+                    color: kTextSubTitleColor,
+                    width: 20.w,
+                    height: 20.h,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
         PopupMenuItem<ContextMenuType>(
-          value: ContextMenuType.delete,
-          child: Text('메시지.삭제'.tr()),
-        ),
-        PopupMenuItem<ContextMenuType>(
-          value: ContextMenuType.resend,
-          child: Text('재전송'),
+          value: ContextMenuType.reply,
+          child: SizedBox(
+            width: 212.w,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(14.w, 8.h, 14.w, 8.h),
+              child: Row(
+                children: [
+                  Text(
+                    '메시지.삭제'.tr(),
+                    style: kBody12SemiBoldStyle.copyWith(color: kBadgeColor),
+                  ),
+                  Spacer(),
+                  Image.asset(
+                    'assets/image/chat/icon_delete_s.png',
+                    color: kBadgeColor,
+                    width: 20.w,
+                    height: 20.h,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
         PopupMenuItem<ContextMenuType>(
           value: ContextMenuType.reaction,
-          child: Row(
-            children: [
-              InkWell(
-                child: Text('😀'),
-                onTap: () {
-                  _reaction('😀');
-                  Navigator.pop(context);
-                },
-              ),
-              InkWell(
-                child: Text('😃'),
-                onTap: () {
-                  _reaction('😃');
-                  Navigator.pop(context);
-                },
-              ),
-              InkWell(
-                child: Text('😄'),
-                onTap: () {
-                  _reaction('😀');
-                  Navigator.pop(context);
-                },
-              ),
-              InkWell(
-                child: Text('😁'),
-                onTap: () {
-                  _reaction('😁');
-                  Navigator.pop(context);
-                },
-              ),
-              InkWell(
-                child: Text('😆'),
-                onTap: () {
-                  _reaction('😆');
-                  Navigator.pop(context);
-                },
-              ),
-              InkWell(
-                child: Text('😅'),
-                onTap: () {
-                  _reaction('😅');
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(14.w, 0.h, 14.w, 0.h),
+            child: Column(
+              children: [
+                const Divider(),
+                Padding(
+                  padding: EdgeInsets.only(top: 8.0.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        child: Text('😀'),
+                        onTap: () {
+                          _reaction('😀');
+                          Navigator.pop(context);
+                        },
+                      ),
+                      InkWell(
+                        child: Text('😃'),
+                        onTap: () {
+                          _reaction('😃');
+                          Navigator.pop(context);
+                        },
+                      ),
+                      InkWell(
+                        child: Text('😄'),
+                        onTap: () {
+                          _reaction('😀');
+                          Navigator.pop(context);
+                        },
+                      ),
+                      InkWell(
+                        child: Text('😁'),
+                        onTap: () {
+                          _reaction('😁');
+                          Navigator.pop(context);
+                        },
+                      ),
+                      InkWell(
+                        child: Text('😆'),
+                        onTap: () {
+                          _reaction('😆');
+                          Navigator.pop(context);
+                        },
+                      ),
+                      InkWell(
+                        child: Text('😅'),
+                        onTap: () {
+                          _reaction('😅');
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ];
@@ -178,6 +274,9 @@ class ChatMessageItem extends ConsumerWidget {
     final double menuTop = position.dy < screenHeight / 2 ? position.dy : max(0, position.dy - menuHeight);
 
     showMenu(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       context: context,
       items: selectedItemBuilder(context),
       position: RelativeRect.fromLTRB(position.dx, menuTop, overlay.size.width - position.dx, overlay.size.height - menuTop),
@@ -244,23 +343,138 @@ class ChatMessageItem extends ConsumerWidget {
     }
   }
 
-  Widget _hashTagText(String text) {
+  Widget _hashTagText(String text, bool isRedacted) {
     return DetectableText(
       text: text,
-      detectionRegExp: detectionRegExp(atSign: false) ?? RegExp(
-        "(?!\\n)(?:^|\\s)([#]([$detectionContentLetters]+))|$urlRegexContent",
-        multiLine: true,
-      ),
-      detectedStyle: TextStyle(
-        fontSize: 20,
-        color: Colors.blue,
-      ),
-      basicStyle: TextStyle(
-        fontSize: 20,
-      ),
-      onTap: (tappedText){
-        print(tappedText);
+      detectionRegExp: detectionRegExp(atSign: false) ??
+          RegExp(
+            "(?!\\n)(?:^|\\s)([#]([$detectionContentLetters]+))|$urlRegexContent",
+            multiLine: true,
+          ),
+      detectedStyle: kBody13RegularStyle.copyWith(color: kSecondaryColor),
+      basicStyle: kBody13RegularStyle.copyWith(color: isRedacted ? kTextBodyColor : kTextSubTitleColor),
+      onTap: (tappedText) {
+        ///TODO
+        /// 해시태그 검색 페이지 이동
+        /// 밖에서 함수 받아오기
       },
+    );
+  }
+
+  Widget _buildDateTimeArea(bool isRead, bool isEdit, bool isMine) {
+    Widget rows;
+
+    if (isMine && isSending) {
+      return SpinKitCircle(
+        size: 10.w,
+        color: kNeutralColor500,
+      );
+    }
+
+    if (isMine) {
+      rows = Row(
+        children: [
+          isMine
+              ? isRead
+                  ? const ImageIcon(
+                      AssetImage('assets/image/chat/icon_check_pair.png'),
+                      // size: 10.w,
+                      color: kNeutralColor500,
+                    )
+                  : const ImageIcon(
+                      AssetImage('assets/image/chat/icon_check_single.png'),
+                      // size: 10.w,
+                      color: kNeutralColor500,
+                    )
+              : const SizedBox.shrink(),
+          chatMessageModel.isViewTime
+              ? Text(
+                  DateTime.parse(chatMessageModel.dateTime).timeOfDay(),
+                  style: kBadge10MediumStyle.copyWith(color: kNeutralColor500),
+                )
+              : const SizedBox.shrink(),
+          SizedBox(width: 4.w,),
+          isEdit ? Text('메시지.수정됨'.tr(), style: kBadge10MediumStyle.copyWith(color: kNeutralColor500)) : const SizedBox.shrink(),
+        ],
+      );
+    } else {
+      rows = Row(
+        children: [
+          isEdit ? Text('메시지.수정됨'.tr(), style: kBadge10MediumStyle.copyWith(color: kNeutralColor500)) : const SizedBox.shrink(),
+          SizedBox(width: 4.w,),
+          chatMessageModel.isViewTime
+              ? Text(
+                  DateTime.parse(chatMessageModel.dateTime).timeOfDay(),
+                  style: kBadge10MediumStyle.copyWith(color: kNeutralColor500),
+                )
+              : const SizedBox.shrink(),
+        ],
+      );
+    }
+
+    return rows;
+  }
+
+  Widget _buildErrorArea() {
+    return Container(
+      width: 45.w,
+      height: 20.h,
+      decoration: const BoxDecoration(
+        color: kBadgeColor,
+        borderRadius: BorderRadius.all(
+          Radius.circular(7),
+        ),
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            InkWell(
+              onTap: () {
+                _resend();
+              },
+              child: const ImageIcon(
+                AssetImage('assets/image/chat/icon_rt.png'),
+                // size: 7.w,
+                color: kNeutralColor100,
+              ),
+            ),
+            // IconButton(
+            //     onPressed: () {},
+            //     icon: ImageIcon(
+            //       const AssetImage('assets/image/chat/icon_rt_small.png'),
+            //       size: 7.w,
+            //       color: kNeutralColor100,
+            //     )),
+            Padding(
+              padding: EdgeInsets.only(top: 4.0.h, bottom: 4.0.h),
+              child: VerticalDivider(
+                thickness: 2,
+                width: 1,
+                color: kNeutralColor100.withOpacity(0.2),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                // print('remove');
+                _delete();
+              },
+              child: const ImageIcon(
+                AssetImage('assets/image/chat/icon_close_s.png'),
+                // size: 7.w,
+                color: kNeutralColor100,
+              ),
+            )
+            // IconButton(
+            //     onPressed: () {},
+            //     icon: ImageIcon(
+            //       const AssetImage('assets/image/chat/icon_close_small.png'),
+            //       size: 7.w,
+            //       color: kNeutralColor100,
+            //     )),
+          ],
+        ),
+      ),
     );
   }
 
@@ -270,6 +484,7 @@ class ChatMessageItem extends ConsumerWidget {
     final bool isMineXorReply = isMine ^ chatMessageModel.isReply;
     final bool isAvatarCondition = !chatMessageModel.isConsecutively && !isMineXorReply;
     final bool hasReaction = chatMessageModel.reactions.isEmpty ? false : true;
+    final String msg = isRedacted ? redactedMsg : chatMessageModel.msg;
 
     return Listener(
       onPointerDown: (details) => _lastPointerDownPosition = details.position,
@@ -317,42 +532,80 @@ class ChatMessageItem extends ConsumerWidget {
           child: Padding(
             padding: EdgeInsets.only(top: 4.0.h),
             child: Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: isMineXorReply ? MainAxisAlignment.end : MainAxisAlignment.start,
+              // crossAxisAlignment: isMineXorReply ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: EdgeInsets.only(right: 6.0.h),
-                  child: SizedBox(
-                    // color: Colors.red,
-                    width: isAvatarCondition ? 28.w : 35.w,
-                    height: 28.h,
-                    child: isAvatarCondition ? _getAvatar(chatMessageModel.avatarUrl) : const SizedBox.shrink(),
-                  ),
-                ),
-                chatMessageModel.isRead && isMineXorReply ? Text('read') : const SizedBox.shrink(),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: isMineXorReply && chatMessageModel.isConsecutively ? 8.0.w : 0),
-                    child: Bubble(
-                      color: isMineXorReply ? kPrimaryLightColor : kNeutralColor200,
-                      borderColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      margin: BubbleEdges.only(top: 2.h),
-                      // nipHeight: 24,
-                      alignment: isMineXorReply ? Alignment.topRight : Alignment.topLeft,
-                      nip: chatMessageModel.isConsecutively
-                          ? BubbleNip.no
-                          : isMineXorReply
-                              ? BubbleNip.rightTop
-                              : BubbleNip.leftTop,
-                      //BubbleNip.leftBottom,
-                      child: chatMessageModel.isReply ? Text('${chatMessageModel.replyTargetNick}에게 답장\n${chatMessageModel.replyTargetMsg}\n${chatMessageModel.msg}') : _hashTagText(chatMessageModel.msg),
+                  child: InkWell(
+                    onTap: () {
+                      print('move user page');
+                    },
+                    child: SizedBox(
+                      // color: Colors.red,
+                      width: isAvatarCondition ? 28 : 35,
+                      height: 28,
+                      child: isAvatarCondition ? _getAvatar(chatMessageModel.avatarUrl) : const SizedBox.shrink(),
                     ),
                   ),
                 ),
-                hasReaction ? Text(chatMessageModel.reactions.first) : const SizedBox.shrink(),
-                isError ? Text('error') : const SizedBox.shrink(),
-                isSending ? const CircularProgressIndicator() : const SizedBox.shrink(),
+                // _buildMsgWidget(chatMessageModel.msg, chatMessageModel.isRead, isMineXorReply),
+                // chatMessageModel.isRead && isMineXorReply ? Text('read') : const SizedBox.shrink(),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(right: isMineXorReply && chatMessageModel.isConsecutively ? 8.0.w : 0),
+                    // child: _buildMsgWidget(chatMessageModel.msg, chatMessageModel.isRead, isMineXorReply),
+                    child: Column(
+                      children: [
+                        Bubble(
+                          color: isMineXorReply ? kPrimaryLightColor : kNeutralColor200,
+                          borderColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          // margin: BubbleEdges.only(top: 8, right: 50),
+                          margin: BubbleEdges.only(top: 2.h),
+                          alignment: isMineXorReply ? Alignment.topRight : Alignment.topLeft,
+                          nip: chatMessageModel.isConsecutively
+                              ? BubbleNip.no
+                              : isMineXorReply
+                                  // ? BubbleNip.rightTop
+                                  // : BubbleNip.leftTop,
+                                  ? BubbleNip.rightCenter
+                                  : BubbleNip.leftCenter,
+                          leftChild: isMineXorReply
+                              ? [
+                                  isError ? _buildErrorArea() : _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply),
+                                  // _buildErrorArea(),
+                                ]
+                              : [],
+                          rightChild: !isMineXorReply
+                              ? [
+                                  _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply),
+                                ]
+                              : [],
+                          // sideChild: _buildErrorArea(),
+                          // isLeftSideChild: isMineXorReply,
+                          mainAxisAlignment: isMineXorReply ? MainAxisAlignment.end : MainAxisAlignment.start,
+                          child: chatMessageModel.isReply
+                              ? Text('${chatMessageModel.replyTargetNick}에게 답장\n${chatMessageModel.replyTargetMsg}\n${chatMessageModel.msg}')
+                              : Container(
+                                  constraints: BoxConstraints(
+                                    maxWidth: isMineXorReply ? 230.w : 210.w, // Maximum width for the Bubble widget.
+                                  ),
+                                  child: _hashTagText(msg, isRedacted)),
+                        ),
+                        hasReaction
+                            ? Padding(
+                                padding: EdgeInsets.only(top: 2.0.h, left: 6.w, right: 6.w),
+                                child: Align(alignment: isMineXorReply ? Alignment.centerRight : Alignment.centerLeft, child: Text(chatMessageModel.reactions.first)),
+                              )
+                            : const SizedBox.shrink(),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // isError ? Text('error') : const SizedBox.shrink(),
+                // isSending ? const CircularProgressIndicator() : const SizedBox.shrink(),
               ],
             ),
           ),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:bubble/bubble.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:matrix/matrix.dart' hide Visibility;
 import 'package:pet_mobile_social_flutter/common/util/extensions/filtered_timeline_extension.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/ios_badge_client_extension.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/room_status_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
@@ -44,12 +47,6 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     super.initState();
     _client = (ref.read(chatControllerProvider('matrix')).controller as MatrixChatClientController).client;
     readMarkerEventId = widget.room.fullyRead;
-    print('readMarkerEventId $readMarkerEventId');
-
-    // _scrollController.addListener(() { })
-    // readMarkerEventId = widget.room.fullyRead;
-    // print('run?222222222 : $readMarkerEventId');
-
     loadTimelineFuture = _getTimeline(eventContextId: readMarkerEventId);
   }
 
@@ -57,11 +54,9 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     String? eventContextId,
     Duration timeout = const Duration(seconds: 7),
   }) async {
-    print('ryun? $readMarkerEventId');
     await _client.roomsLoading;
     await _client.accountDataLoading; //.then((_) => readMarkerEventId = widget.room.fullyRead);
     if (eventContextId != null && (!eventContextId.isValidMatrixId || eventContextId.sigil != '\$')) {
-      print('here?');
       eventContextId = null;
     }
 
@@ -69,21 +64,17 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       _timeline = await widget.room
           .getTimeline(
             onChange: (i) {
-              print('on change! $i');
               _listKey.currentState?.setState(() {});
             },
             onInsert: (i) {
-              print('on insert! $i');
               _listKey.currentState?.insertItem(i);
               _count++;
             },
             onRemove: (i) {
-              print('On remove $i');
               _count--;
               _listKey.currentState?.removeItem(i, (_, __) => const ListTile());
             },
             onUpdate: () {
-              print('On update');
               updateView();
             },
             eventContextId: eventContextId,
@@ -111,10 +102,10 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   }
 
   void _send(String msg) {
-    if(msg.isEmpty) {
-      return ;
+    if (msg.isEmpty) {
+      return;
     }
-    
+
     ChatMessageModel? replyModel = ref.read(chatReplyProvider);
     ChatMessageModel? editModel = ref.read(chatEditProvider);
     Event? replyEvent;
@@ -133,9 +124,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     if (event.status.isError) {
       event.sendAgain();
     }
-    final allEditEvents = event
-        .aggregatedEvents(timeline, RelationshipTypes.edit)
-        .where((e) => e.status.isError);
+    final allEditEvents = event.aggregatedEvents(timeline, RelationshipTypes.edit).where((e) => e.status.isError);
     for (final e in allEditEvents) {
       e.sendAgain();
     }
@@ -147,7 +136,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       return;
     }
 
-    if(event.status.isError) {
+    if (event.status.isError) {
       await event.redactEvent();
       await event.remove();
       // await _client.database!.removeEvent(event.eventId, event.room.id);
@@ -217,8 +206,23 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       Event curEvent = events[index];
       Event nextEvent = events[index + 1];
 
+      int tempIdx = index;
+      bool isMessage = false;
+      do {
+        // print('_checkConsecutively 1-1 ${nextEvent.plaintextBody} / ${nextEvent.isVisibleInGui} / $tempIdx / ${nextEvent.isVisibleInGui} / ${nextEvent.relationshipType != RelationshipTypes.edit}');
+        if (nextEvent.isVisibleInGui && nextEvent.relationshipType != RelationshipTypes.edit) {
+          isMessage = true;
+        }
+        tempIdx = tempIdx + 1;
+        nextEvent = events[tempIdx];
+      } while (!isMessage);
+
       if (curEvent.senderId == nextEvent.senderId) {
-        if (curEvent.originServerTs.minute.compareTo(nextEvent.originServerTs.minute) > 0) {
+        if (curEvent.originServerTs.year.compareTo(nextEvent.originServerTs.year) > 0 ||
+            curEvent.originServerTs.month.compareTo(nextEvent.originServerTs.month) > 0 ||
+            curEvent.originServerTs.day.compareTo(nextEvent.originServerTs.day) > 0 ||
+            curEvent.originServerTs.hour.compareTo(nextEvent.originServerTs.hour) > 0 ||
+            curEvent.originServerTs.minute.compareTo(nextEvent.originServerTs.minute) > 0) {
           return false;
         }
         return true;
@@ -229,8 +233,59 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     }
   }
 
+  bool _checkNeedViewTime(List<Event> events, int index) {
+    // if (events.length <= index + 1) {
+    //   return true;
+    // }
+
+    if (index < 0) {
+      return false;
+    }
+
+    if (events[index] == events[index].room.lastMessageEvent) {
+      return true;
+    }
+
+    try {
+      /// NOTE
+      /// Next 가 다음 메시지
+      Event curEvent = events[index];
+      Event nextEvent = events[index - 1];
+
+      // if(!nextEvent.isVisibleInGui || nextEvent.hasAggregatedEvents(_timeline!, RelationshipTypes.edit)) {
+      //   print('_checkNeedViewTime 1-1');
+      //
+      //   return true;
+      // }
+
+      int tempIdx = index;
+      bool isMessage = false;
+      do {
+        // print('_checkNeedViewTime 1-1 ${nextEvent.plaintextBody} / ${nextEvent.isVisibleInGui} / $tempIdx / ${nextEvent.isVisibleInGui} / ${nextEvent.relationshipType != RelationshipTypes.edit}');
+        if (nextEvent.isVisibleInGui && nextEvent.relationshipType != RelationshipTypes.edit) {
+          isMessage = true;
+        }
+        tempIdx = tempIdx - 1;
+        nextEvent = events[tempIdx];
+      } while (!isMessage);
+
+      if (curEvent.senderId == nextEvent.senderId) {
+        if (curEvent.originServerTs.year.compareTo(nextEvent.originServerTs.year) > 0 ||
+            curEvent.originServerTs.month.compareTo(nextEvent.originServerTs.month) > 0 ||
+            curEvent.originServerTs.day.compareTo(nextEvent.originServerTs.day) > 0 ||
+            curEvent.originServerTs.hour.compareTo(nextEvent.originServerTs.hour) > 0 ||
+            curEvent.originServerTs.minute.compareTo(nextEvent.originServerTs.minute) > 0) {
+          return true;
+        }
+        return false;
+      }
+      return true;
+    } catch (e) {
+      return true;
+    }
+  }
+
   bool _checkNeedDateRow(List<Event> events, int index) {
-    print('date index : $index');
     if (events.length <= index + 1) {
       return false;
     }
@@ -268,40 +323,33 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     int fullyReadIdx = -1;
     int lastReadEventIdx = -1;
 
-    if(curEvent.status.isError) {
-      print('_checkReadMsg 1');
+    if (curEvent.status.isError) {
       return false;
     }
 
     if (fullyReadId == null) {
-      print('_checkReadMsg 2');
       return false;
     }
 
     fullyReadIdx = events.indexWhere((element) => element.eventId == fullyReadId!);
     if (fullyReadIdx < 0) {
-      print('_checkReadMsg 3');
       return false;
     }
 
     lastReadEventId = _getReadEventId(curEvent.room);
     if (lastReadEventId == null) {
-      print('_checkReadMsg 4');
       lastReadEventIdx = fullyReadIdx;
     } else {
-      print('_checkReadMsg 5');
       lastReadEventIdx = events.indexWhere((element) => element.eventId == lastReadEventId!);
     }
 
     if (lastReadEventIdx < fullyReadIdx) {
-      print('_checkReadMsg 6 $lastReadEventId / $readMarkerEventId');
       fullyReadIdx = lastReadEventIdx;
       readMarkerEventId = lastReadEventId;
       setReadMarker(eventId: lastReadEventId);
     }
 
     if (index < fullyReadIdx) {
-      print('_checkReadMsg 7');
       return false;
     } else {
       return true;
@@ -371,13 +419,11 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         (e) => e.senderId == e.room.client.userID && e.content.tryGetMap<String, dynamic>('m.relates_to')?.tryGet<String>('key') == reaction,
       );
       if (evt != null) {
-        print('_onReaction 1');
         await evt.redactEvent();
       }
     }
 
     if (!isExist) {
-      print('_onReaction 2');
       event.room.sendReaction(event.eventId, reactionKey);
     }
   }
@@ -393,6 +439,25 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   //     }
   //   }
   // }
+
+  Widget _buildDateBlock(Event event) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Bubble(
+          radius: const Radius.circular(100.0),
+          padding: const BubbleEdges.fromLTRB(16, 10, 16, 10),
+          mainAxisAlignment : MainAxisAlignment.center,
+          alignment: Alignment.center,
+          color: kNeutralColor500,
+          child: Text(
+            DateFormat("yyyy-MM-dd").format(event.originServerTs),
+            style: kBody11SemiBoldStyle.copyWith(color: kNeutralColor100),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -447,7 +512,6 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                 );
                               }
                               _count = timeline.events.length;
-                              print('_count $_count');
                               return Column(
                                 children: [
                                   // Center(
@@ -510,19 +574,13 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                           Event event = timeline.events[i];
                                           Event displayEvent = event.getDisplayEvent(timeline);
 
-                                          if(displayEvent.status == EventStatus.error) {
-                                            print('aaaa');
-                                            // return Center(child: Text('메세지 전송에 실패했습니다.'),);
-                                          }
-
                                           if (!displayEvent.isVisibleInGui) {
-                                            if(displayEvent.type == EventTypes.RoomCreate) {
-                                              return Center(child: Text(DateTime(displayEvent.originServerTs.year, displayEvent.originServerTs.month, displayEvent.originServerTs.day).toString()));
+                                            if (displayEvent.type == EventTypes.RoomCreate) {
+                                              return _buildDateBlock(displayEvent);
+                                              // return Center(child: Text(DateTime(displayEvent.originServerTs.year, displayEvent.originServerTs.month, displayEvent.originServerTs.day).toString()));
                                             }
                                             return const SizedBox.shrink();
                                           }
-
-
 
                                           bool isNeedDateTime = _checkNeedDateRow(timeline.events, i);
 
@@ -549,9 +607,10 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                                     isMine: displayEvent.senderId != _client.userID,
                                                     userID: displayEvent.senderId,
                                                     avatarUrl: displayEvent.senderFromMemoryOrFallback.avatarUrl.toString(),
-                                                    msg: displayEvent.redacted ? '메시지.삭제된 메시지 입니다'.tr() : displayEvent.plaintextBody,
+                                                    // msg: displayEvent.redacted ? '메시지.삭제된 메시지 입니다'.tr() : displayEvent.plaintextBody,
+                                                    msg: displayEvent.plaintextBody,
                                                     dateTime: displayEvent.originServerTs.toIso8601String(),
-                                                    isEdited: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.edit),
+                                                    isEdited: event.hasAggregatedEvents(timeline, RelationshipTypes.edit),
                                                     reaction: 0,
                                                     reactions: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.reaction) ? _getReactions(event, timeline) : [],
                                                     hasReaction: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.reaction),
@@ -560,6 +619,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                                     isConsecutively: _checkConsecutively(timeline.events, i),
                                                     replyTargetMsg: replyEvent.getDisplayEvent(timeline).plaintextBody,
                                                     replyTargetNick: replyEvent.senderFromMemoryOrFallback.calcDisplayname(),
+                                                    isViewTime: _checkNeedViewTime(timeline.events, i),
                                                   );
                                                   return Column(
                                                     children: [
@@ -573,7 +633,9 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                                         onReaction: (chatMessageModel, reactionKey) => _onReaction(chatMessageModel, reactionKey, timeline),
                                                         onError: (chatMessageModel) => _resend(displayEvent, timeline),
                                                         isError: displayEvent.status.isError,
-                                                        isSending : displayEvent.status.isSending,
+                                                        isSending: displayEvent.status.isSending,
+                                                        isRedacted: displayEvent.redacted,
+                                                        redactedMsg: '메시지.삭제된 메시지 입니다'.tr(),
                                                       ),
                                                     ],
                                                   );
@@ -590,26 +652,29 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                             isMine: displayEvent.senderId == _client.userID,
                                             userID: displayEvent.senderId,
                                             avatarUrl: displayEvent.senderFromMemoryOrFallback.avatarUrl.toString(),
-                                            msg: displayEvent.redacted ? '메시지.삭제된 메시지 입니다'.tr() : displayEvent.calcUnlocalizedBody(
-                                              hideReply: true,
-                                              hideEdit: false,
-                                              plaintextBody: true,
-                                              removeMarkdown: true,
-                                            ),
+                                            msg: displayEvent.calcUnlocalizedBody(
+                                                    hideReply: true,
+                                                    hideEdit: false,
+                                                    plaintextBody: true,
+                                                    removeMarkdown: true,
+                                                  ),
                                             dateTime: displayEvent.originServerTs.toIso8601String(),
-                                            isEdited: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.edit),
+                                            isEdited: event.hasAggregatedEvents(timeline, RelationshipTypes.edit),
                                             reaction: 0,
                                             reactions: event.hasAggregatedEvents(timeline, RelationshipTypes.reaction) ? _getReactions(event, timeline) : [],
                                             hasReaction: displayEvent.hasAggregatedEvents(timeline, RelationshipTypes.reaction),
                                             isReply: false,
                                             isRead: _checkReadMsg(displayEvent, timeline.events, i),
                                             isConsecutively: _checkConsecutively(timeline.events, i),
+                                            isViewTime: _checkNeedViewTime(timeline.events, i),
                                           );
 
                                           return Column(
+                                            // crossAxisAlignment: CrossAxisAlignment.center,
+                                            // mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               isNeedDateTime
-                                                  ? Text(DateTime(displayEvent.originServerTs.year, displayEvent.originServerTs.month, displayEvent.originServerTs.day).toString())
+                                                  ? _buildDateBlock(displayEvent)
                                                   : const SizedBox.shrink(),
                                               ChatMessageItem(
                                                 key: ValueKey<String>(chatMessageModel.id),
@@ -620,7 +685,9 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                                 onReaction: (chatMessageModel, reactionKey) => _onReaction(chatMessageModel, reactionKey, timeline),
                                                 onError: (chatMessageModel) => _resend(displayEvent, timeline),
                                                 isError: displayEvent.status.isError,
-                                                isSending : displayEvent.status.isSending,
+                                                isSending: displayEvent.status.isSending,
+                                                isRedacted: displayEvent.redacted,
+                                                redactedMsg: '메시지.삭제된 메시지 입니다'.tr(),
                                               ),
                                             ],
                                           );
