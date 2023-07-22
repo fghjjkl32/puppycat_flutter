@@ -24,6 +24,7 @@ mixin _$ChatMessageModel {
   String get id => throw _privateConstructorUsedError;
   bool get isMine => throw _privateConstructorUsedError;
   String get userID => throw _privateConstructorUsedError;
+  String get nick => throw _privateConstructorUsedError;
   String get avatarUrl => throw _privateConstructorUsedError;
   String get msg => throw _privateConstructorUsedError;
   String get dateTime => throw _privateConstructorUsedError;
@@ -55,6 +56,7 @@ abstract class $ChatMessageModelCopyWith<$Res> {
       String id,
       bool isMine,
       String userID,
+      String nick,
       String avatarUrl,
       String msg,
       String dateTime,
@@ -87,6 +89,7 @@ class _$ChatMessageModelCopyWithImpl<$Res, $Val extends ChatMessageModel>
     Object? id = null,
     Object? isMine = null,
     Object? userID = null,
+    Object? nick = null,
     Object? avatarUrl = null,
     Object? msg = null,
     Object? dateTime = null,
@@ -117,6 +120,10 @@ class _$ChatMessageModelCopyWithImpl<$Res, $Val extends ChatMessageModel>
       userID: null == userID
           ? _value.userID
           : userID // ignore: cast_nullable_to_non_nullable
+              as String,
+      nick: null == nick
+          ? _value.nick
+          : nick // ignore: cast_nullable_to_non_nullable
               as String,
       avatarUrl: null == avatarUrl
           ? _value.avatarUrl
@@ -187,6 +194,7 @@ abstract class _$$_ChatMessageModelCopyWith<$Res>
       String id,
       bool isMine,
       String userID,
+      String nick,
       String avatarUrl,
       String msg,
       String dateTime,
@@ -217,6 +225,7 @@ class __$$_ChatMessageModelCopyWithImpl<$Res>
     Object? id = null,
     Object? isMine = null,
     Object? userID = null,
+    Object? nick = null,
     Object? avatarUrl = null,
     Object? msg = null,
     Object? dateTime = null,
@@ -247,6 +256,10 @@ class __$$_ChatMessageModelCopyWithImpl<$Res>
       userID: null == userID
           ? _value.userID
           : userID // ignore: cast_nullable_to_non_nullable
+              as String,
+      nick: null == nick
+          ? _value.nick
+          : nick // ignore: cast_nullable_to_non_nullable
               as String,
       avatarUrl: null == avatarUrl
           ? _value.avatarUrl
@@ -312,6 +325,7 @@ class _$_ChatMessageModel implements _ChatMessageModel {
       required this.id,
       required this.isMine,
       required this.userID,
+      required this.nick,
       required this.avatarUrl,
       required this.msg,
       required this.dateTime,
@@ -338,6 +352,8 @@ class _$_ChatMessageModel implements _ChatMessageModel {
   final bool isMine;
   @override
   final String userID;
+  @override
+  final String nick;
   @override
   final String avatarUrl;
   @override
@@ -374,7 +390,7 @@ class _$_ChatMessageModel implements _ChatMessageModel {
 
   @override
   String toString() {
-    return 'ChatMessageModel(idx: $idx, id: $id, isMine: $isMine, userID: $userID, avatarUrl: $avatarUrl, msg: $msg, dateTime: $dateTime, isEdited: $isEdited, reaction: $reaction, hasReaction: $hasReaction, isReply: $isReply, replyTargetNick: $replyTargetNick, replyTargetMsg: $replyTargetMsg, isRead: $isRead, isConsecutively: $isConsecutively, reactions: $reactions, isViewTime: $isViewTime)';
+    return 'ChatMessageModel(idx: $idx, id: $id, isMine: $isMine, userID: $userID, nick: $nick, avatarUrl: $avatarUrl, msg: $msg, dateTime: $dateTime, isEdited: $isEdited, reaction: $reaction, hasReaction: $hasReaction, isReply: $isReply, replyTargetNick: $replyTargetNick, replyTargetMsg: $replyTargetMsg, isRead: $isRead, isConsecutively: $isConsecutively, reactions: $reactions, isViewTime: $isViewTime)';
   }
 
   @override
@@ -386,6 +402,7 @@ class _$_ChatMessageModel implements _ChatMessageModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.isMine, isMine) || other.isMine == isMine) &&
             (identical(other.userID, userID) || other.userID == userID) &&
+            (identical(other.nick, nick) || other.nick == nick) &&
             (identical(other.avatarUrl, avatarUrl) ||
                 other.avatarUrl == avatarUrl) &&
             (identical(other.msg, msg) || other.msg == msg) &&
@@ -419,6 +436,7 @@ class _$_ChatMessageModel implements _ChatMessageModel {
       id,
       isMine,
       userID,
+      nick,
       avatarUrl,
       msg,
       dateTime,
@@ -453,6 +471,7 @@ abstract class _ChatMessageModel implements ChatMessageModel {
       required final String id,
       required final bool isMine,
       required final String userID,
+      required final String nick,
       required final String avatarUrl,
       required final String msg,
       required final String dateTime,
@@ -478,6 +497,8 @@ abstract class _ChatMessageModel implements ChatMessageModel {
   bool get isMine;
   @override
   String get userID;
+  @override
+  String get nick;
   @override
   String get avatarUrl;
   @override

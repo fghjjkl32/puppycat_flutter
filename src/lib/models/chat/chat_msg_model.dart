@@ -11,6 +11,7 @@ class ChatMessageModel with _$ChatMessageModel {
     required String id,
     required bool isMine,
     required String userID,
+    required String nick,
     required String avatarUrl,
     required String msg,
     required String dateTime,

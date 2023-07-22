@@ -33,6 +33,19 @@ extension DateTimeExtension on DateTime {
     return millisecondsSinceEpoch - prevTime.millisecondsSinceEpoch < 1000 * 60 * minutesBetweenEnvironments;
   }
 
+  bool sameOneMinute(DateTime prevTime) {
+    // DateTime prevTime = DateTime(2023, 7, 16, 00, 01); // 00:01 on 2023-07-16
+
+    Duration difference = prevTime.difference(this);
+
+    // print('difference.inMinutes.abs() ${difference.inMinutes.abs()} / $this');
+    if (difference.inMinutes.abs() >= 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   /// Returns a simple time String.
   /// TODO: Add localization
   String localizedTimeOfDay(BuildContext context) {

@@ -74,7 +74,7 @@ class PuppycatApp extends ConsumerWidget {
     return ScreenUtilInit(
       designSize: const Size(360, 640),
       // scaleByHeight: true,
-      // useInheritedMediaQuery: true,
+      // useInheritedMediaQuery: false,
       builder: (BuildContext context, Widget? child) {
         return MaterialApp.router(
           localizationsDelegates: context.localizationDelegates,

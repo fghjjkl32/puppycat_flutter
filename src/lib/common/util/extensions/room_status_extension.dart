@@ -82,7 +82,7 @@ extension RoomStatusExtension on Room {
     final lastEvents = client.roomPreviewLastEvents.map(getState).whereType<Event>();
 
     var lastMsgEvents = lastEvents.where((element) {
-      return element.type == EventTypes.Message && !element.redacted;
+      return element.type == EventTypes.Message;
     });
 
     var lastEvent = lastMsgEvents.isEmpty
