@@ -15,7 +15,9 @@ final chatReplyProvider = StateProvider<ChatMessageModel?>((ref) => null);
 final chatEditProvider = StateProvider<ChatMessageModel?>((ref) => null);
 final chatDeleteProvider = StateProvider<ChatMessageModel?>((ref) => null);
 
-final chatRoomPinProvider = StateProvider<ChatRoomModel?>((ref) => null);
+// final chatRoomPinProvider = StateProvider<ChatRoomModel?>((ref) => null);
+// final chatBubbleFocusProvider = StateProvider<ChatMessageModel?>((ref) => null);
+final chatBubbleFocusProvider = StateProvider<int>((ref) => 0);
 
 @Riverpod(keepAlive: true)
 class ChatRoomState extends _$ChatRoomState {

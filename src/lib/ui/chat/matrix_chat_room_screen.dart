@@ -611,7 +611,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     await _scrollController.scrollToIndex(
       eventIndex,
       preferPosition: AutoScrollPosition.middle,
-    );
+    ).then((value) => ref.read(chatBubbleFocusProvider.notifier).state = eventIndex);
     _updateScrollController();
   }
 
@@ -862,7 +862,9 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                                               isRedacted: displayEvent.redacted,
                                                               redactedMsg: '메시지.삭제된 메시지 입니다'.tr(),
                                                               bottomPadding: _getPadding(timeline.events, i),
-                                                              onMoveReply: () {
+                                                              onMoveReply: (chatMessageModel) {
+                                                                // var replyEvnet = event.getReplyEvent(timeline);
+
                                                                 scrollToEventId(replyEvent.eventId, timeline);
                                                               },
                                                             ),

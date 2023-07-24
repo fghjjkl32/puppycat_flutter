@@ -6,6 +6,7 @@ import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -45,7 +46,7 @@ class ChatMessageItem extends ConsumerStatefulWidget {
   final bool isRedacted;
   final String redactedMsg;
   final double bottomPadding;
-  final void Function()? onMoveReply;
+  final void Function(ChatMessageModel)? onMoveReply;
 
   ChatMessageItem({
     Key? key,
@@ -72,7 +73,7 @@ class ChatMessageItem extends ConsumerStatefulWidget {
   ChatMessageItemState createState() => ChatMessageItemState();
 }
 
-class ChatMessageItemState extends ConsumerState<ChatMessageItem> {
+class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTickerProviderStateMixin {
   Offset? _lastPointerDownPosition;
   late ChatMessageModel chatMessageModel;
   bool isMine = false;
@@ -81,6 +82,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> {
   bool hasReaction = false;
   String msg = '';
   Color _bubbleColor = kNeutralColor200;
+  late final AnimationController _animationController;
 
   // bool isHighLight = false;
 
@@ -92,8 +94,16 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> {
 
     // _bubbleColor = isMineXorReply ? kPrimaryLightColor : kNeutralColor200;
     _updateBubbleColor(false);
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+    // _animationController.stop();
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   void _updateData() {
@@ -431,7 +441,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> {
               onTap: () {
                 print('run?');
                 if (widget.onMoveReply != null) {
-                  widget.onMoveReply!();
+                  widget.onMoveReply!(chatMessageModel);
                 }
               },
               child: Column(
@@ -595,6 +605,25 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> {
   Widget build(BuildContext context) {
     _updateData();
 
+    ref.listen(chatBubbleFocusProvider, (previous, next) {
+      if(next == null) {
+        return;
+      }
+      if(next != chatMessageModel.idx) {
+        return;
+      }
+      if(next == 0) {
+        return;
+      }
+
+      if(_animationController.isCompleted) {
+        _animationController.reset();
+      }
+
+      _animationController.forward();
+      ref.read(chatBubbleFocusProvider.notifier).state = 0;
+    });
+
     return Listener(
       onPointerDown: (details) => _lastPointerDownPosition = details.position,
       child: Swipeable(
@@ -725,7 +754,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> {
           ),
         ),
       ),
-    );
+    ).animate(autoPlay: false, controller: _animationController).shakeY();
   }
 }
 
