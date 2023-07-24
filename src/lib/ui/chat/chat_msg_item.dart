@@ -666,6 +666,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> {
                         onHighlightChanged: (_) {
                           // _updateBubbleColor(true);
                         },//isMineXorReply ? kPrimaryLightColor : kNeutralColor200,
+                        onDoubleTap: () => _reaction('😀'),
                         onLongPress: () {
                           if (widget.isRedacted) {
                             return;
