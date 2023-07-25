@@ -65,13 +65,8 @@ class LoginState extends _$LoginState {
     switch (userModel.loginStatus) {
       case LoginStatus.success:
         saveUserModel(userModel);
-        UserInfoModel userInfoModel = UserInfoModel(userModel: userModel);
-        ref.read(userInfoProvider.notifier).state =
-            UserInfoModel(userModel: userModel);
-        ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
-        ref
-            .read(loginRouteStateProvider.notifier)
-            .changeLoginRoute(LoginRoute.success);
+        ref.read(userInfoProvider.notifier).state = UserInfoModel(userModel: userModel);
+        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
       case LoginStatus.needSignUp:
         ref
             .read(loginRouteStateProvider.notifier)
