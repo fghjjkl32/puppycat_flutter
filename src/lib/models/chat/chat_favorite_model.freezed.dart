@@ -45,7 +45,7 @@ abstract class $ChatFavoriteModelCopyWith<$Res> {
       String nick,
       String profileImgUrl,
       @JsonKey(name: 'chatInfo', fromJson: _parseChatInfo)
-          ChatUserModel chatInfo});
+      ChatUserModel chatInfo});
 
   $ChatUserModelCopyWith<$Res> get chatInfo;
 }
@@ -116,7 +116,7 @@ abstract class _$$_ChatFavoriteModelCopyWith<$Res>
       String nick,
       String profileImgUrl,
       @JsonKey(name: 'chatInfo', fromJson: _parseChatInfo)
-          ChatUserModel chatInfo});
+      ChatUserModel chatInfo});
 
   @override
   $ChatUserModelCopyWith<$Res> get chatInfo;
@@ -173,7 +173,7 @@ class _$_ChatFavoriteModel implements _ChatFavoriteModel {
       required this.nick,
       required this.profileImgUrl,
       @JsonKey(name: 'chatInfo', fromJson: _parseChatInfo)
-          required this.chatInfo});
+      required this.chatInfo});
 
   factory _$_ChatFavoriteModel.fromJson(Map<String, dynamic> json) =>
       _$$_ChatFavoriteModelFromJson(json);
@@ -237,7 +237,7 @@ abstract class _ChatFavoriteModel implements ChatFavoriteModel {
       required final String nick,
       required final String profileImgUrl,
       @JsonKey(name: 'chatInfo', fromJson: _parseChatInfo)
-          required final ChatUserModel chatInfo}) = _$_ChatFavoriteModel;
+      required final ChatUserModel chatInfo}) = _$_ChatFavoriteModel;
 
   factory _ChatFavoriteModel.fromJson(Map<String, dynamic> json) =
       _$_ChatFavoriteModel.fromJson;

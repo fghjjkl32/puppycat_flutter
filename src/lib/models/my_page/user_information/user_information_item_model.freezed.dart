@@ -33,7 +33,11 @@ mixin _$UserInformationItemModel {
   int? get followCnt => throw _privateConstructorUsedError;
   int? get blockedState => throw _privateConstructorUsedError;
   int? get blockedMeState => throw _privateConstructorUsedError;
-  int? get followState => throw _privateConstructorUsedError;
+  int? get followState => throw _privateConstructorUsedError; //ChatInfo
+  String? get chatAccessToken => throw _privateConstructorUsedError;
+  String? get chatMemeberId => throw _privateConstructorUsedError;
+  String? get homeServer => throw _privateConstructorUsedError;
+  String? get deviceId => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -60,7 +64,11 @@ abstract class $UserInformationItemModelCopyWith<$Res> {
       int? followCnt,
       int? blockedState,
       int? blockedMeState,
-      int? followState});
+      int? followState,
+      String? chatAccessToken,
+      String? chatMemeberId,
+      String? homeServer,
+      String? deviceId});
 }
 
 /// @nodoc
@@ -90,6 +98,10 @@ class _$UserInformationItemModelCopyWithImpl<$Res,
     Object? blockedState = freezed,
     Object? blockedMeState = freezed,
     Object? followState = freezed,
+    Object? chatAccessToken = freezed,
+    Object? chatMemeberId = freezed,
+    Object? homeServer = freezed,
+    Object? deviceId = freezed,
   }) {
     return _then(_value.copyWith(
       memberIdx: freezed == memberIdx
@@ -144,6 +156,22 @@ class _$UserInformationItemModelCopyWithImpl<$Res,
           ? _value.followState
           : followState // ignore: cast_nullable_to_non_nullable
               as int?,
+      chatAccessToken: freezed == chatAccessToken
+          ? _value.chatAccessToken
+          : chatAccessToken // ignore: cast_nullable_to_non_nullable
+              as String?,
+      chatMemeberId: freezed == chatMemeberId
+          ? _value.chatMemeberId
+          : chatMemeberId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      homeServer: freezed == homeServer
+          ? _value.homeServer
+          : homeServer // ignore: cast_nullable_to_non_nullable
+              as String?,
+      deviceId: freezed == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -170,7 +198,11 @@ abstract class _$$_UserInformationItemModelCopyWith<$Res>
       int? followCnt,
       int? blockedState,
       int? blockedMeState,
-      int? followState});
+      int? followState,
+      String? chatAccessToken,
+      String? chatMemeberId,
+      String? homeServer,
+      String? deviceId});
 }
 
 /// @nodoc
@@ -198,6 +230,10 @@ class __$$_UserInformationItemModelCopyWithImpl<$Res>
     Object? blockedState = freezed,
     Object? blockedMeState = freezed,
     Object? followState = freezed,
+    Object? chatAccessToken = freezed,
+    Object? chatMemeberId = freezed,
+    Object? homeServer = freezed,
+    Object? deviceId = freezed,
   }) {
     return _then(_$_UserInformationItemModel(
       memberIdx: freezed == memberIdx
@@ -252,6 +288,22 @@ class __$$_UserInformationItemModelCopyWithImpl<$Res>
           ? _value.followState
           : followState // ignore: cast_nullable_to_non_nullable
               as int?,
+      chatAccessToken: freezed == chatAccessToken
+          ? _value.chatAccessToken
+          : chatAccessToken // ignore: cast_nullable_to_non_nullable
+              as String?,
+      chatMemeberId: freezed == chatMemeberId
+          ? _value.chatMemeberId
+          : chatMemeberId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      homeServer: freezed == homeServer
+          ? _value.homeServer
+          : homeServer // ignore: cast_nullable_to_non_nullable
+              as String?,
+      deviceId: freezed == deviceId
+          ? _value.deviceId
+          : deviceId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -272,7 +324,11 @@ class _$_UserInformationItemModel implements _UserInformationItemModel {
       this.followCnt,
       this.blockedState,
       this.blockedMeState,
-      this.followState});
+      this.followState,
+      this.chatAccessToken,
+      this.chatMemeberId,
+      this.homeServer,
+      this.deviceId});
 
   factory _$_UserInformationItemModel.fromJson(Map<String, dynamic> json) =>
       _$$_UserInformationItemModelFromJson(json);
@@ -303,10 +359,19 @@ class _$_UserInformationItemModel implements _UserInformationItemModel {
   final int? blockedMeState;
   @override
   final int? followState;
+//ChatInfo
+  @override
+  final String? chatAccessToken;
+  @override
+  final String? chatMemeberId;
+  @override
+  final String? homeServer;
+  @override
+  final String? deviceId;
 
   @override
   String toString() {
-    return 'UserInformationItemModel(memberIdx: $memberIdx, nick: $nick, simpleType: $simpleType, name: $name, phone: $phone, intro: $intro, profileImgUrl: $profileImgUrl, email: $email, followerCnt: $followerCnt, followCnt: $followCnt, blockedState: $blockedState, blockedMeState: $blockedMeState, followState: $followState)';
+    return 'UserInformationItemModel(memberIdx: $memberIdx, nick: $nick, simpleType: $simpleType, name: $name, phone: $phone, intro: $intro, profileImgUrl: $profileImgUrl, email: $email, followerCnt: $followerCnt, followCnt: $followCnt, blockedState: $blockedState, blockedMeState: $blockedMeState, followState: $followState, chatAccessToken: $chatAccessToken, chatMemeberId: $chatMemeberId, homeServer: $homeServer, deviceId: $deviceId)';
   }
 
   @override
@@ -334,7 +399,15 @@ class _$_UserInformationItemModel implements _UserInformationItemModel {
             (identical(other.blockedMeState, blockedMeState) ||
                 other.blockedMeState == blockedMeState) &&
             (identical(other.followState, followState) ||
-                other.followState == followState));
+                other.followState == followState) &&
+            (identical(other.chatAccessToken, chatAccessToken) ||
+                other.chatAccessToken == chatAccessToken) &&
+            (identical(other.chatMemeberId, chatMemeberId) ||
+                other.chatMemeberId == chatMemeberId) &&
+            (identical(other.homeServer, homeServer) ||
+                other.homeServer == homeServer) &&
+            (identical(other.deviceId, deviceId) ||
+                other.deviceId == deviceId));
   }
 
   @JsonKey(ignore: true)
@@ -353,7 +426,11 @@ class _$_UserInformationItemModel implements _UserInformationItemModel {
       followCnt,
       blockedState,
       blockedMeState,
-      followState);
+      followState,
+      chatAccessToken,
+      chatMemeberId,
+      homeServer,
+      deviceId);
 
   @JsonKey(ignore: true)
   @override
@@ -384,7 +461,11 @@ abstract class _UserInformationItemModel implements UserInformationItemModel {
       final int? followCnt,
       final int? blockedState,
       final int? blockedMeState,
-      final int? followState}) = _$_UserInformationItemModel;
+      final int? followState,
+      final String? chatAccessToken,
+      final String? chatMemeberId,
+      final String? homeServer,
+      final String? deviceId}) = _$_UserInformationItemModel;
 
   factory _UserInformationItemModel.fromJson(Map<String, dynamic> json) =
       _$_UserInformationItemModel.fromJson;
@@ -415,6 +496,14 @@ abstract class _UserInformationItemModel implements UserInformationItemModel {
   int? get blockedMeState;
   @override
   int? get followState;
+  @override //ChatInfo
+  String? get chatAccessToken;
+  @override
+  String? get chatMemeberId;
+  @override
+  String? get homeServer;
+  @override
+  String? get deviceId;
   @override
   @JsonKey(ignore: true)
   _$$_UserInformationItemModelCopyWith<_$_UserInformationItemModel>

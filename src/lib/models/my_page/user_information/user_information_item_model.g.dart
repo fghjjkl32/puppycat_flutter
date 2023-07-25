@@ -22,6 +22,10 @@ _$_UserInformationItemModel _$$_UserInformationItemModelFromJson(
       blockedState: json['blockedState'] as int?,
       blockedMeState: json['blockedMeState'] as int?,
       followState: json['followState'] as int?,
+      chatAccessToken: json['chatAccessToken'] as String?,
+      chatMemeberId: json['chatMemeberId'] as String?,
+      homeServer: json['homeServer'] as String?,
+      deviceId: json['deviceId'] as String?,
     );
 
 Map<String, dynamic> _$$_UserInformationItemModelToJson(
@@ -40,4 +44,8 @@ Map<String, dynamic> _$$_UserInformationItemModelToJson(
       'blockedState': instance.blockedState,
       'blockedMeState': instance.blockedMeState,
       'followState': instance.followState,
+      'chatAccessToken': instance.chatAccessToken,
+      'chatMemeberId': instance.chatMemeberId,
+      'homeServer': instance.homeServer,
+      'deviceId': instance.deviceId,
     };

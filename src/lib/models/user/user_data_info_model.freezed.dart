@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'data_info_model.dart';
+part of 'user_data_info_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$DataInfoModel<T> {
   List<T> get info => throw _privateConstructorUsedError;
+  String? get imgDomain => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $DataInfoModelCopyWith<T, DataInfoModel<T>> get copyWith =>
@@ -29,7 +30,7 @@ abstract class $DataInfoModelCopyWith<T, $Res> {
           DataInfoModel<T> value, $Res Function(DataInfoModel<T>) then) =
       _$DataInfoModelCopyWithImpl<T, $Res, DataInfoModel<T>>;
   @useResult
-  $Res call({List<T> info});
+  $Res call({List<T> info, String? imgDomain});
 }
 
 /// @nodoc
@@ -46,12 +47,17 @@ class _$DataInfoModelCopyWithImpl<T, $Res, $Val extends DataInfoModel<T>>
   @override
   $Res call({
     Object? info = null,
+    Object? imgDomain = freezed,
   }) {
     return _then(_value.copyWith(
       info: null == info
           ? _value.info
           : info // ignore: cast_nullable_to_non_nullable
               as List<T>,
+      imgDomain: freezed == imgDomain
+          ? _value.imgDomain
+          : imgDomain // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -64,7 +70,7 @@ abstract class _$$_DataInfoModelCopyWith<T, $Res>
       __$$_DataInfoModelCopyWithImpl<T, $Res>;
   @override
   @useResult
-  $Res call({List<T> info});
+  $Res call({List<T> info, String? imgDomain});
 }
 
 /// @nodoc
@@ -79,12 +85,17 @@ class __$$_DataInfoModelCopyWithImpl<T, $Res>
   @override
   $Res call({
     Object? info = null,
+    Object? imgDomain = freezed,
   }) {
     return _then(_$_DataInfoModel<T>(
       info: null == info
           ? _value._info
           : info // ignore: cast_nullable_to_non_nullable
               as List<T>,
+      imgDomain: freezed == imgDomain
+          ? _value.imgDomain
+          : imgDomain // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -92,7 +103,8 @@ class __$$_DataInfoModelCopyWithImpl<T, $Res>
 /// @nodoc
 
 class _$_DataInfoModel<T> implements _DataInfoModel<T> {
-  _$_DataInfoModel({required final List<T> info}) : _info = info;
+  _$_DataInfoModel({required final List<T> info, this.imgDomain})
+      : _info = info;
 
   final List<T> _info;
   @override
@@ -103,8 +115,11 @@ class _$_DataInfoModel<T> implements _DataInfoModel<T> {
   }
 
   @override
+  final String? imgDomain;
+
+  @override
   String toString() {
-    return 'DataInfoModel<$T>(info: $info)';
+    return 'DataInfoModel<$T>(info: $info, imgDomain: $imgDomain)';
   }
 
   @override
@@ -112,12 +127,14 @@ class _$_DataInfoModel<T> implements _DataInfoModel<T> {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_DataInfoModel<T> &&
-            const DeepCollectionEquality().equals(other._info, _info));
+            const DeepCollectionEquality().equals(other._info, _info) &&
+            (identical(other.imgDomain, imgDomain) ||
+                other.imgDomain == imgDomain));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_info));
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_info), imgDomain);
 
   @JsonKey(ignore: true)
   @override
@@ -127,10 +144,14 @@ class _$_DataInfoModel<T> implements _DataInfoModel<T> {
 }
 
 abstract class _DataInfoModel<T> implements DataInfoModel<T> {
-  factory _DataInfoModel({required final List<T> info}) = _$_DataInfoModel<T>;
+  factory _DataInfoModel(
+      {required final List<T> info,
+      final String? imgDomain}) = _$_DataInfoModel<T>;
 
   @override
   List<T> get info;
+  @override
+  String? get imgDomain;
   @override
   @JsonKey(ignore: true)
   _$$_DataInfoModelCopyWith<T, _$_DataInfoModel<T>> get copyWith =>
