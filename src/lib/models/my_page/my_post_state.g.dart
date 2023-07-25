@@ -9,7 +9,7 @@ part of 'my_post_state.dart';
 _$_MyPostState _$$_MyPostStateFromJson(Map<String, dynamic> json) =>
     _$_MyPostState(
       myPostState:
-          SelectPost.fromJson(json['myPostState'] as Map<String, dynamic>),
+          MySelectPost.fromJson(json['myPostState'] as Map<String, dynamic>),
       myKeepState:
           SelectPost.fromJson(json['myKeepState'] as Map<String, dynamic>),
     );

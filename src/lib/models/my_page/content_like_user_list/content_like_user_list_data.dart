@@ -7,13 +7,13 @@ part 'content_like_user_list_data.g.dart';
 @freezed
 class ContentLikeUserListData with _$ContentLikeUserListData {
   factory ContentLikeUserListData({
-    required String nick,
-    required int isFollow,
-    required int isBadge,
-    required int memberIdx,
-    required int followerCnt,
-    required String intro,
-    required String profileImgUrl,
+    String? nick,
+    int? followState,
+    int? isBadge,
+    int? memberIdx,
+    int? followerCnt,
+    String? intro,
+    String? profileImgUrl,
   }) = _ContentLikeUserListData;
 
   factory ContentLikeUserListData.fromJson(Map<String, dynamic> json) =>

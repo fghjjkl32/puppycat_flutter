@@ -1,11 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_post_state.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/my_select_post.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/select_post.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/contents/contents_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/keep_contents/keep_contents_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/user_contents/user_contents_repository.dart';
 
 final myPostStateProvider =
     StateNotifierProvider<MyPostStateNotifier, MyPostState>((ref) {
@@ -15,7 +17,7 @@ final myPostStateProvider =
 class MyPostStateNotifier extends StateNotifier<MyPostState> {
   MyPostStateNotifier()
       : super(MyPostState(
-          myPostState: SelectPost(),
+          myPostState: MySelectPost(),
           myKeepState: SelectPost(),
         ));
 
@@ -28,8 +30,8 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     myCurrentPage = 1;
 
     final page = initPage ?? state.myPostState.page;
-    final lists = await UserContentsRepository()
-        .getUserContents(memberIdx: memberIdx, page: page);
+    final lists = await FeedRepository().getUserContentsList(
+        loginMemberIdx: memberIdx, memberIdx: memberIdx, page: page);
 
     myPostMaxPages = lists.data.params!.pagination!.endPage!;
 
@@ -44,9 +46,8 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
       return;
     }
 
-    // Initialize the selection order to -1 for all images
-    List<ContentImageData> images = lists.data.list;
-    List<int> selectOrder = List.filled(images.length, -1); // Add this line
+    List<FeedData> images = lists.data.list;
+    List<int> selectOrder = List.filled(images.length, -1);
 
     state = state.copyWith(
       myPostState: state.myPostState.copyWith(
@@ -114,8 +115,10 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
         myPostState: state.myPostState.copyWith(
             isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-    final lists = await UserContentsRepository().getUserContents(
-        memberIdx: memberIdx, page: state.myPostState.page + 1);
+    final lists = await FeedRepository().getUserContentsList(
+        loginMemberIdx: memberIdx,
+        memberIdx: memberIdx,
+        page: state.myPostState.page + 1);
 
     if (lists == null) {
       state = state.copyWith(

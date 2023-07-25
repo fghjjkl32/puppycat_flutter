@@ -19,6 +19,9 @@ _$_UserInformationItemModel _$$_UserInformationItemModelFromJson(
       email: json['email'] as String?,
       followerCnt: json['followerCnt'] as int?,
       followCnt: json['followCnt'] as int?,
+      blockedState: json['blockedState'] as int?,
+      blockedMeState: json['blockedMeState'] as int?,
+      followState: json['followState'] as int?,
     );
 
 Map<String, dynamic> _$$_UserInformationItemModelToJson(
@@ -34,4 +37,7 @@ Map<String, dynamic> _$$_UserInformationItemModelToJson(
       'email': instance.email,
       'followerCnt': instance.followerCnt,
       'followCnt': instance.followCnt,
+      'blockedState': instance.blockedState,
+      'blockedMeState': instance.blockedMeState,
+      'followState': instance.followState,
     };

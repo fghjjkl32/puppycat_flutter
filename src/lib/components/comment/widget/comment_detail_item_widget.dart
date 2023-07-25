@@ -19,6 +19,7 @@ import 'package:widget_mask/widget_mask.dart';
 
 class CommentDetailItemWidget extends ConsumerWidget {
   const CommentDetailItemWidget({
+    required this.parentIdx,
     required this.contentIdx,
     required this.commentIdx,
     required this.profileImage,
@@ -32,6 +33,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
     Key? key,
   }) : super(key: key);
 
+  final int parentIdx;
   final int contentIdx;
   final int commentIdx;
   final String? profileImage;
@@ -245,9 +247,13 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            ref
-                                .watch(commentHeaderProvider.notifier)
-                                .addCommentHeader(name, commentIdx);
+                            replies != null
+                                ? ref
+                                    .watch(commentHeaderProvider.notifier)
+                                    .addCommentHeader(name, commentIdx)
+                                : ref
+                                    .watch(commentHeaderProvider.notifier)
+                                    .addCommentHeader(name, parentIdx);
                           },
                           child: Row(
                             children: [
@@ -278,30 +284,39 @@ class CommentDetailItemWidget extends ConsumerWidget {
             Column(
               children: [
                 SizedBox(
-                  height: 90.h * replies!.list.length.toDouble(),
-                  child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: replies!.list.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return CommentDetailItemWidget(
-                        commentIdx: replies!.list[index].idx,
-                        profileImage: replies!.list[index].url ??
-                            'assets/image/feed/image/sample_image1.png',
-                        name: replies!.list[index].nick,
-                        comment: replies!.list[index].contents,
-                        isSpecialUser: replies!.list[index].isBadge == 1,
-                        time: DateTime.parse(replies!.list[index].regDate),
-                        isReply: true,
-                        likeCount: replies!.list[index].likeCnt,
-                        replies: replies!.list[index].childCommentData,
-                        contentIdx: replies!.list[0].contentsIdx,
-                      );
-                    },
+                  height: replies!.list.length > 2
+                      ? 100.h * 2
+                      : 100.h * replies!.list.length.toDouble(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount:
+                          replies!.list.length > 2 ? 2 : replies!.list.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CommentDetailItemWidget(
+                          parentIdx: replies!.list[index].parentIdx,
+                          commentIdx: replies!.list[index].idx,
+                          profileImage: replies!.list[index].url ??
+                              'assets/image/feed/image/sample_image1.png',
+                          name: replies!.list[index].nick,
+                          comment: replies!.list[index].contents,
+                          isSpecialUser: replies!.list[index].isBadge == 1,
+                          time: DateTime.parse(replies!.list[index].regDate),
+                          isReply: true,
+                          likeCount: replies!.list[index].likeCnt,
+                          replies: replies!.list[index].childCommentData,
+                          contentIdx: replies!.list[0].contentsIdx,
+                        );
+                      },
+                    ),
                   ),
                 ),
                 if (replies!.list.length > 2)
                   SizedBox(
-                    height: 10.h * replies!.list.length.toDouble(),
+                    height: replies!.list.length > 2
+                        ? 10.h * 2
+                        : 10.h * replies!.list.length.toDouble(),
                     child: Text(
                       "답글 ${replies!.list.length - 2}개 더 보기",
                       style:

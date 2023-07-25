@@ -21,13 +21,13 @@ ContentLikeUserListData _$ContentLikeUserListDataFromJson(
 
 /// @nodoc
 mixin _$ContentLikeUserListData {
-  String get nick => throw _privateConstructorUsedError;
-  int get isFollow => throw _privateConstructorUsedError;
-  int get isBadge => throw _privateConstructorUsedError;
-  int get memberIdx => throw _privateConstructorUsedError;
-  int get followerCnt => throw _privateConstructorUsedError;
-  String get intro => throw _privateConstructorUsedError;
-  String get profileImgUrl => throw _privateConstructorUsedError;
+  String? get nick => throw _privateConstructorUsedError;
+  int? get followState => throw _privateConstructorUsedError;
+  int? get isBadge => throw _privateConstructorUsedError;
+  int? get memberIdx => throw _privateConstructorUsedError;
+  int? get followerCnt => throw _privateConstructorUsedError;
+  String? get intro => throw _privateConstructorUsedError;
+  String? get profileImgUrl => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,13 +42,13 @@ abstract class $ContentLikeUserListDataCopyWith<$Res> {
       _$ContentLikeUserListDataCopyWithImpl<$Res, ContentLikeUserListData>;
   @useResult
   $Res call(
-      {String nick,
-      int isFollow,
-      int isBadge,
-      int memberIdx,
-      int followerCnt,
-      String intro,
-      String profileImgUrl});
+      {String? nick,
+      int? followState,
+      int? isBadge,
+      int? memberIdx,
+      int? followerCnt,
+      String? intro,
+      String? profileImgUrl});
 }
 
 /// @nodoc
@@ -65,43 +65,43 @@ class _$ContentLikeUserListDataCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? nick = null,
-    Object? isFollow = null,
-    Object? isBadge = null,
-    Object? memberIdx = null,
-    Object? followerCnt = null,
-    Object? intro = null,
-    Object? profileImgUrl = null,
+    Object? nick = freezed,
+    Object? followState = freezed,
+    Object? isBadge = freezed,
+    Object? memberIdx = freezed,
+    Object? followerCnt = freezed,
+    Object? intro = freezed,
+    Object? profileImgUrl = freezed,
   }) {
     return _then(_value.copyWith(
-      nick: null == nick
+      nick: freezed == nick
           ? _value.nick
           : nick // ignore: cast_nullable_to_non_nullable
-              as String,
-      isFollow: null == isFollow
-          ? _value.isFollow
-          : isFollow // ignore: cast_nullable_to_non_nullable
-              as int,
-      isBadge: null == isBadge
+              as String?,
+      followState: freezed == followState
+          ? _value.followState
+          : followState // ignore: cast_nullable_to_non_nullable
+              as int?,
+      isBadge: freezed == isBadge
           ? _value.isBadge
           : isBadge // ignore: cast_nullable_to_non_nullable
-              as int,
-      memberIdx: null == memberIdx
+              as int?,
+      memberIdx: freezed == memberIdx
           ? _value.memberIdx
           : memberIdx // ignore: cast_nullable_to_non_nullable
-              as int,
-      followerCnt: null == followerCnt
+              as int?,
+      followerCnt: freezed == followerCnt
           ? _value.followerCnt
           : followerCnt // ignore: cast_nullable_to_non_nullable
-              as int,
-      intro: null == intro
+              as int?,
+      intro: freezed == intro
           ? _value.intro
           : intro // ignore: cast_nullable_to_non_nullable
-              as String,
-      profileImgUrl: null == profileImgUrl
+              as String?,
+      profileImgUrl: freezed == profileImgUrl
           ? _value.profileImgUrl
           : profileImgUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ) as $Val);
   }
 }
@@ -115,13 +115,13 @@ abstract class _$$_ContentLikeUserListDataCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String nick,
-      int isFollow,
-      int isBadge,
-      int memberIdx,
-      int followerCnt,
-      String intro,
-      String profileImgUrl});
+      {String? nick,
+      int? followState,
+      int? isBadge,
+      int? memberIdx,
+      int? followerCnt,
+      String? intro,
+      String? profileImgUrl});
 }
 
 /// @nodoc
@@ -136,43 +136,43 @@ class __$$_ContentLikeUserListDataCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? nick = null,
-    Object? isFollow = null,
-    Object? isBadge = null,
-    Object? memberIdx = null,
-    Object? followerCnt = null,
-    Object? intro = null,
-    Object? profileImgUrl = null,
+    Object? nick = freezed,
+    Object? followState = freezed,
+    Object? isBadge = freezed,
+    Object? memberIdx = freezed,
+    Object? followerCnt = freezed,
+    Object? intro = freezed,
+    Object? profileImgUrl = freezed,
   }) {
     return _then(_$_ContentLikeUserListData(
-      nick: null == nick
+      nick: freezed == nick
           ? _value.nick
           : nick // ignore: cast_nullable_to_non_nullable
-              as String,
-      isFollow: null == isFollow
-          ? _value.isFollow
-          : isFollow // ignore: cast_nullable_to_non_nullable
-              as int,
-      isBadge: null == isBadge
+              as String?,
+      followState: freezed == followState
+          ? _value.followState
+          : followState // ignore: cast_nullable_to_non_nullable
+              as int?,
+      isBadge: freezed == isBadge
           ? _value.isBadge
           : isBadge // ignore: cast_nullable_to_non_nullable
-              as int,
-      memberIdx: null == memberIdx
+              as int?,
+      memberIdx: freezed == memberIdx
           ? _value.memberIdx
           : memberIdx // ignore: cast_nullable_to_non_nullable
-              as int,
-      followerCnt: null == followerCnt
+              as int?,
+      followerCnt: freezed == followerCnt
           ? _value.followerCnt
           : followerCnt // ignore: cast_nullable_to_non_nullable
-              as int,
-      intro: null == intro
+              as int?,
+      intro: freezed == intro
           ? _value.intro
           : intro // ignore: cast_nullable_to_non_nullable
-              as String,
-      profileImgUrl: null == profileImgUrl
+              as String?,
+      profileImgUrl: freezed == profileImgUrl
           ? _value.profileImgUrl
           : profileImgUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
@@ -181,35 +181,35 @@ class __$$_ContentLikeUserListDataCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ContentLikeUserListData implements _ContentLikeUserListData {
   _$_ContentLikeUserListData(
-      {required this.nick,
-      required this.isFollow,
-      required this.isBadge,
-      required this.memberIdx,
-      required this.followerCnt,
-      required this.intro,
-      required this.profileImgUrl});
+      {this.nick,
+      this.followState,
+      this.isBadge,
+      this.memberIdx,
+      this.followerCnt,
+      this.intro,
+      this.profileImgUrl});
 
   factory _$_ContentLikeUserListData.fromJson(Map<String, dynamic> json) =>
       _$$_ContentLikeUserListDataFromJson(json);
 
   @override
-  final String nick;
+  final String? nick;
   @override
-  final int isFollow;
+  final int? followState;
   @override
-  final int isBadge;
+  final int? isBadge;
   @override
-  final int memberIdx;
+  final int? memberIdx;
   @override
-  final int followerCnt;
+  final int? followerCnt;
   @override
-  final String intro;
+  final String? intro;
   @override
-  final String profileImgUrl;
+  final String? profileImgUrl;
 
   @override
   String toString() {
-    return 'ContentLikeUserListData(nick: $nick, isFollow: $isFollow, isBadge: $isBadge, memberIdx: $memberIdx, followerCnt: $followerCnt, intro: $intro, profileImgUrl: $profileImgUrl)';
+    return 'ContentLikeUserListData(nick: $nick, followState: $followState, isBadge: $isBadge, memberIdx: $memberIdx, followerCnt: $followerCnt, intro: $intro, profileImgUrl: $profileImgUrl)';
   }
 
   @override
@@ -218,8 +218,8 @@ class _$_ContentLikeUserListData implements _ContentLikeUserListData {
         (other.runtimeType == runtimeType &&
             other is _$_ContentLikeUserListData &&
             (identical(other.nick, nick) || other.nick == nick) &&
-            (identical(other.isFollow, isFollow) ||
-                other.isFollow == isFollow) &&
+            (identical(other.followState, followState) ||
+                other.followState == followState) &&
             (identical(other.isBadge, isBadge) || other.isBadge == isBadge) &&
             (identical(other.memberIdx, memberIdx) ||
                 other.memberIdx == memberIdx) &&
@@ -232,7 +232,7 @@ class _$_ContentLikeUserListData implements _ContentLikeUserListData {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, nick, isFollow, isBadge,
+  int get hashCode => Object.hash(runtimeType, nick, followState, isBadge,
       memberIdx, followerCnt, intro, profileImgUrl);
 
   @JsonKey(ignore: true)
@@ -253,31 +253,31 @@ class _$_ContentLikeUserListData implements _ContentLikeUserListData {
 
 abstract class _ContentLikeUserListData implements ContentLikeUserListData {
   factory _ContentLikeUserListData(
-      {required final String nick,
-      required final int isFollow,
-      required final int isBadge,
-      required final int memberIdx,
-      required final int followerCnt,
-      required final String intro,
-      required final String profileImgUrl}) = _$_ContentLikeUserListData;
+      {final String? nick,
+      final int? followState,
+      final int? isBadge,
+      final int? memberIdx,
+      final int? followerCnt,
+      final String? intro,
+      final String? profileImgUrl}) = _$_ContentLikeUserListData;
 
   factory _ContentLikeUserListData.fromJson(Map<String, dynamic> json) =
       _$_ContentLikeUserListData.fromJson;
 
   @override
-  String get nick;
+  String? get nick;
   @override
-  int get isFollow;
+  int? get followState;
   @override
-  int get isBadge;
+  int? get isBadge;
   @override
-  int get memberIdx;
+  int? get memberIdx;
   @override
-  int get followerCnt;
+  int? get followerCnt;
   @override
-  String get intro;
+  String? get intro;
   @override
-  String get profileImgUrl;
+  String? get profileImgUrl;
   @override
   @JsonKey(ignore: true)
   _$$_ContentLikeUserListDataCopyWith<_$_ContentLikeUserListData>

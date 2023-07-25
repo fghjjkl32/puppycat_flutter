@@ -14,7 +14,9 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
@@ -61,11 +63,18 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
       length: 2,
       vsync: this,
     );
-    ref
-        .read(userInformationStateProvider.notifier)
-        .getInitUserInformation(widget.memberIdx);
-    ref.read(userContentStateProvider.notifier).initPosts(widget.memberIdx, 1);
-    ref.read(tagContentStateProvider.notifier).initPosts(widget.memberIdx, 1);
+
+    Future(() {
+      ref.watch(userInformationStateProvider.notifier).getInitUserInformation(
+          ref.watch(userModelProvider)!.idx, widget.memberIdx);
+      ref
+          .read(userContentStateProvider.notifier)
+          .initPosts(ref.read(userModelProvider)!.idx, widget.memberIdx, 1);
+      ref
+          .read(tagContentStateProvider.notifier)
+          .initPosts(ref.read(userModelProvider)!.idx, widget.memberIdx, 1);
+    });
+
     super.initState();
   }
 
@@ -89,7 +98,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
       if (userOldLength == ref.read(userContentStateProvider).list.length) {
         ref
             .read(userContentStateProvider.notifier)
-            .loadMorePost(widget.memberIdx);
+            .loadMorePost(ref.read(userModelProvider)!.idx, widget.memberIdx);
       }
     }
   }
@@ -101,7 +110,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
       if (userOldLength == ref.read(tagContentStateProvider).list.length) {
         ref
             .read(tagContentStateProvider.notifier)
-            .loadMorePost(widget.memberIdx);
+            .loadMorePost(ref.read(userModelProvider)!.idx, widget.memberIdx);
       }
     }
   }
@@ -200,6 +209,11 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                     ),
                                     confirmTap: () async {
                                       context.pop();
+                                      toast(
+                                        context: context,
+                                        text: "‘${widget.nick}’님을 차단하였습니다.",
+                                        type: ToastType.purple,
+                                      );
                                       final result = await ref
                                           .read(userInformationStateProvider
                                               .notifier)
@@ -211,11 +225,10 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                           );
 
                                       if (result.result) {
-                                        toast(
-                                          context: context,
-                                          text: "‘${widget.nick}’님을 차단하였습니다.",
-                                          type: ToastType.purple,
-                                        );
+                                        ref
+                                            .watch(userInformationStateProvider
+                                                .notifier)
+                                            .updateBlockState();
                                       }
                                     },
                                     cancelTap: () {
@@ -252,7 +265,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                         },
                       ),
                     ],
-                    expandedHeight: 130.h,
+                    expandedHeight: 146.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
                       final userInformationState =
                           ref.watch(userInformationStateProvider);
@@ -268,12 +281,64 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                 ),
               ];
             },
-            body: TabBarView(
-              children: [
-                _firstTabBody(),
-                _secondTabBody(),
-              ],
-            ),
+            body: Consumer(builder: (context, ref, _) {
+              final userInformationState =
+                  ref.watch(userInformationStateProvider);
+              final lists = userInformationState.list;
+
+              return lists.isEmpty
+                  ? Container()
+                  : lists[0].blockedState == 1
+                      ? Container(
+                          color: kNeutralColor100,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/image/feed_write/image/corgi-2 1.png',
+                                height: 68.h,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "차단한 유저의 정보는 확인할 수 없습니다.\n정보를 보시려면 차단을 해제해 주세요.",
+                                textAlign: TextAlign.center,
+                                style: kBody12RegularStyle.copyWith(
+                                    color: kTextBodyColor),
+                              ),
+                            ],
+                          ),
+                        )
+                      : lists[0].blockedMeState == 1
+                          ? Container(
+                              color: kNeutralColor100,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/image/feed_write/image/corgi-2 1.png',
+                                    height: 68.h,
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "정보를 확인할 수 없습니다.",
+                                    textAlign: TextAlign.center,
+                                    style: kBody12RegularStyle.copyWith(
+                                        color: kTextBodyColor),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : TabBarView(
+                              children: [
+                                _firstTabBody(),
+                                _secondTabBody(),
+                              ],
+                            );
+            }),
           ),
         )),
       ),
@@ -294,6 +359,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
         return RefreshIndicator(
           onRefresh: () {
             return ref.read(userContentStateProvider.notifier).refresh(
+                  ref.read(userModelProvider)!.idx,
                   widget.memberIdx,
                 );
           },
@@ -330,7 +396,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(12)),
                             child: Image.network(
-                              "${lists[index].imgUrl}",
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -352,238 +418,6 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                 ],
                               ),
                             ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: 6.0.w, top: 2.h, right: 2.w),
-                                child: InkWell(
-                                  onTap: () async {
-                                    await ref
-                                        .read(contentLikeUserListStateProvider
-                                            .notifier)
-                                        .initContentLikeUserList(
-                                          lists[index].idx,
-                                          widget.memberIdx,
-                                          1,
-                                        );
-
-                                    // ignore: use_build_context_synchronously
-                                    showCustomModalBottomSheet(
-                                      context: context,
-                                      widget: Consumer(
-                                          builder: (context, ref, child) {
-                                        final contentLikeUserListContentState =
-                                            ref.watch(
-                                                contentLikeUserListStateProvider);
-                                        final lists =
-                                            contentLikeUserListContentState
-                                                .list;
-
-                                        commentOldLength = lists.length ?? 0;
-                                        return SizedBox(
-                                          height: 500.h,
-                                          child: Stack(
-                                            children: [
-                                              Column(
-                                                children: [
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                      top: 8.0.h,
-                                                      bottom: 10.0.h,
-                                                    ),
-                                                    child: Text(
-                                                      "좋아요",
-                                                      style: kTitle16ExtraBoldStyle
-                                                          .copyWith(
-                                                              color:
-                                                                  kTextSubTitleColor),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: ListView.builder(
-                                                      controller:
-                                                          commentController,
-                                                      itemCount: lists.length,
-                                                      padding: EdgeInsets.only(
-                                                          bottom: 80.h),
-                                                      itemBuilder:
-                                                          (BuildContext context,
-                                                              int index) {
-                                                        return FavoriteItemWidget(
-                                                          profileImage: lists[
-                                                                  index]
-                                                              .profileImgUrl,
-                                                          userName:
-                                                              lists[index].nick,
-                                                          content: lists[index]
-                                                              .intro,
-                                                          isSpecialUser: lists[
-                                                                      index]
-                                                                  .isBadge ==
-                                                              0,
-                                                          isFollow: lists[index]
-                                                                  .isFollow ==
-                                                              0,
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                                    );
-                                  },
-                                  child: lists[index].likeCnt == 1
-                                      ? Image.asset(
-                                          'assets/image/feed/icon/small_size/icon_comment_like_on.png',
-                                          height: 26.w,
-                                        )
-                                      : Image.asset(
-                                          'assets/image/feed/icon/small_size/icon_comment_like_off.png',
-                                          height: 26.w,
-                                        ),
-                                ),
-                              ),
-                              Text(
-                                '${lists[index].likeCnt}',
-                                style: kBadge10MediumStyle.copyWith(
-                                    color: kNeutralColor100),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: 6.0.w, top: 2.h, right: 2.w),
-                                child: Builder(builder: (context) {
-                                  return InkWell(
-                                    onTap: () async {
-                                      await ref
-                                          .read(commentStateProvider.notifier)
-                                          .initPosts(lists[index].idx, 1);
-
-                                      // ignore: use_build_context_synchronously
-                                      showCustomModalBottomSheet(
-                                        context: context,
-                                        widget: Consumer(
-                                            builder: (context, ref, child) {
-                                          final commentContentState =
-                                              ref.watch(commentStateProvider);
-                                          final commentLists =
-                                              commentContentState.list;
-
-                                          commentOldLength =
-                                              commentLists.length ?? 0;
-                                          return SizedBox(
-                                            height: 500.h,
-                                            child: Stack(
-                                              children: [
-                                                Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                        top: 8.0.h,
-                                                        bottom: 10.0.h,
-                                                      ),
-                                                      child: Text(
-                                                        "댓글",
-                                                        style: kTitle16ExtraBoldStyle
-                                                            .copyWith(
-                                                                color:
-                                                                    kTextSubTitleColor),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: ListView.builder(
-                                                        controller:
-                                                            commentController,
-                                                        itemCount:
-                                                            commentLists.length,
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                bottom: 80.h),
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                int index) {
-                                                          return CommentDetailItemWidget(
-                                                            commentIdx:
-                                                                commentLists[
-                                                                        index]
-                                                                    .idx,
-                                                            profileImage:
-                                                                commentLists[
-                                                                            index]
-                                                                        .url ??
-                                                                    'assets/image/feed/image/sample_image1.png',
-                                                            name: commentLists[
-                                                                    index]
-                                                                .nick,
-                                                            comment:
-                                                                commentLists[
-                                                                        index]
-                                                                    .contents,
-                                                            isSpecialUser:
-                                                                commentLists[
-                                                                            index]
-                                                                        .isBadge ==
-                                                                    1,
-                                                            time: DateTime.parse(
-                                                                commentLists[
-                                                                        index]
-                                                                    .regDate),
-                                                            isReply: false,
-                                                            likeCount:
-                                                                commentLists[
-                                                                        index]
-                                                                    .likeCnt,
-                                                            replies: commentLists[
-                                                                    index]
-                                                                .childCommentData,
-                                                            contentIdx:
-                                                                commentLists[0]
-                                                                    .contentsIdx,
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Positioned(
-                                                  left: 0,
-                                                  right: 0,
-                                                  bottom: 0,
-                                                  child: CommentCustomTextField(
-                                                    contentIdx:
-                                                        lists[index].idx,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        }),
-                                      );
-                                    },
-                                    child: Image.asset(
-                                      'assets/image/feed/icon/small_size/icon_comment_comment.png',
-                                      height: 24.w,
-                                    ),
-                                  );
-                                }),
-                              ),
-                              Text(
-                                '${lists[index].commentCnt}',
-                                style: kBadge10MediumStyle.copyWith(
-                                    color: kNeutralColor100),
-                              ),
-                            ],
                           ),
                         ),
                         Positioned(
@@ -632,6 +466,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
         return RefreshIndicator(
           onRefresh: () {
             return ref.read(tagContentStateProvider.notifier).refresh(
+                  ref.read(userModelProvider)!.idx,
                   widget.memberIdx,
                 );
           },
@@ -665,7 +500,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                       children: [
                         Positioned.fill(
                           child: Image.network(
-                            "${lists[index].imgUrl}",
+                            "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -707,222 +542,289 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
       expandedTitleScale: 1.0,
       background: Padding(
         padding: const EdgeInsets.only(top: kToolbarHeight),
-        child: Row(
+        child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-              child: WidgetMask(
-                blendMode: BlendMode.srcATop,
-                childSaveLayer: true,
-                mask: data.profileImgUrl == null
-                    ? Center(
-                        child: Image.asset(
-                          'assets/image/feed/image/sample_image3.png',
-                          height: 48.h,
-                          fit: BoxFit.fill,
-                        ),
-                      )
-                    : Center(
-                        child: Image.asset(
-                          data.profileImgUrl!,
-                          height: 48.h,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                child: SvgPicture.asset(
-                  'assets/image/feed/image/squircle.svg',
-                  height: 48.h,
-                ),
-              ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
               children: [
-                Row(
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  child: WidgetMask(
+                    blendMode: BlendMode.srcATop,
+                    childSaveLayer: true,
+                    mask: data.profileImgUrl == null || data.profileImgUrl == ""
+                        ? Center(
+                            child: Image.asset(
+                              'assets/image/feed/image/sample_image3.png',
+                              height: 48.h,
+                              fit: BoxFit.fill,
+                            ),
+                          )
+                        : Center(
+                            child: Image.asset(
+                              data.profileImgUrl!,
+                              height: 48.h,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                    child: SvgPicture.asset(
+                      'assets/image/feed/image/squircle.svg',
+                      height: 48.h,
+                    ),
+                  ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      'assets/image/feed/icon/small_size/icon_special.png',
-                      height: 13.h,
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/image/feed/icon/small_size/icon_special.png',
+                          height: 13.h,
+                        ),
+                        SizedBox(
+                          width: 4.w,
+                        ),
+                        Text(
+                          "${data.nick}",
+                          style: kTitle16ExtraBoldStyle.copyWith(
+                              color: kTextTitleColor),
+                        ),
+                      ],
                     ),
                     SizedBox(
-                      width: 4.w,
+                      height: 3.h,
                     ),
                     Text(
-                      "${data.nick}",
-                      style: kTitle16ExtraBoldStyle.copyWith(
-                          color: kTextTitleColor),
+                      data.intro == null ? "소개글이 없습니다." : "${data.intro}",
+                      style:
+                          kBody12RegularStyle.copyWith(color: kTextBodyColor),
                     ),
                     GestureDetector(
                       onTap: () {
-                        context.go("/home/myPage/profileEdit");
+                        context.push(
+                            "/home/myPage/followList/${widget.memberIdx}");
                       },
-                      child: const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Icon(
-                          Icons.edit,
-                          color: kNeutralColor500,
-                          size: 20,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 8.0.h),
+                        child: Row(
+                          children: [
+                            Text(
+                              "팔로워 ",
+                              style: kBody11RegularStyle.copyWith(
+                                  color: kTextBodyColor),
+                            ),
+                            Text(
+                              "${data.followerCnt}",
+                              style: kBody11SemiBoldStyle.copyWith(
+                                  color: kTextSubTitleColor),
+                            ),
+                            Text(
+                              "  ·  ",
+                              style: kBody11RegularStyle.copyWith(
+                                  color: kTextBodyColor),
+                            ),
+                            Text(
+                              "팔로잉 ",
+                              style: kBody11RegularStyle.copyWith(
+                                  color: kTextBodyColor),
+                            ),
+                            Text(
+                              "${data.followCnt}",
+                              style: kBody11SemiBoldStyle.copyWith(
+                                  color: kTextSubTitleColor),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 3.h,
-                ),
-                Text(
-                  data.intro == null ? "소개글이 없습니다." : "${data.intro}",
-                  style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    context.push("/home/myPage/followList/${widget.memberIdx}");
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 8.0.h),
-                    child: Row(
-                      children: [
-                        Text(
-                          "팔로워 ",
-                          style: kBody11RegularStyle.copyWith(
-                              color: kTextBodyColor),
-                        ),
-                        Text(
-                          "${data.followerCnt}",
-                          style: kBody11SemiBoldStyle.copyWith(
-                              color: kTextSubTitleColor),
-                        ),
-                        Text(
-                          "  ·  ",
-                          style: kBody11RegularStyle.copyWith(
-                              color: kTextBodyColor),
-                        ),
-                        Text(
-                          "팔로잉 ",
-                          style: kBody11RegularStyle.copyWith(
-                              color: kTextBodyColor),
-                        ),
-                        Text(
-                          "${data.followCnt}",
-                          style: kBody11SemiBoldStyle.copyWith(
-                              color: kTextSubTitleColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
+            Padding(
+              padding: EdgeInsets.only(left: 12.w, right: 12.w, top: 10.h),
+              child: data.blockedMeState == 1
+                  ? Expanded(
+                      child: Container(
+                        height: 30.h,
+                        decoration: const BoxDecoration(
+                          color: kNeutralColor300,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8.0),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "유저를 찾을 수 없습니다.",
+                            style: kButton12BoldStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        data.blockedState == 1
+                            ? Expanded(
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    ref
+                                        .watch(userInformationStateProvider
+                                            .notifier)
+                                        .updateUnBlockState(
+                                            ref.watch(userModelProvider)!.idx,
+                                            widget.memberIdx);
+                                    await ref
+                                        .read(blockStateProvider.notifier)
+                                        .deleteBlock(
+                                          memberIdx:
+                                              ref.watch(userModelProvider)!.idx,
+                                          blockIdx: widget.memberIdx,
+                                        );
 
-  Widget _myPageProfile() {
-    return FlexibleSpaceBar(
-      centerTitle: true,
-      expandedTitleScale: 1.0,
-      background: Padding(
-        padding: const EdgeInsets.only(top: kToolbarHeight),
-        child: Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-              child: WidgetMask(
-                blendMode: BlendMode.srcATop,
-                childSaveLayer: true,
-                mask: Center(
-                  child: Image.asset(
-                    'assets/image/feed/image/sample_image3.png',
-                    height: 48.h,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                child: SvgPicture.asset(
-                  'assets/image/feed/image/squircle.svg',
-                  height: 48.h,
-                ),
-              ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Image.asset(
-                      'assets/image/feed/icon/small_size/icon_special.png',
-                      height: 13.h,
-                    ),
-                    SizedBox(
-                      width: 4.w,
-                    ),
-                    Text(
-                      "왕티즈왕왕",
-                      style: kTitle16ExtraBoldStyle.copyWith(
-                          color: kTextTitleColor),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context.go("/home/myPage/profileEdit");
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Icon(
-                          Icons.edit,
-                          color: kNeutralColor500,
-                          size: 20,
+                                    // if (result.result) {
+                                    //   ref
+                                    //       .watch(
+                                    //           userInformationStateProvider.notifier)
+                                    //       .updateFollowState();
+                                    // }
+                                  },
+                                  child: Container(
+                                    height: 30.h,
+                                    decoration: const BoxDecoration(
+                                      color: kPrimaryColor,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8.0),
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "차단 해제",
+                                        style: kButton12BoldStyle.copyWith(
+                                            color: kNeutralColor100),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Expanded(
+                                child: data.followState == 1
+                                    ? GestureDetector(
+                                        onTap: () async {
+                                          ref
+                                              .watch(
+                                                  userInformationStateProvider
+                                                      .notifier)
+                                              .updateUnFollowState();
+
+                                          final result = await ref
+                                              .watch(
+                                                  followStateProvider.notifier)
+                                              .deleteFollow(
+                                                memberIdx: ref
+                                                    .read(userModelProvider)!
+                                                    .idx,
+                                                followIdx: widget.memberIdx,
+                                              );
+
+                                          // if (result.result) {
+                                          //   ref
+                                          //       .watch(
+                                          //           userInformationStateProvider.notifier)
+                                          //       .updateUnFollowState();
+                                          // }
+                                        },
+                                        child: Container(
+                                          height: 30.h,
+                                          decoration: const BoxDecoration(
+                                            color: kNeutralColor300,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(8.0),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              "팔로잉",
+                                              style:
+                                                  kButton12BoldStyle.copyWith(
+                                                      color:
+                                                          kTextSubTitleColor),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : GestureDetector(
+                                        onTap: () async {
+                                          ref
+                                              .watch(
+                                                  userInformationStateProvider
+                                                      .notifier)
+                                              .updateFollowState();
+                                          final result = await ref
+                                              .watch(
+                                                  followStateProvider.notifier)
+                                              .postFollow(
+                                                memberIdx: ref
+                                                    .read(userModelProvider)!
+                                                    .idx,
+                                                followIdx: widget.memberIdx,
+                                              );
+
+                                          // if (result.result) {
+                                          //   ref
+                                          //       .watch(
+                                          //           userInformationStateProvider.notifier)
+                                          //       .updateFollowState();
+                                          // }
+                                        },
+                                        child: Container(
+                                          height: 30.h,
+                                          decoration: const BoxDecoration(
+                                            color: kPrimaryColor,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(8.0),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              "팔로우",
+                                              style:
+                                                  kButton12BoldStyle.copyWith(
+                                                      color: kNeutralColor100),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                              ),
+                        SizedBox(
+                          width: 8.w,
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 3.h,
-                ),
-                Text(
-                  "딸기🍓를 좋아하는 왕큰 말티즈🐶 왕왕이💛🤍 ",
-                  style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 8.0.h),
-                    child: Row(
-                      children: [
-                        Text(
-                          "팔로워 ",
-                          style: kBody11RegularStyle.copyWith(
-                              color: kTextBodyColor),
-                        ),
-                        Text(
-                          "265",
-                          style: kBody11SemiBoldStyle.copyWith(
-                              color: kTextSubTitleColor),
-                        ),
-                        Text(
-                          "  ·  ",
-                          style: kBody11RegularStyle.copyWith(
-                              color: kTextBodyColor),
-                        ),
-                        Text(
-                          "팔로잉 ",
-                          style: kBody11RegularStyle.copyWith(
-                              color: kTextBodyColor),
-                        ),
-                        Text(
-                          "165",
-                          style: kBody11SemiBoldStyle.copyWith(
-                              color: kTextSubTitleColor),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () async {},
+                            child: Container(
+                              height: 30.h,
+                              decoration: const BoxDecoration(
+                                color: kPrimaryLightColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8.0),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "메세지",
+                                  style: kButton12BoldStyle.copyWith(
+                                      color: kPrimaryColor),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-              ],
-            ),
+            )
           ],
         ),
       ),
@@ -961,83 +863,92 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      decoration: shrinkOffset == 0
-          ? BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(20.0),
-                topRight: Radius.circular(20.0),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  spreadRadius: -5,
-                  blurRadius: 7,
-                  offset: const Offset(0, -6),
-                ),
-              ],
-            )
-          : const BoxDecoration(
-              color: Colors.white,
-            ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TabBar(
-                indicatorWeight: 3,
-                labelColor: kPrimaryColor,
-                indicatorColor: kPrimaryColor,
-                unselectedLabelColor: kNeutralColor500,
-                indicatorSize: TabBarIndicatorSize.tab,
-                labelPadding: EdgeInsets.only(
-                  top: 10.h,
-                  bottom: 10.h,
-                ),
-                tabs: [
-                  Consumer(builder: (context, ref, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "일상글",
-                          style: kBody14BoldStyle,
-                        ),
-                        SizedBox(
-                          width: 6.w,
-                        ),
-                        Text(
-                          "${ref.watch(userContentStateProvider).totalCount}",
-                          style: kBadge10MediumStyle.copyWith(
-                              color: kTextBodyColor),
+    return Consumer(builder: (ctx, ref, child) {
+      final userInformationState = ref.watch(userInformationStateProvider);
+      final lists = userInformationState.list;
+
+      return lists.isEmpty
+          ? Container()
+          : Container(
+              decoration: shrinkOffset == 0
+                  ? BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        topRight: Radius.circular(20.0),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.4),
+                          spreadRadius: -5,
+                          blurRadius: 7,
+                          offset: const Offset(0, -6),
                         ),
                       ],
-                    );
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    )
+                  : const BoxDecoration(
+                      color: Colors.white,
+                    ),
+              child: lists[0].blockedState == 1 || lists[0].blockedMeState == 1
+                  ? Container()
+                  : Row(
                       children: [
-                        Text(
-                          "태그됨",
-                          style: kBody14BoldStyle,
-                        ),
-                        SizedBox(
-                          width: 6.w,
-                        ),
-                        Text(
-                          "${ref.watch(tagContentStateProvider).totalCount}",
-                          style: kBadge10MediumStyle.copyWith(
-                              color: kTextBodyColor),
+                        Expanded(
+                          child: TabBar(
+                              indicatorWeight: 3,
+                              labelColor: kPrimaryColor,
+                              indicatorColor: kPrimaryColor,
+                              unselectedLabelColor: kNeutralColor500,
+                              indicatorSize: TabBarIndicatorSize.tab,
+                              labelPadding: EdgeInsets.only(
+                                top: 10.h,
+                                bottom: 10.h,
+                              ),
+                              tabs: [
+                                Consumer(builder: (context, ref, child) {
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "일상글",
+                                        style: kBody14BoldStyle,
+                                      ),
+                                      SizedBox(
+                                        width: 6.w,
+                                      ),
+                                      Text(
+                                        "${ref.watch(userContentStateProvider).totalCount}",
+                                        style: kBadge10MediumStyle.copyWith(
+                                            color: kTextBodyColor),
+                                      ),
+                                    ],
+                                  );
+                                }),
+                                Consumer(builder: (context, ref, child) {
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "태그됨",
+                                        style: kBody14BoldStyle,
+                                      ),
+                                      SizedBox(
+                                        width: 6.w,
+                                      ),
+                                      Text(
+                                        "${ref.watch(tagContentStateProvider).totalCount}",
+                                        style: kBadge10MediumStyle.copyWith(
+                                            color: kTextBodyColor),
+                                      ),
+                                    ],
+                                  );
+                                }),
+                              ]),
                         ),
                       ],
-                    );
-                  }),
-                ]),
-          ),
-        ],
-      ),
-    );
+                    ),
+            );
+    });
   }
 
   @override

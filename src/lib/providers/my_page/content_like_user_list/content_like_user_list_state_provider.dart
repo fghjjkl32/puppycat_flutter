@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/content_like_user_list/content_like_user_list_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
 final contentLikeUserListStateProvider = StateNotifierProvider<
@@ -20,6 +22,12 @@ class ContentLikeUserListStateNotifier
     memberIdx,
     int? initPage,
   ]) async {
+    print(contentsIdx);
+    print(contentsIdx);
+    print(contentsIdx);
+    print(contentsIdx);
+    print(contentsIdx);
+
     currentPage = 1;
 
     final page = initPage ?? state.page;
@@ -84,5 +92,30 @@ class ContentLikeUserListStateNotifier
   Future<void> refresh(contentsIdx) async {
     initContentLikeUserList(contentsIdx, 1);
     currentPage = 1;
+  }
+
+  Future<ResponseModel> postFollow({
+    required memberIdx,
+    required followIdx,
+    required contentsIdx,
+  }) async {
+    final result = await FollowRepository()
+        .postFollow(memberIdx: memberIdx, followIdx: followIdx);
+
+    refresh(contentsIdx);
+    return result;
+  }
+
+  Future<ResponseModel> deleteFollow({
+    required memberIdx,
+    required followIdx,
+    required contentsIdx,
+  }) async {
+    final result = await FollowRepository()
+        .deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+
+    refresh(contentsIdx);
+
+    return result;
   }
 }

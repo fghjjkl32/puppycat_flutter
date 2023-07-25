@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/config/theme/size_data.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 
 class FeedImageDetailWidget extends StatelessWidget {
   FeedImageDetailWidget({
@@ -10,7 +11,7 @@ class FeedImageDetailWidget extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final List<String> imageList;
+  final List<FeedImgListData> imageList;
 
   final ValueNotifier<int> _counter = ValueNotifier<int>(0);
 
@@ -34,9 +35,10 @@ class FeedImageDetailWidget extends StatelessWidget {
                   padding: kPrimarySideFeedImagePadding,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
-                    child: Image.asset(
-                      i,
-                      fit: BoxFit.fill,
+                    child: Image.network(
+                      "https://dev-imgs.devlabs.co.kr${i.url!}",
+                      fit: BoxFit.cover,
+                      width: double.infinity,
                     ),
                   ),
                 );

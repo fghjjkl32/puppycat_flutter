@@ -72,7 +72,11 @@ class _LoginService implements LoginService {
               queryParameters: queryParameters,
               data: _data,
             )
-            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
     final value =
         _result.data == null ? null : ResponseModel.fromJson(_result.data!);
     return value;

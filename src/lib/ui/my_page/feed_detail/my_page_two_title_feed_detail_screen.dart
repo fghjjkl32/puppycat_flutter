@@ -1,14 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/feed_detail_state_provider.dart';
 
-class MyPageTwoTitleFeedDetailScreen extends StatelessWidget {
+class MyPageTwoTitleFeedDetailScreen extends ConsumerStatefulWidget {
   final String firstTitle;
   final String secondTitle;
+  final int memberIdx;
+  final int contentIdx;
 
-  const MyPageTwoTitleFeedDetailScreen(
-      {required this.firstTitle, required this.secondTitle, super.key});
+  const MyPageTwoTitleFeedDetailScreen({
+    required this.firstTitle,
+    required this.secondTitle,
+    required this.memberIdx,
+    required this.contentIdx,
+    super.key,
+  });
+
+  @override
+  MyPageMainState createState() => MyPageMainState();
+}
+
+class MyPageMainState extends ConsumerState<MyPageTwoTitleFeedDetailScreen> {
+  ScrollController contentController = ScrollController();
+  int oldLength = 0;
+
+  @override
+  void initState() {
+    contentController.addListener(contentsScrollListener);
+
+    ref.read(feedDetailStateProvider.notifier).initPosts(
+          loginMemberIdx: ref.read(userModelProvider)!.idx,
+          memberIdx: widget.memberIdx,
+          initPage: 1,
+          contentIdx: widget.contentIdx,
+        );
+    super.initState();
+  }
+
+  void contentsScrollListener() {
+    if (contentController.position.pixels >
+        contentController.position.maxScrollExtent -
+            MediaQuery.of(context).size.height) {
+      if (oldLength ==
+          ref.read(feedDetailStateProvider).feedListState.list.length) {
+        ref.read(feedDetailStateProvider.notifier).loadMorePost(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+              memberIdx: widget.memberIdx,
+            );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    contentController.removeListener(contentsScrollListener);
+    contentController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +83,10 @@ class MyPageTwoTitleFeedDetailScreen extends StatelessWidget {
               title: Column(
                 children: [
                   Text(
-                    firstTitle,
+                    widget.firstTitle,
                     style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                   ),
-                  Text(secondTitle),
+                  Text(widget.secondTitle),
                 ],
               ),
               leading: IconButton(
@@ -43,14 +96,53 @@ class MyPageTwoTitleFeedDetailScreen extends StatelessWidget {
                 icon: const Icon(Icons.arrow_back),
               ),
             ),
-            body: ListView(
-              children: const [
-                FeedDetailWidget(),
-                FeedDetailWidget(),
-                FeedDetailWidget(),
-                FeedDetailWidget(),
-              ],
-            ),
+            body: Consumer(builder: (ctx, ref, child) {
+              final contentState = ref.watch(feedDetailStateProvider);
+              final isLoadMoreError =
+                  contentState.feedListState.isLoadMoreError;
+              final isLoadMoreDone = contentState.feedListState.isLoadMoreDone;
+              final isLoading = contentState.feedListState.isLoading;
+              final firstList = contentState.firstFeedState.list;
+              final lists = contentState.feedListState.list;
+
+              oldLength = lists.length ?? 0;
+
+              return lists.isEmpty && firstList.isEmpty
+                  ? Container()
+                  : ListView.builder(
+                      itemCount: lists.length + 1,
+                      controller: contentController,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == 0) {
+                          return FeedDetailWidget(
+                            feedData: firstList[0],
+                            nick: widget.firstTitle,
+                            profileImage: ref
+                                .watch(feedDetailStateProvider)
+                                .firstFeedState
+                                .memberInfo![0]
+                                .profileImgUrl,
+                            memberIdx: widget.memberIdx,
+                          );
+                        } else {
+                          if (widget.contentIdx == lists[index - 1].idx) {
+                            return Container();
+                          } else {
+                            return FeedDetailWidget(
+                              feedData: lists[index - 1],
+                              nick: widget.firstTitle,
+                              profileImage: ref
+                                  .watch(feedDetailStateProvider)
+                                  .feedListState
+                                  .memberInfo![0]
+                                  .profileImgUrl,
+                              memberIdx: widget.memberIdx,
+                            );
+                          }
+                        }
+                      },
+                    );
+            }),
           ),
         ),
       ),

@@ -248,8 +248,8 @@ class MyPageMyActivityListScreenState
 
               return GestureDetector(
                 onTap: () {
-                  context
-                      .go("/home/myPage/myActivity/myActivityDetail/좋아요한 게시물");
+                  context.go(
+                      "/home/myPage/myActivity/myActivityDetail/좋아요한 게시물/${ref.read(userModelProvider)!.idx}");
                 },
                 child: Stack(
                   children: [
@@ -353,8 +353,8 @@ class MyPageMyActivityListScreenState
 
               return GestureDetector(
                 onTap: () {
-                  context
-                      .go("/home/myPage/myActivity/myActivityDetail/좋아요한 게시물");
+                  context.go(
+                      "/home/myPage/myActivity/myActivityDetail/좋아요한 게시물/${ref.read(userModelProvider)!.idx}");
                 },
                 child: Stack(
                   children: [

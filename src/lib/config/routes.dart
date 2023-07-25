@@ -98,14 +98,21 @@ class AppRouter {
               },
               routes: [
                 GoRoute(
-                  path: 'detail/:firstTitle/:secondTitle',
-                  name: 'detail/:firstTitle/:secondTitle',
+                  path:
+                      'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx',
+                  name:
+                      'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx',
                   builder: (BuildContext context, GoRouterState state) {
                     final firstTitle = state.pathParameters['firstTitle']!;
                     final secondTitle = state.pathParameters['secondTitle']!;
+                    final memberIdx = state.pathParameters['memberIdx']!;
+                    final contentIdx = state.pathParameters['contentIdx']!;
+
                     return MyPageTwoTitleFeedDetailScreen(
                       firstTitle: firstTitle,
                       secondTitle: secondTitle,
+                      memberIdx: int.parse(memberIdx),
+                      contentIdx: int.parse(contentIdx),
                     );
                   },
                 ),
@@ -179,12 +186,14 @@ class AppRouter {
                   },
                   routes: [
                     GoRoute(
-                      path: 'myActivityDetail/:title',
-                      name: 'myActivityDetail/:title',
+                      path: 'myActivityDetail/:title/:memberIdx',
+                      name: 'myActivityDetail/:title/:memberIdx',
                       builder: (BuildContext context, GoRouterState state) {
                         final title = state.pathParameters['title']!;
+                        final memberIdx = state.pathParameters['memberIdx']!;
                         return MyPageOneTitleFeedDetailScreen(
                           title: title,
+                          memberIdx: memberIdx,
                         );
                       },
                     )
@@ -198,11 +207,14 @@ class AppRouter {
                   },
                   routes: [
                     GoRoute(
-                      path: 'myPostDetail/:title',
-                      name: 'myPostDetail/:title',
+                      path: 'myPostDetail/:title/:memberIdx,',
+                      name: 'myPostDetail/:title/:memberIdx',
                       builder: (BuildContext context, GoRouterState state) {
                         final title = state.pathParameters['title']!;
+                        final memberIdx = state.pathParameters['memberIdx']!;
+
                         return MyPageOneTitleFeedDetailScreen(
+                          memberIdx: memberIdx,
                           title: title,
                         );
                       },

@@ -1,28 +1,27 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/user_contents/user_contents_repository.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
+import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 
 final userContentStateProvider =
-    StateNotifierProvider<UserContentStateNotifier, ContentDataListModel>(
-        (ref) {
+    StateNotifierProvider<UserContentStateNotifier, FeedDataListModel>((ref) {
   return UserContentStateNotifier();
 });
 
-class UserContentStateNotifier extends StateNotifier<ContentDataListModel> {
-  UserContentStateNotifier() : super(const ContentDataListModel());
+class UserContentStateNotifier extends StateNotifier<FeedDataListModel> {
+  UserContentStateNotifier() : super(const FeedDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
-  initPosts([
+  initPosts(
+    loginMemberIdx,
     memberIdx,
     int? initPage,
-  ]) async {
+  ) async {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await UserContentsRepository()
-        .getUserContents(memberIdx: memberIdx, page: page);
+    final lists = await FeedRepository().getUserContentsList(
+        loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: page);
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
@@ -37,7 +36,7 @@ class UserContentStateNotifier extends StateNotifier<ContentDataListModel> {
     state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
   }
 
-  loadMorePost(memberIdx) async {
+  loadMorePost(loginMemberIdx, memberIdx) async {
     if (currentPage >= maxPages) {
       state = state.copyWith(isLoadMoreDone: true);
       return;
@@ -54,8 +53,10 @@ class UserContentStateNotifier extends StateNotifier<ContentDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await UserContentsRepository()
-        .getUserContents(memberIdx: memberIdx, page: state.page + 1);
+    final lists = await FeedRepository().getUserContentsList(
+        loginMemberIdx: loginMemberIdx,
+        memberIdx: memberIdx,
+        page: state.page + 1);
 
     if (lists == null) {
       state = state.copyWith(isLoadMoreError: true, isLoading: false);
@@ -75,8 +76,8 @@ class UserContentStateNotifier extends StateNotifier<ContentDataListModel> {
     }
   }
 
-  Future<void> refresh(memberIdx) async {
-    initPosts(memberIdx, 1);
+  Future<void> refresh(loginMemberIdx, memberIdx) async {
+    initPosts(loginMemberIdx, memberIdx, 1);
     currentPage = 1;
   }
 }

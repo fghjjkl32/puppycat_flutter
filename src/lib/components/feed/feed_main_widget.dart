@@ -13,7 +13,7 @@ class FeedMainWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push("/home/myPage/detail/아지다멍/게시물");
+        // context.push("/home/myPage/detail/아지다멍/게시물");
       },
       child: Column(
         children: [
@@ -22,7 +22,7 @@ class FeedMainWidget extends StatelessWidget {
             profileImage: 'assets/image/feed/image/sample_image1.png',
             userName: '아지다멍',
             address: '강원도 평창군 평창읍',
-            time: DateTime(2023, 4, 12),
+            time: '3일 전',
             isEdit: true,
           ),
           //feed detail image
@@ -46,10 +46,10 @@ class FeedMainWidget extends StatelessWidget {
 
 실내, 야외 모두 소형견·대형견 공간이 분리되어 있으니까 다들 꼬옥 놀러와죠❕❤ ''',
           ),
-          const FeedBottomIconWidget(
-            likeCount: 338,
-            commentCount: 13,
-          ),
+          // const FeedBottomIconWidget(
+          //   likeCount: 338,
+          //   commentCount: 13,
+          // ),
           Padding(
             padding: EdgeInsets.all(12.0.h),
             child: const Divider(),

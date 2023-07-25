@@ -1,11 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/tag_contents/tag_contents_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/user_information/user_information_repository.dart';
-import 'package:pet_mobile_social_flutter/services/my_page/user_information/user_information_service.dart';
 import 'package:riverpod/riverpod.dart';
 
 final userInformationStateProvider = StateNotifierProvider<
@@ -18,10 +15,11 @@ class UserInformationStateNotifier
   UserInformationStateNotifier() : super(const UserInformationListModel());
 
   getInitUserInformation([
+    loginMemberIdx,
     memberIdx,
   ]) async {
-    final lists =
-        await UserInformationRepository().getUserInformation(memberIdx);
+    final lists = await UserInformationRepository()
+        .getUserInformation(loginMemberIdx, memberIdx);
 
     if (lists == null) {
       state = state.copyWith(isLoading: false);
@@ -41,5 +39,48 @@ class UserInformationStateNotifier
     );
 
     return result;
+  }
+
+  void updateFollowState() {
+    state = state.copyWith(list: [
+      state.list[0]
+          .copyWith(followState: 1, followerCnt: state.list[0].followerCnt! + 1)
+    ]);
+  }
+
+  void updateUnFollowState() {
+    state = state.copyWith(list: [
+      state.list[0]
+          .copyWith(followState: 0, followerCnt: state.list[0].followerCnt! - 1)
+    ]);
+  }
+
+  Future<void> updateBlockState() async {
+    state = state.copyWith(list: [
+      state.list[0].copyWith(blockedState: 1, followerCnt: 0, followCnt: 0)
+    ]);
+  }
+
+  Future<void> updateUnBlockState(loginMemberIdx, memberIdx) async {
+    state = state.copyWith(list: [
+      state.list[0].copyWith(
+        blockedState: 0,
+        followerCnt: 0,
+        followCnt: 0,
+        followState: 0,
+      )
+    ]);
+
+    final lists = await UserInformationRepository()
+        .getUserInformation(loginMemberIdx, memberIdx);
+
+    state = state.copyWith(list: [
+      state.list[0].copyWith(
+        blockedState: 0,
+        followerCnt: lists.data.info[0].followerCnt,
+        followCnt: lists.data.info[0].followCnt,
+        followState: 0,
+      )
+    ]);
   }
 }

@@ -13,7 +13,9 @@ import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_i
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
@@ -57,12 +59,13 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
     ref
         .read(myInformationStateProvider.notifier)
         .getInitUserInformation(ref.read(userModelProvider)!.idx);
-    ref
-        .read(userContentStateProvider.notifier)
-        .initPosts(ref.read(userModelProvider)!.idx, 1);
-    ref
-        .read(tagContentStateProvider.notifier)
-        .initPosts(ref.read(userModelProvider)!.idx, 1);
+    ref.read(myContentStateProvider.notifier).initPosts(
+          loginMemberIdx: ref.read(userModelProvider)!.idx,
+          memberIdx: ref.read(userModelProvider)!.idx,
+          initPage: 1,
+        );
+    ref.read(myTagContentStateProvider.notifier).initPosts(
+        ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx, 1);
     super.initState();
   }
 
@@ -83,10 +86,11 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
     if (userContentController.position.pixels >
         userContentController.position.maxScrollExtent -
             MediaQuery.of(context).size.height) {
-      if (userOldLength == ref.read(userContentStateProvider).list.length) {
-        ref
-            .read(userContentStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx);
+      if (userOldLength == ref.read(myContentStateProvider).list.length) {
+        ref.read(myContentStateProvider.notifier).loadMorePost(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+              memberIdx: ref.read(userModelProvider)!.idx,
+            );
       }
     }
   }
@@ -95,10 +99,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
     if (tagContentController.position.pixels >
         tagContentController.position.maxScrollExtent -
             MediaQuery.of(context).size.height) {
-      if (userOldLength == ref.read(tagContentStateProvider).list.length) {
-        ref
-            .read(tagContentStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx);
+      if (userOldLength == ref.read(myTagContentStateProvider).list.length) {
+        ref.read(myTagContentStateProvider.notifier).loadMorePost(
+            ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -247,7 +250,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
   Widget _firstTabBody() {
     return Consumer(
       builder: (ctx, ref, child) {
-        final myContentState = ref.watch(userContentStateProvider);
+        final myContentState = ref.watch(myContentStateProvider);
         final isLoadMoreError = myContentState.isLoadMoreError;
         final isLoadMoreDone = myContentState.isLoadMoreDone;
         final isLoading = myContentState.isLoading;
@@ -257,7 +260,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
 
         return RefreshIndicator(
           onRefresh: () {
-            return ref.read(userContentStateProvider.notifier).refresh(
+            return ref.read(myContentStateProvider.notifier).refresh(
+                  ref.read(userModelProvider)!.idx,
                   ref.read(userModelProvider)!.idx,
                 );
           },
@@ -284,7 +288,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 margin: const EdgeInsets.all(10.0),
                 child: GestureDetector(
                   onTap: () {
-                    context.go("/home/myPage/detail/왕티즈왕왕/게시물");
+                    context.go(
+                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}");
                   },
                   child: Center(
                     child: Stack(
@@ -294,7 +299,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(12)),
                             child: Image.network(
-                              "${lists[index].imgUrl}",
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -346,11 +351,12 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                         final contentLikeUserListContentState =
                                             ref.watch(
                                                 contentLikeUserListStateProvider);
-                                        final lists =
+                                        final contentLikeUserList =
                                             contentLikeUserListContentState
                                                 .list;
 
-                                        commentOldLength = lists.length ?? 0;
+                                        commentOldLength =
+                                            contentLikeUserList.length ?? 0;
                                         return SizedBox(
                                           height: 500.h,
                                           child: Stack(
@@ -374,27 +380,42 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                     child: ListView.builder(
                                                       controller:
                                                           commentController,
-                                                      itemCount: lists.length,
+                                                      itemCount:
+                                                          contentLikeUserList
+                                                              .length,
                                                       padding: EdgeInsets.only(
                                                           bottom: 80.h),
-                                                      itemBuilder:
-                                                          (BuildContext context,
-                                                              int index) {
+                                                      itemBuilder: (BuildContext
+                                                              context,
+                                                          int commentIndex) {
                                                         return FavoriteItemWidget(
-                                                          profileImage: lists[
-                                                                  index]
-                                                              .profileImgUrl,
+                                                          profileImage:
+                                                              contentLikeUserList[
+                                                                      commentIndex]
+                                                                  .profileImgUrl,
                                                           userName:
-                                                              lists[index].nick,
-                                                          content: lists[index]
-                                                              .intro,
-                                                          isSpecialUser: lists[
-                                                                      index]
-                                                                  .isBadge ==
+                                                              contentLikeUserList[
+                                                                      commentIndex]
+                                                                  .nick!,
+                                                          content:
+                                                              contentLikeUserList[
+                                                                      commentIndex]
+                                                                  .intro!,
+                                                          isSpecialUser:
+                                                              contentLikeUserList[
+                                                                          commentIndex]
+                                                                      .isBadge ==
+                                                                  1,
+                                                          isFollow: contentLikeUserList[
+                                                                      commentIndex]
+                                                                  .followState ==
                                                               0,
-                                                          isFollow: lists[index]
-                                                                  .isFollow ==
-                                                              0,
+                                                          followerIdx:
+                                                              contentLikeUserList[
+                                                                      commentIndex]
+                                                                  .memberIdx!,
+                                                          contentsIdx:
+                                                              lists[index].idx,
                                                         );
                                                       },
                                                     ),
@@ -478,6 +499,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                                     context,
                                                                 int index) {
                                                           return CommentDetailItemWidget(
+                                                            parentIdx:
+                                                                commentLists[
+                                                                        index]
+                                                                    .parentIdx,
                                                             commentIdx:
                                                                 commentLists[
                                                                         index]
@@ -526,7 +551,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                   bottom: 0,
                                                   child: CommentCustomTextField(
                                                     contentIdx:
-                                                        lists[index].idx,
+                                                        lists[index].idx!,
                                                   ),
                                                 ),
                                               ],
@@ -585,7 +610,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
   Widget _secondTabBody() {
     return Consumer(
       builder: (ctx, ref, child) {
-        final tagContentState = ref.watch(tagContentStateProvider);
+        final tagContentState = ref.watch(myTagContentStateProvider);
         final isLoadMoreError = tagContentState.isLoadMoreError;
         final isLoadMoreDone = tagContentState.isLoadMoreDone;
         final isLoading = tagContentState.isLoading;
@@ -595,7 +620,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
 
         return RefreshIndicator(
           onRefresh: () {
-            return ref.read(tagContentStateProvider.notifier).refresh(
+            return ref.read(myTagContentStateProvider.notifier).refresh(
+                  ref.read(userModelProvider)!.idx,
                   ref.read(userModelProvider)!.idx,
                 );
           },
@@ -622,15 +648,20 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 margin: const EdgeInsets.all(10.0),
                 child: GestureDetector(
                   onTap: () {
-                    context.go("/home/myPage/detail/왕티즈왕왕/태그됨");
+                    context.go(
+                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}");
                   },
                   child: Center(
                     child: Stack(
                       children: [
                         Positioned.fill(
-                          child: Image.network(
-                            "${lists[index].imgUrl}",
-                            fit: BoxFit.cover,
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                            child: Image.network(
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         Positioned(
@@ -678,7 +709,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
               child: WidgetMask(
                 blendMode: BlendMode.srcATop,
                 childSaveLayer: true,
-                mask: data.profileImgUrl == null
+                mask: data.profileImgUrl == null || data.profileImgUrl == ""
                     ? Center(
                         child: Image.asset(
                           'assets/image/feed/image/sample_image3.png',
@@ -863,7 +894,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                           width: 6.w,
                         ),
                         Text(
-                          "${ref.watch(userContentStateProvider).totalCount}",
+                          "${ref.watch(myContentStateProvider).totalCount}",
                           style: kBadge10MediumStyle.copyWith(
                               color: kTextBodyColor),
                         ),
@@ -882,7 +913,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                           width: 6.w,
                         ),
                         Text(
-                          "${ref.watch(tagContentStateProvider).totalCount}",
+                          "${ref.watch(myTagContentStateProvider).totalCount}",
                           style: kBadge10MediumStyle.copyWith(
                               color: kTextBodyColor),
                         ),

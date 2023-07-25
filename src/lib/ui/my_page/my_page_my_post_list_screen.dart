@@ -231,7 +231,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
 
                   return GestureDetector(
                     onTap: () {
-                      context.go("/home/myPage/myPost/myPostDetail/일상글 게시물");
+                      context.go(
+                          "/home/myPage/myPost/myPostDetail/일상글 게시물/${ref.read(userModelProvider)!.idx}");
                     },
                     child: Stack(
                       children: [
@@ -246,7 +247,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                                     : BorderRadius.circular(0),
                             image: DecorationImage(
                                 image: NetworkImage(
-                                    "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}"),
+                                    "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}"),
                                 fit: BoxFit.cover),
                           ),
                         ),
@@ -743,7 +744,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                   }
                   return GestureDetector(
                     onTap: () {
-                      context.go("/home/myPage/myPost/myPostDetail/저장한 게시물");
+                      context.go(
+                          "/home/myPage/myPost/myPostDetail/저장한 게시물/${ref.read(userModelProvider)!.idx}");
                     },
                     child: Stack(
                       children: [

@@ -51,7 +51,7 @@ class FollowingItemWidget extends ConsumerWidget {
                   padding: EdgeInsets.only(
                     right: 10.w,
                   ),
-                  child: profileImage == null
+                  child: profileImage == null || profileImage == ""
                       ? WidgetMask(
                           blendMode: BlendMode.srcATop,
                           childSaveLayer: true,
@@ -72,7 +72,7 @@ class FollowingItemWidget extends ConsumerWidget {
                           childSaveLayer: true,
                           mask: Center(
                             child: Image.asset(
-                              profileImage!,
+                              "https://dev-imgs.devlabs.co.kr${profileImage!}",
                               height: 32.h,
                               fit: BoxFit.fill,
                             ),

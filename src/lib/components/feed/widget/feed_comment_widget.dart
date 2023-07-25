@@ -27,7 +27,7 @@ class FeedCommentWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          profileImage == null
+          profileImage == null || profileImage == ""
               ? WidgetMask(
                   blendMode: BlendMode.srcATop,
                   childSaveLayer: true,
@@ -47,7 +47,7 @@ class FeedCommentWidget extends StatelessWidget {
                   blendMode: BlendMode.srcATop,
                   childSaveLayer: true,
                   mask: Center(
-                    child: Image.asset(
+                    child: Image.network(
                       profileImage!,
                       height: 30.h,
                       fit: BoxFit.fill,

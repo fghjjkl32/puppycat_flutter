@@ -9,8 +9,9 @@ abstract class UserInformationService {
   factory UserInformationService(Dio dio, {String baseUrl}) =
       _UserInformationService;
 
-  @GET('/member/info/{memberIdx}')
+  @GET('/member/info/{memberIdx}?loginMemberIdx={loginMemberIdx}')
   Future<UserInformationResponseModel?> getUserInformation(
+    @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
   );
 }
