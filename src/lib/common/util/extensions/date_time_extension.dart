@@ -30,8 +30,20 @@ extension DateTimeExtension on DateTime {
   /// Checks if two DateTimes are close enough to belong to the same
   /// environment.
   bool sameEnvironment(DateTime prevTime) {
-    return millisecondsSinceEpoch - prevTime.millisecondsSinceEpoch <
-        1000 * 60 * minutesBetweenEnvironments;
+    return millisecondsSinceEpoch - prevTime.millisecondsSinceEpoch < 1000 * 60 * minutesBetweenEnvironments;
+  }
+
+  bool sameOneMinute(DateTime prevTime) {
+    // DateTime prevTime = DateTime(2023, 7, 16, 00, 01); // 00:01 on 2023-07-16
+
+    Duration difference = prevTime.difference(this);
+
+    // print('difference.inMinutes.abs() ${difference.inMinutes.abs()} / $this');
+    if (difference.inMinutes.abs() >= 1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /// Returns a simple time String.
@@ -44,6 +56,12 @@ extension DateTimeExtension on DateTime {
     }
   }
 
+  /// Returns a simple time String.
+  /// TODO: Add localization
+  String timeOfDay() {
+    return '${hour > 11 ? "pm" : "am"} ${_z(hour % 12 == 0 ? 12 : hour % 12)}:${_z(minute)}'.toUpperCase();
+  }
+
   /// Returns [localizedTimeOfDay()] if the ChatTime is today, the name of the week
   /// day if the ChatTime is this week and a date string else.
   String localizedTimeShort(BuildContext context) {
@@ -53,16 +71,12 @@ extension DateTimeExtension on DateTime {
 
     final sameDay = sameYear && now.month == month && now.day == day;
 
-    final sameWeek = sameYear &&
-        !sameDay &&
-        now.millisecondsSinceEpoch - millisecondsSinceEpoch <
-            1000 * 60 * 60 * 24 * 7;
+    final sameWeek = sameYear && !sameDay && now.millisecondsSinceEpoch - millisecondsSinceEpoch < 1000 * 60 * 60 * 24 * 7;
 
     if (sameDay) {
       return localizedTimeOfDay(context);
     } else if (sameWeek) {
-      return DateFormat.EEEE(Localizations.localeOf(context).languageCode)
-          .format(this);
+      return DateFormat.EEEE(Localizations.localeOf(context).languageCode).format(this);
     } else if (sameYear) {
       return '${month.toString().padLeft(2, '0')}--${day.toString().padLeft(2, '0')}';
       // return L10n.of(context)!.dateWithoutYear(
@@ -93,13 +107,13 @@ extension DateTimeExtension on DateTime {
     int seconds = difference.inSeconds.abs();
 
     if (sameDay) {
-      if(hours > 0) {
+      if (hours > 0) {
         return '$hours${'메시지.시간 전'.tr()}';
       } else {
-        if(minutes > 0) {
+        if (minutes > 0) {
           return '$minutes${'메시지.분 전'.tr()}';
         } else {
-          if(seconds > 0) {
+          if (seconds > 0) {
             return '$seconds${'메시지.초 전'.tr()}';
           } else {
             return '메시지.방금'.tr();
@@ -107,7 +121,7 @@ extension DateTimeExtension on DateTime {
         }
       }
     } else {
-      if(days > 30) {
+      if (days > 30) {
         return '${year.toString()}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
       } else {
         return '$days${'메시지.일 전'.tr()}';

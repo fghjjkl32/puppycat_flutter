@@ -20,15 +20,24 @@ ChatMessageModel _$ChatMessageModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ChatMessageModel {
+  int get idx => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
   bool get isMine => throw _privateConstructorUsedError;
   String get userID => throw _privateConstructorUsedError;
+  String get nick => throw _privateConstructorUsedError;
   String get avatarUrl => throw _privateConstructorUsedError;
   String get msg => throw _privateConstructorUsedError;
   String get dateTime => throw _privateConstructorUsedError;
   bool get isEdited => throw _privateConstructorUsedError;
   int get reaction => throw _privateConstructorUsedError;
+  bool get hasReaction => throw _privateConstructorUsedError;
   bool get isReply => throw _privateConstructorUsedError;
+  String? get replyTargetNick => throw _privateConstructorUsedError;
+  String? get replyTargetMsg => throw _privateConstructorUsedError;
   bool get isRead => throw _privateConstructorUsedError;
+  bool get isConsecutively => throw _privateConstructorUsedError;
+  List<String> get reactions => throw _privateConstructorUsedError;
+  bool get isViewTime => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,15 +52,24 @@ abstract class $ChatMessageModelCopyWith<$Res> {
       _$ChatMessageModelCopyWithImpl<$Res, ChatMessageModel>;
   @useResult
   $Res call(
-      {bool isMine,
+      {int idx,
+      String id,
+      bool isMine,
       String userID,
+      String nick,
       String avatarUrl,
       String msg,
       String dateTime,
       bool isEdited,
       int reaction,
+      bool hasReaction,
       bool isReply,
-      bool isRead});
+      String? replyTargetNick,
+      String? replyTargetMsg,
+      bool isRead,
+      bool isConsecutively,
+      List<String> reactions,
+      bool isViewTime});
 }
 
 /// @nodoc
@@ -67,17 +85,34 @@ class _$ChatMessageModelCopyWithImpl<$Res, $Val extends ChatMessageModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? idx = null,
+    Object? id = null,
     Object? isMine = null,
     Object? userID = null,
+    Object? nick = null,
     Object? avatarUrl = null,
     Object? msg = null,
     Object? dateTime = null,
     Object? isEdited = null,
     Object? reaction = null,
+    Object? hasReaction = null,
     Object? isReply = null,
+    Object? replyTargetNick = freezed,
+    Object? replyTargetMsg = freezed,
     Object? isRead = null,
+    Object? isConsecutively = null,
+    Object? reactions = null,
+    Object? isViewTime = null,
   }) {
     return _then(_value.copyWith(
+      idx: null == idx
+          ? _value.idx
+          : idx // ignore: cast_nullable_to_non_nullable
+              as int,
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       isMine: null == isMine
           ? _value.isMine
           : isMine // ignore: cast_nullable_to_non_nullable
@@ -85,6 +120,10 @@ class _$ChatMessageModelCopyWithImpl<$Res, $Val extends ChatMessageModel>
       userID: null == userID
           ? _value.userID
           : userID // ignore: cast_nullable_to_non_nullable
+              as String,
+      nick: null == nick
+          ? _value.nick
+          : nick // ignore: cast_nullable_to_non_nullable
               as String,
       avatarUrl: null == avatarUrl
           ? _value.avatarUrl
@@ -106,13 +145,37 @@ class _$ChatMessageModelCopyWithImpl<$Res, $Val extends ChatMessageModel>
           ? _value.reaction
           : reaction // ignore: cast_nullable_to_non_nullable
               as int,
+      hasReaction: null == hasReaction
+          ? _value.hasReaction
+          : hasReaction // ignore: cast_nullable_to_non_nullable
+              as bool,
       isReply: null == isReply
           ? _value.isReply
           : isReply // ignore: cast_nullable_to_non_nullable
               as bool,
+      replyTargetNick: freezed == replyTargetNick
+          ? _value.replyTargetNick
+          : replyTargetNick // ignore: cast_nullable_to_non_nullable
+              as String?,
+      replyTargetMsg: freezed == replyTargetMsg
+          ? _value.replyTargetMsg
+          : replyTargetMsg // ignore: cast_nullable_to_non_nullable
+              as String?,
       isRead: null == isRead
           ? _value.isRead
           : isRead // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isConsecutively: null == isConsecutively
+          ? _value.isConsecutively
+          : isConsecutively // ignore: cast_nullable_to_non_nullable
+              as bool,
+      reactions: null == reactions
+          ? _value.reactions
+          : reactions // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      isViewTime: null == isViewTime
+          ? _value.isViewTime
+          : isViewTime // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -127,15 +190,24 @@ abstract class _$$_ChatMessageModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {bool isMine,
+      {int idx,
+      String id,
+      bool isMine,
       String userID,
+      String nick,
       String avatarUrl,
       String msg,
       String dateTime,
       bool isEdited,
       int reaction,
+      bool hasReaction,
       bool isReply,
-      bool isRead});
+      String? replyTargetNick,
+      String? replyTargetMsg,
+      bool isRead,
+      bool isConsecutively,
+      List<String> reactions,
+      bool isViewTime});
 }
 
 /// @nodoc
@@ -149,17 +221,34 @@ class __$$_ChatMessageModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? idx = null,
+    Object? id = null,
     Object? isMine = null,
     Object? userID = null,
+    Object? nick = null,
     Object? avatarUrl = null,
     Object? msg = null,
     Object? dateTime = null,
     Object? isEdited = null,
     Object? reaction = null,
+    Object? hasReaction = null,
     Object? isReply = null,
+    Object? replyTargetNick = freezed,
+    Object? replyTargetMsg = freezed,
     Object? isRead = null,
+    Object? isConsecutively = null,
+    Object? reactions = null,
+    Object? isViewTime = null,
   }) {
     return _then(_$_ChatMessageModel(
+      idx: null == idx
+          ? _value.idx
+          : idx // ignore: cast_nullable_to_non_nullable
+              as int,
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
       isMine: null == isMine
           ? _value.isMine
           : isMine // ignore: cast_nullable_to_non_nullable
@@ -167,6 +256,10 @@ class __$$_ChatMessageModelCopyWithImpl<$Res>
       userID: null == userID
           ? _value.userID
           : userID // ignore: cast_nullable_to_non_nullable
+              as String,
+      nick: null == nick
+          ? _value.nick
+          : nick // ignore: cast_nullable_to_non_nullable
               as String,
       avatarUrl: null == avatarUrl
           ? _value.avatarUrl
@@ -188,13 +281,37 @@ class __$$_ChatMessageModelCopyWithImpl<$Res>
           ? _value.reaction
           : reaction // ignore: cast_nullable_to_non_nullable
               as int,
+      hasReaction: null == hasReaction
+          ? _value.hasReaction
+          : hasReaction // ignore: cast_nullable_to_non_nullable
+              as bool,
       isReply: null == isReply
           ? _value.isReply
           : isReply // ignore: cast_nullable_to_non_nullable
               as bool,
+      replyTargetNick: freezed == replyTargetNick
+          ? _value.replyTargetNick
+          : replyTargetNick // ignore: cast_nullable_to_non_nullable
+              as String?,
+      replyTargetMsg: freezed == replyTargetMsg
+          ? _value.replyTargetMsg
+          : replyTargetMsg // ignore: cast_nullable_to_non_nullable
+              as String?,
       isRead: null == isRead
           ? _value.isRead
           : isRead // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isConsecutively: null == isConsecutively
+          ? _value.isConsecutively
+          : isConsecutively // ignore: cast_nullable_to_non_nullable
+              as bool,
+      reactions: null == reactions
+          ? _value._reactions
+          : reactions // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      isViewTime: null == isViewTime
+          ? _value.isViewTime
+          : isViewTime // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
@@ -204,23 +321,39 @@ class __$$_ChatMessageModelCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ChatMessageModel implements _ChatMessageModel {
   _$_ChatMessageModel(
-      {required this.isMine,
+      {required this.idx,
+      required this.id,
+      required this.isMine,
       required this.userID,
+      required this.nick,
       required this.avatarUrl,
       required this.msg,
       required this.dateTime,
       required this.isEdited,
       required this.reaction,
+      required this.hasReaction,
       required this.isReply,
-      required this.isRead});
+      this.replyTargetNick,
+      this.replyTargetMsg,
+      required this.isRead,
+      required this.isConsecutively,
+      final List<String> reactions = const [],
+      required this.isViewTime})
+      : _reactions = reactions;
 
   factory _$_ChatMessageModel.fromJson(Map<String, dynamic> json) =>
       _$$_ChatMessageModelFromJson(json);
 
   @override
+  final int idx;
+  @override
+  final String id;
+  @override
   final bool isMine;
   @override
   final String userID;
+  @override
+  final String nick;
   @override
   final String avatarUrl;
   @override
@@ -232,13 +365,32 @@ class _$_ChatMessageModel implements _ChatMessageModel {
   @override
   final int reaction;
   @override
+  final bool hasReaction;
+  @override
   final bool isReply;
   @override
+  final String? replyTargetNick;
+  @override
+  final String? replyTargetMsg;
+  @override
   final bool isRead;
+  @override
+  final bool isConsecutively;
+  final List<String> _reactions;
+  @override
+  @JsonKey()
+  List<String> get reactions {
+    if (_reactions is EqualUnmodifiableListView) return _reactions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_reactions);
+  }
+
+  @override
+  final bool isViewTime;
 
   @override
   String toString() {
-    return 'ChatMessageModel(isMine: $isMine, userID: $userID, avatarUrl: $avatarUrl, msg: $msg, dateTime: $dateTime, isEdited: $isEdited, reaction: $reaction, isReply: $isReply, isRead: $isRead)';
+    return 'ChatMessageModel(idx: $idx, id: $id, isMine: $isMine, userID: $userID, nick: $nick, avatarUrl: $avatarUrl, msg: $msg, dateTime: $dateTime, isEdited: $isEdited, reaction: $reaction, hasReaction: $hasReaction, isReply: $isReply, replyTargetNick: $replyTargetNick, replyTargetMsg: $replyTargetMsg, isRead: $isRead, isConsecutively: $isConsecutively, reactions: $reactions, isViewTime: $isViewTime)';
   }
 
   @override
@@ -246,8 +398,11 @@ class _$_ChatMessageModel implements _ChatMessageModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ChatMessageModel &&
+            (identical(other.idx, idx) || other.idx == idx) &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.isMine, isMine) || other.isMine == isMine) &&
             (identical(other.userID, userID) || other.userID == userID) &&
+            (identical(other.nick, nick) || other.nick == nick) &&
             (identical(other.avatarUrl, avatarUrl) ||
                 other.avatarUrl == avatarUrl) &&
             (identical(other.msg, msg) || other.msg == msg) &&
@@ -257,14 +412,44 @@ class _$_ChatMessageModel implements _ChatMessageModel {
                 other.isEdited == isEdited) &&
             (identical(other.reaction, reaction) ||
                 other.reaction == reaction) &&
+            (identical(other.hasReaction, hasReaction) ||
+                other.hasReaction == hasReaction) &&
             (identical(other.isReply, isReply) || other.isReply == isReply) &&
-            (identical(other.isRead, isRead) || other.isRead == isRead));
+            (identical(other.replyTargetNick, replyTargetNick) ||
+                other.replyTargetNick == replyTargetNick) &&
+            (identical(other.replyTargetMsg, replyTargetMsg) ||
+                other.replyTargetMsg == replyTargetMsg) &&
+            (identical(other.isRead, isRead) || other.isRead == isRead) &&
+            (identical(other.isConsecutively, isConsecutively) ||
+                other.isConsecutively == isConsecutively) &&
+            const DeepCollectionEquality()
+                .equals(other._reactions, _reactions) &&
+            (identical(other.isViewTime, isViewTime) ||
+                other.isViewTime == isViewTime));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, isMine, userID, avatarUrl, msg,
-      dateTime, isEdited, reaction, isReply, isRead);
+  int get hashCode => Object.hash(
+      runtimeType,
+      idx,
+      id,
+      isMine,
+      userID,
+      nick,
+      avatarUrl,
+      msg,
+      dateTime,
+      isEdited,
+      reaction,
+      hasReaction,
+      isReply,
+      replyTargetNick,
+      replyTargetMsg,
+      isRead,
+      isConsecutively,
+      const DeepCollectionEquality().hash(_reactions),
+      isViewTime);
 
   @JsonKey(ignore: true)
   @override
@@ -282,23 +467,38 @@ class _$_ChatMessageModel implements _ChatMessageModel {
 
 abstract class _ChatMessageModel implements ChatMessageModel {
   factory _ChatMessageModel(
-      {required final bool isMine,
+      {required final int idx,
+      required final String id,
+      required final bool isMine,
       required final String userID,
+      required final String nick,
       required final String avatarUrl,
       required final String msg,
       required final String dateTime,
       required final bool isEdited,
       required final int reaction,
+      required final bool hasReaction,
       required final bool isReply,
-      required final bool isRead}) = _$_ChatMessageModel;
+      final String? replyTargetNick,
+      final String? replyTargetMsg,
+      required final bool isRead,
+      required final bool isConsecutively,
+      final List<String> reactions,
+      required final bool isViewTime}) = _$_ChatMessageModel;
 
   factory _ChatMessageModel.fromJson(Map<String, dynamic> json) =
       _$_ChatMessageModel.fromJson;
 
   @override
+  int get idx;
+  @override
+  String get id;
+  @override
   bool get isMine;
   @override
   String get userID;
+  @override
+  String get nick;
   @override
   String get avatarUrl;
   @override
@@ -310,9 +510,21 @@ abstract class _ChatMessageModel implements ChatMessageModel {
   @override
   int get reaction;
   @override
+  bool get hasReaction;
+  @override
   bool get isReply;
   @override
+  String? get replyTargetNick;
+  @override
+  String? get replyTargetMsg;
+  @override
   bool get isRead;
+  @override
+  bool get isConsecutively;
+  @override
+  List<String> get reactions;
+  @override
+  bool get isViewTime;
   @override
   @JsonKey(ignore: true)
   _$$_ChatMessageModelCopyWith<_$_ChatMessageModel> get copyWith =>

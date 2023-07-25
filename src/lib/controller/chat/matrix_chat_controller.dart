@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:matrix/matrix.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/date_time_extension.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/room_status_extension.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/abstract_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_room_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_user_model.dart';
@@ -20,13 +23,22 @@ class MatrixChatClientController implements AbstractChatController {
   }
 
   void init(String clientName, String homeServer) async {
-    _chatClient = Client(clientName);
+    _chatClient = Client(
+      clientName,
+      databaseBuilder: (_) async {
+        final dir = await getApplicationSupportDirectory();
+        final db = HiveCollectionsDatabase('matrix_example_chat', dir.path);
+        await db.open();
+        return db;
+      },
+    );
     await client.checkHomeserver(Uri.parse(homeServer));
   }
 
   @override
   Future<LoginResponse> login(String id, String pw, [LoginType type = LoginType.mLoginPassword]) async {
     try {
+      print('chat login $id / $pw');
       var result = await _chatClient.login(
         type,
         identifier: AuthenticationUserIdentifier(user: id),
@@ -101,7 +113,9 @@ class MatrixChatClientController implements AbstractChatController {
     String subStringExtra;
     if (extra.length > 5) {
       if (extra.contains('-')) {
-        subStringExtra = extra.split('-').first;
+        subStringExtra = extra
+            .split('-')
+            .first;
       } else {
         subStringExtra = extra.substring(0, 5);
       }
@@ -139,24 +153,31 @@ class MatrixChatClientController implements AbstractChatController {
   List<ChatRoomModel> getRoomList() {
     return _chatClient.rooms
         .map(
-          (e) => ChatRoomModel(
+            (e) {
+          Event? lastEvent = e.lastMessageEvent ?? e.lastEvent;
+          String lastMsg = lastEvent!.redacted ? '메시지.삭제된 메시지 입니다'.tr() : lastEvent!.calcUnlocalizedBody(
+            hideReply: true,
+            hideEdit: true,
+            plaintextBody: true,
+            removeMarkdown: true,
+          );
+
+          // print('${e.getLocalizedDisplayname()} / _getReadEventId(e) ${_getReadEventId(e)} / ${e.fullyRead } / ${lastEvent.eventId}');
+
+          return ChatRoomModel(
             id: e.id,
             avatarUrl: e.avatar?.toString(),
             nick: e.getLocalizedDisplayname(),
-            lastMsg: e.lastEvent!.calcUnlocalizedBody(
-              hideReply: true,
-              hideEdit: true,
-              plaintextBody: true,
-              removeMarkdown: true,
-            ),
+            lastMsg: lastMsg,
+            isLastMsgMine: lastEvent.senderId == client.userID,
             newCount: e.notificationCount,
-            isRead: !e.isUnread,
+            isRead: e.fullyRead == lastEvent.eventId || e.fullyRead == _getReadEventId(e) ||  _getReadEventId(e) ==  lastEvent.eventId,
             isPin: e.membership == Membership.invite ? false : e.isFavourite,
             msgDateTime: e.timeCreated.localizedTimeDayDiff(),
             isMine: e.lastEvent?.senderId == client.userID,
             isJoined: e.membership == Membership.join,
-          ),
-        )
+          );
+        })
         .toList();
   }
 
@@ -165,24 +186,29 @@ class MatrixChatClientController implements AbstractChatController {
     StreamController<List<ChatRoomModel>> controller = StreamController();
 
     _chatClient.onSync.stream.listen((event) {
-      print('aaa');
       controller.add(_chatClient.rooms.map((e) {
-        if(e.membership == Membership.invite) {
+        if (e.membership == Membership.invite) {
           e.join();
         }
+// print('update');
+        // print('_getReadEventId(e) ${_getReadEventId(e)}');
+        Event? lastEvent = e.lastMessageEvent ?? e.lastEvent;
+        String lastMsg = lastEvent!.redacted ? '메시지.삭제된 메시지 입니다'.tr() : lastEvent!.calcUnlocalizedBody(
+          hideReply: true,
+          hideEdit: true,
+          plaintextBody: true,
+          removeMarkdown: true,
+        );
+
 
         return ChatRoomModel(
           id: e.id,
           avatarUrl: e.avatar?.toString(),
           nick: e.getLocalizedDisplayname(),
-          lastMsg: e.lastEvent!.calcUnlocalizedBody(
-            hideReply: true,
-            hideEdit: true,
-            plaintextBody: true,
-            removeMarkdown: true,
-          ),
+          lastMsg: lastMsg,
+          isLastMsgMine: lastEvent.senderId == client.userID,
           newCount: e.notificationCount,
-          isRead: !e.isUnread,
+          isRead: e.fullyRead == lastEvent.eventId || e.fullyRead == _getReadEventId(e) ||  _getReadEventId(e) ==  lastEvent.eventId,
           isPin: e.membership == Membership.invite ? false : e.isFavourite,
           msgDateTime: e.timeCreated.localizedTimeDayDiff(),
           isMine: e.lastEvent?.senderId == client.userID,
@@ -212,5 +238,24 @@ class MatrixChatClientController implements AbstractChatController {
   Future<bool> send(String roomId, String msg) async {
     var result = await _chatClient.getRoomById(roomId)?.sendTextEvent(msg.trim());
     return result == null ? false : true;
+  }
+
+  String? _getReadEventId(Room room) {
+    if (room.ephemerals == null || !room.ephemerals!.containsKey('m.receipt')) {
+      return null;
+    }
+
+    Map<String, Object?> receipts = room.ephemerals['m.receipt']!.content;
+    String? readEventId;
+    // receipts.forEach((key, value) {
+    for (MapEntry e in receipts.entries) {
+      Map<String, dynamic> contentMap = e.value as Map<String, dynamic>;
+      if (contentMap.containsKey('m.read')) {
+        readEventId = e.key;
+        break;
+      }
+    }
+
+    return readEventId;
   }
 }

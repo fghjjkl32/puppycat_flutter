@@ -42,8 +42,8 @@ class ChatLoginState extends _$ChatLoginState {
     }
 
     var chatController = ref.read(chatControllerProvider('matrix'));
-    String id = 'test2'; //userInfoModel.chatUserModel!.chatMemberId ?? '';
-    String pw = 'test2'; //userInfoModel.userModel!.password ?? '';
+    String id = 'test1'; //userInfoModel.chatUserModel!.chatMemberId ?? '';
+    String pw = 'test1'; //userInfoModel.userModel!.password ?? '';
     String appKey = userInfoModel.userModel!.appKey ?? '';
 
     if(id.isEmpty || pw.isEmpty) {
@@ -61,7 +61,7 @@ class ChatLoginState extends _$ChatLoginState {
 
     try {
       // LoginResponse result = await chatController.login(id, chatController.createPassword(pw));
-      LoginResponse result = await chatController.login(id, pw);
+      LoginResponse result = await chatController.controller.login(id, pw);
       ChatUserModel chatUserModel = ChatUserModel(
         chatMemberId: result.userId,
         accessToken: result.accessToken,

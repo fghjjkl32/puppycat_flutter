@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -12,7 +14,6 @@ class DioWrap {
   static Dio getDioWithCookie() {
     // final dio = Dio();
     CookieJar cookieJar = GetIt.I<CookieJar>();
-
     if (dio.interceptors.whereType<CookieManager>().isEmpty) {
       dio.interceptors.add(CookieManager(cookieJar));
       dio.interceptors.add(QueuedInterceptorsWrapper());
