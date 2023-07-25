@@ -6,7 +6,7 @@ part of 'chat_login_state_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chatLoginStateHash() => r'96aa55397f2fab1490ced913d26b5921e9c0f416';
+String _$chatLoginStateHash() => r'babba2d2d7379838e8fc66d957bb08c79b5ea351';
 
 /// See also [ChatLoginState].
 @ProviderFor(ChatLoginState)
