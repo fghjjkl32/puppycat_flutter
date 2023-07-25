@@ -42,8 +42,8 @@ class ChatLoginState extends _$ChatLoginState {
     }
 
     var chatController = ref.read(chatControllerProvider('matrix'));
-    String id = 'test2'; //userInfoModel.chatUserModel!.chatMemberId ?? '';
-    String pw = 'test2'; //userInfoModel.userModel!.password ?? '';
+    String id = 'test1'; //userInfoModel.chatUserModel!.chatMemberId ?? '';
+    String pw = 'test1'; //userInfoModel.userModel!.password ?? '';
     String appKey = userInfoModel.userModel!.appKey ?? '';
 
     if(id.isEmpty || pw.isEmpty) {

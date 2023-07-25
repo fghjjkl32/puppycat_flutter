@@ -38,6 +38,7 @@ class MatrixChatClientController implements AbstractChatController {
   @override
   Future<LoginResponse> login(String id, String pw, [LoginType type = LoginType.mLoginPassword]) async {
     try {
+      print('chat login $id / $pw');
       var result = await _chatClient.login(
         type,
         identifier: AuthenticationUserIdentifier(user: id),

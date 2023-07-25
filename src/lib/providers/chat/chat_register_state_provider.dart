@@ -21,8 +21,10 @@ enum ChatControllerStatus {
 //   return ref.read(accountRepositoryProvider).restoreAccount(restoreInfo.$1, restoreInfo.$2);
 // });
 
+
 final chatControllerProvider = StateProvider.family<ChatController, String>((ref, provider) {
   // ChatController chatController = ChatController(provider: provider);
+
   return ChatController(provider: provider);
 });
 
