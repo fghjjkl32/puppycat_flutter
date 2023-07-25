@@ -16,6 +16,9 @@ class UserInformationItemModel with _$UserInformationItemModel {
     String? email,
     int? followerCnt,
     int? followCnt,
+    int? blockedState,
+    int? blockedMeState,
+    int? followState,
   }) = _UserInformationItemModel;
 
   factory UserInformationItemModel.fromJson(Map<String, dynamic> json) =>

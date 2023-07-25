@@ -11,6 +11,7 @@ _$_CommentHeaderState _$$_CommentHeaderStateFromJson(
     _$_CommentHeaderState(
       isReply: json['isReply'] as bool? ?? false,
       name: json['name'] as String? ?? "",
+      parentIdx: json['parentIdx'] as int? ?? null,
     );
 
 Map<String, dynamic> _$$_CommentHeaderStateToJson(
@@ -18,4 +19,5 @@ Map<String, dynamic> _$$_CommentHeaderStateToJson(
     <String, dynamic>{
       'isReply': instance.isReply,
       'name': instance.name,
+      'parentIdx': instance.parentIdx,
     };

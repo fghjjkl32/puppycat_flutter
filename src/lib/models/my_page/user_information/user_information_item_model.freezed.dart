@@ -31,6 +31,9 @@ mixin _$UserInformationItemModel {
   String? get email => throw _privateConstructorUsedError;
   int? get followerCnt => throw _privateConstructorUsedError;
   int? get followCnt => throw _privateConstructorUsedError;
+  int? get blockedState => throw _privateConstructorUsedError;
+  int? get blockedMeState => throw _privateConstructorUsedError;
+  int? get followState => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -54,7 +57,10 @@ abstract class $UserInformationItemModelCopyWith<$Res> {
       String? profileImgUrl,
       String? email,
       int? followerCnt,
-      int? followCnt});
+      int? followCnt,
+      int? blockedState,
+      int? blockedMeState,
+      int? followState});
 }
 
 /// @nodoc
@@ -81,6 +87,9 @@ class _$UserInformationItemModelCopyWithImpl<$Res,
     Object? email = freezed,
     Object? followerCnt = freezed,
     Object? followCnt = freezed,
+    Object? blockedState = freezed,
+    Object? blockedMeState = freezed,
+    Object? followState = freezed,
   }) {
     return _then(_value.copyWith(
       memberIdx: freezed == memberIdx
@@ -123,6 +132,18 @@ class _$UserInformationItemModelCopyWithImpl<$Res,
           ? _value.followCnt
           : followCnt // ignore: cast_nullable_to_non_nullable
               as int?,
+      blockedState: freezed == blockedState
+          ? _value.blockedState
+          : blockedState // ignore: cast_nullable_to_non_nullable
+              as int?,
+      blockedMeState: freezed == blockedMeState
+          ? _value.blockedMeState
+          : blockedMeState // ignore: cast_nullable_to_non_nullable
+              as int?,
+      followState: freezed == followState
+          ? _value.followState
+          : followState // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -146,7 +167,10 @@ abstract class _$$_UserInformationItemModelCopyWith<$Res>
       String? profileImgUrl,
       String? email,
       int? followerCnt,
-      int? followCnt});
+      int? followCnt,
+      int? blockedState,
+      int? blockedMeState,
+      int? followState});
 }
 
 /// @nodoc
@@ -171,6 +195,9 @@ class __$$_UserInformationItemModelCopyWithImpl<$Res>
     Object? email = freezed,
     Object? followerCnt = freezed,
     Object? followCnt = freezed,
+    Object? blockedState = freezed,
+    Object? blockedMeState = freezed,
+    Object? followState = freezed,
   }) {
     return _then(_$_UserInformationItemModel(
       memberIdx: freezed == memberIdx
@@ -213,6 +240,18 @@ class __$$_UserInformationItemModelCopyWithImpl<$Res>
           ? _value.followCnt
           : followCnt // ignore: cast_nullable_to_non_nullable
               as int?,
+      blockedState: freezed == blockedState
+          ? _value.blockedState
+          : blockedState // ignore: cast_nullable_to_non_nullable
+              as int?,
+      blockedMeState: freezed == blockedMeState
+          ? _value.blockedMeState
+          : blockedMeState // ignore: cast_nullable_to_non_nullable
+              as int?,
+      followState: freezed == followState
+          ? _value.followState
+          : followState // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -230,7 +269,10 @@ class _$_UserInformationItemModel implements _UserInformationItemModel {
       this.profileImgUrl,
       this.email,
       this.followerCnt,
-      this.followCnt});
+      this.followCnt,
+      this.blockedState,
+      this.blockedMeState,
+      this.followState});
 
   factory _$_UserInformationItemModel.fromJson(Map<String, dynamic> json) =>
       _$$_UserInformationItemModelFromJson(json);
@@ -255,10 +297,16 @@ class _$_UserInformationItemModel implements _UserInformationItemModel {
   final int? followerCnt;
   @override
   final int? followCnt;
+  @override
+  final int? blockedState;
+  @override
+  final int? blockedMeState;
+  @override
+  final int? followState;
 
   @override
   String toString() {
-    return 'UserInformationItemModel(memberIdx: $memberIdx, nick: $nick, simpleType: $simpleType, name: $name, phone: $phone, intro: $intro, profileImgUrl: $profileImgUrl, email: $email, followerCnt: $followerCnt, followCnt: $followCnt)';
+    return 'UserInformationItemModel(memberIdx: $memberIdx, nick: $nick, simpleType: $simpleType, name: $name, phone: $phone, intro: $intro, profileImgUrl: $profileImgUrl, email: $email, followerCnt: $followerCnt, followCnt: $followCnt, blockedState: $blockedState, blockedMeState: $blockedMeState, followState: $followState)';
   }
 
   @override
@@ -280,13 +328,32 @@ class _$_UserInformationItemModel implements _UserInformationItemModel {
             (identical(other.followerCnt, followerCnt) ||
                 other.followerCnt == followerCnt) &&
             (identical(other.followCnt, followCnt) ||
-                other.followCnt == followCnt));
+                other.followCnt == followCnt) &&
+            (identical(other.blockedState, blockedState) ||
+                other.blockedState == blockedState) &&
+            (identical(other.blockedMeState, blockedMeState) ||
+                other.blockedMeState == blockedMeState) &&
+            (identical(other.followState, followState) ||
+                other.followState == followState));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, memberIdx, nick, simpleType,
-      name, phone, intro, profileImgUrl, email, followerCnt, followCnt);
+  int get hashCode => Object.hash(
+      runtimeType,
+      memberIdx,
+      nick,
+      simpleType,
+      name,
+      phone,
+      intro,
+      profileImgUrl,
+      email,
+      followerCnt,
+      followCnt,
+      blockedState,
+      blockedMeState,
+      followState);
 
   @JsonKey(ignore: true)
   @override
@@ -314,7 +381,10 @@ abstract class _UserInformationItemModel implements UserInformationItemModel {
       final String? profileImgUrl,
       final String? email,
       final int? followerCnt,
-      final int? followCnt}) = _$_UserInformationItemModel;
+      final int? followCnt,
+      final int? blockedState,
+      final int? blockedMeState,
+      final int? followState}) = _$_UserInformationItemModel;
 
   factory _UserInformationItemModel.fromJson(Map<String, dynamic> json) =
       _$_UserInformationItemModel.fromJson;
@@ -339,6 +409,12 @@ abstract class _UserInformationItemModel implements UserInformationItemModel {
   int? get followerCnt;
   @override
   int? get followCnt;
+  @override
+  int? get blockedState;
+  @override
+  int? get blockedMeState;
+  @override
+  int? get followState;
   @override
   @JsonKey(ignore: true)
   _$$_UserInformationItemModelCopyWith<_$_UserInformationItemModel>

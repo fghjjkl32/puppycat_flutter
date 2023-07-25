@@ -22,7 +22,9 @@ class _UserInformationService implements UserInformationService {
 
   @override
   Future<UserInformationResponseModel?> getUserInformation(
-      int memberIdx) async {
+    int loginMemberIdx,
+    int memberIdx,
+  ) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -35,7 +37,7 @@ class _UserInformationService implements UserInformationService {
     )
             .compose(
               _dio.options,
-              '/member/info/${memberIdx}',
+              '/member/info/${memberIdx}?loginMemberIdx=${loginMemberIdx}',
               queryParameters: queryParameters,
               data: _data,
             )

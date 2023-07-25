@@ -1,25 +1,28 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/tag_contents/tag_contents_repository.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
+import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
 final tagContentStateProvider =
-    StateNotifierProvider<TagContentStateNotifier, ContentDataListModel>((ref) {
+    StateNotifierProvider<TagContentStateNotifier, FeedDataListModel>((ref) {
   return TagContentStateNotifier();
 });
 
-class TagContentStateNotifier extends StateNotifier<ContentDataListModel> {
-  TagContentStateNotifier() : super(const ContentDataListModel());
+class TagContentStateNotifier extends StateNotifier<FeedDataListModel> {
+  TagContentStateNotifier() : super(const FeedDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
-  initPosts([
+  initPosts(
+    loginMemberIdx,
     memberIdx,
     int? initPage,
-  ]) async {
+  ) async {
+    currentPage = 1;
+
     final page = initPage ?? state.page;
-    final lists = await TagContentsRepository()
-        .getTagContents(memberIdx: memberIdx, page: page);
+    final lists = await FeedRepository().getTagContents(
+        loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: page);
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
@@ -34,7 +37,7 @@ class TagContentStateNotifier extends StateNotifier<ContentDataListModel> {
     state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
   }
 
-  loadMorePost(memberIdx) async {
+  loadMorePost(loginMemberIdx, memberIdx) async {
     if (currentPage >= maxPages) {
       state = state.copyWith(isLoadMoreDone: true);
       return;
@@ -51,8 +54,10 @@ class TagContentStateNotifier extends StateNotifier<ContentDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await TagContentsRepository()
-        .getTagContents(memberIdx: memberIdx, page: state.page + 1);
+    final lists = await FeedRepository().getTagContents(
+        loginMemberIdx: loginMemberIdx,
+        memberIdx: memberIdx,
+        page: state.page + 1);
 
     if (lists == null) {
       state = state.copyWith(isLoadMoreError: true, isLoading: false);
@@ -72,8 +77,8 @@ class TagContentStateNotifier extends StateNotifier<ContentDataListModel> {
     }
   }
 
-  Future<void> refresh(memberIdx) async {
-    initPosts(memberIdx, 1);
+  Future<void> refresh(loginMemberIdx, memberIdx) async {
+    initPosts(loginMemberIdx, memberIdx, 1);
     currentPage = 1;
   }
 }

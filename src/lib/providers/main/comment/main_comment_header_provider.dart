@@ -9,11 +9,11 @@ final commentHeaderProvider =
 class CommentHeaderNotifier extends StateNotifier<CommentHeaderState> {
   CommentHeaderNotifier() : super(CommentHeaderState());
 
-  void addCommentHeader(name) {
-    state = state.copyWith(name: name, isReply: true);
+  void addCommentHeader(name, parentIdx) {
+    state = state.copyWith(name: name, isReply: true, parentIdx: parentIdx);
   }
 
   void resetCommentHeader() {
-    state = state.copyWith(name: "", isReply: false);
+    state = state.copyWith(name: "", isReply: false, parentIdx: null);
   }
 }

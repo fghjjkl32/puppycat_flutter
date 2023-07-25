@@ -7,9 +7,13 @@ class UserInformationRepository {
   final UserInformationService _userInformationService =
       UserInformationService(DioWrap.getDioWithCookie());
 
-  Future<UserInformationResponseModel> getUserInformation(int memberIdx) async {
+  Future<UserInformationResponseModel> getUserInformation(
+      int loginMemberIdx, int memberIdx) async {
     UserInformationResponseModel? userInformationResponseModel =
-        await _userInformationService.getUserInformation(memberIdx);
+        await _userInformationService.getUserInformation(
+      loginMemberIdx,
+      memberIdx,
+    );
 
     if (userInformationResponseModel == null) {
       throw "error";

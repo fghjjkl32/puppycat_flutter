@@ -4,14 +4,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -27,30 +33,39 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
   ScrollController scrollController = ScrollController();
   ScrollController userContentController = ScrollController();
   ScrollController tagContentController = ScrollController();
+  ScrollController commentController = ScrollController();
 
   late TabController tabController;
   Color appBarColor = Colors.transparent;
   int userOldLength = 0;
   int tagOldLength = 0;
+  int commentOldLength = 0;
 
   @override
   void initState() {
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
+
     userContentController.addListener(_userContentsScrollListener);
     tagContentController.addListener(_tagContentsScrollListener);
+    commentController.addListener(_commentScrollListener);
 
     tabController = TabController(
       initialIndex: 0,
       length: 2,
       vsync: this,
     );
+
     ref
-        .read(userContentStateProvider.notifier)
-        .initPosts(ref.read(userModelProvider)!.idx, 1);
-    ref
-        .read(tagContentStateProvider.notifier)
-        .initPosts(ref.read(userModelProvider)!.idx, 1);
+        .read(myInformationStateProvider.notifier)
+        .getInitUserInformation(ref.read(userModelProvider)!.idx);
+    ref.read(myContentStateProvider.notifier).initPosts(
+          loginMemberIdx: ref.read(userModelProvider)!.idx,
+          memberIdx: ref.read(userModelProvider)!.idx,
+          initPage: 1,
+        );
+    ref.read(myTagContentStateProvider.notifier).initPosts(
+        ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx, 1);
     super.initState();
   }
 
@@ -71,10 +86,11 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
     if (userContentController.position.pixels >
         userContentController.position.maxScrollExtent -
             MediaQuery.of(context).size.height) {
-      if (userOldLength == ref.read(userContentStateProvider).list.length) {
-        ref
-            .read(userContentStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx);
+      if (userOldLength == ref.read(myContentStateProvider).list.length) {
+        ref.read(myContentStateProvider.notifier).loadMorePost(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+              memberIdx: ref.read(userModelProvider)!.idx,
+            );
       }
     }
   }
@@ -83,10 +99,18 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
     if (tagContentController.position.pixels >
         tagContentController.position.maxScrollExtent -
             MediaQuery.of(context).size.height) {
-      if (userOldLength == ref.read(tagContentStateProvider).list.length) {
-        ref
-            .read(tagContentStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx);
+      if (userOldLength == ref.read(myTagContentStateProvider).list.length) {
+        ref.read(myTagContentStateProvider.notifier).loadMorePost(
+            ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx);
+      }
+    }
+  }
+
+  void _commentScrollListener() {
+    if (commentController.position.extentAfter < 200) {
+      if (commentOldLength == ref.read(commentStateProvider).list.length) {
+        ref.read(commentStateProvider.notifier).loadMoreComment(
+            ref.watch(commentStateProvider).list[0].contentsIdx);
       }
     }
   }
@@ -99,6 +123,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
     userContentController.dispose();
     tagContentController.removeListener(_userContentsScrollListener);
     tagContentController.dispose();
+    commentController.removeListener(_commentScrollListener);
+    commentController.dispose();
     super.dispose();
   }
 
@@ -119,247 +145,90 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
             physics: const ClampingScrollPhysics(),
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
-                Consumer(builder: (context, ref, _) {
-                  AsyncValue<List<UserInformationItemModel>> myInfo =
-                      ref.watch(userInformationFutureProvider);
+                SliverAppBar(
+                    pinned: true,
+                    floating: false,
+                    backgroundColor: appBarColor,
+                    title: const Text('마이페이지'),
+                    leading: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.arrow_back),
+                    ),
+                    forceElevated: innerBoxIsScrolled,
+                    actions: [
+                      PopupMenuButton(
+                        icon: const Icon(Icons.more_horiz),
+                        onSelected: (id) {
+                          if (id == 'myActivity') {
+                            context.go("/home/myPage/myActivity");
+                          }
+                          if (id == 'postsManagement') {
+                            context.go("/home/myPage/myPost");
+                          }
+                          if (id == 'setting') {
+                            context.go("/home/myPage/setting");
+                          }
+                        },
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(16.0),
+                            bottomRight: Radius.circular(16.0),
+                            topLeft: Radius.circular(16.0),
+                            topRight: Radius.circular(16.0),
+                          ),
+                        ),
+                        itemBuilder: (context) {
+                          final list = <PopupMenuEntry>[];
+                          list.add(
+                            diaryPopUpMenuItem(
+                              'myActivity',
+                              '내 활동',
+                              const Icon(Icons.person),
+                              context,
+                            ),
+                          );
+                          list.add(
+                            const PopupMenuDivider(
+                              height: 5,
+                            ),
+                          );
+                          list.add(
+                            diaryPopUpMenuItem(
+                              'postsManagement',
+                              '내 글 관리',
+                              const Icon(Icons.post_add_outlined),
+                              context,
+                            ),
+                          );
+                          list.add(
+                            const PopupMenuDivider(
+                              height: 5,
+                            ),
+                          );
+                          list.add(
+                            diaryPopUpMenuItem(
+                              'setting',
+                              '설정',
+                              const Icon(Icons.settings),
+                              context,
+                            ),
+                          );
+                          return list;
+                        },
+                      ),
+                    ],
+                    expandedHeight: 130.h,
+                    flexibleSpace: Consumer(builder: (context, ref, _) {
+                      final userInformationState =
+                          ref.watch(myInformationStateProvider);
+                      final lists = userInformationState.list;
 
-                  return myInfo.when(
-                    data: (data) {
-                      return SliverAppBar(
-                          pinned: true,
-                          floating: false,
-                          backgroundColor: appBarColor,
-                          title: const Text('마이페이지'),
-                          leading: IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: const Icon(Icons.arrow_back),
-                          ),
-                          forceElevated: innerBoxIsScrolled,
-                          actions: [
-                            PopupMenuButton(
-                              icon: const Icon(Icons.more_horiz),
-                              onSelected: (id) {
-                                if (id == 'myActivity') {
-                                  context.go("/home/myPage/myActivity");
-                                }
-                                if (id == 'postsManagement') {
-                                  context.go("/home/myPage/myPost");
-                                }
-                                if (id == 'setting') {
-                                  context.go("/home/myPage/setting");
-                                }
-                              },
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16.0),
-                                  bottomRight: Radius.circular(16.0),
-                                  topLeft: Radius.circular(16.0),
-                                  topRight: Radius.circular(16.0),
-                                ),
-                              ),
-                              itemBuilder: (context) {
-                                final list = <PopupMenuEntry>[];
-                                list.add(
-                                  diaryPopUpMenuItem(
-                                    'myActivity',
-                                    '내 활동',
-                                    const Icon(Icons.person),
-                                    context,
-                                  ),
-                                );
-                                list.add(
-                                  const PopupMenuDivider(
-                                    height: 5,
-                                  ),
-                                );
-                                list.add(
-                                  diaryPopUpMenuItem(
-                                    'postsManagement',
-                                    '내 글 관리',
-                                    const Icon(Icons.post_add_outlined),
-                                    context,
-                                  ),
-                                );
-                                list.add(
-                                  const PopupMenuDivider(
-                                    height: 5,
-                                  ),
-                                );
-                                list.add(
-                                  diaryPopUpMenuItem(
-                                    'setting',
-                                    '설정',
-                                    const Icon(Icons.settings),
-                                    context,
-                                  ),
-                                );
-                                return list;
-                              },
-                            ),
-                          ],
-                          expandedHeight: 130.h,
-                          flexibleSpace: _myPageSuccessProfile(data[0]));
-                    },
-                    loading: () {
-                      return SliverAppBar(
-                          pinned: true,
-                          floating: false,
-                          backgroundColor: appBarColor,
-                          title: const Text('마이페이지'),
-                          leading: IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: const Icon(Icons.arrow_back),
-                          ),
-                          forceElevated: innerBoxIsScrolled,
-                          actions: [
-                            PopupMenuButton(
-                              icon: const Icon(Icons.more_horiz),
-                              onSelected: (id) {
-                                if (id == 'myActivity') {
-                                  context.go("/home/myPage/myActivity");
-                                }
-                                if (id == 'postsManagement') {
-                                  context.go("/home/myPage/myPost");
-                                }
-                                if (id == 'setting') {
-                                  context.go("/home/myPage/setting");
-                                }
-                              },
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16.0),
-                                  bottomRight: Radius.circular(16.0),
-                                  topLeft: Radius.circular(16.0),
-                                  topRight: Radius.circular(16.0),
-                                ),
-                              ),
-                              itemBuilder: (context) {
-                                final list = <PopupMenuEntry>[];
-                                list.add(
-                                  diaryPopUpMenuItem(
-                                    'myActivity',
-                                    '내 활동',
-                                    const Icon(Icons.person),
-                                    context,
-                                  ),
-                                );
-                                list.add(
-                                  const PopupMenuDivider(
-                                    height: 5,
-                                  ),
-                                );
-                                list.add(
-                                  diaryPopUpMenuItem(
-                                    'postsManagement',
-                                    '내 글 관리',
-                                    const Icon(Icons.post_add_outlined),
-                                    context,
-                                  ),
-                                );
-                                list.add(
-                                  const PopupMenuDivider(
-                                    height: 5,
-                                  ),
-                                );
-                                list.add(
-                                  diaryPopUpMenuItem(
-                                    'setting',
-                                    '설정',
-                                    const Icon(Icons.settings),
-                                    context,
-                                  ),
-                                );
-                                return list;
-                              },
-                            ),
-                          ],
-                          expandedHeight: 130.h,
-                          flexibleSpace: _myPageProfile());
-                    },
-                    error: (error, stackTrace) {
-                      return SliverAppBar(
-                          pinned: true,
-                          floating: false,
-                          backgroundColor: appBarColor,
-                          title: const Text('마이페이지'),
-                          leading: IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: const Icon(Icons.arrow_back),
-                          ),
-                          forceElevated: innerBoxIsScrolled,
-                          actions: [
-                            PopupMenuButton(
-                              icon: const Icon(Icons.more_horiz),
-                              onSelected: (id) {
-                                if (id == 'myActivity') {
-                                  context.go("/home/myPage/myActivity");
-                                }
-                                if (id == 'postsManagement') {
-                                  context.go("/home/myPage/myPost");
-                                }
-                                if (id == 'setting') {
-                                  context.go("/home/myPage/setting");
-                                }
-                              },
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(16.0),
-                                  bottomRight: Radius.circular(16.0),
-                                  topLeft: Radius.circular(16.0),
-                                  topRight: Radius.circular(16.0),
-                                ),
-                              ),
-                              itemBuilder: (context) {
-                                final list = <PopupMenuEntry>[];
-                                list.add(
-                                  diaryPopUpMenuItem(
-                                    'myActivity',
-                                    '내 활동',
-                                    const Icon(Icons.person),
-                                    context,
-                                  ),
-                                );
-                                list.add(
-                                  const PopupMenuDivider(
-                                    height: 5,
-                                  ),
-                                );
-                                list.add(
-                                  diaryPopUpMenuItem(
-                                    'postsManagement',
-                                    '내 글 관리',
-                                    const Icon(Icons.post_add_outlined),
-                                    context,
-                                  ),
-                                );
-                                list.add(
-                                  const PopupMenuDivider(
-                                    height: 5,
-                                  ),
-                                );
-                                list.add(
-                                  diaryPopUpMenuItem(
-                                    'setting',
-                                    '설정',
-                                    const Icon(Icons.settings),
-                                    context,
-                                  ),
-                                );
-                                return list;
-                              },
-                            ),
-                          ],
-                          expandedHeight: 130.h,
-                          flexibleSpace: _myPageProfile());
-                    },
-                  );
-                }),
+                      return lists.isEmpty
+                          ? Container()
+                          : _myPageSuccessProfile(lists[0]);
+                    })),
                 const SliverPersistentHeader(
                   delegate: TabBarDelegate(),
                   pinned: true,
@@ -381,7 +250,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
   Widget _firstTabBody() {
     return Consumer(
       builder: (ctx, ref, child) {
-        final myContentState = ref.watch(userContentStateProvider);
+        final myContentState = ref.watch(myContentStateProvider);
         final isLoadMoreError = myContentState.isLoadMoreError;
         final isLoadMoreDone = myContentState.isLoadMoreDone;
         final isLoading = myContentState.isLoading;
@@ -391,7 +260,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
 
         return RefreshIndicator(
           onRefresh: () {
-            return ref.read(userContentStateProvider.notifier).refresh(
+            return ref.read(myContentStateProvider.notifier).refresh(
+                  ref.read(userModelProvider)!.idx,
                   ref.read(userModelProvider)!.idx,
                 );
           },
@@ -400,7 +270,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
             ),
-            itemCount: lists.length + 1,
+            itemCount: lists.length,
             itemBuilder: (context, index) {
               if (index == lists.length) {
                 if (isLoadMoreError) {
@@ -418,17 +288,20 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 margin: const EdgeInsets.all(10.0),
                 child: GestureDetector(
                   onTap: () {
-                    context.go("/home/myPage/detail/왕티즈왕왕/게시물");
+                    context.go(
+                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}");
                   },
                   child: Center(
                     child: Stack(
                       children: [
-                        ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(12)),
-                          child: Image.network(
-                            "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
-                            fit: BoxFit.fill,
+                        Positioned.fill(
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                            child: Image.network(
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         Positioned(
@@ -460,72 +333,110 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                 padding: EdgeInsets.only(
                                     left: 6.0.w, top: 2.h, right: 2.w),
                                 child: InkWell(
-                                  onTap: () {
+                                  onTap: () async {
+                                    await ref
+                                        .read(contentLikeUserListStateProvider
+                                            .notifier)
+                                        .initContentLikeUserList(
+                                          lists[index].idx,
+                                          ref.read(userModelProvider)!.idx,
+                                          1,
+                                        );
+
+                                    // ignore: use_build_context_synchronously
                                     showCustomModalBottomSheet(
                                       context: context,
-                                      widget: Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              top: 8.0.h,
-                                              bottom: 10.0.h,
-                                            ),
-                                            child: Text(
-                                              "좋아요",
-                                              style: kTitle16ExtraBoldStyle
-                                                  .copyWith(
-                                                      color:
-                                                          kTextSubTitleColor),
-                                            ),
+                                      widget: Consumer(
+                                          builder: (context, ref, child) {
+                                        final contentLikeUserListContentState =
+                                            ref.watch(
+                                                contentLikeUserListStateProvider);
+                                        final contentLikeUserList =
+                                            contentLikeUserListContentState
+                                                .list;
+
+                                        commentOldLength =
+                                            contentLikeUserList.length ?? 0;
+                                        return SizedBox(
+                                          height: 500.h,
+                                          child: Stack(
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                      top: 8.0.h,
+                                                      bottom: 10.0.h,
+                                                    ),
+                                                    child: Text(
+                                                      "좋아요",
+                                                      style: kTitle16ExtraBoldStyle
+                                                          .copyWith(
+                                                              color:
+                                                                  kTextSubTitleColor),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: ListView.builder(
+                                                      controller:
+                                                          commentController,
+                                                      itemCount:
+                                                          contentLikeUserList
+                                                              .length,
+                                                      padding: EdgeInsets.only(
+                                                          bottom: 80.h),
+                                                      itemBuilder: (BuildContext
+                                                              context,
+                                                          int commentIndex) {
+                                                        return FavoriteItemWidget(
+                                                          profileImage:
+                                                              contentLikeUserList[
+                                                                      commentIndex]
+                                                                  .profileImgUrl,
+                                                          userName:
+                                                              contentLikeUserList[
+                                                                      commentIndex]
+                                                                  .nick!,
+                                                          content:
+                                                              contentLikeUserList[
+                                                                      commentIndex]
+                                                                  .intro!,
+                                                          isSpecialUser:
+                                                              contentLikeUserList[
+                                                                          commentIndex]
+                                                                      .isBadge ==
+                                                                  1,
+                                                          isFollow: contentLikeUserList[
+                                                                      commentIndex]
+                                                                  .followState ==
+                                                              0,
+                                                          followerIdx:
+                                                              contentLikeUserList[
+                                                                      commentIndex]
+                                                                  .memberIdx!,
+                                                          contentsIdx:
+                                                              lists[index].idx,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
-                                          const FavoriteItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            userName: '말티푸달콩',
-                                            content: '사용자가 설정한 소개글',
-                                            isSpecialUser: false,
-                                            isFollow: true,
-                                          ),
-                                          const FavoriteItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            userName: '말티푸달콩',
-                                            content: '사용자가 설정한 소개글',
-                                            isSpecialUser: false,
-                                            isFollow: true,
-                                          ),
-                                          const FavoriteItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            userName: '말티푸달콩',
-                                            content: '사용자가 설정한 소개글',
-                                            isSpecialUser: false,
-                                            isFollow: true,
-                                          ),
-                                          const FavoriteItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            userName: '말티푸달콩',
-                                            content: '사용자가 설정한 소개글',
-                                            isSpecialUser: false,
-                                            isFollow: true,
-                                          ),
-                                          const FavoriteItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            userName: '말티푸달콩',
-                                            content: '사용자가 설정한 소개글',
-                                            isSpecialUser: false,
-                                            isFollow: true,
-                                          ),
-                                        ],
-                                      ),
+                                        );
+                                      }),
                                     );
                                   },
-                                  child: Image.asset(
-                                    'assets/image/feed/icon/small_size/icon_comment_like_off.png',
-                                    height: 26.w,
-                                  ),
+                                  child: lists[index].likeCnt == 1
+                                      ? Image.asset(
+                                          'assets/image/feed/icon/small_size/icon_comment_like_on.png',
+                                          height: 26.w,
+                                        )
+                                      : Image.asset(
+                                          'assets/image/feed/icon/small_size/icon_comment_like_off.png',
+                                          height: 26.w,
+                                        ),
                                 ),
                               ),
                               Text(
@@ -536,66 +447,125 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                               Padding(
                                 padding: EdgeInsets.only(
                                     left: 6.0.w, top: 2.h, right: 2.w),
-                                child: InkWell(
-                                  onTap: () {
-                                    showCustomModalBottomSheet(
-                                      context: context,
-                                      widget: Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              top: 8.0.h,
-                                              bottom: 10.0.h,
+                                child: Builder(builder: (context) {
+                                  return InkWell(
+                                    onTap: () async {
+                                      await ref
+                                          .read(commentStateProvider.notifier)
+                                          .initPosts(lists[index].idx, 1);
+
+                                      // ignore: use_build_context_synchronously
+                                      showCustomModalBottomSheet(
+                                        context: context,
+                                        widget: Consumer(
+                                            builder: (context, ref, child) {
+                                          final commentContentState =
+                                              ref.watch(commentStateProvider);
+                                          final commentLists =
+                                              commentContentState.list;
+
+                                          commentOldLength =
+                                              commentLists.length ?? 0;
+                                          return SizedBox(
+                                            height: 500.h,
+                                            child: Stack(
+                                              children: [
+                                                Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                        top: 8.0.h,
+                                                        bottom: 10.0.h,
+                                                      ),
+                                                      child: Text(
+                                                        "댓글",
+                                                        style: kTitle16ExtraBoldStyle
+                                                            .copyWith(
+                                                                color:
+                                                                    kTextSubTitleColor),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: ListView.builder(
+                                                        controller:
+                                                            commentController,
+                                                        itemCount:
+                                                            commentLists.length,
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                bottom: 80.h),
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                int index) {
+                                                          return CommentDetailItemWidget(
+                                                            parentIdx:
+                                                                commentLists[
+                                                                        index]
+                                                                    .parentIdx,
+                                                            commentIdx:
+                                                                commentLists[
+                                                                        index]
+                                                                    .idx,
+                                                            profileImage:
+                                                                commentLists[
+                                                                            index]
+                                                                        .url ??
+                                                                    'assets/image/feed/image/sample_image1.png',
+                                                            name: commentLists[
+                                                                    index]
+                                                                .nick,
+                                                            comment:
+                                                                commentLists[
+                                                                        index]
+                                                                    .contents,
+                                                            isSpecialUser:
+                                                                commentLists[
+                                                                            index]
+                                                                        .isBadge ==
+                                                                    1,
+                                                            time: DateTime.parse(
+                                                                commentLists[
+                                                                        index]
+                                                                    .regDate),
+                                                            isReply: false,
+                                                            likeCount:
+                                                                commentLists[
+                                                                        index]
+                                                                    .likeCnt,
+                                                            replies: commentLists[
+                                                                    index]
+                                                                .childCommentData,
+                                                            contentIdx:
+                                                                commentLists[0]
+                                                                    .contentsIdx,
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Positioned(
+                                                  left: 0,
+                                                  right: 0,
+                                                  bottom: 0,
+                                                  child: CommentCustomTextField(
+                                                    contentIdx:
+                                                        lists[index].idx!,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            child: Text(
-                                              "댓글",
-                                              style: kTitle16ExtraBoldStyle
-                                                  .copyWith(
-                                                      color:
-                                                          kTextSubTitleColor),
-                                            ),
-                                          ),
-                                          CommentDetailItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image1.png',
-                                            name: 'bichon_딩동',
-                                            comment:
-                                                '헤엑😍 넘 귀엽자농~ 모자 쓴거야? 귀여미!!! 너무 행복해...',
-                                            isSpecialUser: true,
-                                            time: DateTime(2023, 5, 28),
-                                            isReply: false,
-                                            likeCount: 42,
-                                          ),
-                                          CommentDetailItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image2.png',
-                                            name: 'baejji',
-                                            comment: '사장님 저희 백설기 안시켰는데여??',
-                                            isSpecialUser: false,
-                                            time: DateTime(2023, 5, 28),
-                                            isReply: false,
-                                            likeCount: 32,
-                                          ),
-                                          CommentDetailItemWidget(
-                                            profileImage:
-                                                'assets/image/feed/image/sample_image2.png',
-                                            name: 'bichon_딩동',
-                                            comment: '@baejji 시켜쨔나욧❕❕🐶',
-                                            isSpecialUser: true,
-                                            time: DateTime(2023, 5, 28),
-                                            isReply: true,
-                                            likeCount: 32,
-                                          ),
-                                          // const CommentCustomTextField(),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  child: Image.asset(
-                                    'assets/image/feed/icon/small_size/icon_comment_comment.png',
-                                    height: 24.w,
-                                  ),
-                                ),
+                                          );
+                                        }),
+                                      );
+                                    },
+                                    child: Image.asset(
+                                      'assets/image/feed/icon/small_size/icon_comment_comment.png',
+                                      height: 24.w,
+                                    ),
+                                  );
+                                }),
                               ),
                               Text(
                                 '${lists[index].commentCnt}',
@@ -640,7 +610,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
   Widget _secondTabBody() {
     return Consumer(
       builder: (ctx, ref, child) {
-        final tagContentState = ref.watch(tagContentStateProvider);
+        final tagContentState = ref.watch(myTagContentStateProvider);
         final isLoadMoreError = tagContentState.isLoadMoreError;
         final isLoadMoreDone = tagContentState.isLoadMoreDone;
         final isLoading = tagContentState.isLoading;
@@ -650,7 +620,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
 
         return RefreshIndicator(
           onRefresh: () {
-            return ref.read(tagContentStateProvider.notifier).refresh(
+            return ref.read(myTagContentStateProvider.notifier).refresh(
+                  ref.read(userModelProvider)!.idx,
                   ref.read(userModelProvider)!.idx,
                 );
           },
@@ -659,7 +630,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
             ),
-            itemCount: lists.length + 1,
+            itemCount: lists.length,
             itemBuilder: (context, index) {
               if (index == lists.length) {
                 if (isLoadMoreError) {
@@ -677,14 +648,21 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 margin: const EdgeInsets.all(10.0),
                 child: GestureDetector(
                   onTap: () {
-                    context.go("/home/myPage/detail/왕티즈왕왕/태그됨");
+                    context.go(
+                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}");
                   },
                   child: Center(
                     child: Stack(
                       children: [
-                        Image.network(
-                          "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
-                          fit: BoxFit.fill,
+                        Positioned.fill(
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                            child: Image.network(
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                         Positioned(
                           right: 6.w,
@@ -731,7 +709,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
               child: WidgetMask(
                 blendMode: BlendMode.srcATop,
                 childSaveLayer: true,
-                mask: data.profileImgUrl == null
+                mask: data.profileImgUrl == null || data.profileImgUrl == ""
                     ? Center(
                         child: Image.asset(
                           'assets/image/feed/image/sample_image3.png',
@@ -794,7 +772,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 ),
                 GestureDetector(
                   onTap: () {
-                    context.go("/home/myPage/followList");
+                    context.go(
+                        "/home/myPage/followList/${ref.read(userModelProvider)!.idx}");
                   },
                   child: Padding(
                     padding: EdgeInsets.only(top: 8.0.h),
@@ -822,117 +801,6 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                         ),
                         Text(
                           "${data.followCnt}",
-                          style: kBody11SemiBoldStyle.copyWith(
-                              color: kTextSubTitleColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _myPageProfile() {
-    return FlexibleSpaceBar(
-      centerTitle: true,
-      expandedTitleScale: 1.0,
-      background: Padding(
-        padding: const EdgeInsets.only(top: kToolbarHeight),
-        child: Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-              child: WidgetMask(
-                blendMode: BlendMode.srcATop,
-                childSaveLayer: true,
-                mask: Center(
-                  child: Image.asset(
-                    'assets/image/feed/image/sample_image3.png',
-                    height: 48.h,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                child: SvgPicture.asset(
-                  'assets/image/feed/image/squircle.svg',
-                  height: 48.h,
-                ),
-              ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Image.asset(
-                      'assets/image/feed/icon/small_size/icon_special.png',
-                      height: 13.h,
-                    ),
-                    SizedBox(
-                      width: 4.w,
-                    ),
-                    Text(
-                      "왕티즈왕왕",
-                      style: kTitle16ExtraBoldStyle.copyWith(
-                          color: kTextTitleColor),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context.go("/home/myPage/profileEdit");
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: Icon(
-                          Icons.edit,
-                          color: kNeutralColor500,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 3.h,
-                ),
-                Text(
-                  "딸기🍓를 좋아하는 왕큰 말티즈🐶 왕왕이💛🤍 ",
-                  style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    context.go("/home/myPage/followList");
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 8.0.h),
-                    child: Row(
-                      children: [
-                        Text(
-                          "팔로워 ",
-                          style: kBody11RegularStyle.copyWith(
-                              color: kTextBodyColor),
-                        ),
-                        Text(
-                          "265",
-                          style: kBody11SemiBoldStyle.copyWith(
-                              color: kTextSubTitleColor),
-                        ),
-                        Text(
-                          "  ·  ",
-                          style: kBody11RegularStyle.copyWith(
-                              color: kTextBodyColor),
-                        ),
-                        Text(
-                          "팔로잉 ",
-                          style: kBody11RegularStyle.copyWith(
-                              color: kTextBodyColor),
-                        ),
-                        Text(
-                          "165",
                           style: kBody11SemiBoldStyle.copyWith(
                               color: kTextSubTitleColor),
                         ),
@@ -1026,7 +894,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                           width: 6.w,
                         ),
                         Text(
-                          "${ref.watch(userContentStateProvider).totalCount}",
+                          "${ref.watch(myContentStateProvider).totalCount}",
                           style: kBadge10MediumStyle.copyWith(
                               color: kTextBodyColor),
                         ),
@@ -1045,7 +913,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                           width: 6.w,
                         ),
                         Text(
-                          "${ref.watch(tagContentStateProvider).totalCount}",
+                          "${ref.watch(myTagContentStateProvider).totalCount}",
                           style: kBadge10MediumStyle.copyWith(
                               color: kTextBodyColor),
                         ),

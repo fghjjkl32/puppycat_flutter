@@ -25,6 +25,7 @@ mixin _$ContentImageData {
   int? get commentCnt => throw _privateConstructorUsedError;
   int? get likeCnt => throw _privateConstructorUsedError;
   int get imageCnt => throw _privateConstructorUsedError;
+  int? get selfLike => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -39,7 +40,12 @@ abstract class $ContentImageDataCopyWith<$Res> {
       _$ContentImageDataCopyWithImpl<$Res, ContentImageData>;
   @useResult
   $Res call(
-      {String imgUrl, int idx, int? commentCnt, int? likeCnt, int imageCnt});
+      {String imgUrl,
+      int idx,
+      int? commentCnt,
+      int? likeCnt,
+      int imageCnt,
+      int? selfLike});
 }
 
 /// @nodoc
@@ -60,6 +66,7 @@ class _$ContentImageDataCopyWithImpl<$Res, $Val extends ContentImageData>
     Object? commentCnt = freezed,
     Object? likeCnt = freezed,
     Object? imageCnt = null,
+    Object? selfLike = freezed,
   }) {
     return _then(_value.copyWith(
       imgUrl: null == imgUrl
@@ -82,6 +89,10 @@ class _$ContentImageDataCopyWithImpl<$Res, $Val extends ContentImageData>
           ? _value.imageCnt
           : imageCnt // ignore: cast_nullable_to_non_nullable
               as int,
+      selfLike: freezed == selfLike
+          ? _value.selfLike
+          : selfLike // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -95,7 +106,12 @@ abstract class _$$_ContentImageDataCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String imgUrl, int idx, int? commentCnt, int? likeCnt, int imageCnt});
+      {String imgUrl,
+      int idx,
+      int? commentCnt,
+      int? likeCnt,
+      int imageCnt,
+      int? selfLike});
 }
 
 /// @nodoc
@@ -114,6 +130,7 @@ class __$$_ContentImageDataCopyWithImpl<$Res>
     Object? commentCnt = freezed,
     Object? likeCnt = freezed,
     Object? imageCnt = null,
+    Object? selfLike = freezed,
   }) {
     return _then(_$_ContentImageData(
       imgUrl: null == imgUrl
@@ -136,6 +153,10 @@ class __$$_ContentImageDataCopyWithImpl<$Res>
           ? _value.imageCnt
           : imageCnt // ignore: cast_nullable_to_non_nullable
               as int,
+      selfLike: freezed == selfLike
+          ? _value.selfLike
+          : selfLike // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -148,7 +169,8 @@ class _$_ContentImageData implements _ContentImageData {
       required this.idx,
       this.commentCnt,
       this.likeCnt,
-      required this.imageCnt});
+      required this.imageCnt,
+      this.selfLike});
 
   factory _$_ContentImageData.fromJson(Map<String, dynamic> json) =>
       _$$_ContentImageDataFromJson(json);
@@ -163,10 +185,12 @@ class _$_ContentImageData implements _ContentImageData {
   final int? likeCnt;
   @override
   final int imageCnt;
+  @override
+  final int? selfLike;
 
   @override
   String toString() {
-    return 'ContentImageData(imgUrl: $imgUrl, idx: $idx, commentCnt: $commentCnt, likeCnt: $likeCnt, imageCnt: $imageCnt)';
+    return 'ContentImageData(imgUrl: $imgUrl, idx: $idx, commentCnt: $commentCnt, likeCnt: $likeCnt, imageCnt: $imageCnt, selfLike: $selfLike)';
   }
 
   @override
@@ -180,13 +204,15 @@ class _$_ContentImageData implements _ContentImageData {
                 other.commentCnt == commentCnt) &&
             (identical(other.likeCnt, likeCnt) || other.likeCnt == likeCnt) &&
             (identical(other.imageCnt, imageCnt) ||
-                other.imageCnt == imageCnt));
+                other.imageCnt == imageCnt) &&
+            (identical(other.selfLike, selfLike) ||
+                other.selfLike == selfLike));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, imgUrl, idx, commentCnt, likeCnt, imageCnt);
+  int get hashCode => Object.hash(
+      runtimeType, imgUrl, idx, commentCnt, likeCnt, imageCnt, selfLike);
 
   @JsonKey(ignore: true)
   @override
@@ -208,7 +234,8 @@ abstract class _ContentImageData implements ContentImageData {
       required final int idx,
       final int? commentCnt,
       final int? likeCnt,
-      required final int imageCnt}) = _$_ContentImageData;
+      required final int imageCnt,
+      final int? selfLike}) = _$_ContentImageData;
 
   factory _ContentImageData.fromJson(Map<String, dynamic> json) =
       _$_ContentImageData.fromJson;
@@ -223,6 +250,8 @@ abstract class _ContentImageData implements ContentImageData {
   int? get likeCnt;
   @override
   int get imageCnt;
+  @override
+  int? get selfLike;
   @override
   @JsonKey(ignore: true)
   _$$_ContentImageDataCopyWith<_$_ContentImageData> get copyWith =>

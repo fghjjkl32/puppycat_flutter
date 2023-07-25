@@ -10,6 +10,7 @@ class ContentImageData with _$ContentImageData {
     int? commentCnt,
     int? likeCnt,
     required int imageCnt,
+    int? selfLike,
   }) = _ContentImageData;
 
   factory ContentImageData.fromJson(Map<String, dynamic> json) =>
