@@ -10,7 +10,7 @@ class FeedBestPostWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push("/home/myPage/detail/아지다멍/게시물");
+        // context.push("/home/myPage/detail/아지다멍/게시물");
       },
       child: Column(
         children: [

@@ -8,15 +8,14 @@ part of 'my_post_state.dart';
 
 _$_MyPostState _$$_MyPostStateFromJson(Map<String, dynamic> json) =>
     _$_MyPostState(
-      selectOrder: (json['selectOrder'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList() ??
-          const [],
-      currentOrder: json['currentOrder'] as int? ?? 1,
+      myPostState:
+          MySelectPost.fromJson(json['myPostState'] as Map<String, dynamic>),
+      myKeepState:
+          SelectPost.fromJson(json['myKeepState'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$_MyPostStateToJson(_$_MyPostState instance) =>
     <String, dynamic>{
-      'selectOrder': instance.selectOrder,
-      'currentOrder': instance.currentOrder,
+      'myPostState': instance.myPostState,
+      'myKeepState': instance.myKeepState,
     };

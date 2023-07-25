@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class FavoriteItemWidget extends StatelessWidget {
+class FavoriteItemWidget extends ConsumerWidget {
   const FavoriteItemWidget({
     required this.profileImage,
     required this.userName,
     required this.content,
     required this.isSpecialUser,
     required this.isFollow,
+    required this.followerIdx,
+    required this.contentsIdx,
     Key? key,
   }) : super(key: key);
 
@@ -20,9 +25,11 @@ class FavoriteItemWidget extends StatelessWidget {
   final String content;
   final bool isSpecialUser;
   final bool isFollow;
+  final int followerIdx;
+  final int contentsIdx;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 16.h),
       child: Row(
@@ -104,40 +111,65 @@ class FavoriteItemWidget extends StatelessWidget {
               ),
             ],
           ),
-          isFollow
-              ? Container(
-                  width: 56.w,
-                  height: 32.h,
-                  decoration: const BoxDecoration(
-                    color: kPrimaryColor,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8.0),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "팔로우",
-                      style:
-                          kButton12BoldStyle.copyWith(color: kNeutralColor100),
-                    ),
-                  ),
-                )
-              : Container(
-                  width: 56.w,
-                  height: 32.h,
-                  decoration: const BoxDecoration(
-                    color: kNeutralColor300,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8.0),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "팔로잉",
-                      style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
-                    ),
-                  ),
-                )
+          ref.read(userModelProvider)!.idx == followerIdx
+              ? Container()
+              : isFollow
+                  ? GestureDetector(
+                      onTap: () async {
+                        await ref
+                            .watch(contentLikeUserListStateProvider.notifier)
+                            .postFollow(
+                              memberIdx: ref.read(userModelProvider)!.idx,
+                              followIdx: followerIdx,
+                              contentsIdx: contentsIdx,
+                            );
+                      },
+                      child: Container(
+                        width: 56.w,
+                        height: 32.h,
+                        decoration: const BoxDecoration(
+                          color: kPrimaryColor,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8.0),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "팔로우",
+                            style: kButton12BoldStyle.copyWith(
+                                color: kNeutralColor100),
+                          ),
+                        ),
+                      ),
+                    )
+                  : GestureDetector(
+                      onTap: () async {
+                        await ref
+                            .watch(contentLikeUserListStateProvider.notifier)
+                            .deleteFollow(
+                              memberIdx: ref.read(userModelProvider)!.idx,
+                              followIdx: followerIdx,
+                              contentsIdx: contentsIdx,
+                            );
+                      },
+                      child: Container(
+                        width: 56.w,
+                        height: 32.h,
+                        decoration: const BoxDecoration(
+                          color: kNeutralColor300,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8.0),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "팔로잉",
+                            style: kButton12BoldStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                        ),
+                      ),
+                    )
         ],
       ),
     );

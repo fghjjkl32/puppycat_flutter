@@ -20,8 +20,8 @@ MyPostState _$MyPostStateFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$MyPostState {
-  List<int> get selectOrder => throw _privateConstructorUsedError;
-  int get currentOrder => throw _privateConstructorUsedError;
+  MySelectPost get myPostState => throw _privateConstructorUsedError;
+  SelectPost get myKeepState => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -35,7 +35,10 @@ abstract class $MyPostStateCopyWith<$Res> {
           MyPostState value, $Res Function(MyPostState) then) =
       _$MyPostStateCopyWithImpl<$Res, MyPostState>;
   @useResult
-  $Res call({List<int> selectOrder, int currentOrder});
+  $Res call({MySelectPost myPostState, SelectPost myKeepState});
+
+  $MySelectPostCopyWith<$Res> get myPostState;
+  $SelectPostCopyWith<$Res> get myKeepState;
 }
 
 /// @nodoc
@@ -51,19 +54,35 @@ class _$MyPostStateCopyWithImpl<$Res, $Val extends MyPostState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? selectOrder = null,
-    Object? currentOrder = null,
+    Object? myPostState = null,
+    Object? myKeepState = null,
   }) {
     return _then(_value.copyWith(
-      selectOrder: null == selectOrder
-          ? _value.selectOrder
-          : selectOrder // ignore: cast_nullable_to_non_nullable
-              as List<int>,
-      currentOrder: null == currentOrder
-          ? _value.currentOrder
-          : currentOrder // ignore: cast_nullable_to_non_nullable
-              as int,
+      myPostState: null == myPostState
+          ? _value.myPostState
+          : myPostState // ignore: cast_nullable_to_non_nullable
+              as MySelectPost,
+      myKeepState: null == myKeepState
+          ? _value.myKeepState
+          : myKeepState // ignore: cast_nullable_to_non_nullable
+              as SelectPost,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $MySelectPostCopyWith<$Res> get myPostState {
+    return $MySelectPostCopyWith<$Res>(_value.myPostState, (value) {
+      return _then(_value.copyWith(myPostState: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SelectPostCopyWith<$Res> get myKeepState {
+    return $SelectPostCopyWith<$Res>(_value.myKeepState, (value) {
+      return _then(_value.copyWith(myKeepState: value) as $Val);
+    });
   }
 }
 
@@ -75,7 +94,12 @@ abstract class _$$_MyPostStateCopyWith<$Res>
       __$$_MyPostStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<int> selectOrder, int currentOrder});
+  $Res call({MySelectPost myPostState, SelectPost myKeepState});
+
+  @override
+  $MySelectPostCopyWith<$Res> get myPostState;
+  @override
+  $SelectPostCopyWith<$Res> get myKeepState;
 }
 
 /// @nodoc
@@ -89,18 +113,18 @@ class __$$_MyPostStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? selectOrder = null,
-    Object? currentOrder = null,
+    Object? myPostState = null,
+    Object? myKeepState = null,
   }) {
     return _then(_$_MyPostState(
-      selectOrder: null == selectOrder
-          ? _value._selectOrder
-          : selectOrder // ignore: cast_nullable_to_non_nullable
-              as List<int>,
-      currentOrder: null == currentOrder
-          ? _value.currentOrder
-          : currentOrder // ignore: cast_nullable_to_non_nullable
-              as int,
+      myPostState: null == myPostState
+          ? _value.myPostState
+          : myPostState // ignore: cast_nullable_to_non_nullable
+              as MySelectPost,
+      myKeepState: null == myKeepState
+          ? _value.myKeepState
+          : myKeepState // ignore: cast_nullable_to_non_nullable
+              as SelectPost,
     ));
   }
 }
@@ -108,29 +132,19 @@ class __$$_MyPostStateCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$_MyPostState implements _MyPostState {
-  _$_MyPostState(
-      {final List<int> selectOrder = const [], this.currentOrder = 1})
-      : _selectOrder = selectOrder;
+  _$_MyPostState({required this.myPostState, required this.myKeepState});
 
   factory _$_MyPostState.fromJson(Map<String, dynamic> json) =>
       _$$_MyPostStateFromJson(json);
 
-  final List<int> _selectOrder;
   @override
-  @JsonKey()
-  List<int> get selectOrder {
-    if (_selectOrder is EqualUnmodifiableListView) return _selectOrder;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_selectOrder);
-  }
-
+  final MySelectPost myPostState;
   @override
-  @JsonKey()
-  final int currentOrder;
+  final SelectPost myKeepState;
 
   @override
   String toString() {
-    return 'MyPostState(selectOrder: $selectOrder, currentOrder: $currentOrder)';
+    return 'MyPostState(myPostState: $myPostState, myKeepState: $myKeepState)';
   }
 
   @override
@@ -138,16 +152,15 @@ class _$_MyPostState implements _MyPostState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_MyPostState &&
-            const DeepCollectionEquality()
-                .equals(other._selectOrder, _selectOrder) &&
-            (identical(other.currentOrder, currentOrder) ||
-                other.currentOrder == currentOrder));
+            (identical(other.myPostState, myPostState) ||
+                other.myPostState == myPostState) &&
+            (identical(other.myKeepState, myKeepState) ||
+                other.myKeepState == myKeepState));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(_selectOrder), currentOrder);
+  int get hashCode => Object.hash(runtimeType, myPostState, myKeepState);
 
   @JsonKey(ignore: true)
   @override
@@ -164,16 +177,17 @@ class _$_MyPostState implements _MyPostState {
 }
 
 abstract class _MyPostState implements MyPostState {
-  factory _MyPostState({final List<int> selectOrder, final int currentOrder}) =
-      _$_MyPostState;
+  factory _MyPostState(
+      {required final MySelectPost myPostState,
+      required final SelectPost myKeepState}) = _$_MyPostState;
 
   factory _MyPostState.fromJson(Map<String, dynamic> json) =
       _$_MyPostState.fromJson;
 
   @override
-  List<int> get selectOrder;
+  MySelectPost get myPostState;
   @override
-  int get currentOrder;
+  SelectPost get myKeepState;
   @override
   @JsonKey(ignore: true)
   _$$_MyPostStateCopyWith<_$_MyPostState> get copyWith =>

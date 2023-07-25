@@ -22,7 +22,7 @@ class FeedTitleWidget extends StatelessWidget {
   final String? profileImage;
   final String userName;
   final String address;
-  final DateTime time;
+  final String time;
   final bool isEdit;
 
   @override
@@ -35,7 +35,7 @@ class FeedTitleWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              profileImage == null
+              profileImage == null || profileImage == ""
                   ? WidgetMask(
                       blendMode: BlendMode.srcATop,
                       childSaveLayer: true,
@@ -55,8 +55,8 @@ class FeedTitleWidget extends StatelessWidget {
                       blendMode: BlendMode.srcATop,
                       childSaveLayer: true,
                       mask: Center(
-                        child: Image.asset(
-                          profileImage!,
+                        child: Image.network(
+                          "https://dev-imgs.devlabs.co.kr${profileImage}!",
                           height: 32.h,
                           fit: BoxFit.fill,
                         ),
@@ -94,8 +94,13 @@ class FeedTitleWidget extends StatelessWidget {
                             style: kBody11RegularStyle.copyWith(
                                 color: kTextBodyColor),
                           ),
+                          // Text(
+                          //   displayedAt(time),
+                          //   style: kBody11RegularStyle.copyWith(
+                          //       color: kTextBodyColor),
+                          // ),
                           Text(
-                            displayedAt(time),
+                            time,
                             style: kBody11RegularStyle.copyWith(
                                 color: kTextBodyColor),
                           ),

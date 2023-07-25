@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
@@ -63,11 +64,14 @@ class LoginState extends _$LoginState {
     ///Login Route State 관련
     switch (userModel.loginStatus) {
       case LoginStatus.success:
-        _saveUserModel(userModel);
+        saveUserModel(userModel);
         UserInfoModel userInfoModel = UserInfoModel(userModel: userModel);
-        ref.read(userInfoProvider.notifier).state = UserInfoModel(userModel: userModel);
+        ref.read(userInfoProvider.notifier).state =
+            UserInfoModel(userModel: userModel);
         ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
-        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
+        ref
+            .read(loginRouteStateProvider.notifier)
+            .changeLoginRoute(LoginRoute.success);
       case LoginStatus.needSignUp:
         ref
             .read(loginRouteStateProvider.notifier)
@@ -89,13 +93,14 @@ class LoginState extends _$LoginState {
 
     var result = await loginRepository.logout(appKey);
     if (result) {
+      ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
       ref.read(userModelProvider.notifier).state = null;
-      _saveUserModel(null);
+      saveUserModel(null);
       state = LoginStatus.none;
     }
   }
 
-  void _saveUserModel(UserModel? userModel) async {
+  void saveUserModel(UserModel? userModel) async {
     final prefs = await SharedPreferences.getInstance();
     String userModelKey = 'userModel';
 

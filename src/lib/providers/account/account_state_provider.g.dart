@@ -7,7 +7,7 @@ part of 'account_state_provider.dart';
 // **************************************************************************
 
 String _$accountRestoreStateHash() =>
-    r'4b32adfba5679a6780bc8adefbb0102dd782ae1a';
+    r'244b63a4763ccec24a1f64c55a00b19244ebc8a2';
 
 /// See also [AccountRestoreState].
 @ProviderFor(AccountRestoreState)
