@@ -24,6 +24,9 @@ class UserInformationItemModel with _$UserInformationItemModel {
     String? chatMemeberId,
     String? homeServer,
     String? deviceId,
+
+    //img host
+    String? imgDomain,
   }) = _UserInformationItemModel;
 
   factory UserInformationItemModel.fromJson(Map<String, dynamic> json) =>

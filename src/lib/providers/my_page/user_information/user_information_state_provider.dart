@@ -2,7 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/user_information/user_information_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
+// import 'package:pet_mobile_social_flutter/repositories/my_page/user_information/user_information_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
 final userInformationStateProvider = StateNotifierProvider<
@@ -18,7 +19,7 @@ class UserInformationStateNotifier
     loginMemberIdx,
     memberIdx,
   ]) async {
-    final lists = await UserInformationRepository()
+    final lists = await UserInfoRepository()
         .getUserInformation(loginMemberIdx, memberIdx);
 
     if (lists == null) {
@@ -71,7 +72,7 @@ class UserInformationStateNotifier
       )
     ]);
 
-    final lists = await UserInformationRepository()
+    final lists = await UserInfoRepository()
         .getUserInformation(loginMemberIdx, memberIdx);
 
     state = state.copyWith(list: [
