@@ -19,6 +19,14 @@ class UserInformationItemModel with _$UserInformationItemModel {
     int? blockedState,
     int? blockedMeState,
     int? followState,
+    //ChatInfo
+    String? chatAccessToken,
+    String? chatMemeberId,
+    String? homeServer,
+    String? deviceId,
+
+    //img host
+    String? imgDomain,
   }) = _UserInformationItemModel;
 
   factory UserInformationItemModel.fromJson(Map<String, dynamic> json) =>

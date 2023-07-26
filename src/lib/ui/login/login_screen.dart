@@ -10,7 +10,7 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_cu
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
-import 'package:pet_mobile_social_flutter/providers/account/account_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/user_restore_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/kakao/kakao_login.dart';
@@ -71,7 +71,7 @@ class LoginScreen extends ConsumerWidget {
       }
     });
 
-    ref.listen(accountRestoreStateProvider, (previous, next) {
+    ref.listen(userRestoreStateProvider, (previous, next) {
       if (next) {
         var userModel = ref.read(userModelProvider);
         ref
