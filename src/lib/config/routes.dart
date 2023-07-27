@@ -19,11 +19,11 @@ import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_complete_scree
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/comment/main_comment_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_post_list_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/my_page_one_title_feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_alarm_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_blocked_user_screen.dart';
@@ -32,7 +32,6 @@ import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_not
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_privacy_policy_accepted_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_privacy_policy_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/my_page_two_title_feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_terms_of_service_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_detail_screen.dart';
@@ -101,20 +100,22 @@ class AppRouter {
               routes: [
                 GoRoute(
                   path:
-                      'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx',
+                      'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
                   name:
-                      'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx',
+                      'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
                   builder: (BuildContext context, GoRouterState state) {
                     final firstTitle = state.pathParameters['firstTitle']!;
                     final secondTitle = state.pathParameters['secondTitle']!;
                     final memberIdx = state.pathParameters['memberIdx']!;
                     final contentIdx = state.pathParameters['contentIdx']!;
+                    final contentType = state.pathParameters['contentType']!;
 
-                    return MyPageTwoTitleFeedDetailScreen(
+                    return FeedDetailScreen(
                       firstTitle: firstTitle,
                       secondTitle: secondTitle,
                       memberIdx: int.parse(memberIdx),
                       contentIdx: int.parse(contentIdx),
+                      contentType: contentType,
                     );
                   },
                 ),
@@ -186,20 +187,6 @@ class AppRouter {
                   builder: (BuildContext context, GoRouterState state) {
                     return const MyPageMyActivityListScreen();
                   },
-                  routes: [
-                    GoRoute(
-                      path: 'myActivityDetail/:title/:memberIdx',
-                      name: 'myActivityDetail/:title/:memberIdx',
-                      builder: (BuildContext context, GoRouterState state) {
-                        final title = state.pathParameters['title']!;
-                        final memberIdx = state.pathParameters['memberIdx']!;
-                        return MyPageOneTitleFeedDetailScreen(
-                          title: title,
-                          memberIdx: memberIdx,
-                        );
-                      },
-                    )
-                  ],
                 ),
                 GoRoute(
                   path: 'myPost',
@@ -207,21 +194,6 @@ class AppRouter {
                   builder: (BuildContext context, GoRouterState state) {
                     return const MyPageMyPostListScreen();
                   },
-                  routes: [
-                    GoRoute(
-                      path: 'myPostDetail/:title/:memberIdx,',
-                      name: 'myPostDetail/:title/:memberIdx',
-                      builder: (BuildContext context, GoRouterState state) {
-                        final title = state.pathParameters['title']!;
-                        final memberIdx = state.pathParameters['memberIdx']!;
-
-                        return MyPageOneTitleFeedDetailScreen(
-                          memberIdx: memberIdx,
-                          title: title,
-                        );
-                      },
-                    )
-                  ],
                 ),
                 GoRoute(
                   path: 'setting',
@@ -340,26 +312,25 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: '/chatMain',
-        name: 'chatMain',
-        builder: (BuildContext context, GoRouterState state) {
-          return const ChatMainScreen();
-        },
-        routes: [
-          GoRoute(
-            path: 'chatRoom',
-            name: 'chatRoom',
-            builder: (BuildContext context, GoRouterState state) {
-              if(state.extra is Room) {
-                return ChatRoomScreen(room: state.extra! as Room);
-                // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
-              } else {
-                return const ChatMainScreen();
-              }
-            },
-          ),
-        ]
-      ),
+          path: '/chatMain',
+          name: 'chatMain',
+          builder: (BuildContext context, GoRouterState state) {
+            return const ChatMainScreen();
+          },
+          routes: [
+            GoRoute(
+              path: 'chatRoom',
+              name: 'chatRoom',
+              builder: (BuildContext context, GoRouterState state) {
+                if (state.extra is Room) {
+                  return ChatRoomScreen(room: state.extra! as Room);
+                  // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
+                } else {
+                  return const ChatMainScreen();
+                }
+              },
+            ),
+          ]),
       // GoRoute(
       //   path: '/chatRoomTest',
       //   name: 'chatRoomTest',

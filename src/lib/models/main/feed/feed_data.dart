@@ -7,6 +7,7 @@ part 'feed_data.g.dart';
 class FeedData with _$FeedData {
   factory FeedData({
     List<FeedCommentData>? commentList,
+    int? keepState,
     int? followState,
     int? isComment,
     int? memberIdx,
@@ -25,6 +26,7 @@ class FeedData with _$FeedData {
     List<FeedMentionListData>? mentionList,
     int? commentCnt,
     List<FeedHashTagListData>? hashTagList,
+    List<MemberInfoListData>? memberInfoList,
     List<FeedImgListData>? imgList,
   }) = _FeedData;
 
@@ -120,4 +122,22 @@ class ImgMemberTagListData with _$ImgMemberTagListData {
 
   factory ImgMemberTagListData.fromJson(Map<String, dynamic> json) =>
       _$ImgMemberTagListDataFromJson(json);
+}
+
+@freezed
+class MemberInfoListData with _$MemberInfoListData {
+  factory MemberInfoListData({
+    String? simpleType,
+    String? nick,
+    int? isBadge,
+    int? memberIdx,
+    int? followerCnt,
+    String? intro,
+    String? profileImgUrl,
+    int? followCnt,
+    String? email,
+  }) = _MemberInfoListData;
+
+  factory MemberInfoListData.fromJson(Map<String, dynamic> json) =>
+      _$MemberInfoListDataFromJson(json);
 }

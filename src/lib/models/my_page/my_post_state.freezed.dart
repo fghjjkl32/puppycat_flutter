@@ -20,7 +20,7 @@ MyPostState _$MyPostStateFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$MyPostState {
-  MySelectPost get myPostState => throw _privateConstructorUsedError;
+  SelectPost get myPostState => throw _privateConstructorUsedError;
   SelectPost get myKeepState => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -35,9 +35,9 @@ abstract class $MyPostStateCopyWith<$Res> {
           MyPostState value, $Res Function(MyPostState) then) =
       _$MyPostStateCopyWithImpl<$Res, MyPostState>;
   @useResult
-  $Res call({MySelectPost myPostState, SelectPost myKeepState});
+  $Res call({SelectPost myPostState, SelectPost myKeepState});
 
-  $MySelectPostCopyWith<$Res> get myPostState;
+  $SelectPostCopyWith<$Res> get myPostState;
   $SelectPostCopyWith<$Res> get myKeepState;
 }
 
@@ -61,7 +61,7 @@ class _$MyPostStateCopyWithImpl<$Res, $Val extends MyPostState>
       myPostState: null == myPostState
           ? _value.myPostState
           : myPostState // ignore: cast_nullable_to_non_nullable
-              as MySelectPost,
+              as SelectPost,
       myKeepState: null == myKeepState
           ? _value.myKeepState
           : myKeepState // ignore: cast_nullable_to_non_nullable
@@ -71,8 +71,8 @@ class _$MyPostStateCopyWithImpl<$Res, $Val extends MyPostState>
 
   @override
   @pragma('vm:prefer-inline')
-  $MySelectPostCopyWith<$Res> get myPostState {
-    return $MySelectPostCopyWith<$Res>(_value.myPostState, (value) {
+  $SelectPostCopyWith<$Res> get myPostState {
+    return $SelectPostCopyWith<$Res>(_value.myPostState, (value) {
       return _then(_value.copyWith(myPostState: value) as $Val);
     });
   }
@@ -94,10 +94,10 @@ abstract class _$$_MyPostStateCopyWith<$Res>
       __$$_MyPostStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({MySelectPost myPostState, SelectPost myKeepState});
+  $Res call({SelectPost myPostState, SelectPost myKeepState});
 
   @override
-  $MySelectPostCopyWith<$Res> get myPostState;
+  $SelectPostCopyWith<$Res> get myPostState;
   @override
   $SelectPostCopyWith<$Res> get myKeepState;
 }
@@ -120,7 +120,7 @@ class __$$_MyPostStateCopyWithImpl<$Res>
       myPostState: null == myPostState
           ? _value.myPostState
           : myPostState // ignore: cast_nullable_to_non_nullable
-              as MySelectPost,
+              as SelectPost,
       myKeepState: null == myKeepState
           ? _value.myKeepState
           : myKeepState // ignore: cast_nullable_to_non_nullable
@@ -138,7 +138,7 @@ class _$_MyPostState implements _MyPostState {
       _$$_MyPostStateFromJson(json);
 
   @override
-  final MySelectPost myPostState;
+  final SelectPost myPostState;
   @override
   final SelectPost myKeepState;
 
@@ -178,14 +178,14 @@ class _$_MyPostState implements _MyPostState {
 
 abstract class _MyPostState implements MyPostState {
   factory _MyPostState(
-      {required final MySelectPost myPostState,
+      {required final SelectPost myPostState,
       required final SelectPost myKeepState}) = _$_MyPostState;
 
   factory _MyPostState.fromJson(Map<String, dynamic> json) =
       _$_MyPostState.fromJson;
 
   @override
-  MySelectPost get myPostState;
+  SelectPost get myPostState;
   @override
   SelectPost get myKeepState;
   @override

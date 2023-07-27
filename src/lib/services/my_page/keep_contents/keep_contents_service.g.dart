@@ -53,6 +53,37 @@ class _KeepContentsService implements KeepContentsService {
   }
 
   @override
+  Future<FeedResponseModel?> getMyKeepContentDetail(
+    int contentsIdx,
+    int loginMemberIdx,
+  ) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>?>(_setStreamType<FeedResponseModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/my/keep/contents/${contentsIdx}?loginMemberIdx=${loginMemberIdx}&imgLimit=12',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value =
+        _result.data == null ? null : FeedResponseModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<ResponseModel?> deleteKeepContents(
     int memberIdx,
     String idx,

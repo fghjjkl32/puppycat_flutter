@@ -21,6 +21,7 @@ FeedData _$FeedDataFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$FeedData {
   List<FeedCommentData>? get commentList => throw _privateConstructorUsedError;
+  int? get keepState => throw _privateConstructorUsedError;
   int? get followState => throw _privateConstructorUsedError;
   int? get isComment => throw _privateConstructorUsedError;
   int? get memberIdx => throw _privateConstructorUsedError;
@@ -41,6 +42,8 @@ mixin _$FeedData {
   int? get commentCnt => throw _privateConstructorUsedError;
   List<FeedHashTagListData>? get hashTagList =>
       throw _privateConstructorUsedError;
+  List<MemberInfoListData>? get memberInfoList =>
+      throw _privateConstructorUsedError;
   List<FeedImgListData>? get imgList => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -56,6 +59,7 @@ abstract class $FeedDataCopyWith<$Res> {
   @useResult
   $Res call(
       {List<FeedCommentData>? commentList,
+      int? keepState,
       int? followState,
       int? isComment,
       int? memberIdx,
@@ -74,6 +78,7 @@ abstract class $FeedDataCopyWith<$Res> {
       List<FeedMentionListData>? mentionList,
       int? commentCnt,
       List<FeedHashTagListData>? hashTagList,
+      List<MemberInfoListData>? memberInfoList,
       List<FeedImgListData>? imgList});
 }
 
@@ -91,6 +96,7 @@ class _$FeedDataCopyWithImpl<$Res, $Val extends FeedData>
   @override
   $Res call({
     Object? commentList = freezed,
+    Object? keepState = freezed,
     Object? followState = freezed,
     Object? isComment = freezed,
     Object? memberIdx = freezed,
@@ -109,6 +115,7 @@ class _$FeedDataCopyWithImpl<$Res, $Val extends FeedData>
     Object? mentionList = freezed,
     Object? commentCnt = freezed,
     Object? hashTagList = freezed,
+    Object? memberInfoList = freezed,
     Object? imgList = freezed,
   }) {
     return _then(_value.copyWith(
@@ -116,6 +123,10 @@ class _$FeedDataCopyWithImpl<$Res, $Val extends FeedData>
           ? _value.commentList
           : commentList // ignore: cast_nullable_to_non_nullable
               as List<FeedCommentData>?,
+      keepState: freezed == keepState
+          ? _value.keepState
+          : keepState // ignore: cast_nullable_to_non_nullable
+              as int?,
       followState: freezed == followState
           ? _value.followState
           : followState // ignore: cast_nullable_to_non_nullable
@@ -188,6 +199,10 @@ class _$FeedDataCopyWithImpl<$Res, $Val extends FeedData>
           ? _value.hashTagList
           : hashTagList // ignore: cast_nullable_to_non_nullable
               as List<FeedHashTagListData>?,
+      memberInfoList: freezed == memberInfoList
+          ? _value.memberInfoList
+          : memberInfoList // ignore: cast_nullable_to_non_nullable
+              as List<MemberInfoListData>?,
       imgList: freezed == imgList
           ? _value.imgList
           : imgList // ignore: cast_nullable_to_non_nullable
@@ -205,6 +220,7 @@ abstract class _$$_FeedDataCopyWith<$Res> implements $FeedDataCopyWith<$Res> {
   @useResult
   $Res call(
       {List<FeedCommentData>? commentList,
+      int? keepState,
       int? followState,
       int? isComment,
       int? memberIdx,
@@ -223,6 +239,7 @@ abstract class _$$_FeedDataCopyWith<$Res> implements $FeedDataCopyWith<$Res> {
       List<FeedMentionListData>? mentionList,
       int? commentCnt,
       List<FeedHashTagListData>? hashTagList,
+      List<MemberInfoListData>? memberInfoList,
       List<FeedImgListData>? imgList});
 }
 
@@ -238,6 +255,7 @@ class __$$_FeedDataCopyWithImpl<$Res>
   @override
   $Res call({
     Object? commentList = freezed,
+    Object? keepState = freezed,
     Object? followState = freezed,
     Object? isComment = freezed,
     Object? memberIdx = freezed,
@@ -256,6 +274,7 @@ class __$$_FeedDataCopyWithImpl<$Res>
     Object? mentionList = freezed,
     Object? commentCnt = freezed,
     Object? hashTagList = freezed,
+    Object? memberInfoList = freezed,
     Object? imgList = freezed,
   }) {
     return _then(_$_FeedData(
@@ -263,6 +282,10 @@ class __$$_FeedDataCopyWithImpl<$Res>
           ? _value._commentList
           : commentList // ignore: cast_nullable_to_non_nullable
               as List<FeedCommentData>?,
+      keepState: freezed == keepState
+          ? _value.keepState
+          : keepState // ignore: cast_nullable_to_non_nullable
+              as int?,
       followState: freezed == followState
           ? _value.followState
           : followState // ignore: cast_nullable_to_non_nullable
@@ -335,6 +358,10 @@ class __$$_FeedDataCopyWithImpl<$Res>
           ? _value._hashTagList
           : hashTagList // ignore: cast_nullable_to_non_nullable
               as List<FeedHashTagListData>?,
+      memberInfoList: freezed == memberInfoList
+          ? _value._memberInfoList
+          : memberInfoList // ignore: cast_nullable_to_non_nullable
+              as List<MemberInfoListData>?,
       imgList: freezed == imgList
           ? _value._imgList
           : imgList // ignore: cast_nullable_to_non_nullable
@@ -348,6 +375,7 @@ class __$$_FeedDataCopyWithImpl<$Res>
 class _$_FeedData implements _FeedData {
   _$_FeedData(
       {final List<FeedCommentData>? commentList,
+      this.keepState,
       this.followState,
       this.isComment,
       this.memberIdx,
@@ -366,10 +394,12 @@ class _$_FeedData implements _FeedData {
       final List<FeedMentionListData>? mentionList,
       this.commentCnt,
       final List<FeedHashTagListData>? hashTagList,
+      final List<MemberInfoListData>? memberInfoList,
       final List<FeedImgListData>? imgList})
       : _commentList = commentList,
         _mentionList = mentionList,
         _hashTagList = hashTagList,
+        _memberInfoList = memberInfoList,
         _imgList = imgList;
 
   factory _$_FeedData.fromJson(Map<String, dynamic> json) =>
@@ -385,6 +415,8 @@ class _$_FeedData implements _FeedData {
     return EqualUnmodifiableListView(value);
   }
 
+  @override
+  final int? keepState;
   @override
   final int? followState;
   @override
@@ -437,6 +469,16 @@ class _$_FeedData implements _FeedData {
     return EqualUnmodifiableListView(value);
   }
 
+  final List<MemberInfoListData>? _memberInfoList;
+  @override
+  List<MemberInfoListData>? get memberInfoList {
+    final value = _memberInfoList;
+    if (value == null) return null;
+    if (_memberInfoList is EqualUnmodifiableListView) return _memberInfoList;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   final List<FeedImgListData>? _imgList;
   @override
   List<FeedImgListData>? get imgList {
@@ -449,7 +491,7 @@ class _$_FeedData implements _FeedData {
 
   @override
   String toString() {
-    return 'FeedData(commentList: $commentList, followState: $followState, isComment: $isComment, memberIdx: $memberIdx, isLike: $isLike, saveState: $saveState, isView: $isView, regDate: $regDate, likeState: $likeState, imageCnt: $imageCnt, uuid: $uuid, likeCnt: $likeCnt, contents: $contents, location: $location, modifyState: $modifyState, idx: $idx, mentionList: $mentionList, commentCnt: $commentCnt, hashTagList: $hashTagList, imgList: $imgList)';
+    return 'FeedData(commentList: $commentList, keepState: $keepState, followState: $followState, isComment: $isComment, memberIdx: $memberIdx, isLike: $isLike, saveState: $saveState, isView: $isView, regDate: $regDate, likeState: $likeState, imageCnt: $imageCnt, uuid: $uuid, likeCnt: $likeCnt, contents: $contents, location: $location, modifyState: $modifyState, idx: $idx, mentionList: $mentionList, commentCnt: $commentCnt, hashTagList: $hashTagList, memberInfoList: $memberInfoList, imgList: $imgList)';
   }
 
   @override
@@ -459,6 +501,8 @@ class _$_FeedData implements _FeedData {
             other is _$_FeedData &&
             const DeepCollectionEquality()
                 .equals(other._commentList, _commentList) &&
+            (identical(other.keepState, keepState) ||
+                other.keepState == keepState) &&
             (identical(other.followState, followState) ||
                 other.followState == followState) &&
             (identical(other.isComment, isComment) ||
@@ -489,6 +533,8 @@ class _$_FeedData implements _FeedData {
                 other.commentCnt == commentCnt) &&
             const DeepCollectionEquality()
                 .equals(other._hashTagList, _hashTagList) &&
+            const DeepCollectionEquality()
+                .equals(other._memberInfoList, _memberInfoList) &&
             const DeepCollectionEquality().equals(other._imgList, _imgList));
   }
 
@@ -497,6 +543,7 @@ class _$_FeedData implements _FeedData {
   int get hashCode => Object.hashAll([
         runtimeType,
         const DeepCollectionEquality().hash(_commentList),
+        keepState,
         followState,
         isComment,
         memberIdx,
@@ -515,6 +562,7 @@ class _$_FeedData implements _FeedData {
         const DeepCollectionEquality().hash(_mentionList),
         commentCnt,
         const DeepCollectionEquality().hash(_hashTagList),
+        const DeepCollectionEquality().hash(_memberInfoList),
         const DeepCollectionEquality().hash(_imgList)
       ]);
 
@@ -535,6 +583,7 @@ class _$_FeedData implements _FeedData {
 abstract class _FeedData implements FeedData {
   factory _FeedData(
       {final List<FeedCommentData>? commentList,
+      final int? keepState,
       final int? followState,
       final int? isComment,
       final int? memberIdx,
@@ -553,12 +602,15 @@ abstract class _FeedData implements FeedData {
       final List<FeedMentionListData>? mentionList,
       final int? commentCnt,
       final List<FeedHashTagListData>? hashTagList,
+      final List<MemberInfoListData>? memberInfoList,
       final List<FeedImgListData>? imgList}) = _$_FeedData;
 
   factory _FeedData.fromJson(Map<String, dynamic> json) = _$_FeedData.fromJson;
 
   @override
   List<FeedCommentData>? get commentList;
+  @override
+  int? get keepState;
   @override
   int? get followState;
   @override
@@ -595,6 +647,8 @@ abstract class _FeedData implements FeedData {
   int? get commentCnt;
   @override
   List<FeedHashTagListData>? get hashTagList;
+  @override
+  List<MemberInfoListData>? get memberInfoList;
   @override
   List<FeedImgListData>? get imgList;
   @override
@@ -2060,5 +2114,312 @@ abstract class _ImgMemberTagListData implements ImgMemberTagListData {
   @override
   @JsonKey(ignore: true)
   _$$_ImgMemberTagListDataCopyWith<_$_ImgMemberTagListData> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+MemberInfoListData _$MemberInfoListDataFromJson(Map<String, dynamic> json) {
+  return _MemberInfoListData.fromJson(json);
+}
+
+/// @nodoc
+mixin _$MemberInfoListData {
+  String? get simpleType => throw _privateConstructorUsedError;
+  String? get nick => throw _privateConstructorUsedError;
+  int? get isBadge => throw _privateConstructorUsedError;
+  int? get memberIdx => throw _privateConstructorUsedError;
+  int? get followerCnt => throw _privateConstructorUsedError;
+  String? get intro => throw _privateConstructorUsedError;
+  String? get profileImgUrl => throw _privateConstructorUsedError;
+  int? get followCnt => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $MemberInfoListDataCopyWith<MemberInfoListData> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $MemberInfoListDataCopyWith<$Res> {
+  factory $MemberInfoListDataCopyWith(
+          MemberInfoListData value, $Res Function(MemberInfoListData) then) =
+      _$MemberInfoListDataCopyWithImpl<$Res, MemberInfoListData>;
+  @useResult
+  $Res call(
+      {String? simpleType,
+      String? nick,
+      int? isBadge,
+      int? memberIdx,
+      int? followerCnt,
+      String? intro,
+      String? profileImgUrl,
+      int? followCnt,
+      String? email});
+}
+
+/// @nodoc
+class _$MemberInfoListDataCopyWithImpl<$Res, $Val extends MemberInfoListData>
+    implements $MemberInfoListDataCopyWith<$Res> {
+  _$MemberInfoListDataCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? simpleType = freezed,
+    Object? nick = freezed,
+    Object? isBadge = freezed,
+    Object? memberIdx = freezed,
+    Object? followerCnt = freezed,
+    Object? intro = freezed,
+    Object? profileImgUrl = freezed,
+    Object? followCnt = freezed,
+    Object? email = freezed,
+  }) {
+    return _then(_value.copyWith(
+      simpleType: freezed == simpleType
+          ? _value.simpleType
+          : simpleType // ignore: cast_nullable_to_non_nullable
+              as String?,
+      nick: freezed == nick
+          ? _value.nick
+          : nick // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isBadge: freezed == isBadge
+          ? _value.isBadge
+          : isBadge // ignore: cast_nullable_to_non_nullable
+              as int?,
+      memberIdx: freezed == memberIdx
+          ? _value.memberIdx
+          : memberIdx // ignore: cast_nullable_to_non_nullable
+              as int?,
+      followerCnt: freezed == followerCnt
+          ? _value.followerCnt
+          : followerCnt // ignore: cast_nullable_to_non_nullable
+              as int?,
+      intro: freezed == intro
+          ? _value.intro
+          : intro // ignore: cast_nullable_to_non_nullable
+              as String?,
+      profileImgUrl: freezed == profileImgUrl
+          ? _value.profileImgUrl
+          : profileImgUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      followCnt: freezed == followCnt
+          ? _value.followCnt
+          : followCnt // ignore: cast_nullable_to_non_nullable
+              as int?,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$_MemberInfoListDataCopyWith<$Res>
+    implements $MemberInfoListDataCopyWith<$Res> {
+  factory _$$_MemberInfoListDataCopyWith(_$_MemberInfoListData value,
+          $Res Function(_$_MemberInfoListData) then) =
+      __$$_MemberInfoListDataCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String? simpleType,
+      String? nick,
+      int? isBadge,
+      int? memberIdx,
+      int? followerCnt,
+      String? intro,
+      String? profileImgUrl,
+      int? followCnt,
+      String? email});
+}
+
+/// @nodoc
+class __$$_MemberInfoListDataCopyWithImpl<$Res>
+    extends _$MemberInfoListDataCopyWithImpl<$Res, _$_MemberInfoListData>
+    implements _$$_MemberInfoListDataCopyWith<$Res> {
+  __$$_MemberInfoListDataCopyWithImpl(
+      _$_MemberInfoListData _value, $Res Function(_$_MemberInfoListData) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? simpleType = freezed,
+    Object? nick = freezed,
+    Object? isBadge = freezed,
+    Object? memberIdx = freezed,
+    Object? followerCnt = freezed,
+    Object? intro = freezed,
+    Object? profileImgUrl = freezed,
+    Object? followCnt = freezed,
+    Object? email = freezed,
+  }) {
+    return _then(_$_MemberInfoListData(
+      simpleType: freezed == simpleType
+          ? _value.simpleType
+          : simpleType // ignore: cast_nullable_to_non_nullable
+              as String?,
+      nick: freezed == nick
+          ? _value.nick
+          : nick // ignore: cast_nullable_to_non_nullable
+              as String?,
+      isBadge: freezed == isBadge
+          ? _value.isBadge
+          : isBadge // ignore: cast_nullable_to_non_nullable
+              as int?,
+      memberIdx: freezed == memberIdx
+          ? _value.memberIdx
+          : memberIdx // ignore: cast_nullable_to_non_nullable
+              as int?,
+      followerCnt: freezed == followerCnt
+          ? _value.followerCnt
+          : followerCnt // ignore: cast_nullable_to_non_nullable
+              as int?,
+      intro: freezed == intro
+          ? _value.intro
+          : intro // ignore: cast_nullable_to_non_nullable
+              as String?,
+      profileImgUrl: freezed == profileImgUrl
+          ? _value.profileImgUrl
+          : profileImgUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      followCnt: freezed == followCnt
+          ? _value.followCnt
+          : followCnt // ignore: cast_nullable_to_non_nullable
+              as int?,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_MemberInfoListData implements _MemberInfoListData {
+  _$_MemberInfoListData(
+      {this.simpleType,
+      this.nick,
+      this.isBadge,
+      this.memberIdx,
+      this.followerCnt,
+      this.intro,
+      this.profileImgUrl,
+      this.followCnt,
+      this.email});
+
+  factory _$_MemberInfoListData.fromJson(Map<String, dynamic> json) =>
+      _$$_MemberInfoListDataFromJson(json);
+
+  @override
+  final String? simpleType;
+  @override
+  final String? nick;
+  @override
+  final int? isBadge;
+  @override
+  final int? memberIdx;
+  @override
+  final int? followerCnt;
+  @override
+  final String? intro;
+  @override
+  final String? profileImgUrl;
+  @override
+  final int? followCnt;
+  @override
+  final String? email;
+
+  @override
+  String toString() {
+    return 'MemberInfoListData(simpleType: $simpleType, nick: $nick, isBadge: $isBadge, memberIdx: $memberIdx, followerCnt: $followerCnt, intro: $intro, profileImgUrl: $profileImgUrl, followCnt: $followCnt, email: $email)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_MemberInfoListData &&
+            (identical(other.simpleType, simpleType) ||
+                other.simpleType == simpleType) &&
+            (identical(other.nick, nick) || other.nick == nick) &&
+            (identical(other.isBadge, isBadge) || other.isBadge == isBadge) &&
+            (identical(other.memberIdx, memberIdx) ||
+                other.memberIdx == memberIdx) &&
+            (identical(other.followerCnt, followerCnt) ||
+                other.followerCnt == followerCnt) &&
+            (identical(other.intro, intro) || other.intro == intro) &&
+            (identical(other.profileImgUrl, profileImgUrl) ||
+                other.profileImgUrl == profileImgUrl) &&
+            (identical(other.followCnt, followCnt) ||
+                other.followCnt == followCnt) &&
+            (identical(other.email, email) || other.email == email));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(runtimeType, simpleType, nick, isBadge,
+      memberIdx, followerCnt, intro, profileImgUrl, followCnt, email);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_MemberInfoListDataCopyWith<_$_MemberInfoListData> get copyWith =>
+      __$$_MemberInfoListDataCopyWithImpl<_$_MemberInfoListData>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_MemberInfoListDataToJson(
+      this,
+    );
+  }
+}
+
+abstract class _MemberInfoListData implements MemberInfoListData {
+  factory _MemberInfoListData(
+      {final String? simpleType,
+      final String? nick,
+      final int? isBadge,
+      final int? memberIdx,
+      final int? followerCnt,
+      final String? intro,
+      final String? profileImgUrl,
+      final int? followCnt,
+      final String? email}) = _$_MemberInfoListData;
+
+  factory _MemberInfoListData.fromJson(Map<String, dynamic> json) =
+      _$_MemberInfoListData.fromJson;
+
+  @override
+  String? get simpleType;
+  @override
+  String? get nick;
+  @override
+  int? get isBadge;
+  @override
+  int? get memberIdx;
+  @override
+  int? get followerCnt;
+  @override
+  String? get intro;
+  @override
+  String? get profileImgUrl;
+  @override
+  int? get followCnt;
+  @override
+  String? get email;
+  @override
+  @JsonKey(ignore: true)
+  _$$_MemberInfoListDataCopyWith<_$_MemberInfoListData> get copyWith =>
       throw _privateConstructorUsedError;
 }

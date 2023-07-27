@@ -107,7 +107,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
     if (tagContentController.position.pixels >
         tagContentController.position.maxScrollExtent -
             MediaQuery.of(context).size.height) {
-      if (userOldLength == ref.read(tagContentStateProvider).list.length) {
+      if (tagOldLength == ref.read(tagContentStateProvider).list.length) {
         ref
             .read(tagContentStateProvider.notifier)
             .loadMorePost(ref.read(userModelProvider)!.idx, widget.memberIdx);
@@ -386,7 +386,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                 margin: const EdgeInsets.all(10.0),
                 child: GestureDetector(
                   onTap: () {
-                    context.go("/home/myPage/detail/왕티즈왕왕/게시물");
+                    context.push(
+                        "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/게시물/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userContent");
                   },
                   child: Center(
                     child: Stack(
@@ -396,7 +397,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(12)),
                             child: Image.network(
-                              "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -493,15 +494,20 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                 margin: const EdgeInsets.all(10.0),
                 child: GestureDetector(
                   onTap: () {
-                    context.go("/home/myPage/detail/왕티즈왕왕/태그됨");
+                    context.push(
+                        "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userTagContent");
                   },
                   child: Center(
                     child: Stack(
                       children: [
                         Positioned.fill(
-                          child: Image.network(
-                            "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
-                            fit: BoxFit.cover,
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                            child: Image.network(
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         Positioned(

@@ -10,6 +10,7 @@ _$_FeedData _$$_FeedDataFromJson(Map<String, dynamic> json) => _$_FeedData(
       commentList: (json['commentList'] as List<dynamic>?)
           ?.map((e) => FeedCommentData.fromJson(e as Map<String, dynamic>))
           .toList(),
+      keepState: json['keepState'] as int?,
       followState: json['followState'] as int?,
       isComment: json['isComment'] as int?,
       memberIdx: json['memberIdx'] as int?,
@@ -32,6 +33,9 @@ _$_FeedData _$$_FeedDataFromJson(Map<String, dynamic> json) => _$_FeedData(
       hashTagList: (json['hashTagList'] as List<dynamic>?)
           ?.map((e) => FeedHashTagListData.fromJson(e as Map<String, dynamic>))
           .toList(),
+      memberInfoList: (json['memberInfoList'] as List<dynamic>?)
+          ?.map((e) => MemberInfoListData.fromJson(e as Map<String, dynamic>))
+          .toList(),
       imgList: (json['imgList'] as List<dynamic>?)
           ?.map((e) => FeedImgListData.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -40,6 +44,7 @@ _$_FeedData _$$_FeedDataFromJson(Map<String, dynamic> json) => _$_FeedData(
 Map<String, dynamic> _$$_FeedDataToJson(_$_FeedData instance) =>
     <String, dynamic>{
       'commentList': instance.commentList,
+      'keepState': instance.keepState,
       'followState': instance.followState,
       'isComment': instance.isComment,
       'memberIdx': instance.memberIdx,
@@ -58,6 +63,7 @@ Map<String, dynamic> _$$_FeedDataToJson(_$_FeedData instance) =>
       'mentionList': instance.mentionList,
       'commentCnt': instance.commentCnt,
       'hashTagList': instance.hashTagList,
+      'memberInfoList': instance.memberInfoList,
       'imgList': instance.imgList,
     };
 
@@ -189,4 +195,32 @@ Map<String, dynamic> _$$_ImgMemberTagListDataToJson(
       'followState': instance.followState,
       'width': instance.width,
       'height': instance.height,
+    };
+
+_$_MemberInfoListData _$$_MemberInfoListDataFromJson(
+        Map<String, dynamic> json) =>
+    _$_MemberInfoListData(
+      simpleType: json['simpleType'] as String?,
+      nick: json['nick'] as String?,
+      isBadge: json['isBadge'] as int?,
+      memberIdx: json['memberIdx'] as int?,
+      followerCnt: json['followerCnt'] as int?,
+      intro: json['intro'] as String?,
+      profileImgUrl: json['profileImgUrl'] as String?,
+      followCnt: json['followCnt'] as int?,
+      email: json['email'] as String?,
+    );
+
+Map<String, dynamic> _$$_MemberInfoListDataToJson(
+        _$_MemberInfoListData instance) =>
+    <String, dynamic>{
+      'simpleType': instance.simpleType,
+      'nick': instance.nick,
+      'isBadge': instance.isBadge,
+      'memberIdx': instance.memberIdx,
+      'followerCnt': instance.followerCnt,
+      'intro': instance.intro,
+      'profileImgUrl': instance.profileImgUrl,
+      'followCnt': instance.followCnt,
+      'email': instance.email,
     };

@@ -61,7 +61,6 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
         .getInitUserInformation(ref.read(userModelProvider)!.idx);
     ref.read(myContentStateProvider.notifier).initPosts(
           loginMemberIdx: ref.read(userModelProvider)!.idx,
-          memberIdx: ref.read(userModelProvider)!.idx,
           initPage: 1,
         );
     ref.read(myTagContentStateProvider.notifier).initPosts(
@@ -288,8 +287,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 margin: const EdgeInsets.all(10.0),
                 child: GestureDetector(
                   onTap: () {
-                    context.go(
-                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}");
+                    context.push(
+                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myContent");
                   },
                   child: Center(
                     child: Stack(
@@ -299,7 +298,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(12)),
                             child: Image.network(
-                              "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -648,8 +647,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 margin: const EdgeInsets.all(10.0),
                 child: GestureDetector(
                   onTap: () {
-                    context.go(
-                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}");
+                    context.push(
+                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myTagContent");
                   },
                   child: Center(
                     child: Stack(
@@ -659,7 +658,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(12)),
                             child: Image.network(
-                              "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
                               fit: BoxFit.cover,
                             ),
                           ),
