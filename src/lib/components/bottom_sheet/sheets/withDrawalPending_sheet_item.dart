@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
-import 'package:pet_mobile_social_flutter/providers/account/account_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/user_restore_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 
 class WithDrawalPendingSheetItem extends ConsumerWidget {
@@ -43,7 +43,7 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
                 return;
               }
               ref
-                  .read(accountRestoreStateProvider.notifier)
+                  .read(userRestoreStateProvider.notifier)
                   .restoreAccount(userModel.simpleId);
             },
             style: ButtonStyle(

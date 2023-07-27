@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pet_mobile_social_flutter/models/data_info_model.dart';
+import 'package:pet_mobile_social_flutter/models/user/user_data_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 
 part 'user_information_response_model.freezed.dart';
