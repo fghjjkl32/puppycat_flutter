@@ -65,7 +65,7 @@ class MyPageWithdrawalSelectScreenState
             appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               title: const Text(
-                "게시물 신고",
+                "회원 탈퇴",
               ),
               leading: IconButton(
                 onPressed: () {

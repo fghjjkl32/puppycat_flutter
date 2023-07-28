@@ -73,7 +73,7 @@ class FeedMemberInfoListData with _$FeedMemberInfoListData {
 @freezed
 class FeedMentionListData with _$FeedMentionListData {
   factory FeedMentionListData({
-    int? idx,
+    int? memberIdx,
     String? uuid,
     String? nick,
   }) = _FeedMentionListData;
@@ -111,6 +111,7 @@ class FeedImgListData with _$FeedImgListData {
 @freezed
 class ImgMemberTagListData with _$ImgMemberTagListData {
   factory ImgMemberTagListData({
+    String? nick,
     int? imgIdx,
     int? memberIdx,
     int? isBadge,

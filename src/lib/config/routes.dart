@@ -18,6 +18,7 @@ import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_complete_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/comment/main_comment_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/main/feed_search/feed_search_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.dart';
@@ -75,20 +76,35 @@ class AppRouter {
           },
           routes: [
             GoRoute(
-              path: 'report/:isComment',
-              name: 'report/:isComment',
+              path: 'report/:isComment/:contentIdx',
+              name: 'report/:isComment/:contentIdx',
               builder: (BuildContext context, GoRouterState state) {
                 final isComment = state.pathParameters['isComment']!;
+                final contentIdx = state.pathParameters['contentIdx']!;
                 return ReportScreen(
                   isComment: bool.parse(isComment),
+                  contentIdx: int.parse(contentIdx),
                 );
               },
             ),
             GoRoute(
-              path: 'commentDetail',
-              name: 'commentDetail',
+              path: 'search/:searchWord',
+              name: 'search/:searchWord',
               builder: (BuildContext context, GoRouterState state) {
-                return const MainCommentDetailScreen();
+                final searchWord = state.pathParameters['searchWord']!;
+                return FeedSearchListScreen(
+                  searchWord: searchWord,
+                );
+              },
+            ),
+            GoRoute(
+              path: 'commentDetail/:contentIdx',
+              name: 'commentDetail/:contentIdx',
+              builder: (BuildContext context, GoRouterState state) {
+                final contentIdx = state.pathParameters['contentIdx']!;
+                return MainCommentDetailScreen(
+                  contentIdx: int.parse(contentIdx),
+                );
               },
             ),
             GoRoute(

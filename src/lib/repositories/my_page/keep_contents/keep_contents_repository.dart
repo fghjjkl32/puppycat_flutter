@@ -47,6 +47,18 @@ class KeepContentsRepository {
     return keepContentsResponseModel;
   }
 
+  Future<ResponseModel> deleteOneKeepContents(
+      {required int memberIdx, required int idx}) async {
+    ResponseModel? keepContentsResponseModel =
+        await _keepContentsService.deleteOneKeepContents(memberIdx, idx);
+
+    if (keepContentsResponseModel == null) {
+      throw "error";
+    }
+
+    return keepContentsResponseModel;
+  }
+
   Future<ResponseModel> postKeepContents(
       {required int memberIdx, required List<int> idxList}) async {
     Map<String, dynamic> body = {

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
+import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 
 class MainCommentDetailScreen extends ConsumerStatefulWidget {
-  const MainCommentDetailScreen({super.key});
+  final int? contentIdx;
+  const MainCommentDetailScreen({required this.contentIdx, super.key});
 
   @override
   MainCommentDetailScreenState createState() => MainCommentDetailScreenState();
@@ -14,6 +17,26 @@ class MainCommentDetailScreen extends ConsumerStatefulWidget {
 
 class MainCommentDetailScreenState
     extends ConsumerState<MainCommentDetailScreen> {
+  int commentOldLength = 0;
+  ScrollController commentController = ScrollController();
+
+  @override
+  void initState() {
+    commentController.addListener(_commentScrollListener);
+
+    ref.read(commentStateProvider.notifier).initPosts(widget.contentIdx, 1);
+    super.initState();
+  }
+
+  void _commentScrollListener() {
+    if (commentController.position.extentAfter < 200) {
+      if (commentOldLength == ref.read(commentStateProvider).list.length) {
+        ref.read(commentStateProvider.notifier).loadMoreComment(
+            ref.watch(commentStateProvider).list[0].contentsIdx);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -27,7 +50,7 @@ class MainCommentDetailScreenState
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: const Text(
-              "댓글 5",
+              "댓글",
             ),
             leading: IconButton(
               onPressed: () {
@@ -39,106 +62,38 @@ class MainCommentDetailScreenState
           ),
           body: Stack(
             children: [
-              ListView(
-                children: [
-                  // CommentDetailItemWidget(
-                  //   profileImage: 'assets/image/feed/image/sample_image1.png',
-                  //   name: 'bichon_딩동',
-                  //   comment: '헤엑😍 넘 귀엽자농~ 모자 쓴거야? 귀여미!!! 너무 행복해...',
-                  //   isSpecialUser: true,
-                  //   time: DateTime(2023, 5, 28),
-                  //   isReply: false,
-                  //   likeCount: 42,
-                  // ),
-                  // CommentDetailItemWidget(
-                  //   profileImage: 'assets/image/feed/image/sample_image2.png',
-                  //   name: 'bichon_딩동',
-                  //   comment: '@baejji 시켜쨔나욧❕❕🐶',
-                  //   isSpecialUser: true,
-                  //   time: DateTime(2023, 5, 28),
-                  //   isReply: true,
-                  //   likeCount: 32,
-                  // ),
-                  // CommentDetailItemWidget(
-                  //   profileImage: 'assets/image/feed/image/sample_image1.png',
-                  //   name: 'bichon_딩동',
-                  //   comment: '헤엑😍 넘 귀엽자농~ 모자 쓴거야? 귀여미!!! 너무 행복해...',
-                  //   isSpecialUser: true,
-                  //   time: DateTime(2023, 5, 28),
-                  //   isReply: false,
-                  //   likeCount: 42,
-                  // ),
-                  // CommentDetailItemWidget(
-                  //   profileImage: 'assets/image/feed/image/sample_image2.png',
-                  //   name: 'bichon_딩동',
-                  //   comment: '@baejji 시켜쨔나욧❕❕🐶',
-                  //   isSpecialUser: true,
-                  //   time: DateTime(2023, 5, 28),
-                  //   isReply: true,
-                  //   likeCount: 32,
-                  // ),
-                  // CommentDetailItemWidget(
-                  //   profileImage: 'assets/image/feed/image/sample_image2.png',
-                  //   name: 'bichon_딩동',
-                  //   comment: '@baejji 시켜쨔나욧❕❕🐶',
-                  //   isSpecialUser: true,
-                  //   time: DateTime(2023, 5, 28),
-                  //   isReply: true,
-                  //   likeCount: 32,
-                  // ),
-                  // CommentDetailItemWidget(
-                  //   profileImage: 'assets/image/feed/image/sample_image1.png',
-                  //   name: 'bichon_딩동',
-                  //   comment: '헤엑😍 넘 귀엽자농~ 모자 쓴거야? 귀여미!!! 너무 행복해...',
-                  //   isSpecialUser: true,
-                  //   time: DateTime(2023, 5, 28),
-                  //   isReply: false,
-                  //   likeCount: 42,
-                  // ),
-                  // CommentDetailItemWidget(
-                  //   profileImage: 'assets/image/feed/image/sample_image2.png',
-                  //   name: 'bichon_딩동',
-                  //   comment: '@baejji 시켜쨔나욧❕❕🐶',
-                  //   isSpecialUser: true,
-                  //   time: DateTime(2023, 5, 28),
-                  //   isReply: true,
-                  //   likeCount: 32,
-                  // ),
-                  // CommentDetailItemWidget(
-                  //   profileImage: 'assets/image/feed/image/sample_image1.png',
-                  //   name: 'bichon_딩동',
-                  //   comment: '헤엑😍 넘 귀엽자농~ 모자 쓴거야? 귀여미!!! 너무 행복해...',
-                  //   isSpecialUser: true,
-                  //   time: DateTime(2023, 5, 28),
-                  //   isReply: false,
-                  //   likeCount: 42,
-                  // ),
-                  // CommentDetailItemWidget(
-                  //   profileImage: 'assets/image/feed/image/sample_image2.png',
-                  //   name: 'bichon_딩동',
-                  //   comment: '@baejji 시켜쨔나욧❕❕🐶',
-                  //   isSpecialUser: true,
-                  //   time: DateTime(2023, 5, 28),
-                  //   isReply: true,
-                  //   likeCount: 32,
-                  // ),
-                  // CommentDetailItemWidget(
-                  //   profileImage: 'assets/image/feed/image/sample_image2.png',
-                  //   name: 'bichon_딩동',
-                  //   comment: '@baejji 시켜쨔나욧❕❕🐶',
-                  //   isSpecialUser: true,
-                  //   time: DateTime(2023, 5, 28),
-                  //   isReply: true,
-                  //   likeCount: 32,
-                  // ),
-                ],
-              ),
-              const Positioned(
+              Consumer(builder: (context, ref, child) {
+                final commentContentState = ref.watch(commentStateProvider);
+                final commentLists = commentContentState.list;
+                return ListView.builder(
+                  controller: commentController,
+                  itemCount: commentLists.length,
+                  padding: EdgeInsets.only(bottom: 80.h),
+                  itemBuilder: (BuildContext context, int index) {
+                    return CommentDetailItemWidget(
+                      parentIdx: commentLists[index].parentIdx,
+                      commentIdx: commentLists[index].idx,
+                      profileImage: commentLists[index].url ??
+                          'assets/image/feed/image/sample_image1.png',
+                      name: commentLists[index].nick,
+                      comment: commentLists[index].contents,
+                      isSpecialUser: commentLists[index].isBadge == 1,
+                      time: DateTime.parse(commentLists[index].regDate),
+                      isReply: false,
+                      likeCount: commentLists[index].likeCnt,
+                      replies: commentLists[index].childCommentData,
+                      contentIdx: commentLists[0].contentsIdx,
+                      isLike: commentLists[index].likeState == 1,
+                    );
+                  },
+                );
+              }),
+              Positioned(
                 left: 0,
                 right: 0,
                 bottom: 0,
                 child: CommentCustomTextField(
-                  contentIdx: 0,
+                  contentIdx: widget.contentIdx!,
                 ),
               ),
             ],

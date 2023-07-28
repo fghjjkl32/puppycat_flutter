@@ -5,12 +5,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class FeedTitleWidget extends ConsumerWidget {
@@ -22,6 +25,8 @@ class FeedTitleWidget extends ConsumerWidget {
     required this.isEdit,
     required this.memberIdx,
     required this.isKeep,
+    required this.contentIdx,
+    required this.contentType,
     Key? key,
   }) : super(key: key);
 
@@ -32,6 +37,8 @@ class FeedTitleWidget extends ConsumerWidget {
   final bool isEdit;
   final int? memberIdx;
   final bool isKeep;
+  final int contentIdx;
+  final String contentType;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -154,20 +161,18 @@ class FeedTitleWidget extends ConsumerWidget {
                                     context.pop();
 
                                     final result = await ref
-                                        .watch(myPostStateProvider.notifier)
-                                        .postKeepContents(
-                                          memberIdx:
+                                        .watch(feedDetailStateProvider.notifier)
+                                        .deleteOneKeepContents(
+                                          loginMemberIdx:
                                               ref.read(userModelProvider)!.idx,
-                                          idxList: ref
-                                              .watch(
-                                                  myPostStateProvider.notifier)
-                                              .getSelectedMyPostImageIdx(),
+                                          contentType: contentType,
+                                          contentIdx: contentIdx,
                                         );
 
                                     if (result.result) {
                                       toast(
                                         context: context,
-                                        text: '게시물 보관이 완료되었습니다.',
+                                        text: '게시물 보관이 취소됐습니다.',
                                         type: ToastType.purple,
                                       );
                                     }
@@ -183,14 +188,12 @@ class FeedTitleWidget extends ConsumerWidget {
                                     context.pop();
 
                                     final result = await ref
-                                        .watch(myPostStateProvider.notifier)
+                                        .watch(feedDetailStateProvider.notifier)
                                         .postKeepContents(
-                                          memberIdx:
+                                          loginMemberIdx:
                                               ref.read(userModelProvider)!.idx,
-                                          idxList: ref
-                                              .watch(
-                                                  myPostStateProvider.notifier)
-                                              .getSelectedMyPostImageIdx(),
+                                          contentIdxList: [contentIdx],
+                                          contentType: contentType,
                                         );
 
                                     if (result.result) {
@@ -216,9 +219,25 @@ class FeedTitleWidget extends ConsumerWidget {
                             title: '삭제하기',
                             titleStyle:
                                 kButton14BoldStyle.copyWith(color: kBadgeColor),
-                            onTap: () {
+                            onTap: () async {
                               context.pop();
-                              context.push("/home/report/false");
+
+                              final result = await ref
+                                  .watch(feedDetailStateProvider.notifier)
+                                  .deleteOneContents(
+                                    loginMemberIdx:
+                                        ref.read(userModelProvider)!.idx,
+                                    contentType: contentType,
+                                    contentIdx: contentIdx,
+                                  );
+
+                              if (result.result) {
+                                toast(
+                                  context: context,
+                                  text: '게시물 삭제가 완료되었습니다.',
+                                  type: ToastType.purple,
+                                );
+                              }
                             },
                           ),
                         ],
@@ -234,7 +253,47 @@ class FeedTitleWidget extends ConsumerWidget {
                             title: '숨기기',
                             titleStyle: kButton14BoldStyle.copyWith(
                                 color: kTextSubTitleColor),
-                            onTap: () {},
+                            onTap: () async {
+                              context.pop();
+
+                              final result = await ref
+                                  .watch(feedDetailStateProvider.notifier)
+                                  .postHide(
+                                    loginMemberIdx:
+                                        ref.read(userModelProvider)!.idx,
+                                    contentType: contentType,
+                                    contentIdx: contentIdx,
+                                    memberIdx: memberIdx,
+                                  );
+
+                              if (result.result) {
+                                toast(
+                                  context: context,
+                                  text: '게시물 숨기기를 완료하였습니다.',
+                                  type: ToastType.purple,
+                                  buttonText: "숨기기 취소",
+                                  buttonOnTap: () async {
+                                    final result = await ref
+                                        .watch(feedDetailStateProvider.notifier)
+                                        .deleteHide(
+                                          loginMemberIdx:
+                                              ref.read(userModelProvider)!.idx,
+                                          contentType: contentType,
+                                          contentIdx: contentIdx,
+                                          memberIdx: memberIdx,
+                                        );
+
+                                    if (result.result) {
+                                      toast(
+                                        context: context,
+                                        text: '게시물 숨기기 취소',
+                                        type: ToastType.purple,
+                                      );
+                                    }
+                                  },
+                                );
+                              }
+                            },
                           ),
                           BottomSheetButtonItem(
                             iconImage:
@@ -242,7 +301,83 @@ class FeedTitleWidget extends ConsumerWidget {
                             title: '차단하기',
                             titleStyle: kButton14BoldStyle.copyWith(
                                 color: kTextSubTitleColor),
-                            onTap: () {},
+                            onTap: () async {
+                              context.pop();
+
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return CustomDialog(
+                                      content: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 24.0.h),
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              "‘${userName}’님을\n차단하시겠어요?",
+                                              style: kBody16BoldStyle.copyWith(
+                                                  color: kTextTitleColor),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(
+                                              height: 8.h,
+                                            ),
+                                            Text(
+                                              "‘${userName}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
+                                              style:
+                                                  kBody12RegularStyle.copyWith(
+                                                      color: kTextBodyColor),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(
+                                              height: 8.h,
+                                            ),
+                                            Text(
+                                              " ‘${userName}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
+                                              style:
+                                                  kBody12RegularStyle.copyWith(
+                                                      color: kTextBodyColor),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      confirmTap: () async {
+                                        context.pop();
+
+                                        final result = await ref
+                                            .read(feedDetailStateProvider
+                                                .notifier)
+                                            .postBlock(
+                                              memberIdx: ref
+                                                  .watch(userModelProvider)!
+                                                  .idx,
+                                              blockIdx: memberIdx,
+                                              contentType: contentType,
+                                              contentIdx: contentIdx,
+                                            );
+
+                                        if (result.result) {
+                                          context.pop();
+
+                                          toast(
+                                            context: context,
+                                            text: "‘${userName}’님을 차단하였습니다.",
+                                            type: ToastType.purple,
+                                          );
+                                        }
+                                      },
+                                      cancelTap: () {
+                                        context.pop();
+                                      },
+                                      confirmWidget: Text(
+                                        "유저 차단",
+                                        style: kButton14MediumStyle.copyWith(
+                                            color: kBadgeColor),
+                                      ));
+                                },
+                              );
+                            },
                           ),
                           BottomSheetButtonItem(
                             iconImage:
@@ -252,7 +387,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                 kButton14BoldStyle.copyWith(color: kBadgeColor),
                             onTap: () {
                               context.pop();
-                              context.push("/home/report/false");
+                              context.push("/home/report/false/$contentIdx");
                             },
                           ),
                         ],

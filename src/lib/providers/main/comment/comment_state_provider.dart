@@ -112,4 +112,30 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
 
     return result;
   }
+
+  Future<ResponseModel> postCommentLike({
+    required memberIdx,
+    required commentIdx,
+    required contentsIdx,
+  }) async {
+    final result = await CommentRepository()
+        .postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+
+    await refresh(contentsIdx);
+
+    return result;
+  }
+
+  Future<ResponseModel> deleteCommentLike({
+    required memberIdx,
+    required commentIdx,
+    required contentsIdx,
+  }) async {
+    final result = await CommentRepository()
+        .deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+
+    await refresh(contentsIdx);
+
+    return result;
+  }
 }

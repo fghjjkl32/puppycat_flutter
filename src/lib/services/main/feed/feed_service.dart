@@ -11,6 +11,30 @@ part 'feed_service.g.dart';
 abstract class FeedService {
   factory FeedService(Dio dio, {String baseUrl}) = _FeedService;
 
+  @DELETE('/contents?memberIdx={memberIdx}&{idx}')
+  Future<ResponseModel?> deleteContents(
+    @Path("memberIdx") int memberIdx,
+    @Path("idx") String idx,
+  );
+
+  @DELETE('/contents?memberIdx={memberIdx}&idx={idx}')
+  Future<ResponseModel?> deleteOneContents(
+    @Path("memberIdx") int memberIdx,
+    @Path("idx") int idx,
+  );
+
+  @POST('/contents/{contentsIdx}/report')
+  Future<ResponseModel?> postContentReport(
+    @Path("contentsIdx") int contentsIdx,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @DELETE('/contents/{contentsIdx}/report?memberIdx={memberIdx}')
+  Future<ResponseModel?> deleteContentReport(
+    @Path("contentsIdx") int contentsIdx,
+    @Path("memberIdx") int memberIdx,
+  );
+
   //user page feed list - my
   @GET('/my/contents?memberIdx={memberIdx}&page={page}&limit=15')
   Future<ContentResponseModel?> getMyContentList(
@@ -41,6 +65,14 @@ abstract class FeedService {
     @Path("page") int page,
   );
 
+  @GET(
+      '/search/tag/contents?memberIdx={memberIdx}&imgLimit=12&searchWord={searchWord}&page={page}&limit=15')
+  Future<ContentResponseModel?> getUserHashtagContentList(
+    @Path("memberIdx") int memberIdx,
+    @Path("searchWord") String searchWord,
+    @Path("page") int page,
+  );
+
   //user contents detail
   @GET(
       '/contents/member/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&memberIdx={memberIdx}&page={page}')
@@ -55,6 +87,14 @@ abstract class FeedService {
   Future<FeedResponseModel?> getUserTagContentDetail(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
+    @Path("page") int page,
+  );
+
+  @GET(
+      '/contents/hashtag/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&searchWord={searchWord}&page={page}')
+  Future<FeedResponseModel?> getUserHashtagContentDetailList(
+    @Path("loginMemberIdx") int loginMemberIdx,
+    @Path("searchWord") String searchWord,
     @Path("page") int page,
   );
 

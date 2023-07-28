@@ -40,6 +40,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
           initPage: 1,
           contentIdx: widget.contentIdx,
           contentType: widget.contentType,
+          searchWord: widget.secondTitle,
         );
     super.initState();
   }
@@ -54,6 +55,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
               loginMemberIdx: ref.read(userModelProvider)!.idx,
               memberIdx: widget.memberIdx,
               contentType: widget.contentType,
+              searchWord: widget.secondTitle,
             );
       }
     }
@@ -86,7 +88,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               title: widget.firstTitle == "null"
                   ? Text(
-                      widget.secondTitle,
+                      widget.contentType == "searchContent"
+                          ? "#${widget.secondTitle}"
+                          : widget.secondTitle,
                     )
                   : Column(
                       children: [

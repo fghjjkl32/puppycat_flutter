@@ -4,8 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/select_button.dart';
+import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/feed_detail_state_provider.dart';
 
 enum ReportSelectEnum {
   adOrPromotion,
@@ -19,9 +22,14 @@ enum ReportSelectEnum {
 }
 
 class ReportScreen extends ConsumerStatefulWidget {
-  const ReportScreen({required this.isComment, super.key});
+  const ReportScreen({
+    required this.isComment,
+    required this.contentIdx,
+    super.key,
+  });
 
   final bool isComment;
+  final int contentIdx;
 
   @override
   ReportScreenState createState() => ReportScreenState();
@@ -45,6 +53,9 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
   }
 
   ReportSelectEnum? reportSelectStatus;
+
+  String? directInputText = "";
+  int code = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +114,11 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                               setState(() {
                                 reportSelectStatus = ReportSelectEnum.values[i];
                               });
+                              code = i + 1;
+                            },
+                            onTextChanged: (text) {
+                              directInputText = text ?? "";
+                              setState(() {});
                             },
                           );
                         },
@@ -133,7 +149,50 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
-                        onPressed: reportSelectStatus == null ? null : () {},
+                        onPressed: reportSelectStatus == null ||
+                                (reportSelectStatus ==
+                                        ReportSelectEnum.directInput &&
+                                    directInputText!.isEmpty)
+                            ? null
+                            : () async {
+                                final result = await ref
+                                    .watch(feedDetailStateProvider.notifier)
+                                    .postContentReport(
+                                      loginMemberIdx:
+                                          ref.watch(userModelProvider)!.idx,
+                                      contentIdx: widget.contentIdx,
+                                      reportCode: code,
+                                      reason: directInputText,
+                                    );
+
+                                if (result.result) {
+                                  toast(
+                                    context: context,
+                                    text: '정상적으로 신고 접수가 되었습니다.',
+                                    type: ToastType.purple,
+                                    buttonText: "신고취소",
+                                    buttonOnTap: () async {
+                                      final result = await ref
+                                          .watch(
+                                              feedDetailStateProvider.notifier)
+                                          .deleteContentReport(
+                                            loginMemberIdx: ref
+                                                .watch(userModelProvider)!
+                                                .idx,
+                                            contentIdx: widget.contentIdx,
+                                          );
+
+                                      if (result.result) {
+                                        toast(
+                                          context: context,
+                                          text: '신고 접수가 취소되었습니다.',
+                                          type: ToastType.grey,
+                                        );
+                                      }
+                                    },
+                                  );
+                                }
+                              },
                         child: Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Text(

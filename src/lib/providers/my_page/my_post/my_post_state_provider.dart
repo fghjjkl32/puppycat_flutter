@@ -3,7 +3,6 @@ import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_post_state.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/select_post.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
-import 'package:pet_mobile_social_flutter/repositories/main/contents/contents_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/keep_contents/keep_contents_repository.dart';
 
@@ -337,8 +336,8 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
 
   Future<ResponseModel> deleteContents(
       {required memberIdx, required idx}) async {
-    final result = await ContentsRepository()
-        .deleteContents(memberIdx: memberIdx, idx: idx);
+    final result =
+        await FeedRepository().deleteContents(memberIdx: memberIdx, idx: idx);
 
     await refreshMyKeeps(memberIdx);
     await refreshMyPost(memberIdx);

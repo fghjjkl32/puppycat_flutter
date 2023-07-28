@@ -29,6 +29,12 @@ abstract class KeepContentsService {
     @Path("idx") String idx,
   );
 
+  @DELETE('/contents/keep?memberIdx={memberIdx}&idx={idx}')
+  Future<ResponseModel?> deleteOneKeepContents(
+    @Path("memberIdx") int memberIdx,
+    @Path("idx") int idx,
+  );
+
   @POST('/contents/keep')
   Future<ResponseModel?> postKeepContents(@Body() Map<String, dynamic> body);
 }

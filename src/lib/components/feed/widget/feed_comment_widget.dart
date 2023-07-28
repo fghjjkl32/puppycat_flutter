@@ -64,6 +64,7 @@ class FeedCommentWidget extends StatelessWidget {
           ),
           Expanded(
             child: Bubble(
+              isComment: true,
               radius: Radius.circular(10.w),
               elevation: 0,
               alignment: Alignment.topLeft,

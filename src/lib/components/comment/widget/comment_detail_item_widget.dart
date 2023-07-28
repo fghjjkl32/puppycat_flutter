@@ -29,6 +29,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
     required this.time,
     required this.isReply,
     required this.likeCount,
+    required this.isLike,
     this.replies,
     Key? key,
   }) : super(key: key);
@@ -43,10 +44,80 @@ class CommentDetailItemWidget extends ConsumerWidget {
   final DateTime time;
   final bool isReply;
   final int likeCount;
+  final bool isLike;
   final ChildCommentData? replies;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // List<InlineSpan> replaceMentionsWithNicknamesInContent(String content,
+    //     List<FeedMentionListData> mentionList, BuildContext context) {
+    //   List<InlineSpan> spans = [];
+    //
+    //   String remainingContent = content;
+    //
+    //   for (var mention in mentionList) {
+    //     String nick = mention.nick ?? '';
+    //     String uuid = mention.uuid ?? '';
+    //     int memberIdx = mention.memberIdx ?? 0;
+    //
+    //     String pattern = '[@[' + uuid + ']]';
+    //     int startIdx = remainingContent.indexOf(pattern);
+    //
+    //     if (startIdx != -1) {
+    //       if (startIdx > 0) {
+    //         spans.add(TextSpan(text: remainingContent.substring(0, startIdx)));
+    //       }
+    //
+    //       spans.add(WidgetSpan(
+    //         child: GestureDetector(
+    //           onTap: () {
+    //             context.push(
+    //                 "/home/myPage/followList/$memberIdx/userPage/$nick/$memberIdx");
+    //           },
+    //           child: Text('@' + nick,
+    //               style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),
+    //         ),
+    //       ));
+    //
+    //       remainingContent =
+    //           remainingContent.substring(startIdx + pattern.length);
+    //     }
+    //   }
+    //
+    //   // Process hashtags
+    //   String remainingContentAfterMentions = remainingContent;
+    //   while (true) {
+    //     RegExp exp = new RegExp(r"\[#\[(.*?)\]\]");
+    //     var match = exp.firstMatch(remainingContentAfterMentions);
+    //
+    //     if (match == null) break;
+    //
+    //     String beforeHashtag =
+    //         remainingContentAfterMentions.substring(0, match.start);
+    //     String hashtag = match.group(1) ?? '';
+    //
+    //     spans.add(TextSpan(text: beforeHashtag));
+    //
+    //     spans.add(WidgetSpan(
+    //       child: GestureDetector(
+    //         onTap: () {
+    //           print(hashtag);
+    //         },
+    //         child: Text('#' + hashtag,
+    //             style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),
+    //       ),
+    //     ));
+    //
+    //     remainingContentAfterMentions =
+    //         remainingContentAfterMentions.substring(match.end);
+    //   }
+    //
+    //   // Add the remaining content after the last pattern
+    //   spans.add(TextSpan(text: remainingContentAfterMentions));
+    //
+    //   return spans;
+    // }
+
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 12.h),
       child: Column(
@@ -99,6 +170,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Bubble(
+                      isComment: true,
                       radius: Radius.circular(10.w),
                       elevation: 0,
                       alignment: Alignment.topLeft,
@@ -212,6 +284,23 @@ class CommentDetailItemWidget extends ConsumerWidget {
                           SizedBox(
                             height: 6.h,
                           ),
+                          // Padding(
+                          //   padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                          //   child: Container(
+                          //     alignment: Alignment.centerLeft,
+                          //     child: RichText(
+                          //       text: TextSpan(
+                          //         children:
+                          //             replaceMentionsWithNicknamesInContent(
+                          //                 feedData.contents!,
+                          //                 feedData.mentionList!,
+                          //                 context),
+                          //         style: kBody13RegularStyle.copyWith(
+                          //             color: kTextTitleColor),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           LinkifyText(
                             comment,
                             textStyle: kBody11RegularStyle.copyWith(
@@ -232,13 +321,39 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         Padding(
                           padding: EdgeInsets.only(
                               left: 12.0.w, top: 2.h, right: 2.w),
-                          child: InkWell(
-                            onTap: () {},
-                            child: Image.asset(
-                              'assets/image/feed/icon/small_size/icon_comment_like_off.png',
-                              height: 26.w,
-                            ),
-                          ),
+                          child: isLike
+                              ? InkWell(
+                                  onTap: () {
+                                    ref
+                                        .watch(commentStateProvider.notifier)
+                                        .deleteCommentLike(
+                                          commentIdx: commentIdx,
+                                          memberIdx:
+                                              ref.read(userModelProvider)!.idx,
+                                          contentsIdx: contentIdx,
+                                        );
+                                  },
+                                  child: Image.asset(
+                                    'assets/image/feed/icon/small_size/icon_comment_like_on.png',
+                                    height: 26.w,
+                                  ),
+                                )
+                              : InkWell(
+                                  onTap: () {
+                                    ref
+                                        .watch(commentStateProvider.notifier)
+                                        .postCommentLike(
+                                          commentIdx: commentIdx,
+                                          memberIdx:
+                                              ref.read(userModelProvider)!.idx,
+                                          contentsIdx: contentIdx,
+                                        );
+                                  },
+                                  child: Image.asset(
+                                    'assets/image/feed/icon/small_size/icon_comment_like_off.png',
+                                    height: 26.w,
+                                  ),
+                                ),
                         ),
                         Text(
                           '$likeCount',
@@ -307,6 +422,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                           likeCount: replies!.list[index].likeCnt,
                           replies: replies!.list[index].childCommentData,
                           contentIdx: replies!.list[0].contentsIdx,
+                          isLike: replies!.list[index].likeState == 1,
                         );
                       },
                     ),

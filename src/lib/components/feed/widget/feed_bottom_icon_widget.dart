@@ -86,7 +86,7 @@ class FeedBottomIconWidget extends ConsumerWidget {
               SizedBox(width: 12.w),
               GestureDetector(
                 onTap: () {
-                  context.push("/home/commentDetail");
+                  context.push("/home/commentDetail/$contentIdx");
                 },
                 child: Row(
                   children: [

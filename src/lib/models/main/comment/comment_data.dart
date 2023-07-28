@@ -9,6 +9,7 @@ class CommentData with _$CommentData {
   factory CommentData({
     required String nick,
     required int likeCnt,
+    required int likeState,
     required int isBadge,
     required int memberIdx,
     required String contents,

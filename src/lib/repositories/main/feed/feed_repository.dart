@@ -71,6 +71,21 @@ class FeedRepository {
     return contentsResponseModel;
   }
 
+  Future<ContentResponseModel> getUserHashtagContentList({
+    required memberIdx,
+    required searchWord,
+    required page,
+  }) async {
+    ContentResponseModel? contentsResponseModel = await _feedService
+        .getUserHashtagContentList(memberIdx, searchWord, page);
+
+    if (contentsResponseModel == null) {
+      return contentNullResponseModel;
+    }
+
+    return contentsResponseModel;
+  }
+
   //user contents detail
   Future<FeedResponseModel> getUserContentsDetailList({
     required memberIdx,
@@ -87,13 +102,28 @@ class FeedRepository {
     return contentsResponseModel;
   }
 
-  Future<FeedResponseModel> getUserTagContents({
+  Future<FeedResponseModel> getUserTagContentDetail({
     required int memberIdx,
     required int page,
     required int loginMemberIdx,
   }) async {
     FeedResponseModel? tagResponseModel = await _feedService
         .getUserTagContentDetail(loginMemberIdx, memberIdx, page);
+
+    if (tagResponseModel == null) {
+      return feedNullResponseModel;
+    }
+
+    return tagResponseModel;
+  }
+
+  Future<FeedResponseModel> getUserHashtagContentDetailList({
+    required int loginMemberIdx,
+    required String searchWord,
+    required int page,
+  }) async {
+    FeedResponseModel? tagResponseModel = await _feedService
+        .getUserHashtagContentDetailList(loginMemberIdx, searchWord, page);
 
     if (tagResponseModel == null) {
       return feedNullResponseModel;
@@ -219,6 +249,109 @@ class FeedRepository {
     ResponseModel? feedResponseModel = await _feedService.deleteSave(
       contentsIdx: contentsIdx,
       memberIdx: memberIdx,
+    );
+
+    if (feedResponseModel == null) {
+      throw "error";
+    }
+
+    return feedResponseModel;
+  }
+
+  Future<ResponseModel> postHide({
+    required int memberIdx,
+    required int contentIdx,
+  }) async {
+    final Map<String, dynamic> body = {
+      "memberIdx": memberIdx,
+    };
+
+    ResponseModel? feedResponseModel =
+        await _feedService.postHide(contentIdx, body);
+
+    if (feedResponseModel == null) {
+      throw "error";
+    }
+
+    return feedResponseModel;
+  }
+
+  Future<ResponseModel> deleteHide({
+    required int contentsIdx,
+    required int memberIdx,
+  }) async {
+    ResponseModel? feedResponseModel = await _feedService.deleteHide(
+      contentsIdx: contentsIdx,
+      memberIdx: memberIdx,
+    );
+
+    if (feedResponseModel == null) {
+      throw "error";
+    }
+
+    return feedResponseModel;
+  }
+
+  Future<ResponseModel> deleteContents(
+      {required int memberIdx, required String idx}) async {
+    ResponseModel? contentsResponseModel =
+        await _feedService.deleteContents(memberIdx, idx);
+
+    if (contentsResponseModel == null) {
+      throw "error";
+    }
+
+    return contentsResponseModel;
+  }
+
+  Future<ResponseModel> deleteOneContents(
+      {required int memberIdx, required int idx}) async {
+    ResponseModel? contentsResponseModel =
+        await _feedService.deleteOneContents(memberIdx, idx);
+
+    if (contentsResponseModel == null) {
+      throw "error";
+    }
+
+    return contentsResponseModel;
+  }
+
+  Future<ResponseModel> postContentReport({
+    required int memberIdx,
+    required int contentIdx,
+    required int reportCode,
+    required String? reason,
+  }) async {
+    final Map<String, dynamic> body;
+
+    reportCode == 8
+        ? body = {
+            "reportCode": reportCode,
+            "memberIdx": memberIdx,
+            "reason": reason,
+          }
+        : body = {
+            "reportCode": reportCode,
+            "memberIdx": memberIdx,
+          };
+
+    ResponseModel? feedResponseModel =
+        await _feedService.postContentReport(contentIdx, body);
+
+    if (feedResponseModel == null) {
+      throw "error";
+    }
+
+    return feedResponseModel;
+  }
+
+  Future<ResponseModel> deleteContentReport({
+    required int contentsIdx,
+    required int memberIdx,
+  }) async {
+    ResponseModel? feedResponseModel = await _feedService.deleteContentReport(
+      contentsIdx,
+      memberIdx,
     );
 
     if (feedResponseModel == null) {

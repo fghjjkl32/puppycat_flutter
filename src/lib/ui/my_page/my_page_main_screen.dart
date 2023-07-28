@@ -538,6 +538,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                             contentIdx:
                                                                 commentLists[0]
                                                                     .contentsIdx,
+                                                            isLike: commentLists[
+                                                                        0]
+                                                                    .likeState ==
+                                                                1,
                                                           );
                                                         },
                                                       ),

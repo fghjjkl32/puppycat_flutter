@@ -100,6 +100,41 @@ class CommentRepository {
     return commentResponseModel;
   }
 
+  Future<ResponseModel> postCommentLike({
+    required int commentIdx,
+    required int memberIdx,
+  }) async {
+    final Map<String, dynamic> body = {
+      "memberIdx": memberIdx,
+    };
+
+    ResponseModel? commentResponseModel =
+        await _contentsService.postCommentLike(memberIdx, body);
+
+    if (commentResponseModel == null) {
+      throw "error";
+    }
+
+    return commentResponseModel;
+  }
+
+  Future<ResponseModel> deleteCommentLike({
+    required int commentIdx,
+    required int memberIdx,
+  }) async {
+    ResponseModel? commentResponseModel =
+        await _contentsService.deleteCommentLike(
+      commentIdx: commentIdx,
+      memberIdx: memberIdx,
+    );
+
+    if (commentResponseModel == null) {
+      throw "error";
+    }
+
+    return commentResponseModel;
+  }
+
   Future<(ResponseModel?, bool)> errorHandler(Object obj) async {
     ResponseModel? responseModel;
     switch (obj.runtimeType) {

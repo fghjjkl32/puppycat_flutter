@@ -602,7 +602,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                       height: 3.h,
                     ),
                     Text(
-                      data.intro == null ? "소개글이 없습니다." : "${data.intro}",
+                      data.intro == null || data.intro == ""
+                          ? "소개글이 없습니다."
+                          : "${data.intro}",
                       style:
                           kBody12RegularStyle.copyWith(color: kTextBodyColor),
                     ),

@@ -27,4 +27,16 @@ abstract class CommentService {
     @Path("commentIdx") required int commentIdx,
     @Path("memberIdx") required int memberIdx,
   });
+
+  @POST('/comment/{commentIdx}/like')
+  Future<ResponseModel?> postCommentLike(
+    @Path("commentIdx") int commentIdx,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @DELETE('/comment/{commentIdx}/like?memberIdx={memberIdx}')
+  Future<ResponseModel?> deleteCommentLike({
+    @Path("commentIdx") required int commentIdx,
+    @Path("memberIdx") required int memberIdx,
+  });
 }
