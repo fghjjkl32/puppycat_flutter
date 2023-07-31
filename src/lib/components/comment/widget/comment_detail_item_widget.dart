@@ -434,7 +434,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         ? 10.h * 2
                         : 10.h * replies!.list.length.toDouble(),
                     child: Text(
-                      "답글 ${replies!.list.length - 2}개 더 보기",
+                      "답글 ${replies!.params.pagination!.totalRecordCount! - 2}개 더 보기",
                       style:
                           kBody12RegularStyle.copyWith(color: kTextBodyColor),
                     ),

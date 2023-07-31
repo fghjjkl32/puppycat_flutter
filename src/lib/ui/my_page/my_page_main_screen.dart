@@ -554,7 +554,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                   bottom: 0,
                                                   child: CommentCustomTextField(
                                                     contentIdx:
-                                                        lists[index].idx!,
+                                                        lists[index].idx,
                                                   ),
                                                 ),
                                               ],

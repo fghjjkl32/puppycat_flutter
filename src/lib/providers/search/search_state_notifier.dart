@@ -1,52 +1,48 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_state.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-final blockStateProvider =
-    StateNotifierProvider<BlockStateNotifier, SearchDataListModel>((ref) {
+final searchStateProvider =
+    StateNotifierProvider<SearchStateNotifier, SearchDataListModel>((ref) {
   final loginMemberIdx = ref.watch(userModelProvider)!.idx;
-  return BlockStateNotifier(loginMemberIdx);
+  return SearchStateNotifier(loginMemberIdx);
 });
 
-class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
+class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
   final int loginMemberIdx;
 
-  BlockStateNotifier(this.loginMemberIdx) : super(const SearchDataListModel()) {
-    blockSearchQuery.stream
+  SearchStateNotifier(this.loginMemberIdx)
+      : super(const SearchDataListModel()) {
+    searchQuery.stream
         .debounceTime(const Duration(milliseconds: 500))
         .listen((query) async {
-      await searchBlockList(query);
+      await searchMentionList(query);
     });
   }
 
-  int userMemberIdx = 0;
+  int recommendMaxPages = 1;
+  int searchMentionMaxPages = 1;
 
-  int blockMaxPages = 1;
-  int blockCurrentPage = 1;
+  bool isMentionSearching = false;
 
-  bool isBlockSearching = false;
-  String blockSearchWord = '';
-  int searchBlockMaxPages = 1;
-  int searchBlockCurrentPage = 1;
+  String searchSearchWord = '';
+  int searchMentionCurrentPage = 1;
+  int recommendCurrentPage = 1;
 
-  initBlockList([memberIdx, int? initPage]) async {
-    blockCurrentPage = 1;
+  getMentionRecommendList({required int? initPage}) async {
+    recommendCurrentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await BlockRepository().getBlockList(
-      memberIdx: memberIdx,
+    final lists = await SearchRepository().getMentionRecommendList(
+      memberIdx: loginMemberIdx,
       page: page,
     );
 
-    blockMaxPages = lists.data.params!.pagination!.endPage!;
+    recommendMaxPages = lists.data.params!.pagination!.endPage!;
 
     state = state.copyWith(
         totalCount: lists.data.params!.pagination!.totalRecordCount!);
@@ -59,9 +55,9 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
     state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
   }
 
-  loadMoreBlockList(memberIdx) async {
-    if (isBlockSearching) {
-      if (searchBlockCurrentPage >= blockMaxPages) {
+  loadMoreMentionSearchList(memberIdx) async {
+    if (isMentionSearching) {
+      if (searchMentionCurrentPage >= searchMentionMaxPages) {
         state = state.copyWith(isLoadMoreDone: true);
         return;
       }
@@ -79,10 +75,10 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
       state = state.copyWith(
           isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-      final lists = await BlockRepository().getBlockSearchList(
+      final lists = await SearchRepository().getSearchList(
         memberIdx: memberIdx,
-        page: searchBlockCurrentPage + 1,
-        searchWord: blockSearchWord,
+        page: recommendCurrentPage + 1,
+        searchWord: searchSearchWord,
       );
 
       if (lists == null) {
@@ -95,12 +91,12 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
           isLoading: false,
           list: [...state.list, ...lists.data.list],
         );
-        searchBlockCurrentPage++;
+        searchMentionCurrentPage++;
       } else {
         state = state.copyWith(isLoading: false);
       }
     } else {
-      if (blockCurrentPage >= blockMaxPages) {
+      if (recommendCurrentPage >= recommendMaxPages) {
         state = state.copyWith(isLoadMoreDone: true);
         return;
       }
@@ -118,9 +114,9 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
       state = state.copyWith(
           isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-      final lists = await BlockRepository().getBlockList(
+      final lists = await SearchRepository().getMentionRecommendList(
         memberIdx: memberIdx,
-        page: state.page + 1,
+        page: recommendCurrentPage + 1,
       );
 
       if (lists == null) {
@@ -133,32 +129,27 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
             page: state.page + 1,
             isLoading: false,
             list: [...state.list, ...lists.data.list]);
-        blockCurrentPage++;
+        recommendCurrentPage++;
       } else {
         state = state.copyWith(isLoading: false);
       }
     }
   }
 
-  Future<void> refreshBlockList(memberIdx) async {
-    initBlockList(memberIdx, 1);
-    blockCurrentPage = 1;
-  }
+  final searchQuery = PublishSubject<String>();
 
-  final blockSearchQuery = PublishSubject<String>();
+  Future<void> searchMentionList(String searchWord) async {
+    searchSearchWord = searchWord;
+    searchMentionCurrentPage = 1;
+    isMentionSearching = true;
 
-  Future<void> searchBlockList(String searchWord) async {
-    blockSearchWord = searchWord;
-    isBlockSearching = true;
-    searchBlockCurrentPage = 1;
-
-    final lists = await BlockRepository().getBlockSearchList(
-      memberIdx: userMemberIdx,
+    final lists = await SearchRepository().getSearchList(
+      memberIdx: loginMemberIdx,
       page: 1,
-      searchWord: searchWord,
+      searchWord: searchSearchWord,
     );
 
-    searchBlockMaxPages = lists.data.params!.pagination!.endPage!;
+    searchMentionMaxPages = lists.data.params!.pagination!.endPage!;
 
     if (lists == null) {
       state = state.copyWith(page: 1, isLoading: false, list: []);
@@ -168,23 +159,9 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
     state = state.copyWith(page: 1, isLoading: false, list: lists.data.list);
   }
 
-  Future<ResponseModel> deleteBlock({
-    required memberIdx,
-    required blockIdx,
-  }) async {
-    final result = await BlockRepository().deleteBlock(
-      memberIdx: memberIdx,
-      blockIdx: blockIdx,
-    );
-
-    await refreshBlockList(memberIdx);
-
-    return result;
-  }
-
   @override
   void dispose() {
-    blockSearchQuery.close();
+    searchQuery.close();
     super.dispose();
   }
 }
