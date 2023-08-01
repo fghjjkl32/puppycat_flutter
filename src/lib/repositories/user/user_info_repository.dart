@@ -5,6 +5,7 @@ import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/services/user/user_info_service.dart';
 
 // final accountRepositoryProvider = Provider((ref) => AccountRepository());
@@ -30,7 +31,7 @@ class UserInfoRepository {
     return responseModel.result;
   }
 
-  Future<UserInformationItemModel> getAccountInfo(String memberIdx) async {
+  Future<UserInformationItemModel> getMyInfo(String memberIdx) async {
     UserInformationResponseModel? responseModel = await _userInfoService.getMyInfo(memberIdx);
 
     if(responseModel == null) {
@@ -47,6 +48,58 @@ class UserInfoRepository {
     UserInformationItemModel infoModel = responseModel.data.info!.first;
 
     return infoModel;
+  }
+
+  Future<bool> updateMyInfo(UserInfoModel userInfoModel) async {
+    Map<String, dynamic> params = {
+      "uploadFile" :  null,
+      "intro" : userInfoModel.userModel!.introText,
+      "nick" : userInfoModel.userModel!.nick,
+      "memberIdx" : userInfoModel.userModel!.idx,
+      "name" : userInfoModel.userModel!.name,
+      "phone" : userInfoModel.userModel!.phone,
+      "gender" : userInfoModel.userModel!.gender,
+      "birth" : userInfoModel.userModel!.birth,
+      "ci" : userInfoModel.userModel!.ci,
+      "di" : userInfoModel.userModel!.di,
+      // "chatInfo" : userInfoModel.chatUserModel,
+      "chatMemberId" : userInfoModel.chatUserModel!.chatMemberId,
+      "chatHomeServer" : userInfoModel.chatUserModel!.homeServer,
+      "chatAccessToken" : userInfoModel.chatUserModel!.accessToken,
+      "chatDeviceId" : userInfoModel.chatUserModel!.deviceId,
+    };
+
+    ResponseModel? responseModel = await _userInfoService.updateMyInfo(params);
+
+    if(responseModel == null) {
+      ///TODO
+      ///throw로 할지 그냥 return null로 할지 생각해보기
+      throw "error";
+    }
+
+    return true;
+  }
+
+  Future<bool> updateMyChatInfo(UserInfoModel userInfoModel) async {
+    Map<String, dynamic> params = {
+      "memberIdx" : userInfoModel.userModel!.idx,
+      // "chatInfo" : {
+        "chatMemberId" : userInfoModel.chatUserModel!.chatMemberId,
+        "chatHomeServer" : userInfoModel.chatUserModel!.homeServer,
+        "chatAccessToken" : userInfoModel.chatUserModel!.accessToken,
+        "chatDeviceId" : userInfoModel.chatUserModel!.deviceId,
+      // }
+    };
+
+    ResponseModel? responseModel = await _userInfoService.updateMyInfo(params);
+
+    if(responseModel == null) {
+      ///TODO
+      ///throw로 할지 그냥 return null로 할지 생각해보기
+      throw "error";
+    }
+
+    return true;
   }
 
 

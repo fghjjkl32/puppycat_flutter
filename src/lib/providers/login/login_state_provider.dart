@@ -3,11 +3,15 @@ import 'dart:convert';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_user_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,8 +48,7 @@ class LoginState extends _$LoginState {
   }) async {
     final loginRepository = LoginRepository(provider: userModel.simpleType);
     // final loginRepository = ref.watch(loginRepositoryProvider(userModel.simpleType));
-    var loginResult =
-        await loginRepository.loginByUserModel(userModel: userModel);
+    var loginResult = await loginRepository.loginByUserModel(userModel: userModel);
 
     _procLogin(loginResult);
   }
@@ -65,20 +68,55 @@ class LoginState extends _$LoginState {
     switch (userModel.loginStatus) {
       case LoginStatus.success:
         saveUserModel(userModel);
-        ref.read(userInfoProvider.notifier).state = UserInfoModel(userModel: userModel);
+        UserInfoModel userInfoModel = UserInfoModel(userModel: userModel);
         ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
+        ref.read(myInfoStateProvider.notifier).getMyInfo(userModel.idx.toString());
+        ref.listen(myInfoStateProvider, (previous, next) {
+          print('next $next');
+          if (previous == next) {
+            return;
+          }
+
+          userInfoModel = userInfoModel.copyWith(
+            userModel: userModel.copyWith(
+              idx: next.memberIdx ?? userModel.idx,
+              nick: next.nick ?? userModel.nick,
+              id: next.email ?? userModel.id,
+              // id: 'thirdnsov4@gmail.com',
+              name: next.name ?? userModel.name,
+              phone: next.phone ?? userModel.phone,
+              introText: next.intro,
+              profileImgUrl: next.profileImgUrl,
+              // password: '2809229088121356223',
+            )
+          );
+
+          if (ref.read(myInfoStateProvider.notifier).checkChatInfo(next)) {
+            // ref.read(chatRegisterStateProvider.notifier).register(userModel);
+            userInfoModel = userInfoModel.copyWith(
+              chatUserModel: ChatUserModel(
+                chatMemberId: next.chatMemberId,
+                homeServer: next.chatHomeServer,
+                deviceId: next.chatDeviceId,
+                accessToken: next.chatAccessToken,
+              ),
+            );
+          }
+
+          ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
+          ref.read(userInfoProvider.notifier).state = userInfoModel;
+        });
+
+        print('userInfoModel $userInfoModel');
+        ref.read(userInfoProvider.notifier).state = userInfoModel;
       case LoginStatus.needSignUp:
-        ref
-            .read(loginRouteStateProvider.notifier)
-            .changeLoginRoute(LoginRoute.signUpScreen);
+        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.signUpScreen);
       // case LoginStatus.withdrawalPending:
       // case LoginStatus.failure:
       // case LoginStatus.restriction:
       case LoginStatus.none:
       default:
-        ref
-            .read(loginRouteStateProvider.notifier)
-            .changeLoginRoute(LoginRoute.none);
+        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.none);
     }
   }
 

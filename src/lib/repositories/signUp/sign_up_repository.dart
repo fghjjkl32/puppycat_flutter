@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,9 +20,23 @@ class SignUpRepository {
   final SignUpService _signUpService = SignUpService(DioWrap.getDioWithCookie());
 
   Future<SignUpStatus> socialSignUp(UserModel userModel, List<PolicyItemModel> policyIdxList) async {
+    /// NOTE
+    ///테스트용
+
+    // userModel = userModel.copyWith(
+    //   id: 'thirdnsov4@gmail.com',
+    //   ci: '2809229088121356223',
+    //   nick: 'test_reg',
+    //   simpleId: '2809229088121356223',
+    //   password: '2809229088121356223',
+    //   passwordConfirm: '2809229088121356223',
+    // );
+
     Map<String, dynamic> body = {
       ...userModel.toJson(),
     };
+
+    print('puppycat register body $body');
 
     for (var element in policyIdxList) {
       body['selectPolicy_${element.idx}'] = element.isAgreed ? 1 : 0;

@@ -21,9 +21,9 @@ class UserInformationItemModel with _$UserInformationItemModel {
     int? followState,
     //ChatInfo
     String? chatAccessToken,
-    String? chatMemeberId,
-    String? homeServer,
-    String? deviceId,
+    String? chatMemberId,
+    String? chatHomeServer,
+    String? chatDeviceId,
 
     //img host
     String? imgDomain,

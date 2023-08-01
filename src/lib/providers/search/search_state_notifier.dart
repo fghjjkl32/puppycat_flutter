@@ -6,8 +6,7 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-final searchStateProvider =
-    StateNotifierProvider<SearchStateNotifier, SearchDataListModel>((ref) {
+final searchStateProvider = StateNotifierProvider<SearchStateNotifier, SearchDataListModel>((ref) {
   final loginMemberIdx = ref.watch(userModelProvider)!.idx;
   return SearchStateNotifier(loginMemberIdx);
 });
@@ -15,11 +14,8 @@ final searchStateProvider =
 class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
   final int loginMemberIdx;
 
-  SearchStateNotifier(this.loginMemberIdx)
-      : super(const SearchDataListModel()) {
-    searchQuery.stream
-        .debounceTime(const Duration(milliseconds: 500))
-        .listen((query) async {
+  SearchStateNotifier(this.loginMemberIdx) : super(const SearchDataListModel()) {
+    searchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
       await searchMentionList(query);
     });
   }
@@ -44,8 +40,7 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
 
     recommendMaxPages = lists.data.params!.pagination!.endPage!;
 
-    state = state.copyWith(
-        totalCount: lists.data.params!.pagination!.totalRecordCount!);
+    state = state.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!);
 
     if (lists == null) {
       state = state.copyWith(page: page, isLoading: false);
@@ -64,16 +59,14 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
 
       StringBuffer bf = StringBuffer();
 
-      bf.write(
-          'try to request loading ${state.isLoading} at ${state.page + 1}');
+      bf.write('try to request loading ${state.isLoading} at ${state.page + 1}');
       if (state.isLoading) {
         bf.write(' fail');
         return;
       }
       bf.write(' success');
 
-      state = state.copyWith(
-          isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+      state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
       final lists = await SearchRepository().getSearchList(
         memberIdx: memberIdx,
@@ -103,16 +96,14 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
 
       StringBuffer bf = StringBuffer();
 
-      bf.write(
-          'try to request loading ${state.isLoading} at ${state.page + 1}');
+      bf.write('try to request loading ${state.isLoading} at ${state.page + 1}');
       if (state.isLoading) {
         bf.write(' fail');
         return;
       }
       bf.write(' success');
 
-      state = state.copyWith(
-          isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+      state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
       final lists = await SearchRepository().getMentionRecommendList(
         memberIdx: memberIdx,
@@ -125,10 +116,7 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
       }
 
       if (lists.data.list.isNotEmpty) {
-        state = state.copyWith(
-            page: state.page + 1,
-            isLoading: false,
-            list: [...state.list, ...lists.data.list]);
+        state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.data.list]);
         recommendCurrentPage++;
       } else {
         state = state.copyWith(isLoading: false);
@@ -163,5 +151,10 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
   void dispose() {
     searchQuery.close();
     super.dispose();
+  }
+
+  clearSearchMensionList() {
+    // state = SearchDataListModel();
+    state = state.copyWith(page: 1, isLoading: false, list: []);
   }
 }
