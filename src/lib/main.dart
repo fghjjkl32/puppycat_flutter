@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
+import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 
@@ -76,14 +77,16 @@ class PuppycatApp extends ConsumerWidget {
       // scaleByHeight: true,
       // useInheritedMediaQuery: false,
       builder: (BuildContext context, Widget? child) {
-        return MaterialApp.router(
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          routerConfig: router,
-          title: 'Flutter Demo',
-          theme: themeData(context),
-          debugShowCheckedModeBanner: false,
+        return Portal(
+          child: MaterialApp.router(
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            routerConfig: router,
+            title: 'Flutter Demo',
+            theme: themeData(context),
+            debugShowCheckedModeBanner: false,
+          ),
         );
       },
     );

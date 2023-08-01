@@ -1,8 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_detail_state.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/keep_contents/keep_contents_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/like_contents/like_contents_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
 
 final feedDetailStateProvider =
     StateNotifierProvider<FeedDetailStateNotifier, FeedDetailState>((ref) {
@@ -19,26 +24,89 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
   int maxPages = 1;
   int currentPage = 1;
   initPosts({
-    required int loginMemberIdx,
-    required int memberIdx,
-    required int? initPage,
-    required int contentIdx,
+    int? loginMemberIdx,
+    int? memberIdx,
+    int? initPage,
+    int? contentIdx,
+    String? contentType,
+    String? searchWord,
   }) async {
     currentPage = 1;
 
     final page = initPage ?? state.feedListState.page;
 
-    final futures = Future.wait([
-      FeedRepository().getUserContentsList(
-          loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: page),
-      FeedRepository().getUserContentsDetail(
-          loginMemberIdx: loginMemberIdx, page: page, contentIdx: contentIdx)
-    ]);
+    var futures;
+
+    if (contentType == "myContent") {
+      futures = Future.wait([
+        FeedRepository().getMyContentsDetail(
+            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+        FeedRepository().getMyContentsDetailList(
+            loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: page),
+      ]);
+    } else if (contentType == "myTagContent") {
+      futures = Future.wait([
+        FeedRepository().getContentDetail(
+            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+        FeedRepository().getMyTagContentsDetailList(
+            loginMemberIdx: loginMemberIdx, page: page),
+      ]);
+    } else if (contentType == "userContent") {
+      futures = Future.wait([
+        FeedRepository().getContentDetail(
+            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+        FeedRepository().getUserContentsDetailList(
+            loginMemberIdx: loginMemberIdx, page: page, memberIdx: memberIdx),
+      ]);
+    } else if (contentType == "userTagContent") {
+      futures = Future.wait([
+        FeedRepository().getContentDetail(
+            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+        FeedRepository().getUserTagContentDetail(
+            loginMemberIdx: loginMemberIdx, page: page, memberIdx: memberIdx!),
+      ]);
+    } else if (contentType == "myLikeContent") {
+      futures = Future.wait([
+        FeedRepository().getContentDetail(
+            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+        LikeContentsRepository().getLikeDetailContentList(
+            loginMemberIdx: loginMemberIdx!, page: page),
+      ]);
+    } else if (contentType == "mySaveContent") {
+      futures = Future.wait([
+        FeedRepository().getContentDetail(
+            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+        SaveContentsRepository().getSaveDetailContentList(
+            loginMemberIdx: loginMemberIdx, page: page),
+      ]);
+    } else if (contentType == "myDetailContent") {
+      futures = Future.wait([
+        FeedRepository().getMyContentsDetail(
+            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+        Future.value(feedNullResponseModel),
+      ]);
+    } else if (contentType == "myKeepContent") {
+      futures = Future.wait([
+        KeepContentsRepository().getMyKeepContentDetail(
+            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+        Future.value(feedNullResponseModel),
+      ]);
+    } else if (contentType == "searchContent") {
+      futures = Future.wait([
+        FeedRepository().getContentDetail(
+            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+        FeedRepository().getUserHashtagContentDetailList(
+          loginMemberIdx: loginMemberIdx,
+          searchWord: searchWord!,
+          page: page,
+        ),
+      ]);
+    }
 
     final results = await futures;
 
-    final lists = results[0];
-    final firstLists = results[1];
+    final firstLists = results[0];
+    final lists = results[1];
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
@@ -78,7 +146,12 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     );
   }
 
-  loadMorePost({required int loginMemberIdx, required int memberIdx}) async {
+  loadMorePost({
+    required int loginMemberIdx,
+    required int memberIdx,
+    required String contentType,
+    String? searchWord,
+  }) async {
     if (currentPage >= maxPages) {
       state = state.copyWith(
           feedListState: state.feedListState.copyWith(isLoadMoreDone: true));
@@ -98,10 +171,38 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
         feedListState: state.feedListState.copyWith(
             isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-    final lists = await FeedRepository().getUserContentsList(
-        loginMemberIdx: loginMemberIdx,
-        memberIdx: memberIdx,
-        page: state.feedListState.page + 1);
+    var lists;
+
+    if (contentType == "myContent") {
+      lists = await FeedRepository().getMyContentsDetailList(
+          loginMemberIdx: loginMemberIdx,
+          memberIdx: memberIdx,
+          page: state.feedListState.page + 1);
+    } else if (contentType == "myTagContent") {
+      lists = await FeedRepository().getMyTagContentsDetailList(
+          loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
+    } else if (contentType == "userContent") {
+      lists = await FeedRepository().getUserContentsDetailList(
+          loginMemberIdx: loginMemberIdx,
+          page: state.feedListState.page + 1,
+          memberIdx: memberIdx);
+    } else if (contentType == "userTagContent") {
+      lists = await FeedRepository().getUserTagContentDetail(
+          loginMemberIdx: loginMemberIdx,
+          page: state.feedListState.page + 1,
+          memberIdx: memberIdx);
+    } else if (contentType == "myLikeContent") {
+      lists = await LikeContentsRepository().getLikeDetailContentList(
+          loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
+    } else if (contentType == "mySaveContent") {
+      lists = await SaveContentsRepository().getSaveDetailContentList(
+          loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
+    } else if (contentType == "searchContent") {
+      lists = await FeedRepository().getUserHashtagContentDetailList(
+          loginMemberIdx: loginMemberIdx,
+          searchWord: searchWord!,
+          page: state.feedListState.page + 1);
+    }
 
     if (lists == null) {
       state = state.copyWith(
@@ -126,15 +227,18 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     }
   }
 
-  Future<void> refresh(
-      {required int loginMemberIdx,
-      required int memberIdx,
-      required int contentIdx}) async {
+  Future<void> refresh({
+    required int loginMemberIdx,
+    required int memberIdx,
+    required int contentIdx,
+    required String contentType,
+  }) async {
     initPosts(
       loginMemberIdx: loginMemberIdx,
       memberIdx: memberIdx,
       initPage: 1,
       contentIdx: contentIdx,
+      contentType: contentType,
     );
     currentPage = 1;
   }
@@ -143,6 +247,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required loginMemberIdx,
     required memberIdx,
     required contentIdx,
+    required String contentType,
   }) async {
     final result = await FeedRepository()
         .postLike(memberIdx: loginMemberIdx, contentIdx: contentIdx);
@@ -151,6 +256,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
       loginMemberIdx: loginMemberIdx,
       memberIdx: memberIdx,
       contentIdx: contentIdx,
+      contentType: contentType,
     );
 
     return result;
@@ -160,6 +266,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required loginMemberIdx,
     required memberIdx,
     required contentIdx,
+    required String contentType,
   }) async {
     final result = await FeedRepository()
         .deleteLike(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
@@ -168,6 +275,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
       loginMemberIdx: loginMemberIdx,
       memberIdx: memberIdx,
       contentIdx: contentIdx,
+      contentType: contentType,
     );
 
     return result;
@@ -177,6 +285,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required loginMemberIdx,
     required memberIdx,
     required contentIdx,
+    required String contentType,
   }) async {
     final result = await FeedRepository()
         .postSave(memberIdx: loginMemberIdx, contentIdx: contentIdx);
@@ -185,6 +294,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
       loginMemberIdx: loginMemberIdx,
       memberIdx: memberIdx,
       contentIdx: contentIdx,
+      contentType: contentType,
     );
 
     return result;
@@ -194,6 +304,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required loginMemberIdx,
     required memberIdx,
     required contentIdx,
+    required String contentType,
   }) async {
     final result = await FeedRepository()
         .deleteSave(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
@@ -202,6 +313,152 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
       loginMemberIdx: loginMemberIdx,
       memberIdx: memberIdx,
       contentIdx: contentIdx,
+      contentType: contentType,
+    );
+
+    return result;
+  }
+
+  Future<ResponseModel> postKeepContents({
+    required loginMemberIdx,
+    required List<int> contentIdxList,
+    required contentType,
+  }) async {
+    final result = await KeepContentsRepository()
+        .postKeepContents(memberIdx: loginMemberIdx, idxList: contentIdxList);
+
+    await refresh(
+      loginMemberIdx: loginMemberIdx,
+      memberIdx: loginMemberIdx,
+      contentIdx: contentIdxList[0],
+      contentType: contentType,
+    );
+
+    return result;
+  }
+
+  Future<ResponseModel> deleteOneKeepContents({
+    required loginMemberIdx,
+    required contentIdx,
+    required contentType,
+  }) async {
+    final result = await KeepContentsRepository()
+        .deleteOneKeepContents(memberIdx: loginMemberIdx, idx: contentIdx);
+
+    await refresh(
+      loginMemberIdx: loginMemberIdx,
+      memberIdx: loginMemberIdx,
+      contentIdx: contentIdx,
+      contentType: contentType,
+    );
+
+    return result;
+  }
+
+  Future<ResponseModel> deleteOneContents({
+    required loginMemberIdx,
+    required int contentIdx,
+    required contentType,
+  }) async {
+    final result = await FeedRepository()
+        .deleteOneContents(memberIdx: loginMemberIdx, idx: contentIdx);
+
+    await refresh(
+      loginMemberIdx: loginMemberIdx,
+      memberIdx: loginMemberIdx,
+      contentIdx: contentIdx,
+      contentType: contentType,
+    );
+
+    return result;
+  }
+
+  Future<ResponseModel> postHide({
+    required loginMemberIdx,
+    required memberIdx,
+    required contentIdx,
+    required String contentType,
+  }) async {
+    final result = await FeedRepository()
+        .postHide(memberIdx: loginMemberIdx, contentIdx: contentIdx);
+
+    await refresh(
+      loginMemberIdx: loginMemberIdx,
+      memberIdx: memberIdx,
+      contentIdx: contentIdx,
+      contentType: contentType,
+    );
+
+    return result;
+  }
+
+  Future<ResponseModel> deleteHide({
+    required loginMemberIdx,
+    required memberIdx,
+    required contentIdx,
+    required String contentType,
+  }) async {
+    final result = await FeedRepository()
+        .deleteHide(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
+
+    await refresh(
+      loginMemberIdx: loginMemberIdx,
+      memberIdx: memberIdx,
+      contentIdx: contentIdx,
+      contentType: contentType,
+    );
+
+    return result;
+  }
+
+  Future<ResponseModel> postBlock({
+    required memberIdx,
+    required blockIdx,
+    required contentIdx,
+    required contentType,
+  }) async {
+    final result = await BlockRepository().postBlock(
+      memberIdx: memberIdx,
+      blockIdx: blockIdx,
+    );
+
+    await refresh(
+      loginMemberIdx: memberIdx,
+      memberIdx: blockIdx,
+      contentIdx: contentIdx,
+      contentType: contentType,
+    );
+
+    return result;
+  }
+
+  Future<ResponseModel> postContentReport({
+    required int loginMemberIdx,
+    required int contentIdx,
+    required int reportCode,
+    required String? reason,
+    required String reportType,
+  }) async {
+    final result = await FeedRepository().postContentReport(
+      reportType: reportType,
+      memberIdx: loginMemberIdx,
+      contentIdx: contentIdx,
+      reportCode: reportCode,
+      reason: reason,
+    );
+
+    return result;
+  }
+
+  Future<ResponseModel> deleteContentReport({
+    required String reportType,
+    required int loginMemberIdx,
+    required int contentIdx,
+  }) async {
+    final result = await FeedRepository().deleteContentReport(
+      reportType: reportType,
+      memberIdx: loginMemberIdx,
+      contentsIdx: contentIdx,
     );
 
     return result;

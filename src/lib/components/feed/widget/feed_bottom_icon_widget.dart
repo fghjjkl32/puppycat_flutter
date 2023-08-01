@@ -16,14 +16,16 @@ class FeedBottomIconWidget extends ConsumerWidget {
     required this.commentCount,
     required this.isLike,
     required this.isSave,
+    required this.contentType,
   });
 
   final int contentIdx;
-  final int memberIdx;
+  final int? memberIdx;
   final int likeCount;
   final int commentCount;
   final bool isLike;
   final bool isSave;
+  final String contentType;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,9 +40,11 @@ class FeedBottomIconWidget extends ConsumerWidget {
                   ? GestureDetector(
                       onTap: () {
                         ref.watch(feedDetailStateProvider.notifier).deleteLike(
-                            loginMemberIdx: ref.read(userModelProvider)!.idx,
-                            memberIdx: memberIdx,
-                            contentIdx: contentIdx);
+                              loginMemberIdx: ref.read(userModelProvider)!.idx,
+                              memberIdx: memberIdx,
+                              contentIdx: contentIdx,
+                              contentType: contentType,
+                            );
                       },
                       child: Row(
                         children: [
@@ -59,9 +63,11 @@ class FeedBottomIconWidget extends ConsumerWidget {
                   : GestureDetector(
                       onTap: () {
                         ref.watch(feedDetailStateProvider.notifier).postLike(
-                            loginMemberIdx: ref.read(userModelProvider)!.idx,
-                            memberIdx: memberIdx,
-                            contentIdx: contentIdx);
+                              loginMemberIdx: ref.read(userModelProvider)!.idx,
+                              memberIdx: memberIdx,
+                              contentIdx: contentIdx,
+                              contentType: contentType,
+                            );
                       },
                       child: Row(
                         children: [
@@ -80,7 +86,7 @@ class FeedBottomIconWidget extends ConsumerWidget {
               SizedBox(width: 12.w),
               GestureDetector(
                 onTap: () {
-                  context.push("/home/commentDetail");
+                  context.push("/home/commentDetail/$contentIdx");
                 },
                 child: Row(
                   children: [
@@ -102,9 +108,11 @@ class FeedBottomIconWidget extends ConsumerWidget {
               ? GestureDetector(
                   onTap: () {
                     ref.watch(feedDetailStateProvider.notifier).deleteSave(
-                        loginMemberIdx: ref.read(userModelProvider)!.idx,
-                        memberIdx: memberIdx,
-                        contentIdx: contentIdx);
+                          loginMemberIdx: ref.read(userModelProvider)!.idx,
+                          memberIdx: memberIdx,
+                          contentIdx: contentIdx,
+                          contentType: contentType,
+                        );
                   },
                   child: Image.asset(
                     'assets/image/feed/icon/large_size/icon_bookmark.png',
@@ -115,9 +123,11 @@ class FeedBottomIconWidget extends ConsumerWidget {
               : GestureDetector(
                   onTap: () {
                     ref.watch(feedDetailStateProvider.notifier).postSave(
-                        loginMemberIdx: ref.read(userModelProvider)!.idx,
-                        memberIdx: memberIdx,
-                        contentIdx: contentIdx);
+                          loginMemberIdx: ref.read(userModelProvider)!.idx,
+                          memberIdx: memberIdx,
+                          contentIdx: contentIdx,
+                          contentType: contentType,
+                        );
                   },
                   child: Image.asset(
                     'assets/image/feed/icon/large_size/icon_bookmark.png',

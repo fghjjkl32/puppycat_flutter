@@ -22,12 +22,6 @@ class ContentLikeUserListStateNotifier
     memberIdx,
     int? initPage,
   ]) async {
-    print(contentsIdx);
-    print(contentsIdx);
-    print(contentsIdx);
-    print(contentsIdx);
-    print(contentsIdx);
-
     currentPage = 1;
 
     final page = initPage ?? state.page;
@@ -89,8 +83,8 @@ class ContentLikeUserListStateNotifier
     }
   }
 
-  Future<void> refresh(contentsIdx) async {
-    initContentLikeUserList(contentsIdx, 1);
+  Future<void> refresh(contentsIdx, memberIdx) async {
+    initContentLikeUserList(contentsIdx, memberIdx, 1);
     currentPage = 1;
   }
 
@@ -102,7 +96,7 @@ class ContentLikeUserListStateNotifier
     final result = await FollowRepository()
         .postFollow(memberIdx: memberIdx, followIdx: followIdx);
 
-    refresh(contentsIdx);
+    refresh(contentsIdx, memberIdx);
     return result;
   }
 
@@ -114,7 +108,7 @@ class ContentLikeUserListStateNotifier
     final result = await FollowRepository()
         .deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
 
-    refresh(contentsIdx);
+    refresh(contentsIdx, memberIdx);
 
     return result;
   }

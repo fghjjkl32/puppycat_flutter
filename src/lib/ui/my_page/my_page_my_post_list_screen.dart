@@ -231,8 +231,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
 
                   return GestureDetector(
                     onTap: () {
-                      context.go(
-                          "/home/myPage/myPost/myPostDetail/일상글 게시물/${ref.read(userModelProvider)!.idx}");
+                      context.push(
+                          "/home/myPage/detail/null/일상글 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myDetailContent");
                     },
                     child: Stack(
                       children: [
@@ -247,7 +247,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                                     : BorderRadius.circular(0),
                             image: DecorationImage(
                                 image: NetworkImage(
-                                    "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}"),
+                                    "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}"),
                                 fit: BoxFit.cover),
                           ),
                         ),
@@ -458,16 +458,6 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                                           GestureDetector(
                                             onTap: () async {
                                               context.pop();
-
-                                              // final result =
-                                              //     await contentManager
-                                              //         .postKeepContents(
-                                              //   memberIdx: ref
-                                              //       .read(userModelProvider)!
-                                              //       .idx,
-                                              //   idxList: myPageMyPostController
-                                              //       .getSelectedImageIdx(),
-                                              // );
 
                                               final result =
                                                   await myPageMyPostController
@@ -744,8 +734,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                   }
                   return GestureDetector(
                     onTap: () {
-                      context.go(
-                          "/home/myPage/myPost/myPostDetail/저장한 게시물/${ref.read(userModelProvider)!.idx}");
+                      context.push(
+                          "/home/myPage/detail/null/보관한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myKeepContent");
                     },
                     child: Stack(
                       children: [

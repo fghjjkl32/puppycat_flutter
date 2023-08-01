@@ -191,7 +191,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
               textEditingController: _textEditingController,
               detectionBuilders: {
                 DetectedType.mention: (context) => mentionContent(height),
-                DetectedType.hashtag: (context) => hashtagContent(height),
+                // DetectedType.hashtag: (context) => hashtagContent(height),
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.0.w),

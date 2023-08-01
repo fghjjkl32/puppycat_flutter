@@ -1,29 +1,29 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
-final tagContentStateProvider =
-    StateNotifierProvider<TagContentStateNotifier, ContentDataListModel>((ref) {
-  return TagContentStateNotifier();
+final feedSearchStateProvider =
+    StateNotifierProvider<FeedSearchStateNotifier, ContentDataListModel>((ref) {
+  return FeedSearchStateNotifier();
 });
 
-class TagContentStateNotifier extends StateNotifier<ContentDataListModel> {
-  TagContentStateNotifier() : super(const ContentDataListModel());
+class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
+  FeedSearchStateNotifier() : super(const ContentDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
   initPosts(
-    loginMemberIdx,
     memberIdx,
     int? initPage,
+    searchWord,
   ) async {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await FeedRepository().getUserTagContentList(
-        loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: page);
+    final lists = await FeedRepository().getUserHashtagContentList(
+        memberIdx: memberIdx, page: page, searchWord: searchWord);
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
@@ -35,10 +35,15 @@ class TagContentStateNotifier extends StateNotifier<ContentDataListModel> {
       return;
     }
 
-    state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
+    state = state.copyWith(
+      page: page,
+      isLoading: false,
+      list: lists.data.list,
+      totalCnt: lists.data.totalCnt,
+    );
   }
 
-  loadMorePost(loginMemberIdx, memberIdx) async {
+  loadMorePost(memberIdx, searchWord) async {
     if (currentPage >= maxPages) {
       state = state.copyWith(isLoadMoreDone: true);
       return;
@@ -55,10 +60,8 @@ class TagContentStateNotifier extends StateNotifier<ContentDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await FeedRepository().getUserTagContentList(
-        loginMemberIdx: loginMemberIdx,
-        memberIdx: memberIdx,
-        page: state.page + 1);
+    final lists = await FeedRepository().getUserHashtagContentList(
+        memberIdx: memberIdx, page: state.page + 1, searchWord: searchWord);
 
     if (lists == null) {
       state = state.copyWith(isLoadMoreError: true, isLoading: false);
@@ -78,8 +81,8 @@ class TagContentStateNotifier extends StateNotifier<ContentDataListModel> {
     }
   }
 
-  Future<void> refresh(loginMemberIdx, memberIdx) async {
-    initPosts(loginMemberIdx, memberIdx, 1);
+  Future<void> refresh(memberIdx, searchWord) async {
+    initPosts(memberIdx, 1, searchWord);
     currentPage = 1;
   }
 }

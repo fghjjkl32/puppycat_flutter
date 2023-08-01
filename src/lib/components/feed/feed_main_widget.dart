@@ -18,13 +18,13 @@ class FeedMainWidget extends StatelessWidget {
       child: Column(
         children: [
           //feed title
-          FeedTitleWidget(
-            profileImage: 'assets/image/feed/image/sample_image1.png',
-            userName: '아지다멍',
-            address: '강원도 평창군 평창읍',
-            time: '3일 전',
-            isEdit: true,
-          ),
+          // FeedTitleWidget(
+          //   profileImage: 'assets/image/feed/image/sample_image1.png',
+          //   userName: '아지다멍',
+          //   address: '강원도 평창군 평창읍',
+          //   time: '3일 전',
+          //   isEdit: true,
+          // ),
           //feed detail image
           const FeedImageMainWidget(
             imageList: [

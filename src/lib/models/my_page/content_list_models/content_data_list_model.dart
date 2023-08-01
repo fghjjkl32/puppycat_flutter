@@ -10,6 +10,7 @@ class ContentDataListModel with _$ContentDataListModel {
   const factory ContentDataListModel({
     @Default([]) List<ContentImageData> list,
     ParamsModel? params,
+    @Default("0") String totalCnt,
     @Default(1) int page,
     @Default(true) bool isLoading,
     @Default(false) bool isLoadMoreError,
