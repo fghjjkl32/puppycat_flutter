@@ -36,6 +36,8 @@ class UserModel with _$UserModel {
     String? phone,
     String? birth,
     String? gender,
+    String? profileImgUrl,
+    String? introText,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);

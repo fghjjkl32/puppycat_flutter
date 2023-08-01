@@ -10,6 +10,7 @@ import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provide
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_room_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/chat/chat_search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chatview_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/matrix_chat_room_screen.dart';
 
@@ -356,6 +357,13 @@ class AppRouter {
               } else {
                 return const ChatMainScreen();
               }
+            },
+          ),
+          GoRoute(
+            path: 'chatSearch',
+            name: 'chatSearch',
+            builder: (BuildContext context, GoRouterState state) {
+                return const ChatSearchScreen();
             },
           ),
         ]

@@ -50,7 +50,9 @@ class LoginRepository {
       var appKey = await GetIt.I.get<UuidUtil>().getUUID();
       LoginRequestModel reqModel = LoginRequestModel(
         id: userModel!.id,
+        // id: 'thirdnsov4@gmail.com',
         simpleId: userModel!.simpleId,
+        // simpleId: '2809229088121356223',
         simpleType: userModel!.simpleType ?? provider,
         appKey: appKey,
         appVer: GetIt.I.get<PackageInformationUtil>().appVersion,
@@ -102,7 +104,9 @@ class LoginRepository {
     var appKey = await GetIt.I.get<UuidUtil>().getUUID();
     LoginRequestModel reqModel = LoginRequestModel(
       id: userModel!.id,
+      // id: 'thirdnsov4@gmail.com',
       simpleId: userModel!.simpleId,
+      // simpleId: '2809229088121356223',
       simpleType: userModel!.simpleType ?? provider,
       appKey: appKey,
       appVer: GetIt.I.get<PackageInformationUtil>().appVersion,

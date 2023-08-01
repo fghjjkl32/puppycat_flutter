@@ -56,7 +56,7 @@ class FeedTitleWidget extends StatelessWidget {
                       childSaveLayer: true,
                       mask: Center(
                         child: Image.network(
-                          "https://dev-imgs.devlabs.co.kr${profileImage}!",
+                          "https://dev-imgs.devlabs.co.kr/$profileImage",
                           height: 32.h,
                           fit: BoxFit.fill,
                         ),

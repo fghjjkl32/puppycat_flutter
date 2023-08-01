@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:matrix/matrix.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
+import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/abstract_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_user_model.dart';
@@ -9,6 +10,7 @@ import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -20,8 +22,11 @@ enum ChatLoginStatus {
   failure,
 }
 
+
 @Riverpod(keepAlive: true)
 class ChatLoginState extends _$ChatLoginState {
+  static int _loginRetryCount = 0;
+
   @override
   ChatLoginStatus build() {
     return ChatLoginStatus.none;
@@ -34,16 +39,15 @@ class ChatLoginState extends _$ChatLoginState {
       return null;
     }
 
-    if(false) {
-      if (userInfoModel.chatUserModel == null) {
-        ref.read(chatRegisterStateProvider.notifier).register(userInfoModel.userModel!);
-        return null;
-      }
+    if (userInfoModel.chatUserModel == null) {
+      ref.read(chatRegisterStateProvider.notifier).register(userInfoModel.userModel!);
+      return null;
     }
 
-    var chatController = ref.read(chatControllerProvider('matrix'));
-    String id = 'test1'; //userInfoModel.chatUserModel!.chatMemberId ?? '';
-    String pw = 'test1'; //userInfoModel.userModel!.password ?? '';
+    var chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${userInfoModel.userModel!.idx}')));
+    String id = userInfoModel.chatUserModel!.chatMemberId ?? '';
+    String pw = userInfoModel.userModel!.password ?? '';
+    // String pw = '280922908812135622';
     String appKey = userInfoModel.userModel!.appKey ?? '';
 
     if(id.isEmpty || pw.isEmpty) {
@@ -60,8 +64,8 @@ class ChatLoginState extends _$ChatLoginState {
     }
 
     try {
-      // LoginResponse result = await chatController.login(id, chatController.createPassword(pw));
-      LoginResponse result = await chatController.controller.login(id, pw);
+      LoginResponse result = await chatController.controller.login(id, EncryptUtil.getPassAPIEncrypt(pw));
+      // LoginResponse result = await chatController.controller.login(id, pw);
       ChatUserModel chatUserModel = ChatUserModel(
         chatMemberId: result.userId,
         accessToken: result.accessToken,
@@ -69,11 +73,20 @@ class ChatLoginState extends _$ChatLoginState {
         deviceId: result.deviceId,
       );
 
-      ref.read(userInfoProvider.notifier).state = userInfoModel.copyWith(chatUserModel: chatUserModel);
+      userInfoModel = userInfoModel.copyWith(chatUserModel: chatUserModel);
+      ref.read(userInfoProvider.notifier).state = userInfoModel;
+      ref.read(myInfoStateProvider.notifier).updateMyChatInfo(userInfoModel);
       state = ChatLoginStatus.success;
     } catch (e) {
       print('login failed. e : $e');
       state = ChatLoginStatus.failure;
+      _loginRetryCount++;
+      if(_loginRetryCount >= 3) {
+        _loginRetryCount = 0;
+        ref.read(chatRegisterStateProvider.notifier).register(userInfoModel.userModel!);
+        throw 'login retry failed, Try Register';
+      }
+      chatLogin(userInfoModel);
     }
 
     print('chat login state : $state');

@@ -22,6 +22,12 @@ abstract class UserInfoService {
   })
   Future<UserInformationResponseModel?> getMyInfo(@Query("memberIdx") String memberIdx);
 
+  @PUT('/my/info')
+  @MultiPart()
+  // Future<ResponseModel> updateMyInfo(@Part() MultiPart file, @Body() Map<String, dynamic> params);
+  Future<ResponseModel> updateMyInfo(@Part() Map<String, dynamic> params); //TODO  File  넣어야함
+
+
   //User Info
   @GET('/member/info/{memberIdx}?loginMemberIdx={loginMemberIdx}')
   Future<UserInformationResponseModel?> getUserInformation(

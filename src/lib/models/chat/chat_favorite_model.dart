@@ -34,7 +34,12 @@ class ChatFavoriteModel with _$ChatFavoriteModel {
     required int isBadge,
     required String nick,
     required String profileImgUrl,
-    @JsonKey(name: 'chatInfo', fromJson: _parseChatInfo) required ChatUserModel chatInfo,
+    // @JsonKey(name: 'chatInfo', fromJson: _parseChatInfo) required ChatUserModel chatInfo,
+    required String chatMemberId,
+    required String chatHomeServer,
+    required String chatAccessToken,
+    required String chatDeviceId,
+    @JsonKey(name: 'intro') required String introText,
   }) = _ChatFavoriteModel;
 
   factory ChatFavoriteModel.fromJson(Map<String, dynamic> json) => _$ChatFavoriteModelFromJson(json);

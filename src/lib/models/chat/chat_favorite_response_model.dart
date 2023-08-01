@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_model.dart';
 import 'package:pet_mobile_social_flutter/models/data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
@@ -11,7 +12,7 @@ class ChatFavoriteResponseModel with _$ChatFavoriteResponseModel {
   factory ChatFavoriteResponseModel({
     required bool result,
     required String code,
-    required DataListModel<ChatFavoriteModel> data,
+    required ChatFavoriteDataListModel data,
     String? message,
   }) = _ChatFavoriteResponseModel;
 
