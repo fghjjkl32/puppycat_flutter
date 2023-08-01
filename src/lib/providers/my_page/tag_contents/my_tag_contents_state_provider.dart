@@ -1,15 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
 final myTagContentStateProvider =
-    StateNotifierProvider<MyTagContentStateNotifier, FeedDataListModel>((ref) {
+    StateNotifierProvider<MyTagContentStateNotifier, ContentDataListModel>(
+        (ref) {
   return MyTagContentStateNotifier();
 });
 
-class MyTagContentStateNotifier extends StateNotifier<FeedDataListModel> {
-  MyTagContentStateNotifier() : super(const FeedDataListModel());
+class MyTagContentStateNotifier extends StateNotifier<ContentDataListModel> {
+  MyTagContentStateNotifier() : super(const ContentDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
@@ -21,8 +23,8 @@ class MyTagContentStateNotifier extends StateNotifier<FeedDataListModel> {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await FeedRepository().getTagContents(
-        loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: page);
+    final lists = await FeedRepository()
+        .getMyTagContentList(loginMemberIdx: loginMemberIdx, page: page);
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
@@ -34,7 +36,11 @@ class MyTagContentStateNotifier extends StateNotifier<FeedDataListModel> {
       return;
     }
 
-    state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
+    state = state.copyWith(
+      page: page,
+      isLoading: false,
+      list: lists.data.list,
+    );
   }
 
   loadMorePost(loginMemberIdx, memberIdx) async {
@@ -54,10 +60,8 @@ class MyTagContentStateNotifier extends StateNotifier<FeedDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await FeedRepository().getTagContents(
-        loginMemberIdx: loginMemberIdx,
-        memberIdx: memberIdx,
-        page: state.page + 1);
+    final lists = await FeedRepository().getMyTagContentList(
+        loginMemberIdx: loginMemberIdx, page: state.page + 1);
 
     if (lists == null) {
       state = state.copyWith(isLoadMoreError: true, isLoading: false);

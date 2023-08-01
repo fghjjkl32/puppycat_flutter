@@ -7,6 +7,7 @@ part 'feed_data.g.dart';
 class FeedData with _$FeedData {
   factory FeedData({
     List<FeedCommentData>? commentList,
+    int? keepState,
     int? followState,
     int? isComment,
     int? memberIdx,
@@ -22,9 +23,10 @@ class FeedData with _$FeedData {
     String? location,
     int? modifyState,
     required int idx,
-    List<FeedMentionListData>? mentionList,
+    List<MentionListData>? mentionList,
     int? commentCnt,
     List<FeedHashTagListData>? hashTagList,
+    List<MemberInfoListData>? memberInfoList,
     List<FeedImgListData>? imgList,
   }) = _FeedData;
 
@@ -69,15 +71,15 @@ class FeedMemberInfoListData with _$FeedMemberInfoListData {
 }
 
 @freezed
-class FeedMentionListData with _$FeedMentionListData {
-  factory FeedMentionListData({
-    int? idx,
+class MentionListData with _$MentionListData {
+  factory MentionListData({
+    int? memberIdx,
     String? uuid,
     String? nick,
-  }) = _FeedMentionListData;
+  }) = _MentionListData;
 
-  factory FeedMentionListData.fromJson(Map<String, dynamic> json) =>
-      _$FeedMentionListDataFromJson(json);
+  factory MentionListData.fromJson(Map<String, dynamic> json) =>
+      _$MentionListDataFromJson(json);
 }
 
 @freezed
@@ -109,6 +111,7 @@ class FeedImgListData with _$FeedImgListData {
 @freezed
 class ImgMemberTagListData with _$ImgMemberTagListData {
   factory ImgMemberTagListData({
+    String? nick,
     int? imgIdx,
     int? memberIdx,
     int? isBadge,
@@ -120,4 +123,22 @@ class ImgMemberTagListData with _$ImgMemberTagListData {
 
   factory ImgMemberTagListData.fromJson(Map<String, dynamic> json) =>
       _$ImgMemberTagListDataFromJson(json);
+}
+
+@freezed
+class MemberInfoListData with _$MemberInfoListData {
+  factory MemberInfoListData({
+    String? simpleType,
+    String? nick,
+    int? isBadge,
+    int? memberIdx,
+    int? followerCnt,
+    String? intro,
+    String? profileImgUrl,
+    int? followCnt,
+    String? email,
+  }) = _MemberInfoListData;
+
+  factory MemberInfoListData.fromJson(Map<String, dynamic> json) =>
+      _$MemberInfoListDataFromJson(json);
 }

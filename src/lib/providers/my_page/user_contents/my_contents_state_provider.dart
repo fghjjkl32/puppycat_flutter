@@ -1,27 +1,27 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 
 final myContentStateProvider =
-    StateNotifierProvider<MyContentStateNotifier, FeedDataListModel>((ref) {
+    StateNotifierProvider<MyContentStateNotifier, ContentDataListModel>((ref) {
   return MyContentStateNotifier();
 });
 
-class MyContentStateNotifier extends StateNotifier<FeedDataListModel> {
-  MyContentStateNotifier() : super(const FeedDataListModel());
+class MyContentStateNotifier extends StateNotifier<ContentDataListModel> {
+  MyContentStateNotifier() : super(const ContentDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
   initPosts({
     required loginMemberIdx,
-    required memberIdx,
     required int? initPage,
   }) async {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await FeedRepository().getUserContentsList(
-        loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: page);
+    final lists = await FeedRepository()
+        .getMyContentList(loginMemberIdx: loginMemberIdx, page: page);
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
@@ -33,7 +33,11 @@ class MyContentStateNotifier extends StateNotifier<FeedDataListModel> {
       return;
     }
 
-    state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
+    state = state.copyWith(
+      page: page,
+      isLoading: false,
+      list: lists.data.list,
+    );
   }
 
   loadMorePost({required loginMemberIdx, required memberIdx}) async {
@@ -53,10 +57,8 @@ class MyContentStateNotifier extends StateNotifier<FeedDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await FeedRepository().getUserContentsList(
-        loginMemberIdx: loginMemberIdx,
-        memberIdx: memberIdx,
-        page: state.page + 1);
+    final lists = await FeedRepository()
+        .getMyContentList(loginMemberIdx: loginMemberIdx, page: state.page + 1);
 
     if (lists == null) {
       state = state.copyWith(isLoadMoreError: true, isLoading: false);
@@ -78,8 +80,7 @@ class MyContentStateNotifier extends StateNotifier<FeedDataListModel> {
   }
 
   Future<void> refresh(loginMemberIdx, memberIdx) async {
-    initPosts(
-        loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, initPage: 1);
+    initPosts(loginMemberIdx: loginMemberIdx, initPage: 1);
     currentPage = 1;
   }
 }

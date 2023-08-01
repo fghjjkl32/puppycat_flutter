@@ -10,9 +10,11 @@ import 'package:pet_mobile_social_flutter/components/user_list/widget/following_
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_model.dart';
+import 'package:pet_mobile_social_flutter/models/search/search_data.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_favorite_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_search_list_item.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -33,6 +35,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
   @override
   void initState() {
     // var userInfoModel = ref.read(userInfoProvider);
+    // ref.read(searchStateProvider.notifier).clearSearchMensionList();
     userMemberIdx = ref.read(userInfoProvider).userModel!.idx;
     ref.read(followStateProvider.notifier).initFollowList(userMemberIdx, 1);
 
@@ -58,6 +61,11 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
     followController.dispose();
     super.dispose();
   }
+
+  void _onTabListItem(String chatMemberId) {
+    context.pop(chatMemberId);
+  }
+
 
   Widget _buildFavorite() {
     var chatFavoriteList = ref.watch(chatFavoriteStateProvider);
@@ -121,28 +129,49 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
             chatMemberId: lists[index].chatMemeberId ?? '',
             chatHomeServer: lists[index].chatHomeServer ?? '',
           );
-
-          return FollowingItemWidget(
-            profileImage: "${lists[index].url}",
-            userName: lists[index].followNick!,
-            content: lists[index].intro == "" ||
-                lists[index].intro == null
-                ? '소개글이 없습니다.'
-                : lists[index].intro!,
-            isSpecialUser: lists[index].isBadge! == 1,
-            isFollow: lists[index].isFollow == 0,
-            isNewUser: lists[index].newState! == 1,
-            followIdx: lists[index].followIdx!,
-            memberIdx: lists[index].memberIdx!,
-          );
         },
       );
     });
   }
 
+  Widget _buildSearch(List<SearchData> searchList) {
+    return searchList.isEmpty
+        ? const SizedBox.shrink()
+        : ListView.separated(
+      itemCount: searchList.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      // scrollDirection: Axis.horizontal,
+      separatorBuilder: (context, index) {
+        return SizedBox(
+          width: 12.0.w,
+        );
+      },
+      itemBuilder: (BuildContext context, int index) {
+        return ChatSearchListItem(
+          idx: searchList[index].memberIdx!,
+          nick: searchList[index].nick ?? 'unknown',
+          intro: searchList[index].intro ?? '',
+          isFavorite: searchList[index].favoriteState == 1 ? true : false,
+          profileImgUrl: searchList[index].profileImgUrl ?? '',
+          chatMemberId: searchList[index].chatMemberId ?? '',
+          chatHomeServer: searchList[index].chatHomeServer ?? '',
+          // onTab: _onTabListItem,
+          onTabFavorite: () {
+            var userInfoModel = ref.read(userInfoProvider);
+            if (searchList[index].favoriteState == 1) {
+              ref.read(chatFavoriteStateProvider.notifier).unSetChatFavorite(userInfoModel.userModel!.idx, searchList[index].chatMemberId!);
+            } else {
+              ref.read(chatFavoriteStateProvider.notifier).setChatFavorite(userInfoModel.userModel!.idx, searchList[index].chatMemberId!);
+            }
+          },
+        );
+      },
+    );
+  }
 
   Widget _buildBody() {
-    var chatFavoriteList = ref.watch(chatFavoriteStateProvider);
+    final searchList = ref.watch(searchStateProvider).list;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -151,8 +180,18 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
           child: FormBuilderTextField(
-            name: 'follower',
+            name: 'chatFavorite',
             controller: searchController,
+            onChanged: (value) {
+              ref
+                  .read(searchStateProvider.notifier)
+                  .searchQuery
+                  .add(value.toString());
+              if(searchController.text.isNotEmpty) {
+              } else {
+                ref.refresh(searchStateProvider.notifier).clearSearchMensionList();
+              }
+            },
             style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
@@ -207,36 +246,37 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
         SizedBox(
           height: 4.h,
         ),
-        Column(
-          children: [
-            ExpansionTile(
-              initiallyExpanded: true,
-              title: Text(
-                '메시지.즐겨찾기'.tr(),
-                style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2.h),
-              ),
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 12.0.w, top: 8.0.h, bottom: 12.0.h),
-                  child: _buildFavorite(),
-                ),
-              ],
-            ),
-            ExpansionTile(
-              initiallyExpanded: true,
-              title: Text(
-                '팔로잉',
-                style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2.h),
-              ),
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 12.0.w, top: 8.0.h, bottom: 12.0.h),
-                  child: _buildFollow(),
-                ),
-              ],
-            ),
-          ],
-        ),
+        // searchList.isEmpty ? Column(
+        //   children: [
+        //     ExpansionTile(
+        //       initiallyExpanded: true,
+        //       title: Text(
+        //         '메시지.즐겨찾기'.tr(),
+        //         style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2.h),
+        //       ),
+        //       children: [
+        //         Padding(
+        //           padding: EdgeInsets.only(left: 12.0.w, top: 8.0.h, bottom: 12.0.h),
+        //           child: _buildFavorite(),
+        //         ),
+        //       ],
+        //     ),
+        //     ExpansionTile(
+        //       initiallyExpanded: true,
+        //       title: Text(
+        //         '팔로잉',
+        //         style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2.h),
+        //       ),
+        //       children: [
+        //         Padding(
+        //           padding: EdgeInsets.only(left: 12.0.w, top: 8.0.h, bottom: 12.0.h),
+        //           child: _buildFollow(),
+        //         ),
+        //       ],
+        //     ),
+        //   ],
+        // ) : _buildSearch(searchList),
+        _buildSearch(searchList),
       ],
     );
   }

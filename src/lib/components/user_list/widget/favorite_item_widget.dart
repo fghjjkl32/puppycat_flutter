@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -30,147 +31,157 @@ class FavoriteItemWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 16.h),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  right: 10.w,
-                ),
-                child: profileImage == null
-                    ? WidgetMask(
-                        blendMode: BlendMode.srcATop,
-                        childSaveLayer: true,
-                        mask: Center(
-                          child: Image.asset(
-                            'assets/image/feed/icon/large_size/icon_taguser.png',
+    return InkWell(
+      onTap: () {
+        ref.read(userModelProvider)!.idx == followerIdx
+            ? null
+            : context.push(
+                "/home/myPage/followList/$followerIdx/userPage/$userName/$followerIdx");
+      },
+      child: Padding(
+        padding:
+            EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 10.w,
+                  ),
+                  child: profileImage == null
+                      ? WidgetMask(
+                          blendMode: BlendMode.srcATop,
+                          childSaveLayer: true,
+                          mask: Center(
+                            child: Image.asset(
+                              'assets/image/feed/icon/large_size/icon_taguser.png',
+                              height: 32.h,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/image/feed/image/squircle.svg',
+                            height: 32.h,
+                          ),
+                        )
+                      : WidgetMask(
+                          blendMode: BlendMode.srcATop,
+                          childSaveLayer: true,
+                          mask: Center(
+                            child: Image.asset(
+                              profileImage!,
+                              height: 32.h,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/image/feed/image/squircle.svg',
                             height: 32.h,
                             fit: BoxFit.fill,
                           ),
                         ),
-                        child: SvgPicture.asset(
-                          'assets/image/feed/image/squircle.svg',
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        isSpecialUser
+                            ? Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/image/feed/icon/small_size/icon_special.png',
+                                    height: 13.h,
+                                  ),
+                                  SizedBox(
+                                    width: 4.w,
+                                  ),
+                                ],
+                              )
+                            : Container(),
+                        Text(
+                          userName,
+                          style:
+                              kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 4.h,
+                    ),
+                    Text(
+                      content,
+                      style:
+                          kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            ref.read(userModelProvider)!.idx == followerIdx
+                ? Container()
+                : isFollow
+                    ? GestureDetector(
+                        onTap: () async {
+                          await ref
+                              .watch(contentLikeUserListStateProvider.notifier)
+                              .postFollow(
+                                memberIdx: ref.read(userModelProvider)!.idx,
+                                followIdx: followerIdx,
+                                contentsIdx: contentsIdx,
+                              );
+                        },
+                        child: Container(
+                          width: 56.w,
                           height: 32.h,
+                          decoration: const BoxDecoration(
+                            color: kPrimaryColor,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "팔로우",
+                              style: kButton12BoldStyle.copyWith(
+                                  color: kNeutralColor100),
+                            ),
+                          ),
                         ),
                       )
-                    : WidgetMask(
-                        blendMode: BlendMode.srcATop,
-                        childSaveLayer: true,
-                        mask: Center(
-                          child: Image.asset(
-                            profileImage!,
-                            height: 32.h,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/image/feed/image/squircle.svg',
+                    : GestureDetector(
+                        onTap: () async {
+                          await ref
+                              .watch(contentLikeUserListStateProvider.notifier)
+                              .deleteFollow(
+                                memberIdx: ref.read(userModelProvider)!.idx,
+                                followIdx: followerIdx,
+                                contentsIdx: contentsIdx,
+                              );
+                        },
+                        child: Container(
+                          width: 56.w,
                           height: 32.h,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      isSpecialUser
-                          ? Row(
-                              children: [
-                                Image.asset(
-                                  'assets/image/feed/icon/small_size/icon_special.png',
-                                  height: 13.h,
-                                ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
-                              ],
-                            )
-                          : Container(),
-                      Text(
-                        userName,
-                        style:
-                            kBody13BoldStyle.copyWith(color: kTextTitleColor),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 4.h,
-                  ),
-                  Text(
-                    content,
-                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          ref.read(userModelProvider)!.idx == followerIdx
-              ? Container()
-              : isFollow
-                  ? GestureDetector(
-                      onTap: () async {
-                        await ref
-                            .watch(contentLikeUserListStateProvider.notifier)
-                            .postFollow(
-                              memberIdx: ref.read(userModelProvider)!.idx,
-                              followIdx: followerIdx,
-                              contentsIdx: contentsIdx,
-                            );
-                      },
-                      child: Container(
-                        width: 56.w,
-                        height: 32.h,
-                        decoration: const BoxDecoration(
-                          color: kPrimaryColor,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
+                          decoration: const BoxDecoration(
+                            color: kNeutralColor300,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "팔로잉",
+                              style: kButton12BoldStyle.copyWith(
+                                  color: kTextBodyColor),
+                            ),
                           ),
                         ),
-                        child: Center(
-                          child: Text(
-                            "팔로우",
-                            style: kButton12BoldStyle.copyWith(
-                                color: kNeutralColor100),
-                          ),
-                        ),
-                      ),
-                    )
-                  : GestureDetector(
-                      onTap: () async {
-                        await ref
-                            .watch(contentLikeUserListStateProvider.notifier)
-                            .deleteFollow(
-                              memberIdx: ref.read(userModelProvider)!.idx,
-                              followIdx: followerIdx,
-                              contentsIdx: contentsIdx,
-                            );
-                      },
-                      child: Container(
-                        width: 56.w,
-                        height: 32.h,
-                        decoration: const BoxDecoration(
-                          color: kNeutralColor300,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "팔로잉",
-                            style: kButton12BoldStyle.copyWith(
-                                color: kTextBodyColor),
-                          ),
-                        ),
-                      ),
-                    )
-        ],
+                      )
+          ],
+        ),
       ),
     );
   }

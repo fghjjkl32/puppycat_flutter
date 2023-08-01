@@ -10,6 +10,8 @@ void toast({
   required BuildContext context,
   required String text,
   String? secondText,
+  String? buttonText,
+  VoidCallback? buttonOnTap,
   required ToastType type,
   int milliseconds = 3000,
 }) {
@@ -46,40 +48,66 @@ void toast({
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          height: 20.h,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100),
-            color: kNeutralColor100,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: iconImage,
-          ),
-        ),
-        SizedBox(
-          width: 14.w,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
           children: [
-            Text(
-              text,
-              style: kBody13BoldStyle.copyWith(color: kNeutralColor100),
+            Container(
+              height: 20.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                color: kNeutralColor100,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: iconImage,
+              ),
             ),
-            secondText == null
-                ? Container()
-                : Padding(
-                    padding: const EdgeInsets.only(top: 2.0),
-                    child: Text(
-                      secondText,
-                      style:
-                          kBody11RegularStyle.copyWith(color: kNeutralColor100),
-                    ),
-                  ),
+            SizedBox(
+              width: 14.w,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  text,
+                  style: kBody13BoldStyle.copyWith(color: kNeutralColor100),
+                ),
+                secondText == null
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Text(
+                          secondText,
+                          style: kBody11RegularStyle.copyWith(
+                              color: kNeutralColor100),
+                        ),
+                      ),
+              ],
+            ),
           ],
         ),
+        buttonText == null
+            ? Container()
+            : InkWell(
+                onTap: buttonOnTap,
+                child: Padding(
+                  padding: const EdgeInsets.all(3),
+                  child: Row(
+                    children: [
+                      Text(
+                        buttonText,
+                        style: kBody11SemiBoldStyle.copyWith(
+                            color: kNeutralColor100),
+                      ),
+                      const Icon(
+                        Icons.refresh,
+                        color: kNeutralColor100,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
       ],
     ),
   );

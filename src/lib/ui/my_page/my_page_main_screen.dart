@@ -18,7 +18,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_con
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
-// import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class MyPageMainScreen extends ConsumerStatefulWidget {
@@ -61,7 +61,6 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
         .getInitUserInformation(ref.read(userModelProvider)!.idx);
     ref.read(myContentStateProvider.notifier).initPosts(
           loginMemberIdx: ref.read(userModelProvider)!.idx,
-          memberIdx: ref.read(userModelProvider)!.idx,
           initPage: 1,
         );
     ref.read(myTagContentStateProvider.notifier).initPosts(
@@ -110,7 +109,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
     if (commentController.position.extentAfter < 200) {
       if (commentOldLength == ref.read(commentStateProvider).list.length) {
         ref.read(commentStateProvider.notifier).loadMoreComment(
-            ref.watch(commentStateProvider).list[0].contentsIdx);
+            ref.watch(commentStateProvider).list[0].contentsIdx,
+            ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -288,8 +288,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 margin: const EdgeInsets.all(10.0),
                 child: GestureDetector(
                   onTap: () {
-                    context.go(
-                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}");
+                    context.push(
+                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myContent");
                   },
                   child: Center(
                     child: Stack(
@@ -299,7 +299,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(12)),
                             child: Image.network(
-                              "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -452,7 +452,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                     onTap: () async {
                                       await ref
                                           .read(commentStateProvider.notifier)
-                                          .initPosts(lists[index].idx, 1);
+                                          .getInitComment(
+                                              lists[index].idx,
+                                              ref.read(userModelProvider)!.idx,
+                                              1);
 
                                       // ignore: use_build_context_synchronously
                                       showCustomModalBottomSheet(
@@ -499,6 +502,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                                     context,
                                                                 int index) {
                                                           return CommentDetailItemWidget(
+                                                            key: UniqueKey(),
                                                             parentIdx:
                                                                 commentLists[
                                                                         index]
@@ -529,16 +533,29 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                                         index]
                                                                     .regDate),
                                                             isReply: false,
-                                                            likeCount:
-                                                                commentLists[
-                                                                        index]
-                                                                    .likeCnt,
+                                                            likeCount: commentLists[
+                                                                    index]
+                                                                .commentLikeCnt,
                                                             replies: commentLists[
                                                                     index]
                                                                 .childCommentData,
                                                             contentIdx:
-                                                                commentLists[0]
+                                                                commentLists[
+                                                                        index]
                                                                     .contentsIdx,
+                                                            isLike: commentLists[
+                                                                        index]
+                                                                    .likeState ==
+                                                                1,
+                                                            memberIdx:
+                                                                commentLists[
+                                                                        index]
+                                                                    .memberIdx,
+                                                            mentionListData:
+                                                                commentLists[
+                                                                            index]
+                                                                        .mentionList ??
+                                                                    [],
                                                           );
                                                         },
                                                       ),
@@ -551,7 +568,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                   bottom: 0,
                                                   child: CommentCustomTextField(
                                                     contentIdx:
-                                                        lists[index].idx!,
+                                                        lists[index].idx,
                                                   ),
                                                 ),
                                               ],
@@ -648,8 +665,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 margin: const EdgeInsets.all(10.0),
                 child: GestureDetector(
                   onTap: () {
-                    context.go(
-                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}");
+                    context.push(
+                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myTagContent");
                   },
                   child: Center(
                     child: Stack(
@@ -659,7 +676,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(12)),
                             child: Image.network(
-                              "https://dev-imgs.devlabs.co.kr${lists[index].imgList![0].url}",
+                              "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
                               fit: BoxFit.cover,
                             ),
                           ),

@@ -2,24 +2,24 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/block/block_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_state.dart';
+import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 final blockStateProvider =
-    StateNotifierProvider<BlockStateNotifier, BlockDataListModel>((ref) {
+    StateNotifierProvider<BlockStateNotifier, SearchDataListModel>((ref) {
   final loginMemberIdx = ref.watch(userModelProvider)!.idx;
   return BlockStateNotifier(loginMemberIdx);
 });
 
-class BlockStateNotifier extends StateNotifier<BlockDataListModel> {
+class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
   final int loginMemberIdx;
 
-  BlockStateNotifier(this.loginMemberIdx) : super(const BlockDataListModel()) {
+  BlockStateNotifier(this.loginMemberIdx) : super(const SearchDataListModel()) {
     blockSearchQuery.stream
         .debounceTime(const Duration(milliseconds: 500))
         .listen((query) async {
@@ -34,6 +34,7 @@ class BlockStateNotifier extends StateNotifier<BlockDataListModel> {
 
   bool isBlockSearching = false;
   String blockSearchWord = '';
+  int searchBlockMaxPages = 1;
   int searchBlockCurrentPage = 1;
 
   initBlockList([memberIdx, int? initPage]) async {
@@ -156,6 +157,8 @@ class BlockStateNotifier extends StateNotifier<BlockDataListModel> {
       page: 1,
       searchWord: searchWord,
     );
+
+    searchBlockMaxPages = lists.data.params!.pagination!.endPage!;
 
     if (lists == null) {
       state = state.copyWith(page: 1, isLoading: false, list: []);

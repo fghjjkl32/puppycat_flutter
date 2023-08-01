@@ -30,19 +30,30 @@ class ChatSearchListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        getProfileAvatar(profileImgUrl, true),
-        Column(
-          children: [
-            Text(nick),
-            Text(intro),
-          ],
-        ),
-        const Spacer(),
-        const Icon(Icons.star_border),
-      ],
+    return InkWell(
+      onTap: () {
+        if(onTab != null) {
+          onTab!(chatMemberId);
+        }
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          getProfileAvatar(profileImgUrl, true),
+          Column(
+            children: [
+              Text(nick),
+              Text(intro),
+            ],
+          ),
+          const Spacer(),
+          IconButton(icon : const Icon(Icons.star_border), onPressed: () {
+            if(onTabFavorite != null) {
+              onTabFavorite!();
+            }
+          },),
+        ],
+      ),
     );
   }
 }

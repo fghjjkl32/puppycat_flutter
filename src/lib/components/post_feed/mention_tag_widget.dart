@@ -8,6 +8,7 @@ class MentionTagWidget extends StatelessWidget {
   MentionTagWidget({
     Key? key,
     required this.text,
+    this.isCanClose = true,
     this.textStyle = const TextStyle(fontSize: 16, color: Colors.white),
     this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     this.margin,
@@ -23,6 +24,8 @@ class MentionTagWidget extends StatelessWidget {
 
   /// The text value.
   final String text;
+
+  final bool isCanClose;
 
   /// The text style of the text value.
   final TextStyle textStyle;
@@ -72,16 +75,18 @@ class MentionTagWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(text, style: textStyle),
-            GestureDetector(
-              onTap: () {
-                onDelete();
-              },
-              child: const Icon(
-                Icons.close,
-                size: 18,
-                color: kNeutralColor100,
-              ),
-            ),
+            isCanClose
+                ? GestureDetector(
+                    onTap: () {
+                      onDelete();
+                    },
+                    child: const Icon(
+                      Icons.close,
+                      size: 18,
+                      color: kNeutralColor100,
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),

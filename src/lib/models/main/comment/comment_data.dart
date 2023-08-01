@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
 
 part 'comment_data.freezed.dart';
@@ -7,19 +8,22 @@ part 'comment_data.g.dart';
 @freezed
 class CommentData with _$CommentData {
   factory CommentData({
-    required String nick,
-    required int likeCnt,
     required int isBadge,
     required int memberIdx,
+    required int commentLikeCnt,
+    required String regDate,
+    required int likeState,
+    required String uuid,
+    String? url,
+    required String nick,
     required String contents,
     required int parentIdx,
     required int contentsIdx,
-    required String regDate,
     required int state,
     required int idx,
-    required String uuid,
-    String? url,
+    List<MentionListData>? mentionList,
     ChildCommentData? childCommentData,
+    @Default(false) bool showAllReplies,
   }) = _CommentData;
 
   factory CommentData.fromJson(Map<String, dynamic> json) =>

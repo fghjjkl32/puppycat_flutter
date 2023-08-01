@@ -9,9 +9,19 @@ part 'comment_service.g.dart';
 abstract class CommentService {
   factory CommentService(Dio dio, {String baseUrl}) = _CommentService;
 
-  @GET('/contents/{contentIdx}/comment?page={page}')
+  @GET('/contents/{contentIdx}/comment?page={page}&memberIdx={memberIdx}')
   Future<CommentResponseModel?> getComment(
     @Path("contentIdx") int contentIdx,
+    @Path("memberIdx") int memberIdx,
+    @Path("page") int page,
+  );
+
+  @GET(
+      '/contents/{contentsIdx}/comment/{commentIdx}/child?memberIdx={memberIdx}&page={page}&limit=5')
+  Future<CommentResponseModel?> getReplyComment(
+    @Path("contentsIdx") int contentsIdx,
+    @Path("commentIdx") int commentIdx,
+    @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
@@ -24,6 +34,18 @@ abstract class CommentService {
   @DELETE('/contents/{contentsIdx}/comment/{commentIdx}?memberIdx={memberIdx}')
   Future<ResponseModel?> deleteComment({
     @Path("contentsIdx") required int contentsIdx,
+    @Path("commentIdx") required int commentIdx,
+    @Path("memberIdx") required int memberIdx,
+  });
+
+  @POST('/comment/{commentIdx}/like')
+  Future<ResponseModel?> postCommentLike(
+    @Path("commentIdx") int commentIdx,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @DELETE('/comment/{commentIdx}/like?memberIdx={memberIdx}')
+  Future<ResponseModel?> deleteCommentLike({
     @Path("commentIdx") required int commentIdx,
     @Path("memberIdx") required int memberIdx,
   });
