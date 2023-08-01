@@ -469,15 +469,30 @@ class CommentDetailItemWidget extends ConsumerWidget {
             Column(
               children: [
                 SizedBox(
-                  height: replies!.list.length > 2
-                      ? 100.h * 2
-                      : 100.h * replies!.list.length.toDouble(),
+                  height: 125 *
+                      (ref
+                                  .watch(commentStateProvider.select((state) =>
+                                      state.list.firstWhere(
+                                          (c) => c.idx == commentIdx)))
+                                  .showAllReplies
+                              ? replies!.list.length
+                              : replies!.list.length > 2
+                                  ? 2
+                                  : replies!.list.length)
+                          .toDouble(),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount:
-                          replies!.list.length > 2 ? 2 : replies!.list.length,
+                      itemCount: ref
+                              .watch(commentStateProvider.select((state) =>
+                                  state.list
+                                      .firstWhere((c) => c.idx == commentIdx)))
+                              .showAllReplies
+                          ? replies!.list.length
+                          : replies!.list.length > 2
+                              ? 2
+                              : replies!.list.length,
                       itemBuilder: (BuildContext context, int index) {
                         return CommentDetailItemWidget(
                           parentIdx: replies!.list[index].parentIdx,
@@ -502,10 +517,13 @@ class CommentDetailItemWidget extends ConsumerWidget {
                   ),
                 ),
                 if (replies!.list.length > 2)
-                  SizedBox(
-                    height: 10.h * 2,
-                    child: InkWell(
-                      onTap: () async {
+                  InkWell(
+                    onTap: () async {
+                      var comment = ref.watch(commentStateProvider.select(
+                          (state) => state.list
+                              .firstWhere((c) => c.idx == commentIdx)));
+
+                      if (comment.loadMoreClickCount == 0) {
                         await ref
                             .watch(commentStateProvider.notifier)
                             .getInitReplyComment(
@@ -514,12 +532,39 @@ class CommentDetailItemWidget extends ConsumerWidget {
                               1,
                               commentIdx,
                             );
+                      } else {
+                        await ref
+                            .watch(commentStateProvider.notifier)
+                            .loadMoreReplyComment(
+                              contentIdx,
+                              memberIdx,
+                              commentIdx,
+                            );
+                      }
+                      ref
+                          .watch(commentStateProvider.notifier)
+                          .increaseLoadMoreClickCount(commentIdx);
+                    },
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final comment = ref.watch(commentStateProvider.select(
+                            (state) => state.list
+                                .firstWhere((c) => c.idx == commentIdx)));
+
+                        int displayedReplies = comment.loadMoreClickCount == 0
+                            ? 2
+                            : 2 + (comment.loadMoreClickCount * 5);
+
+                        return replies!.params.pagination!.totalRecordCount! -
+                                    displayedReplies <=
+                                0
+                            ? Container()
+                            : Text(
+                                "답글 ${replies!.params.pagination!.totalRecordCount! - displayedReplies}개 더 보기",
+                                style: kBody12RegularStyle.copyWith(
+                                    color: kTextBodyColor),
+                              );
                       },
-                      child: Text(
-                        "답글 ${replies!.params.pagination!.totalRecordCount! - 2}개 더 보기",
-                        style:
-                            kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                      ),
                     ),
                   ),
               ],
