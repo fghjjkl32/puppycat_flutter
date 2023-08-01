@@ -10,7 +10,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_room_state_provider.g.dart';
 
-final chatRoomListStreamProvider = StateProvider<Stream>((ref) => (ref.read(chatControllerProvider('matrix')) as MatrixChatClientController).getRoomListStream());
 final chatReplyProvider = StateProvider<ChatMessageModel?>((ref) => null);
 final chatEditProvider = StateProvider<ChatMessageModel?>((ref) => null);
 final chatDeleteProvider = StateProvider<ChatMessageModel?>((ref) => null);

@@ -21,6 +21,7 @@ import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller
 import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_msg_item.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -50,7 +51,8 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   void initState() {
     _scrollController.addListener(_updateScrollController);
     super.initState();
-    _client = (ref.read(chatControllerProvider('matrix')).controller as MatrixChatClientController).client;
+    var userInfoModel = ref.read(userInfoProvider);
+    _client = (ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${userInfoModel.userModel!.idx}'))).controller as MatrixChatClientController).client;
     readMarkerEventId = widget.room.fullyRead;
     loadTimelineFuture = _getTimeline(eventContextId: readMarkerEventId);
   }

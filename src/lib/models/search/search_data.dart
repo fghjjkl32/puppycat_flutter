@@ -12,6 +12,11 @@ class SearchData with _$SearchData {
     String? profileImgUrl,
     int? isBadge,
     int? followerCnt,
+    String? chatMemberId,
+    String? chatHomeServer,
+    String? chatAccessToken,
+    String? chatDeviceId,
+    int? favoriteState,
   }) = _SearchData;
 
   factory SearchData.fromJson(Map<String, dynamic> json) =>

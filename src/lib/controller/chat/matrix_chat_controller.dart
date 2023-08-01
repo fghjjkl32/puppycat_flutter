@@ -16,9 +16,9 @@ class MatrixChatClientController implements AbstractChatController {
 
   Client get client => _chatClient;
 
-  // MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://sns-chat.devlabs.co.kr:8008']) {
-  MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://dev2.office.uxplus.kr']) {
-    print('homeServer $homeServer');
+  MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://sns-chat.devlabs.co.kr:8008']) {
+  // MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://dev2.office.uxplus.kr']) {
+    print('homeServer $homeServer / clientName $clientName');
     init(clientName, homeServer);
   }
 
@@ -60,6 +60,9 @@ class MatrixChatClientController implements AbstractChatController {
       id = id.replaceAll('#', '_');
     }
 
+
+    print('chat register id - $id / pw - $pw');
+
     var result = await _chatClient
         .register(
       auth: AuthenticationData(
@@ -84,6 +87,7 @@ class MatrixChatClientController implements AbstractChatController {
     if (result.accessToken != null) {
       _chatClient.accessToken = result.accessToken;
       setDisplayName(result.userId, displayName);
+      _chatClient.accessToken = null;
     }
 
     ChatUserModel userModel = ChatUserModel(
@@ -92,6 +96,8 @@ class MatrixChatClientController implements AbstractChatController {
       accessToken: result.accessToken,
       deviceId: result.deviceId,
     );
+
+    print('register result $userModel');
 
     return userModel;
   }
