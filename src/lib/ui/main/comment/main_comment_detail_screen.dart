@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 
@@ -24,15 +25,21 @@ class MainCommentDetailScreenState
   void initState() {
     commentController.addListener(_commentScrollListener);
 
-    ref.read(commentStateProvider.notifier).initPosts(widget.contentIdx, 1);
+    ref
+        .read(commentStateProvider.notifier)
+        .getInitComment(widget.contentIdx, ref.read(userModelProvider)!.idx, 1);
+
     super.initState();
   }
 
   void _commentScrollListener() {
-    if (commentController.position.extentAfter < 200) {
+    if (commentController.position.pixels >
+        commentController.position.maxScrollExtent -
+            MediaQuery.of(context).size.height) {
       if (commentOldLength == ref.read(commentStateProvider).list.length) {
         ref.read(commentStateProvider.notifier).loadMoreComment(
-            ref.watch(commentStateProvider).list[0].contentsIdx);
+            ref.watch(commentStateProvider).list[0].contentsIdx,
+            ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -65,12 +72,16 @@ class MainCommentDetailScreenState
               Consumer(builder: (context, ref, child) {
                 final commentContentState = ref.watch(commentStateProvider);
                 final commentLists = commentContentState.list;
+
+                commentOldLength = commentLists.length ?? 0;
+
                 return ListView.builder(
                   controller: commentController,
                   itemCount: commentLists.length,
                   padding: EdgeInsets.only(bottom: 80.h),
                   itemBuilder: (BuildContext context, int index) {
                     return CommentDetailItemWidget(
+                      key: UniqueKey(),
                       parentIdx: commentLists[index].parentIdx,
                       commentIdx: commentLists[index].idx,
                       profileImage: commentLists[index].url ??
@@ -80,10 +91,12 @@ class MainCommentDetailScreenState
                       isSpecialUser: commentLists[index].isBadge == 1,
                       time: DateTime.parse(commentLists[index].regDate),
                       isReply: false,
-                      likeCount: commentLists[index].likeCnt,
+                      likeCount: commentLists[index].commentLikeCnt,
                       replies: commentLists[index].childCommentData,
-                      contentIdx: commentLists[0].contentsIdx,
+                      contentIdx: commentLists[index].contentsIdx,
                       isLike: commentLists[index].likeState == 1,
+                      memberIdx: commentLists[index].memberIdx,
+                      mentionListData: commentLists[index].mentionList ?? [],
                     );
                   },
                 );

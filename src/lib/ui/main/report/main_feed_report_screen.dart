@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/feed_detail_state_provider.dart';
 
 enum ReportSelectEnum {
@@ -155,32 +156,61 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                                     directInputText!.isEmpty)
                             ? null
                             : () async {
-                                final result = await ref
-                                    .watch(feedDetailStateProvider.notifier)
-                                    .postContentReport(
-                                      loginMemberIdx:
-                                          ref.watch(userModelProvider)!.idx,
-                                      contentIdx: widget.contentIdx,
-                                      reportCode: code,
-                                      reason: directInputText,
-                                    );
+                                final result = widget.isComment
+                                    ? await ref
+                                        .watch(commentStateProvider.notifier)
+                                        .postCommentReport(
+                                          loginMemberIdx:
+                                              ref.watch(userModelProvider)!.idx,
+                                          contentIdx: widget.contentIdx,
+                                          reportCode: code,
+                                          reason: directInputText,
+                                          reportType: "comment",
+                                        )
+                                    : await ref
+                                        .watch(feedDetailStateProvider.notifier)
+                                        .postContentReport(
+                                          loginMemberIdx:
+                                              ref.watch(userModelProvider)!.idx,
+                                          contentIdx: widget.contentIdx,
+                                          reportCode: code,
+                                          reason: directInputText,
+                                          reportType: "contents",
+                                        );
 
                                 if (result.result) {
+                                  // ignore: use_build_context_synchronously
                                   toast(
                                     context: context,
                                     text: '정상적으로 신고 접수가 되었습니다.',
                                     type: ToastType.purple,
                                     buttonText: "신고취소",
                                     buttonOnTap: () async {
-                                      final result = await ref
-                                          .watch(
-                                              feedDetailStateProvider.notifier)
-                                          .deleteContentReport(
-                                            loginMemberIdx: ref
-                                                .watch(userModelProvider)!
-                                                .idx,
-                                            contentIdx: widget.contentIdx,
-                                          );
+                                      final result = widget.isComment
+                                          ? await ref
+                                              .watch(
+                                                  commentStateProvider.notifier)
+                                              .deleteCommentReport(
+                                                loginMemberIdx: ref
+                                                    .watch(userModelProvider)!
+                                                    .idx,
+                                                contentIdx: widget.contentIdx,
+                                                reportType: widget.isComment
+                                                    ? "comment"
+                                                    : "contents",
+                                              )
+                                          : await ref
+                                              .watch(feedDetailStateProvider
+                                                  .notifier)
+                                              .deleteContentReport(
+                                                loginMemberIdx: ref
+                                                    .watch(userModelProvider)!
+                                                    .idx,
+                                                contentIdx: widget.contentIdx,
+                                                reportType: widget.isComment
+                                                    ? "comment"
+                                                    : "contents",
+                                              );
 
                                       if (result.result) {
                                         toast(

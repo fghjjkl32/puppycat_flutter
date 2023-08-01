@@ -321,6 +321,7 @@ class FeedRepository {
     required int contentIdx,
     required int reportCode,
     required String? reason,
+    required String reportType,
   }) async {
     final Map<String, dynamic> body;
 
@@ -336,7 +337,7 @@ class FeedRepository {
           };
 
     ResponseModel? feedResponseModel =
-        await _feedService.postContentReport(contentIdx, body);
+        await _feedService.postContentReport(reportType, contentIdx, body);
 
     if (feedResponseModel == null) {
       throw "error";
@@ -346,10 +347,12 @@ class FeedRepository {
   }
 
   Future<ResponseModel> deleteContentReport({
+    required String reportType,
     required int contentsIdx,
     required int memberIdx,
   }) async {
     ResponseModel? feedResponseModel = await _feedService.deleteContentReport(
+      reportType,
       contentsIdx,
       memberIdx,
     );

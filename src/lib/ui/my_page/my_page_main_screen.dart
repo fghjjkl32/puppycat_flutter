@@ -109,7 +109,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
     if (commentController.position.extentAfter < 200) {
       if (commentOldLength == ref.read(commentStateProvider).list.length) {
         ref.read(commentStateProvider.notifier).loadMoreComment(
-            ref.watch(commentStateProvider).list[0].contentsIdx);
+            ref.watch(commentStateProvider).list[0].contentsIdx,
+            ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -451,7 +452,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                     onTap: () async {
                                       await ref
                                           .read(commentStateProvider.notifier)
-                                          .initPosts(lists[index].idx, 1);
+                                          .getInitComment(
+                                              lists[index].idx,
+                                              ref.read(userModelProvider)!.idx,
+                                              1);
 
                                       // ignore: use_build_context_synchronously
                                       showCustomModalBottomSheet(
@@ -498,6 +502,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                                     context,
                                                                 int index) {
                                                           return CommentDetailItemWidget(
+                                                            key: UniqueKey(),
                                                             parentIdx:
                                                                 commentLists[
                                                                         index]
@@ -528,20 +533,29 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                                         index]
                                                                     .regDate),
                                                             isReply: false,
-                                                            likeCount:
-                                                                commentLists[
-                                                                        index]
-                                                                    .likeCnt,
+                                                            likeCount: commentLists[
+                                                                    index]
+                                                                .commentLikeCnt,
                                                             replies: commentLists[
                                                                     index]
                                                                 .childCommentData,
                                                             contentIdx:
-                                                                commentLists[0]
+                                                                commentLists[
+                                                                        index]
                                                                     .contentsIdx,
                                                             isLike: commentLists[
-                                                                        0]
+                                                                        index]
                                                                     .likeState ==
                                                                 1,
+                                                            memberIdx:
+                                                                commentLists[
+                                                                        index]
+                                                                    .memberIdx,
+                                                            mentionListData:
+                                                                commentLists[
+                                                                            index]
+                                                                        .mentionList ??
+                                                                    [],
                                                           );
                                                         },
                                                       ),

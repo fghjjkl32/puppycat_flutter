@@ -119,7 +119,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
     if (commentController.position.extentAfter < 200) {
       if (commentOldLength == ref.read(commentStateProvider).list.length) {
         ref.read(commentStateProvider.notifier).loadMoreComment(
-            ref.watch(commentStateProvider).list[0].contentsIdx);
+            ref.watch(commentStateProvider).list[0].contentsIdx,
+            ref.read(userModelProvider)!.idx);
       }
     }
   }

@@ -23,7 +23,7 @@ class FeedData with _$FeedData {
     String? location,
     int? modifyState,
     required int idx,
-    List<FeedMentionListData>? mentionList,
+    List<MentionListData>? mentionList,
     int? commentCnt,
     List<FeedHashTagListData>? hashTagList,
     List<MemberInfoListData>? memberInfoList,
@@ -71,15 +71,15 @@ class FeedMemberInfoListData with _$FeedMemberInfoListData {
 }
 
 @freezed
-class FeedMentionListData with _$FeedMentionListData {
-  factory FeedMentionListData({
+class MentionListData with _$MentionListData {
+  factory MentionListData({
     int? memberIdx,
     String? uuid,
     String? nick,
-  }) = _FeedMentionListData;
+  }) = _MentionListData;
 
-  factory FeedMentionListData.fromJson(Map<String, dynamic> json) =>
-      _$FeedMentionListDataFromJson(json);
+  factory MentionListData.fromJson(Map<String, dynamic> json) =>
+      _$MentionListDataFromJson(json);
 }
 
 @freezed

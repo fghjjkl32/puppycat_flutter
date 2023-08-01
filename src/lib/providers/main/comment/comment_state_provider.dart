@@ -1,7 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
 
 final commentStateProvider =
     StateNotifierProvider<CommentStateNotifier, CommentDataListModel>((ref) {
@@ -13,15 +16,20 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
 
   int maxPages = 1;
   int currentPage = 1;
-  initPosts([
+
+  int repliesMaxPages = 1;
+  int repliesCurrentPage = 1;
+
+  getInitComment(
     contentIdx,
+    memberIdx,
     int? initPage,
-  ]) async {
+  ) async {
     currentPage = 1;
 
     final page = initPage ?? state.page;
     final lists = await CommentRepository()
-        .getComment(page: page, contentIdx: contentIdx);
+        .getComment(page: page, memberIdx: memberIdx, contentIdx: contentIdx);
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
@@ -36,7 +44,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
   }
 
-  loadMoreComment(contentIdx) async {
+  loadMoreComment(contentIdx, memberIdx) async {
     if (currentPage >= maxPages) {
       state = state.copyWith(isLoadMoreDone: true);
       return;
@@ -53,8 +61,11 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await CommentRepository()
-        .getComment(contentIdx: contentIdx, page: state.page + 1);
+    final lists = await CommentRepository().getComment(
+      contentIdx: contentIdx,
+      page: state.page + 1,
+      memberIdx: memberIdx,
+    );
 
     if (lists == null) {
       state = state.copyWith(isLoadMoreError: true, isLoading: false);
@@ -75,8 +86,8 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     }
   }
 
-  Future<void> refresh(contentsIdx) async {
-    initPosts(contentsIdx, 1);
+  Future<void> refresh(contentsIdx, memberIdx) async {
+    getInitComment(contentsIdx, memberIdx, 1);
     currentPage = 1;
   }
 
@@ -91,7 +102,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
       commentIdx: commentIdx,
     );
 
-    await refresh(contentsIdx);
+    await refresh(contentsIdx, memberIdx);
 
     return result;
   }
@@ -108,7 +119,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
         parentIdx: parentIdx,
         contentIdx: contentIdx);
 
-    await refresh(contentIdx);
+    await refresh(contentIdx, memberIdx);
 
     return result;
   }
@@ -121,7 +132,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     final result = await CommentRepository()
         .postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
 
-    await refresh(contentsIdx);
+    await refresh(contentsIdx, memberIdx);
 
     return result;
   }
@@ -134,8 +145,137 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     final result = await CommentRepository()
         .deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
 
-    await refresh(contentsIdx);
+    await refresh(contentsIdx, memberIdx);
 
     return result;
   }
+
+  Future<ResponseModel> postBlock({
+    required contentsIdx,
+    required memberIdx,
+    required blockIdx,
+  }) async {
+    final result = await BlockRepository().postBlock(
+      memberIdx: memberIdx,
+      blockIdx: blockIdx,
+    );
+
+    await refresh(contentsIdx, memberIdx);
+
+    return result;
+  }
+
+  Future<ResponseModel> postCommentReport({
+    required int loginMemberIdx,
+    required int contentIdx,
+    required int reportCode,
+    required String? reason,
+    required String reportType,
+  }) async {
+    final result = await FeedRepository().postContentReport(
+      reportType: reportType,
+      memberIdx: loginMemberIdx,
+      contentIdx: contentIdx,
+      reportCode: reportCode,
+      reason: reason,
+    );
+
+    return result;
+  }
+
+  Future<ResponseModel> deleteCommentReport({
+    required String reportType,
+    required int loginMemberIdx,
+    required int contentIdx,
+  }) async {
+    final result = await FeedRepository().deleteContentReport(
+      reportType: reportType,
+      memberIdx: loginMemberIdx,
+      contentsIdx: contentIdx,
+    );
+
+    return result;
+  }
+
+  getInitReplyComment(
+    contentIdx,
+    memberIdx,
+    int? initPage,
+    commentIdx,
+  ) async {
+    repliesCurrentPage = 1;
+
+    final page = initPage ?? state.page;
+    final lists = await CommentRepository().getReplyComment(
+        page: page,
+        memberIdx: memberIdx,
+        contentIdx: contentIdx,
+        commentIdx: commentIdx);
+
+    repliesMaxPages = lists.data.params!.pagination!.endPage!;
+
+    if (lists == null) {
+      state = state.copyWith(page: page, isLoading: false);
+      return;
+    }
+
+    // Find the comment with the given commentIdx
+    final commentIndex = state.list.indexWhere((c) => c.idx == commentIdx);
+
+    // Update the childCommentData of the comment
+    final updatedComment = state.list[commentIndex].copyWith(
+      childCommentData:
+          ChildCommentData(params: lists.data.params!, list: lists.data.list),
+      showAllReplies: true,
+    );
+
+    // Update the comment in the state
+    state = state.copyWith(list: [
+      ...state.list.sublist(0, commentIndex),
+      updatedComment,
+      ...state.list.sublist(commentIndex + 1),
+    ], page: page, isLoading: false);
+  }
+
+// loadMoreComment(contentIdx, memberIdx) async {
+  //   if (currentPage >= maxPages) {
+  //     state = state.copyWith(isLoadMoreDone: true);
+  //     return;
+  //   }
+  //
+  //   StringBuffer bf = StringBuffer();
+  //
+  //   bf.write('try to request loading ${state.isLoading} at ${state.page + 1}');
+  //   if (state.isLoading) {
+  //     bf.write(' fail');
+  //     return;
+  //   }
+  //   bf.write(' success');
+  //   state = state.copyWith(
+  //       isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+  //
+  //   final lists = await CommentRepository().getComment(
+  //     contentIdx: contentIdx,
+  //     page: state.page + 1,
+  //     memberIdx: memberIdx,
+  //   );
+  //
+  //   if (lists == null) {
+  //     state = state.copyWith(isLoadMoreError: true, isLoading: false);
+  //     return;
+  //   }
+  //
+  //   if (lists.data.list.isNotEmpty) {
+  //     state = state.copyWith(
+  //         page: state.page + 1,
+  //         isLoading: false,
+  //         list: [...state.list, ...lists.data.list]);
+  //
+  //     currentPage++;
+  //   } else {
+  //     state = state.copyWith(
+  //       isLoading: false,
+  //     );
+  //   }
+  // }
 }

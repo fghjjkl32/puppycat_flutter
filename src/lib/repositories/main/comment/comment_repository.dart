@@ -13,43 +13,68 @@ class CommentRepository {
       CommentService(DioWrap.getDioWithCookie());
 
   Future<CommentResponseModel> getComment(
-      {required int contentIdx, required int page}) async {
-    CommentResponseModel? commentResponseModel = await _contentsService
-        .getComment(contentIdx, page)
-        .catchError((Object obj) async {
-      (ResponseModel?, bool) errorResult = await errorHandler(obj);
-      return errorResult.$1;
-    });
+      {required int contentIdx,
+      required int memberIdx,
+      required int page}) async {
+    try {
+      CommentResponseModel? commentResponseModel =
+          await _contentsService.getComment(contentIdx, memberIdx, page);
 
-    if (commentResponseModel == null) {
-      return CommentResponseModel(
-        result: false,
-        code: "",
-        data: const CommentDataListModel(
-          list: [],
-          params: ParamsModel(
-            memberIdx: 0,
-            pagination: Pagination(
-              startPage: 0,
-              limitStart: 0,
-              totalPageCount: 0,
-              existNextPage: false,
-              endPage: 0,
-              existPrevPage: false,
-              totalRecordCount: 0,
-            ),
-            offset: 0,
-            limit: 0,
-            pageSize: 0,
-            page: 0,
-            recordSize: 0,
-          ),
-        ),
-        message: "",
-      );
+      if (commentResponseModel == null) {
+        return _getDefaultCommentResponseModel();
+      }
+
+      return commentResponseModel;
+    } catch (error) {
+      return _getDefaultCommentResponseModel();
     }
+  }
 
-    return commentResponseModel;
+  Future<CommentResponseModel> getReplyComment(
+      {required int contentIdx,
+      required int commentIdx,
+      required int memberIdx,
+      required int page}) async {
+    try {
+      CommentResponseModel? commentResponseModel = await _contentsService
+          .getReplyComment(contentIdx, commentIdx, memberIdx, page);
+
+      if (commentResponseModel == null) {
+        return _getDefaultCommentResponseModel();
+      }
+
+      return commentResponseModel;
+    } catch (error) {
+      return _getDefaultCommentResponseModel();
+    }
+  }
+
+  CommentResponseModel _getDefaultCommentResponseModel() {
+    return CommentResponseModel(
+      result: false,
+      code: "",
+      data: const CommentDataListModel(
+        list: [],
+        params: ParamsModel(
+          memberIdx: 0,
+          pagination: Pagination(
+            startPage: 0,
+            limitStart: 0,
+            totalPageCount: 0,
+            existNextPage: false,
+            endPage: 0,
+            existPrevPage: false,
+            totalRecordCount: 0,
+          ),
+          offset: 0,
+          limit: 0,
+          pageSize: 0,
+          page: 0,
+          recordSize: 0,
+        ),
+      ),
+      message: "",
+    );
   }
 
   Future<ResponseModel> postComment({
@@ -109,7 +134,7 @@ class CommentRepository {
     };
 
     ResponseModel? commentResponseModel =
-        await _contentsService.postCommentLike(memberIdx, body);
+        await _contentsService.postCommentLike(commentIdx, body);
 
     if (commentResponseModel == null) {
       throw "error";

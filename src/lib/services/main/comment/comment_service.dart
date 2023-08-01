@@ -9,9 +9,19 @@ part 'comment_service.g.dart';
 abstract class CommentService {
   factory CommentService(Dio dio, {String baseUrl}) = _CommentService;
 
-  @GET('/contents/{contentIdx}/comment?page={page}')
+  @GET('/contents/{contentIdx}/comment?page={page}&memberIdx={memberIdx}')
   Future<CommentResponseModel?> getComment(
     @Path("contentIdx") int contentIdx,
+    @Path("memberIdx") int memberIdx,
+    @Path("page") int page,
+  );
+
+  @GET(
+      '/contents/{contentsIdx}/comment/{commentIdx}/child?memberIdx={memberIdx}&page={page}&limit=5')
+  Future<CommentResponseModel?> getReplyComment(
+    @Path("contentsIdx") int contentsIdx,
+    @Path("commentIdx") int commentIdx,
+    @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 

@@ -148,12 +148,10 @@ class CommentCustomTextFieldState
                               if (nextSpace == -1 || nextSpace >= cursorPos) {
                                 String toSearch =
                                     text.substring(from + 1, cursorPos);
-                                toSearch = toSearch
-                                    .trim(); // Remove leading and trailing white spaces.
+                                toSearch = toSearch.trim();
 
                                 if (toSearch.isNotEmpty) {
                                   if (toSearch.length >= 1) {
-                                    print(toSearch);
                                     ref
                                         .watch(searchStateProvider.notifier)
                                         .searchQuery
@@ -205,6 +203,7 @@ class CommentCustomTextFieldState
                                           .watch(commentHeaderProvider.notifier)
                                           .resetCommentHeader();
                                       _controller.text = '';
+                                      hasInput = false;
                                       initialized.value = false;
                                     }
                                   },
@@ -296,67 +295,3 @@ class MentionAutocompleteOptions extends ConsumerWidget {
     );
   }
 }
-
-class User {
-  const User({
-    required this.id,
-    required this.name,
-    required this.avatar,
-  });
-
-  final String id;
-  final String name;
-  final String avatar;
-}
-
-const sahil = User(
-  id: 'xsahil03x',
-  name: 'Sahil Kumar',
-  avatar: 'https://bit.ly/3yEVRrD',
-);
-
-const avni = User(
-  id: 'avu.saxena',
-  name: 'Avni Saxena',
-  avatar: 'https://bit.ly/3PbPBii',
-);
-
-const trapti = User(
-  id: 'trapti2711',
-  name: 'Trapti Gupta',
-  avatar: 'https://bit.ly/3aDHtba',
-);
-
-const gaurav = User(
-  id: 'itsmegb98',
-  name: 'Gaurav Bhadouriya',
-  avatar: 'https://bit.ly/3PmNdES',
-);
-
-const amit = User(
-  id: 'amitk_15',
-  name: 'Amit Kumar',
-  avatar: 'https://bit.ly/3P9GPB8',
-);
-
-const ayush = User(
-  id: 'ayushpgupta',
-  name: 'Ayush Gupta',
-  avatar: 'https://bit.ly/3Rw61Dv',
-);
-
-const shubham = User(
-  id: 'someshubham',
-  name: 'Shubham Jain',
-  avatar: 'https://bit.ly/3Rs3uud',
-);
-
-const kUsers = <User>[
-  sahil,
-  avni,
-  gaurav,
-  trapti,
-  amit,
-  ayush,
-  shubham,
-];

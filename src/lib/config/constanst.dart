@@ -1,4 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
@@ -69,3 +74,91 @@ final FeedResponseModel feedNullResponseModel = FeedResponseModel(
   ),
   message: "",
 );
+
+List<InlineSpan> replaceMentionsWithNicknamesInContent(
+    String content,
+    List<MentionListData> mentionList,
+    BuildContext context,
+    TextStyle tagStyle) {
+  List<InlineSpan> spans = [];
+
+  String remainingContent = content;
+
+  while (true) {
+    MentionListData? firstMention;
+    int firstMentionIndex = -1;
+
+    // Find the first mention in the remaining content
+    for (var mention in mentionList) {
+      String uuid = mention.uuid ?? '';
+      String pattern = '[@[' + uuid + ']]';
+      int mentionIndex = remainingContent.indexOf(pattern);
+
+      if (mentionIndex != -1 &&
+          (firstMentionIndex == -1 || mentionIndex < firstMentionIndex)) {
+        firstMention = mention;
+        firstMentionIndex = mentionIndex;
+      }
+    }
+
+    // If no more mentions are found, break the loop
+    if (firstMention == null) {
+      break;
+    }
+
+    // Add the text before the mention to the spans
+    if (firstMentionIndex > 0) {
+      spans.add(
+          TextSpan(text: remainingContent.substring(0, firstMentionIndex)));
+    }
+
+    // Add the mention to the spans with special style and click behavior
+    spans.add(WidgetSpan(
+      child: GestureDetector(
+        onTap: () {
+          context.push(
+              "/home/myPage/followList/${firstMention!.memberIdx}/userPage/${firstMention.nick}/${firstMention.memberIdx}");
+        },
+        child: Text('@' + (firstMention.nick ?? ''), style: tagStyle),
+      ),
+    ));
+
+    // Remove the processed content
+    remainingContent = remainingContent
+        .substring(firstMentionIndex + '[@[${firstMention.uuid}]]'.length);
+  }
+
+  // Process hashtags
+  String remainingContentAfterMentions = remainingContent;
+  while (true) {
+    RegExp exp = new RegExp(r"\[#\[(.*?)\]\]");
+    var match = exp.firstMatch(remainingContentAfterMentions);
+
+    if (match == null) break;
+
+    String beforeHashtag =
+        remainingContentAfterMentions.substring(0, match.start);
+    String hashtag = match.group(1) ?? '';
+
+    spans.add(TextSpan(text: beforeHashtag));
+
+    spans.add(WidgetSpan(
+      child: GestureDetector(
+        onTap: () {
+          print(hashtag);
+          context.push("/home/search/$hashtag");
+        },
+        child: Text('#' + hashtag,
+            style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),
+      ),
+    ));
+
+    remainingContentAfterMentions =
+        remainingContentAfterMentions.substring(match.end);
+  }
+
+  // Add the remaining content after the last pattern
+  spans.add(TextSpan(text: remainingContentAfterMentions));
+
+  return spans;
+}

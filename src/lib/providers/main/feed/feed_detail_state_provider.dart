@@ -437,8 +437,10 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required int contentIdx,
     required int reportCode,
     required String? reason,
+    required String reportType,
   }) async {
     final result = await FeedRepository().postContentReport(
+      reportType: reportType,
       memberIdx: loginMemberIdx,
       contentIdx: contentIdx,
       reportCode: reportCode,
@@ -449,10 +451,12 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
   }
 
   Future<ResponseModel> deleteContentReport({
+    required String reportType,
     required int loginMemberIdx,
     required int contentIdx,
   }) async {
     final result = await FeedRepository().deleteContentReport(
+      reportType: reportType,
       memberIdx: loginMemberIdx,
       contentsIdx: contentIdx,
     );

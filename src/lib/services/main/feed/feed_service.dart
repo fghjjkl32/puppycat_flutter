@@ -22,14 +22,16 @@ abstract class FeedService {
     @Path("idx") int idx,
   );
 
-  @POST('/contents/{contentsIdx}/report')
+  @POST('/{reportType}/{contentsIdx}/report')
   Future<ResponseModel?> postContentReport(
+    @Path("reportType") String reportType,
     @Path("contentsIdx") int contentsIdx,
     @Body() Map<String, dynamic> body,
   );
 
-  @DELETE('/contents/{contentsIdx}/report?memberIdx={memberIdx}')
+  @DELETE('/{reportType}/{contentsIdx}/report?memberIdx={memberIdx}')
   Future<ResponseModel?> deleteContentReport(
+    @Path("reportType") String reportType,
     @Path("contentsIdx") int contentsIdx,
     @Path("memberIdx") int memberIdx,
   );
