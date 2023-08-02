@@ -107,6 +107,27 @@ class CommentRepository {
     return commentResponseModel;
   }
 
+  Future<ResponseModel> editComment({
+    required int memberIdx,
+    required int commentIdx,
+    required String contents,
+    required int contentIdx,
+  }) async {
+    final Map<String, dynamic> body = {
+      "memberIdx": memberIdx,
+      "contents": contents,
+    };
+
+    ResponseModel? commentResponseModel =
+        await _contentsService.editComment(contentIdx, commentIdx, body);
+
+    if (commentResponseModel == null) {
+      throw "error";
+    }
+
+    return commentResponseModel;
+  }
+
   Future<ResponseModel> deleteComment({
     required int contentsIdx,
     required int commentIdx,

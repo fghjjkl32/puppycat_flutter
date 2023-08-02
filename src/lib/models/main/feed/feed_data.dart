@@ -46,6 +46,7 @@ class FeedCommentData with _$FeedCommentData {
     int? likeState,
     int? idx,
     String? profileImgUrl,
+    List<MentionListData>? mentionList,
   }) = _FeedCommentData;
 
   factory FeedCommentData.fromJson(Map<String, dynamic> json) =>
@@ -119,6 +120,7 @@ class ImgMemberTagListData with _$ImgMemberTagListData {
     int? followState,
     int? width,
     int? height,
+    String? intro,
   }) = _ImgMemberTagListData;
 
   factory ImgMemberTagListData.fromJson(Map<String, dynamic> json) =>

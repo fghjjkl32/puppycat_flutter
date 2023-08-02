@@ -11,13 +11,14 @@ void showCustomModalBottomSheet(
         top: Radius.circular(20.0),
       ),
     ),
-    builder: (BuildContext context2) {
+    builder: (BuildContext modalContext) {
       return Padding(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding: EdgeInsets.only(
+            bottom: MediaQuery.of(modalContext).viewInsets.bottom),
         child: SingleChildScrollView(
           child: CustomModalBottomSheet(
             widget: widget,
+            context: modalContext,
           ),
         ),
       );

@@ -148,6 +148,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                     .memberIdx ??
                                 lists[0].memberInfoList?[0].memberIdx,
                             contentType: widget.contentType,
+                            contentIdx: widget.contentIdx,
                           );
                         } else {
                           if (widget.contentIdx == lists[index - 1].idx) {
@@ -176,6 +177,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                       .memberIdx ??
                                   lists[0].memberInfoList?[0].memberIdx,
                               contentType: widget.contentType,
+                              contentIdx: widget.contentIdx,
                             );
                           }
                         }
