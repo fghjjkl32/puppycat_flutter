@@ -18,12 +18,14 @@ class FeedDetailWidget extends StatelessWidget {
   final FeedData feedData;
   final int? memberIdx;
   final String contentType;
+  final int contentIdx;
   const FeedDetailWidget({
     required this.profileImage,
     required this.feedData,
     required this.nick,
     required this.memberIdx,
     required this.contentType,
+    required this.contentIdx,
     Key? key,
   }) : super(key: key);
 
@@ -46,12 +48,9 @@ class FeedDetailWidget extends StatelessWidget {
         //feed detail image
         FeedImageDetailWidget(
           imageList: feedData.imgList!,
+          contentIdx: contentIdx,
+          contentType: contentType,
         ),
-        // FeedContentDetailWidget(
-        //   content: replaceMentionsWithNicknamesInContent(
-        //       feedData.contents!, feedData.mentionList!),
-        // ),
-
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0.w),
           child: Container(
@@ -84,6 +83,7 @@ class FeedDetailWidget extends StatelessWidget {
                 name: feedData.commentList![0].nick!,
                 comment: feedData.commentList![0].contents!,
                 isSpecialUser: feedData.commentList![0].isBadge! == 1,
+                mentionListData: feedData.commentList![0].mentionList ?? [],
               ),
         Padding(
           padding: EdgeInsets.all(12.0.h),

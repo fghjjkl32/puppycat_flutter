@@ -124,6 +124,24 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     return result;
   }
 
+  Future<ResponseModel> editContents({
+    required int memberIdx,
+    required int commentIdx,
+    required String contents,
+    required int contentIdx,
+  }) async {
+    final result = await CommentRepository().editComment(
+      memberIdx: memberIdx,
+      contents: contents,
+      contentIdx: contentIdx,
+      commentIdx: commentIdx,
+    );
+
+    await refresh(contentIdx, memberIdx);
+
+    return result;
+  }
+
   Future<ResponseModel> postCommentLike({
     required memberIdx,
     required commentIdx,

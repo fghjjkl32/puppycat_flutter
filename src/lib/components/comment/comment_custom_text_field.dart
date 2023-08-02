@@ -44,6 +44,19 @@ class CommentCustomTextFieldState
         child: Consumer(builder: (context, ref, child) {
           final commentHeaderState = ref.watch(commentHeaderProvider);
 
+          if (commentHeaderState.hasSetControllerValue &&
+              commentHeaderState.controllerValue != _controller.text) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                hasInput = commentHeaderState.hasInput;
+                _controller.text = commentHeaderState.controllerValue;
+                ref
+                    .read(commentHeaderProvider.notifier)
+                    .resetHasSetControllerValue();
+              }
+            });
+          }
+
           if (_controller.text != '@${commentHeaderState.name} ' &&
               commentHeaderState.isReply &&
               !initialized.value) {
@@ -80,8 +93,43 @@ class CommentCustomTextFieldState
                             onPressed: () {
                               ref
                                   .watch(commentHeaderProvider.notifier)
-                                  .resetCommentHeader();
+                                  .resetReplyCommentHeader();
                               _controller.text = '';
+                              hasInput = false;
+                              initialized.value = false;
+                            },
+                            icon: const Icon(
+                              Icons.close,
+                              size: 20,
+                              color: kTextBodyColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Container(),
+              commentHeaderState.isEdit
+                  ? Container(
+                      width: double.infinity,
+                      color: kNeutralColor300,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 12.0.w),
+                            child: Text(
+                              "댓글 수정",
+                              style: kBody11RegularStyle.copyWith(
+                                  color: kTextBodyColor),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              ref
+                                  .watch(commentHeaderProvider.notifier)
+                                  .resetReplyCommentHeader();
+                              _controller.text = '';
+                              hasInput = false;
                               initialized.value = false;
                             },
                             icon: const Icon(
@@ -181,27 +229,45 @@ class CommentCustomTextFieldState
                           suffixIcon: hasInput
                               ? IconButton(
                                   onPressed: () async {
-                                    final result = await ref
-                                        .watch(commentStateProvider.notifier)
-                                        .postContents(
-                                          memberIdx:
-                                              ref.read(userModelProvider)!.idx,
-                                          contents: _controller.value.text,
-                                          contentIdx: widget.contentIdx,
-                                          parentIdx: ref
+                                    final result = commentHeaderState.isEdit
+                                        ? await ref
+                                            .watch(
+                                                commentStateProvider.notifier)
+                                            .editContents(
+                                              memberIdx: ref
+                                                  .read(userModelProvider)!
+                                                  .idx,
+                                              contents: _controller.value.text,
+                                              contentIdx: widget.contentIdx,
+                                              commentIdx: ref
                                                   .watch(commentHeaderProvider)
-                                                  .isReply
-                                              ? ref
-                                                  .watch(commentHeaderProvider)
-                                                  .parentIdx
-                                              : null,
-                                        );
+                                                  .commentIdx!,
+                                            )
+                                        : await ref
+                                            .watch(
+                                                commentStateProvider.notifier)
+                                            .postContents(
+                                              memberIdx: ref
+                                                  .read(userModelProvider)!
+                                                  .idx,
+                                              contents: _controller.value.text,
+                                              contentIdx: widget.contentIdx,
+                                              parentIdx: ref
+                                                      .watch(
+                                                          commentHeaderProvider)
+                                                      .isReply
+                                                  ? ref
+                                                      .watch(
+                                                          commentHeaderProvider)
+                                                      .commentIdx
+                                                  : null,
+                                            );
 
                                     if (result.result) {
                                       FocusScope.of(context).unfocus();
                                       ref
                                           .watch(commentHeaderProvider.notifier)
-                                          .resetCommentHeader();
+                                          .resetReplyCommentHeader();
                                       _controller.text = '';
                                       hasInput = false;
                                       initialized.value = false;

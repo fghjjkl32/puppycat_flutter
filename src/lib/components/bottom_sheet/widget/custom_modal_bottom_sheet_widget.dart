@@ -5,10 +5,12 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 class CustomModalBottomSheet extends StatelessWidget {
   const CustomModalBottomSheet({
     required this.widget,
+    required this.context,
     Key? key,
   }) : super(key: key);
 
   final Widget widget;
+  final BuildContext context;
 
   @override
   Widget build(BuildContext context) {

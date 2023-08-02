@@ -1,5 +1,6 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -171,24 +172,28 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                                 color:
                                                                     kBadgeColor),
                                                     onTap: () async {
-                                                      final result = await ref
-                                                          .watch(
-                                                              commentStateProvider
-                                                                  .notifier)
-                                                          .deleteContents(
-                                                            memberIdx: ref
-                                                                .read(
-                                                                    userModelProvider)!
-                                                                .idx,
-                                                            contentsIdx:
-                                                                contentIdx,
-                                                            commentIdx:
-                                                                commentIdx,
-                                                          );
+                                                      context.pop();
 
-                                                      if (result.result) {
-                                                        context.pop();
-                                                      }
+                                                      final commentHeaderState =
+                                                          ref.watch(
+                                                              commentHeaderProvider
+                                                                  .notifier);
+
+                                                      // context.pop();
+
+                                                      commentHeaderState
+                                                          .addEditCommentHeader(
+                                                              comment,
+                                                              commentIdx);
+
+                                                      commentHeaderState
+                                                          .setHasInput(true);
+
+                                                      commentHeaderState
+                                                          .setControllerValue(
+                                                              replaceMentionsWithNicknamesInContentAsString(
+                                                                  comment,
+                                                                  mentionListData));
                                                     },
                                                   ),
                                                   BottomSheetButtonItem(
@@ -432,13 +437,18 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            replies != null
-                                ? ref
-                                    .watch(commentHeaderProvider.notifier)
-                                    .addCommentHeader(name, commentIdx)
-                                : ref
-                                    .watch(commentHeaderProvider.notifier)
-                                    .addCommentHeader(name, parentIdx);
+                            if (replies != null) {
+                              ref
+                                  .watch(commentHeaderProvider.notifier)
+                                  .addReplyCommentHeader(name, commentIdx);
+                              ref
+                                  .watch(commentHeaderProvider.notifier)
+                                  .setHasInput(true);
+                            } else {
+                              ref
+                                  .watch(commentHeaderProvider.notifier)
+                                  .addReplyCommentHeader(name, parentIdx);
+                            }
                           },
                           child: Row(
                             children: [
