@@ -156,7 +156,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
           profileImgUrl: searchList[index].profileImgUrl ?? '',
           chatMemberId: searchList[index].chatMemberId ?? '',
           chatHomeServer: searchList[index].chatHomeServer ?? '',
-          // onTab: _onTabListItem,
+          onTab: _onTabListItem,
           onTabFavorite: () {
             var userInfoModel = ref.read(userInfoProvider);
             if (searchList[index].favoriteState == 1) {
