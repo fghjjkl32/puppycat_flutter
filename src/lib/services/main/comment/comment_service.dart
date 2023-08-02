@@ -31,6 +31,13 @@ abstract class CommentService {
     @Body() Map<String, dynamic> body,
   );
 
+  @PUT('/contents/{contentIdx}/comment/{commentIdx}')
+  Future<ResponseModel?> editComment(
+    @Path("contentIdx") int contentIdx,
+    @Path("commentIdx") int commentIdx,
+    @Body() Map<String, dynamic> body,
+  );
+
   @DELETE('/contents/{contentsIdx}/comment/{commentIdx}?memberIdx={memberIdx}')
   Future<ResponseModel?> deleteComment({
     @Path("contentsIdx") required int contentsIdx,

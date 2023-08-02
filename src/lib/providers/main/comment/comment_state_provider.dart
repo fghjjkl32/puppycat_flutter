@@ -124,6 +124,24 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     return result;
   }
 
+  Future<ResponseModel> editContents({
+    required int memberIdx,
+    required int commentIdx,
+    required String contents,
+    required int contentIdx,
+  }) async {
+    final result = await CommentRepository().editComment(
+      memberIdx: memberIdx,
+      contents: contents,
+      contentIdx: contentIdx,
+      commentIdx: commentIdx,
+    );
+
+    await refresh(contentIdx, memberIdx);
+
+    return result;
+  }
+
   Future<ResponseModel> postCommentLike({
     required memberIdx,
     required commentIdx,
@@ -224,10 +242,9 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
 
     // Update the childCommentData of the comment
     final updatedComment = state.list[commentIndex].copyWith(
-      childCommentData:
-          ChildCommentData(params: lists.data.params!, list: lists.data.list),
-      showAllReplies: true,
-    );
+        childCommentData:
+            ChildCommentData(params: lists.data.params!, list: lists.data.list),
+        showAllReplies: true);
 
     // Update the comment in the state
     state = state.copyWith(list: [
@@ -237,45 +254,71 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     ], page: page, isLoading: false);
   }
 
-// loadMoreComment(contentIdx, memberIdx) async {
-  //   if (currentPage >= maxPages) {
-  //     state = state.copyWith(isLoadMoreDone: true);
-  //     return;
-  //   }
-  //
-  //   StringBuffer bf = StringBuffer();
-  //
-  //   bf.write('try to request loading ${state.isLoading} at ${state.page + 1}');
-  //   if (state.isLoading) {
-  //     bf.write(' fail');
-  //     return;
-  //   }
-  //   bf.write(' success');
-  //   state = state.copyWith(
-  //       isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
-  //
-  //   final lists = await CommentRepository().getComment(
-  //     contentIdx: contentIdx,
-  //     page: state.page + 1,
-  //     memberIdx: memberIdx,
-  //   );
-  //
-  //   if (lists == null) {
-  //     state = state.copyWith(isLoadMoreError: true, isLoading: false);
-  //     return;
-  //   }
-  //
-  //   if (lists.data.list.isNotEmpty) {
-  //     state = state.copyWith(
-  //         page: state.page + 1,
-  //         isLoading: false,
-  //         list: [...state.list, ...lists.data.list]);
-  //
-  //     currentPage++;
-  //   } else {
-  //     state = state.copyWith(
-  //       isLoading: false,
-  //     );
-  //   }
-  // }
+  loadMoreReplyComment(contentIdx, memberIdx, commentIdx) async {
+    if (repliesCurrentPage >= repliesMaxPages) {
+      state = state.copyWith(isLoadMoreDone: true);
+      return;
+    }
+
+    StringBuffer bf = StringBuffer();
+
+    bf.write('try to request loading ${state.isLoading} at ${state.page + 1}');
+    if (state.isLoading) {
+      bf.write(' fail');
+      return;
+    }
+    bf.write(' success');
+    state = state.copyWith(
+        isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+
+    final lists = await CommentRepository().getReplyComment(
+        page: repliesCurrentPage + 1,
+        memberIdx: memberIdx,
+        contentIdx: contentIdx,
+        commentIdx: commentIdx);
+
+    if (lists == null) {
+      state = state.copyWith(isLoadMoreError: true, isLoading: false);
+      return;
+    }
+
+    // Find the comment with the given commentIdx
+    final commentIndex = state.list.indexWhere((c) => c.idx == commentIdx);
+
+    // Append the newly loaded replies to the existing replies
+    final updatedComment = state.list[commentIndex].copyWith(
+      childCommentData: ChildCommentData(
+        params: lists.data.params!,
+        list: [
+          ...state.list[commentIndex].childCommentData!.list,
+          ...lists.data.list,
+        ],
+      ),
+    );
+
+    // Update the comment in the state
+    state = state.copyWith(
+      list: [
+        ...state.list.sublist(0, commentIndex),
+        updatedComment,
+        ...state.list.sublist(commentIndex + 1),
+      ],
+      isLoading: false,
+    );
+
+    repliesCurrentPage++;
+  }
+
+  void increaseLoadMoreClickCount(int commentIdx) {
+    final commentIndex = state.list.indexWhere((c) => c.idx == commentIdx);
+    final updatedComment = state.list[commentIndex].copyWith(
+      loadMoreClickCount: state.list[commentIndex].loadMoreClickCount + 1,
+    );
+
+    state = state.copyWith(list: [
+      ...state.list.sublist(0, commentIndex),
+      updatedComment,
+      ...state.list.sublist(commentIndex + 1),
+    ]);
+  }
 }

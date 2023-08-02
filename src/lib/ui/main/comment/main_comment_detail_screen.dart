@@ -48,7 +48,7 @@ class MainCommentDetailScreenState
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        ref.watch(commentHeaderProvider.notifier).resetCommentHeader();
+        ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
         context.pop();
         return false;
       },
@@ -61,7 +61,9 @@ class MainCommentDetailScreenState
             ),
             leading: IconButton(
               onPressed: () {
-                ref.watch(commentHeaderProvider.notifier).resetCommentHeader();
+                ref
+                    .watch(commentHeaderProvider.notifier)
+                    .resetReplyCommentHeader();
                 context.pop();
               },
               icon: const Icon(Icons.arrow_back),

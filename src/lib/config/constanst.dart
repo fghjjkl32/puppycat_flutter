@@ -162,3 +162,72 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(
 
   return spans;
 }
+
+String replaceMentionsWithNicknamesInContentAsString(
+    String content, List<MentionListData> mentionList) {
+  String result = "";
+
+  String remainingContent = content;
+
+  while (true) {
+    MentionListData? firstMention;
+    int firstMentionIndex = -1;
+
+    // Find the first mention in the remaining content
+    for (var mention in mentionList) {
+      String uuid = mention.uuid ?? '';
+      String pattern = '[@[' + uuid + ']]';
+      int mentionIndex = remainingContent.indexOf(pattern);
+
+      if (mentionIndex != -1 &&
+          (firstMentionIndex == -1 || mentionIndex < firstMentionIndex)) {
+        firstMention = mention;
+        firstMentionIndex = mentionIndex;
+      }
+    }
+
+    // If no more mentions are found, break the loop
+    if (firstMention == null) {
+      break;
+    }
+
+    // Add the text before the mention to the result
+    if (firstMentionIndex > 0) {
+      result += remainingContent.substring(0, firstMentionIndex);
+    }
+
+    // Add the mention to the result
+    result += '@' + (firstMention.nick ?? '');
+
+    // Remove the processed content
+    remainingContent = remainingContent
+        .substring(firstMentionIndex + '[@[${firstMention.uuid}]]'.length);
+  }
+
+  // Process hashtags
+  String remainingContentAfterMentions = remainingContent;
+  while (true) {
+    RegExp exp = new RegExp(r"\[#\[(.*?)\]\]");
+    var match = exp.firstMatch(remainingContentAfterMentions);
+
+    if (match == null) break;
+
+    String beforeHashtag =
+        remainingContentAfterMentions.substring(0, match.start);
+    String hashtag = match.group(1) ?? '';
+
+    // Add the text before the hashtag to the result
+    result += beforeHashtag;
+
+    // Add the hashtag to the result
+    result += '#' + hashtag;
+
+    remainingContentAfterMentions =
+        remainingContentAfterMentions.substring(match.end);
+  }
+
+  // Add the remaining content after the last pattern to the result
+  result += remainingContentAfterMentions;
+
+  return result;
+}

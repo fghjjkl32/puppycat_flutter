@@ -1,5 +1,6 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -171,24 +172,28 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                                 color:
                                                                     kBadgeColor),
                                                     onTap: () async {
-                                                      final result = await ref
-                                                          .watch(
-                                                              commentStateProvider
-                                                                  .notifier)
-                                                          .deleteContents(
-                                                            memberIdx: ref
-                                                                .read(
-                                                                    userModelProvider)!
-                                                                .idx,
-                                                            contentsIdx:
-                                                                contentIdx,
-                                                            commentIdx:
-                                                                commentIdx,
-                                                          );
+                                                      context.pop();
 
-                                                      if (result.result) {
-                                                        context.pop();
-                                                      }
+                                                      final commentHeaderState =
+                                                          ref.watch(
+                                                              commentHeaderProvider
+                                                                  .notifier);
+
+                                                      // context.pop();
+
+                                                      commentHeaderState
+                                                          .addEditCommentHeader(
+                                                              comment,
+                                                              commentIdx);
+
+                                                      commentHeaderState
+                                                          .setHasInput(true);
+
+                                                      commentHeaderState
+                                                          .setControllerValue(
+                                                              replaceMentionsWithNicknamesInContentAsString(
+                                                                  comment,
+                                                                  mentionListData));
                                                     },
                                                   ),
                                                   BottomSheetButtonItem(
@@ -432,13 +437,18 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            replies != null
-                                ? ref
-                                    .watch(commentHeaderProvider.notifier)
-                                    .addCommentHeader(name, commentIdx)
-                                : ref
-                                    .watch(commentHeaderProvider.notifier)
-                                    .addCommentHeader(name, parentIdx);
+                            if (replies != null) {
+                              ref
+                                  .watch(commentHeaderProvider.notifier)
+                                  .addReplyCommentHeader(name, commentIdx);
+                              ref
+                                  .watch(commentHeaderProvider.notifier)
+                                  .setHasInput(true);
+                            } else {
+                              ref
+                                  .watch(commentHeaderProvider.notifier)
+                                  .addReplyCommentHeader(name, parentIdx);
+                            }
                           },
                           child: Row(
                             children: [
@@ -469,15 +479,30 @@ class CommentDetailItemWidget extends ConsumerWidget {
             Column(
               children: [
                 SizedBox(
-                  height: replies!.list.length > 2
-                      ? 100.h * 2
-                      : 100.h * replies!.list.length.toDouble(),
+                  height: 125 *
+                      (ref
+                                  .watch(commentStateProvider.select((state) =>
+                                      state.list.firstWhere(
+                                          (c) => c.idx == commentIdx)))
+                                  .showAllReplies
+                              ? replies!.list.length
+                              : replies!.list.length > 2
+                                  ? 2
+                                  : replies!.list.length)
+                          .toDouble(),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount:
-                          replies!.list.length > 2 ? 2 : replies!.list.length,
+                      itemCount: ref
+                              .watch(commentStateProvider.select((state) =>
+                                  state.list
+                                      .firstWhere((c) => c.idx == commentIdx)))
+                              .showAllReplies
+                          ? replies!.list.length
+                          : replies!.list.length > 2
+                              ? 2
+                              : replies!.list.length,
                       itemBuilder: (BuildContext context, int index) {
                         return CommentDetailItemWidget(
                           parentIdx: replies!.list[index].parentIdx,
@@ -502,10 +527,13 @@ class CommentDetailItemWidget extends ConsumerWidget {
                   ),
                 ),
                 if (replies!.list.length > 2)
-                  SizedBox(
-                    height: 10.h * 2,
-                    child: InkWell(
-                      onTap: () async {
+                  InkWell(
+                    onTap: () async {
+                      var comment = ref.watch(commentStateProvider.select(
+                          (state) => state.list
+                              .firstWhere((c) => c.idx == commentIdx)));
+
+                      if (comment.loadMoreClickCount == 0) {
                         await ref
                             .watch(commentStateProvider.notifier)
                             .getInitReplyComment(
@@ -514,12 +542,39 @@ class CommentDetailItemWidget extends ConsumerWidget {
                               1,
                               commentIdx,
                             );
+                      } else {
+                        await ref
+                            .watch(commentStateProvider.notifier)
+                            .loadMoreReplyComment(
+                              contentIdx,
+                              memberIdx,
+                              commentIdx,
+                            );
+                      }
+                      ref
+                          .watch(commentStateProvider.notifier)
+                          .increaseLoadMoreClickCount(commentIdx);
+                    },
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final comment = ref.watch(commentStateProvider.select(
+                            (state) => state.list
+                                .firstWhere((c) => c.idx == commentIdx)));
+
+                        int displayedReplies = comment.loadMoreClickCount == 0
+                            ? 2
+                            : 2 + (comment.loadMoreClickCount * 5);
+
+                        return replies!.params.pagination!.totalRecordCount! -
+                                    displayedReplies <=
+                                0
+                            ? Container()
+                            : Text(
+                                "답글 ${replies!.params.pagination!.totalRecordCount! - displayedReplies}개 더 보기",
+                                style: kBody12RegularStyle.copyWith(
+                                    color: kTextBodyColor),
+                              );
                       },
-                      child: Text(
-                        "답글 ${replies!.params.pagination!.totalRecordCount! - 2}개 더 보기",
-                        style:
-                            kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                      ),
                     ),
                   ),
               ],

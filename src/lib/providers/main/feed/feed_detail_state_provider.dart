@@ -5,6 +5,7 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_detail_state.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/keep_contents/keep_contents_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/like_contents/like_contents_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
@@ -459,6 +460,43 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
       reportType: reportType,
       memberIdx: loginMemberIdx,
       contentsIdx: contentIdx,
+    );
+
+    return result;
+  }
+
+  Future<ResponseModel> postFollow({
+    required memberIdx,
+    required followIdx,
+    required contentsIdx,
+    required contentType,
+  }) async {
+    final result = await FollowRepository()
+        .postFollow(memberIdx: memberIdx, followIdx: followIdx);
+
+    await refresh(
+      loginMemberIdx: memberIdx,
+      memberIdx: followIdx,
+      contentIdx: contentsIdx,
+      contentType: contentType,
+    );
+    return result;
+  }
+
+  Future<ResponseModel> deleteFollow({
+    required memberIdx,
+    required followIdx,
+    required contentsIdx,
+    required contentType,
+  }) async {
+    final result = await FollowRepository()
+        .deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+
+    await refresh(
+      loginMemberIdx: memberIdx,
+      memberIdx: followIdx,
+      contentIdx: contentsIdx,
+      contentType: contentType,
     );
 
     return result;

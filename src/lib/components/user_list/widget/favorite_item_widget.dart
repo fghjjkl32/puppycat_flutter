@@ -6,10 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class FavoriteItemWidget extends ConsumerWidget {
+class FavoriteItemWidget extends ConsumerStatefulWidget {
   const FavoriteItemWidget({
     required this.profileImage,
     required this.userName,
@@ -18,6 +19,7 @@ class FavoriteItemWidget extends ConsumerWidget {
     required this.isFollow,
     required this.followerIdx,
     required this.contentsIdx,
+    this.contentType,
     Key? key,
   }) : super(key: key);
 
@@ -28,15 +30,36 @@ class FavoriteItemWidget extends ConsumerWidget {
   final bool isFollow;
   final int followerIdx;
   final int contentsIdx;
+  final String? contentType;
+  @override
+  FavoriteItemWidgetState createState() => FavoriteItemWidgetState();
+}
+
+class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
+  bool isFollowing = false;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    print(isFollowing);
+    print(isFollowing);
+    print(isFollowing);
+    print(isFollowing);
+    print(isFollowing);
+
+    isFollowing = widget.isFollow;
+
+    print(isFollowing);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        ref.read(userModelProvider)!.idx == followerIdx
+        ref.read(userModelProvider)!.idx == widget.followerIdx
             ? null
             : context.push(
-                "/home/myPage/followList/$followerIdx/userPage/$userName/$followerIdx");
+                "/home/myPage/followList/${widget.followerIdx}/userPage/${widget.userName}/${widget.followerIdx}");
       },
       child: Padding(
         padding:
@@ -51,7 +74,7 @@ class FavoriteItemWidget extends ConsumerWidget {
                   padding: EdgeInsets.only(
                     right: 10.w,
                   ),
-                  child: profileImage == null
+                  child: widget.profileImage == null
                       ? WidgetMask(
                           blendMode: BlendMode.srcATop,
                           childSaveLayer: true,
@@ -72,7 +95,7 @@ class FavoriteItemWidget extends ConsumerWidget {
                           childSaveLayer: true,
                           mask: Center(
                             child: Image.asset(
-                              profileImage!,
+                              widget.profileImage!,
                               height: 32.h,
                               fit: BoxFit.fill,
                             ),
@@ -89,7 +112,7 @@ class FavoriteItemWidget extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        isSpecialUser
+                        widget.isSpecialUser
                             ? Row(
                                 children: [
                                   Image.asset(
@@ -103,7 +126,7 @@ class FavoriteItemWidget extends ConsumerWidget {
                               )
                             : Container(),
                         Text(
-                          userName,
+                          widget.userName,
                           style:
                               kBody13BoldStyle.copyWith(color: kTextTitleColor),
                         ),
@@ -113,7 +136,7 @@ class FavoriteItemWidget extends ConsumerWidget {
                       height: 4.h,
                     ),
                     Text(
-                      content,
+                      widget.content,
                       style:
                           kBody11RegularStyle.copyWith(color: kTextBodyColor),
                     ),
@@ -121,18 +144,33 @@ class FavoriteItemWidget extends ConsumerWidget {
                 ),
               ],
             ),
-            ref.read(userModelProvider)!.idx == followerIdx
+            ref.read(userModelProvider)!.idx == widget.followerIdx
                 ? Container()
-                : isFollow
+                : !isFollowing
                     ? GestureDetector(
                         onTap: () async {
-                          await ref
-                              .watch(contentLikeUserListStateProvider.notifier)
-                              .postFollow(
-                                memberIdx: ref.read(userModelProvider)!.idx,
-                                followIdx: followerIdx,
-                                contentsIdx: contentsIdx,
-                              );
+                          setState(() {
+                            isFollowing = true;
+                          });
+                          if (widget.contentType == null) {
+                            await ref
+                                .watch(
+                                    contentLikeUserListStateProvider.notifier)
+                                .postFollow(
+                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  followIdx: widget.followerIdx,
+                                  contentsIdx: widget.contentsIdx,
+                                );
+                          } else {
+                            ref
+                                .watch(feedDetailStateProvider.notifier)
+                                .postFollow(
+                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  followIdx: widget.followerIdx,
+                                  contentsIdx: widget.contentsIdx,
+                                  contentType: widget.contentType,
+                                );
+                          }
                         },
                         child: Container(
                           width: 56.w,
@@ -154,13 +192,29 @@ class FavoriteItemWidget extends ConsumerWidget {
                       )
                     : GestureDetector(
                         onTap: () async {
-                          await ref
-                              .watch(contentLikeUserListStateProvider.notifier)
-                              .deleteFollow(
-                                memberIdx: ref.read(userModelProvider)!.idx,
-                                followIdx: followerIdx,
-                                contentsIdx: contentsIdx,
-                              );
+                          setState(() {
+                            isFollowing = false;
+                          });
+
+                          if (widget.contentType == null) {
+                            await ref
+                                .watch(
+                                    contentLikeUserListStateProvider.notifier)
+                                .deleteFollow(
+                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  followIdx: widget.followerIdx,
+                                  contentsIdx: widget.contentsIdx,
+                                );
+                          } else {
+                            ref
+                                .watch(feedDetailStateProvider.notifier)
+                                .deleteFollow(
+                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  followIdx: widget.followerIdx,
+                                  contentsIdx: widget.contentsIdx,
+                                  contentType: widget.contentType,
+                                );
+                          }
                         },
                         child: Container(
                           width: 56.w,
