@@ -29,7 +29,6 @@ class CommentCustomTextFieldState
   TextEditingController _controller = TextEditingController();
   int lineCount = 0;
   bool hasInput = false;
-
   final initialized = ValueNotifier<bool>(false);
 
   @override
@@ -300,7 +299,7 @@ class CommentCustomTextFieldState
   }
 }
 
-class MentionAutocompleteOptions extends ConsumerWidget {
+class MentionAutocompleteOptions extends ConsumerStatefulWidget {
   const MentionAutocompleteOptions({
     Key? key,
     required this.query,
@@ -311,8 +310,39 @@ class MentionAutocompleteOptions extends ConsumerWidget {
   final ValueSetter<SearchData> onMentionUserTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  MentionAutocompleteOptionsState createState() =>
+      MentionAutocompleteOptionsState();
+}
+
+class MentionAutocompleteOptionsState
+    extends ConsumerState<MentionAutocompleteOptions> {
+  int mentionOldLength = 0;
+  ScrollController mentionController = ScrollController();
+
+  @override
+  void initState() {
+    mentionController.addListener(_commentScrollListener);
+
+    super.initState();
+  }
+
+  void _commentScrollListener() {
+    if (mentionController.position.pixels >
+        mentionController.position.maxScrollExtent -
+            MediaQuery.of(context).size.height) {
+      if (mentionOldLength == ref.read(searchStateProvider).list.length) {
+        ref
+            .read(searchStateProvider.notifier)
+            .loadMoreMentionSearchList(ref.read(userModelProvider)!.idx);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final users = ref.watch(searchStateProvider).list;
+
+    mentionOldLength = users.length ?? 0;
 
     if (users.isEmpty) return const SizedBox.shrink();
 
@@ -331,12 +361,13 @@ class MentionAutocompleteOptions extends ConsumerWidget {
             child: ListTile(
               dense: true,
               horizontalTitleGap: 0,
-              title: Text("Users matching '$query'"),
+              title: Text("Users matching '${widget.query}'"),
             ),
           ),
           LimitedBox(
             maxHeight: MediaQuery.of(context).size.height * 0.3,
             child: ListView.separated(
+              controller: mentionController,
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               itemCount: users.length,
@@ -351,7 +382,7 @@ class MentionAutocompleteOptions extends ConsumerWidget {
                   ),
                   title: Text(user.nick ?? ''),
                   subtitle: Text('@${user.intro}'),
-                  onTap: () => onMentionUserTap(user),
+                  onTap: () => widget.onMentionUserTap(user),
                 );
               },
             ),

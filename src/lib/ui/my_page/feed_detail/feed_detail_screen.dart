@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
+import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
 
 class FeedDetailScreen extends ConsumerStatefulWidget {
   final String firstTitle;
@@ -126,6 +127,10 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                       itemCount: lists.length + 1,
                       controller: contentController,
                       itemBuilder: (BuildContext context, int index) {
+                        if (index != 0 && index % 4 == 0) {
+                          return FeedFollowWidget();
+                        }
+
                         if (index == 0) {
                           return FeedDetailWidget(
                             feedData: firstList[0],

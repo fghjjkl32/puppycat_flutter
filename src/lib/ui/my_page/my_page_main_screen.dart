@@ -31,8 +31,6 @@ class MyPageMainScreen extends ConsumerStatefulWidget {
 class MyPageMainState extends ConsumerState<MyPageMainScreen>
     with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
-  ScrollController userContentController = ScrollController();
-  ScrollController tagContentController = ScrollController();
   ScrollController commentController = ScrollController();
 
   late TabController tabController;
@@ -46,8 +44,6 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
 
-    userContentController.addListener(_userContentsScrollListener);
-    tagContentController.addListener(_tagContentsScrollListener);
     commentController.addListener(_commentScrollListener);
 
     tabController = TabController(
@@ -79,28 +75,24 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
         appBarColor = Colors.transparent;
       });
     }
-  }
 
-  void _userContentsScrollListener() {
-    if (userContentController.position.pixels >
-        userContentController.position.maxScrollExtent -
+    if (scrollController.position.pixels >
+        scrollController.position.maxScrollExtent -
+            MediaQuery.of(context).size.height) {
+      if (tagOldLength == ref.read(myTagContentStateProvider).list.length) {
+        ref.read(myTagContentStateProvider.notifier).loadMorePost(
+            ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx);
+      }
+    }
+
+    if (scrollController.position.pixels >
+        scrollController.position.maxScrollExtent -
             MediaQuery.of(context).size.height) {
       if (userOldLength == ref.read(myContentStateProvider).list.length) {
         ref.read(myContentStateProvider.notifier).loadMorePost(
               loginMemberIdx: ref.read(userModelProvider)!.idx,
               memberIdx: ref.read(userModelProvider)!.idx,
             );
-      }
-    }
-  }
-
-  void _tagContentsScrollListener() {
-    if (tagContentController.position.pixels >
-        tagContentController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
-      if (userOldLength == ref.read(myTagContentStateProvider).list.length) {
-        ref.read(myTagContentStateProvider.notifier).loadMorePost(
-            ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -119,10 +111,6 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
   void dispose() {
     scrollController.removeListener(_scrollListener);
     scrollController.dispose();
-    userContentController.removeListener(_userContentsScrollListener);
-    userContentController.dispose();
-    tagContentController.removeListener(_userContentsScrollListener);
-    tagContentController.dispose();
     commentController.removeListener(_commentScrollListener);
     commentController.dispose();
     super.dispose();
@@ -265,359 +253,380 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                   ref.read(userModelProvider)!.idx,
                 );
           },
-          child: GridView.builder(
-            controller: userContentController,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-            ),
-            itemCount: lists.length,
-            itemBuilder: (context, index) {
-              if (index == lists.length) {
-                if (isLoadMoreError) {
-                  return const Center(
-                    child: Text('Error'),
-                  );
-                }
-                if (isLoadMoreDone) {
-                  return Container();
-                }
-                return Container();
-              }
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: <Widget>[
+              SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    if (index == lists.length) {
+                      if (isLoadMoreError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      }
+                      if (isLoadMoreDone) {
+                        return Container();
+                      }
+                      return Container();
+                    }
 
-              return Container(
-                margin: const EdgeInsets.all(10.0),
-                child: GestureDetector(
-                  onTap: () {
-                    context.push(
-                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myContent");
-                  },
-                  child: Center(
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(12)),
-                            child: Image.network(
-                              "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            height: 30,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Colors.black.withOpacity(0.5),
-                                  Colors.transparent,
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Row(
+                    return Container(
+                      margin: const EdgeInsets.all(10.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          context.push(
+                              "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myContent");
+                        },
+                        child: Center(
+                          child: Stack(
                             children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: 6.0.w, top: 2.h, right: 2.w),
-                                child: InkWell(
-                                  onTap: () async {
-                                    await ref
-                                        .read(contentLikeUserListStateProvider
-                                            .notifier)
-                                        .initContentLikeUserList(
-                                          lists[index].idx,
-                                          ref.read(userModelProvider)!.idx,
-                                          1,
-                                        );
-
-                                    // ignore: use_build_context_synchronously
-                                    showCustomModalBottomSheet(
-                                      context: context,
-                                      widget: Consumer(
-                                          builder: (context, ref, child) {
-                                        final contentLikeUserListContentState =
-                                            ref.watch(
-                                                contentLikeUserListStateProvider);
-                                        final contentLikeUserList =
-                                            contentLikeUserListContentState
-                                                .list;
-
-                                        commentOldLength =
-                                            contentLikeUserList.length ?? 0;
-                                        return SizedBox(
-                                          height: 500.h,
-                                          child: Stack(
-                                            children: [
-                                              Column(
-                                                children: [
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                      top: 8.0.h,
-                                                      bottom: 10.0.h,
-                                                    ),
-                                                    child: Text(
-                                                      "좋아요",
-                                                      style: kTitle16ExtraBoldStyle
-                                                          .copyWith(
-                                                              color:
-                                                                  kTextSubTitleColor),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: ListView.builder(
-                                                      controller:
-                                                          commentController,
-                                                      itemCount:
-                                                          contentLikeUserList
-                                                              .length,
-                                                      padding: EdgeInsets.only(
-                                                          bottom: 80.h),
-                                                      itemBuilder: (BuildContext
-                                                              context,
-                                                          int commentIndex) {
-                                                        return FavoriteItemWidget(
-                                                          profileImage:
-                                                              contentLikeUserList[
-                                                                      commentIndex]
-                                                                  .profileImgUrl,
-                                                          userName:
-                                                              contentLikeUserList[
-                                                                      commentIndex]
-                                                                  .nick!,
-                                                          content:
-                                                              contentLikeUserList[
-                                                                      commentIndex]
-                                                                  .intro!,
-                                                          isSpecialUser:
-                                                              contentLikeUserList[
-                                                                          commentIndex]
-                                                                      .isBadge ==
-                                                                  1,
-                                                          isFollow: contentLikeUserList[
-                                                                      commentIndex]
-                                                                  .followState ==
-                                                              0,
-                                                          followerIdx:
-                                                              contentLikeUserList[
-                                                                      commentIndex]
-                                                                  .memberIdx!,
-                                                          contentsIdx:
-                                                              lists[index].idx,
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                                    );
-                                  },
-                                  child: lists[index].likeCnt == 1
-                                      ? Image.asset(
-                                          'assets/image/feed/icon/small_size/icon_comment_like_on.png',
-                                          height: 26.w,
-                                        )
-                                      : Image.asset(
-                                          'assets/image/feed/icon/small_size/icon_comment_like_off.png',
-                                          height: 26.w,
-                                        ),
+                              Positioned.fill(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(12)),
+                                  child: Image.network(
+                                    "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
-                              Text(
-                                '${lists[index].likeCnt}',
-                                style: kBadge10MediumStyle.copyWith(
-                                    color: kNeutralColor100),
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.5),
+                                        Colors.transparent,
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: 6.0.w, top: 2.h, right: 2.w),
-                                child: Builder(builder: (context) {
-                                  return InkWell(
-                                    onTap: () async {
-                                      await ref
-                                          .read(commentStateProvider.notifier)
-                                          .getInitComment(
-                                              lists[index].idx,
-                                              ref.read(userModelProvider)!.idx,
-                                              1);
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 6.0.w, top: 2.h, right: 2.w),
+                                      child: InkWell(
+                                        onTap: () async {
+                                          await ref
+                                              .read(
+                                                  contentLikeUserListStateProvider
+                                                      .notifier)
+                                              .initContentLikeUserList(
+                                                lists[index].idx,
+                                                ref
+                                                    .read(userModelProvider)!
+                                                    .idx,
+                                                1,
+                                              );
 
-                                      // ignore: use_build_context_synchronously
-                                      showCustomModalBottomSheet(
-                                        context: context,
-                                        widget: Consumer(
-                                            builder: (context, ref, child) {
-                                          final commentContentState =
-                                              ref.watch(commentStateProvider);
-                                          final commentLists =
-                                              commentContentState.list;
+                                          // ignore: use_build_context_synchronously
+                                          showCustomModalBottomSheet(
+                                            context: context,
+                                            widget: Consumer(
+                                                builder: (context, ref, child) {
+                                              final contentLikeUserListContentState =
+                                                  ref.watch(
+                                                      contentLikeUserListStateProvider);
+                                              final contentLikeUserList =
+                                                  contentLikeUserListContentState
+                                                      .list;
 
-                                          commentOldLength =
-                                              commentLists.length ?? 0;
-                                          return SizedBox(
-                                            height: 500.h,
-                                            child: Stack(
-                                              children: [
-                                                Column(
+                                              commentOldLength =
+                                                  contentLikeUserList.length ??
+                                                      0;
+                                              return SizedBox(
+                                                height: 500.h,
+                                                child: Stack(
                                                   children: [
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                        top: 8.0.h,
-                                                        bottom: 10.0.h,
-                                                      ),
-                                                      child: Text(
-                                                        "댓글",
-                                                        style: kTitle16ExtraBoldStyle
-                                                            .copyWith(
-                                                                color:
-                                                                    kTextSubTitleColor),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: ListView.builder(
-                                                        controller:
-                                                            commentController,
-                                                        itemCount:
-                                                            commentLists.length,
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                bottom: 80.h),
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                int index) {
-                                                          return CommentDetailItemWidget(
-                                                            key: UniqueKey(),
-                                                            parentIdx:
-                                                                commentLists[
-                                                                        index]
-                                                                    .parentIdx,
-                                                            commentIdx:
-                                                                commentLists[
-                                                                        index]
-                                                                    .idx,
-                                                            profileImage:
-                                                                commentLists[
-                                                                            index]
-                                                                        .url ??
-                                                                    'assets/image/feed/image/sample_image1.png',
-                                                            name: commentLists[
-                                                                    index]
-                                                                .nick,
-                                                            comment:
-                                                                commentLists[
-                                                                        index]
-                                                                    .contents,
-                                                            isSpecialUser:
-                                                                commentLists[
-                                                                            index]
-                                                                        .isBadge ==
-                                                                    1,
-                                                            time: DateTime.parse(
-                                                                commentLists[
-                                                                        index]
-                                                                    .regDate),
-                                                            isReply: false,
-                                                            likeCount: commentLists[
-                                                                    index]
-                                                                .commentLikeCnt,
-                                                            replies: commentLists[
-                                                                    index]
-                                                                .childCommentData,
-                                                            contentIdx:
-                                                                commentLists[
-                                                                        index]
-                                                                    .contentsIdx,
-                                                            isLike: commentLists[
-                                                                        index]
-                                                                    .likeState ==
-                                                                1,
-                                                            memberIdx:
-                                                                commentLists[
-                                                                        index]
-                                                                    .memberIdx,
-                                                            mentionListData:
-                                                                commentLists[
-                                                                            index]
-                                                                        .mentionList ??
-                                                                    [],
-                                                          );
-                                                        },
-                                                      ),
+                                                    Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                            top: 8.0.h,
+                                                            bottom: 10.0.h,
+                                                          ),
+                                                          child: Text(
+                                                            "좋아요",
+                                                            style: kTitle16ExtraBoldStyle
+                                                                .copyWith(
+                                                                    color:
+                                                                        kTextSubTitleColor),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child:
+                                                              ListView.builder(
+                                                            controller:
+                                                                commentController,
+                                                            itemCount:
+                                                                contentLikeUserList
+                                                                    .length,
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    bottom:
+                                                                        80.h),
+                                                            itemBuilder:
+                                                                (BuildContext
+                                                                        context,
+                                                                    int commentIndex) {
+                                                              return FavoriteItemWidget(
+                                                                profileImage:
+                                                                    contentLikeUserList[
+                                                                            commentIndex]
+                                                                        .profileImgUrl,
+                                                                userName:
+                                                                    contentLikeUserList[
+                                                                            commentIndex]
+                                                                        .nick!,
+                                                                content:
+                                                                    contentLikeUserList[
+                                                                            commentIndex]
+                                                                        .intro!,
+                                                                isSpecialUser:
+                                                                    contentLikeUserList[commentIndex]
+                                                                            .isBadge ==
+                                                                        1,
+                                                                isFollow: contentLikeUserList[
+                                                                            commentIndex]
+                                                                        .followState ==
+                                                                    0,
+                                                                followerIdx:
+                                                                    contentLikeUserList[
+                                                                            commentIndex]
+                                                                        .memberIdx!,
+                                                                contentsIdx:
+                                                                    lists[index]
+                                                                        .idx,
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
-                                                Positioned(
-                                                  left: 0,
-                                                  right: 0,
-                                                  bottom: 0,
-                                                  child: CommentCustomTextField(
-                                                    contentIdx:
-                                                        lists[index].idx,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                              );
+                                            }),
                                           );
-                                        }),
-                                      );
-                                    },
-                                    child: Image.asset(
-                                      'assets/image/feed/icon/small_size/icon_comment_comment.png',
-                                      height: 24.w,
+                                        },
+                                        child: lists[index].likeCnt == 1
+                                            ? Image.asset(
+                                                'assets/image/feed/icon/small_size/icon_comment_like_on.png',
+                                                height: 26.w,
+                                              )
+                                            : Image.asset(
+                                                'assets/image/feed/icon/small_size/icon_comment_like_off.png',
+                                                height: 26.w,
+                                              ),
+                                      ),
                                     ),
-                                  );
-                                }),
+                                    Text(
+                                      '${lists[index].likeCnt}',
+                                      style: kBadge10MediumStyle.copyWith(
+                                          color: kNeutralColor100),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 6.0.w, top: 2.h, right: 2.w),
+                                      child: Builder(builder: (context) {
+                                        return InkWell(
+                                          onTap: () async {
+                                            await ref
+                                                .read(commentStateProvider
+                                                    .notifier)
+                                                .getInitComment(
+                                                    lists[index].idx,
+                                                    ref
+                                                        .read(
+                                                            userModelProvider)!
+                                                        .idx,
+                                                    1);
+
+                                            // ignore: use_build_context_synchronously
+                                            showCustomModalBottomSheet(
+                                              context: context,
+                                              widget: Consumer(builder:
+                                                  (context, ref, child) {
+                                                final commentContentState =
+                                                    ref.watch(
+                                                        commentStateProvider);
+                                                final commentLists =
+                                                    commentContentState.list;
+
+                                                commentOldLength =
+                                                    commentLists.length ?? 0;
+                                                return SizedBox(
+                                                  height: 500.h,
+                                                  child: Stack(
+                                                    children: [
+                                                      Column(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                              top: 8.0.h,
+                                                              bottom: 10.0.h,
+                                                            ),
+                                                            child: Text(
+                                                              "댓글",
+                                                              style: kTitle16ExtraBoldStyle
+                                                                  .copyWith(
+                                                                      color:
+                                                                          kTextSubTitleColor),
+                                                            ),
+                                                          ),
+                                                          Expanded(
+                                                            child: ListView
+                                                                .builder(
+                                                              controller:
+                                                                  commentController,
+                                                              itemCount:
+                                                                  commentLists
+                                                                      .length,
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      bottom:
+                                                                          80.h),
+                                                              itemBuilder:
+                                                                  (BuildContext
+                                                                          context,
+                                                                      int index) {
+                                                                return CommentDetailItemWidget(
+                                                                  key:
+                                                                      UniqueKey(),
+                                                                  parentIdx: commentLists[
+                                                                          index]
+                                                                      .parentIdx,
+                                                                  commentIdx:
+                                                                      commentLists[
+                                                                              index]
+                                                                          .idx,
+                                                                  profileImage:
+                                                                      commentLists[index]
+                                                                              .url ??
+                                                                          'assets/image/feed/image/sample_image1.png',
+                                                                  name: commentLists[
+                                                                          index]
+                                                                      .nick,
+                                                                  comment: commentLists[
+                                                                          index]
+                                                                      .contents,
+                                                                  isSpecialUser:
+                                                                      commentLists[index]
+                                                                              .isBadge ==
+                                                                          1,
+                                                                  time: DateTime.parse(
+                                                                      commentLists[
+                                                                              index]
+                                                                          .regDate),
+                                                                  isReply:
+                                                                      false,
+                                                                  likeCount: commentLists[
+                                                                          index]
+                                                                      .commentLikeCnt,
+                                                                  replies: commentLists[
+                                                                          index]
+                                                                      .childCommentData,
+                                                                  contentIdx: commentLists[
+                                                                          index]
+                                                                      .contentsIdx,
+                                                                  isLike: commentLists[
+                                                                              index]
+                                                                          .likeState ==
+                                                                      1,
+                                                                  memberIdx: commentLists[
+                                                                          index]
+                                                                      .memberIdx,
+                                                                  mentionListData:
+                                                                      commentLists[index]
+                                                                              .mentionList ??
+                                                                          [],
+                                                                );
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Positioned(
+                                                        left: 0,
+                                                        right: 0,
+                                                        bottom: 0,
+                                                        child:
+                                                            CommentCustomTextField(
+                                                          contentIdx:
+                                                              lists[index].idx,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }),
+                                            );
+                                          },
+                                          child: Image.asset(
+                                            'assets/image/feed/icon/small_size/icon_comment_comment.png',
+                                            height: 24.w,
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                    Text(
+                                      '${lists[index].commentCnt}',
+                                      style: kBadge10MediumStyle.copyWith(
+                                          color: kNeutralColor100),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Text(
-                                '${lists[index].commentCnt}',
-                                style: kBadge10MediumStyle.copyWith(
-                                    color: kNeutralColor100),
+                              Positioned(
+                                right: 6.w,
+                                top: 6.w,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff414348)
+                                        .withOpacity(0.75),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(5.0)),
+                                  ),
+                                  width: 18.w,
+                                  height: 14.w,
+                                  child: Center(
+                                    child: Text(
+                                      '${lists[index].imageCnt}',
+                                      style: kBadge9RegularStyle.copyWith(
+                                          color: kNeutralColor100),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        Positioned(
-                          right: 6.w,
-                          top: 6.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                            width: 18.w,
-                            height: 14.w,
-                            child: Center(
-                              child: Text(
-                                '${lists[index].imageCnt}',
-                                style: kBadge9RegularStyle.copyWith(
-                                    color: kNeutralColor100),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
+                  childCount: lists.length,
                 ),
-              );
-            },
+              ),
+            ],
           ),
         );
       },
@@ -642,71 +651,78 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                   ref.read(userModelProvider)!.idx,
                 );
           },
-          child: GridView.builder(
-            controller: tagContentController,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-            ),
-            itemCount: lists.length,
-            itemBuilder: (context, index) {
-              if (index == lists.length) {
-                if (isLoadMoreError) {
-                  return const Center(
-                    child: Text('Error'),
-                  );
-                }
-                if (isLoadMoreDone) {
-                  return Container();
-                }
-                return Container();
-              }
-
-              return Container(
-                margin: const EdgeInsets.all(10.0),
-                child: GestureDetector(
-                  onTap: () {
-                    context.push(
-                        "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myTagContent");
-                  },
-                  child: Center(
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(12)),
-                            child: Image.network(
-                              "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 6.w,
-                          top: 6.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                            width: 18.w,
-                            height: 14.w,
-                            child: Center(
-                              child: Text(
-                                "${lists[index].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(
-                                    color: kNeutralColor100),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: <Widget>[
+              SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
                 ),
-              );
-            },
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    if (index == lists.length) {
+                      if (isLoadMoreError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      }
+                      if (isLoadMoreDone) {
+                        return Container();
+                      }
+                      return Container();
+                    }
+
+                    return Container(
+                      margin: const EdgeInsets.all(10.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          context.push(
+                              "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myTagContent");
+                        },
+                        child: Center(
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(12)),
+                                  child: Image.network(
+                                    "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: 6.w,
+                                top: 6.w,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff414348)
+                                        .withOpacity(0.75),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(5.0)),
+                                  ),
+                                  width: 18.w,
+                                  height: 14.w,
+                                  child: Center(
+                                    child: Text(
+                                      "${lists[index].imageCnt}",
+                                      style: kBadge9RegularStyle.copyWith(
+                                          color: kNeutralColor100),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  childCount: lists.length,
+                ),
+              ),
+            ],
           ),
         );
       },

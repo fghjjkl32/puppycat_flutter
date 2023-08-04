@@ -141,13 +141,14 @@ class FeedImageDetailWidget extends StatelessWidget {
             );
           }).toList(),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.0.h),
-          child: DotIndicator(
-            counter: _counter,
-            imageListLength: imageList.length,
+        if (imageList.length != 1)
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0.h),
+            child: DotIndicator(
+              counter: _counter,
+              imageListLength: imageList.length,
+            ),
           ),
-        ),
       ],
     );
   }

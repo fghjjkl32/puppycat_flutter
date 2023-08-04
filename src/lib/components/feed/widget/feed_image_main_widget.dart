@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/size_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 
 class FeedImageMainWidget extends StatelessWidget {
   const FeedImageMainWidget({
@@ -10,7 +11,7 @@ class FeedImageMainWidget extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final List<String> imageList;
+  final List<FeedImgListData> imageList;
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +20,17 @@ class FeedImageMainWidget extends StatelessWidget {
       child: Column(
         children: [
           if (imageList.length == 1) ...[
-            Padding(
-              padding: kPrimarySideFeedImagePadding,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
-                child: Image.asset(
-                  'assets/image/feed/image/sample_image2.png',
-                  fit: BoxFit.fill,
+            Container(
+              height: 266.h,
+              child: Padding(
+                padding: kPrimarySideFeedImagePadding,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.asset(
+                    "https://dev-imgs.devlabs.co.kr${imageList[0].url!}",
+                    fit: BoxFit.cover,
+                    height: 266.h,
+                  ),
                 ),
               ),
             ),
@@ -39,7 +44,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       topLeft: Radius.circular(12.0),
                     ),
                     child: Image.network(
-                      imageList[0],
+                      "https://dev-imgs.devlabs.co.kr${imageList[0].url!}",
                       fit: BoxFit.cover,
                       height: 266.h,
                     ),
@@ -55,7 +60,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       topRight: Radius.circular(12.0),
                     ),
                     child: Image.network(
-                      imageList[1],
+                      "https://dev-imgs.devlabs.co.kr${imageList[1].url!}",
                       fit: BoxFit.cover,
                       height: 266.h,
                     ),
@@ -73,7 +78,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       topLeft: Radius.circular(12.0),
                     ),
                     child: Image.network(
-                      imageList[0],
+                      "https://dev-imgs.devlabs.co.kr${imageList[0].url!}",
                       fit: BoxFit.cover,
                       height: 266.h,
                     ),
@@ -90,7 +95,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           topRight: Radius.circular(12.0),
                         ),
                         child: Image.network(
-                          imageList[1],
+                          "https://dev-imgs.devlabs.co.kr${imageList[1].url!}",
                           fit: BoxFit.cover,
                           height: 132.h,
                         ),
@@ -103,7 +108,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           bottomRight: Radius.circular(12.0),
                         ),
                         child: Image.network(
-                          imageList[2],
+                          "https://dev-imgs.devlabs.co.kr${imageList[2].url!}",
                           fit: BoxFit.cover,
                           height: 132.h,
                         ),
@@ -123,7 +128,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       topLeft: Radius.circular(12.0),
                     ),
                     child: Image.network(
-                      imageList[0],
+                      "https://dev-imgs.devlabs.co.kr${imageList[0].url!}",
                       fit: BoxFit.cover,
                       height: 266.h,
                     ),
@@ -140,7 +145,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           topRight: Radius.circular(12.0),
                         ),
                         child: Image.network(
-                          imageList[1],
+                          "https://dev-imgs.devlabs.co.kr${imageList[1].url!}",
                           fit: BoxFit.cover,
                           height: 132.h,
                         ),
@@ -155,7 +160,7 @@ class FeedImageMainWidget extends StatelessWidget {
                               bottomRight: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              imageList[2],
+                              "https://dev-imgs.devlabs.co.kr${imageList[2].url!}",
                               fit: BoxFit.cover,
                               height: 132.h,
                             ),
