@@ -13,6 +13,7 @@ class ChatSearchListItem extends StatelessWidget {
   final Function? onTab;
   final Function? onTabFavorite;
   final Function? onTabProfileImg;
+  final String tempIdx;
 
   const ChatSearchListItem({
     super.key,
@@ -26,6 +27,7 @@ class ChatSearchListItem extends StatelessWidget {
     this.onTab,
     this.onTabFavorite,
     this.onTabProfileImg,
+    required this.tempIdx,
   });
 
   @override
@@ -42,12 +44,13 @@ class ChatSearchListItem extends StatelessWidget {
           getProfileAvatar(profileImgUrl, true),
           Column(
             children: [
+              Text(tempIdx),
               Text(nick),
-              Text(intro),
+              // Text(intro),
             ],
           ),
           const Spacer(),
-          IconButton(icon : const Icon(Icons.star_border), onPressed: () {
+          IconButton(icon : Icon(isFavorite ? Icons.star : Icons.star_border), onPressed: () {
             if(onTabFavorite != null) {
               onTabFavorite!();
             }

@@ -21,21 +21,23 @@ class ChatFavoriteState extends _$ChatFavoriteState {
     ref.read(chatFavoriteStatusChangedProvider.notifier).state = false;
   }
 
-  void setChatFavorite(int memberIdx, String chatMemberId) async {
+  Future<bool> setChatFavorite(int memberIdx, String chatMemberId) async {
     ChatRepository chatRepository = ref.read(chatRepositoryProvider);
 
     bool result = await chatRepository.setChatFavorite(memberIdx, chatMemberId);
 
     getChatFavorite(memberIdx);
     ref.read(chatFavoriteStatusChangedProvider.notifier).state = result;
+    return result;
   }
 
-  void unSetChatFavorite(int memberIdx, String chatMemberId) async {
+  Future<bool> unSetChatFavorite(int memberIdx, String chatMemberId) async {
     ChatRepository chatRepository = ref.read(chatRepositoryProvider);
 
     bool result = await chatRepository.unSetChatFavorite(memberIdx, chatMemberId);
 
     getChatFavorite(memberIdx);
     ref.read(chatFavoriteStatusChangedProvider.notifier).state = result;
+    return result;
   }
 }

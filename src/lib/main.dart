@@ -48,7 +48,7 @@ void main() async {
 
   // GetIt.I.registerSingleton<ChatClientController>(ChatClientController());
 
-  runAppSpector();
+  // runAppSpector();
   runApp(
     ProviderScope(
       child: EasyLocalization(

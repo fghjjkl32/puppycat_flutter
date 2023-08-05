@@ -49,6 +49,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
     super.initState();
   }
 
+  ///background -> run
   @override
   void didChangeDependencies() {
     getChatFavoriteList();
