@@ -5,13 +5,14 @@ import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository
 import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
-final bestFeedStateProvider =
-    StateNotifierProvider<BestFeedStateNotifier, FeedDataListModel>((ref) {
-  return BestFeedStateNotifier();
+final popularWeekFeedStateProvider =
+    StateNotifierProvider<PopularWeekFeedStateNotifier, FeedDataListModel>(
+        (ref) {
+  return PopularWeekFeedStateNotifier();
 });
 
-class BestFeedStateNotifier extends StateNotifier<FeedDataListModel> {
-  BestFeedStateNotifier() : super(const FeedDataListModel());
+class PopularWeekFeedStateNotifier extends StateNotifier<FeedDataListModel> {
+  PopularWeekFeedStateNotifier() : super(const FeedDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
@@ -22,7 +23,7 @@ class BestFeedStateNotifier extends StateNotifier<FeedDataListModel> {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await FeedRepository().getBestDetailList(
+    final lists = await FeedRepository().getPopularWeekDetailList(
       loginMemberIdx: loginMemberIdx,
       page: page,
     );
@@ -61,7 +62,7 @@ class BestFeedStateNotifier extends StateNotifier<FeedDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await FeedRepository().getBestDetailList(
+    final lists = await FeedRepository().getPopularWeekDetailList(
       loginMemberIdx: loginMemberIdx,
       page: state.page + 1,
     );

@@ -15,11 +15,13 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/best_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/popular_hour_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/popular_week_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
@@ -40,7 +42,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
   int myFeedOldLength = 0;
   int recentOldLength = 0;
   int followOldLength = 0;
-  int bestOldLength = 0;
+  int popularWeekOldLength = 0;
 
   List<Widget> getTabs() {
     final loginState = ref.read(loginStateProvider);
@@ -98,9 +100,17 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
               initPage: 1,
             );
 
-        ref.read(bestFeedStateProvider.notifier).initPosts(
+        ref.read(popularWeekFeedStateProvider.notifier).initPosts(
               loginMemberIdx: ref.read(userModelProvider)!.idx,
               initPage: 1,
+            );
+
+        ref.read(popularHourFeedStateProvider.notifier).initPosts(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+            );
+
+        ref.read(popularUserListStateProvider.notifier).getInitUserList(
+              ref.read(userModelProvider)!.idx,
             );
 
         ref
@@ -137,8 +147,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
                     loginMemberIdx: ref.read(userModelProvider)!.idx,
                   );
             }
-            if (bestOldLength == ref.read(bestFeedStateProvider).list.length) {
-              ref.read(bestFeedStateProvider.notifier).loadMorePost(
+            if (popularWeekOldLength ==
+                ref.read(popularWeekFeedStateProvider).list.length) {
+              ref.read(popularWeekFeedStateProvider.notifier).loadMorePost(
                     loginMemberIdx: ref.read(userModelProvider)!.idx,
                   );
             }
@@ -471,6 +482,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
             (BuildContext context, int index) {
               return Consumer(builder: (ctx, ref, child) {
                 final recentFeedState = ref.watch(recentFeedStateProvider);
+                final popularHourFeedState =
+                    ref.watch(popularHourFeedStateProvider);
+                final popularUserState =
+                    ref.watch(popularUserListStateProvider);
                 final isLoadMoreError = recentFeedState.isLoadMoreError;
                 final isLoadMoreDone = recentFeedState.isLoadMoreDone;
                 final isLoading = recentFeedState.isLoading;
@@ -479,11 +494,15 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
                 recentOldLength = lists.length ?? 0;
 
                 if (index == 4) {
-                  return FeedFollowWidget();
+                  return FeedFollowWidget(
+                    popularUserListData: popularUserState.list,
+                  );
                 }
 
                 if (index != 0 && index % 10 == 0) {
-                  return FeedBestPostWidget();
+                  return FeedBestPostWidget(
+                    feedData: popularHourFeedState.list,
+                  );
                 }
 
                 if (index == lists.length) {
@@ -562,13 +581,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
                 return FeedMainWidget(
                   feedData: lists[index],
                   contentType: 'userContent',
-                  userName:
+                  userName: followFeedState.memberInfo?[0].nick ??
                       followFeedState.list[index].memberInfoList![0].nick!,
-                  profileImage: followFeedState
+                  profileImage: followFeedState.memberInfo?[0].profileImgUrl ??
+                      followFeedState
                           .list[index].memberInfoList![0].profileImgUrl! ??
                       "",
                   memberIdx: ref.read(userModelProvider)!.idx,
-                  firstTitle:
+                  firstTitle: followFeedState.memberInfo?[0].nick ??
                       followFeedState.list[index].memberInfoList![0].nick!,
                   secondTitle: '게시물',
                 );
@@ -578,23 +598,44 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
         ),
         SliverList(
           delegate: SliverChildBuilderDelegate(
-            childCount: ref.watch(bestFeedStateProvider).list.length,
+            childCount: ref.watch(popularWeekFeedStateProvider).list.length,
             (BuildContext context, int index) {
               return Consumer(builder: (ctx, ref, child) {
-                final bestFeedState = ref.watch(bestFeedStateProvider);
+                final bestFeedState = ref.watch(popularWeekFeedStateProvider);
+                final popularHourFeedState =
+                    ref.watch(popularHourFeedStateProvider);
+                final popularUserState =
+                    ref.watch(popularUserListStateProvider);
                 final isLoadMoreError = bestFeedState.isLoadMoreError;
                 final isLoadMoreDone = bestFeedState.isLoadMoreDone;
                 final isLoading = bestFeedState.isLoading;
                 final lists = bestFeedState.list;
 
-                bestOldLength = lists.length ?? 0;
+                popularWeekOldLength = lists.length ?? 0;
 
                 if (index == 0) {
-                  return FeedFollowWidget();
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: 16.0.w, right: 10.w, bottom: 12.h),
+                        child: Text(
+                          "인기있는 펫 집사들",
+                          style: kTitle16ExtraBoldStyle.copyWith(
+                              color: kTextTitleColor),
+                        ),
+                      ),
+                      FeedFollowWidget(
+                        popularUserListData: popularUserState.list,
+                      ),
+                    ],
+                  );
                 }
 
                 if (index != 0 && index % 10 == 0) {
-                  return FeedBestPostWidget();
+                  return FeedBestPostWidget(
+                      feedData: popularHourFeedState.list);
                 }
 
                 if (index == lists.length) {
@@ -633,12 +674,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
                         : Container(),
                     FeedMainWidget(
                       feedData: lists[index],
-                      contentType: 'userContent',
-                      userName:
+                      contentType: 'popularWeekContent',
+                      userName: bestFeedState.memberInfo?[0].nick ??
                           bestFeedState.list[index].memberInfoList![0].nick!,
-                      profileImage: bestFeedState
-                              .list[index].memberInfoList![0].profileImgUrl! ??
-                          "",
+                      profileImage:
+                          bestFeedState.memberInfo?[0].profileImgUrl ??
+                              bestFeedState.list[index].memberInfoList![0]
+                                  .profileImgUrl! ??
+                              "",
                       memberIdx: ref.read(userModelProvider)!.idx,
                       firstTitle: "null",
                       secondTitle: '인기 급상승',

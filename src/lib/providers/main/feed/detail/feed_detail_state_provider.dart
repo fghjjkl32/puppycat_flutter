@@ -3,9 +3,9 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_detail_state.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/best_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/popular_week_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
@@ -17,17 +17,18 @@ import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/sav
 final feedDetailStateProvider =
     StateNotifierProvider<FeedDetailStateNotifier, FeedDetailState>((ref) {
   final myFeedNotifier = ref.watch(myFeedStateProvider.notifier);
-  final bestFeedNotifier = ref.watch(bestFeedStateProvider.notifier);
+  final popularWeekFeedNotifier =
+      ref.watch(popularWeekFeedStateProvider.notifier);
   final recentFeedNotifier = ref.watch(recentFeedStateProvider.notifier);
   final followFeedNotifier = ref.watch(followFeedStateProvider.notifier);
 
-  return FeedDetailStateNotifier(
-      myFeedNotifier, bestFeedNotifier, recentFeedNotifier, followFeedNotifier);
+  return FeedDetailStateNotifier(myFeedNotifier, popularWeekFeedNotifier,
+      recentFeedNotifier, followFeedNotifier);
 });
 
 class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
   final MyFeedStateNotifier myFeedNotifier;
-  final BestFeedStateNotifier bestFeedNotifier;
+  final PopularWeekFeedStateNotifier bestFeedNotifier;
   final RecentFeedStateNotifier recentFeedNotifier;
   final FollowFeedStateNotifier followFeedNotifier;
 
@@ -118,11 +119,20 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
           page: page,
         ),
       ]);
-    } else if (contentType == "bestContent") {
+    } else if (contentType == "popularWeekContent") {
       futures = Future.wait([
         FeedRepository().getContentDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-        FeedRepository().getBestDetailList(
+        FeedRepository().getPopularWeekDetailList(
+          loginMemberIdx: loginMemberIdx,
+          page: page,
+        ),
+      ]);
+    } else if (contentType == "popularHourContent") {
+      futures = Future.wait([
+        FeedRepository().getContentDetail(
+            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+        FeedRepository().getPopularHourDetailList(
           loginMemberIdx: loginMemberIdx,
           page: page,
         ),
@@ -228,8 +238,11 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
           loginMemberIdx: loginMemberIdx,
           searchWord: searchWord!,
           page: state.feedListState.page + 1);
-    } else if (contentType == "bestContent") {
-      lists = await FeedRepository().getBestDetailList(
+    } else if (contentType == "popularWeekContent") {
+      lists = await FeedRepository().getPopularWeekDetailList(
+          loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
+    } else if (contentType == "popularHourContent") {
+      lists = await FeedRepository().getPopularHourDetailList(
           loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
     }
 

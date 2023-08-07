@@ -745,7 +745,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                 mask: data.profileImgUrl == null || data.profileImgUrl == ""
                     ? Center(
                         child: Image.asset(
-                          'assets/image/feed/image/sample_image3.png',
+                          'assets/image/feed/icon/large_size/icon_taguser.png',
                           height: 48.h,
                           fit: BoxFit.fill,
                         ),
