@@ -25,7 +25,6 @@ class ChatFavoriteUserState extends _$ChatFavoriteUserState {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      print('not run????????');
       ChatRepository chatRepository = ref.read(chatRepositoryProvider);
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
       var searchResult = await chatRepository.getChatFavoriteUsers(loginMemberIdx, pageKey);
@@ -97,6 +96,24 @@ class ChatFavoriteUserState extends _$ChatFavoriteUserState {
         state.itemList!.removeAt(targetIdx);
       }
       state.notifyListeners();
+    }
+  }
+
+  void addFavorite(ChatFavoriteModel model) {
+    try {
+      state.itemList?.add(model);
+      state.notifyListeners();
+    } catch(e) {
+      print('add Favorite Error $e');
+    }
+  }
+
+  void removeFavorite(ChatFavoriteModel model) {
+    try {
+      state.itemList?.remove(model);
+      state.notifyListeners();
+    } catch (e) {
+      print('remove Favorite Error $e');
     }
   }
 }

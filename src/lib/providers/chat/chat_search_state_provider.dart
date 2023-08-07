@@ -107,6 +107,11 @@ class ChatUserSearchState extends _$ChatUserSearchState {
       );
       print('next state[targetIdx] ${state.itemList![targetIdx]}');
       state.notifyListeners();
+      if(isFavorite) {
+        ref.read(chatFavoriteUserStateProvider.notifier).addFavorite(state.itemList![targetIdx]);
+      } else {
+        ref.read(chatFavoriteUserStateProvider.notifier).removeFavorite(state.itemList![targetIdx]);
+      }
     }
   }
 }

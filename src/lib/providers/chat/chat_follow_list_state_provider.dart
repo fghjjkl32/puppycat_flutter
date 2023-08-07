@@ -9,6 +9,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_follow_list_state_provider.g.dart';
 
+final chatFollowListEmptyProvider = StateProvider<bool>((ref) => true);
+
+
 @Riverpod(keepAlive: true)
 class ChatFollowUserState extends _$ChatFollowUserState {
   int _lastPage = 0;
@@ -58,6 +61,7 @@ class ChatFollowUserState extends _$ChatFollowUserState {
       } else {
         state.appendPage(searchList, nextPageKey);
       }
+      ref.read(chatFollowListEmptyProvider.notifier).state = searchList.isEmpty;
     } catch (e) {
       state.error = e;
     }
@@ -78,6 +82,11 @@ class ChatFollowUserState extends _$ChatFollowUserState {
   }
 
   void changedFavoriteState(String chatMemberId, bool isFavorite) {
+    if(chatMemberId.isEmpty || chatMemberId == '') {
+      ///TODO
+      ///Need Error Handling
+      return;
+    }
     int targetIdx = state.itemList!.indexWhere((element) => element.chatMemberId == chatMemberId);
     // int targetIdx = Random().nextInt(state.itemList!.length ?? 4);
     print('targetIdx $targetIdx');
@@ -86,6 +95,11 @@ class ChatFollowUserState extends _$ChatFollowUserState {
           favoriteState: isFavorite ? 1 : 0,
         );
       state.notifyListeners();
+      if(isFavorite) {
+        ref.read(chatFavoriteUserStateProvider.notifier).addFavorite(state.itemList![targetIdx]);
+      } else {
+        ref.read(chatFavoriteUserStateProvider.notifier).removeFavorite(state.itemList![targetIdx]);
+      }
     }
   }
 }

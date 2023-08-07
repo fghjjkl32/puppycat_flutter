@@ -70,6 +70,33 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
     context.pop(chatMemberId);
   }
 
+  Widget _buildNoItemsFound(String text) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 140.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/image/chat/character_01_nopost_88_x2.png',
+              width: 88,
+              height: 88,
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            Text(
+              text,
+              textAlign: TextAlign.center,
+              style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildSearch() {
     return Expanded(
       child: PagedListView<int, ChatFavoriteModel>(
@@ -78,7 +105,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
           noItemsFoundIndicatorBuilder: (context) {
             print('searchController.text.isEmpty ${searchController.text}');
             // if (searchController.text.isNotEmpty || searchController.text != '') {
-            return const Text('유저를 찾을 수 없습니다.');
+            return _buildNoItemsFound('유저를 찾을 수 없습니다'.tr());
             // } else {
             //   return _buildPrevSearch();
             // }
@@ -141,6 +168,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
   Widget _buildFollowUsers() {
     return PagedSliverList<int, ChatFavoriteModel>(
       // shrinkWrap: true,
+      shrinkWrapFirstPageIndicators: true,
       pagingController: _followListPagingController,
       builderDelegate: PagedChildBuilderDelegate<ChatFavoriteModel>(
         noItemsFoundIndicatorBuilder: (context) {
@@ -159,9 +187,9 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
             onTab: _onTabListItem,
             onTabFavorite: () {
               if (item.favoriteState == 1) {
-                ref.read(chatUserSearchStateProvider.notifier).unSetFavorite(userMemberIdx, item.chatMemberId);
+                ref.read(chatFollowUserStateProvider.notifier).unSetFavorite(userMemberIdx, item.chatMemberId);
               } else {
-                ref.read(chatUserSearchStateProvider.notifier).setFavorite(userMemberIdx, item.chatMemberId);
+                ref.read(chatFollowUserStateProvider.notifier).setFavorite(userMemberIdx, item.chatMemberId);
               }
             },
           );
@@ -173,9 +201,15 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
   ///NOTE
   ///ExpansionTile 사용하려고 했지만 height 이슈로 ListTile 사용
   Widget _buildPrevSearch() {
-    var isFavoriteListEmpty = ref.watch(chatFavoriteListEmptyProvider);
-    print('isFavoriteListEmpty $isFavoriteListEmpty');
-    return CustomScrollView(
+    bool isFavoriteEmpty = ref.watch(chatFavoriteListEmptyProvider);
+    bool isFollowEmpty = ref.watch(chatFollowListEmptyProvider);
+    bool isViewEmptyPage = isFavoriteEmpty && isFollowEmpty;
+
+    return isViewEmptyPage ? Builder(builder: (context) {
+      ref.read(chatFavoriteUserStateProvider).notifyPageRequestListeners(1);
+      ref.read(chatFollowUserStateProvider).notifyPageRequestListeners(1);
+      return _buildNoItemsFound('메시지.검색해서 메시지 전송 상대를 찾아보세요'.tr());
+    }) : CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
           child: ListTile(
@@ -242,36 +276,15 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
         if (_isFollowExpanded) _buildFollowUsers(),
       ],
     );
-    // return Column(
-    //   mainAxisSize: MainAxisSize.min,
-    //   children: [
-    //     ExpansionTile(
-    //       initiallyExpanded: true,
-    //       title: Text(
-    //         '메시지.즐겨찾기'.tr(),
-    //         style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2.h),
-    //       ),
-    //       children: [
-    //         _buildFavoriteUsers(),
-    //       ],
-    //     ),
-    //     ExpansionTile(
-    //       initiallyExpanded: true,
-    //       title: Text(
-    //         '팔로잉'.tr(),
-    //         style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2.h),
-    //       ),
-    //       children: [
-    //         _buildFollowUsers(),
-    //       ],
-    //     ),
-    //   ],
-    // );
   }
 
   void _search(String keyword) {
     if (keyword.isEmpty || keyword == '') {
       // _searchWord = '';
+      setState(() {
+        ///NOTE
+        /// UI 업데이트용
+      });
       return;
     }
 
@@ -359,11 +372,11 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
           SizedBox(
             height: 4.h,
           ),
-          if (searchController.text.isNotEmpty) _buildSearch(),
-          if (searchController.text.isEmpty)
-            Expanded(
-              child: _buildPrevSearch(),
-            ),
+          searchController.text.isEmpty
+              ? Expanded(
+                  child: _buildPrevSearch(),
+                )
+              : _buildSearch(),
         ],
       ),
     );
