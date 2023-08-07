@@ -190,6 +190,62 @@ class FeedRepository {
     return myContentResponseModel;
   }
 
+  Future<FeedResponseModel> getPopularWeekDetailList({
+    required page,
+    required loginMemberIdx,
+  }) async {
+    FeedResponseModel? contentResponseModel =
+        await _feedService.getPopularWeekDetailList(loginMemberIdx, page);
+
+    if (contentResponseModel == null) {
+      return feedNullResponseModel;
+    }
+
+    return contentResponseModel;
+  }
+
+  Future<FeedResponseModel> getPopularHourDetailList({
+    required page,
+    required loginMemberIdx,
+  }) async {
+    FeedResponseModel? contentResponseModel =
+        await _feedService.getPopularHourDetailList(loginMemberIdx, page);
+
+    if (contentResponseModel == null) {
+      return feedNullResponseModel;
+    }
+
+    return contentResponseModel;
+  }
+
+  Future<FeedResponseModel> getFollowDetailList({
+    required page,
+    required loginMemberIdx,
+  }) async {
+    FeedResponseModel? contentResponseModel =
+        await _feedService.getFollowDetailList(loginMemberIdx, page);
+
+    if (contentResponseModel == null) {
+      return feedNullResponseModel;
+    }
+
+    return contentResponseModel;
+  }
+
+  Future<FeedResponseModel> getRecentDetailList({
+    required page,
+    required loginMemberIdx,
+  }) async {
+    FeedResponseModel? contentResponseModel =
+        await _feedService.getRecentDetailList(loginMemberIdx, page);
+
+    if (contentResponseModel == null) {
+      return feedNullResponseModel;
+    }
+
+    return contentResponseModel;
+  }
+
   Future<ResponseModel> postLike({
     required int memberIdx,
     required int contentIdx,

@@ -48,7 +48,7 @@ void main() async {
 
   // GetIt.I.registerSingleton<ChatClientController>(ChatClientController());
 
-  runAppSpector();
+  // runAppSpector();
   runApp(
     ProviderScope(
       child: EasyLocalization(
@@ -97,6 +97,7 @@ Future runAppSpector() async {
   final config = Config()
     ..androidApiKey =
         "android_ODg1YjU5NmEtMTcwYi00M2NiLWIxMTYtMjIyN2VjY2M5OTk5";
+  config.monitors = [Monitors.http, Monitors.sqLite, Monitors.fileSystem];
 
   // If you don't want to start all monitors you can specify a list of necessary ones
   // config.monitors = [Monitors.http, Monitors.sqLite, Monitors.fileSystem];

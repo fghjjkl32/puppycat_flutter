@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
+import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 
 class FeedDetailScreen extends ConsumerStatefulWidget {
   final String firstTitle;
@@ -114,6 +116,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
               final isLoadMoreError =
                   contentState.feedListState.isLoadMoreError;
               final isLoadMoreDone = contentState.feedListState.isLoadMoreDone;
+              final popularUserState = ref.watch(popularUserListStateProvider);
               final isLoading = contentState.feedListState.isLoading;
               final firstList = contentState.firstFeedState.list;
               final lists = contentState.feedListState.list;
@@ -126,6 +129,12 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                       itemCount: lists.length + 1,
                       controller: contentController,
                       itemBuilder: (BuildContext context, int index) {
+                        if (index != 0 && index % 4 == 0) {
+                          return FeedFollowWidget(
+                            popularUserListData: popularUserState.list,
+                          );
+                        }
+
                         if (index == 0) {
                           return FeedDetailWidget(
                             feedData: firstList[0],

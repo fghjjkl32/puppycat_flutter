@@ -23,7 +23,7 @@ class FeedBestPostItemWidget extends StatelessWidget {
             borderRadius: const BorderRadius.all(
               Radius.circular(10),
             ),
-            child: Image.asset(
+            child: Image.network(
               image,
               fit: BoxFit.cover,
               height: 112.h,

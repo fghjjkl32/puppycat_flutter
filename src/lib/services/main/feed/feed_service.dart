@@ -128,6 +128,37 @@ abstract class FeedService {
     @Path("page") int page,
   );
 
+  //PopularWeek
+  @GET(
+      '/contents/week/popular/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
+  Future<FeedResponseModel?> getPopularWeekDetailList(
+    @Path("loginMemberIdx") int loginMemberIdx,
+    @Path("page") int page,
+  );
+
+  //PopularHour
+  @GET(
+      '/contents/hour/popular/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
+  Future<FeedResponseModel?> getPopularHourDetailList(
+    @Path("loginMemberIdx") int loginMemberIdx,
+    @Path("page") int page,
+  );
+
+  //follow
+  @GET('/main/follow/{loginMemberIdx}?page={page}')
+  Future<FeedResponseModel?> getFollowDetailList(
+    @Path("loginMemberIdx") int loginMemberIdx,
+    @Path("page") int page,
+  );
+
+  //recent
+  @GET(
+      '/contents/recent/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
+  Future<FeedResponseModel?> getRecentDetailList(
+    @Path("loginMemberIdx") int loginMemberIdx,
+    @Path("page") int page,
+  );
+
   @POST('/contents/{contentsIdx}/like')
   Future<ResponseModel?> postLike(
     @Path("contentsIdx") int contentsIdx,
