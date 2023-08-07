@@ -11,11 +11,6 @@ final searchStateProvider = StateNotifierProvider<SearchStateNotifier, SearchDat
   return SearchStateNotifier(loginMemberIdx);
 });
 
-final chatSearchStateProvider = StateNotifierProvider<SearchStateNotifier, SearchDataListModel>((ref) {
-  final loginMemberIdx = ref.watch(userModelProvider)!.idx;
-  return SearchStateNotifier(loginMemberIdx);
-});
-
 class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
   final int loginMemberIdx;
 

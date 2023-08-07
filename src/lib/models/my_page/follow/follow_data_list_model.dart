@@ -16,6 +16,7 @@ class FollowDataListModel with _$FollowDataListModel {
     @Default(false) bool isLoadMoreError,
     @Default(false) bool isLoadMoreDone,
     @Default(0) int totalCount,
+    String? imgDomain,
   }) = _FollowDataListModel;
 
   factory FollowDataListModel.fromJson(Map<String, dynamic> json) =>
