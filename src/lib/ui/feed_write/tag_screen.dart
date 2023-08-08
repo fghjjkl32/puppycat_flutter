@@ -140,9 +140,9 @@ class TagScreen extends ConsumerWidget {
 class TaggableImage extends ConsumerStatefulWidget {
   final File image;
   final int imageIndex;
+  final GlobalKey imageKey = GlobalKey();
 
-  const TaggableImage(
-      {super.key, required this.image, required this.imageIndex});
+  TaggableImage({super.key, required this.image, required this.imageIndex});
 
   @override
   _TaggableImageState createState() => _TaggableImageState();
@@ -150,6 +150,8 @@ class TaggableImage extends ConsumerStatefulWidget {
 
 class _TaggableImageState extends ConsumerState<TaggableImage>
     with AutomaticKeepAliveClientMixin {
+  Tag? draggingTag;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -204,6 +206,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               child: Image.file(
                 widget.image,
+                key: widget.imageKey,
               ),
             ),
           ),
@@ -211,24 +214,69 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
               .map((tag) => Positioned(
                     top: tag.position.dy,
                     left: tag.position.dx,
-                    child: GestureDetector(
-                      onTap: () {
-                        ref.read(feedWriteProvider.notifier).removeTag(tag);
-                      },
-                      child: MentionTagWidget(
-                        color: kTextSubTitleColor.withOpacity(0.8),
-                        textStyle: kBody11RegularStyle.copyWith(
-                            color: kNeutralColor100),
-                        text: tag.username,
-                        onDelete: () {
-                          ref.read(feedWriteProvider.notifier).removeTag(tag);
-                        },
-                      ),
-                    ),
+                    child: buildDraggableTag(tag),
                   ))
               .toList(),
         ],
       ),
+    );
+  }
+
+  Draggable<Tag> buildDraggableTag(Tag tag) {
+    return Draggable<Tag>(
+      data: tag,
+      feedback: Material(
+        color: Colors.transparent,
+        child: MentionTagWidget(
+          color: kTextSubTitleColor.withOpacity(0.8),
+          textStyle: kBody11RegularStyle.copyWith(color: kNeutralColor100),
+          text: tag.username,
+          onDelete: () {},
+        ),
+      ),
+      onDragStarted: () {
+        setState(() {
+          draggingTag = tag;
+        });
+      },
+      onDragEnd: (dragDetails) {
+        RenderBox box = context.findRenderObject() as RenderBox;
+        RenderBox imageBox =
+            widget.imageKey.currentContext!.findRenderObject() as RenderBox;
+
+        double imageHeight = imageBox.size.height - 40;
+        double imageWidth = imageBox.size.width - 50;
+
+        Offset localPosition = box.globalToLocal(dragDetails.offset);
+
+        double xPos = localPosition.dx;
+        double yPos = localPosition.dy;
+
+        if (xPos < 10) xPos = 10;
+        if (yPos < 0) yPos = 0;
+        if (xPos > imageWidth) xPos = imageWidth;
+        if (yPos > imageHeight) yPos = imageHeight;
+
+        final newTag = tag.copyWith(position: Offset(xPos, yPos));
+
+        ref
+            .read(feedWriteProvider.notifier)
+            .updateTag(tag, newTag, widget.imageIndex);
+
+        setState(() {
+          draggingTag = null;
+        });
+      },
+      child: draggingTag == tag
+          ? Container()
+          : MentionTagWidget(
+              color: kTextSubTitleColor.withOpacity(0.8),
+              textStyle: kBody11RegularStyle.copyWith(color: kNeutralColor100),
+              text: tag.username,
+              onDelete: () {
+                ref.read(feedWriteProvider.notifier).removeTag(tag);
+              },
+            ),
     );
   }
 

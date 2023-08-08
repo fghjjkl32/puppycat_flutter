@@ -10,6 +10,7 @@ class Tag with _$Tag {
   @OffsetConverter()
   factory Tag({
     required String username,
+    required int memberIdx,
     required Offset position,
   }) = _Tag;
 
