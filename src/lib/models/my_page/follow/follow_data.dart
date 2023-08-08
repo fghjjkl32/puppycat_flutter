@@ -24,6 +24,7 @@ class FollowData with _$FollowData {
     String? chatHomeServer,
     String? chatDeviceId,
     String? chatAccessToken,
+    int? favoriteState,
   }) = _FollowData;
 
   factory FollowData.fromJson(Map<String, dynamic> json) =>

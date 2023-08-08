@@ -179,7 +179,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
             idx: item.memberIdx!,
             nick: item.nick ?? 'unknown',
             intro: item.introText ?? '',
-            isFavorite: false,
+            isFavorite: item.favoriteState == 1 ? true : false,
             profileImgUrl: item.profileImgUrl ?? '',
             chatMemberId: item.chatMemberId ?? '',
             chatHomeServer: item.chatHomeServer ?? '',

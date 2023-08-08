@@ -19,6 +19,7 @@ class ChatRoomModel with _$ChatRoomModel {
     required bool isMine,
     required bool isJoined,
     @Default(false) bool isFavorite,
+    required String dmId,
   }) = _ChatRoomModel;
 
   factory ChatRoomModel.fromJson(Map<String, dynamic> json) => _$ChatRoomModelFromJson(json);

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_favorite_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -15,6 +16,8 @@ final chatFollowListEmptyProvider = StateProvider<bool>((ref) => true);
 @Riverpod(keepAlive: true)
 class ChatFollowUserState extends _$ChatFollowUserState {
   int _lastPage = 0;
+  ListAPIStatus _apiStatus = ListAPIStatus.idle;
+
 
   @override
   PagingController<int, ChatFavoriteModel> build() {
@@ -25,6 +28,12 @@ class ChatFollowUserState extends _$ChatFollowUserState {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
+      if(_apiStatus == ListAPIStatus.loading) {
+        return;
+      }
+
+      _apiStatus = ListAPIStatus.loading;
+
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
       var searchResult = await FollowRepository().getFollowList(
         memberIdx: loginMemberIdx,
@@ -38,7 +47,7 @@ class ChatFollowUserState extends _$ChatFollowUserState {
               isBadge: e.isBadge!,
               nick: e.followNick ?? 'unknown',
               profileImgUrl: '${searchResult.data.imgDomain}${e.url}' ?? '',
-              favoriteState: 0,
+              favoriteState: e.favoriteState,
               chatMemberId: e.chatMemberId ?? '',
               chatHomeServer: e.chatHomeServer ?? '',
               chatAccessToken: e.chatAccessToken ?? '',
@@ -61,8 +70,10 @@ class ChatFollowUserState extends _$ChatFollowUserState {
       } else {
         state.appendPage(searchList, nextPageKey);
       }
+      _apiStatus = ListAPIStatus.loaded;
       ref.read(chatFollowListEmptyProvider.notifier).state = searchList.isEmpty;
     } catch (e) {
+      _apiStatus = ListAPIStatus.error;
       state.error = e;
     }
   }

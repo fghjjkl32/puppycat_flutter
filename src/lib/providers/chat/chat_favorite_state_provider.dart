@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/chat/chat_repository.dart';
@@ -10,11 +11,13 @@ part 'chat_favorite_state_provider.g.dart';
 final chatFavoriteStatusChangedProvider = StateProvider<bool>((ref) => false);
 
 final chatFavoriteListEmptyProvider = StateProvider<bool>((ref) => true);
+final charFavoriteFunctionStateProvider = StateProvider<ListAPIStatus>((ref) => ListAPIStatus.idle);
 /// NOTE
 /// 검색 페이지에서 사용
 @Riverpod(keepAlive: true)
 class ChatFavoriteUserState extends _$ChatFavoriteUserState {
   int _lastPage = 0;
+  ListAPIStatus _apiStatus = ListAPIStatus.idle;
 
   @override
   PagingController<int, ChatFavoriteModel> build() {
@@ -25,6 +28,12 @@ class ChatFavoriteUserState extends _$ChatFavoriteUserState {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
+      if(_apiStatus == ListAPIStatus.loading) {
+        return;
+      }
+
+      _apiStatus = ListAPIStatus.loading;
+
       ChatRepository chatRepository = ref.read(chatRepositoryProvider);
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
       var searchResult = await chatRepository.getChatFavoriteUsers(loginMemberIdx, pageKey);
@@ -63,9 +72,10 @@ class ChatFavoriteUserState extends _$ChatFavoriteUserState {
       } else {
         state.appendPage(searchList, nextPageKey);
       }
-      print('searchList.isEmpty ${searchList.isEmpty}');
+      _apiStatus = ListAPIStatus.loaded;
       ref.read(chatFavoriteListEmptyProvider.notifier).state = searchList.isEmpty;
     } catch (e) {
+      _apiStatus = ListAPIStatus.error;
       state.error = e;
     }
   }
@@ -110,7 +120,7 @@ class ChatFavoriteUserState extends _$ChatFavoriteUserState {
 
   void removeFavorite(ChatFavoriteModel model) {
     try {
-      state.itemList?.remove(model);
+      state.itemList?.removeWhere((element) => element.chatMemberId == model.chatMemberId);
       state.notifyListeners();
     } catch (e) {
       print('remove Favorite Error $e');
