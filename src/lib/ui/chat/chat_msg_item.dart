@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
@@ -124,36 +125,6 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
         _bubbleColor = isHighLight ? kNeutralColor400 : kNeutralColor200;
       }
     });
-  }
-
-  Widget _getAvatar(String avatarUrl) {
-    return WidgetMask(
-      blendMode: BlendMode.srcATop,
-      childSaveLayer: true,
-      mask: Center(
-        child: Image.asset(
-          'assets/image/feed/image/sample_image3.png',
-          // avatarUrl != '' ? 'assets/image/feed/image/sample_image3.png' : 'https://via.placeholder.com/150/f66b97',
-          // width: 42,
-          height: 28,
-          fit: BoxFit.fill,
-        ),
-      ),
-      // Image.network(
-      //     avatarUrl != '' ? avatarUrl : 'https://via.placeholder.com/150/f66b97',
-      //     // avatarUrl != '' ? 'assets/image/feed/image/sample_image3.png' : 'https://via.placeholder.com/150/f66b97',
-      //     // width: 42.w,
-      //     height: 41.h,
-      //     fit: BoxFit.fill,
-      //   ),
-      // ),
-      child: SvgPicture.asset(
-        'assets/image/feed/image/squircle.svg',
-        // width: 28,
-        height: 28,
-        fit: BoxFit.fill,
-      ),
-    );
   }
 
   ///NOTE
@@ -679,7 +650,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
                     // color: Colors.red,
                     width: isAvatarCondition ? 28 : 35,
                     height: 28,
-                    child: isAvatarCondition ? _getAvatar(chatMessageModel.avatarUrl) : const SizedBox.shrink(),
+                    child: isAvatarCondition ? getProfileAvatar(chatMessageModel.avatarUrl, 'assets/image/chat/icon_profile_small.png') : const SizedBox.shrink(),
                   ),
                 ),
               ),

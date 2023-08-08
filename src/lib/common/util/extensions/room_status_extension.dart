@@ -108,4 +108,44 @@ extension RoomStatusExtension on Room {
     }
     return lastEvent;
   }
+
+  String getDisplayName([
+    MatrixLocalizations i18n = const MatrixDefaultLocalizations(),
+  ]) {
+    if (name.isNotEmpty) return name;
+
+    final canonicalAlias = this.canonicalAlias.localpart;
+    if (canonicalAlias != null && canonicalAlias.isNotEmpty) {
+      return canonicalAlias;
+    }
+
+    final directChatMatrixID = this.directChatMatrixID;
+    final heroes = summary.mHeroes ??
+        (directChatMatrixID == null ? [] : [directChatMatrixID]);
+    if (heroes.isNotEmpty) {
+      final result = heroes
+          .where((hero) => hero.isNotEmpty)
+          .map((hero) =>
+          unsafeGetUserFromMemoryOrFallback(hero)
+              .calcDisplayname(i18n: i18n))
+          .join(', ');
+      return result;
+    } else {
+      return i18n.emptyChat;
+    }
+  }
+
+  String getDmID([
+    MatrixLocalizations i18n = const MatrixDefaultLocalizations(),
+  ]) {
+    final directChatMatrixID = this.directChatMatrixID;
+    final heroes = summary.mHeroes ??
+        (directChatMatrixID == null ? [] : [directChatMatrixID]);
+    if (heroes.isNotEmpty) {
+      final result = heroes.first;
+      return result;
+    } else {
+      return '';
+    }
+  }
 }

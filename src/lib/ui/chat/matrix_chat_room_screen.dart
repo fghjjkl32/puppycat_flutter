@@ -109,7 +109,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     setState(() {});
   }
 
-  void _send(String msg) {
+  void _send(String msg) async {
     if (msg.isEmpty) {
       return;
     }
@@ -120,6 +120,12 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     if (replyModel != null) {
       replyEvent = _timeline?.events[replyModel.idx];
     }
+
+    if(widget.room.isAbandonedDMRoom) {
+      // widget.room.client.startDirectChat(widget.room.getDmID(), enableEncryption: false);
+      await widget.room.client.inviteUser(widget.room.id, widget.room.getDmID());
+    }
+
     widget.room.sendTextEvent(msg, inReplyTo: replyEvent, editEventId: editModel?.id);
     _sendController.clear();
     _inputFocus.unfocus();
@@ -693,7 +699,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
               },
               child: Scaffold(
                 appBar: AppBar(
-                  title: Text(widget.room.getLocalizedDisplayname()),
+                  title: Text(widget.room.getDisplayName()),
                   backgroundColor: kNeutralColor100,
                 ),
                 floatingActionButton: _scrolledUp
@@ -828,7 +834,8 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                                         // 답글은 보낸이가 달라야 내꺼
                                                         isMine: displayEvent.senderId != _client.userID,
                                                         userID: displayEvent.senderId,
-                                                        nick: displayEvent.senderFromMemoryOrFallback.displayName ?? 'unknown',
+                                                        // nick: displayEvent.senderFromMemoryOrFallback.displayName ?? 'unknown',
+                                                        nick: displayEvent.senderFromMemoryOrFallback.room.getDisplayName() ?? 'unknown',
                                                         avatarUrl: displayEvent.senderFromMemoryOrFallback.avatarUrl.toString(),
                                                         // msg: displayEvent.redacted ? '메시지.삭제된 메시지 입니다'.tr() : displayEvent.plaintextBody,
                                                         msg: displayEvent.plaintextBody,
@@ -886,7 +893,8 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                               id: displayEvent.eventId,
                                               isMine: displayEvent.senderId == _client.userID,
                                               userID: displayEvent.senderId,
-                                              nick: displayEvent.senderFromMemoryOrFallback.displayName ?? 'unknown',
+                                              // nick: displayEvent.senderFromMemoryOrFallback.displayName ?? 'unknown',
+                                              nick: displayEvent.senderFromMemoryOrFallback.room.getDisplayName() ?? 'unknown',
                                               avatarUrl: displayEvent.senderFromMemoryOrFallback.avatarUrl.toString(),
                                               msg: displayEvent.calcUnlocalizedBody(
                                                 hideReply: true,
