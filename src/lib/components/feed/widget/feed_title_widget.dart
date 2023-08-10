@@ -10,14 +10,17 @@ import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/feed_edit_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class FeedTitleWidget extends ConsumerWidget {
   const FeedTitleWidget({
+    required this.feedData,
     required this.profileImage,
     required this.userName,
     required this.address,
@@ -39,6 +42,7 @@ class FeedTitleWidget extends ConsumerWidget {
   final bool isKeep;
   final int contentIdx;
   final String contentType;
+  final FeedData feedData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -211,7 +215,15 @@ class FeedTitleWidget extends ConsumerWidget {
                             title: '수정하기',
                             titleStyle: kButton14BoldStyle.copyWith(
                                 color: kTextSubTitleColor),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => FeedEditScreen(
+                                    feedData: feedData,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                           BottomSheetButtonItem(
                             iconImage:
