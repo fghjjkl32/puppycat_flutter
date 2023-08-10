@@ -177,7 +177,10 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                     isRead: item.isShow == 1 ? true : false,
                                     profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
                                   );
-                                } else if (item.subType == describeEnum(NotiSubType.new_contents)) {
+                                } else if (item.subType == describeEnum(NotiSubType.new_contents) ||
+                                    item.subType == describeEnum(NotiSubType.mention_contents) ||
+                                    item.subType == describeEnum(NotiSubType.img_tag) ||
+                                    item.subType == describeEnum(NotiSubType.like_contents)) {
                                   return NotificationPostItem(
                                     name: item.senderInfo?.first.nick ?? 'unknown',
                                     regDate: item.regDate,
@@ -187,93 +190,15 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                     profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
                                     imgUrl: item.img ?? '',
                                     isLiked: item.contentsLikeState == 1 ? true : false,
-                                    onLikeTap: (isLiked) {
-                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                      if(isLiked) {
-                                        ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
-                                      } else {
-                                        ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
-                                      }
-                                    },
-                                    onCommentTap: () {
+                                    onTap: () {
                                       ///TODO
                                       ///route 정리 필요
                                       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                      context.push(
-                                          "/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
+                                      context.push("/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
                                     },
-                                  );
-                                } else if (item.subType == describeEnum(NotiSubType.mention_contents)) {
-                                  return NotificationPostItem(
-                                    name: item.senderInfo?.first.nick ?? 'unknown',
-                                    regDate: item.regDate,
-                                    isRead: item.isShow == 1 ? true : false,
-                                    notificationType: item.title,
-                                    content: item.body,
-                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
-                                    imgUrl: item.img ?? '',
-                                    isLiked: item.contentsLikeState == 1 ? true : false,
                                     onLikeTap: (isLiked) {
                                       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                      print('isLiked $isLiked');
-                                      if(isLiked) {
-                                        ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
-                                      } else {
-                                        ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
-                                      }
-                                    },
-                                    onCommentTap: () {
-                                      ///TODO
-                                      ///route 정리 필요
-                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                      context.push(
-                                          "/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
-                                    },
-                                  );
-                                } else if (item.subType == describeEnum(NotiSubType.img_tag)) {
-                                  return NotificationPostItem(
-                                    name: item.senderInfo?.first.nick ?? 'unknown',
-                                    regDate: item.regDate,
-                                    isRead: item.isShow == 1 ? true : false,
-                                    notificationType: item.title,
-                                    content: item.body,
-                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
-                                    imgUrl: item.img ?? '',
-                                    isLiked: item.contentsLikeState == 1 ? true : false,
-                                    onLikeTap: (isLiked) {
-                                      print('isLiked $isLiked');
-
-                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                      if(isLiked) {
-                                        ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
-                                      } else {
-                                        ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
-                                      }
-                                    },
-                                    onCommentTap: () {
-                                      ///TODO
-                                      ///route 정리 필요
-                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                      context.push(
-                                          "/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
-                                    },
-                                  );
-                                } else if (item.subType == describeEnum(NotiSubType.like_contents)) {
-                                  return NotificationPostItem(
-                                    name: item.senderInfo?.first.nick ?? 'unknown',
-                                    regDate: item.regDate,
-                                    isRead: item.isShow == 1 ? true : false,
-                                    notificationType: item.title,
-                                    content: item.body,
-                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
-                                    imgUrl: item.img ?? '',
-                                    isLiked: item.contentsLikeState == 1 ? true : false,
-                                    onLikeTap: (isLiked) {
-                                      print('isLiked $isLiked');
-
-                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                      if(isLiked) {
-                                        print('???????');
+                                      if (isLiked) {
                                         ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
                                       } else {
                                         ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
@@ -283,11 +208,98 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                       ///TODO
                                       ///route 정리 필요
                                       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                      context.push(
-                                          "/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
+                                      context.push("/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent", extra: {
+                                        "isRouteComment": true,
+                                      });
                                     },
                                   );
-                                } else if (item.subType == describeEnum(NotiSubType.new_comment) || item.subType == describeEnum(NotiSubType.new_reply)) {
+                                }
+                                // else if (item.subType == describeEnum(NotiSubType.mention_contents)) {
+                                //   return NotificationPostItem(
+                                //     name: item.senderInfo?.first.nick ?? 'unknown',
+                                //     regDate: item.regDate,
+                                //     isRead: item.isShow == 1 ? true : false,
+                                //     notificationType: item.title,
+                                //     content: item.body,
+                                //     profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                //     imgUrl: item.img ?? '',
+                                //     isLiked: item.contentsLikeState == 1 ? true : false,
+                                //     onLikeTap: (isLiked) {
+                                //       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                //       print('isLiked $isLiked');
+                                //       if(isLiked) {
+                                //         ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
+                                //       } else {
+                                //         ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
+                                //       }
+                                //     },
+                                //     onCommentTap: () {
+                                //       ///TODO
+                                //       ///route 정리 필요
+                                //       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                //       context.push(
+                                //           "/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
+                                //     },
+                                //   );
+                                // } else if (item.subType == describeEnum(NotiSubType.img_tag)) {
+                                //   return NotificationPostItem(
+                                //     name: item.senderInfo?.first.nick ?? 'unknown',
+                                //     regDate: item.regDate,
+                                //     isRead: item.isShow == 1 ? true : false,
+                                //     notificationType: item.title,
+                                //     content: item.body,
+                                //     profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                //     imgUrl: item.img ?? '',
+                                //     isLiked: item.contentsLikeState == 1 ? true : false,
+                                //     onLikeTap: (isLiked) {
+                                //       print('isLiked $isLiked');
+                                //
+                                //       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                //       if(isLiked) {
+                                //         ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
+                                //       } else {
+                                //         ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
+                                //       }
+                                //     },
+                                //     onCommentTap: () {
+                                //       ///TODO
+                                //       ///route 정리 필요
+                                //       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                //       context.push(
+                                //           "/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
+                                //     },
+                                //   );
+                                // } else if (item.subType == describeEnum(NotiSubType.like_contents)) {
+                                //   return NotificationPostItem(
+                                //     name: item.senderInfo?.first.nick ?? 'unknown',
+                                //     regDate: item.regDate,
+                                //     isRead: item.isShow == 1 ? true : false,
+                                //     notificationType: item.title,
+                                //     content: item.body,
+                                //     profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                //     imgUrl: item.img ?? '',
+                                //     isLiked: item.contentsLikeState == 1 ? true : false,
+                                //     onLikeTap: (isLiked) {
+                                //       print('isLiked $isLiked');
+                                //
+                                //       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                //       if(isLiked) {
+                                //         print('???????');
+                                //         ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
+                                //       } else {
+                                //         ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
+                                //       }
+                                //     },
+                                //     onCommentTap: () {
+                                //       ///TODO
+                                //       ///route 정리 필요
+                                //       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                //       context.push(
+                                //           "/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
+                                //     },
+                                //   );
+                                // }
+                                else if (item.subType == describeEnum(NotiSubType.new_comment) || item.subType == describeEnum(NotiSubType.new_reply)) {
                                   return NotificationCommentItem(
                                     name: item.senderInfo?.first.nick ?? 'unknown',
                                     regDate: item.regDate,

@@ -7,6 +7,7 @@ import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/notification/notification_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/policy/policy_repository.dart';
 import 'package:riverpod/riverpod.dart';
@@ -53,7 +54,7 @@ class NotificationListState extends _$NotificationListState {
       var result = await repository.getNotifications(loginMemberIdx, pageKey);
 
       var resultList = result.list.map((e) {
-        if(e.senderInfo == null) {
+        if (e.senderInfo == null) {
           return e;
         }
         try {
@@ -61,7 +62,7 @@ class NotificationListState extends _$NotificationListState {
             senderInfo: [e.senderInfo!.first.copyWith(profileImgUrl: '${result.imgDomain}${e.senderInfo!.first.profileImgUrl}')],
             img: '${result.imgDomain}${e.img}',
           );
-        }catch(_) {
+        } catch (_) {
           return e;
         }
       }).toList();
@@ -89,45 +90,70 @@ class NotificationListState extends _$NotificationListState {
   }
 
   void setFeedLike(int memberIdx, int contentsIdx) async {
-    final result = await FeedRepository()
-        .postLike(memberIdx: memberIdx, contentIdx: contentsIdx);
-    if(result.result) {
-      changedState(contentsIdx, true);
+    final result = await FeedRepository().postLike(memberIdx: memberIdx, contentIdx: contentsIdx);
+    if (result.result) {
+      changedLikeState(contentsIdx, true);
     }
   }
+
   void unSetFeedLike(int memberIdx, int contentsIdx) async {
-    final result = await FeedRepository()
-        .deleteLike(memberIdx: memberIdx, contentsIdx: contentsIdx);
-    if(result.result) {
-      changedState(contentsIdx, false);
+    final result = await FeedRepository().deleteLike(memberIdx: memberIdx, contentsIdx: contentsIdx);
+    if (result.result) {
+      changedLikeState(contentsIdx, false);
     }
   }
+
+  // void setFollow(int memberIdx, int contentsIdx) async {
+  //   final result = await FeedRepository().postLike(memberIdx: memberIdx, contentIdx: contentsIdx);
+  //   if (result.result) {
+  //     changedLikeState(contentsIdx, true);
+  //   }
+  // }
+  //
+  // void unSetFollow(int memberIdx, int contentsIdx) async {
+  //   final result = await FeedRepository().deleteLike(memberIdx: memberIdx, contentsIdx: contentsIdx);
+  //   if (result.result) {
+  //     changedLikeState(contentsIdx, false);
+  //   }
+  // }
+
   void setCommentLike(int memberIdx, int commentIdx) async {
-    final result = await CommentRepository()
-        .postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
-    if(result.result) {
-      changedState(commentIdx, true);
+    final result = await CommentRepository().postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+    if (result.result) {
+      changedLikeState(commentIdx, true);
     }
   }
+
   void unSetCommentLike(int memberIdx, int commentIdx) async {
-    final result = await CommentRepository()
-        .deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+    final result = await CommentRepository().deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
 
-    if(result.result) {
-      changedState(commentIdx, false);
+    if (result.result) {
+      changedLikeState(commentIdx, false);
     }
   }
 
-  void changedState(int contentsIdx, bool isLike) {
-    int targetIdx = state.itemList!.indexWhere((element) => element.contentsIdx == contentsIdx);
-    print('targetIdx $targetIdx');
-    if(targetIdx >= 0) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          contentsLikeState: isLike ? 1 : 0,
-        );
-      state.notifyListeners();
-    }
+  void changedLikeState(int contentsIdx, bool isLike) {
+    state.itemList = state.itemList!.map((e) {
+      if (e.contentsIdx != contentsIdx) {
+        return e;
+      }
+      return e.copyWith(
+        contentsLikeState: isLike ? 1 : 0,
+      );
+    }).toList();
+    state.notifyListeners();
   }
+  // void changedFollowState(int contentsIdx, bool isFollow) {
+  //   state.itemList = state.itemList!.map((e) {
+  //     if (e.contentsIdx != contentsIdx) {
+  //       return e;
+  //     }
+  //     return e.copyWith(
+  //       is: isLike ? 1 : 0,
+  //     );
+  //   }).toList();
+  //   state.notifyListeners();
+  // }
 }
 
 //
