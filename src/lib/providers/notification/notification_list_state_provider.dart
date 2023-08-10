@@ -103,19 +103,19 @@ class NotificationListState extends _$NotificationListState {
     }
   }
 
-  // void setFollow(int memberIdx, int contentsIdx) async {
-  //   final result = await FeedRepository().postLike(memberIdx: memberIdx, contentIdx: contentsIdx);
-  //   if (result.result) {
-  //     changedLikeState(contentsIdx, true);
-  //   }
-  // }
-  //
-  // void unSetFollow(int memberIdx, int contentsIdx) async {
-  //   final result = await FeedRepository().deleteLike(memberIdx: memberIdx, contentsIdx: contentsIdx);
-  //   if (result.result) {
-  //     changedLikeState(contentsIdx, false);
-  //   }
-  // }
+  void setFollow(int memberIdx, int followIdx) async {
+    final result = await FollowRepository().postFollow(memberIdx: memberIdx, followIdx: followIdx);
+    if (result.result) {
+      changedFollowState(followIdx, true);
+    }
+  }
+
+  void unSetFollow(int memberIdx, int followIdx) async {
+    final result = await FollowRepository().deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+    if (result.result) {
+      changedFollowState(followIdx, false);
+    }
+  }
 
   void setCommentLike(int memberIdx, int commentIdx) async {
     final result = await CommentRepository().postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
@@ -143,17 +143,18 @@ class NotificationListState extends _$NotificationListState {
     }).toList();
     state.notifyListeners();
   }
-  // void changedFollowState(int contentsIdx, bool isFollow) {
-  //   state.itemList = state.itemList!.map((e) {
-  //     if (e.contentsIdx != contentsIdx) {
-  //       return e;
-  //     }
-  //     return e.copyWith(
-  //       is: isLike ? 1 : 0,
-  //     );
-  //   }).toList();
-  //   state.notifyListeners();
-  // }
+
+  void changedFollowState(int followIdx, bool isFollow) {
+    state.itemList = state.itemList!.map((e) {
+      if (e.senderIdx != followIdx) {
+        return e;
+      }
+      return e.copyWith(
+        followState: isFollow ? 1 : 0,
+      );
+    }).toList();
+    state.notifyListeners();
+  }
 }
 
 //

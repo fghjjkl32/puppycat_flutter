@@ -176,6 +176,15 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                     regDate: item.regDate,
                                     isRead: item.isShow == 1 ? true : false,
                                     profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                    isFollowed: item.followState == 1 ? true : false,
+                                    onTapFollowButton: (isFollowed) {
+                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                      if (isFollowed) {
+                                        ref.read(notificationListStateProvider.notifier).unSetFollow(loginMemberIdx, item.senderIdx);
+                                      } else {
+                                        ref.read(notificationListStateProvider.notifier).setFollow(loginMemberIdx, item.senderIdx);
+                                      }
+                                    },
                                   );
                                 } else if (item.subType == describeEnum(NotiSubType.new_contents) ||
                                     item.subType == describeEnum(NotiSubType.mention_contents) ||

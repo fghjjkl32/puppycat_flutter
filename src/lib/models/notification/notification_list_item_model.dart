@@ -26,6 +26,7 @@ class NotificationListItemModel with _$NotificationListItemModel {
     required int idx,
     List<Map<String, dynamic>>? mentionMemberInfo,
     int? contentsLikeState,
+    int? followState,
   }) = _NotificationListItemModel;
 
   factory NotificationListItemModel.fromJson(Map<String, dynamic> json) =>

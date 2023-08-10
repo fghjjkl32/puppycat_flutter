@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,13 +15,16 @@ class NotificationFollowItem extends StatelessWidget {
     required this.isRead,
     required this.regDate,
     required this.profileImgUrl,
+    required this.isFollowed,
+    this.onTapFollowButton,
   }) : super(key: key);
 
   final String name;
   final String regDate;
   final bool isRead;
   final String profileImgUrl;
-
+  final bool isFollowed;
+  final Function? onTapFollowButton;
 
   @override
   Widget build(BuildContext context) {
@@ -56,13 +60,11 @@ class NotificationFollowItem extends StatelessWidget {
                       children: [
                         Text(
                           "새로운 팔로우",
-                          style: kBody11SemiBoldStyle.copyWith(
-                              color: kTextBodyColor),
+                          style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                         ),
                         Text(
                           regDate,
-                          style:
-                              kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                          style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                         ),
                       ],
                     ),
@@ -73,15 +75,11 @@ class NotificationFollowItem extends StatelessWidget {
                       Expanded(
                         child: RichText(
                           text: TextSpan(
-                            style: kBody13RegularStyle.copyWith(
-                                color: kTextTitleColor),
+                            style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
                             children: <TextSpan>[
                               TextSpan(
-                                text: name.length > 13
-                                    ? '${name.substring(0, 13)}...'
-                                    : name,
-                                style: kBody13BoldStyle.copyWith(
-                                    color: kTextTitleColor),
+                                text: name.length > 13 ? '${name.substring(0, 13)}...' : name,
+                                style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                               ),
                               const TextSpan(text: '님이 나를 팔로우하기 시작했습니다.'),
                             ],
@@ -90,23 +88,46 @@ class NotificationFollowItem extends StatelessWidget {
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 10.w, right: 4.w),
-                        child: Container(
-                          width: 52,
-                          height: 26,
-                          decoration: const BoxDecoration(
-                            color: kPrimaryColor,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(8.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: isFollowed ? kTextBodyColor : kNeutralColor100,
+                            backgroundColor: isFollowed ? kNeutralColor300 : kPrimaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
                             ),
+                            elevation: 0,
                           ),
-                          child: Center(
-                            child: Text(
-                              "팔로우",
-                              style: kButton12BoldStyle.copyWith(
-                                  color: kNeutralColor100),
-                            ),
-                          ),
+                          onPressed: () {
+                            if(onTapFollowButton != null) {
+                              onTapFollowButton!(isFollowed);
+                            }
+                          },
+                          child: isFollowed
+                              ? Text(
+                                  '팔로잉'.tr(),
+                                  style: kButton12BoldStyle,
+                                )
+                              : Text(
+                                  '팔로우'.tr(),
+                                  style: kButton12BoldStyle,
+                                ),
                         ),
+                        // Container(
+                        //   width: 52,
+                        //   height: 26,
+                        //   decoration: const BoxDecoration(
+                        //     color: kPrimaryColor,
+                        //     borderRadius: BorderRadius.all(
+                        //       Radius.circular(8.0),
+                        //     ),
+                        //   ),
+                        //   child: Center(
+                        //     child: Text(
+                        //       "팔로우",
+                        //       style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
+                        //     ),
+                        //   ),
+                        // ),
                       )
                     ],
                   ),
