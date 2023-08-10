@@ -15,6 +15,7 @@ class SearchDataListModel with _$SearchDataListModel {
     @Default(false) bool isLoadMoreError,
     @Default(false) bool isLoadMoreDone,
     @Default(0) int totalCount,
+    String? imgDomain,
   }) = _SearchDataListModel;
 
   factory SearchDataListModel.fromJson(Map<String, dynamic> json) =>

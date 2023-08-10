@@ -91,9 +91,10 @@ class SearchRepository {
     required int memberIdx,
     required int page,
     required String searchWord,
+    int limit = 10,
   }) async {
     SearchResponseModel? searchResponseModel = await _searchService
-        .getSearchList(memberIdx, page, searchWord)
+        .getSearchList(memberIdx, page, searchWord, limit)
         .catchError((Object obj) async {});
 
     if (searchResponseModel == null) {

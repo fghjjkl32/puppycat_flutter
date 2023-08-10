@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:matrix/matrix.dart' hide Visibility;
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/date_time_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -58,28 +59,6 @@ class ChatRoomItem extends ConsumerWidget {
 
   Offset? _lastPointerDownPosition;
 
-  Widget getAvatar() {
-    return WidgetMask(
-      blendMode: BlendMode.srcATop,
-      childSaveLayer: true,
-      mask: Center(
-        child: roomModel.avatarUrl != null
-            ? Image.network(
-                roomModel.avatarUrl!,
-                // width: 42.w,
-                height: 41.h,
-                fit: BoxFit.fill,
-              )
-            : Image.asset('assets/image/common/icon_profile_medium.png'),
-      ),
-      child: SvgPicture.asset(
-        'assets/image/feed/image/squircle.svg',
-        width: 41.w,
-        height: 41.h,
-        fit: BoxFit.fill,
-      ),
-    );
-  }
 
   ///NOTE
   ///GPT Code
@@ -320,7 +299,7 @@ class ChatRoomItem extends ConsumerWidget {
             padding: EdgeInsets.fromLTRB(12.0.w, 4.0.h, 12.0.w, 4.0.h),
             child: Row(
               children: [
-                getAvatar(),
+                getProfileAvatar(roomModel.avatarUrl ?? '', 'assets/image/chat/icon_profile_small.png', 42, 42),
                 SizedBox(
                   width: 8.0.w,
                 ),
@@ -335,20 +314,25 @@ class ChatRoomItem extends ConsumerWidget {
                           ),
                           Visibility(
                             visible: roomModel.isPin,
-                            child: SizedBox(
-                              width: 20.w,
-                              height: 20.h,
-                              child: Image.asset(
-                                'assets/image/chat/icon_fix_small.png',
-                              ),
-                            ),
+                            child: const ImageIcon(
+                                  AssetImage('assets/image/chat/icon_fix_small.png'),
+                                  size: 20,
+                                  color: kNeutralColor400,
+                                ),
                           ),
                           const Spacer(),
                           !roomModel.isLastMsgMine
                               ? const SizedBox.shrink()
                               : roomModel.isRead
-                                  ? Image.asset('assets/image/chat/icon_check_pair.png')
-                                  : Image.asset('assets/image/chat/icon_check_single.png'),
+                                  ? const ImageIcon(
+                            AssetImage('assets/image/chat/icon_check_pair.png'),
+                            size: 20,
+                            color: kNeutralColor500,
+                          ) : const ImageIcon(
+                            AssetImage('assets/image/chat/icon_check_single.png'),
+                            size: 20,
+                            color: kNeutralColor500,
+                          ),
                           Padding(
                             padding: EdgeInsets.only(left: 4.0.w),
                             child: Text(

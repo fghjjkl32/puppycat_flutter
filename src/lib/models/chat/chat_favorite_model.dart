@@ -34,6 +34,7 @@ class ChatFavoriteModel with _$ChatFavoriteModel {
     required int isBadge,
     required String nick,
     required String profileImgUrl,
+    required int? favoriteState,
     // @JsonKey(name: 'chatInfo', fromJson: _parseChatInfo) required ChatUserModel chatInfo,
     required String chatMemberId,
     required String chatHomeServer,

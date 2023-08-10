@@ -25,8 +25,9 @@ abstract class SearchService {
 
   @GET('/search/nick?memberIdx={memberIdx}&page={page}&searchWord={searchWord}')
   Future<SearchResponseModel?> getSearchList(
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
-    @Path("searchWord") String searchWord,
+    @Query("memberIdx") int memberIdx,
+    @Query("page") int page,
+    @Query("searchWord") String searchWord,
+    @Query("limit") int limit,
   );
 }

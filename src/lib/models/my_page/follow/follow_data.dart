@@ -20,10 +20,11 @@ class FollowData with _$FollowData {
     int? isFollow,
     int? followerIdx,
     String? followerId,
-    String? chatMemeberId,
+    String? chatMemberId,
     String? chatHomeServer,
     String? chatDeviceId,
-    String? chetAccessToken,
+    String? chatAccessToken,
+    int? favoriteState,
   }) = _FollowData;
 
   factory FollowData.fromJson(Map<String, dynamic> json) =>

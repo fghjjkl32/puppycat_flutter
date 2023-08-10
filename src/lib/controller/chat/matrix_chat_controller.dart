@@ -157,6 +157,8 @@ class MatrixChatClientController implements AbstractChatController {
 
   @override
   List<ChatRoomModel> getRoomList() {
+    // return [];
+
     return _chatClient.rooms
         .map(
             (e) {
@@ -168,12 +170,16 @@ class MatrixChatClientController implements AbstractChatController {
             removeMarkdown: true,
           );
 
+          // final isHide = checkHideRoom(e.id);
+          // print('isHide $isHide / ${e.id}');
+
           // print('${e.getLocalizedDisplayname()} / _getReadEventId(e) ${_getReadEventId(e)} / ${e.fullyRead } / ${lastEvent.eventId}');
 
           return ChatRoomModel(
             id: e.id,
+            dmId: e.directChatMatrixID ?? e.getDmID(),
             avatarUrl: e.avatar?.toString(),
-            nick: e.getLocalizedDisplayname(),
+            nick: e.getDisplayName(),
             lastMsg: lastMsg,
             isLastMsgMine: lastEvent.senderId == client.userID,
             newCount: e.notificationCount,
@@ -187,6 +193,50 @@ class MatrixChatClientController implements AbstractChatController {
         .toList();
   }
 
+  Future<List<ChatRoomModel>> getRoomListAsync() async {
+    // return [];
+
+    List<ChatRoomModel> roomList = [];
+
+    for (var e in _chatClient.rooms) {
+      Event? lastEvent = e.lastMessageEvent ?? e.lastEvent;
+      String lastMsg = lastEvent!.redacted ? '메시지.삭제된 메시지 입니다'.tr() : lastEvent!.calcUnlocalizedBody(
+        hideReply: true,
+        hideEdit: true,
+        plaintextBody: true,
+        removeMarkdown: true,
+      );
+
+      bool isHide = await checkHideRoom(e.id);
+      print('isHide $isHide / ${e.id}');
+      if(await checkHideRoom(e.id)) {
+        if(e.notificationCount > 0) {
+          showRoom(e.id);
+        } else {
+          continue;
+        }
+      }
+
+      roomList.add(ChatRoomModel(
+        id: e.id,
+        dmId: e.directChatMatrixID ?? e.getDmID(),
+        avatarUrl: e.avatar?.toString(),
+        nick: e.getDisplayName(),
+        lastMsg: lastMsg,
+        isLastMsgMine: lastEvent.senderId == client.userID,
+        newCount: e.notificationCount,
+        isRead: e.fullyRead == lastEvent.eventId || e.fullyRead == _getReadEventId(e) ||  _getReadEventId(e) ==  lastEvent.eventId,
+        isPin: e.membership == Membership.invite ? false : e.isFavourite,
+        msgDateTime: e.timeCreated.localizedTimeDayDiff(),
+        isMine: e.lastEvent?.senderId == client.userID,
+        isJoined: e.membership == Membership.join,
+      ));
+    }
+
+    return roomList;
+
+  }
+
   @override
   Stream<List<ChatRoomModel>> getRoomListStream() {
     StreamController<List<ChatRoomModel>> controller = StreamController();
@@ -196,8 +246,7 @@ class MatrixChatClientController implements AbstractChatController {
         if (e.membership == Membership.invite) {
           e.join();
         }
-// print('update');
-        // print('_getReadEventId(e) ${_getReadEventId(e)}');
+
         Event? lastEvent = e.lastMessageEvent ?? e.lastEvent;
         String lastMsg = lastEvent!.redacted ? '메시지.삭제된 메시지 입니다'.tr() : lastEvent!.calcUnlocalizedBody(
           hideReply: true,
@@ -209,8 +258,9 @@ class MatrixChatClientController implements AbstractChatController {
 
         return ChatRoomModel(
           id: e.id,
+          dmId: e.directChatMatrixID ?? e.getDmID(),
           avatarUrl: e.avatar?.toString(),
-          nick: e.getLocalizedDisplayname(),
+          nick: e.getDisplayName(),
           lastMsg: lastMsg,
           isLastMsgMine: lastEvent.senderId == client.userID,
           newCount: e.notificationCount,
@@ -233,6 +283,48 @@ class MatrixChatClientController implements AbstractChatController {
   @override
   void leave(String roomId) async {
     await _chatClient.leaveRoom(roomId);
+  }
+
+  void hideRoom(String roomId) async {
+    List<dynamic> hideenRooms = await getHideRooms();
+    if(hideenRooms.contains(roomId)) {
+      return;
+    } else {
+      hideenRooms.add(roomId);
+    }
+
+    _chatClient.setAccountData(_chatClient.userID!, 'hidden_rooms', {
+      'room_ids': hideenRooms
+    });
+  }
+
+  void showRoom(String roomId) async {
+    List<dynamic> hideenRooms = await getHideRooms();
+    if(hideenRooms.contains(roomId)) {
+      hideenRooms.remove(roomId);
+    } else {
+      return;
+    }
+
+    _chatClient.setAccountData(_chatClient.userID!, 'hidden_rooms', {
+      'room_ids': hideenRooms
+    });
+  }
+
+  Future<List<dynamic>> getHideRooms() async {
+    Map<String, Object?> hiddenRoomsData = await client.getAccountData(_chatClient.userID!, 'hidden_rooms');
+    List<dynamic> hiddenRoomIds = hiddenRoomsData['room_ids'] as List<dynamic>;
+    return hiddenRoomIds;
+  }
+
+  Future<bool> checkHideRoom(String roomId) async {
+    List<dynamic> hiddenRooms = await getHideRooms();
+
+    if(hiddenRooms.contains(roomId)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @override

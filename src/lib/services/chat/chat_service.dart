@@ -10,12 +10,15 @@ abstract class ChatService {
   factory ChatService(Dio dio, {String baseUrl}) = _ChatService;
 
   @GET('/chat/favorites')
-  Future<ChatFavoriteResponseModel?> getChatFavorite(@Query('memberIdx') int memberIdx);
+  Future<ChatFavoriteResponseModel?> getChatFavorite(
+    @Query('memberIdx') int memberIdx,
+    @Query('page') int page,
+    @Query('limit') int limit,
+  );
 
   @POST('/chat/favorites')
   Future<ResponseModel> setChatFavorite(@Body() Map<String, dynamic> body);
 
   @DELETE('/chat/favorites')
   Future<ResponseModel> unSetChatFavorite(@Queries() Map<String, dynamic> queries);
-
 }

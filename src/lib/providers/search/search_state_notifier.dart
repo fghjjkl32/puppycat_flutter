@@ -33,6 +33,8 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
   int searchMentionCurrentPage = 1;
   int recommendCurrentPage = 1;
 
+  final searchQuery = PublishSubject<String>();
+
   getMentionRecommendList({required int? initPage}) async {
     recommendCurrentPage = 1;
 
@@ -136,7 +138,6 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
     }
   }
 
-  final searchQuery = PublishSubject<String>();
 
   Future<void> searchMentionList(String searchWord) async {
     searchSearchWord = searchWord;
@@ -163,10 +164,5 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
   void dispose() {
     searchQuery.close();
     super.dispose();
-  }
-
-  clearSearchMensionList() {
-    // state = SearchDataListModel();
-    state = state.copyWith(page: 1, isLoading: false, list: []);
   }
 }
