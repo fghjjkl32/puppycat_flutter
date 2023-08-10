@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart' hide Headers;
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
@@ -195,9 +197,6 @@ abstract class FeedService {
     @Path("memberIdx") required int memberIdx,
   });
 
-  @POST('/contents/{contentsIdx}/report')
-  Future<ResponseModel?> postReport(
-    @Path("contentsIdx") int contentsIdx,
-    @Body() Map<String, dynamic> body,
-  );
+  @POST("/contents")
+  Future<ResponseModel?> postFeed(@Body() FormData formData);
 }

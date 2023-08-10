@@ -523,7 +523,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
                   userName:
                       recentFeedState.list[index].memberInfoList![0].nick!,
                   profileImage: recentFeedState
-                          .list[index].memberInfoList![0].profileImgUrl! ??
+                          .list[index].memberInfoList?[0].profileImgUrl! ??
                       "",
                   memberIdx: ref.read(userModelProvider)!.idx,
                   firstTitle:

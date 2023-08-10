@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widge
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
@@ -18,17 +19,18 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_curren
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_view_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
 
-class TagScreen extends ConsumerWidget {
-  TagScreen({
-    super.key,
-  });
+class EditTagScreen extends ConsumerWidget {
+  EditTagScreen({
+    Key? key,
+    required this.feedData,
+  }) : super(key: key);
+
+  final FeedData feedData;
 
   final ValueNotifier<int> _counter = ValueNotifier<int>(0);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<File> croppedFiles = ref.watch(feedWriteCroppedFilesProvider);
-
     return Scaffold(
       backgroundColor: Colors.black.withOpacity(0.8),
       body: SafeArea(
@@ -108,14 +110,16 @@ class TagScreen extends ConsumerWidget {
                 controller: PageController(
                     initialPage: ref.watch(feedWriteCurrentViewCountProvider)),
                 scrollDirection: Axis.horizontal,
-                children: croppedFiles.asMap().entries.map((entry) {
+                children: feedData.imgList!.asMap().entries.map((entry) {
                   var imageIndex = entry.key;
                   var image = entry.value;
 
+                  print(entry);
+
                   return Center(
                     child: TaggableImage(
-                      image: image,
                       imageIndex: imageIndex,
+                      url: entry.value.url!,
                     ),
                   );
                 }).toList(),
@@ -127,7 +131,7 @@ class TagScreen extends ConsumerWidget {
                 counter: ValueNotifier<int>(ref
                     .watch(feedWriteCurrentViewCountProvider.notifier)
                     .state),
-                imageListLength: croppedFiles.length,
+                imageListLength: feedData.imgList!.length,
               ),
             ),
           ],
@@ -138,11 +142,16 @@ class TagScreen extends ConsumerWidget {
 }
 
 class TaggableImage extends ConsumerStatefulWidget {
-  final File image;
   final int imageIndex;
+  final String url;
+
   final GlobalKey imageKey = GlobalKey();
 
-  TaggableImage({super.key, required this.image, required this.imageIndex});
+  TaggableImage({
+    super.key,
+    required this.imageIndex,
+    required this.url,
+  });
 
   @override
   _TaggableImageState createState() => _TaggableImageState();
@@ -204,8 +213,9 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
-              child: Image.file(
-                widget.image,
+              child: Image.network(
+                "https://dev-imgs.devlabs.co.kr${widget.url}",
+                fit: BoxFit.cover,
                 key: widget.imageKey,
               ),
             ),

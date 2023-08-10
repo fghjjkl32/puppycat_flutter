@@ -48,6 +48,45 @@ class SearchRepository {
     return searchResponseModel;
   }
 
+  Future<SearchResponseModel> getImageTagRecommendList({
+    required int memberIdx,
+    required int page,
+  }) async {
+    SearchResponseModel? searchResponseModel = await _searchService
+        .getImageTagRecommendList(memberIdx, page)
+        .catchError((Object obj) async {});
+
+    if (searchResponseModel == null) {
+      return SearchResponseModel(
+        result: false,
+        code: "",
+        data: const SearchDataListModel(
+          list: [],
+          params: ParamsModel(
+            memberIdx: 0,
+            pagination: Pagination(
+              startPage: 0,
+              limitStart: 0,
+              totalPageCount: 0,
+              existNextPage: false,
+              endPage: 0,
+              existPrevPage: false,
+              totalRecordCount: 0,
+            ),
+            offset: 0,
+            limit: 0,
+            pageSize: 0,
+            page: 0,
+            recordSize: 0,
+          ),
+        ),
+        message: "",
+      );
+    }
+
+    return searchResponseModel;
+  }
+
   Future<SearchResponseModel> getSearchList({
     required int memberIdx,
     required int page,

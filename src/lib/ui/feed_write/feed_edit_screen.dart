@@ -6,20 +6,22 @@ import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/ins
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button_selected_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_content_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_search_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/edit_feed_view.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/post_feed_view.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_cropped_files_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_information_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
 
-class FeedWriteScreen extends ConsumerWidget {
-  const FeedWriteScreen({super.key, required this.cropStream});
+class FeedEditScreen extends ConsumerWidget {
+  const FeedEditScreen({super.key, required this.feedData});
 
-  final Stream<InstaAssetsExportDetails> cropStream;
+  final FeedData feedData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -123,7 +125,7 @@ class FeedWriteScreen extends ConsumerWidget {
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: const Text('새 게시물'),
+            title: const Text('게시물 수정'),
             leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -151,72 +153,68 @@ class FeedWriteScreen extends ConsumerWidget {
                   print(
                       ref.watch(feedWriteContentProvider.notifier).state.text);
 
-                  final result = await ref
-                      .watch(feedWriteProvider.notifier)
-                      .postFeed(
-                        files: ref.watch(feedWriteCroppedFilesProvider),
-                        memberIdx: ref.watch(userModelProvider)!.idx,
-                        isView: ref.watch(feedWriteButtonSelectedProvider),
-                        location: ref
-                            .watch(
-                                feedWriteLocationInformationProvider.notifier)
-                            .state,
-                        contents: ref
-                            .watch(feedWriteContentProvider.notifier)
-                            .state
-                            .text,
-                        feedState: ref.watch(feedWriteProvider),
-                      );
-                  if (result.result) {
-                    context.pushReplacement("/home");
-                  } else {
-                    showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (context) {
-                        return CustomDialog(
-                            content: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "게시물을 등록할 수 없습니다.",
-                                    style: kBody16BoldStyle.copyWith(
-                                        color: kTextTitleColor),
-                                  ),
-                                  SizedBox(
-                                    height: 4.h,
-                                  ),
-                                  Text(
-                                    "죄송합니다.\n게시물 등록 중 오류가 발생하였습니다.\n다시 시도해 주세요.",
-                                    style: kBody12RegularStyle.copyWith(
-                                        color: kTextBodyColor),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            confirmTap: () {
-                              context.pop();
-                            },
-                            confirmWidget: Text(
-                              "확인",
-                              style: kButton14MediumStyle.copyWith(
-                                  color: kPrimaryColor),
-                            ));
-                      },
-                    );
-                  }
+                  // final result = await ref
+                  //     .watch(feedWriteProvider.notifier)
+                  //     .postFeed(
+                  //       files: ref.watch(feedWriteCroppedFilesProvider),
+                  //       memberIdx: ref.watch(userModelProvider)!.idx,
+                  //       isView: ref.watch(feedWriteButtonSelectedProvider),
+                  //       location: ref
+                  //           .watch(
+                  //               feedWriteLocationInformationProvider.notifier)
+                  //           .state,
+                  //       contents: ref
+                  //           .watch(feedWriteContentProvider.notifier)
+                  //           .state
+                  //           .text,
+                  //       feedState: ref.watch(feedWriteProvider),
+                  //     );
+                  // if (result.result) {
+                  //   context.pushReplacement("/home");
+                  // } else {
+                  //   showDialog(
+                  //     barrierDismissible: false,
+                  //     context: context,
+                  //     builder: (context) {
+                  //       return CustomDialog(
+                  //           content: Padding(
+                  //             padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                  //             child: Column(
+                  //               children: [
+                  //                 Text(
+                  //                   "게시물을 등록할 수 없습니다.",
+                  //                   style: kBody16BoldStyle.copyWith(
+                  //                       color: kTextTitleColor),
+                  //                 ),
+                  //                 SizedBox(
+                  //                   height: 4.h,
+                  //                 ),
+                  //                 Text(
+                  //                   "죄송합니다.\n게시물 등록 중 오류가 발생하였습니다.\n다시 시도해 주세요.",
+                  //                   style: kBody12RegularStyle.copyWith(
+                  //                       color: kTextBodyColor),
+                  //                   textAlign: TextAlign.center,
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //           confirmTap: () {
+                  //             context.pop();
+                  //           },
+                  //           confirmWidget: Text(
+                  //             "확인",
+                  //             style: kButton14MediumStyle.copyWith(
+                  //                 color: kPrimaryColor),
+                  //           ));
+                  //     },
+                  //   );
+                  // }
                 },
               ),
             ],
           ),
-          body: StreamBuilder<InstaAssetsExportDetails>(
-            stream: cropStream,
-            builder: (context, snapshot) => PostFeedView(
-              croppedFiles: snapshot.data?.croppedFiles ?? [],
-              progress: snapshot.data?.progress,
-            ),
+          body: EditFeedView(
+            feedData: feedData,
           ),
         ),
       ),

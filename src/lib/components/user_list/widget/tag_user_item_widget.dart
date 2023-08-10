@@ -53,8 +53,8 @@ class TagUserItemWidget extends StatelessWidget {
                         blendMode: BlendMode.srcATop,
                         childSaveLayer: true,
                         mask: Center(
-                          child: Image.asset(
-                            profileImage!,
+                          child: Image.network(
+                            "https://dev-imgs.devlabs.co.kr${profileImage!}",
                             height: 32.h,
                             fit: BoxFit.fill,
                           ),
