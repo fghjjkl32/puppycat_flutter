@@ -3,14 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:go_router/go_router.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/notification/notification_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/notification/component/notification_comment_item.dart';
 import 'package:pet_mobile_social_flutter/ui/notification/component/notification_follow_item.dart';
 import 'package:pet_mobile_social_flutter/ui/notification/component/notification_notice_item.dart';
 import 'package:pet_mobile_social_flutter/ui/notification/component/notification_post_item.dart';
+import 'package:flutter/foundation.dart';
 
 class NotificationScreen extends ConsumerStatefulWidget {
   const NotificationScreen({super.key});
@@ -19,18 +24,22 @@ class NotificationScreen extends ConsumerStatefulWidget {
   NotificationScreenState createState() => NotificationScreenState();
 }
 
-class NotificationScreenState extends ConsumerState<NotificationScreen>
-    with SingleTickerProviderStateMixin {
+class NotificationScreenState extends ConsumerState<NotificationScreen> with SingleTickerProviderStateMixin {
   late TabController tabController;
+  late PagingController<int, NotificationListItemModel> _notiListPagingController;
 
   @override
   void initState() {
+    _notiListPagingController = ref.read(notificationListStateProvider);
+
     super.initState();
     tabController = TabController(
       initialIndex: 0,
       length: 4,
       vsync: this,
     );
+
+    _notiListPagingController.refresh();
   }
 
   void onTap() {
@@ -66,8 +75,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen>
           body: Column(
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -75,8 +83,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen>
                   ),
                   width: double.infinity,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: 14.0.h, horizontal: 14.w),
+                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -85,43 +92,31 @@ class NotificationScreenState extends ConsumerState<NotificationScreen>
                           children: [
                             Text(
                               "혜택 알림이 꺼져 있어요.",
-                              style: kBody11RegularStyle.copyWith(
-                                  color: kTextSubTitleColor),
+                              style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
                             ),
                             const SizedBox(
                               height: 2,
                             ),
                             Text(
                               "프로모션 및 이벤트 혜택 정보를 받으려면 ON!",
-                              style: kBody11RegularStyle.copyWith(
-                                  color: kTextSubTitleColor),
+                              style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
                             ),
                           ],
                         ),
                         FlutterSwitch(
                           padding: 4,
-                          width: 34.w,
-                          height: 16.h,
+                          width: 38,
+                          height: 20,
                           activeColor: Theme.of(context).primaryColor,
                           inactiveColor: kNeutralColor500,
-                          toggleSize: 12.0.w,
+                          toggleSize: 12.0,
                           value: testValue,
-                          borderRadius: 50.0.w,
+                          borderRadius: 50.0,
                           onToggle: (value) async {
                             if (value) {
-                              toast(
-                                  context: context,
-                                  text: '광고성 정보 수신 여부가 ‘동의’로 변경되었습니다.',
-                                  type: ToastType.purple,
-                                  secondText:
-                                      "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                              toast(context: context, text: '광고성 정보 수신 여부가 ‘동의’로 변경되었습니다.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
                             } else {
-                              toast(
-                                  context: context,
-                                  text: '광고성 정보 수신 여부가 ‘거부’로 변경되었습니다.',
-                                  type: ToastType.grey,
-                                  secondText:
-                                      "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                              toast(context: context, text: '광고성 정보 수신 여부가 ‘거부’로 변경되었습니다.', type: ToastType.grey, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
                             }
 
                             onTap();
@@ -165,95 +160,254 @@ class NotificationScreenState extends ConsumerState<NotificationScreen>
                 child: TabBarView(
                   controller: tabController,
                   children: [
+                    Column(
+                      children: [
+                        Expanded(
+                          child: PagedListView<int, NotificationListItemModel>(
+                            pagingController: _notiListPagingController,
+                            builderDelegate: PagedChildBuilderDelegate<NotificationListItemModel>(
+                              noItemsFoundIndicatorBuilder: (context) {
+                                return const Text('No Noti');
+                              },
+                              itemBuilder: (context, item, index) {
+                                if (item.subType == describeEnum(NotiSubType.follow)) {
+                                  return NotificationFollowItem(
+                                    name: item.senderInfo?.first.nick ?? 'unknown',
+                                    regDate: item.regDate,
+                                    isRead: item.isShow == 1 ? true : false,
+                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                  );
+                                } else if (item.subType == describeEnum(NotiSubType.new_contents)) {
+                                  return NotificationPostItem(
+                                    name: item.senderInfo?.first.nick ?? 'unknown',
+                                    regDate: item.regDate,
+                                    isRead: item.isShow == 1 ? true : false,
+                                    notificationType: item.title,
+                                    content: item.body,
+                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                    imgUrl: item.img ?? '',
+                                    isLiked: item.contentsLikeState == 1 ? true : false,
+                                    onLikeTap: (isLiked) {
+                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                      if(isLiked) {
+                                        ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
+                                      } else {
+                                        ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
+                                      }
+                                    },
+                                    onCommentTap: () {
+                                      ///TODO
+                                      ///route 정리 필요
+                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                      context.push(
+                                          "/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
+                                    },
+                                  );
+                                } else if (item.subType == describeEnum(NotiSubType.mention_contents)) {
+                                  return NotificationPostItem(
+                                    name: item.senderInfo?.first.nick ?? 'unknown',
+                                    regDate: item.regDate,
+                                    isRead: item.isShow == 1 ? true : false,
+                                    notificationType: item.title,
+                                    content: item.body,
+                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                    imgUrl: item.img ?? '',
+                                    isLiked: item.contentsLikeState == 1 ? true : false,
+                                    onLikeTap: (isLiked) {
+                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                      print('isLiked $isLiked');
+                                      if(isLiked) {
+                                        ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
+                                      } else {
+                                        ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
+                                      }
+                                    },
+                                    onCommentTap: () {
+                                      ///TODO
+                                      ///route 정리 필요
+                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                      context.push(
+                                          "/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
+                                    },
+                                  );
+                                } else if (item.subType == describeEnum(NotiSubType.img_tag)) {
+                                  return NotificationPostItem(
+                                    name: item.senderInfo?.first.nick ?? 'unknown',
+                                    regDate: item.regDate,
+                                    isRead: item.isShow == 1 ? true : false,
+                                    notificationType: item.title,
+                                    content: item.body,
+                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                    imgUrl: item.img ?? '',
+                                    isLiked: item.contentsLikeState == 1 ? true : false,
+                                    onLikeTap: (isLiked) {
+                                      print('isLiked $isLiked');
+
+                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                      if(isLiked) {
+                                        ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
+                                      } else {
+                                        ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
+                                      }
+                                    },
+                                    onCommentTap: () {
+                                      ///TODO
+                                      ///route 정리 필요
+                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                      context.push(
+                                          "/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
+                                    },
+                                  );
+                                } else if (item.subType == describeEnum(NotiSubType.like_contents)) {
+                                  return NotificationPostItem(
+                                    name: item.senderInfo?.first.nick ?? 'unknown',
+                                    regDate: item.regDate,
+                                    isRead: item.isShow == 1 ? true : false,
+                                    notificationType: item.title,
+                                    content: item.body,
+                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                    imgUrl: item.img ?? '',
+                                    isLiked: item.contentsLikeState == 1 ? true : false,
+                                    onLikeTap: (isLiked) {
+                                      print('isLiked $isLiked');
+
+                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                      if(isLiked) {
+                                        print('???????');
+                                        ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
+                                      } else {
+                                        ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
+                                      }
+                                    },
+                                    onCommentTap: () {
+                                      ///TODO
+                                      ///route 정리 필요
+                                      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                      context.push(
+                                          "/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
+                                    },
+                                  );
+                                } else if (item.subType == describeEnum(NotiSubType.new_comment) || item.subType == describeEnum(NotiSubType.new_reply)) {
+                                  return NotificationCommentItem(
+                                    name: item.senderInfo?.first.nick ?? 'unknown',
+                                    regDate: item.regDate,
+                                    isRead: item.isShow == 1 ? true : false,
+                                    notificationType: item.title,
+                                    content: item.body,
+                                    comment: item.contents ?? '',
+                                    mentionList: (item.mentionMemberInfo?.isNotEmpty ?? false) ? item.mentionMemberInfo!.first : {},
+                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                    imgUrl: item.img ?? '',
+                                  );
+                                } else if (item.subType == describeEnum(NotiSubType.mention_comment)) {
+                                  return NotificationCommentItem(
+                                    name: item.senderInfo?.first.nick ?? 'unknown',
+                                    regDate: item.regDate,
+                                    isRead: item.isShow == 1 ? true : false,
+                                    notificationType: item.title,
+                                    content: item.body,
+                                    comment: item.contents ?? '',
+                                    mentionList: (item.mentionMemberInfo?.isNotEmpty ?? false) ? item.mentionMemberInfo!.first : {},
+                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                    imgUrl: item.img ?? '',
+                                  );
+                                } else if (item.subType == describeEnum(NotiSubType.like_comment)) {
+                                  print(
+                                      'item.mentionMemberInfo == []  ${item.mentionMemberInfo?.isEmpty} / ${item.mentionMemberInfo == null} / ${item.mentionMemberInfo == []} / ${item.mentionMemberInfo ?? [
+                                            {"aa": 1}
+                                          ]}');
+                                  return NotificationCommentItem(
+                                    name: item.senderInfo?.first.nick ?? 'unknown',
+                                    regDate: item.regDate,
+                                    isRead: item.isShow == 1 ? true : false,
+                                    notificationType: item.title,
+                                    content: item.body,
+                                    comment: item.contents ?? '',
+                                    mentionList: (item.mentionMemberInfo?.isNotEmpty ?? false) ? item.mentionMemberInfo!.first : {},
+                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                    imgUrl: item.img ?? '',
+                                  );
+                                } else if (item.subType == describeEnum(NotiSubType.notice)) {
+                                  return NotificationNoticeItem(
+                                    content: item.body,
+                                    regDate: item.regDate,
+                                    isRead: item.isShow == 1 ? true : false,
+                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                  );
+                                } else if (item.subType == describeEnum(NotiSubType.event)) {
+                                  return NotificationNoticeItem(
+                                    content: item.body,
+                                    regDate: item.regDate,
+                                    isRead: item.isShow == 1 ? true : false,
+                                    profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                                  );
+                                } else {
+                                  return const SizedBox.shrink();
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        // const Text('asdsadad'),
+                        Container(
+                          color: kNeutralColor100,
+                          height: 70,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 10.h),
+                                child: const Divider(),
+                              ),
+                              Text(
+                                "최근 30일 간의 알림만 확인할 수 있습니다.",
+                                style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 6.0.h),
+                                child: Text(
+                                  "수신 거부 : 마이페이지 → 설정 → 알림",
+                                  style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                     Stack(
                       children: [
                         ListView(
-                          padding: const EdgeInsets.only(bottom: 100),
-                          children: [
-                            NotificationNoticeItem(
-                              content: "안녕하세요. 포레스트 담당자입니다. 메뉴 개편 안내드립니다.",
-                              time: DateTime.now(),
-                              isRead: false,
-                            ),
-                            NotificationFollowItem(
-                              name: "일이삼사오육칠팔구십일이삼사",
-                              time: DateTime.now(),
-                              isRead: true,
-                            ),
-                            NotificationCommentItem(
-                              name: '일이삼사오육칠팔구십일이삼사',
-                              time: DateTime.now(),
-                              isRead: true,
-                              notificationType: '좋아요',
-                              content: '님이 내댓글을 좋아합니다.',
-                              comment: '댓글 내용은 1줄만 보여주고 말줄임 처리..',
-                            ),
-                            NotificationPostItem(
-                              name: '일이삼사오육칠팔구십일이삼사',
-                              time: DateTime.now(),
-                              isRead: true,
-                              notificationType: '좋아요',
-                              content: '님이 내게시물을 좋아합니다.',
-                            ),
-                            NotificationCommentItem(
-                              name: '일이삼사오육칠팔구십일이삼사',
-                              time: DateTime.now(),
-                              isRead: true,
-                              notificationType: '멘션',
-                              content: '님이 내댓글을 좋아합니다.',
-                              comment: '@dhkdxlwm_dhkddhkd 여기에 같이 출근을 했거든',
-                            ),
-                            NotificationPostItem(
-                              name: '일이삼사오육칠팔구십일이삼사',
-                              time: DateTime.now(),
-                              isRead: true,
-                              notificationType: '멘션',
-                              content: '님이 내게시물에서 나를 멘션했습니다.',
-                            ),
-                            NotificationPostItem(
-                              name: '일이삼사오육칠팔구십일이삼사',
-                              time: DateTime.now(),
-                              isRead: true,
-                              notificationType: '태그',
-                              content: '님이 내게시물에서 나를 태그했습니다.',
-                            ),
-                            NotificationPostItem(
-                              name: '일이삼사오육칠팔구십일이삼사',
-                              time: DateTime.now(),
-                              isRead: true,
-                              notificationType: '새 글',
-                              content: '님이 새 게시물을 올렸습니다.',
-                            ),
+                          children: const [
+                            Text("DSA"),
+                            Text("DSA"),
+                            Text("DSA"),
                           ],
                         ),
                         Positioned(
                           bottom: 0,
                           left: 0,
                           right: 0,
-                          child: Container(
-                            color: kNeutralColor100,
-                            height: 70,
+                          child: SizedBox(
+                            height: 80,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Padding(
-                                  padding:
-                                      EdgeInsets.fromLTRB(16.w, 0, 16.w, 10.h),
+                                  padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 10.h),
                                   child: const Divider(),
                                 ),
                                 Text(
                                   "최근 30일 간의 알림만 확인할 수 있습니다.",
-                                  style: kBody12SemiBoldStyle.copyWith(
-                                      color: kTextBodyColor),
+                                  style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
                                 ),
                                 Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(vertical: 6.0.h),
+                                  padding: EdgeInsets.symmetric(vertical: 6.0.h),
                                   child: Text(
                                     "수신 거부 : 마이페이지 → 설정 → 알림",
-                                    style: kBody11RegularStyle.copyWith(
-                                        color: kTextBodyColor),
+                                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                                   ),
                                 ),
                               ],
@@ -282,22 +436,18 @@ class NotificationScreenState extends ConsumerState<NotificationScreen>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16.0.w, vertical: 10.h),
+                                  padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 10.h),
                                   child: const Divider(),
                                 ),
                                 Text(
                                   "최근 30일 간의 알림만 확인할 수 있습니다.",
-                                  style: kBody12SemiBoldStyle.copyWith(
-                                      color: kTextBodyColor),
+                                  style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
                                 ),
                                 Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(vertical: 6.0.h),
+                                  padding: EdgeInsets.symmetric(vertical: 6.0.h),
                                   child: Text(
                                     "수신 거부 : 마이페이지 → 설정 → 알림",
-                                    style: kBody11RegularStyle.copyWith(
-                                        color: kTextBodyColor),
+                                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                                   ),
                                 ),
                               ],
@@ -326,66 +476,18 @@ class NotificationScreenState extends ConsumerState<NotificationScreen>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16.0.w, vertical: 10.h),
+                                  padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 10.h),
                                   child: const Divider(),
                                 ),
                                 Text(
                                   "최근 30일 간의 알림만 확인할 수 있습니다.",
-                                  style: kBody12SemiBoldStyle.copyWith(
-                                      color: kTextBodyColor),
+                                  style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
                                 ),
                                 Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(vertical: 6.0.h),
+                                  padding: EdgeInsets.symmetric(vertical: 6.0.h),
                                   child: Text(
                                     "수신 거부 : 마이페이지 → 설정 → 알림",
-                                    style: kBody11RegularStyle.copyWith(
-                                        color: kTextBodyColor),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Stack(
-                      children: [
-                        ListView(
-                          children: const [
-                            Text("DSA"),
-                            Text("DSA"),
-                            Text("DSA"),
-                          ],
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: SizedBox(
-                            height: 80,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16.0.w, vertical: 10.h),
-                                  child: const Divider(),
-                                ),
-                                Text(
-                                  "최근 30일 간의 알림만 확인할 수 있습니다.",
-                                  style: kBody12SemiBoldStyle.copyWith(
-                                      color: kTextBodyColor),
-                                ),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(vertical: 6.0.h),
-                                  child: Text(
-                                    "수신 거부 : 마이페이지 → 설정 → 알림",
-                                    style: kBody11RegularStyle.copyWith(
-                                        color: kTextBodyColor),
+                                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                                   ),
                                 ),
                               ],

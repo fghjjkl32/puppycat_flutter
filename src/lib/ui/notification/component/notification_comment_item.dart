@@ -1,148 +1,188 @@
+import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
+import 'package:detectable_text_field/functions.dart';
+import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:linkfy_text/linkfy_text.dart';
+import 'package:matrix/matrix.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class NotificationCommentItem extends StatelessWidget {
-  const NotificationCommentItem({
+  NotificationCommentItem({
     Key? key,
     required this.name,
-    required this.time,
+    required this.regDate,
     required this.isRead,
     required this.notificationType,
     required this.content,
     required this.comment,
+    required this.mentionList,
+    required this.profileImgUrl,
+    required this.imgUrl,
   }) : super(key: key);
 
   final String name;
-  final DateTime time;
+  final String regDate;
   final bool isRead;
   final String notificationType;
   final String content;
   final String comment;
+  final Map<String, dynamic> mentionList;
+  final String profileImgUrl;
+  final String imgUrl;
+
+  // final List<MentionListData> mentionList;
+
+  final detectRegExp = RegExp(
+    r"\[@\[(.*?)\]\]|\[#\[(.*?)\]\]",
+    multiLine: true,
+  );
+
+  String _replaceMentionHashTag(String comment) {
+    if (mentionList.isEmpty) {
+      return comment;
+    }
+
+    String replacedText = comment.replaceAllMapped(detectRegExp, (match) {
+      String? detectedText = match[1] ?? match[2];
+
+      if (detectedText == null) {
+        return match[0] ?? '';
+      }
+      //result.list.first.mentionMemberInfo.first['ko10bd036fcdcb4aad9989296f340f54cc1688623039'].first['nick']
+
+      String replaceText = detectedText;
+      if (mentionList.keys.contains(detectedText)) {
+        replaceText = mentionList[detectedText].first['nick'];
+      }
+
+      if (match[1] != null) {
+        return '@$replaceText'; // @ 패턴의 경우, 내부 텍스트를 대문자로 변환
+      } else {
+        return '#$replaceText'; // # 패턴의 경우, 내부 텍스트를 소문자로 변환
+      }
+    });
+
+    return replacedText;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Container(
-            width: 8.0.w,
-            height: 8.0.h,
-            decoration: BoxDecoration(
-              color: isRead ? kPrimaryLightColor : kBadgeColor,
-              shape: BoxShape.circle,
+    // final List<String> detections = extractDetections(comment, detectRegExp);
+
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Container(
+              width: 8.0,
+              height: 8.0,
+              decoration: BoxDecoration(
+                color: isRead ? kPrimaryLightColor : kBadgeColor,
+                shape: BoxShape.circle,
+              ),
             ),
           ),
-        ),
-        WidgetMask(
-          blendMode: BlendMode.srcATop,
-          childSaveLayer: true,
-          mask: Center(
-            child: Image.asset(
-              'assets/image/feed/icon/large_size/icon_taguser.png',
-              height: 28.h,
-              fit: BoxFit.fill,
-            ),
-          ),
-          child: SvgPicture.asset(
-            'assets/image/feed/image/squircle.svg',
-            height: 28.h,
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(top: 12.h, left: 10.0.w, right: 12.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(bottom: 4.0.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        notificationType,
-                        style: kBody11SemiBoldStyle.copyWith(
-                            color: kTextBodyColor),
-                      ),
-                      Text(
-                        DateFormat('yyyy-MM-dd a h:mm', 'ko_KR')
-                            .format(DateTime.now()),
-                        style:
-                            kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              style: kBody13RegularStyle.copyWith(
-                                  color: kTextTitleColor),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: name.length > 13
-                                      ? '${name.substring(0, 13)}...'
-                                      : name,
-                                  style: kBody13BoldStyle.copyWith(
-                                      color: kTextTitleColor),
-                                ),
-                                TextSpan(text: content),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 2.0.h),
-                            child: LinkifyText(
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              comment,
-                              textStyle: kBody12RegularStyle.copyWith(
-                                  color: kTextBodyColor),
-                              linkStyle: kBody12RegularStyle.copyWith(
-                                  color: kSecondaryColor),
-                              linkTypes: const [
-                                LinkType.hashTag,
-                                LinkType.userTag
-                              ],
-                              onTap: (link) {},
-                            ),
-                          ),
-                        ],
-                      ),
+          getProfileAvatar(profileImgUrl, 'assets/image/chat/icon_profile_small.png'),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          notificationType,
+                          style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+                        ),
+                        Text(
+                          regDate,
+                          style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10.w),
-                      child: ClipRRect(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
-                        child: Image.network(
-                          "https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80",
-                          fit: BoxFit.cover,
-                          height: 40.h,
-                          width: 52.w,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: name.length > 13 ? '${name.substring(0, 13)}...' : name,
+                                    style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                                  ),
+                                  TextSpan(text: content),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2.0),
+                              child: DetectableText(
+                                text: _replaceMentionHashTag(comment),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                detectionRegExp: detectionRegExp(atSign: true) ??
+                                    RegExp(
+                                      "(?!\\n)(?:^|\\s)([#]([$detectionContentLetters]+))|$urlRegexContent",
+                                      multiLine: true,
+                                    ),
+                                detectedStyle: kBody12RegularStyle.copyWith(color: kSecondaryColor),
+                                basicStyle: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                onTap: (tappedText) {
+                                  ///TODO
+                                  /// 해시태그 검색 페이지 이동
+                                  /// 밖에서 함수 받아오기
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    )
-                  ],
-                ),
-              ],
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.all(Radius.circular(8)),
+                          child: Image.network(
+                            imgUrl,
+                            fit: BoxFit.cover,
+                            height: 52,
+                            width: 52,
+                            errorBuilder: (context, e, stackTrace) {
+                              print('error imgUrl $imgUrl');
+                              return const SizedBox(height: 52, width: 52,);
+                            },
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
