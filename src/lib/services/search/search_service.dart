@@ -17,13 +17,13 @@ abstract class SearchService {
     @Path("page") int page,
   );
 
-  // @GET('/search/nick?memberIdx={memberIdx}&page={page}&searchWord={searchWord}')
-  // Future<SearchResponseModel?> getSearchList(
-  //   @Path("memberIdx") int memberIdx,
-  //   @Path("page") int page,
-  //   @Path("searchWord") String searchWord,
-  // );
-  @GET('/search/nick')
+  @GET('/search/nick/img?memberIdx={memberIdx}&page={page}')
+  Future<SearchResponseModel?> getImageTagRecommendList(
+    @Path("memberIdx") int memberIdx,
+    @Path("page") int page,
+  );
+
+  @GET('/search/nick?memberIdx={memberIdx}&page={page}&searchWord={searchWord}')
   Future<SearchResponseModel?> getSearchList(
     @Query("memberIdx") int memberIdx,
     @Query("page") int page,

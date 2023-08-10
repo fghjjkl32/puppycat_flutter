@@ -118,8 +118,8 @@ class ImgMemberTagListData with _$ImgMemberTagListData {
     int? isBadge,
     String? profileImgUrl,
     int? followState,
-    int? width,
-    int? height,
+    double? width,
+    double? height,
     String? intro,
   }) = _ImgMemberTagListData;
 

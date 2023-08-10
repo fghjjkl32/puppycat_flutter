@@ -51,6 +51,7 @@ class FeedMainWidget extends StatelessWidget {
                 isKeep: feedData.keepState == 1,
                 contentIdx: feedData.idx,
                 contentType: contentType,
+                feedData: feedData,
               ),
               FeedImageMainWidget(
                 imageList: feedData.imgList!,

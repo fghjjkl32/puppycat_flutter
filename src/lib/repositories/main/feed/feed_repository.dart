@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -6,7 +10,9 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.d
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
+import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/services/main/feed/feed_service.dart';
+import 'package:http_parser/http_parser.dart';
 
 class FeedRepository {
   final FeedService _feedService = FeedService(DioWrap.getDioWithCookie());
@@ -415,6 +421,58 @@ class FeedRepository {
 
     if (feedResponseModel == null) {
       throw "error";
+    }
+
+    return feedResponseModel;
+  }
+
+  Future<ResponseModel> postFeed({
+    required List<File> files,
+    required int memberIdx,
+    required int isView,
+    String? location,
+    String? contents,
+    required PostFeedState feedState,
+  }) async {
+    List<MultipartFile> multiPartFiles = await Future.wait(
+      files.map((file) async {
+        return MultipartFileRecreatable.fromFileSync(
+          file.path,
+          contentType: MediaType('image', 'jpg'),
+        );
+      }).toList(),
+    );
+
+    Map<String, dynamic> formDataMap = {
+      "memberIdx": memberIdx,
+      "menuIdx": 1,
+      "contents": contents ?? "",
+      "isView": isView,
+      "uploadFile": multiPartFiles,
+    };
+
+    int tagCounter = 0;
+    for (var tagImage in feedState.tagImage) {
+      for (var tag in tagImage.tag) {
+        String baseKey = "imgTagList[$tagCounter]";
+        formDataMap["$baseKey.imgIdx"] = tagImage.index;
+        formDataMap["$baseKey.memberIdx"] = tag.memberIdx;
+        formDataMap["$baseKey.width"] = tag.position.dx;
+        formDataMap["$baseKey.height"] = tag.position.dy;
+        tagCounter++;
+      }
+    }
+
+    if (location != null) {
+      formDataMap["location"] = location;
+    }
+
+    final formData = FormData.fromMap(formDataMap);
+
+    ResponseModel? feedResponseModel = await _feedService.postFeed(formData);
+
+    if (feedResponseModel == null) {
+      throw "error posting feed";
     }
 
     return feedResponseModel;

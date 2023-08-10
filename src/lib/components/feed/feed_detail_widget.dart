@@ -35,6 +35,7 @@ class FeedDetailWidget extends StatelessWidget {
       children: [
         //feed title
         FeedTitleWidget(
+          feedData: feedData,
           profileImage: profileImage,
           userName: nick,
           address: feedData.location ?? "",

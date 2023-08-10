@@ -98,6 +98,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           "https://dev-imgs.devlabs.co.kr${imageList[1].url!}",
                           fit: BoxFit.cover,
                           height: 132.h,
+                          width: double.infinity,
                         ),
                       ),
                       SizedBox(
@@ -111,6 +112,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           "https://dev-imgs.devlabs.co.kr${imageList[2].url!}",
                           fit: BoxFit.cover,
                           height: 132.h,
+                          width: double.infinity,
                         ),
                       ),
                     ],
@@ -118,7 +120,7 @@ class FeedImageMainWidget extends StatelessWidget {
                 ),
               ],
             ),
-          ] else if (imageList.length > 4) ...[
+          ] else if (imageList.length > 3) ...[
             Row(
               children: [
                 Expanded(
@@ -147,6 +149,7 @@ class FeedImageMainWidget extends StatelessWidget {
                         child: Image.network(
                           "https://dev-imgs.devlabs.co.kr${imageList[1].url!}",
                           fit: BoxFit.cover,
+                          width: double.infinity,
                           height: 132.h,
                         ),
                       ),
@@ -163,6 +166,7 @@ class FeedImageMainWidget extends StatelessWidget {
                               "https://dev-imgs.devlabs.co.kr${imageList[2].url!}",
                               fit: BoxFit.cover,
                               height: 132.h,
+                              width: double.infinity,
                             ),
                           ),
                           Positioned.fill(
@@ -176,7 +180,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           Positioned.fill(
                             child: Center(
                               child: Text(
-                                '+ ${imageList.length - 4}',
+                                '+ ${imageList.length - 3}',
                                 style: kTitle18BoldStyle.copyWith(
                                     color: kNeutralColor100),
                               ),

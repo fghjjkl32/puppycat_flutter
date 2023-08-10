@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
+import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 
 final feedWriteProvider =
     StateNotifierProvider<PostFeedWriteNotifier, PostFeedState>((ref) {
@@ -16,21 +20,37 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
   // 이미지에 태그를 추가하는 함수입니다.
   void addTag(Tag tag, int imageIndex, BuildContext context) {
     List<TagImages> newTagImage = List.from(state.tagImage);
-    int existingIndex = -1;
+    int existingImageIndex = -1;
 
     // 이미지 인덱스를 확인하고, 해당 이미지에 이미 태그가 있으면 해당 인덱스를 저장합니다.
     for (int i = 0; i < newTagImage.length; i++) {
       if (newTagImage[i].index == imageIndex) {
-        existingIndex = i;
+        existingImageIndex = i;
         break;
       }
     }
 
-    // 이미지에 태그가 이미 있으면, 기존 태그에 추가하고, 그렇지 않으면 새 태그 이미지를 추가합니다.
-    if (existingIndex != -1) {
-      List<Tag> newTags = List.from(newTagImage[existingIndex].tag)..add(tag);
-      newTagImage[existingIndex] =
-          newTagImage[existingIndex].copyWith(tag: newTags);
+    // 이미지에 태그가 이미 있으면, 같은 사용자 이름의 태그를 제거하고 새로운 태그를 추가합니다.
+    if (existingImageIndex != -1) {
+      List<Tag> newTags = List.from(newTagImage[existingImageIndex].tag);
+
+      // find the index of the tag with the same username
+      int existingTagIndex = -1;
+      for (int i = 0; i < newTags.length; i++) {
+        if (newTags[i].username == tag.username) {
+          existingTagIndex = i;
+          break;
+        }
+      }
+
+      // if the tag with the same username exists, remove it
+      if (existingTagIndex != -1) {
+        newTags.removeAt(existingTagIndex);
+      }
+
+      newTags.add(tag);
+      newTagImage[existingImageIndex] =
+          newTagImage[existingImageIndex].copyWith(tag: newTags);
     } else {
       newTagImage.add(TagImages(index: imageIndex, tag: [tag]));
     }
@@ -82,5 +102,45 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
 
     // 새로운 태그 이미지로 상태를 업데이트합니다.
     state = state.copyWith(tagImage: newTagImage);
+  }
+
+  void updateTag(Tag oldTag, Tag newTag, int imageIndex) {
+    state = state.copyWith(
+      tagImage: state.tagImage.map((tagImages) {
+        if (tagImages.index == imageIndex) {
+          final updatedTags = tagImages.tag.map((tag) {
+            if (tag == oldTag) {
+              return newTag;
+            } else {
+              return tag;
+            }
+          }).toList();
+
+          return tagImages.copyWith(tag: updatedTags);
+        } else {
+          return tagImages;
+        }
+      }).toList(),
+    );
+  }
+
+  Future<ResponseModel> postFeed({
+    required List<File> files,
+    required int memberIdx,
+    required int isView,
+    String? location,
+    String? contents,
+    required PostFeedState feedState,
+  }) async {
+    final result = await FeedRepository().postFeed(
+      files: files,
+      memberIdx: memberIdx,
+      isView: isView,
+      location: location,
+      contents: contents,
+      feedState: feedState,
+    );
+
+    return result;
   }
 }

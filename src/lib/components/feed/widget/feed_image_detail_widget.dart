@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
@@ -56,7 +57,10 @@ class FeedImageDetailWidget extends StatelessWidget {
                     left: tag.width!.toDouble(),
                     top: tag.height!.toDouble(),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        context.push(
+                            "/home/myPage/followList/${tag.memberIdx}/userPage/${tag.nick}/${tag.memberIdx}");
+                      },
                       child: MentionTagWidget(
                         isCanClose: false,
                         color: kTextSubTitleColor.withOpacity(0.8),

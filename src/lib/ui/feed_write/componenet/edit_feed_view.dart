@@ -11,31 +11,79 @@ import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autoco
 import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
+import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
+import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button_selected_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_content_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/cropped_images_list_view.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/edit_cropped_images_list_view.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/edit_tag_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_location_search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/tag_screen.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_information_provider.dart';
 
-class PostFeedView extends ConsumerStatefulWidget {
-  const PostFeedView({
+class EditFeedView extends ConsumerStatefulWidget {
+  const EditFeedView({
     super.key,
-    required this.croppedFiles,
-    this.progress,
+    required this.feedData,
   });
 
-  final List<File> croppedFiles;
-  final double? progress;
+  final FeedData feedData;
 
   @override
   PostFeedViewState createState() => PostFeedViewState();
 }
 
-class PostFeedViewState extends ConsumerState<PostFeedView> {
+class PostFeedViewState extends ConsumerState<EditFeedView> {
   final ScrollController _scrollController = ScrollController();
+
+  PostFeedState feedDataToPostFeedState(FeedData feedData) {
+    List<TagImages> tagImages = [];
+
+    for (int i = 0; i < feedData.imgList!.length; i++) {
+      var imgData = feedData.imgList![i];
+      List<Tag> tags = [];
+
+      for (var tagData in imgData.imgMemberTagList!) {
+        tags.add(Tag(
+          username: tagData.nick!,
+          memberIdx: tagData.memberIdx!,
+          position: Offset(tagData.width!, tagData.height!),
+        ));
+      }
+
+      tagImages.add(TagImages(
+        index: i,
+        tag: tags,
+      ));
+    }
+
+    return PostFeedState(tagImage: tagImages);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future(() {
+      Future<void>.delayed(Duration(milliseconds: 100), () async {
+        ref.watch(feedEditContentProvider.notifier).state.text =
+            widget.feedData.contents!;
+        ref.watch(feedWriteLocationInformationProvider.notifier).state =
+            widget.feedData.location!;
+
+        PostFeedState postFeedState = feedDataToPostFeedState(widget.feedData);
+        ref.watch(feedWriteProvider.notifier).state = postFeedState;
+
+        print(ref.watch(feedWriteProvider));
+        print(widget.feedData.imgList);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +102,8 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
             width: 270.w,
             child: Column(
               children: <Widget>[
-                CroppedImagesListView(
-                  progress: widget.progress,
-                  croppedFiles: widget.croppedFiles,
+                EditCroppedImagesListView(
+                  feedData: widget.feedData,
                 ),
               ],
             ),
@@ -68,7 +115,9 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                 Navigator.of(context).push(
                   PageRouteBuilder(
                     opaque: false, // set to false
-                    pageBuilder: (_, __, ___) => TagScreen(),
+                    pageBuilder: (_, __, ___) => EditTagScreen(
+                      feedData: widget.feedData,
+                    ),
                   ),
                 );
               },
@@ -156,17 +205,19 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
               ),
             ],
             fieldViewBuilder: (context, controller, focusNode) {
-              ref.watch(feedWriteContentProvider.notifier).state = controller;
+              Future(() {
+                ref.watch(feedEditContentProvider.notifier).state = controller;
+              });
 
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   child: FormBuilderTextField(
                     focusNode: focusNode,
-                    controller: ref.watch(feedWriteContentProvider),
+                    controller: controller,
                     onChanged: (text) {
                       int cursorPos = ref
-                          .watch(feedWriteContentProvider)
+                          .watch(feedEditContentProvider)
                           .selection
                           .baseOffset;
                       if (cursorPos > 0) {

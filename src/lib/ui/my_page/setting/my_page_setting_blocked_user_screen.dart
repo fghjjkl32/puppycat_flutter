@@ -186,6 +186,7 @@ class MyPageSettingBlockedUserScreenState
                                 ],
                               )
                             : ListView.builder(
+                                controller: blockController,
                                 itemCount: lists.length + 1,
                                 itemBuilder: (context, index) {
                                   if (index == lists.length) {
