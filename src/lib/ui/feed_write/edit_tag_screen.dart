@@ -114,12 +114,11 @@ class EditTagScreen extends ConsumerWidget {
                   var imageIndex = entry.key;
                   var image = entry.value;
 
-                  print(entry);
-
                   return Center(
                     child: TaggableImage(
-                      imageIndex: imageIndex,
+                      imagePositionIndex: imageIndex,
                       url: entry.value.url!,
+                      imageIdx: entry.value.idx!,
                     ),
                   );
                 }).toList(),
@@ -142,14 +141,16 @@ class EditTagScreen extends ConsumerWidget {
 }
 
 class TaggableImage extends ConsumerStatefulWidget {
-  final int imageIndex;
+  final int imagePositionIndex;
   final String url;
+  final int imageIdx;
 
   final GlobalKey imageKey = GlobalKey();
 
   TaggableImage({
     super.key,
-    required this.imageIndex,
+    required this.imagePositionIndex,
+    required this.imageIdx,
     required this.url,
   });
 
@@ -167,8 +168,8 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
     PostFeedState state = ref.watch(feedWriteProvider);
     List<TagImages> taggedImages = state.tagImage;
     TagImages tagImages = taggedImages.firstWhere(
-        (tagImage) => tagImage.index == widget.imageIndex,
-        orElse: () => TagImages(index: widget.imageIndex, tag: []));
+        (tagImage) => tagImage.index == widget.imagePositionIndex,
+        orElse: () => TagImages(index: widget.imagePositionIndex, tag: []));
 
     List<Tag> tags = tagImages.tag;
 
@@ -181,7 +182,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
         int existingIndex = -1;
 
         for (int i = 0; i < newTagImage.length; i++) {
-          if (newTagImage[i].index == widget.imageIndex) {
+          if (newTagImage[i].index == widget.imagePositionIndex) {
             existingIndex = i;
             break;
           }
@@ -202,7 +203,8 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
             opaque: false, // set to false
             pageBuilder: (_, __, ___) => FeedWriteTagSearchScreen(
               offset: tapLocation,
-              imageIndex: widget.imageIndex,
+              imagePositionIndex: widget.imagePositionIndex,
+              imageIdx: widget.imageIdx,
             ),
           ),
         );
@@ -271,7 +273,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
 
         ref
             .read(feedWriteProvider.notifier)
-            .updateTag(tag, newTag, widget.imageIndex);
+            .updateTag(tag, newTag, widget.imagePositionIndex);
 
         setState(() {
           draggingTag = null;

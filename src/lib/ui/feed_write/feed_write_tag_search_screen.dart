@@ -12,12 +12,14 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 
 class FeedWriteTagSearchScreen extends ConsumerStatefulWidget {
   final Offset offset;
-  final int imageIndex;
+  final int imagePositionIndex;
+  final int imageIdx;
 
   const FeedWriteTagSearchScreen({
     Key? key,
     required this.offset,
-    required this.imageIndex,
+    required this.imagePositionIndex,
+    required this.imageIdx,
   }) : super(key: key);
 
   @override
@@ -216,11 +218,12 @@ class FeedWriteTagSearchScreenState
                                         .watch(feedWriteProvider.notifier)
                                         .addTag(
                                           Tag(
-                                              username: lists[index].nick!,
-                                              position: widget.offset,
-                                              memberIdx:
-                                                  lists[index].memberIdx!),
-                                          widget.imageIndex,
+                                            username: lists[index].nick!,
+                                            position: widget.offset,
+                                            memberIdx: lists[index].memberIdx!,
+                                            imageIndex: widget.imageIdx,
+                                          ),
+                                          widget.imagePositionIndex,
                                           context,
                                         );
 
