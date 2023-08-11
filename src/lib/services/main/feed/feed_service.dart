@@ -199,4 +199,10 @@ abstract class FeedService {
 
   @POST("/contents")
   Future<ResponseModel?> postFeed(@Body() FormData formData);
+
+  @PUT("/contents/{contentsIdx}")
+  Future<ResponseModel?> putFeed(
+    @Path("contentsIdx") int contentsIdx,
+    @Body() Map<String, dynamic> formData,
+  );
 }

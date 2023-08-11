@@ -220,6 +220,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                 MaterialPageRoute(
                                   builder: (context) => FeedEditScreen(
                                     feedData: feedData,
+                                    contentIdx: contentIdx,
                                   ),
                                 ),
                               );

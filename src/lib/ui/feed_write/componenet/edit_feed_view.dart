@@ -9,6 +9,7 @@ import 'package:flutter_social_textfield/flutter_social_textfield.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autocomplete_options.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_item_widget.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
@@ -42,7 +43,7 @@ class EditFeedView extends ConsumerStatefulWidget {
 class PostFeedViewState extends ConsumerState<EditFeedView> {
   final ScrollController _scrollController = ScrollController();
 
-  PostFeedState feedDataToPostFeedState(FeedData feedData) {
+  List<TagImages> feedDataToPostFeedState(FeedData feedData) {
     List<TagImages> tagImages = [];
 
     for (int i = 0; i < feedData.imgList!.length; i++) {
@@ -54,6 +55,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
           username: tagData.nick!,
           memberIdx: tagData.memberIdx!,
           position: Offset(tagData.width!, tagData.height!),
+          imageIndex: tagData.imgIdx!,
         ));
       }
 
@@ -63,7 +65,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
       ));
     }
 
-    return PostFeedState(tagImage: tagImages);
+    return tagImages;
   }
 
   @override
@@ -72,15 +74,25 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
     Future(() {
       Future<void>.delayed(Duration(milliseconds: 100), () async {
         ref.watch(feedEditContentProvider.notifier).state.text =
-            widget.feedData.contents!;
+            replaceMentionsWithNicknamesInContentAsTextFieldString(
+                widget.feedData.contents!, widget.feedData.mentionList!);
         ref.watch(feedWriteLocationInformationProvider.notifier).state =
             widget.feedData.location!;
+        ref.watch(feedWriteButtonSelectedProvider.notifier).state =
+            widget.feedData.isView!;
 
-        PostFeedState postFeedState = feedDataToPostFeedState(widget.feedData);
-        ref.watch(feedWriteProvider.notifier).state = postFeedState;
+        List<TagImages> postFeedState =
+            feedDataToPostFeedState(widget.feedData);
+        final updatedState = ref
+            .watch(feedWriteProvider.notifier)
+            .state
+            .copyWith(tagImage: postFeedState);
+        ref.watch(feedWriteProvider.notifier).state = updatedState;
 
-        print(ref.watch(feedWriteProvider));
-        print(widget.feedData.imgList);
+        List<TagImages> initialTagImages =
+            feedDataToPostFeedState(widget.feedData);
+
+        ref.read(feedWriteProvider.notifier).initializeTags(initialTagImages);
       });
     });
   }

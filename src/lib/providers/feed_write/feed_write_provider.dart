@@ -10,12 +10,16 @@ import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository
 
 final feedWriteProvider =
     StateNotifierProvider<PostFeedWriteNotifier, PostFeedState>((ref) {
-  return PostFeedWriteNotifier();
+  return PostFeedWriteNotifier([]);
 });
 
 class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
-  PostFeedWriteNotifier()
-      : super(PostFeedState(tagList: [], tagImage: [], offsetCount: 0));
+  PostFeedWriteNotifier(List<TagImages> initialTags)
+      : super(PostFeedState(
+            initialTagList: initialTags,
+            tagList: [],
+            tagImage: [],
+            offsetCount: 0));
 
   // 이미지에 태그를 추가하는 함수입니다.
   void addTag(Tag tag, int imageIndex, BuildContext context) {
@@ -142,5 +146,31 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     );
 
     return result;
+  }
+
+  Future<ResponseModel> putFeed({
+    required int memberIdx,
+    required int isView,
+    String? location,
+    String? contents,
+    required PostFeedState feedState,
+    required int contentIdx,
+    required List<TagImages> initialTagList,
+  }) async {
+    final result = await FeedRepository().putFeed(
+      memberIdx: memberIdx,
+      isView: isView,
+      location: location,
+      contents: contents,
+      feedState: feedState,
+      contentIdx: contentIdx,
+      initialTagList: initialTagList,
+    );
+
+    return result;
+  }
+
+  void initializeTags(List<TagImages> initialTagImages) {
+    state = state.copyWith(initialTagList: initialTagImages);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pet_mobile_social_flutter/common/converter/offset_converter.dart';
+import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
 
 part 'post_feed_state.freezed.dart';
@@ -13,6 +14,7 @@ class PostFeedState with _$PostFeedState {
     @Default([]) List<Offset> tagList,
     @Default([]) List<TagImages> tagImage,
     @Default(0) int offsetCount,
+    @Default([]) List<TagImages> initialTagList,
   }) = _PostFeedState;
 
   factory PostFeedState.fromJson(Map<String, dynamic> json) =>
