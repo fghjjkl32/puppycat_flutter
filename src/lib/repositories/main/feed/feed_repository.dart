@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
+import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -11,6 +12,8 @@ import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/con
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
+import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
+import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
 import 'package:pet_mobile_social_flutter/services/main/feed/feed_service.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -470,6 +473,90 @@ class FeedRepository {
     final formData = FormData.fromMap(formDataMap);
 
     ResponseModel? feedResponseModel = await _feedService.postFeed(formData);
+
+    if (feedResponseModel == null) {
+      throw "error posting feed";
+    }
+
+    return feedResponseModel;
+  }
+
+  Future<ResponseModel> putFeed({
+    required int memberIdx,
+    required int isView,
+    String? location,
+    String? contents,
+    required PostFeedState feedState,
+    required int contentIdx,
+    required List<TagImages> initialTagList,
+  }) async {
+    Map<String, dynamic> formDataMap = {
+      "memberIdx": memberIdx,
+      "menuIdx": 1,
+      "contents": contents ?? "",
+      "isView": isView,
+    };
+
+    if (location != null) {
+      formDataMap["location"] = location;
+    }
+
+    List<Map<String, dynamic>> imgTagList = [];
+    for (var tagImage in feedState.tagImage) {
+      for (var tag in tagImage.tag) {
+        // 초기 태그 리스트에서 해당 태그를 찾습니다.
+        var initialTag = initialTagList
+            .where((e) => e.index == tagImage.index)
+            .expand((e) => e.tag)
+            .firstWhere((t) => t.memberIdx == tag.memberIdx,
+                orElse: () => Tag(
+                      username: '',
+                      memberIdx: 0,
+                      position: Offset(0, 0),
+                      imageIndex: tag.imageIndex,
+                    ));
+
+        // 태그의 상태를 결정하는 로직
+        String status = "";
+        if (initialTag.username == '' && initialTag.memberIdx == 0) {
+          status = "new"; // 새로운 태그
+        } else if (initialTag.position != tag.position) {
+          status = "modi"; // 위치가 수정된 태그
+        } else {
+          // 변경되지 않은 태그
+          status = "";
+        }
+
+        imgTagList.add({
+          "imgIdx": tag.imageIndex,
+          "memberIdx": tag.memberIdx,
+          "width": tag.position.dx,
+          "height": tag.position.dy,
+          "status": status
+        });
+      }
+    }
+
+    // 초기 태그 리스트에만 있는 태그를 찾아서 "status": "del"로 설정합니다.
+    for (var initialTagImage in initialTagList) {
+      for (var initialTag in initialTagImage.tag) {
+        if (!feedState.tagImage.any(
+            (ti) => ti.tag.any((t) => t.memberIdx == initialTag.memberIdx))) {
+          imgTagList.add({
+            "imgIdx": initialTag.imageIndex,
+            "memberIdx": initialTag.memberIdx,
+            "width": initialTag.position.dx,
+            "height": initialTag.position.dy,
+            "status": "del"
+          });
+        }
+      }
+    }
+
+    formDataMap["imgTagList"] = imgTagList;
+
+    ResponseModel? feedResponseModel =
+        await _feedService.putFeed(contentIdx, formDataMap);
 
     if (feedResponseModel == null) {
       throw "error posting feed";

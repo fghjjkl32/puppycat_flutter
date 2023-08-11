@@ -232,3 +232,29 @@ String replaceMentionsWithNicknamesInContentAsString(
 
   return result;
 }
+
+String replaceMentionsWithNicknamesInContentAsTextFieldString(
+    String content, List<MentionListData> mentionList) {
+  String result = content;
+
+  for (var mention in mentionList) {
+    String uuid = mention.uuid ?? '';
+    String pattern = '[@[' + uuid + ']]';
+    String replacement = '@' + (mention.nick ?? '');
+
+    result = result.replaceAll(pattern, replacement);
+  }
+
+  RegExp exp = new RegExp(r"\[#\[(.*?)\]\]");
+  var matches = exp.allMatches(result);
+
+  for (var match in matches) {
+    String hashtag = match.group(1) ?? '';
+    String pattern = '[#[' + hashtag + ']]';
+    String replacement = '#' + hashtag;
+
+    result = result.replaceAll(pattern, replacement);
+  }
+
+  return result;
+}
