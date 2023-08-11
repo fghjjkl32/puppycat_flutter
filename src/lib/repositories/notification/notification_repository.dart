@@ -30,7 +30,18 @@ class NotificationRepository {
   // }
 
   Future<NotificationDataListModel> getNotifications(int memberIdx, [int page = 1, int? type, int limit = 10]) async {
-    NotificationResponseModel? notificationResponseModel = await _notificationService.getNotifications(memberIdx, page, limit);
+    Map<String, dynamic> queries = {
+      'memberIdx' : memberIdx,
+      'page' : page,
+      'limit' : limit,
+    };
+
+    if(type != null) {
+      queries['type'] = type;
+    }
+
+    // NotificationResponseModel? notificationResponseModel = await _notificationService.getNotifications(memberIdx, page, limit);
+    NotificationResponseModel? notificationResponseModel = await _notificationService.getNotifications(queries);
 
     if (notificationResponseModel == null) {
       ///NOTE

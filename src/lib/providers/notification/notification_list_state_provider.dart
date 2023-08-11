@@ -29,10 +29,20 @@ enum NotiSubType {
   event,
 }
 
+enum NotificationType {
+  all,
+  activity,
+  notice,
+  walk,
+}
+
+final notificationFirstVisitProvider = StateProvider<bool>((ref) => false);
+
 @Riverpod(keepAlive: true)
 class NotificationListState extends _$NotificationListState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
+  NotificationType _notiType = NotificationType.all;
 
   @override
   PagingController<int, NotificationListItemModel> build() {
@@ -51,7 +61,8 @@ class NotificationListState extends _$NotificationListState {
 
       NotificationRepository repository = ref.read(notificationRepositoryProvider);
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-      var result = await repository.getNotifications(loginMemberIdx, pageKey);
+      int type = _notiType.index;
+      var result = await repository.getNotifications(loginMemberIdx, pageKey, type == 0 ? null : type);
 
       var resultList = result.list.map((e) {
         if (e.senderInfo == null) {
@@ -66,6 +77,11 @@ class NotificationListState extends _$NotificationListState {
           return e;
         }
       }).toList();
+
+      if(result.isFirst != null) {
+        print('result.isFirst');
+        ref.read(notificationFirstVisitProvider.notifier).state = true; //result.isFirst!;
+      }
 
       print('resultList $resultList');
       //result.list.first.mentionMemberInfo.first['ko10bd036fcdcb4aad9989296f340f54cc1688623039'].first['nick']
@@ -87,6 +103,11 @@ class NotificationListState extends _$NotificationListState {
       _apiStatus = ListAPIStatus.error;
       state.error = e;
     }
+  }
+
+  void setNotificationType(NotificationType type) {
+    _notiType = type;
+    state.refresh();
   }
 
   void setFeedLike(int memberIdx, int contentsIdx) async {

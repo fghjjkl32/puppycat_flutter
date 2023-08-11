@@ -11,9 +11,13 @@ abstract class NotificationService {
 
   @GET('/noti')
   Future<NotificationResponseModel?> getNotifications(
-      @Query('memberIdx') int memberIdx,
-      @Query('page') int page,
-      // @Query('type') int type,
-      @Query('limit') int limit,
+      @Queries() Map<String, dynamic> queries,
       );
+  // @GET('/noti')
+  // Future<NotificationResponseModel?> getNotifications(
+  //     @Query('memberIdx') int memberIdx,
+  //     @Query('page') int page,
+  //     // @Query('type') int type,
+  //     @Query('limit') int limit,
+  //     );
 }
