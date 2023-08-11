@@ -1,11 +1,16 @@
 import 'package:permission_handler/permission_handler.dart';
 
 class Permissions {
+  // static Future<void> requestNotificationPermission() async {
+  //   final curStatus = await getNotificationPermission();
+  //   if (!curStatus.isGranted) {
+  //     await Permission.notification.request();
+  //   }
+  // }
+
   static Future<void> requestNotificationPermission() async {
-    final curStatus = await getNotificationPermission();
-    if (!curStatus.isGranted) {
-      await Permission.notification.request();
-    }
+    await Permission.notification.request();
+
   }
 
   static Future<void> requestPhonePermission() async {
