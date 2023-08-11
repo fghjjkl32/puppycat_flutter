@@ -254,7 +254,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   ///TODO
                                   ///route 정리 필요
                                   var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                  context.push("/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
+                                  context.push("/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/notificationContent");
                                 },
                                 onLikeTap: (isLiked) {
                                   var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
@@ -268,7 +268,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   ///TODO
                                   ///route 정리 필요
                                   var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                  context.push("/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent", extra: {
+                                  context.push("/home/myPage/detail/nickname/게시물/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
                                     "isRouteComment": true,
                                   });
                                 },

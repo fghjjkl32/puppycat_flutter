@@ -102,7 +102,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                   : Column(
                       children: [
                         Text(
-                          widget.firstTitle,
+                          widget.contentType != "notificationContent" ? widget.firstTitle : ref.read(feedDetailStateProvider).firstFeedState.memberInfo?[0].nick ?? '',
                           style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                         ),
                         Text(widget.secondTitle),
