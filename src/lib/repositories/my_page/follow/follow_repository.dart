@@ -1,4 +1,5 @@
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_data_list_model.dart';
@@ -9,7 +10,7 @@ import 'package:pet_mobile_social_flutter/services/my_page/content_like_user_lis
 
 class FollowRepository {
   final FollowService _followService =
-      FollowService(DioWrap.getDioWithCookie());
+      FollowService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   Future<FollowResponseModel> getFollowerSearchList({
     required int loginMemberIdx,

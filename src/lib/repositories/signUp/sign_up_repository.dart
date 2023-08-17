@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
@@ -12,14 +13,14 @@ import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/signUp/sign_up_service.dart';
 
-
 // final policyRepositoryProvider = Provider.autoDispose((ref) => PolicyRepository());
 
-
 class SignUpRepository {
-  final SignUpService _signUpService = SignUpService(DioWrap.getDioWithCookie());
+  final SignUpService _signUpService =
+      SignUpService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
-  Future<SignUpStatus> socialSignUp(UserModel userModel, List<PolicyItemModel> policyIdxList) async {
+  Future<SignUpStatus> socialSignUp(
+      UserModel userModel, List<PolicyItemModel> policyIdxList) async {
     /// NOTE
     ///테스트용
 
@@ -43,7 +44,8 @@ class SignUpRepository {
     }
 
     bool isError = false;
-    ResponseModel? res = await _signUpService.socialSignUp(body).catchError((Object obj) async {
+    ResponseModel? res =
+        await _signUpService.socialSignUp(body).catchError((Object obj) async {
       (ResponseModel?, bool) errorResult = await errorHandler(obj);
       var responseModel = errorResult.$1;
       isError = errorResult.$2;
@@ -75,7 +77,9 @@ class SignUpRepository {
     };
 
     bool isError = false;
-    ResponseModel? res = await _signUpService.checkNickName(queries).catchError((Object obj) async {
+    ResponseModel? res = await _signUpService
+        .checkNickName(queries)
+        .catchError((Object obj) async {
       (ResponseModel?, bool) errorResult = await errorHandler(obj);
       var responseModel = errorResult.$1;
       isError = errorResult.$2;

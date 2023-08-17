@@ -6,7 +6,6 @@ import 'package:retrofit/retrofit.dart';
 
 part 'block_service.g.dart';
 
-@RestApi(baseUrl: baseUrl)
 abstract class BlockService {
   factory BlockService(Dio dio, {String baseUrl}) = _BlockService;
 

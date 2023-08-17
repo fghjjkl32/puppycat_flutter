@@ -1,11 +1,12 @@
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/setting/setting_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/setting/setting_service.dart';
 
 class SettingRepository {
   final SettingService _settingService =
-      SettingService(DioWrap.getDioWithCookie());
+      SettingService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   Future<SettingResponseModel?> getSetting({
     required int memberIdx,

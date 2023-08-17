@@ -10,6 +10,7 @@ import 'package:get_it/get_it.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
@@ -19,6 +20,8 @@ import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.d
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  baseUrl = await Constants.getBaseUrl();
+
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

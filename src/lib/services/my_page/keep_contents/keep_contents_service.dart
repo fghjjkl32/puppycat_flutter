@@ -7,7 +7,6 @@ import 'package:retrofit/retrofit.dart';
 
 part 'keep_contents_service.g.dart';
 
-@RestApi(baseUrl: baseUrl)
 abstract class KeepContentsService {
   factory KeepContentsService(Dio dio, {String baseUrl}) = _KeepContentsService;
 

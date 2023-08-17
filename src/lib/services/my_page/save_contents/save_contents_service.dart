@@ -6,7 +6,6 @@ import 'package:retrofit/retrofit.dart';
 
 part 'save_contents_service.g.dart';
 
-@RestApi(baseUrl: baseUrl)
 abstract class SaveContentsService {
   factory SaveContentsService(Dio dio, {String baseUrl}) = _SaveContentsService;
 

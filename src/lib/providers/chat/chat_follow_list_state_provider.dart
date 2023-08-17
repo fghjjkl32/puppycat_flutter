@@ -12,23 +12,22 @@ part 'chat_follow_list_state_provider.g.dart';
 
 final chatFollowListEmptyProvider = StateProvider<bool>((ref) => true);
 
-
 @Riverpod(keepAlive: true)
 class ChatFollowUserState extends _$ChatFollowUserState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
 
-
   @override
   PagingController<int, ChatFavoriteModel> build() {
-    PagingController<int, ChatFavoriteModel> pagingController = PagingController(firstPageKey: 1);
+    PagingController<int, ChatFavoriteModel> pagingController =
+        PagingController(firstPageKey: 1);
     pagingController.addPageRequestListener(_fetchPage);
     return pagingController;
   }
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      if(_apiStatus == ListAPIStatus.loading) {
+      if (_apiStatus == ListAPIStatus.loading) {
         return;
       }
 
@@ -79,37 +78,46 @@ class ChatFollowUserState extends _$ChatFollowUserState {
   }
 
   void setFavorite(int memberIdx, String chatMemberId) async {
-    bool result = await ref.read(chatFavoriteStateProvider.notifier).setChatFavorite(memberIdx, chatMemberId);
+    bool result = await ref
+        .read(chatFavoriteStateProvider.notifier)
+        .setChatFavorite(memberIdx, chatMemberId);
     if (result) {
       changedFavoriteState(chatMemberId, true);
     }
   }
 
   void unSetFavorite(int memberIdx, String chatMemberId) async {
-    bool result = await ref.read(chatFavoriteStateProvider.notifier).unSetChatFavorite(memberIdx, chatMemberId);
+    bool result = await ref
+        .read(chatFavoriteStateProvider.notifier)
+        .unSetChatFavorite(memberIdx, chatMemberId);
     if (result) {
       changedFavoriteState(chatMemberId, false);
     }
   }
 
   void changedFavoriteState(String chatMemberId, bool isFavorite) {
-    if(chatMemberId.isEmpty || chatMemberId == '') {
+    if (chatMemberId.isEmpty || chatMemberId == '') {
       ///TODO
       ///Need Error Handling
       return;
     }
-    int targetIdx = state.itemList!.indexWhere((element) => element.chatMemberId == chatMemberId);
+    int targetIdx = state.itemList!
+        .indexWhere((element) => element.chatMemberId == chatMemberId);
     // int targetIdx = Random().nextInt(state.itemList!.length ?? 4);
     print('targetIdx $targetIdx');
     if (targetIdx >= 0) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          favoriteState: isFavorite ? 1 : 0,
-        );
+      state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+        favoriteState: isFavorite ? 1 : 0,
+      );
       state.notifyListeners();
-      if(isFavorite) {
-        ref.read(chatFavoriteUserStateProvider.notifier).addFavorite(state.itemList![targetIdx]);
+      if (isFavorite) {
+        ref
+            .read(chatFavoriteUserStateProvider.notifier)
+            .addFavorite(state.itemList![targetIdx]);
       } else {
-        ref.read(chatFavoriteUserStateProvider.notifier).removeFavorite(state.itemList![targetIdx]);
+        ref
+            .read(chatFavoriteUserStateProvider.notifier)
+            .removeFavorite(state.itemList![targetIdx]);
       }
     }
   }

@@ -7,7 +7,7 @@ import 'package:pet_mobile_social_flutter/services/my_page/keep_contents/keep_co
 
 class KeepContentsRepository {
   final KeepContentsService _keepContentsService =
-      KeepContentsService(DioWrap.getDioWithCookie());
+      KeepContentsService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   Future<ContentResponseModel> getKeepContents(
       {required int memberIdx, required int page}) async {

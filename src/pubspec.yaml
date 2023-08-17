@@ -113,6 +113,8 @@ dependencies:
   infinite_scroll_pagination: ^3.2.0
   group_button: ^5.3.2
 
+  shared_preferences: ^2.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

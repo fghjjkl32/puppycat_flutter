@@ -6,7 +6,6 @@ import 'package:retrofit/retrofit.dart';
 
 part 'login_service.g.dart';
 
-@RestApi(baseUrl: baseUrl)
 abstract class LoginService {
   factory LoginService(Dio dio, {String baseUrl}) = _LoginService;
   //

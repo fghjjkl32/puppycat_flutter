@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_response_model.dart';
@@ -10,7 +11,7 @@ import 'package:pet_mobile_social_flutter/services/main/comment/comment_service.
 
 class CommentRepository {
   final CommentService _contentsService =
-      CommentService(DioWrap.getDioWithCookie());
+      CommentService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   Future<CommentResponseModel> getComment(
       {required int contentIdx,
