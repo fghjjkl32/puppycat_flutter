@@ -6,7 +6,7 @@ import 'package:pet_mobile_social_flutter/services/my_page/like_contents/like_co
 
 class LikeContentsRepository {
   final LikeContentsService _likeContentsService =
-      LikeContentsService(DioWrap.getDioWithCookie());
+      LikeContentsService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   Future<ContentResponseModel> getLikeContents(
       {required int memberIdx, required int page}) async {

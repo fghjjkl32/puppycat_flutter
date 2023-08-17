@@ -2,13 +2,14 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/withdrawal/withdrawal_provider.dart';
 import 'package:pet_mobile_social_flutter/services/withdrawal/withdrawal_service.dart';
 
 class WithdrawalRepository {
   final WithdrawalService _withdrawalService =
-      WithdrawalService(DioWrap.getDioWithCookie());
+      WithdrawalService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   Future<WithdrawalStatus> withdrawalUser(
       {required int idx, required int code, String? reason}) async {

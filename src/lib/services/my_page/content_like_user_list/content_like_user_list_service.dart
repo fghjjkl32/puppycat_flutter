@@ -5,7 +5,6 @@ import 'package:retrofit/retrofit.dart';
 
 part 'content_like_user_list_service.g.dart';
 
-@RestApi(baseUrl: baseUrl)
 abstract class ContentLikeUserListService {
   factory ContentLikeUserListService(Dio dio, {String baseUrl}) =
       _ContentLikeUserListService;

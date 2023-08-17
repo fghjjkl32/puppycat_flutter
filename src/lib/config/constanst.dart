@@ -10,8 +10,16 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.d
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-const String baseUrl = "https://api.pcstg.co.kr/v1";
+class Constants {
+  static Future<String> getBaseUrl() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('selectedURL') ?? "https://api.pcstg.co.kr/v1";
+  }
+}
+
+String baseUrl = "https://api.pcstg.co.kr/v1";
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;

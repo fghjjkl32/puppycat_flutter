@@ -6,7 +6,7 @@ import 'package:pet_mobile_social_flutter/services/my_page/save_contents/save_co
 
 class SaveContentsRepository {
   final SaveContentsService _saveContentsService =
-      SaveContentsService(DioWrap.getDioWithCookie());
+      SaveContentsService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   Future<ContentResponseModel> getSaveContents(
       {required int memberIdx, required int page}) async {

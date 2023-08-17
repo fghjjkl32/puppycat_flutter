@@ -18,7 +18,8 @@ import 'package:pet_mobile_social_flutter/services/main/feed/feed_service.dart';
 import 'package:http_parser/http_parser.dart';
 
 class FeedRepository {
-  final FeedService _feedService = FeedService(DioWrap.getDioWithCookie());
+  final FeedService _feedService =
+      FeedService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   //user page feed list - my
   Future<ContentResponseModel> getMyContentList({

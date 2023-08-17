@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/login/login_request_model.dart';
 import 'package:pet_mobile_social_flutter/models/login/login_response_model.dart';
@@ -26,7 +27,8 @@ final loginRepositoryProvider = StateProvider.family<LoginRepository, String>(
     (ref, provider) => LoginRepository(provider: provider));
 
 class LoginRepository {
-  final LoginService _loginService = LoginService(DioWrap.getDioWithCookie());
+  final LoginService _loginService =
+      LoginService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
   late SocialLoginService? _socialLoginService;
   final String provider;
 

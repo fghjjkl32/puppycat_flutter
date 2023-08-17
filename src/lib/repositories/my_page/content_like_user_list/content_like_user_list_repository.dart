@@ -1,4 +1,5 @@
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
@@ -6,7 +7,7 @@ import 'package:pet_mobile_social_flutter/services/my_page/content_like_user_lis
 
 class ContentLikeUserListRepository {
   final ContentLikeUserListService _contentLikeUserListService =
-      ContentLikeUserListService(DioWrap.getDioWithCookie());
+      ContentLikeUserListService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   Future<ContentLikeUserListResponseModel> getContentLikeUserList({
     required int contentsIdx,

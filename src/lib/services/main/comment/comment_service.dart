@@ -6,7 +6,6 @@ import 'package:retrofit/retrofit.dart';
 
 part 'comment_service.g.dart';
 
-@RestApi(baseUrl: baseUrl)
 abstract class CommentService {
   factory CommentService(Dio dio, {String baseUrl}) = _CommentService;
 

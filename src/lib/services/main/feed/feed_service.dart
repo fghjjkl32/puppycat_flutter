@@ -9,7 +9,6 @@ import 'package:retrofit/retrofit.dart';
 
 part 'feed_service.g.dart';
 
-@RestApi(baseUrl: baseUrl)
 abstract class FeedService {
   factory FeedService(Dio dio, {String baseUrl}) = _FeedService;
 

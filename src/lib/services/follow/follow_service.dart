@@ -7,7 +7,6 @@ import 'package:retrofit/retrofit.dart';
 
 part 'follow_service.g.dart';
 
-@RestApi(baseUrl: baseUrl)
 abstract class FollowService {
   factory FollowService(Dio dio, {String baseUrl}) = _FollowService;
 

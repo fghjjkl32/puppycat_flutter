@@ -10,6 +10,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/my_page_setting_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/Admin/password_screen.dart';
 
 class MyPageSettingScreen extends ConsumerStatefulWidget {
   const MyPageSettingScreen({super.key});
@@ -26,6 +27,9 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
       ref.watch(myPageSettingProvider.notifier).getCacheSizeInMB();
     });
   }
+
+  int adminCount = 0;
+  int lastTap = DateTime.now().millisecondsSinceEpoch;
 
   @override
   Widget build(BuildContext context) {
@@ -420,24 +424,43 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         color: kTextSubTitleColor,
                       ),
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          "최신 버전 사용 중",
-                          style: kBadge10MediumStyle.copyWith(
-                            color: kTextBodyColor,
+                    GestureDetector(
+                      onTap: () {
+                        int now = DateTime.now().millisecondsSinceEpoch;
+                        if (now - lastTap < 500) {
+                          adminCount++;
+                          if (adminCount >= 10) {
+                            // Do something
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const PasswordScreen()),
+                            );
+                          }
+                        } else {
+                          adminCount = 0;
+                        }
+                        lastTap = now;
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            "최신 버전 사용 중",
+                            style: kBadge10MediumStyle.copyWith(
+                              color: kTextBodyColor,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        Text(
-                          "1.0.0",
-                          style: kBody13RegularStyle.copyWith(
-                            color: kTextSubTitleColor,
+                          SizedBox(
+                            width: 10.w,
                           ),
-                        ),
-                      ],
+                          Text(
+                            "1.0.0",
+                            style: kBody13RegularStyle.copyWith(
+                              color: kTextSubTitleColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
