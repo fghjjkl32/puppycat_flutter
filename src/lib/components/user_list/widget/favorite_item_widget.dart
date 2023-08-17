@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class FavoriteItemWidget extends StatelessWidget {
+class FavoriteItemWidget extends ConsumerStatefulWidget {
   const FavoriteItemWidget({
     required this.profileImage,
     required this.userName,
     required this.content,
     required this.isSpecialUser,
     required this.isFollow,
+    required this.followerIdx,
+    required this.contentsIdx,
+    this.contentType,
     Key? key,
   }) : super(key: key);
 
@@ -20,125 +28,207 @@ class FavoriteItemWidget extends StatelessWidget {
   final String content;
   final bool isSpecialUser;
   final bool isFollow;
+  final int followerIdx;
+  final int contentsIdx;
+  final String? contentType;
+  @override
+  FavoriteItemWidgetState createState() => FavoriteItemWidgetState();
+}
+
+class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
+  bool isFollowing = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    isFollowing = widget.isFollow;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 16.h),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  right: 10.w,
-                ),
-                child: profileImage == null
-                    ? WidgetMask(
-                        blendMode: BlendMode.srcATop,
-                        childSaveLayer: true,
-                        mask: Center(
-                          child: Image.asset(
-                            'assets/image/feed/icon/large_size/icon_taguser.png',
+    return InkWell(
+      onTap: () {
+        ref.read(userModelProvider)!.idx == widget.followerIdx
+            ? null
+            : context.push(
+                "/home/myPage/followList/${widget.followerIdx}/userPage/${widget.userName}/${widget.followerIdx}");
+      },
+      child: Padding(
+        padding:
+            EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: 10.w,
+                  ),
+                  child: widget.profileImage == null
+                      ? WidgetMask(
+                          blendMode: BlendMode.srcATop,
+                          childSaveLayer: true,
+                          mask: Center(
+                            child: Image.asset(
+                              'assets/image/feed/icon/large_size/icon_taguser.png',
+                              height: 32.h,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/image/feed/image/squircle.svg',
+                            height: 32.h,
+                          ),
+                        )
+                      : WidgetMask(
+                          blendMode: BlendMode.srcATop,
+                          childSaveLayer: true,
+                          mask: Center(
+                            child: Image.asset(
+                              widget.profileImage!,
+                              height: 32.h,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/image/feed/image/squircle.svg',
                             height: 32.h,
                             fit: BoxFit.fill,
                           ),
                         ),
-                        child: SvgPicture.asset(
-                          'assets/image/feed/image/squircle.svg',
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        widget.isSpecialUser
+                            ? Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/image/feed/icon/small_size/icon_special.png',
+                                    height: 13.h,
+                                  ),
+                                  SizedBox(
+                                    width: 4.w,
+                                  ),
+                                ],
+                              )
+                            : Container(),
+                        Text(
+                          widget.userName,
+                          style:
+                              kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 4.h,
+                    ),
+                    Text(
+                      widget.content,
+                      style:
+                          kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            ref.read(userModelProvider)!.idx == widget.followerIdx
+                ? Container()
+                : !isFollowing
+                    ? GestureDetector(
+                        onTap: () async {
+                          setState(() {
+                            isFollowing = true;
+                          });
+                          if (widget.contentType == null) {
+                            await ref
+                                .watch(
+                                    contentLikeUserListStateProvider.notifier)
+                                .postFollow(
+                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  followIdx: widget.followerIdx,
+                                  contentsIdx: widget.contentsIdx,
+                                );
+                          } else {
+                            ref
+                                .watch(feedDetailStateProvider.notifier)
+                                .postFollow(
+                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  followIdx: widget.followerIdx,
+                                  contentsIdx: widget.contentsIdx,
+                                  contentType: widget.contentType,
+                                );
+                          }
+                        },
+                        child: Container(
+                          width: 56.w,
                           height: 32.h,
+                          decoration: const BoxDecoration(
+                            color: kPrimaryColor,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "팔로우",
+                              style: kButton12BoldStyle.copyWith(
+                                  color: kNeutralColor100),
+                            ),
+                          ),
                         ),
                       )
-                    : WidgetMask(
-                        blendMode: BlendMode.srcATop,
-                        childSaveLayer: true,
-                        mask: Center(
-                          child: Image.asset(
-                            profileImage!,
-                            height: 32.h,
-                            fit: BoxFit.fill,
+                    : GestureDetector(
+                        onTap: () async {
+                          setState(() {
+                            isFollowing = false;
+                          });
+
+                          if (widget.contentType == null) {
+                            await ref
+                                .watch(
+                                    contentLikeUserListStateProvider.notifier)
+                                .deleteFollow(
+                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  followIdx: widget.followerIdx,
+                                  contentsIdx: widget.contentsIdx,
+                                );
+                          } else {
+                            ref
+                                .watch(feedDetailStateProvider.notifier)
+                                .deleteFollow(
+                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  followIdx: widget.followerIdx,
+                                  contentsIdx: widget.contentsIdx,
+                                  contentType: widget.contentType,
+                                );
+                          }
+                        },
+                        child: Container(
+                          width: 56.w,
+                          height: 32.h,
+                          decoration: const BoxDecoration(
+                            color: kNeutralColor300,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "팔로잉",
+                              style: kButton12BoldStyle.copyWith(
+                                  color: kTextBodyColor),
+                            ),
                           ),
                         ),
-                        child: SvgPicture.asset(
-                          'assets/image/feed/image/squircle.svg',
-                          height: 32.h,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      isSpecialUser
-                          ? Row(
-                              children: [
-                                Image.asset(
-                                  'assets/image/feed/icon/small_size/icon_special.png',
-                                  height: 13.h,
-                                ),
-                                SizedBox(
-                                  width: 4.w,
-                                ),
-                              ],
-                            )
-                          : Container(),
-                      Text(
-                        userName,
-                        style:
-                            kBody13BoldStyle.copyWith(color: kTextTitleColor),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 4.h,
-                  ),
-                  Text(
-                    content,
-                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          isFollow
-              ? Container(
-                  width: 56.w,
-                  height: 32.h,
-                  decoration: const BoxDecoration(
-                    color: kPrimaryColor,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8.0),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "팔로우",
-                      style:
-                          kButton12BoldStyle.copyWith(color: kNeutralColor100),
-                    ),
-                  ),
-                )
-              : Container(
-                  width: 56.w,
-                  height: 32.h,
-                  decoration: const BoxDecoration(
-                    color: kNeutralColor300,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8.0),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "팔로잉",
-                      style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
-                    ),
-                  ),
-                )
-        ],
+                      )
+          ],
+        ),
       ),
     );
   }

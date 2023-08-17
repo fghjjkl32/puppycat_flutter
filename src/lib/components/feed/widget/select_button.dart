@@ -9,6 +9,7 @@ class SelectButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isSelected;
   final String title;
+  final ValueSetter<String?>? onTextChanged;
 
   const SelectButton({
     super.key,
@@ -16,6 +17,7 @@ class SelectButton extends StatelessWidget {
     required this.title,
     required this.onPressed,
     required this.isSelected,
+    this.onTextChanged,
   });
 
   @override
@@ -73,6 +75,7 @@ class SelectButton extends StatelessWidget {
                   padding: EdgeInsets.only(
                       top: 8.h, left: 4.w, right: 4.w, bottom: 4.h),
                   child: FormBuilderTextField(
+                    onChanged: onTextChanged,
                     scrollPhysics: const ClampingScrollPhysics(),
                     maxLength: 200,
                     scrollPadding: EdgeInsets.only(bottom: 500.h),

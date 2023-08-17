@@ -1,4 +1,3 @@
-import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,58 +5,26 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_write_show_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/comment/comment_deatil_list_widget.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_best_post_widget.dart';
-import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
-import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/favorite_list_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/popular_hour_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/popular_week_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
-
-// class PuppyCatMain extends ConsumerWidget {
-//   const PuppyCatMain({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     var userProvider = ref.watch(userModelProvider);
-//     return Scaffold(
-//       body: SafeArea(
-//         child: Center(
-//           child: Column(
-//             children: [
-//               Text('$userProvider'),
-//               ElevatedButton(
-//                   onPressed: () {
-//                     if (userProvider == null) {
-//                       print('aa');
-//                       return;
-//                     }
-//                     ref
-//                         .read(loginStateProvider.notifier)
-//                         .logout(userProvider.simpleType, userProvider.appKey);
-//                   },
-//                   child: const Text('logout')),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class PuppyCatMain extends ConsumerStatefulWidget {
   const PuppyCatMain({Key? key}) : super(key: key);
@@ -66,55 +33,19 @@ class PuppyCatMain extends ConsumerStatefulWidget {
   PuppyCatMainState createState() => PuppyCatMainState();
 }
 
-class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
-  final List<Story> stories = [
-    Story(
-      name: 'User 1',
-      imageUrl: 'https://via.placeholder.com/150/f66b97',
-    ),
-    Story(
-      name: 'User 2',
-      imageUrl: 'https://via.placeholder.com/150/f66b97',
-    ),
-    Story(
-      name: 'User 3',
-      imageUrl: 'https://via.placeholder.com/150/f66b97',
-    ),
-    Story(
-      name: 'User 4',
-      imageUrl: 'https://via.placeholder.com/150/f66b97',
-    ),
-    Story(
-      name: 'User 5',
-      imageUrl: 'https://via.placeholder.com/150/f66b97',
-    ),
-    Story(
-      name: 'User 5',
-      imageUrl: 'https://via.placeholder.com/150/f66b97',
-    ),
-    Story(
-      name: 'User 5',
-      imageUrl: 'https://via.placeholder.com/150/f66b97',
-    ),
-    Story(
-      name: 'User 5',
-      imageUrl: 'https://via.placeholder.com/150/f66b97',
-    ),
-    Story(
-      name: 'User 5',
-      imageUrl: 'https://via.placeholder.com/150/f66b97',
-    ),
-    Story(
-      name: 'User 5',
-      imageUrl: 'https://via.placeholder.com/150/f66b97',
-    ),
-  ];
-
-  late ScrollController _scrollController;
+class PuppyCatMainState extends ConsumerState<PuppyCatMain>
+    with SingleTickerProviderStateMixin {
+  ScrollController scrollController = ScrollController();
+  late TabController tabController;
   bool _showIcon = false;
 
+  int myFeedOldLength = 0;
+  int recentOldLength = 0;
+  int followOldLength = 0;
+  int popularWeekOldLength = 0;
+
   List<Widget> getTabs() {
-    final loginState = ref.watch(loginStateProvider);
+    final loginState = ref.read(loginStateProvider);
 
     List<Widget> tabs = [
       Text(
@@ -146,17 +77,102 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController()
-      ..addListener(() {
-        setState(() {
-          _showIcon = _scrollController.offset > 100.h;
-        });
-      });
+
+    tabController = TabController(vsync: this, length: getTabs().length);
+    Future(() {
+      final loginState = ref.watch(loginStateProvider);
+
+      ref.read(recentFeedStateProvider.notifier).initPosts(
+            loginMemberIdx: ref.read(userModelProvider)!.idx,
+            initPage: 1,
+          );
+
+      if (loginState == LoginStatus.success) {
+        scrollController.addListener(_myPostScrollListener);
+
+        ref.read(myFeedStateProvider.notifier).initPosts(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+              initPage: 1,
+            );
+
+        ref.read(followFeedStateProvider.notifier).initPosts(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+              initPage: 1,
+            );
+
+        ref.read(popularWeekFeedStateProvider.notifier).initPosts(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+              initPage: 1,
+            );
+
+        ref.read(popularHourFeedStateProvider.notifier).initPosts(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+            );
+
+        ref.read(popularUserListStateProvider.notifier).getInitUserList(
+              ref.read(userModelProvider)!.idx,
+            );
+
+        ref
+            .read(favoriteUserListStateProvider.notifier)
+            .getInitUserList(ref.read(userModelProvider)!.idx);
+      }
+    });
+  }
+
+  void _myPostScrollListener() {
+    setState(() {
+      _showIcon = scrollController.offset > 100.h;
+    });
+
+    final loginState = ref.watch(loginStateProvider);
+
+    if (tabController.index == 0) {
+      if (recentOldLength == ref.read(recentFeedStateProvider).list.length) {
+        ref.read(recentFeedStateProvider.notifier).loadMorePost(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+            );
+      }
+    }
+
+    if (loginState == LoginStatus.success) {
+      if (scrollController.position.pixels >
+          scrollController.position.maxScrollExtent -
+              MediaQuery.of(context).size.height) {
+        switch (tabController.index) {
+          case 2: // Second Tab
+            if (followOldLength ==
+                ref.read(followFeedStateProvider).list.length) {
+              ref.read(followFeedStateProvider.notifier).loadMorePost(
+                    loginMemberIdx: ref.read(userModelProvider)!.idx,
+                  );
+            }
+            if (popularWeekOldLength ==
+                ref.read(popularWeekFeedStateProvider).list.length) {
+              ref.read(popularWeekFeedStateProvider.notifier).loadMorePost(
+                    loginMemberIdx: ref.read(userModelProvider)!.idx,
+                  );
+            }
+            break;
+          case 3: // Fourth Tab
+            if (myFeedOldLength == ref.read(myFeedStateProvider).list.length) {
+              ref.read(myFeedStateProvider.notifier).loadMorePost(
+                    loginMemberIdx: ref.read(userModelProvider)!.idx,
+                  );
+            }
+            break;
+          default:
+            break;
+        }
+      }
+    }
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    scrollController.removeListener(_myPostScrollListener);
+    scrollController.dispose();
+    tabController.dispose();
     super.dispose();
   }
 
@@ -190,7 +206,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
         child: DefaultTabController(
           length: loginState == LoginStatus.success ? 4 : 2,
           child: NestedScrollView(
-            controller: _scrollController,
+            controller: scrollController,
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 isBigDevice
@@ -268,14 +284,15 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
               ];
             },
             body: TabBarView(
+              controller: tabController,
               children: [
                 _firstTab(),
                 if (loginState == LoginStatus.success) ...[
-                  _secondTab(),
+                  Container(
+                    color: Colors.blue,
+                  ),
                 ],
-                Container(
-                  color: Colors.blue,
-                ),
+                _thirdTab(),
                 if (loginState == LoginStatus.success) ...[
                   _fourthTab(),
                 ],
@@ -360,7 +377,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
             if (id == 'search') {
               context.go("/home/search");
             }
-            if (id == 'message') {}
+            if (id == 'message') {
+              context.push('/chatMain');
+            }
             if (id == 'setting') {
               context.push("/home/myPage/setting");
             }
@@ -404,7 +423,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
             list.add(
               diaryPopUpMenuItem(
                 'message',
-                '메세지',
+                '메시지',
                 const Icon(Icons.message),
                 context,
               ),
@@ -457,86 +476,267 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
   }
 
   Widget _firstTab() {
-    return ListView(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(top: 16.0.h),
-          child: const FeedMainWidget(),
-        ),
-        const FeedMainWidget(),
-        const FeedMainWidget(),
-        const FeedMainWidget(),
-        const FeedBestPostWidget(),
-        const FeedMainWidget(),
-        const FeedMainWidget(),
-        const FeedMainWidget(),
-        const FeedMainWidget(),
-      ],
-    );
-  }
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            childCount: ref.watch(recentFeedStateProvider).list.length,
+            (BuildContext context, int index) {
+              return Consumer(builder: (ctx, ref, child) {
+                final recentFeedState = ref.watch(recentFeedStateProvider);
+                final popularHourFeedState =
+                    ref.watch(popularHourFeedStateProvider);
+                final popularUserState =
+                    ref.watch(popularUserListStateProvider);
+                final isLoadMoreError = recentFeedState.isLoadMoreError;
+                final isLoadMoreDone = recentFeedState.isLoadMoreDone;
+                final isLoading = recentFeedState.isLoading;
+                final lists = recentFeedState.list;
 
-  Widget _secondTab() {
-    return ListView(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(top: 16.0.h, left: 12.w, bottom: 14.h),
-          child: Text(
-            "인기있는 펫 집사들",
-            style: kTitle16ExtraBoldStyle.copyWith(color: kNeutralColor600),
+                recentOldLength = lists.length ?? 0;
+
+                if (index == 4) {
+                  return FeedFollowWidget(
+                    popularUserListData: popularUserState.list,
+                  );
+                }
+
+                if (index != 0 && index % 10 == 0) {
+                  return FeedBestPostWidget(
+                    feedData: popularHourFeedState.list,
+                  );
+                }
+
+                if (index == lists.length) {
+                  if (isLoadMoreError) {
+                    return const Center(
+                      child: Text('Error'),
+                    );
+                  }
+                  if (isLoadMoreDone) {
+                    return Container();
+                  }
+                  return Container();
+                }
+
+                return FeedMainWidget(
+                  feedData: lists[index],
+                  contentType: 'userContent',
+                  userName:
+                      recentFeedState.list[index].memberInfoList![0].nick!,
+                  profileImage: recentFeedState
+                          .list[index].memberInfoList?[0].profileImgUrl! ??
+                      "",
+                  memberIdx: ref.read(userModelProvider)!.idx,
+                  firstTitle:
+                      recentFeedState.list[index].memberInfoList![0].nick!,
+                  secondTitle: '게시물',
+                );
+              });
+            },
           ),
         ),
-        const FeedFollowWidget(),
-        const FeedMainWidget(),
-        const FeedMainWidget(),
-        const FeedMainWidget(),
-        const FeedMainWidget(),
-        const FeedBestPostWidget(),
-        const FeedMainWidget(),
+      ],
+    );
+    // Padding(
+    //   padding: EdgeInsets.only(top: 16.0.h),
+    //   child: const FeedMainWidget(),
+    // ),
+    // const FeedMainWidget(),
+    // const FeedMainWidget(),
+    // const FeedMainWidget(),
+    // const FeedBestPostWidget(),
+    // const FeedMainWidget(),
+    // const FeedMainWidget(),
+    // const FeedMainWidget(),
+    // const FeedMainWidget(),
+  }
+
+  Widget _thirdTab() {
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            childCount: ref.watch(followFeedStateProvider).list.length,
+            (BuildContext context, int index) {
+              return Consumer(builder: (ctx, ref, child) {
+                final followFeedState = ref.watch(followFeedStateProvider);
+                final isLoadMoreError = followFeedState.isLoadMoreError;
+                final isLoadMoreDone = followFeedState.isLoadMoreDone;
+                final isLoading = followFeedState.isLoading;
+                final lists = followFeedState.list;
+
+                followOldLength = lists.length ?? 0;
+
+                if (index == lists.length) {
+                  if (isLoadMoreError) {
+                    return const Center(
+                      child: Text('Error'),
+                    );
+                  }
+                  if (isLoadMoreDone) {
+                    return Container();
+                  }
+                  return Container();
+                }
+
+                return FeedMainWidget(
+                  feedData: lists[index],
+                  contentType: 'userContent',
+                  userName: followFeedState.memberInfo?[0].nick ??
+                      followFeedState.list[index].memberInfoList![0].nick!,
+                  profileImage: followFeedState.memberInfo?[0].profileImgUrl ??
+                      followFeedState
+                          .list[index].memberInfoList![0].profileImgUrl! ??
+                      "",
+                  memberIdx: ref.read(userModelProvider)!.idx,
+                  firstTitle: followFeedState.memberInfo?[0].nick ??
+                      followFeedState.list[index].memberInfoList![0].nick!,
+                  secondTitle: '게시물',
+                );
+              });
+            },
+          ),
+        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            childCount: ref.watch(popularWeekFeedStateProvider).list.length,
+            (BuildContext context, int index) {
+              return Consumer(builder: (ctx, ref, child) {
+                final bestFeedState = ref.watch(popularWeekFeedStateProvider);
+                final popularHourFeedState =
+                    ref.watch(popularHourFeedStateProvider);
+                final popularUserState =
+                    ref.watch(popularUserListStateProvider);
+                final isLoadMoreError = bestFeedState.isLoadMoreError;
+                final isLoadMoreDone = bestFeedState.isLoadMoreDone;
+                final isLoading = bestFeedState.isLoading;
+                final lists = bestFeedState.list;
+
+                popularWeekOldLength = lists.length ?? 0;
+
+                if (index == 0) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: 16.0.w, right: 10.w, bottom: 12.h),
+                        child: Text(
+                          "인기있는 펫 집사들",
+                          style: kTitle16ExtraBoldStyle.copyWith(
+                              color: kTextTitleColor),
+                        ),
+                      ),
+                      FeedFollowWidget(
+                        popularUserListData: popularUserState.list,
+                      ),
+                    ],
+                  );
+                }
+
+                if (index != 0 && index % 10 == 0) {
+                  return FeedBestPostWidget(
+                      feedData: popularHourFeedState.list);
+                }
+
+                if (index == lists.length) {
+                  if (isLoadMoreError) {
+                    return const Center(
+                      child: Text('Error'),
+                    );
+                  }
+                  if (isLoadMoreDone) {
+                    return Container();
+                  }
+                  return Container();
+                }
+
+                return Column(
+                  children: [
+                    index == 1
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(12.0.h),
+                                child: const Divider(),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: 16.0.w, right: 10.w, bottom: 12.h),
+                                child: Text(
+                                  "인기 게시글",
+                                  style: kTitle16ExtraBoldStyle.copyWith(
+                                      color: kTextTitleColor),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(),
+                    FeedMainWidget(
+                      feedData: lists[index],
+                      contentType: 'popularWeekContent',
+                      userName: bestFeedState.memberInfo?[0].nick ??
+                          bestFeedState.list[index].memberInfoList![0].nick!,
+                      profileImage:
+                          bestFeedState.memberInfo?[0].profileImgUrl ??
+                              bestFeedState.list[index].memberInfoList![0]
+                                  .profileImgUrl! ??
+                              "",
+                      memberIdx: ref.read(userModelProvider)!.idx,
+                      firstTitle: "null",
+                      secondTitle: '인기 급상승',
+                    ),
+                  ],
+                );
+              });
+            },
+          ),
+        ),
       ],
     );
   }
 
   Widget _fourthTab() {
-    return ListView(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(top: 16.0.h),
-          child: const FeedMainWidget(),
-        ),
-        const FeedMainWidget(),
-        const FeedMainWidget(),
-        const FeedMainWidget(),
-        Padding(
-          padding: EdgeInsets.only(
-            left: 20.0.w,
-            right: 20.0.w,
-            bottom: 20.0.h,
-          ),
-          child: SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                disabledBackgroundColor: kNeutralColor400,
-                backgroundColor: kPrimaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              onPressed: () {
-                feedWriteShowBottomSheet(
-                  context: context,
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            childCount: ref.watch(myFeedStateProvider).list.length,
+            (BuildContext context, int index) {
+              return Consumer(builder: (ctx, ref, child) {
+                final myFeedState = ref.watch(myFeedStateProvider);
+                final isLoadMoreError = myFeedState.isLoadMoreError;
+                final isLoadMoreDone = myFeedState.isLoadMoreDone;
+                final isLoading = myFeedState.isLoading;
+                final lists = myFeedState.list;
+
+                myFeedOldLength = lists.length ?? 0;
+
+                if (index == lists.length) {
+                  if (isLoadMoreError) {
+                    return const Center(
+                      child: Text('Error'),
+                    );
+                  }
+                  if (isLoadMoreDone) {
+                    return Container();
+                  }
+                  return Container();
+                }
+
+                return FeedMainWidget(
+                  feedData: lists[index],
+                  contentType: 'myContent',
+                  userName: myFeedState.memberInfo![0].nick!,
+                  profileImage: myFeedState.memberInfo?[0].profileImgUrl ?? "",
+                  memberIdx: ref.read(userModelProvider)!.idx,
+                  firstTitle: myFeedState.memberInfo![0].nick!,
+                  secondTitle: '게시물',
                 );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Text(
-                  '게시글 등록하기',
-                  style: kBody14BoldStyle.copyWith(
-                    color: kNeutralColor100,
-                  ),
-                ),
-              ),
-            ),
+              });
+            },
           ),
         ),
       ],
@@ -553,33 +753,66 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
         top: isBigDevice ? 50 : 5,
       ),
       child: loginState == LoginStatus.success
-          ? ListView.builder(
-              itemCount: stories.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      index == 0
-                          ? GestureDetector(
-                              onTap: () {
-                                context.go("/home/myPage");
-                              },
-                              child: buildWidgetMask(stories[index]),
-                            )
-                          : buildWidgetMask(stories[index]),
-                      const SizedBox(height: 4.0),
-                      Text(
-                        index == 0 ? "my" : stories[index].name,
-                        style: kBody12RegularStyle.copyWith(
-                            color: kTextTitleColor),
+          ? Consumer(builder: (context, ref, child) {
+              final userListState = ref.watch(favoriteUserListStateProvider);
+              final userListLists = userListState.memberList;
+
+              return Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        context.go("/home/myPage");
+                      },
+                      child: Column(
+                        children: [
+                          buildWidgetMask(
+                              ref.read(userModelProvider)!.profileImgUrl ?? "",
+                              0),
+                          const SizedBox(height: 4.0),
+                          Text(
+                            "my",
+                            style: kBody12RegularStyle.copyWith(
+                                color: kTextTitleColor),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                );
-              },
-            )
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: userListLists.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              context.push(
+                                  "/home/myPage/followList/${userListLists[index].memberIdx}/userPage/${userListLists[index].nick}/${userListLists[index].memberIdx}");
+                            },
+                            child: Column(
+                              children: [
+                                buildWidgetMask(
+                                    userListLists[index].profileImgUrl,
+                                    userListLists[index].isBadge),
+                                const SizedBox(height: 4.0),
+                                Text(
+                                  userListLists[index].nick!,
+                                  style: kBody12RegularStyle.copyWith(
+                                      color: kTextTitleColor),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            })
           : GestureDetector(
               onTap: () {
                 context.pushReplacement("/loginScreen");
@@ -609,13 +842,13 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
     );
   }
 
-  Widget buildWidgetMask(Story story) {
+  Widget buildWidgetMask(String? profileImgUrl, int? isBadge) {
     return WidgetMask(
       blendMode: BlendMode.srcATop,
       childSaveLayer: true,
       mask: Center(
         child: Image.network(
-          story.imageUrl,
+          profileImgUrl!,
           height: 46.h,
           fit: BoxFit.fill,
         ),
@@ -630,7 +863,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
 
   Widget _buildTabbar(bool innerBoxIsScrolled) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 320;
-    final loginState = ref.watch(loginStateProvider);
 
     return Container(
       decoration: innerBoxIsScrolled
@@ -657,6 +889,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
           Flexible(
             flex: isBigDevice ? 1 : 2,
             child: TabBar(
+              controller: tabController,
               indicatorWeight: 3,
               labelColor: kNeutralColor600,
               indicatorColor: kNeutralColor600,
@@ -674,11 +907,4 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> {
       ),
     );
   }
-}
-
-class Story {
-  final String name;
-  final String imageUrl;
-
-  Story({required this.name, required this.imageUrl});
 }

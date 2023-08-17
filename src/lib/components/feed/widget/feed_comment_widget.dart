@@ -2,8 +2,10 @@ import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class FeedCommentWidget extends StatelessWidget {
@@ -12,6 +14,7 @@ class FeedCommentWidget extends StatelessWidget {
     required this.name,
     required this.comment,
     required this.isSpecialUser,
+    required this.mentionListData,
     Key? key,
   }) : super(key: key);
 
@@ -19,6 +22,7 @@ class FeedCommentWidget extends StatelessWidget {
   final String name;
   final String comment;
   final bool isSpecialUser;
+  final List<MentionListData> mentionListData;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,7 @@ class FeedCommentWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          profileImage == null
+          profileImage == null || profileImage == ""
               ? WidgetMask(
                   blendMode: BlendMode.srcATop,
                   childSaveLayer: true,
@@ -47,7 +51,7 @@ class FeedCommentWidget extends StatelessWidget {
                   blendMode: BlendMode.srcATop,
                   childSaveLayer: true,
                   mask: Center(
-                    child: Image.asset(
+                    child: Image.network(
                       profileImage!,
                       height: 30.h,
                       fit: BoxFit.fill,
@@ -64,6 +68,7 @@ class FeedCommentWidget extends StatelessWidget {
           ),
           Expanded(
             child: Bubble(
+              isComment: true,
               radius: Radius.circular(10.w),
               elevation: 0,
               alignment: Alignment.topLeft,
@@ -100,10 +105,20 @@ class FeedCommentWidget extends StatelessWidget {
                   SizedBox(
                     height: 6.h,
                   ),
-                  Text(
-                    comment,
-                    style:
-                        kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: RichText(
+                      text: TextSpan(
+                        children: replaceMentionsWithNicknamesInContent(
+                          comment,
+                          mentionListData,
+                          context,
+                          kBody11RegularStyle.copyWith(color: kSecondaryColor),
+                        ),
+                        style: kBody11RegularStyle.copyWith(
+                            color: kTextTitleColor),
+                      ),
+                    ),
                   ),
                 ],
               ),

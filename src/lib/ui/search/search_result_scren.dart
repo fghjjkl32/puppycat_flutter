@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pet_mobile_social_flutter/providers/search/searchHelperProvider.dart';
+import 'package:pet_mobile_social_flutter/providers/search/search_helper_provider.dart';
 import 'package:pet_mobile_social_flutter/services/search/search_db_helper.dart';
 
 class SearchResultScreen extends ConsumerWidget {
@@ -31,8 +31,7 @@ class SearchResultScreen extends ConsumerWidget {
             itemBuilder: (context, index) {
               final search = searches[index];
               return ListTile(
-                title: Text(search.name),
-                subtitle: Text(search.image!),
+                title: Text(search.name!),
                 onTap: () async {
                   print("DSA");
                   // 탭하면 검색 기록을 삭제합니다.

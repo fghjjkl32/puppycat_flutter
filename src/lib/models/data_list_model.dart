@@ -10,9 +10,6 @@ class DataListModel<T> with _$DataListModel<T> {
     required List<T> list,
   }) = _DataListModel<T>;
 
-  // factory DataListModel.fromJson(Map<String, dynamic> json) =>
-  //     _$DataListModelFromJson(json);
-
   factory DataListModel.fromJson(
       Map<String, dynamic> json, T Function(Object? json) fromJsonT) {
     return _$DataListModelFromJson<T>(json, fromJsonT);

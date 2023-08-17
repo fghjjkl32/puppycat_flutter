@@ -16,16 +16,13 @@ class FeedContentDetailWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-      child: Column(
-        children: [
-          LinkifyText(
-            content,
-            textStyle: kBody13RegularStyle.copyWith(color: kTextTitleColor),
-            linkStyle: kBody13RegularStyle.copyWith(color: kSecondaryColor),
-            linkTypes: const [LinkType.hashTag, LinkType.userTag],
-            onTap: (link) {},
-          )
-        ],
+      child: LinkifyText(
+        content,
+        textStyle: kBody13RegularStyle.copyWith(color: kTextTitleColor),
+        linkStyle: kBody13RegularStyle.copyWith(color: kSecondaryColor),
+        linkTypes: const [LinkType.hashTag, LinkType.userTag],
+        onTap: (link) {},
+        textAlign: TextAlign.start,
       ),
     );
   }

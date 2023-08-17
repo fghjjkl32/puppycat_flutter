@@ -10,7 +10,9 @@ class Tag with _$Tag {
   @OffsetConverter()
   factory Tag({
     required String username,
+    required int memberIdx,
     required Offset position,
+    required int imageIndex,
   }) = _Tag;
 
   factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);

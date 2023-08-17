@@ -236,7 +236,6 @@ class _WebViewViewState extends State<WebViewView> {
           },
           onCloseWindow: (controller) {
             if (widget.onCloseWindow != null) {
-              print('aaa');
               isErrorVisible = false;
               widget.onCloseWindow!(controller);
             }

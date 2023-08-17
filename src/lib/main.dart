@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
+import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 
@@ -47,7 +48,7 @@ void main() async {
 
   // GetIt.I.registerSingleton<ChatClientController>(ChatClientController());
 
-  runAppSpector();
+  // runAppSpector();
   runApp(
     ProviderScope(
       child: EasyLocalization(
@@ -73,15 +74,19 @@ class PuppycatApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     return ScreenUtilInit(
       designSize: const Size(360, 640),
+      // scaleByHeight: true,
+      // useInheritedMediaQuery: false,
       builder: (BuildContext context, Widget? child) {
-        return MaterialApp.router(
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          routerConfig: router,
-          title: 'Flutter Demo',
-          theme: themeData(context),
-          debugShowCheckedModeBanner: false,
+        return Portal(
+          child: MaterialApp.router(
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            routerConfig: router,
+            title: 'Flutter Demo',
+            theme: themeData(context),
+            debugShowCheckedModeBanner: false,
+          ),
         );
       },
     );
@@ -92,6 +97,7 @@ Future runAppSpector() async {
   final config = Config()
     ..androidApiKey =
         "android_ODg1YjU5NmEtMTcwYi00M2NiLWIxMTYtMjIyN2VjY2M5OTk5";
+  config.monitors = [Monitors.http, Monitors.sqLite, Monitors.fileSystem];
 
   // If you don't want to start all monitors you can specify a list of necessary ones
   // config.monitors = [Monitors.http, Monitors.sqLite, Monitors.fileSystem];
