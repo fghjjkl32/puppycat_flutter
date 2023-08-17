@@ -140,7 +140,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
           scrollController.position.maxScrollExtent -
               MediaQuery.of(context).size.height) {
         switch (tabController.index) {
-          case 1: // Second Tab
+          case 2: // Second Tab
             if (followOldLength ==
                 ref.read(followFeedStateProvider).list.length) {
               ref.read(followFeedStateProvider.notifier).loadMorePost(
@@ -374,7 +374,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
             if (id == 'notification') {
               context.go("/home/notification");
             }
-            if (id == 'search') {}
+            if (id == 'search') {
+              context.go("/home/search");
+            }
             if (id == 'message') {
               context.push('/chatMain');
             }

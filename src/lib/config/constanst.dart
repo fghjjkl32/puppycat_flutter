@@ -11,6 +11,8 @@ import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/con
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
 
+const String baseUrl = "https://api.pcstg.co.kr/v1";
+
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
   var seconds = milliSeconds / 1000;
@@ -21,6 +23,7 @@ String displayedAt(DateTime time) {
   if (hours < 24) return '${hours.floor()}시간 전';
   var days = hours / 24;
   if (days < 7) return '${days.floor()}일 전';
+
   return DateFormat('yyyy-MM-dd').format(time);
 }
 

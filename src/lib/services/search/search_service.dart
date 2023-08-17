@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart' hide Headers;
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
@@ -7,7 +8,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'search_service.g.dart';
 
-@RestApi(baseUrl: "https://sns-api.devlabs.co.kr:28080/v1")
+@RestApi(baseUrl: baseUrl)
 abstract class SearchService {
   factory SearchService(Dio dio, {String baseUrl}) = _SearchService;
 
@@ -24,10 +25,24 @@ abstract class SearchService {
   );
 
   @GET('/search/nick')
-  Future<SearchResponseModel?> getSearchList(
+  Future<SearchResponseModel?> getNickSearchList(
     @Query("memberIdx") int memberIdx,
     @Query("page") int page,
     @Query("searchWord") String searchWord,
     @Query("limit") int limit,
+  );
+
+  @GET('/search/tag')
+  Future<SearchResponseModel?> getTagSearchList(
+    @Query("memberIdx") int memberIdx,
+    @Query("page") int page,
+    @Query("searchWord") String searchWord,
+    @Query("limit") int limit,
+  );
+
+  @GET('/search')
+  Future<SearchResponseModel?> getFullSearchList(
+    @Query("memberIdx") int memberIdx,
+    @Query("searchWord") String searchWord,
   );
 }

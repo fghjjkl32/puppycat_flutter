@@ -87,14 +87,94 @@ class SearchRepository {
     return searchResponseModel;
   }
 
-  Future<SearchResponseModel> getSearchList({
+  Future<SearchResponseModel> getNickSearchList({
     required int memberIdx,
     required int page,
     required String searchWord,
     int limit = 10,
   }) async {
     SearchResponseModel? searchResponseModel = await _searchService
-        .getSearchList(memberIdx, page, searchWord, limit)
+        .getNickSearchList(memberIdx, page, searchWord, limit)
+        .catchError((Object obj) async {});
+
+    if (searchResponseModel == null) {
+      return SearchResponseModel(
+        result: false,
+        code: "",
+        data: const SearchDataListModel(
+          list: [],
+          params: ParamsModel(
+            memberIdx: 0,
+            pagination: Pagination(
+              startPage: 0,
+              limitStart: 0,
+              totalPageCount: 0,
+              existNextPage: false,
+              endPage: 0,
+              existPrevPage: false,
+              totalRecordCount: 0,
+            ),
+            offset: 0,
+            limit: 0,
+            pageSize: 0,
+            page: 0,
+            recordSize: 0,
+          ),
+        ),
+        message: "",
+      );
+    }
+
+    return searchResponseModel;
+  }
+
+  Future<SearchResponseModel> getTagSearchList({
+    required int memberIdx,
+    required int page,
+    required String searchWord,
+    int limit = 10,
+  }) async {
+    SearchResponseModel? searchResponseModel = await _searchService
+        .getTagSearchList(memberIdx, page, searchWord, limit)
+        .catchError((Object obj) async {});
+
+    if (searchResponseModel == null) {
+      return SearchResponseModel(
+        result: false,
+        code: "",
+        data: const SearchDataListModel(
+          list: [],
+          params: ParamsModel(
+            memberIdx: 0,
+            pagination: Pagination(
+              startPage: 0,
+              limitStart: 0,
+              totalPageCount: 0,
+              existNextPage: false,
+              endPage: 0,
+              existPrevPage: false,
+              totalRecordCount: 0,
+            ),
+            offset: 0,
+            limit: 0,
+            pageSize: 0,
+            page: 0,
+            recordSize: 0,
+          ),
+        ),
+        message: "",
+      );
+    }
+
+    return searchResponseModel;
+  }
+
+  Future<SearchResponseModel> getFullSearchList({
+    required int memberIdx,
+    required String searchWord,
+  }) async {
+    SearchResponseModel? searchResponseModel = await _searchService
+        .getFullSearchList(memberIdx, searchWord)
         .catchError((Object obj) async {});
 
     if (searchResponseModel == null) {

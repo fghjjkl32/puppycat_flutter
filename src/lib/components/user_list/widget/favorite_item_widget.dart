@@ -41,15 +41,8 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
   @override
   void initState() {
     super.initState();
-    print(isFollowing);
-    print(isFollowing);
-    print(isFollowing);
-    print(isFollowing);
-    print(isFollowing);
 
     isFollowing = widget.isFollow;
-
-    print(isFollowing);
   }
 
   @override

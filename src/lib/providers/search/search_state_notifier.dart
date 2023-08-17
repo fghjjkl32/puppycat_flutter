@@ -77,9 +77,9 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
       state = state.copyWith(
           isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-      final lists = await SearchRepository().getSearchList(
+      final lists = await SearchRepository().getNickSearchList(
         memberIdx: memberIdx,
-        page: recommendCurrentPage + 1,
+        page: searchMentionCurrentPage + 1,
         searchWord: searchSearchWord,
       );
 
@@ -138,13 +138,12 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
     }
   }
 
-
   Future<void> searchMentionList(String searchWord) async {
     searchSearchWord = searchWord;
     searchMentionCurrentPage = 1;
     isMentionSearching = true;
 
-    final lists = await SearchRepository().getSearchList(
+    final lists = await SearchRepository().getNickSearchList(
       memberIdx: loginMemberIdx,
       page: 1,
       searchWord: searchSearchWord,

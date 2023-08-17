@@ -16,8 +16,56 @@ class SearchDataListModel with _$SearchDataListModel {
     @Default(false) bool isLoadMoreDone,
     @Default(0) int totalCount,
     String? imgDomain,
+    int? nick_count,
+    int? tag_count,
+    @Default([]) List<NickListData>? nick_list,
+    @Default([]) List<TagListData>? tag_list,
+    @Default([]) List<BestListData>? best_list,
   }) = _SearchDataListModel;
 
   factory SearchDataListModel.fromJson(Map<String, dynamic> json) =>
       _$SearchDataListModelFromJson(json);
+}
+
+@freezed
+class NickListData with _$NickListData {
+  factory NickListData({
+    String? nick,
+    int? memberIdx,
+    String? intro,
+    String? profileImgUrl,
+    int? isBadge,
+    int? followerCnt,
+    String? chatMemberId,
+    String? chatHomeServer,
+    String? chatAccessToken,
+    String? chatDeviceId,
+    int? favoriteState,
+  }) = _NickListData;
+
+  factory NickListData.fromJson(Map<String, dynamic> json) =>
+      _$NickListDataFromJson(json);
+}
+
+@freezed
+class TagListData with _$TagListData {
+  factory TagListData({
+    String? hashTagContentsCnt,
+    int? idx,
+    String? hashTag,
+  }) = _TagListData;
+
+  factory TagListData.fromJson(Map<String, dynamic> json) =>
+      _$TagListDataFromJson(json);
+}
+
+@freezed
+class BestListData with _$BestListData {
+  factory BestListData({
+    String? searchWord,
+    String? searchCnt,
+  }) = _BestListData;
+
+  factory BestListData.fromJson(Map<String, dynamic> json) =>
+      _$BestListDataFromJson(json);
 }

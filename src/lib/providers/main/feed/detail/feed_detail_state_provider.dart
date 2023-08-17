@@ -288,10 +288,10 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
       contentIdx: contentIdx,
       contentType: contentType,
     );
-    myFeedNotifier.updateState(state.feedListState);
-    bestFeedNotifier.updateState(state.feedListState);
-    recentFeedNotifier.updateState(state.feedListState);
-    followFeedNotifier.updateState(state.feedListState);
+    myFeedNotifier.refresh(loginMemberIdx);
+    bestFeedNotifier.refresh(loginMemberIdx);
+    recentFeedNotifier.refresh(loginMemberIdx);
+    followFeedNotifier.refresh(loginMemberIdx);
     currentPage = 1;
   }
 

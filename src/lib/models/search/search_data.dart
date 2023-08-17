@@ -17,6 +17,8 @@ class SearchData with _$SearchData {
     String? chatAccessToken,
     String? chatDeviceId,
     int? favoriteState,
+    String? hashTagContentsCnt,
+    String? hashTag,
   }) = _SearchData;
 
   factory SearchData.fromJson(Map<String, dynamic> json) =>

@@ -17,7 +17,8 @@ class ChatUserSearchState extends _$ChatUserSearchState {
 
   @override
   PagingController<int, ChatFavoriteModel> build() {
-    PagingController<int, ChatFavoriteModel> pagingController = PagingController(firstPageKey: 1);
+    PagingController<int, ChatFavoriteModel> pagingController =
+        PagingController(firstPageKey: 1);
     pagingController.addPageRequestListener(_fetchPage);
     return pagingController;
   }
@@ -29,23 +30,28 @@ class ChatUserSearchState extends _$ChatUserSearchState {
         return;
       }
 
-      var searchResult = await SearchRepository().getSearchList(memberIdx: _loginMemberIdx, page: pageKey, searchWord: _searchWord, limit: 20);
+      var searchResult = await SearchRepository().getNickSearchList(
+          memberIdx: _loginMemberIdx,
+          page: pageKey,
+          searchWord: _searchWord,
+          limit: 20);
 
       var searchList = searchResult.data.list
           .map(
             (e) => ChatFavoriteModel(
-          memberIdx: e.memberIdx!,
-          isBadge: e.isBadge!,
-          nick: e.nick ?? 'unknown',
-          profileImgUrl: '${searchResult.data.imgDomain}${e.profileImgUrl}' ?? '',
-          favoriteState: e.favoriteState,
-          chatMemberId: e.chatMemberId ?? '',
-          chatHomeServer: e.chatHomeServer ?? '',
-          chatAccessToken: e.chatAccessToken ?? '',
-          chatDeviceId: e.chatDeviceId ?? '',
-          introText: e.intro ?? '',
-        ),
-      )
+              memberIdx: e.memberIdx!,
+              isBadge: e.isBadge!,
+              nick: e.nick ?? 'unknown',
+              profileImgUrl:
+                  '${searchResult.data.imgDomain}${e.profileImgUrl}' ?? '',
+              favoriteState: e.favoriteState,
+              chatMemberId: e.chatMemberId ?? '',
+              chatHomeServer: e.chatHomeServer ?? '',
+              chatAccessToken: e.chatAccessToken ?? '',
+              chatDeviceId: e.chatDeviceId ?? '',
+              introText: e.intro ?? '',
+            ),
+          )
           .toList();
 
       try {
@@ -83,39 +89,48 @@ class ChatUserSearchState extends _$ChatUserSearchState {
 
   void setFavorite(int memberIdx, String chatMemberId) async {
     print('memberIdx $memberIdx / chatMemberId $chatMemberId 1');
-    bool result = await ref.read(chatFavoriteStateProvider.notifier).setChatFavorite(memberIdx, chatMemberId);
-    if(result) {
+    bool result = await ref
+        .read(chatFavoriteStateProvider.notifier)
+        .setChatFavorite(memberIdx, chatMemberId);
+    if (result) {
       print('memberIdx $memberIdx / chatMemberId $chatMemberId 2');
       changedFavoriteState(chatMemberId, true);
     }
   }
+
   void unSetFavorite(int memberIdx, String chatMemberId) async {
-    bool result = await ref.read(chatFavoriteStateProvider.notifier).unSetChatFavorite(memberIdx, chatMemberId);
-    if(result) {
+    bool result = await ref
+        .read(chatFavoriteStateProvider.notifier)
+        .unSetChatFavorite(memberIdx, chatMemberId);
+    if (result) {
       changedFavoriteState(chatMemberId, false);
     }
   }
 
   void changedFavoriteState(String chatMemberId, bool isFavorite) {
-    int targetIdx = state.itemList!.indexWhere((element) => element.chatMemberId == chatMemberId);
+    int targetIdx = state.itemList!
+        .indexWhere((element) => element.chatMemberId == chatMemberId);
     // int targetIdx = Random().nextInt(state.itemList!.length ?? 4);
     print('targetIdx $targetIdx');
-    if(targetIdx >= 0) {
+    if (targetIdx >= 0) {
       print('pre state[targetIdx] ${state.itemList![targetIdx]}');
       state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
         favoriteState: isFavorite ? 1 : 0,
       );
       print('next state[targetIdx] ${state.itemList![targetIdx]}');
       state.notifyListeners();
-      if(isFavorite) {
-        ref.read(chatFavoriteUserStateProvider.notifier).addFavorite(state.itemList![targetIdx]);
+      if (isFavorite) {
+        ref
+            .read(chatFavoriteUserStateProvider.notifier)
+            .addFavorite(state.itemList![targetIdx]);
       } else {
-        ref.read(chatFavoriteUserStateProvider.notifier).removeFavorite(state.itemList![targetIdx]);
+        ref
+            .read(chatFavoriteUserStateProvider.notifier)
+            .removeFavorite(state.itemList![targetIdx]);
       }
     }
   }
 }
-
 
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart' hide Headers;
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_response_model.dart';
@@ -6,7 +7,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'follow_service.g.dart';
 
-@RestApi(baseUrl: "https://sns-api.devlabs.co.kr:28080/v1")
+@RestApi(baseUrl: baseUrl)
 abstract class FollowService {
   factory FollowService(Dio dio, {String baseUrl}) = _FollowService;
 

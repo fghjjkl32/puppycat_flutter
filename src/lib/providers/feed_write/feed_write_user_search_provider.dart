@@ -78,7 +78,7 @@ class FeedWriteImageTagSearchNotifier
       state = state.copyWith(
           isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-      final lists = await SearchRepository().getSearchList(
+      final lists = await SearchRepository().getNickSearchList(
         memberIdx: memberIdx,
         page: searchUserCurrentPage + 1,
         searchWord: userSearchWord,
@@ -144,7 +144,7 @@ class FeedWriteImageTagSearchNotifier
     isSearching = true;
     searchUserCurrentPage = 1;
 
-    final lists = await SearchRepository().getSearchList(
+    final lists = await SearchRepository().getNickSearchList(
       memberIdx: userMemberIdx,
       page: 1,
       searchWord: searchWord,
