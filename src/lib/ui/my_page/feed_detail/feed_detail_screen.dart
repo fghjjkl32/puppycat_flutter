@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -14,13 +15,15 @@ class FeedDetailScreen extends ConsumerStatefulWidget {
   final int memberIdx;
   final int contentIdx;
   final String contentType;
+  bool isRouteComment;
 
-  const FeedDetailScreen({
+  FeedDetailScreen({
     required this.firstTitle,
     required this.secondTitle,
     required this.memberIdx,
     required this.contentIdx,
     required this.contentType,
+    this.isRouteComment = false,
     super.key,
   });
 
@@ -45,14 +48,18 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
           searchWord: widget.secondTitle,
         );
     super.initState();
+
+    if (widget.isRouteComment) {
+      Future(() {
+        context.push("/home/commentDetail/${widget.contentIdx}");
+      });
+      widget.isRouteComment = false;
+    }
   }
 
   void contentsScrollListener() {
-    if (contentController.position.pixels >
-        contentController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
-      if (oldLength ==
-          ref.read(feedDetailStateProvider).feedListState.list.length) {
+    if (contentController.position.pixels > contentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
+      if (oldLength == ref.read(feedDetailStateProvider).feedListState.list.length) {
         ref.read(feedDetailStateProvider.notifier).loadMorePost(
               loginMemberIdx: ref.read(userModelProvider)!.idx,
               memberIdx: widget.memberIdx,
@@ -90,16 +97,13 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               title: widget.firstTitle == "null"
                   ? Text(
-                      widget.contentType == "searchContent"
-                          ? "#${widget.secondTitle}"
-                          : widget.secondTitle,
+                      widget.contentType == "searchContent" ? "#${widget.secondTitle}" : widget.secondTitle,
                     )
                   : Column(
                       children: [
                         Text(
-                          widget.firstTitle,
-                          style: kBody11RegularStyle.copyWith(
-                              color: kTextBodyColor),
+                          widget.contentType != "notificationContent" ? widget.firstTitle : ref.read(feedDetailStateProvider).firstFeedState.memberInfo?[0].nick ?? '',
+                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                         ),
                         Text(widget.secondTitle),
                       ],
@@ -113,8 +117,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
             ),
             body: Consumer(builder: (ctx, ref, child) {
               final contentState = ref.watch(feedDetailStateProvider);
-              final isLoadMoreError =
-                  contentState.feedListState.isLoadMoreError;
+              final isLoadMoreError = contentState.feedListState.isLoadMoreError;
               final isLoadMoreDone = contentState.feedListState.isLoadMoreDone;
               final popularUserState = ref.watch(popularUserListStateProvider);
               final isLoading = contentState.feedListState.isLoading;
@@ -138,24 +141,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                         if (index == 0) {
                           return FeedDetailWidget(
                             feedData: firstList[0],
-                            nick: ref
-                                    .watch(feedDetailStateProvider)
-                                    .firstFeedState
-                                    .memberInfo?[0]
-                                    .nick ??
-                                lists[0].memberInfoList?[0].nick,
-                            profileImage: ref
-                                    .watch(feedDetailStateProvider)
-                                    .firstFeedState
-                                    .memberInfo?[0]
-                                    .profileImgUrl ??
-                                "",
-                            memberIdx: ref
-                                    .watch(feedDetailStateProvider)
-                                    .firstFeedState
-                                    .memberInfo?[0]
-                                    .memberIdx ??
-                                lists[0].memberInfoList?[0].memberIdx,
+                            nick: ref.watch(feedDetailStateProvider).firstFeedState.memberInfo?[0].nick ?? lists[0].memberInfoList?[0].nick,
+                            profileImage: ref.watch(feedDetailStateProvider).firstFeedState.memberInfo?[0].profileImgUrl ?? "",
+                            memberIdx: ref.watch(feedDetailStateProvider).firstFeedState.memberInfo?[0].memberIdx ?? lists[0].memberInfoList?[0].memberIdx,
                             contentType: widget.contentType,
                             contentIdx: widget.contentIdx,
                           );
@@ -165,26 +153,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                           } else {
                             return FeedDetailWidget(
                               feedData: lists[index - 1],
-                              nick: ref
-                                      .watch(feedDetailStateProvider)
-                                      .feedListState
-                                      .memberInfo?[0]
-                                      .nick ??
-                                  lists[index - 1].memberInfoList?[0].nick,
-                              profileImage: ref
-                                      .watch(feedDetailStateProvider)
-                                      .feedListState
-                                      .memberInfo?[0]
-                                      .profileImgUrl ??
-                                  lists[index - 1]
-                                      .memberInfoList?[0]
-                                      .profileImgUrl,
-                              memberIdx: ref
-                                      .watch(feedDetailStateProvider)
-                                      .firstFeedState
-                                      .memberInfo?[0]
-                                      .memberIdx ??
-                                  lists[0].memberInfoList?[0].memberIdx,
+                              nick: ref.watch(feedDetailStateProvider).feedListState.memberInfo?[0].nick ?? lists[index - 1].memberInfoList?[0].nick,
+                              profileImage: ref.watch(feedDetailStateProvider).feedListState.memberInfo?[0].profileImgUrl ?? lists[index - 1].memberInfoList?[0].profileImgUrl,
+                              memberIdx: ref.watch(feedDetailStateProvider).firstFeedState.memberInfo?[0].memberIdx ?? lists[0].memberInfoList?[0].memberIdx,
                               contentType: widget.contentType,
                               contentIdx: widget.contentIdx,
                             );

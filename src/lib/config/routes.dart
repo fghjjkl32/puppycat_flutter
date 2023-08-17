@@ -128,6 +128,43 @@ class AppRouter {
                       'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
                   name:
                       'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
+                  // pageBuilder: (context, state) {
+                  //   final firstTitle = state.pathParameters['firstTitle']!;
+                  //   final secondTitle = state.pathParameters['secondTitle']!;
+                  //   final memberIdx = state.pathParameters['memberIdx']!;
+                  //   final contentIdx = state.pathParameters['contentIdx']!;
+                  //   final contentType = state.pathParameters['contentType']!;
+                  //
+                  //   bool isRouteComment = false;
+                  //   final extraData = state.extra;
+                  //   if(extraData != null) {
+                  //     Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
+                  //     if(extraMap.keys.contains('isRouteComment')) {
+                  //       isRouteComment = extraMap['isRouteComment'];
+                  //     }
+                  //   }
+                  //
+                  //   return CustomTransitionPage(
+                  //     key: state.pageKey,
+                  //     child: FeedDetailScreen(
+                  //       firstTitle: firstTitle,
+                  //       secondTitle: secondTitle,
+                  //       memberIdx: int.parse(memberIdx),
+                  //       contentIdx: int.parse(contentIdx),
+                  //       contentType: contentType,
+                  //       isRouteComment: isRouteComment,
+                  //     ),
+                  //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  //       // Change the opacity of the screen using a Curve based on the the animation's
+                  //       // value
+                  //       return FadeTransition(
+                  //         opacity:
+                  //         CurveTween(curve: Curves.easeInOutCirc).animate(animation),
+                  //         child: child,
+                  //       );
+                  //     },
+                  //   );
+                  // },
                   builder: (BuildContext context, GoRouterState state) {
                     final firstTitle = state.pathParameters['firstTitle']!;
                     final secondTitle = state.pathParameters['secondTitle']!;
@@ -135,12 +172,22 @@ class AppRouter {
                     final contentIdx = state.pathParameters['contentIdx']!;
                     final contentType = state.pathParameters['contentType']!;
 
+                    bool isRouteComment = false;
+                    final extraData = state.extra;
+                    if(extraData != null) {
+                      Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
+                      if(extraMap.keys.contains('isRouteComment')) {
+                        isRouteComment = extraMap['isRouteComment'];
+                      }
+                    }
+
                     return FeedDetailScreen(
                       firstTitle: firstTitle,
                       secondTitle: secondTitle,
                       memberIdx: int.parse(memberIdx),
                       contentIdx: int.parse(contentIdx),
                       contentType: contentType,
+                      isRouteComment: isRouteComment,
                     );
                   },
                 ),

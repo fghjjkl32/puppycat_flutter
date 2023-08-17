@@ -9,6 +9,7 @@ class CustomDialog extends StatelessWidget {
   final VoidCallback? confirmTap;
   final VoidCallback? cancelTap;
   final Widget confirmWidget;
+  final Widget? cancelWidget;
 
   const CustomDialog({
     Key? key,
@@ -16,14 +17,15 @@ class CustomDialog extends StatelessWidget {
     required this.confirmTap,
     this.cancelTap,
     required this.confirmWidget,
+    this.cancelWidget,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
-      insetPadding: EdgeInsets.symmetric(
-        horizontal: 40.w,
+      insetPadding: const EdgeInsets.symmetric(
+        horizontal: 40,
       ),
       iconPadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.zero,
@@ -38,7 +40,7 @@ class CustomDialog extends StatelessWidget {
           children: <Widget>[
             content,
             Container(
-              height: 54.h,
+              height: 54,
               decoration: const BoxDecoration(
                 border: Border(
                   top: BorderSide(width: 1.0, color: kNeutralColor300),
@@ -48,35 +50,39 @@ class CustomDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Visibility(
-                    visible: cancelTap != null,
-                    child: Expanded(
-                      child: InkWell(
-                        borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(20)),
-                        onTap: cancelTap,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            border: Border(
-                              right:
-                                  BorderSide(width: 1.0, color: kNeutralColor300),
-                            ),
+                  cancelWidget != null
+                      ? Expanded(
+                          child: InkWell(
+                            borderRadius: const BorderRadius.only(bottomRight: Radius.circular(20)),
+                            onTap: cancelTap,
+                            child: Center(child: cancelWidget),
                           ),
-                          child: Center(
-                            child: Text(
-                              "취소",
-                              style: kButton14MediumStyle.copyWith(
-                                  color: kTextSubTitleColor),
+                        )
+                      : Visibility(
+                          visible: cancelTap != null,
+                          child: Expanded(
+                            child: InkWell(
+                              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20)),
+                              onTap: cancelTap,
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    right: BorderSide(width: 1.0, color: kNeutralColor300),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "취소",
+                                    style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
                   Expanded(
                     child: InkWell(
-                      borderRadius: const BorderRadius.only(
-                          bottomRight: Radius.circular(20)),
+                      borderRadius: const BorderRadius.only(bottomRight: Radius.circular(20)),
                       onTap: confirmTap,
                       child: Center(child: confirmWidget),
                     ),

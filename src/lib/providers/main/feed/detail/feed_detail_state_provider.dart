@@ -137,6 +137,12 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
           page: page,
         ),
       ]);
+    } else if (contentType == "notificationContent") {
+      futures = Future.wait([
+        FeedRepository().getContentDetail(
+            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+        Future.value(feedNullResponseModel),
+      ]);
     }
 
     final results = await futures;
