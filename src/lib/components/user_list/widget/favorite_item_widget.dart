@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -50,7 +51,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
     return InkWell(
       onTap: () {
         ref.read(userModelProvider)!.idx == widget.followerIdx
-            ? null
+            ? context.push("/home/myPage")
             : context.push(
                 "/home/myPage/followList/${widget.followerIdx}/userPage/${widget.userName}/${widget.followerIdx}");
       },
@@ -67,38 +68,8 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                   padding: EdgeInsets.only(
                     right: 10.w,
                   ),
-                  child: widget.profileImage == null
-                      ? WidgetMask(
-                          blendMode: BlendMode.srcATop,
-                          childSaveLayer: true,
-                          mask: Center(
-                            child: Image.asset(
-                              'assets/image/feed/icon/large_size/icon_taguser.png',
-                              height: 32.h,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                          child: SvgPicture.asset(
-                            'assets/image/feed/image/squircle.svg',
-                            height: 32.h,
-                          ),
-                        )
-                      : WidgetMask(
-                          blendMode: BlendMode.srcATop,
-                          childSaveLayer: true,
-                          mask: Center(
-                            child: Image.asset(
-                              widget.profileImage!,
-                              height: 32.h,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                          child: SvgPicture.asset(
-                            'assets/image/feed/image/squircle.svg',
-                            height: 32.h,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
+                  child:
+                      getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

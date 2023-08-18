@@ -21,6 +21,9 @@ import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.d
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   baseUrl = await Constants.getBaseUrl();
+  thumborHostUrl = await Constants.getThumborHostUrl();
+  thumborKey = await Constants.getThumborKey();
+  imgDomain = await Constants.getThumborDomain();
 
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp(

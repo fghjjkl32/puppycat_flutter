@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/size_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
+import 'package:thumbor/thumbor.dart';
 
 class FeedImageMainWidget extends StatelessWidget {
   const FeedImageMainWidget({
     required this.imageList,
+    required this.imageDomain,
     Key? key,
   }) : super(key: key);
 
   final List<FeedImgListData> imageList;
+  final String imageDomain;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +30,13 @@ class FeedImageMainWidget extends StatelessWidget {
                 padding: kPrimarySideFeedImagePadding,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
-                  child: Image.asset(
-                    "https://dev-imgs.devlabs.co.kr${imageList[0].url!}",
+                  child: Image.network(
+                    Thumbor(host: thumborHostUrl, key: thumborKey)
+                        .buildImage("$imgDomain${imageList[0].url!}")
+                        .toUrl(),
                     fit: BoxFit.cover,
                     height: 266.h,
+                    width: double.infinity,
                   ),
                 ),
               ),
@@ -44,9 +51,12 @@ class FeedImageMainWidget extends StatelessWidget {
                       topLeft: Radius.circular(12.0),
                     ),
                     child: Image.network(
-                      "https://dev-imgs.devlabs.co.kr${imageList[0].url!}",
+                      Thumbor(host: thumborHostUrl, key: thumborKey)
+                          .buildImage("$imgDomain${imageList[0].url!}")
+                          .toUrl(),
                       fit: BoxFit.cover,
                       height: 266.h,
+                      width: double.infinity,
                     ),
                   ),
                 ),
@@ -60,9 +70,12 @@ class FeedImageMainWidget extends StatelessWidget {
                       topRight: Radius.circular(12.0),
                     ),
                     child: Image.network(
-                      "https://dev-imgs.devlabs.co.kr${imageList[1].url!}",
+                      Thumbor(host: thumborHostUrl, key: thumborKey)
+                          .buildImage("$imgDomain${imageList[1].url!}")
+                          .toUrl(),
                       fit: BoxFit.cover,
                       height: 266.h,
+                      width: double.infinity,
                     ),
                   ),
                 ),
@@ -78,9 +91,12 @@ class FeedImageMainWidget extends StatelessWidget {
                       topLeft: Radius.circular(12.0),
                     ),
                     child: Image.network(
-                      "https://dev-imgs.devlabs.co.kr${imageList[0].url!}",
+                      Thumbor(host: thumborHostUrl, key: thumborKey)
+                          .buildImage("$imgDomain${imageList[0].url!}")
+                          .toUrl(),
                       fit: BoxFit.cover,
                       height: 266.h,
+                      width: double.infinity,
                     ),
                   ),
                 ),
@@ -95,7 +111,9 @@ class FeedImageMainWidget extends StatelessWidget {
                           topRight: Radius.circular(12.0),
                         ),
                         child: Image.network(
-                          "https://dev-imgs.devlabs.co.kr${imageList[1].url!}",
+                          Thumbor(host: thumborHostUrl, key: thumborKey)
+                              .buildImage("$imgDomain${imageList[1].url!}")
+                              .toUrl(),
                           fit: BoxFit.cover,
                           height: 132.h,
                           width: double.infinity,
@@ -109,7 +127,9 @@ class FeedImageMainWidget extends StatelessWidget {
                           bottomRight: Radius.circular(12.0),
                         ),
                         child: Image.network(
-                          "https://dev-imgs.devlabs.co.kr${imageList[2].url!}",
+                          Thumbor(host: thumborHostUrl, key: thumborKey)
+                              .buildImage("$imgDomain${imageList[2].url!}")
+                              .toUrl(),
                           fit: BoxFit.cover,
                           height: 132.h,
                           width: double.infinity,
@@ -130,9 +150,12 @@ class FeedImageMainWidget extends StatelessWidget {
                       topLeft: Radius.circular(12.0),
                     ),
                     child: Image.network(
-                      "https://dev-imgs.devlabs.co.kr${imageList[0].url!}",
+                      Thumbor(host: thumborHostUrl, key: thumborKey)
+                          .buildImage("$imgDomain${imageList[0].url!}")
+                          .toUrl(),
                       fit: BoxFit.cover,
                       height: 266.h,
+                      width: double.infinity,
                     ),
                   ),
                 ),
@@ -147,7 +170,9 @@ class FeedImageMainWidget extends StatelessWidget {
                           topRight: Radius.circular(12.0),
                         ),
                         child: Image.network(
-                          "https://dev-imgs.devlabs.co.kr${imageList[1].url!}",
+                          Thumbor(host: thumborHostUrl, key: thumborKey)
+                              .buildImage("$imgDomain${imageList[1].url!}")
+                              .toUrl(),
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: 132.h,
@@ -163,7 +188,9 @@ class FeedImageMainWidget extends StatelessWidget {
                               bottomRight: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              "https://dev-imgs.devlabs.co.kr${imageList[2].url!}",
+                              Thumbor(host: thumborHostUrl, key: thumborKey)
+                                  .buildImage("$imgDomain${imageList[2].url!}")
+                                  .toUrl(),
                               fit: BoxFit.cover,
                               height: 132.h,
                               width: double.infinity,

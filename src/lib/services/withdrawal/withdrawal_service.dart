@@ -5,6 +5,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'withdrawal_service.g.dart';
 
+@RestApi()
 abstract class WithdrawalService {
   factory WithdrawalService(Dio dio, {String baseUrl}) = _WithdrawalService;
 

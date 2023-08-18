@@ -21,7 +21,6 @@ class NotificationNoticeItem extends StatelessWidget {
   final bool isRead;
   final String profileImgUrl;
 
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -41,8 +40,7 @@ class NotificationNoticeItem extends StatelessWidget {
               ),
             ),
           ),
-          getProfileAvatar(profileImgUrl, 'assets/image/chat/icon_profile_small.png'),
-
+          getProfileAvatar(profileImgUrl),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 10.0, right: 0),
@@ -62,8 +60,8 @@ class NotificationNoticeItem extends StatelessWidget {
                         ),
                         Text(
                           regDate,
-                          style:
-                              kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                          style: kBadge10MediumStyle.copyWith(
+                              color: kTextBodyColor),
                         ),
                       ],
                     ),

@@ -5,14 +5,14 @@ import 'package:retrofit/retrofit.dart';
 
 part 'notification_service.g.dart';
 
-@RestApi(baseUrl: "https://sns-api.devlabs.co.kr:28080/v1")
+@RestApi()
 abstract class NotificationService {
   factory NotificationService(Dio dio, {String baseUrl}) = _NotificationService;
 
   @GET('/noti')
   Future<NotificationResponseModel?> getNotifications(
-      @Queries() Map<String, dynamic> queries,
-      );
+    @Queries() Map<String, dynamic> queries,
+  );
   // @GET('/noti')
   // Future<NotificationResponseModel?> getNotifications(
   //     @Query('memberIdx') int memberIdx,

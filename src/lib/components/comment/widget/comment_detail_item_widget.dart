@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:linkfy_text/linkfy_text.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
@@ -70,38 +71,15 @@ class CommentDetailItemWidget extends ConsumerWidget {
                       width: 30.w,
                     )
                   : Container(),
-              profileImage == null
-                  ? WidgetMask(
-                      blendMode: BlendMode.srcATop,
-                      childSaveLayer: true,
-                      mask: Center(
-                        child: Image.asset(
-                          'assets/image/feed/icon/large_size/icon_taguser.png',
-                          height: 30.h,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/image/feed/image/squircle.svg',
-                        height: 30.h,
-                      ),
-                    )
-                  : WidgetMask(
-                      blendMode: BlendMode.srcATop,
-                      childSaveLayer: true,
-                      mask: Center(
-                        child: Image.asset(
-                          profileImage!,
-                          height: 30.h,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/image/feed/image/squircle.svg',
-                        height: 30.h,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
+              GestureDetector(
+                onTap: () {
+                  ref.read(userModelProvider)!.idx == memberIdx
+                      ? context.push("/home/myPage")
+                      : context.push(
+                          "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx");
+                },
+                child: getProfileAvatar(profileImage!, 30.w, 30.h),
+              ),
               SizedBox(
                 width: 8.w,
               ),
@@ -109,286 +87,308 @@ class CommentDetailItemWidget extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Bubble(
-                      isComment: true,
-                      radius: Radius.circular(10.w),
-                      elevation: 0,
-                      alignment: Alignment.topLeft,
-                      nip: BubbleNip.leftTop,
-                      nipOffset: 15.h,
-                      color: kNeutralColor200,
-                      padding: BubbleEdges.only(
-                          left: 12.w, right: 12.w, top: 10.h, bottom: 12.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  isSpecialUser
-                                      ? Row(
-                                          children: [
-                                            Image.asset(
-                                              'assets/image/feed/icon/small_size/icon_special.png',
-                                              height: 13.h,
-                                            ),
-                                            SizedBox(
-                                              width: 4.w,
-                                            ),
-                                          ],
-                                        )
-                                      : Container(),
-                                  Text(
-                                    name,
-                                    style: kBody12SemiBoldStyle.copyWith(
-                                        color: kTextSubTitleColor),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    displayedAt(time),
-                                    style: kBody11RegularStyle.copyWith(
-                                        color: kTextBodyColor),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      memberIdx ==
-                                              ref.read(userModelProvider)!.idx
-                                          ? showCustomModalBottomSheet(
-                                              context: context,
-                                              widget: Column(
-                                                children: [
-                                                  BottomSheetButtonItem(
-                                                    iconImage:
-                                                        'assets/image/feed/icon/small_size/icon_report.png',
-                                                    title: '수정하기',
-                                                    titleStyle:
-                                                        kButton14BoldStyle
-                                                            .copyWith(
-                                                                color:
-                                                                    kBadgeColor),
-                                                    onTap: () async {
-                                                      context.pop();
-
-                                                      final commentHeaderState =
-                                                          ref.watch(
-                                                              commentHeaderProvider
-                                                                  .notifier);
-
-                                                      // context.pop();
-
-                                                      commentHeaderState
-                                                          .addEditCommentHeader(
-                                                              comment,
-                                                              commentIdx);
-
-                                                      commentHeaderState
-                                                          .setHasInput(true);
-
-                                                      commentHeaderState
-                                                          .setControllerValue(
-                                                              replaceMentionsWithNicknamesInContentAsString(
-                                                                  comment,
-                                                                  mentionListData));
-                                                    },
-                                                  ),
-                                                  BottomSheetButtonItem(
-                                                    iconImage:
-                                                        'assets/image/feed/icon/small_size/icon_report.png',
-                                                    title: '삭제하기',
-                                                    titleStyle:
-                                                        kButton14BoldStyle
-                                                            .copyWith(
-                                                                color:
-                                                                    kBadgeColor),
-                                                    onTap: () async {
-                                                      final result = await ref
-                                                          .watch(
-                                                              commentStateProvider
-                                                                  .notifier)
-                                                          .deleteContents(
-                                                            memberIdx: ref
-                                                                .read(
-                                                                    userModelProvider)!
-                                                                .idx,
-                                                            contentsIdx:
-                                                                contentIdx,
-                                                            commentIdx:
-                                                                commentIdx,
-                                                          );
-
-                                                      if (result.result) {
-                                                        context.pop();
-                                                      }
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
+                    GestureDetector(
+                      onDoubleTap: () {
+                        isLike
+                            ? null
+                            : ref
+                                .watch(commentStateProvider.notifier)
+                                .postCommentLike(
+                                  commentIdx: commentIdx,
+                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  contentsIdx: contentIdx,
+                                );
+                      },
+                      child: Bubble(
+                        isComment: true,
+                        radius: Radius.circular(10.w),
+                        elevation: 0,
+                        alignment: Alignment.topLeft,
+                        nip: BubbleNip.leftTop,
+                        nipOffset: 15.h,
+                        color: kNeutralColor200,
+                        padding: BubbleEdges.only(
+                            left: 12.w, right: 12.w, top: 10.h, bottom: 12.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    ref.read(userModelProvider)!.idx ==
+                                            memberIdx
+                                        ? context.push("/home/myPage")
+                                        : context.push(
+                                            "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx");
+                                  },
+                                  child: Row(
+                                    children: [
+                                      isSpecialUser
+                                          ? Row(
+                                              children: [
+                                                Image.asset(
+                                                  'assets/image/feed/icon/small_size/icon_special.png',
+                                                  height: 13.h,
+                                                ),
+                                                SizedBox(
+                                                  width: 4.w,
+                                                ),
+                                              ],
                                             )
-                                          : showCustomModalBottomSheet(
-                                              context: context,
-                                              widget: Column(
-                                                children: [
-                                                  BottomSheetButtonItem(
-                                                    iconImage:
-                                                        'assets/image/feed/icon/small_size/icon_user_block_on.png',
-                                                    title: '차단하기',
-                                                    titleStyle: kButton14BoldStyle
-                                                        .copyWith(
-                                                            color:
-                                                                kTextSubTitleColor),
-                                                    onTap: () async {
-                                                      context.pop();
+                                          : Container(),
+                                      Text(
+                                        name,
+                                        style: kBody12SemiBoldStyle.copyWith(
+                                            color: kTextSubTitleColor),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      displayedAt(time),
+                                      style: kBody11RegularStyle.copyWith(
+                                          color: kTextBodyColor),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        memberIdx ==
+                                                ref.read(userModelProvider)!.idx
+                                            ? showCustomModalBottomSheet(
+                                                context: context,
+                                                widget: Column(
+                                                  children: [
+                                                    BottomSheetButtonItem(
+                                                      iconImage:
+                                                          'assets/image/feed/icon/small_size/icon_report.png',
+                                                      title: '수정하기',
+                                                      titleStyle:
+                                                          kButton14BoldStyle
+                                                              .copyWith(
+                                                                  color:
+                                                                      kBadgeColor),
+                                                      onTap: () async {
+                                                        context.pop();
 
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return CustomDialog(
-                                                              content: Padding(
-                                                                padding: EdgeInsets
-                                                                    .symmetric(
-                                                                        vertical:
-                                                                            24.0.h),
-                                                                child: Column(
-                                                                  children: [
-                                                                    Text(
-                                                                      "‘${name}’님을\n차단하시겠어요?",
-                                                                      style: kBody16BoldStyle.copyWith(
-                                                                          color:
-                                                                              kTextTitleColor),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height:
-                                                                          8.h,
-                                                                    ),
-                                                                    Text(
-                                                                      "‘${name}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
-                                                                      style: kBody12RegularStyle.copyWith(
-                                                                          color:
-                                                                              kTextBodyColor),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height:
-                                                                          8.h,
-                                                                    ),
-                                                                    Text(
-                                                                      " ‘${name}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
-                                                                      style: kBody12RegularStyle.copyWith(
-                                                                          color:
-                                                                              kTextBodyColor),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                    ),
-                                                                  ],
+                                                        final commentHeaderState =
+                                                            ref.watch(
+                                                                commentHeaderProvider
+                                                                    .notifier);
+
+                                                        // context.pop();
+
+                                                        commentHeaderState
+                                                            .addEditCommentHeader(
+                                                                comment,
+                                                                commentIdx);
+
+                                                        commentHeaderState
+                                                            .setHasInput(true);
+
+                                                        commentHeaderState
+                                                            .setControllerValue(
+                                                                replaceMentionsWithNicknamesInContentAsString(
+                                                                    comment,
+                                                                    mentionListData));
+                                                      },
+                                                    ),
+                                                    BottomSheetButtonItem(
+                                                      iconImage:
+                                                          'assets/image/feed/icon/small_size/icon_report.png',
+                                                      title: '삭제하기',
+                                                      titleStyle:
+                                                          kButton14BoldStyle
+                                                              .copyWith(
+                                                                  color:
+                                                                      kBadgeColor),
+                                                      onTap: () async {
+                                                        final result = await ref
+                                                            .watch(
+                                                                commentStateProvider
+                                                                    .notifier)
+                                                            .deleteContents(
+                                                              memberIdx: ref
+                                                                  .read(
+                                                                      userModelProvider)!
+                                                                  .idx,
+                                                              contentsIdx:
+                                                                  contentIdx,
+                                                              commentIdx:
+                                                                  commentIdx,
+                                                            );
+
+                                                        if (result.result) {
+                                                          context.pop();
+                                                        }
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : showCustomModalBottomSheet(
+                                                context: context,
+                                                widget: Column(
+                                                  children: [
+                                                    BottomSheetButtonItem(
+                                                      iconImage:
+                                                          'assets/image/feed/icon/small_size/icon_user_block_on.png',
+                                                      title: '차단하기',
+                                                      titleStyle: kButton14BoldStyle
+                                                          .copyWith(
+                                                              color:
+                                                                  kTextSubTitleColor),
+                                                      onTap: () async {
+                                                        context.pop();
+
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return CustomDialog(
+                                                                content:
+                                                                    Padding(
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          vertical:
+                                                                              24.0.h),
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Text(
+                                                                        "‘${name}’님을\n차단하시겠어요?",
+                                                                        style: kBody16BoldStyle.copyWith(
+                                                                            color:
+                                                                                kTextTitleColor),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            8.h,
+                                                                      ),
+                                                                      Text(
+                                                                        "‘${name}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
+                                                                        style: kBody12RegularStyle.copyWith(
+                                                                            color:
+                                                                                kTextBodyColor),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            8.h,
+                                                                      ),
+                                                                      Text(
+                                                                        " ‘${name}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
+                                                                        style: kBody12RegularStyle.copyWith(
+                                                                            color:
+                                                                                kTextBodyColor),
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              confirmTap:
-                                                                  () async {
-                                                                context.pop();
-
-                                                                final result = await ref
-                                                                    .read(commentStateProvider
-                                                                        .notifier)
-                                                                    .postBlock(
-                                                                      memberIdx: ref
-                                                                          .watch(
-                                                                              userModelProvider)!
-                                                                          .idx,
-                                                                      blockIdx:
-                                                                          memberIdx,
-                                                                      contentsIdx:
-                                                                          contentIdx,
-                                                                    );
-
-                                                                if (result
-                                                                    .result) {
+                                                                confirmTap:
+                                                                    () async {
                                                                   context.pop();
 
-                                                                  toast(
-                                                                    context:
-                                                                        context,
-                                                                    text:
-                                                                        "‘${name}’님을 차단하였습니다.",
-                                                                    type: ToastType
-                                                                        .purple,
-                                                                  );
-                                                                }
-                                                              },
-                                                              cancelTap: () {
-                                                                context.pop();
-                                                              },
-                                                              confirmWidget:
-                                                                  Text(
-                                                                "유저 차단",
-                                                                style: kButton14MediumStyle
-                                                                    .copyWith(
-                                                                        color:
-                                                                            kBadgeColor),
-                                                              ));
-                                                        },
-                                                      );
-                                                    },
-                                                  ),
-                                                  BottomSheetButtonItem(
-                                                    iconImage:
-                                                        'assets/image/feed/icon/small_size/icon_report.png',
-                                                    title: '신고하기',
-                                                    titleStyle:
-                                                        kButton14BoldStyle
-                                                            .copyWith(
-                                                                color:
-                                                                    kBadgeColor),
-                                                    onTap: () {
-                                                      context.pop();
-                                                      context.push(
-                                                          "/home/report/true/$commentIdx");
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                    },
-                                    child: Image.asset(
-                                      'assets/image/feed/icon/small_size/icon_more.png',
-                                      height: 26.w,
+                                                                  final result = await ref
+                                                                      .read(commentStateProvider
+                                                                          .notifier)
+                                                                      .postBlock(
+                                                                        memberIdx: ref
+                                                                            .watch(userModelProvider)!
+                                                                            .idx,
+                                                                        blockIdx:
+                                                                            memberIdx,
+                                                                        contentsIdx:
+                                                                            contentIdx,
+                                                                      );
+
+                                                                  if (result
+                                                                      .result) {
+                                                                    context
+                                                                        .pop();
+
+                                                                    toast(
+                                                                      context:
+                                                                          context,
+                                                                      text:
+                                                                          "‘${name}’님을 차단하였습니다.",
+                                                                      type: ToastType
+                                                                          .purple,
+                                                                    );
+                                                                  }
+                                                                },
+                                                                cancelTap: () {
+                                                                  context.pop();
+                                                                },
+                                                                confirmWidget:
+                                                                    Text(
+                                                                  "유저 차단",
+                                                                  style: kButton14MediumStyle
+                                                                      .copyWith(
+                                                                          color:
+                                                                              kBadgeColor),
+                                                                ));
+                                                          },
+                                                        );
+                                                      },
+                                                    ),
+                                                    BottomSheetButtonItem(
+                                                      iconImage:
+                                                          'assets/image/feed/icon/small_size/icon_report.png',
+                                                      title: '신고하기',
+                                                      titleStyle:
+                                                          kButton14BoldStyle
+                                                              .copyWith(
+                                                                  color:
+                                                                      kBadgeColor),
+                                                      onTap: () {
+                                                        context.pop();
+                                                        context.push(
+                                                            "/home/report/true/$commentIdx");
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                      },
+                                      child: Image.asset(
+                                        'assets/image/feed/icon/small_size/icon_more.png',
+                                        height: 26.w,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 6.h,
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: RichText(
-                              text: TextSpan(
-                                children: replaceMentionsWithNicknamesInContent(
-                                  comment,
-                                  mentionListData,
-                                  context,
-                                  kBody11RegularStyle.copyWith(
-                                      color: kSecondaryColor),
+                                  ],
                                 ),
-                                style: kBody11RegularStyle.copyWith(
-                                    color: kTextTitleColor),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 6.h,
+                            ),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: RichText(
+                                text: TextSpan(
+                                  children:
+                                      replaceMentionsWithNicknamesInContent(
+                                    comment,
+                                    mentionListData,
+                                    context,
+                                    kBody11RegularStyle.copyWith(
+                                        color: kSecondaryColor),
+                                    ref,
+                                  ),
+                                  style: kBody11RegularStyle.copyWith(
+                                      color: kTextTitleColor),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     Row(

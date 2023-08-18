@@ -42,6 +42,7 @@ class PopularWeekFeedStateNotifier extends StateNotifier<FeedDataListModel> {
       isLoading: false,
       list: lists.data.list,
       memberInfo: lists.data.memberInfo,
+      imgDomain: lists.data.imgDomain,
     );
   }
 
@@ -74,10 +75,13 @@ class PopularWeekFeedStateNotifier extends StateNotifier<FeedDataListModel> {
 
     if (lists.data.list.isNotEmpty) {
       state = state.copyWith(
-          page: state.page + 1,
-          isLoading: false,
-          list: [...state.list, ...lists.data.list],
-          memberInfo: [...?state.memberInfo, ...?lists.data.memberInfo]);
+        page: state.page + 1,
+        isLoading: false,
+        list: [...state.list, ...lists.data.list],
+        memberInfo: [...?state.memberInfo, ...?lists.data.memberInfo],
+        imgDomain: lists.data.imgDomain,
+      );
+
       currentPage++;
     } else {
       state = state.copyWith(

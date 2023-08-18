@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -39,38 +40,7 @@ class BlockUserItemWidget extends ConsumerWidget {
                 padding: EdgeInsets.only(
                   right: 10.w,
                 ),
-                child: profileImage == null
-                    ? WidgetMask(
-                        blendMode: BlendMode.srcATop,
-                        childSaveLayer: true,
-                        mask: Center(
-                          child: Image.asset(
-                            'assets/image/feed/icon/large_size/icon_taguser.png',
-                            height: 32.h,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/image/feed/image/squircle.svg',
-                          height: 32.h,
-                        ),
-                      )
-                    : WidgetMask(
-                        blendMode: BlendMode.srcATop,
-                        childSaveLayer: true,
-                        mask: Center(
-                          child: Image.asset(
-                            profileImage!,
-                            height: 32.h,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/image/feed/image/squircle.svg',
-                          height: 32.h,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
+                child: getProfileAvatar(profileImage ?? "", 32.w, 32.h),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

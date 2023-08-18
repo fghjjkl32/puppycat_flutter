@@ -6,6 +6,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'setting_service.g.dart';
 
+@RestApi()
 abstract class SettingService {
   factory SettingService(Dio dio, {String baseUrl}) = _SettingService;
 

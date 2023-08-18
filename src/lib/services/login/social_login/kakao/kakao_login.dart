@@ -77,12 +77,13 @@ class KakaoLoginService implements SocialLoginService {
       id: userInfo.kakaoAccount?.email ?? 'thirdnsov.dev@gmail.com',
       // id: "thirdnso2v@gmail.com",
       simpleId: userInfo.id.toString(),
-      refreshToken: _accessToken?.refreshToken?? '',
+      refreshToken: _accessToken?.refreshToken ?? '',
       isSimple: 1,
       simpleType: 'kakao',
       accessToken: _accessToken?.accessToken ?? '',
       password: userInfo.id.toString(),
       passwordConfirm: userInfo.id.toString(),
+      isBadge: 0,
     );
 
     return userModel;

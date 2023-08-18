@@ -37,6 +37,7 @@ class RecentFeedStateNotifier extends StateNotifier<FeedDataListModel> {
     }
 
     state = state.copyWith(
+      imgDomain: lists.data.imgDomain,
       page: page,
       isLoading: false,
       list: lists.data.list,
@@ -71,6 +72,7 @@ class RecentFeedStateNotifier extends StateNotifier<FeedDataListModel> {
 
     if (lists.data.list.isNotEmpty) {
       state = state.copyWith(
+          imgDomain: lists.data.imgDomain,
           page: state.page + 1,
           isLoading: false,
           list: [...state.list, ...lists.data.list],

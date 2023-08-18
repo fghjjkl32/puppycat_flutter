@@ -217,7 +217,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
               ),
             ],
             fieldViewBuilder: (context, controller, focusNode) {
-              Future(() {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
                 ref.watch(feedEditContentProvider.notifier).state = controller;
               });
 

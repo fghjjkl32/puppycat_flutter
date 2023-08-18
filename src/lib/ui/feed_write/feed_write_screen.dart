@@ -167,6 +167,7 @@ class FeedWriteScreen extends ConsumerWidget {
                             .text,
                         feedState: ref.watch(feedWriteProvider),
                       );
+
                   if (result.result) {
                     context.pushReplacement("/home");
                   } else {

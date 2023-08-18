@@ -8,9 +8,11 @@ import 'package:intl/intl.dart';
 import 'package:linkfy_text/linkfy_text.dart';
 import 'package:matrix/matrix.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
+import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class NotificationCommentItem extends StatelessWidget {
@@ -93,7 +95,9 @@ class NotificationCommentItem extends StatelessWidget {
               ),
             ),
           ),
-          getProfileAvatar(profileImgUrl, 'assets/image/chat/icon_profile_small.png'),
+          getProfileAvatar(
+            profileImgUrl,
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 10.0, right: 0),
@@ -107,11 +111,13 @@ class NotificationCommentItem extends StatelessWidget {
                       children: [
                         Text(
                           notificationType,
-                          style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+                          style: kBody11SemiBoldStyle.copyWith(
+                              color: kTextBodyColor),
                         ),
                         Text(
                           regDate,
-                          style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                          style: kBadge10MediumStyle.copyWith(
+                              color: kTextBodyColor),
                         ),
                       ],
                     ),
@@ -126,11 +132,15 @@ class NotificationCommentItem extends StatelessWidget {
                           children: [
                             RichText(
                               text: TextSpan(
-                                style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
+                                style: kBody13RegularStyle.copyWith(
+                                    color: kTextTitleColor),
                                 children: <TextSpan>[
                                   TextSpan(
-                                    text: name.length > 13 ? '${name.substring(0, 13)}...' : name,
-                                    style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                                    text: name.length > 13
+                                        ? '${name.substring(0, 13)}...'
+                                        : name,
+                                    style: kBody13BoldStyle.copyWith(
+                                        color: kTextTitleColor),
                                   ),
                                   TextSpan(text: content),
                                 ],
@@ -142,13 +152,16 @@ class NotificationCommentItem extends StatelessWidget {
                                 text: _replaceMentionHashTag(comment),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
-                                detectionRegExp: detectionRegExp(atSign: true) ??
-                                    RegExp(
-                                      "(?!\\n)(?:^|\\s)([#]([$detectionContentLetters]+))|$urlRegexContent",
-                                      multiLine: true,
-                                    ),
-                                detectedStyle: kBody12RegularStyle.copyWith(color: kSecondaryColor),
-                                basicStyle: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                detectionRegExp:
+                                    detectionRegExp(atSign: true) ??
+                                        RegExp(
+                                          "(?!\\n)(?:^|\\s)([#]([$detectionContentLetters]+))|$urlRegexContent",
+                                          multiLine: true,
+                                        ),
+                                detectedStyle: kBody12RegularStyle.copyWith(
+                                    color: kSecondaryColor),
+                                basicStyle: kBody12RegularStyle.copyWith(
+                                    color: kTextBodyColor),
                                 onTap: (tappedText) {
                                   ///TODO
                                   /// 해시태그 검색 페이지 이동
@@ -162,15 +175,21 @@ class NotificationCommentItem extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: ClipRRect(
-                          borderRadius: const BorderRadius.all(Radius.circular(8)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8)),
                           child: Image.network(
-                            imgUrl,
+                            Thumbor(host: thumborHostUrl, key: thumborKey)
+                                .buildImage("$imgDomain${imgUrl}")
+                                .toUrl(),
                             fit: BoxFit.cover,
                             height: 52,
                             width: 52,
                             errorBuilder: (context, e, stackTrace) {
                               print('error imgUrl $imgUrl');
-                              return const SizedBox(height: 52, width: 52,);
+                              return const SizedBox(
+                                height: 52,
+                                width: 52,
+                              );
                             },
                           ),
                         ),

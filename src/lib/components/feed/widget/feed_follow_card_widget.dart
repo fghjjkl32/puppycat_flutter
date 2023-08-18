@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class FeedFollowCardWidget extends StatelessWidget {
+class FeedFollowCardWidget extends ConsumerWidget {
   const FeedFollowCardWidget({
     required this.profileImage,
     required this.userName,
@@ -27,7 +32,7 @@ class FeedFollowCardWidget extends StatelessWidget {
   final int memberIdx;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w),
       child: Container(
@@ -45,8 +50,10 @@ class FeedFollowCardWidget extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                context.push(
-                    "/home/myPage/followList/$memberIdx/userPage/$userName/$memberIdx");
+                ref.read(userModelProvider)!.idx == memberIdx
+                    ? context.push("/home/myPage")
+                    : context.push(
+                        "/home/myPage/followList/$memberIdx/userPage/$userName/$memberIdx");
               },
               child: Row(
                 children: [
@@ -57,38 +64,7 @@ class FeedFollowCardWidget extends StatelessWidget {
                       bottom: 12.h,
                       right: 8.w,
                     ),
-                    child: profileImage == null
-                        ? WidgetMask(
-                            blendMode: BlendMode.srcATop,
-                            childSaveLayer: true,
-                            mask: Center(
-                              child: Image.asset(
-                                'assets/image/feed/icon/large_size/icon_taguser.png',
-                                height: 32.h,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                            child: SvgPicture.asset(
-                              'assets/image/feed/image/squircle.svg',
-                              height: 32.h,
-                            ),
-                          )
-                        : WidgetMask(
-                            blendMode: BlendMode.srcATop,
-                            childSaveLayer: true,
-                            mask: Center(
-                              child: Image.network(
-                                "https://dev-imgs.devlabs.co.kr${profileImage!}",
-                                height: 32.h,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                            child: SvgPicture.asset(
-                              'assets/image/feed/image/squircle.svg',
-                              height: 32.h,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
+                    child: getProfileAvatar(profileImage ?? "", 32.w, 32.h),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,11 +114,139 @@ class FeedFollowCardWidget extends StatelessWidget {
                 ],
               ),
             ),
-            if (imageList.length == 1)
-              ...[]
-            else if (imageList.length == 2)
-              ...[]
-            else if (imageList.length == 3) ...[
+            if (imageList.length == 1) ...[
+              Row(
+                children: [
+                  Flexible(
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(12.0),
+                          ),
+                          child: Image.network(
+                            Thumbor(host: thumborHostUrl, key: thumborKey)
+                                .buildImage("$imgDomain${imageList[0].imgUrl!}")
+                                .toUrl(),
+                            fit: BoxFit.cover,
+                            height: 147.h,
+                            width: double.infinity,
+                          ),
+                        ),
+                        Positioned(
+                          right: 4.w,
+                          top: 4.w,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xff414348).withOpacity(0.75),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            width: 18.w,
+                            height: 14.w,
+                            child: Center(
+                              child: Text(
+                                "${imageList[0].imageCnt}",
+                                style: kBadge9RegularStyle.copyWith(
+                                    color: kNeutralColor100),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ] else if (imageList.length == 2) ...[
+              Row(
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(12.0),
+                          ),
+                          child: Image.network(
+                            Thumbor(host: thumborHostUrl, key: thumborKey)
+                                .buildImage("$imgDomain${imageList[0].imgUrl!}")
+                                .toUrl(),
+                            fit: BoxFit.cover,
+                            height: 147.h,
+                            width: double.infinity,
+                          ),
+                        ),
+                        Positioned(
+                          right: 4.w,
+                          top: 4.w,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xff414348).withOpacity(0.75),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            width: 18.w,
+                            height: 14.w,
+                            child: Center(
+                              child: Text(
+                                "${imageList[0].imageCnt}",
+                                style: kBadge9RegularStyle.copyWith(
+                                    color: kNeutralColor100),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 1,
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            bottomRight: Radius.circular(12.0),
+                          ),
+                          child: Image.network(
+                            Thumbor(host: thumborHostUrl, key: thumborKey)
+                                .buildImage("$imgDomain${imageList[1].imgUrl!}")
+                                .toUrl(),
+                            fit: BoxFit.cover,
+                            height: 147.h,
+                            width: double.infinity,
+                          ),
+                        ),
+                        Positioned(
+                          right: 4.w,
+                          top: 4.w,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xff414348).withOpacity(0.75),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            width: 18.w,
+                            height: 14.w,
+                            child: Center(
+                              child: Text(
+                                "${imageList[1].imageCnt}",
+                                style: kBadge9RegularStyle.copyWith(
+                                    color: kNeutralColor100),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ] else if (imageList.length == 3) ...[
               Row(
                 children: [
                   Flexible(
@@ -154,9 +258,12 @@ class FeedFollowCardWidget extends StatelessWidget {
                             bottomLeft: Radius.circular(12.0),
                           ),
                           child: Image.network(
-                            "https://dev-imgs.devlabs.co.kr${imageList[0].imgUrl!}",
+                            Thumbor(host: thumborHostUrl, key: thumborKey)
+                                .buildImage("$imgDomain${imageList[0].imgUrl!}")
+                                .toUrl(),
                             fit: BoxFit.cover,
                             height: 147.h,
+                            width: double.infinity,
                           ),
                         ),
                         Positioned(
@@ -192,9 +299,13 @@ class FeedFollowCardWidget extends StatelessWidget {
                         Stack(
                           children: [
                             Image.network(
-                              "https://dev-imgs.devlabs.co.kr${imageList[1].imgUrl!}",
+                              Thumbor(host: thumborHostUrl, key: thumborKey)
+                                  .buildImage(
+                                      "$imgDomain${imageList[1].imgUrl!}")
+                                  .toUrl(),
                               fit: BoxFit.cover,
                               height: 73.h,
+                              width: double.infinity,
                             ),
                             Positioned(
                               right: 4.w,
@@ -229,9 +340,13 @@ class FeedFollowCardWidget extends StatelessWidget {
                           child: Stack(
                             children: [
                               Image.network(
-                                "https://dev-imgs.devlabs.co.kr${imageList[2].imgUrl!}",
+                                Thumbor(host: thumborHostUrl, key: thumborKey)
+                                    .buildImage(
+                                        "$imgDomain${imageList[2].imgUrl!}")
+                                    .toUrl(),
                                 fit: BoxFit.cover,
                                 height: 73.h,
+                                width: double.infinity,
                               ),
                               Positioned(
                                 right: 4.w,

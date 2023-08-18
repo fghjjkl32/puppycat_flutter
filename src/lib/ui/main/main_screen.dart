@@ -10,6 +10,7 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_wr
 import 'package:pet_mobile_social_flutter/components/feed/feed_best_post_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
@@ -25,6 +26,7 @@ import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
+import 'package:thumbor/thumbor.dart';
 
 class PuppyCatMain extends ConsumerStatefulWidget {
   const PuppyCatMain({Key? key}) : super(key: key);
@@ -192,7 +194,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "PUUPYCAT",
+                      "PUPPYCAT",
                       style: kTitle18BoldStyle,
                     ),
                     _buttonWidget(),
@@ -245,7 +247,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
                                     left: 10.w,
                                   ),
                                   child: Text(
-                                    "PUUPYCAT",
+                                    "PUPPYCAT",
                                     style: kTitle18BoldStyle,
                                   ),
                                 ),
@@ -476,67 +478,84 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
   }
 
   Widget _firstTab() {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            childCount: ref.watch(recentFeedStateProvider).list.length,
-            (BuildContext context, int index) {
-              return Consumer(builder: (ctx, ref, child) {
-                final recentFeedState = ref.watch(recentFeedStateProvider);
-                final popularHourFeedState =
-                    ref.watch(popularHourFeedStateProvider);
-                final popularUserState =
-                    ref.watch(popularUserListStateProvider);
-                final isLoadMoreError = recentFeedState.isLoadMoreError;
-                final isLoadMoreDone = recentFeedState.isLoadMoreDone;
-                final isLoading = recentFeedState.isLoading;
-                final lists = recentFeedState.list;
+    return RefreshIndicator(
+      onRefresh: () {
+        ref.read(popularWeekFeedStateProvider.notifier).initPosts(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+              initPage: 1,
+            );
 
-                recentOldLength = lists.length ?? 0;
+        return ref.read(recentFeedStateProvider.notifier).initPosts(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+              initPage: 1,
+            );
+      },
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              childCount: ref.watch(recentFeedStateProvider).list.length,
+              (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Consumer(builder: (ctx, ref, child) {
+                    final recentFeedState = ref.watch(recentFeedStateProvider);
+                    final popularHourFeedState =
+                        ref.watch(popularHourFeedStateProvider);
+                    final popularUserState =
+                        ref.watch(popularUserListStateProvider);
+                    final isLoadMoreError = recentFeedState.isLoadMoreError;
+                    final isLoadMoreDone = recentFeedState.isLoadMoreDone;
+                    final isLoading = recentFeedState.isLoading;
+                    final lists = recentFeedState.list;
 
-                if (index == 4) {
-                  return FeedFollowWidget(
-                    popularUserListData: popularUserState.list,
-                  );
-                }
+                    recentOldLength = lists.length ?? 0;
 
-                if (index != 0 && index % 10 == 0) {
-                  return FeedBestPostWidget(
-                    feedData: popularHourFeedState.list,
-                  );
-                }
+                    if (index == 4) {
+                      return FeedFollowWidget(
+                        popularUserListData: popularUserState.list,
+                      );
+                    }
 
-                if (index == lists.length) {
-                  if (isLoadMoreError) {
-                    return const Center(
-                      child: Text('Error'),
+                    if (index != 0 && index % 10 == 0) {
+                      return FeedBestPostWidget(
+                        feedData: popularHourFeedState.list,
+                      );
+                    }
+
+                    if (index == lists.length) {
+                      if (isLoadMoreError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      }
+                      if (isLoadMoreDone) {
+                        return Container();
+                      }
+                      return Container();
+                    }
+
+                    return FeedMainWidget(
+                      feedData: lists[index],
+                      contentType: 'userContent',
+                      userName:
+                          recentFeedState.list[index].memberInfoList![0].nick!,
+                      profileImage: recentFeedState
+                              .list[index].memberInfoList?[0].profileImgUrl! ??
+                          "",
+                      memberIdx: ref.read(userModelProvider)!.idx,
+                      firstTitle:
+                          recentFeedState.list[index].memberInfoList![0].nick!,
+                      secondTitle: '게시물',
+                      imageDomain: recentFeedState.imgDomain!,
                     );
-                  }
-                  if (isLoadMoreDone) {
-                    return Container();
-                  }
-                  return Container();
-                }
-
-                return FeedMainWidget(
-                  feedData: lists[index],
-                  contentType: 'userContent',
-                  userName:
-                      recentFeedState.list[index].memberInfoList![0].nick!,
-                  profileImage: recentFeedState
-                          .list[index].memberInfoList?[0].profileImgUrl! ??
-                      "",
-                  memberIdx: ref.read(userModelProvider)!.idx,
-                  firstTitle:
-                      recentFeedState.list[index].memberInfoList![0].nick!,
-                  secondTitle: '게시물',
+                  }),
                 );
-              });
-            },
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
     // Padding(
     //   padding: EdgeInsets.only(top: 16.0.h),
@@ -553,193 +572,224 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
   }
 
   Widget _thirdTab() {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            childCount: ref.watch(followFeedStateProvider).list.length,
-            (BuildContext context, int index) {
-              return Consumer(builder: (ctx, ref, child) {
-                final followFeedState = ref.watch(followFeedStateProvider);
-                final isLoadMoreError = followFeedState.isLoadMoreError;
-                final isLoadMoreDone = followFeedState.isLoadMoreDone;
-                final isLoading = followFeedState.isLoading;
-                final lists = followFeedState.list;
+    return RefreshIndicator(
+      onRefresh: () {
+        return ref.read(followFeedStateProvider.notifier).initPosts(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+              initPage: 1,
+            );
+      },
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              childCount: ref.watch(followFeedStateProvider).list.length,
+              (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Consumer(builder: (ctx, ref, child) {
+                    final followFeedState = ref.watch(followFeedStateProvider);
+                    final isLoadMoreError = followFeedState.isLoadMoreError;
+                    final isLoadMoreDone = followFeedState.isLoadMoreDone;
+                    final isLoading = followFeedState.isLoading;
+                    final lists = followFeedState.list;
 
-                followOldLength = lists.length ?? 0;
+                    followOldLength = lists.length ?? 0;
 
-                if (index == lists.length) {
-                  if (isLoadMoreError) {
-                    return const Center(
-                      child: Text('Error'),
-                    );
-                  }
-                  if (isLoadMoreDone) {
-                    return Container();
-                  }
-                  return Container();
-                }
+                    if (index == lists.length) {
+                      if (isLoadMoreError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      }
+                      if (isLoadMoreDone) {
+                        return Container();
+                      }
+                      return Container();
+                    }
 
-                return FeedMainWidget(
-                  feedData: lists[index],
-                  contentType: 'userContent',
-                  userName: followFeedState.memberInfo?[0].nick ??
-                      followFeedState.list[index].memberInfoList![0].nick!,
-                  profileImage: followFeedState.memberInfo?[0].profileImgUrl ??
-                      followFeedState
-                          .list[index].memberInfoList![0].profileImgUrl! ??
-                      "",
-                  memberIdx: ref.read(userModelProvider)!.idx,
-                  firstTitle: followFeedState.memberInfo?[0].nick ??
-                      followFeedState.list[index].memberInfoList![0].nick!,
-                  secondTitle: '게시물',
-                );
-              });
-            },
-          ),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            childCount: ref.watch(popularWeekFeedStateProvider).list.length,
-            (BuildContext context, int index) {
-              return Consumer(builder: (ctx, ref, child) {
-                final bestFeedState = ref.watch(popularWeekFeedStateProvider);
-                final popularHourFeedState =
-                    ref.watch(popularHourFeedStateProvider);
-                final popularUserState =
-                    ref.watch(popularUserListStateProvider);
-                final isLoadMoreError = bestFeedState.isLoadMoreError;
-                final isLoadMoreDone = bestFeedState.isLoadMoreDone;
-                final isLoading = bestFeedState.isLoading;
-                final lists = bestFeedState.list;
-
-                popularWeekOldLength = lists.length ?? 0;
-
-                if (index == 0) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: 16.0.w, right: 10.w, bottom: 12.h),
-                        child: Text(
-                          "인기있는 펫 집사들",
-                          style: kTitle16ExtraBoldStyle.copyWith(
-                              color: kTextTitleColor),
-                        ),
-                      ),
-                      FeedFollowWidget(
-                        popularUserListData: popularUserState.list,
-                      ),
-                    ],
-                  );
-                }
-
-                if (index != 0 && index % 10 == 0) {
-                  return FeedBestPostWidget(
-                      feedData: popularHourFeedState.list);
-                }
-
-                if (index == lists.length) {
-                  if (isLoadMoreError) {
-                    return const Center(
-                      child: Text('Error'),
-                    );
-                  }
-                  if (isLoadMoreDone) {
-                    return Container();
-                  }
-                  return Container();
-                }
-
-                return Column(
-                  children: [
-                    index == 1
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(12.0.h),
-                                child: const Divider(),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: 16.0.w, right: 10.w, bottom: 12.h),
-                                child: Text(
-                                  "인기 게시글",
-                                  style: kTitle16ExtraBoldStyle.copyWith(
-                                      color: kTextTitleColor),
-                                ),
-                              ),
-                            ],
-                          )
-                        : Container(),
-                    FeedMainWidget(
+                    return FeedMainWidget(
                       feedData: lists[index],
-                      contentType: 'popularWeekContent',
-                      userName: bestFeedState.memberInfo?[0].nick ??
-                          bestFeedState.list[index].memberInfoList![0].nick!,
+                      contentType: 'userContent',
+                      userName: followFeedState.memberInfo?[0].nick ??
+                          followFeedState.list[index].memberInfoList![0].nick!,
                       profileImage:
-                          bestFeedState.memberInfo?[0].profileImgUrl ??
-                              bestFeedState.list[index].memberInfoList![0]
+                          followFeedState.memberInfo?[0].profileImgUrl ??
+                              followFeedState.list[index].memberInfoList![0]
                                   .profileImgUrl! ??
                               "",
                       memberIdx: ref.read(userModelProvider)!.idx,
-                      firstTitle: "null",
-                      secondTitle: '인기 급상승',
-                    ),
-                  ],
+                      firstTitle: followFeedState.memberInfo?[0].nick ??
+                          followFeedState.list[index].memberInfoList![0].nick!,
+                      secondTitle: '게시물',
+                      imageDomain: followFeedState.imgDomain!,
+                    );
+                  }),
                 );
-              });
-            },
+              },
+            ),
           ),
-        ),
-      ],
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              childCount: ref.watch(popularWeekFeedStateProvider).list.length,
+              (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Consumer(builder: (ctx, ref, child) {
+                    final bestFeedState =
+                        ref.watch(popularWeekFeedStateProvider);
+                    final popularHourFeedState =
+                        ref.watch(popularHourFeedStateProvider);
+                    final popularUserState =
+                        ref.watch(popularUserListStateProvider);
+                    final isLoadMoreError = bestFeedState.isLoadMoreError;
+                    final isLoadMoreDone = bestFeedState.isLoadMoreDone;
+                    final isLoading = bestFeedState.isLoading;
+                    final lists = bestFeedState.list;
+
+                    popularWeekOldLength = lists.length ?? 0;
+
+                    if (index == 0) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: 16.0.w, right: 10.w, bottom: 12.h),
+                            child: Text(
+                              "인기있는 펫 집사들",
+                              style: kTitle16ExtraBoldStyle.copyWith(
+                                  color: kTextTitleColor),
+                            ),
+                          ),
+                          FeedFollowWidget(
+                            popularUserListData: popularUserState.list,
+                          ),
+                        ],
+                      );
+                    }
+
+                    if (index != 0 && index % 10 == 0) {
+                      return FeedBestPostWidget(
+                          feedData: popularHourFeedState.list);
+                    }
+
+                    if (index == lists.length) {
+                      if (isLoadMoreError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      }
+                      if (isLoadMoreDone) {
+                        return Container();
+                      }
+                      return Container();
+                    }
+
+                    return Column(
+                      children: [
+                        index == 1
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(12.0.h),
+                                    child: const Divider(),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 16.0.w,
+                                        right: 10.w,
+                                        bottom: 12.h),
+                                    child: Text(
+                                      "인기 게시글",
+                                      style: kTitle16ExtraBoldStyle.copyWith(
+                                          color: kTextTitleColor),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(),
+                        FeedMainWidget(
+                          feedData: lists[index],
+                          contentType: 'popularWeekContent',
+                          userName: bestFeedState
+                              .list[index].memberInfoList![0].nick!,
+                          profileImage: bestFeedState.list[index]
+                                  .memberInfoList![0].profileImgUrl! ??
+                              "",
+                          memberIdx: ref.read(userModelProvider)!.idx,
+                          firstTitle: "null",
+                          secondTitle: '인기 급상승',
+                          imageDomain: bestFeedState.imgDomain!,
+                        ),
+                      ],
+                    );
+                  }),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _fourthTab() {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            childCount: ref.watch(myFeedStateProvider).list.length,
-            (BuildContext context, int index) {
-              return Consumer(builder: (ctx, ref, child) {
-                final myFeedState = ref.watch(myFeedStateProvider);
-                final isLoadMoreError = myFeedState.isLoadMoreError;
-                final isLoadMoreDone = myFeedState.isLoadMoreDone;
-                final isLoading = myFeedState.isLoading;
-                final lists = myFeedState.list;
+    return RefreshIndicator(
+      onRefresh: () {
+        return ref.read(myFeedStateProvider.notifier).initPosts(
+              loginMemberIdx: ref.read(userModelProvider)!.idx,
+              initPage: 1,
+            );
+      },
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              childCount: ref.watch(myFeedStateProvider).list.length,
+              (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Consumer(builder: (ctx, ref, child) {
+                    final myFeedState = ref.watch(myFeedStateProvider);
+                    final isLoadMoreError = myFeedState.isLoadMoreError;
+                    final isLoadMoreDone = myFeedState.isLoadMoreDone;
+                    final isLoading = myFeedState.isLoading;
+                    final lists = myFeedState.list;
 
-                myFeedOldLength = lists.length ?? 0;
+                    myFeedOldLength = lists.length ?? 0;
 
-                if (index == lists.length) {
-                  if (isLoadMoreError) {
-                    return const Center(
-                      child: Text('Error'),
+                    if (index == lists.length) {
+                      if (isLoadMoreError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      }
+                      if (isLoadMoreDone) {
+                        return Container();
+                      }
+                      return Container();
+                    }
+
+                    return FeedMainWidget(
+                      feedData: lists[index],
+                      contentType: 'myContent',
+                      userName: myFeedState.memberInfo![0].nick!,
+                      profileImage:
+                          myFeedState.memberInfo?[0].profileImgUrl ?? "",
+                      memberIdx: ref.read(userModelProvider)!.idx,
+                      firstTitle: myFeedState.memberInfo![0].nick!,
+                      secondTitle: '게시물',
+                      imageDomain: myFeedState.imgDomain!,
                     );
-                  }
-                  if (isLoadMoreDone) {
-                    return Container();
-                  }
-                  return Container();
-                }
-
-                return FeedMainWidget(
-                  feedData: lists[index],
-                  contentType: 'myContent',
-                  userName: myFeedState.memberInfo![0].nick!,
-                  profileImage: myFeedState.memberInfo?[0].profileImgUrl ?? "",
-                  memberIdx: ref.read(userModelProvider)!.idx,
-                  firstTitle: myFeedState.memberInfo![0].nick!,
-                  secondTitle: '게시물',
+                  }),
                 );
-              });
-            },
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -769,7 +819,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
                         children: [
                           buildWidgetMask(
                               ref.read(userModelProvider)!.profileImgUrl ?? "",
-                              0),
+                              ref.read(userModelProvider)!.isBadge),
                           const SizedBox(height: 4.0),
                           Text(
                             "my",
@@ -789,8 +839,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              context.push(
-                                  "/home/myPage/followList/${userListLists[index].memberIdx}/userPage/${userListLists[index].nick}/${userListLists[index].memberIdx}");
+                              ref.read(userModelProvider)!.idx ==
+                                      userListLists[index].memberIdx
+                                  ? context.push("/home/myPage")
+                                  : context.push(
+                                      "/home/myPage/followList/${userListLists[index].memberIdx}/userPage/${userListLists[index].nick}/${userListLists[index].memberIdx}");
                             },
                             child: Column(
                               children: [
@@ -843,22 +896,56 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
   }
 
   Widget buildWidgetMask(String? profileImgUrl, int? isBadge) {
-    return WidgetMask(
-      blendMode: BlendMode.srcATop,
-      childSaveLayer: true,
-      mask: Center(
-        child: Image.network(
-          profileImgUrl!,
-          height: 46.h,
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: SvgPicture.asset(
-        'assets/image/feed/image/squircle.svg',
-        height: 46.h,
-        fit: BoxFit.fill,
-      ),
-    );
+    return profileImgUrl == null || profileImgUrl == ""
+        ? Stack(
+            children: [
+              WidgetMask(
+                blendMode: BlendMode.srcATop,
+                childSaveLayer: true,
+                mask: Center(
+                  child: Image.asset(
+                    'assets/image/feed/icon/large_size/icon_taguser.png',
+                    height: 46.h,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: SvgPicture.asset(
+                  'assets/image/feed/image/squircle.svg',
+                  height: 46.h,
+                  fit: BoxFit.fill,
+                ),
+              ),
+              isBadge == 1
+                  ? Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Image.asset(
+                        'assets/image/feed/icon/small_size/icon_special.png',
+                        height: 13.h,
+                      ),
+                    )
+                  : Container(),
+            ],
+          )
+        : WidgetMask(
+            blendMode: BlendMode.srcATop,
+            childSaveLayer: true,
+            mask: Center(
+              child: Image.network(
+                Thumbor(host: thumborHostUrl, key: thumborKey)
+                    .buildImage("$imgDomain$profileImgUrl")
+                    .toUrl(),
+                height: 46.h,
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+            ),
+            child: SvgPicture.asset(
+              'assets/image/feed/image/squircle.svg',
+              height: 46.h,
+              fit: BoxFit.fill,
+            ),
+          );
   }
 
   Widget _buildTabbar(bool innerBoxIsScrolled) {
@@ -897,7 +984,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
               indicatorSize: TabBarIndicatorSize.tab,
               labelPadding: EdgeInsets.only(
                 top: 10.h,
-                bottom: 10.h,
+                bottom: 6.h,
               ),
               tabs: getTabs(),
             ),

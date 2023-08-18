@@ -34,6 +34,7 @@ class PopularHourFeedStateNotifier extends StateNotifier<FeedDataListModel> {
       isLoading: false,
       list: lists.data.list,
       memberInfo: lists.data.memberInfo,
+      imgDomain: lists.data.imgDomain,
     );
   }
 }
