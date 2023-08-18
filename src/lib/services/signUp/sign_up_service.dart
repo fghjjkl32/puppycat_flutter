@@ -5,6 +5,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'sign_up_service.g.dart';
 
+@RestApi()
 abstract class SignUpService {
   factory SignUpService(Dio dio, {String baseUrl}) = _SignUpService;
 

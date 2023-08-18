@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_bottom_icon_widget.dart';
@@ -9,7 +10,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 
-class FeedMainWidget extends StatelessWidget {
+class FeedMainWidget extends ConsumerWidget {
   const FeedMainWidget(
       {required this.feedData,
       required this.contentType,
@@ -18,6 +19,7 @@ class FeedMainWidget extends StatelessWidget {
       required this.memberIdx,
       required this.firstTitle,
       required this.secondTitle,
+      required this.imageDomain,
       Key? key})
       : super(key: key);
 
@@ -28,9 +30,10 @@ class FeedMainWidget extends StatelessWidget {
   final String profileImage;
   final String firstTitle;
   final String secondTitle;
+  final String imageDomain;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
         context.push(
@@ -55,6 +58,7 @@ class FeedMainWidget extends StatelessWidget {
               ),
               FeedImageMainWidget(
                 imageList: feedData.imgList!,
+                imageDomain: imageDomain,
               ),
               //feed content
               Padding(
@@ -85,11 +89,13 @@ class FeedMainWidget extends StatelessWidget {
                                 text: TextSpan(
                                   children:
                                       replaceMentionsWithNicknamesInContent(
-                                          feedData.contents!,
-                                          feedData.mentionList!,
-                                          context,
-                                          kBody13RegularStyle.copyWith(
-                                              color: kSecondaryColor)),
+                                    feedData.contents!,
+                                    feedData.mentionList!,
+                                    context,
+                                    kBody13RegularStyle.copyWith(
+                                        color: kSecondaryColor),
+                                    ref,
+                                  ),
                                   style: style,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -114,11 +120,13 @@ class FeedMainWidget extends StatelessWidget {
                         child: RichText(
                           text: TextSpan(
                             children: replaceMentionsWithNicknamesInContent(
-                                feedData.contents!,
-                                feedData.mentionList!,
-                                context,
-                                kBody13RegularStyle.copyWith(
-                                    color: kSecondaryColor)),
+                              feedData.contents!,
+                              feedData.mentionList!,
+                              context,
+                              kBody13RegularStyle.copyWith(
+                                  color: kSecondaryColor),
+                              ref,
+                            ),
                             style: style,
                           ),
                         ),

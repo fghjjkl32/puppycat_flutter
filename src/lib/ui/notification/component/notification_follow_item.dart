@@ -45,7 +45,9 @@ class NotificationFollowItem extends StatelessWidget {
               ),
             ),
           ),
-          getProfileAvatar(profileImgUrl, 'assets/image/chat/icon_profile_small.png'),
+          getProfileAvatar(
+            profileImgUrl,
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 10.0, right: 0),
@@ -60,11 +62,13 @@ class NotificationFollowItem extends StatelessWidget {
                       children: [
                         Text(
                           "새로운 팔로우",
-                          style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+                          style: kBody11SemiBoldStyle.copyWith(
+                              color: kTextBodyColor),
                         ),
                         Text(
                           regDate,
-                          style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                          style: kBadge10MediumStyle.copyWith(
+                              color: kTextBodyColor),
                         ),
                       ],
                     ),
@@ -75,11 +79,15 @@ class NotificationFollowItem extends StatelessWidget {
                       Expanded(
                         child: RichText(
                           text: TextSpan(
-                            style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
+                            style: kBody13RegularStyle.copyWith(
+                                color: kTextTitleColor),
                             children: <TextSpan>[
                               TextSpan(
-                                text: name.length > 13 ? '${name.substring(0, 13)}...' : name,
-                                style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                                text: name.length > 13
+                                    ? '${name.substring(0, 13)}...'
+                                    : name,
+                                style: kBody13BoldStyle.copyWith(
+                                    color: kTextTitleColor),
                               ),
                               const TextSpan(text: '님이 나를 팔로우하기 시작했습니다.'),
                             ],
@@ -90,15 +98,17 @@ class NotificationFollowItem extends StatelessWidget {
                         padding: EdgeInsets.only(left: 10.w, right: 4.w),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            foregroundColor: isFollowed ? kTextBodyColor : kNeutralColor100,
-                            backgroundColor: isFollowed ? kNeutralColor300 : kPrimaryColor,
+                            foregroundColor:
+                                isFollowed ? kTextBodyColor : kNeutralColor100,
+                            backgroundColor:
+                                isFollowed ? kNeutralColor300 : kPrimaryColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                             elevation: 0,
                           ),
                           onPressed: () {
-                            if(onTapFollowButton != null) {
+                            if (onTapFollowButton != null) {
                               onTapFollowButton!(isFollowed);
                             }
                           },

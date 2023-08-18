@@ -58,8 +58,11 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
   }
 
   void contentsScrollListener() {
-    if (contentController.position.pixels > contentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
-      if (oldLength == ref.read(feedDetailStateProvider).feedListState.list.length) {
+    if (contentController.position.pixels >
+        contentController.position.maxScrollExtent -
+            MediaQuery.of(context).size.height) {
+      if (oldLength ==
+          ref.read(feedDetailStateProvider).feedListState.list.length) {
         ref.read(feedDetailStateProvider.notifier).loadMorePost(
               loginMemberIdx: ref.read(userModelProvider)!.idx,
               memberIdx: widget.memberIdx,
@@ -92,41 +95,140 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
             Navigator.of(context).pop();
             return false;
           },
-          child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: widget.firstTitle == "null"
-                  ? Text(
-                      widget.contentType == "searchContent" ? "#${widget.secondTitle}" : widget.secondTitle,
-                    )
-                  : Column(
-                      children: [
-                        Text(
-                          widget.contentType != "notificationContent" ? widget.firstTitle : ref.read(feedDetailStateProvider).firstFeedState.memberInfo?[0].nick ?? '',
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+          child: Consumer(builder: (ctx, ref, child) {
+            final contentState = ref.watch(feedDetailStateProvider);
+            final isLoadMoreError = contentState.feedListState.isLoadMoreError;
+            final isLoadMoreDone = contentState.feedListState.isLoadMoreDone;
+            final popularUserState = ref.watch(popularUserListStateProvider);
+            final isLoading = contentState.feedListState.isLoading;
+            final firstList = contentState.firstFeedState.list;
+            final lists = contentState.feedListState.list;
+
+            oldLength = lists.length ?? 0;
+
+            AppBar appBarWidget() {
+              if (isLoading) {
+                return AppBar(
+                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  title: widget.firstTitle == "null"
+                      ? Text(
+                          widget.contentType == "searchContent"
+                              ? "#${widget.secondTitle}"
+                              : widget.secondTitle,
+                        )
+                      : Column(
+                          children: [
+                            Text(
+                              widget.contentType != "notificationContent"
+                                  ? widget.firstTitle
+                                  : ref
+                                          .read(feedDetailStateProvider)
+                                          .firstFeedState
+                                          .memberInfo?[0]
+                                          .nick ??
+                                      '',
+                              style: kBody11RegularStyle.copyWith(
+                                  color: kTextBodyColor),
+                            ),
+                            Text(widget.secondTitle),
+                          ],
                         ),
-                        Text(widget.secondTitle),
-                      ],
-                    ),
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(Icons.arrow_back),
-              ),
-            ),
-            body: Consumer(builder: (ctx, ref, child) {
-              final contentState = ref.watch(feedDetailStateProvider);
-              final isLoadMoreError = contentState.feedListState.isLoadMoreError;
-              final isLoadMoreDone = contentState.feedListState.isLoadMoreDone;
-              final popularUserState = ref.watch(popularUserListStateProvider);
-              final isLoading = contentState.feedListState.isLoading;
-              final firstList = contentState.firstFeedState.list;
-              final lists = contentState.feedListState.list;
+                  leading: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(Icons.arrow_back),
+                  ),
+                );
+              }
+              return AppBar(
+                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                actions: [
+                  widget.contentType == "userContent"
+                      ? contentState.firstFeedState.list[0].followState == 1
+                          ? InkWell(
+                              onTap: () {
+                                ref
+                                    .watch(feedDetailStateProvider.notifier)
+                                    .deleteFollow(
+                                      memberIdx:
+                                          ref.read(userModelProvider)!.idx,
+                                      followIdx: contentState
+                                          .firstFeedState.list[0].memberIdx,
+                                      contentsIdx: contentState
+                                          .firstFeedState.list[0].idx,
+                                      contentType: widget.contentType,
+                                    );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Text(
+                                  "팔로잉",
+                                  style: kBody12SemiBoldStyle.copyWith(
+                                      color: kNeutralColor500),
+                                ),
+                              ),
+                            )
+                          : InkWell(
+                              onTap: () {
+                                ref
+                                    .watch(feedDetailStateProvider.notifier)
+                                    .postFollow(
+                                      memberIdx:
+                                          ref.read(userModelProvider)!.idx,
+                                      followIdx: contentState
+                                          .firstFeedState.list[0].memberIdx,
+                                      contentsIdx: contentState
+                                          .firstFeedState.list[0].idx,
+                                      contentType: widget.contentType,
+                                    );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Text(
+                                  "팔로우",
+                                  style: kBody12SemiBoldStyle.copyWith(
+                                      color: kPrimaryColor),
+                                ),
+                              ),
+                            )
+                      : Container()
+                ],
+                title: widget.firstTitle == "null"
+                    ? Text(
+                        widget.contentType == "searchContent"
+                            ? "#${widget.secondTitle}"
+                            : widget.secondTitle,
+                      )
+                    : Column(
+                        children: [
+                          Text(
+                            widget.contentType != "notificationContent"
+                                ? widget.firstTitle
+                                : ref
+                                        .read(feedDetailStateProvider)
+                                        .firstFeedState
+                                        .memberInfo?[0]
+                                        .nick ??
+                                    '',
+                            style: kBody11RegularStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                          Text(widget.secondTitle),
+                        ],
+                      ),
+                leading: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                ),
+              );
+            }
 
-              oldLength = lists.length ?? 0;
-
-              return lists.isEmpty && firstList.isEmpty
+            return Scaffold(
+              appBar: appBarWidget(),
+              body: lists.isEmpty && firstList.isEmpty
                   ? Container()
                   : ListView.builder(
                       itemCount: lists.length + 1,
@@ -141,11 +243,29 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                         if (index == 0) {
                           return FeedDetailWidget(
                             feedData: firstList[0],
-                            nick: ref.watch(feedDetailStateProvider).firstFeedState.memberInfo?[0].nick ?? lists[0].memberInfoList?[0].nick,
-                            profileImage: ref.watch(feedDetailStateProvider).firstFeedState.memberInfo?[0].profileImgUrl ?? "",
-                            memberIdx: ref.watch(feedDetailStateProvider).firstFeedState.memberInfo?[0].memberIdx ?? lists[0].memberInfoList?[0].memberIdx,
+                            nick: ref
+                                    .watch(feedDetailStateProvider)
+                                    .firstFeedState
+                                    .memberInfo?[0]
+                                    .nick ??
+                                lists[0].memberInfoList?[0].nick,
+                            profileImage: ref
+                                    .watch(feedDetailStateProvider)
+                                    .firstFeedState
+                                    .memberInfo?[0]
+                                    .profileImgUrl ??
+                                "",
+                            memberIdx: ref
+                                    .watch(feedDetailStateProvider)
+                                    .firstFeedState
+                                    .memberInfo?[0]
+                                    .memberIdx ??
+                                lists[0].memberInfoList?[0].memberIdx,
                             contentType: widget.contentType,
-                            contentIdx: widget.contentIdx,
+                            imgDomain: ref
+                                .watch(feedDetailStateProvider)
+                                .firstFeedState
+                                .imgDomain!,
                           );
                         } else {
                           if (widget.contentIdx == lists[index - 1].idx) {
@@ -153,18 +273,38 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                           } else {
                             return FeedDetailWidget(
                               feedData: lists[index - 1],
-                              nick: ref.watch(feedDetailStateProvider).feedListState.memberInfo?[0].nick ?? lists[index - 1].memberInfoList?[0].nick,
-                              profileImage: ref.watch(feedDetailStateProvider).feedListState.memberInfo?[0].profileImgUrl ?? lists[index - 1].memberInfoList?[0].profileImgUrl,
-                              memberIdx: ref.watch(feedDetailStateProvider).firstFeedState.memberInfo?[0].memberIdx ?? lists[0].memberInfoList?[0].memberIdx,
+                              nick: ref
+                                      .watch(feedDetailStateProvider)
+                                      .feedListState
+                                      .memberInfo?[0]
+                                      .nick ??
+                                  lists[index - 1].memberInfoList?[0].nick,
+                              profileImage: ref
+                                      .watch(feedDetailStateProvider)
+                                      .feedListState
+                                      .memberInfo?[0]
+                                      .profileImgUrl ??
+                                  lists[index - 1]
+                                      .memberInfoList?[0]
+                                      .profileImgUrl,
+                              memberIdx: ref
+                                      .watch(feedDetailStateProvider)
+                                      .firstFeedState
+                                      .memberInfo?[0]
+                                      .memberIdx ??
+                                  lists[0].memberInfoList?[0].memberIdx,
                               contentType: widget.contentType,
-                              contentIdx: widget.contentIdx,
+                              imgDomain: ref
+                                  .watch(feedDetailStateProvider)
+                                  .firstFeedState
+                                  .imgDomain!,
                             );
                           }
                         }
                       },
-                    );
-            }),
-          ),
+                    ),
+            );
+          }),
         ),
       ),
     );

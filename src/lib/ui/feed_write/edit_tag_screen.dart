@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
@@ -18,6 +19,7 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_croppe
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_view_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
+import 'package:thumbor/thumbor.dart';
 
 class EditTagScreen extends ConsumerWidget {
   EditTagScreen({
@@ -216,7 +218,9 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               child: Image.network(
-                "https://dev-imgs.devlabs.co.kr${widget.url}",
+                Thumbor(host: thumborHostUrl, key: thumborKey)
+                    .buildImage("$imgDomain${widget.url}")
+                    .toUrl(),
                 fit: BoxFit.cover,
                 key: widget.imageKey,
               ),

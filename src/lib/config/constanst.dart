@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -10,6 +11,7 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.d
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Constants {
@@ -17,9 +19,27 @@ class Constants {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('selectedURL') ?? "https://api.pcstg.co.kr/v1";
   }
+
+  static Future<String> getThumborHostUrl() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('thumborHostUrl') ?? "https://tb.pcstg.co.kr/";
+  }
+
+  static Future<String> getThumborKey() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('thumborKey') ?? "Tjaqhvpt";
+  }
+
+  static Future<String> getThumborDomain() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('thumborDomain') ?? "https://imgs.pcstg.co.kr";
+  }
 }
 
 String baseUrl = "https://api.pcstg.co.kr/v1";
+String thumborHostUrl = "https://tb.pcstg.co.kr/";
+String thumborKey = "Tjaqhvpt";
+String imgDomain = "https://imgs.pcstg.co.kr";
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
@@ -86,186 +106,105 @@ final FeedResponseModel feedNullResponseModel = FeedResponseModel(
   ),
   message: "",
 );
-
 List<InlineSpan> replaceMentionsWithNicknamesInContent(
     String content,
     List<MentionListData> mentionList,
     BuildContext context,
-    TextStyle tagStyle) {
+    TextStyle tagStyle,
+    WidgetRef ref) {
   List<InlineSpan> spans = [];
 
-  String remainingContent = content;
+  // Combining both mention and hashtag patterns
+  RegExp pattern = RegExp(r"\[@\[(.*?)\]\]|\[#\[(.*?)\]\]");
 
-  while (true) {
-    MentionListData? firstMention;
-    int firstMentionIndex = -1;
+  List<Match> matches = pattern.allMatches(content).toList();
 
-    // Find the first mention in the remaining content
-    for (var mention in mentionList) {
-      String uuid = mention.uuid ?? '';
-      String pattern = '[@[' + uuid + ']]';
-      int mentionIndex = remainingContent.indexOf(pattern);
+  int lastIndex = 0;
 
-      if (mentionIndex != -1 &&
-          (firstMentionIndex == -1 || mentionIndex < firstMentionIndex)) {
-        firstMention = mention;
-        firstMentionIndex = mentionIndex;
+  for (var match in matches) {
+    String mentionMatched = match.group(1) ?? "";
+    String hashtagMatched = match.group(2) ?? "";
+
+    // Add the plain text between the current and the last mention/hashtag
+    spans.add(TextSpan(text: content.substring(lastIndex, match.start)));
+
+    if (mentionMatched.isNotEmpty) {
+      if (mentionList.any((mention) => mention.uuid == mentionMatched)) {
+        var mention = mentionList.firstWhere((m) => m.uuid == mentionMatched);
+        spans.add(WidgetSpan(
+          child: GestureDetector(
+            onTap: () {
+              ref.read(userModelProvider)!.idx == mention.memberIdx
+                  ? context.push("/home/myPage")
+                  : context.push(
+                      "/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}");
+            },
+            child: Text('@' + (mention.nick ?? ''), style: tagStyle),
+          ),
+        ));
+      } else {
+        spans.add(TextSpan(text: '@' + mentionMatched));
       }
+    } else if (hashtagMatched.isNotEmpty) {
+      // Handle hashtag
+      spans.add(WidgetSpan(
+        child: GestureDetector(
+          onTap: () {
+            context.push("/home/search/$hashtagMatched");
+          },
+          child: Text('#' + hashtagMatched,
+              style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),
+        ),
+      ));
     }
 
-    // If no more mentions are found, break the loop
-    if (firstMention == null) {
-      break;
-    }
-
-    // Add the text before the mention to the spans
-    if (firstMentionIndex > 0) {
-      spans.add(
-          TextSpan(text: remainingContent.substring(0, firstMentionIndex)));
-    }
-
-    // Add the mention to the spans with special style and click behavior
-    spans.add(WidgetSpan(
-      child: GestureDetector(
-        onTap: () {
-          context.push(
-              "/home/myPage/followList/${firstMention!.memberIdx}/userPage/${firstMention.nick}/${firstMention.memberIdx}");
-        },
-        child: Text('@' + (firstMention.nick ?? ''), style: tagStyle),
-      ),
-    ));
-
-    // Remove the processed content
-    remainingContent = remainingContent
-        .substring(firstMentionIndex + '[@[${firstMention.uuid}]]'.length);
+    lastIndex = match.end;
   }
 
-  // Process hashtags
-  String remainingContentAfterMentions = remainingContent;
-  while (true) {
-    RegExp exp = new RegExp(r"\[#\[(.*?)\]\]");
-    var match = exp.firstMatch(remainingContentAfterMentions);
-
-    if (match == null) break;
-
-    String beforeHashtag =
-        remainingContentAfterMentions.substring(0, match.start);
-    String hashtag = match.group(1) ?? '';
-
-    spans.add(TextSpan(text: beforeHashtag));
-
-    spans.add(WidgetSpan(
-      child: GestureDetector(
-        onTap: () {
-          print(hashtag);
-          context.push("/home/search/$hashtag");
-        },
-        child: Text('#' + hashtag,
-            style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),
-      ),
-    ));
-
-    remainingContentAfterMentions =
-        remainingContentAfterMentions.substring(match.end);
-  }
-
-  // Add the remaining content after the last pattern
-  spans.add(TextSpan(text: remainingContentAfterMentions));
+  // Add any remaining text after the last mention/hashtag
+  spans.add(TextSpan(text: content.substring(lastIndex)));
 
   return spans;
 }
 
 String replaceMentionsWithNicknamesInContentAsString(
     String content, List<MentionListData> mentionList) {
-  String result = "";
+  RegExp pattern = RegExp(r"\[@\[(.*?)\]\]");
+  String result = content.replaceAllMapped(pattern, (match) {
+    String matchedString = match.group(1) ?? "";
 
-  String remainingContent = content;
-
-  while (true) {
-    MentionListData? firstMention;
-    int firstMentionIndex = -1;
-
-    // Find the first mention in the remaining content
-    for (var mention in mentionList) {
-      String uuid = mention.uuid ?? '';
-      String pattern = '[@[' + uuid + ']]';
-      int mentionIndex = remainingContent.indexOf(pattern);
-
-      if (mentionIndex != -1 &&
-          (firstMentionIndex == -1 || mentionIndex < firstMentionIndex)) {
-        firstMention = mention;
-        firstMentionIndex = mentionIndex;
-      }
+    if (mentionList.any((mention) => mention.uuid == matchedString)) {
+      return '@' + mentionList.firstWhere((m) => m.uuid == matchedString).nick!;
+    } else {
+      return '@' + matchedString;
     }
+  });
 
-    // If no more mentions are found, break the loop
-    if (firstMention == null) {
-      break;
-    }
-
-    // Add the text before the mention to the result
-    if (firstMentionIndex > 0) {
-      result += remainingContent.substring(0, firstMentionIndex);
-    }
-
-    // Add the mention to the result
-    result += '@' + (firstMention.nick ?? '');
-
-    // Remove the processed content
-    remainingContent = remainingContent
-        .substring(firstMentionIndex + '[@[${firstMention.uuid}]]'.length);
-  }
-
-  // Process hashtags
-  String remainingContentAfterMentions = remainingContent;
-  while (true) {
-    RegExp exp = new RegExp(r"\[#\[(.*?)\]\]");
-    var match = exp.firstMatch(remainingContentAfterMentions);
-
-    if (match == null) break;
-
-    String beforeHashtag =
-        remainingContentAfterMentions.substring(0, match.start);
-    String hashtag = match.group(1) ?? '';
-
-    // Add the text before the hashtag to the result
-    result += beforeHashtag;
-
-    // Add the hashtag to the result
-    result += '#' + hashtag;
-
-    remainingContentAfterMentions =
-        remainingContentAfterMentions.substring(match.end);
-  }
-
-  // Add the remaining content after the last pattern to the result
-  result += remainingContentAfterMentions;
+  RegExp hashtagExp = RegExp(r"\[#\[(.*?)\]\]");
+  result = result.replaceAllMapped(hashtagExp, (match) {
+    return "#" + (match.group(1) ?? "");
+  });
 
   return result;
 }
 
 String replaceMentionsWithNicknamesInContentAsTextFieldString(
     String content, List<MentionListData> mentionList) {
-  String result = content;
+  RegExp pattern = RegExp(r"\[@\[(.*?)\]\]");
+  String result = content.replaceAllMapped(pattern, (match) {
+    String matchedString = match.group(1) ?? "";
 
-  for (var mention in mentionList) {
-    String uuid = mention.uuid ?? '';
-    String pattern = '[@[' + uuid + ']]';
-    String replacement = '@' + (mention.nick ?? '');
+    if (mentionList.any((mention) => mention.uuid == matchedString)) {
+      return '@' + mentionList.firstWhere((m) => m.uuid == matchedString).nick!;
+    } else {
+      return '@' + matchedString;
+    }
+  });
 
-    result = result.replaceAll(pattern, replacement);
-  }
-
-  RegExp exp = new RegExp(r"\[#\[(.*?)\]\]");
-  var matches = exp.allMatches(result);
-
-  for (var match in matches) {
-    String hashtag = match.group(1) ?? '';
-    String pattern = '[#[' + hashtag + ']]';
-    String replacement = '#' + hashtag;
-
-    result = result.replaceAll(pattern, replacement);
-  }
+  RegExp hashtagExp = RegExp(r"\[#\[(.*?)\]\]");
+  result = result.replaceAllMapped(hashtagExp, (match) {
+    return "#" + (match.group(1) ?? "");
+  });
 
   return result;
 }

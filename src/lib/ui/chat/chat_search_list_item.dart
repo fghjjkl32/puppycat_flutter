@@ -44,18 +44,26 @@ class ChatSearchListItem extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            getProfileAvatar(profileImgUrl, 'assets/image/chat/icon_profile_small.png'),
+            getProfileAvatar(
+              profileImgUrl,
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0, right: 8.0),
               child: Column(
                 // mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(nick,
-                    style: kBody13BoldStyle.copyWith(color: kTextTitleColor, letterSpacing: 0.2, height: 1.4),
+                  Text(
+                    nick,
+                    style: kBody13BoldStyle.copyWith(
+                        color: kTextTitleColor,
+                        letterSpacing: 0.2,
+                        height: 1.4),
                   ),
-                  Text(intro,
-                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor, letterSpacing: 0.2, height: 1.2),
+                  Text(
+                    intro,
+                    style: kBody11RegularStyle.copyWith(
+                        color: kTextBodyColor, letterSpacing: 0.2, height: 1.2),
                   ),
                 ],
               ),

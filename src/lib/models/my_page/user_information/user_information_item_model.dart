@@ -19,6 +19,7 @@ class UserInformationItemModel with _$UserInformationItemModel {
     int? blockedState,
     int? blockedMeState,
     int? followState,
+    int? isBadge,
     //ChatInfo
     String? chatAccessToken,
     String? chatMemberId,

@@ -6,6 +6,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'chat_service.g.dart';
 
+@RestApi()
 abstract class ChatService {
   factory ChatService(Dio dio, {String baseUrl}) = _ChatService;
 

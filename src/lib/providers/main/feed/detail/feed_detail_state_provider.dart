@@ -434,13 +434,6 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     final result = await FeedRepository()
         .postHide(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
-    await refresh(
-      loginMemberIdx: loginMemberIdx,
-      memberIdx: memberIdx,
-      contentIdx: contentIdx,
-      contentType: contentType,
-    );
-
     return result;
   }
 

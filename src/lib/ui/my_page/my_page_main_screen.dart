@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
@@ -19,6 +21,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_con
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
+import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class MyPageMainScreen extends ConsumerStatefulWidget {
@@ -289,7 +292,12 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(12)),
                                   child: Image.network(
-                                    "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
+                                    Thumbor(
+                                            host: thumborHostUrl,
+                                            key: thumborKey)
+                                        .buildImage(
+                                            "$imgDomain${lists[index].imgUrl}")
+                                        .toUrl(),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -687,7 +695,12 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(12)),
                                   child: Image.network(
-                                    "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}",
+                                    Thumbor(
+                                            host: thumborHostUrl,
+                                            key: thumborKey)
+                                        .buildImage(
+                                            "$imgDomain${lists[index].imgUrl}")
+                                        .toUrl(),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -739,29 +752,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-              child: WidgetMask(
-                blendMode: BlendMode.srcATop,
-                childSaveLayer: true,
-                mask: data.profileImgUrl == null || data.profileImgUrl == ""
-                    ? Center(
-                        child: Image.asset(
-                          'assets/image/feed/icon/large_size/icon_taguser.png',
-                          height: 48.h,
-                          fit: BoxFit.fill,
-                        ),
-                      )
-                    : Center(
-                        child: Image.asset(
-                          data.profileImgUrl!,
-                          height: 48.h,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                child: SvgPicture.asset(
-                  'assets/image/feed/image/squircle.svg',
-                  height: 48.h,
-                ),
-              ),
+              child: getProfileAvatar(data.profileImgUrl! ?? "", 48.w, 48.h),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -769,13 +760,19 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
               children: [
                 Row(
                   children: [
-                    Image.asset(
-                      'assets/image/feed/icon/small_size/icon_special.png',
-                      height: 13.h,
-                    ),
-                    SizedBox(
-                      width: 4.w,
-                    ),
+                    data.isBadge == 1
+                        ? Row(
+                            children: [
+                              Image.asset(
+                                'assets/image/feed/icon/small_size/icon_special.png',
+                                height: 13.h,
+                              ),
+                              SizedBox(
+                                width: 4.w,
+                              ),
+                            ],
+                          )
+                        : Container(),
                     Text(
                       "${data.nick}",
                       style: kTitle16ExtraBoldStyle.copyWith(
@@ -800,7 +797,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                   height: 3.h,
                 ),
                 Text(
-                  data.intro == null ? "소개글이 없습니다." : "${data.intro}",
+                  data.intro == null || data.intro == ""
+                      ? "소개글이 없습니다."
+                      : "${data.intro}",
                   style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                 ),
                 GestureDetector(

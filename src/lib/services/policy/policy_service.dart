@@ -5,6 +5,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'policy_service.g.dart';
 
+@RestApi()
 abstract class PolicyService {
   factory PolicyService(Dio dio, {String baseUrl}) = _PolicyService;
 

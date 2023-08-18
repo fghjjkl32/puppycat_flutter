@@ -6,6 +6,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'like_contents_service.g.dart';
 
+@RestApi()
 abstract class LikeContentsService {
   factory LikeContentsService(Dio dio, {String baseUrl}) = _LikeContentsService;
 

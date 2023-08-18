@@ -13,10 +13,12 @@ class LoginRequestModel with _$LoginRequestModel {
     required String simpleType,
     required String appKey,
     required String appVer,
+    required int isBadge,
     @Default('puppycat.co.kr') String domain, // puppycat.co.kr  임시
     @Default('ko') String iso,
     required String fcmToken,
   }) = _LoginRequestModel;
 
-  factory LoginRequestModel.fromJson(Map<String, dynamic> json) => _$LoginRequestModelFromJson(json);
+  factory LoginRequestModel.fromJson(Map<String, dynamic> json) =>
+      _$LoginRequestModelFromJson(json);
 }

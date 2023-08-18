@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_bottom_icon_widget.dart';
@@ -12,25 +13,26 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 
 import 'widget/feed_content_detail_widget.dart';
 
-class FeedDetailWidget extends StatelessWidget {
+class FeedDetailWidget extends ConsumerWidget {
   final String? profileImage;
   final String? nick;
   final FeedData feedData;
   final int? memberIdx;
   final String contentType;
-  final int contentIdx;
+  final String imgDomain;
+
   const FeedDetailWidget({
     required this.profileImage,
     required this.feedData,
     required this.nick,
     required this.memberIdx,
     required this.contentType,
-    required this.contentIdx,
+    required this.imgDomain,
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         //feed title
@@ -49,8 +51,14 @@ class FeedDetailWidget extends StatelessWidget {
         //feed detail image
         FeedImageDetailWidget(
           imageList: feedData.imgList!,
-          contentIdx: contentIdx,
+          contentIdx: feedData.idx,
           contentType: contentType,
+          memberIdx: memberIdx,
+          isLike: feedData.likeState == 1,
+          imgDomain: imgDomain,
+        ),
+        const SizedBox(
+          height: 10,
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0.w),
@@ -59,10 +67,12 @@ class FeedDetailWidget extends StatelessWidget {
             child: RichText(
               text: TextSpan(
                 children: replaceMentionsWithNicknamesInContent(
-                    feedData.contents!,
-                    feedData.mentionList!,
-                    context,
-                    kBody13RegularStyle.copyWith(color: kSecondaryColor)),
+                  feedData.contents!,
+                  feedData.mentionList!,
+                  context,
+                  kBody13RegularStyle.copyWith(color: kSecondaryColor),
+                  ref,
+                ),
                 style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
               ),
             ),
@@ -85,6 +95,7 @@ class FeedDetailWidget extends StatelessWidget {
                 comment: feedData.commentList![0].contents!,
                 isSpecialUser: feedData.commentList![0].isBadge! == 1,
                 mentionListData: feedData.commentList![0].mentionList ?? [],
+                contentIdx: feedData.idx,
               ),
         Padding(
           padding: EdgeInsets.all(12.0.h),

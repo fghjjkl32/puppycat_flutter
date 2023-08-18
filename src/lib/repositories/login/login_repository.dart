@@ -59,7 +59,7 @@ class LoginRepository {
         appKey: appKey,
         appVer: GetIt.I.get<PackageInformationUtil>().appVersion,
         // domain: "11",
-        fcmToken: "12343535463",
+        fcmToken: "12343535463", isBadge: userModel!.isBadge,
       );
 
       // var isNeedSignUp = false;
@@ -114,6 +114,7 @@ class LoginRepository {
       appVer: GetIt.I.get<PackageInformationUtil>().appVersion,
       // domain: "11",
       fcmToken: "12343535463",
+      isBadge: userModel!.isBadge,
     );
 
     // var isNeedSignUp = false;
@@ -144,9 +145,11 @@ class LoginRepository {
 
     print('loginStatus 2 $loginStatus');
     userModel = userModel.copyWith(
-        loginStatus: loginStatus,
-        idx: int.parse(_getMemberIdx(result) ?? '0'),
-        appKey: appKey);
+      loginStatus: loginStatus,
+      idx: int.parse(_getMemberIdx(result) ?? '0'),
+      appKey: appKey,
+      isBadge: 1,
+    );
     print('userModel $userModel');
 
     return userModel;

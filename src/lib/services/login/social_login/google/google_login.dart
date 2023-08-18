@@ -1,4 +1,3 @@
-
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/social_login_service.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -36,7 +35,7 @@ class GoogleLoginService implements SocialLoginService {
       simpleType: 'google',
       accessToken: _authentication!.accessToken ?? '',
       password: _accountResult!.id,
-      passwordConfirm: _accountResult!.id,
+      passwordConfirm: _accountResult!.id, isBadge: 0,
     );
 
     return userModel;
@@ -46,7 +45,7 @@ class GoogleLoginService implements SocialLoginService {
   Future<bool> login() async {
     try {
       _accountResult = await _googleSignIn.signIn();
-      if(_accountResult == null) {
+      if (_accountResult == null) {
         return false;
       }
       _authentication = await _accountResult!.authentication;
@@ -62,5 +61,4 @@ class GoogleLoginService implements SocialLoginService {
     // TODO: implement logout
     throw UnimplementedError();
   }
-
 }

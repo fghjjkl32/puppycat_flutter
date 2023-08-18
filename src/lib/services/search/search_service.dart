@@ -8,6 +8,7 @@ import 'package:retrofit/retrofit.dart';
 
 part 'search_service.g.dart';
 
+@RestApi()
 abstract class SearchService {
   factory SearchService(Dio dio, {String baseUrl}) = _SearchService;
 

@@ -7,7 +7,7 @@ part 'user_model.g.dart';
 enum LoginStatus {
   none,
   success, //페이지 이동
-  failure,  // 팝업 다이얼로그
+  failure, // 팝업 다이얼로그
   needSignUp, // 화면 전환
   restriction, // 팝업 다이얼로그
   withdrawalPending, // 바텀 시트 띄워
@@ -29,6 +29,7 @@ class UserModel with _$UserModel {
     required String accessToken,
     required String password,
     required String passwordConfirm,
+    required int isBadge,
     @Default('') String? partner,
     String? ci,
     String? di,
@@ -40,5 +41,6 @@ class UserModel with _$UserModel {
     String? introText,
   }) = _UserModel;
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 }

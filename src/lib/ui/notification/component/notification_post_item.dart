@@ -3,8 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class NotificationPostItem extends StatelessWidget {
@@ -39,7 +41,7 @@ class NotificationPostItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if(onTap != null) {
+        if (onTap != null) {
           onTap!();
         }
       },
@@ -60,7 +62,7 @@ class NotificationPostItem extends StatelessWidget {
                 ),
               ),
             ),
-            getProfileAvatar(profileImgUrl, 'assets/image/chat/icon_profile_small.png'),
+            getProfileAvatar(profileImgUrl),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: 10.0, right: 0),
@@ -79,8 +81,8 @@ class NotificationPostItem extends StatelessWidget {
                           ),
                           Text(
                             regDate,
-                            style:
-                                kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                            style: kBadge10MediumStyle.copyWith(
+                                color: kTextBodyColor),
                           ),
                         ],
                       ),
@@ -115,14 +117,16 @@ class NotificationPostItem extends StatelessWidget {
                                     InkWell(
                                       onTap: () {
                                         print('isLiked 1 $isLiked');
-                                        if(onLikeTap != null) {
+                                        if (onLikeTap != null) {
                                           onLikeTap!(isLiked);
                                         }
                                       },
                                       child: Image.asset(
                                         'assets/image/feed/icon/small_size/icon_comment_like_off.png',
                                         height: 20,
-                                        color: isLiked ? kPrimaryColor : kTextBodyColor,
+                                        color: isLiked
+                                            ? kPrimaryColor
+                                            : kTextBodyColor,
                                       ),
                                     ),
                                     Text(
@@ -135,7 +139,7 @@ class NotificationPostItem extends StatelessWidget {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        if(onCommentTap != null) {
+                                        if (onCommentTap != null) {
                                           onCommentTap!();
                                         }
                                       },
@@ -161,13 +165,18 @@ class NotificationPostItem extends StatelessWidget {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(8)),
                             child: Image.network(
-                              imgUrl,
+                              Thumbor(host: thumborHostUrl, key: thumborKey)
+                                  .buildImage("$imgDomain${imgUrl}")
+                                  .toUrl(),
                               fit: BoxFit.cover,
                               height: 52,
                               width: 52,
                               errorBuilder: (context, e, stackTrace) {
                                 print('error imgUrl $imgUrl');
-                                return const SizedBox(height: 52, width: 52,);
+                                return const SizedBox(
+                                  height: 52,
+                                  width: 52,
+                                );
                               },
                             ),
                           ),

@@ -30,14 +30,30 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   late TextEditingController stgUrlController;
   late TextEditingController prdUrlController;
   late TextEditingController selUrlController;
+  late TextEditingController selThumborHostController;
+  late TextEditingController selThumborKeyController;
+  late TextEditingController selThumborDomainController;
+
   late FocusNode devFocusNode;
   late FocusNode stgFocusNode;
   late FocusNode prdFocusNode;
   late FocusNode selFocusNode;
+  late FocusNode selFocusNode2;
+  late FocusNode selFocusNode3;
+  late FocusNode selFocusNode4;
 
   List<SystemUiOverlay>? systemUiOverlayList = [];
 
   bool developMode = false;
+
+  String devThumborHostUrl = "https://tb.devlabs.co.kr/";
+  String stgThumborHostUrl = "https://tb.pcstg.co.kr/";
+
+  String devThumborKey = "B5C2FAB11C3CB963";
+  String stgThumborKey = "Tjaqhvpt";
+
+  String stgThumborDomainUrl = "https://imgs.pcstg.co.kr";
+  String devThumborDomainUrl = "https://dev-imgs.devlabs.co.kr";
 
   @override
   void initState() {
@@ -50,10 +66,17 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
         TextEditingController(text: "https://api.pcstg.co.kr/v1");
     prdUrlController = TextEditingController(text: "");
     selUrlController = TextEditingController(text: '');
+    selThumborHostController = TextEditingController(text: '');
+    selThumborKeyController = TextEditingController(text: '');
+    selThumborDomainController = TextEditingController(text: '');
+
     devFocusNode = FocusNode();
     stgFocusNode = FocusNode();
     prdFocusNode = FocusNode();
     selFocusNode = FocusNode();
+    selFocusNode2 = FocusNode();
+    selFocusNode3 = FocusNode();
+    selFocusNode4 = FocusNode();
   }
 
   @override
@@ -66,12 +89,24 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     stgFocusNode.dispose();
     prdFocusNode.dispose();
     selFocusNode.dispose();
+    selFocusNode2.dispose();
+    selFocusNode3.dispose();
+    selFocusNode4.dispose();
+
     super.dispose();
   }
 
-  void setSelectURL(TextEditingController controller) {
+  void setSelectURL(
+    TextEditingController controller,
+    String thumborHost,
+    String thumborKey,
+    String thumborDomain,
+  ) {
     setState(() {
       selUrlController.text = controller.text;
+      selThumborHostController.text = thumborHost;
+      selThumborKeyController.text = thumborKey;
+      selThumborDomainController.text = thumborDomain;
     });
   }
 
@@ -96,7 +131,30 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     await prefs.setString('selectedURL', selUrlController.text);
 
     baseUrl = await Constants.getBaseUrl();
-    // Restart.restartApp();
+  }
+
+  setThumborHostUrl() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('thumborHostUrl', selThumborHostController.text);
+
+    thumborHostUrl = await Constants.getThumborHostUrl();
+  }
+
+  setThumborKey() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('thumborKey', selThumborKeyController.text);
+
+    thumborKey = await Constants.getThumborKey();
+  }
+
+  setThumborDomain() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('thumborDomain', selThumborDomainController.text);
+
+    imgDomain = await Constants.getThumborDomain();
   }
 
   @override
@@ -142,7 +200,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        setSelectURL(devUrlController);
+                        setSelectURL(devUrlController, devThumborHostUrl,
+                            devThumborKey, devThumborDomainUrl);
                       },
                       child: const Text('선택'),
                     ),
@@ -166,31 +225,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        setSelectURL(stgUrlController);
-                      },
-                      child: const Text('선택'),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: TextField(
-                        controller: prdUrlController,
-                        focusNode: prdFocusNode,
-                        decoration:
-                            const InputDecoration(label: Text('Product')),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        setSelectURL(prdUrlController);
+                        setSelectURL(stgUrlController, stgThumborHostUrl,
+                            stgThumborKey, stgThumborDomainUrl);
                       },
                       child: const Text('선택'),
                     ),
@@ -237,6 +273,45 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
               const SizedBox(
                 height: 20,
               ),
+              Flexible(
+                child: TextField(
+                  controller: selThumborHostController,
+                  focusNode: selFocusNode2,
+                  readOnly: true,
+                  decoration: const InputDecoration(
+                    label: Text('thumbor Host Url'),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Flexible(
+                child: TextField(
+                  controller: selThumborKeyController,
+                  focusNode: selFocusNode3,
+                  readOnly: true,
+                  decoration: const InputDecoration(
+                    label: Text('Thumbor Key'),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Flexible(
+                child: TextField(
+                  controller: selThumborDomainController,
+                  focusNode: selFocusNode4,
+                  readOnly: true,
+                  decoration: const InputDecoration(
+                    label: Text('Thumbor Domain'),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -273,6 +348,9 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                           return;
                         } else {
                           setUrlValue();
+                          setThumborHostUrl();
+                          setThumborKey();
+                          setThumborDomain();
                           ref.read(loginStateProvider.notifier).logout(
                                 ref.read(userModelProvider)!.simpleType,
                                 ref.read(userModelProvider)!.appKey,
