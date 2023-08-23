@@ -10,7 +10,7 @@ import 'firebase_options.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   NotificationController notificationController = NotificationController();
-  print("run1 ");
+  print("run1  $message");
   // _setupNotificationChannel();
   notificationController.createChannel('puppycat', 'Puppycat Notification', '');
   // notificationController.showFlutterNotification(message);
@@ -44,6 +44,12 @@ class FireBaseMessageController {
     notificationController = NotificationController();
     _setupNotificationChannel();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('onMessageOpenedApp $message');
+    });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('onMessage $message');
+    });
 
     // await FirebaseMessaging.instance.subscribeToTopic("topic_test");
 

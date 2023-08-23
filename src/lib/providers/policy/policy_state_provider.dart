@@ -28,7 +28,8 @@ class PolicyState extends _$PolicyState {
   void getPolicies() async {
     final PolicyRepository policyRepository = PolicyRepository();
     try {
-      var result = await policyRepository.getPolicies();
+      List<PolicyItemModel> result = await policyRepository.getPolicies();
+
       state = result;
     } catch (e) {
       print('get Policy Error');

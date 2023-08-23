@@ -226,13 +226,6 @@ class LoginScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            ElevatedButton(
-              onPressed: () async {
-                // var test = await EncryptUtil.getPassAPIEncrypt();
-                // print('test : $test');
-              },
-              child: const Text('test'),
-            ),
           ],
         ),
       ),

@@ -11,7 +11,7 @@ class KakaoLoginService implements SocialLoginService {
 
   KakaoLoginService() {
     KakaoSdk.init(
-      nativeAppKey: '7c08c783bcbdb1ef34a88b51e2dc0fde',
+      nativeAppKey: 'cd91822133ce9bf5f822d84832752658',
       loggingEnabled: false,
     );
   }

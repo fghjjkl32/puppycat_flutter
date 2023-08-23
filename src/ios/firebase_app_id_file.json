@@ -1,7 +1,7 @@
 {
   "file_generated_by": "FlutterFire CLI",
   "purpose": "FirebaseAppID & ProjectID for this Firebase app in this directory",
-  "GOOGLE_APP_ID": "1:749563510570:ios:3afc80b802eac65b4a2853",
-  "FIREBASE_PROJECT_ID": "pet-mobile-social-flutter",
-  "GCM_SENDER_ID": "749563510570"
+  "GOOGLE_APP_ID": "1:14263543464:ios:6a62a6702e40cdcaa9c49d",
+  "FIREBASE_PROJECT_ID": "prd-puppycat",
+  "GCM_SENDER_ID": "14263543464"
 }

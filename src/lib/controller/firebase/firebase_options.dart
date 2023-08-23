@@ -50,20 +50,21 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCoErAInXE9HT9iTKR9nzCtSp13a6KnGDc',
-    appId: '1:749563510570:android:9cabecdac32bfe144a2853',
-    messagingSenderId: '749563510570',
-    projectId: 'pet-mobile-social-flutter',
-    storageBucket: 'pet-mobile-social-flutter.appspot.com',
+    apiKey: 'AIzaSyBmdFKCBhurDbjj5p6wA6eAQBskNjDmIAg',
+    appId: '1:14263543464:android:b52833d47506d509a9c49d',
+    messagingSenderId: '14263543464',
+    projectId: 'prd-puppycat',
+    storageBucket: 'prd-puppycat.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBQducCrLIepCJIo8N-8m7MZMR5wn__nfY',
-    appId: '1:749563510570:ios:3afc80b802eac65b4a2853',
-    messagingSenderId: '749563510570',
-    projectId: 'pet-mobile-social-flutter',
-    storageBucket: 'pet-mobile-social-flutter.appspot.com',
-    iosClientId: '749563510570-3je9kstd42unntoi8no8ds13ohg4og3a.apps.googleusercontent.com',
+    apiKey: 'AIzaSyC26GO3vDuyAfgEF8C9jW2ikP8kum_QFPQ',
+    appId: '1:14263543464:ios:6a62a6702e40cdcaa9c49d',
+    messagingSenderId: '14263543464',
+    projectId: 'prd-puppycat',
+    storageBucket: 'prd-puppycat.appspot.com',
+    androidClientId: '14263543464-775u5si0ocp1mest7qch552uak2rj7g1.apps.googleusercontent.com',
+    iosClientId: '14263543464-a7s7l6h3d68vatmij33ddooqn8qt26pl.apps.googleusercontent.com',
     iosBundleId: 'com.uxplus.test.puppycat',
   );
 }

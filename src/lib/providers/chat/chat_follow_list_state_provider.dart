@@ -57,7 +57,7 @@ class ChatFollowUserState extends _$ChatFollowUserState {
           .toList();
 
       try {
-        _lastPage = searchResult.data.params!.pagination!.endPage!;
+        _lastPage = searchResult.data.params!.pagination!.totalPageCount!;
       } catch (_) {
         _lastPage = 1;
       }
