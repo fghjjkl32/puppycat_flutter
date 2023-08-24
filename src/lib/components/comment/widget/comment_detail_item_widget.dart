@@ -40,7 +40,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
     required this.isLike,
     required this.memberIdx,
     required this.mentionListData,
-    this.replies,
+    // this.replies,
     Key? key,
   }) : super(key: key);
 
@@ -55,7 +55,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
   final bool isReply;
   final int likeCount;
   final bool isLike;
-  final ChildCommentData? replies;
+  // final ChildCommentData? replies;
   final int memberIdx;
   final List<MentionListData> mentionListData;
 
@@ -342,12 +342,12 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            if (replies != null) {
-                              ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, commentIdx);
-                              ref.watch(commentHeaderProvider.notifier).setHasInput(true);
-                            } else {
-                              ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, parentIdx);
-                            }
+                            // if (replies != null) {
+                            //   ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, commentIdx);
+                            //   ref.watch(commentHeaderProvider.notifier).setHasInput(true);
+                            // } else {
+                            //   ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, parentIdx);
+                            // }
                           },
                           child: Row(
                             children: [
@@ -372,96 +372,6 @@ class CommentDetailItemWidget extends ConsumerWidget {
               ),
             ],
           ),
-          if (replies != null)
-            Column(
-              children: [
-                SizedBox(
-                  height: 125 * replies!.list.length.toDouble(),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: replies!.list.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        print('replies!.list[index].idx ${replies!.list[index].idx}');
-                        return AutoScrollTag(
-                          key: UniqueKey(),
-                          controller: ref.read(commentListScrollCtrlProvider),
-                          index: replies!.list[index].idx,
-                          child: CommentDetailItemWidget(
-                            parentIdx: replies!.list[index].parentIdx,
-                            commentIdx: replies!.list[index].idx,
-                            profileImage: replies!.list[index].url ?? 'assets/image/feed/image/sample_image1.png',
-                            name: replies!.list[index].nick,
-                            comment: replies!.list[index].contents,
-                            isSpecialUser: replies!.list[index].isBadge == 1,
-                            time: DateTime.parse(replies!.list[index].regDate),
-                            isReply: true,
-                            likeCount: replies!.list[index].commentLikeCnt ?? 0,
-                            replies: replies!.list[index].childCommentData,
-                            contentIdx: replies!.list[index].contentsIdx,
-                            isLike: replies!.list[index].likeState == 1,
-                            memberIdx: replies!.list[index].memberIdx,
-                            mentionListData: replies!.list[index].mentionList ?? [],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                // if (replies!.list.length > 2)
-                //   InkWell(
-                //     onTap: () async {
-                //       var comment = ref.watch(commentStateProvider.select(
-                //           (state) => state.list
-                //               .firstWhere((c) => c.idx == commentIdx)));
-                //
-                //       if (comment.loadMoreClickCount == 0) {
-                //         await ref
-                //             .watch(commentStateProvider.notifier)
-                //             .getInitReplyComment(
-                //               contentIdx,
-                //               memberIdx,
-                //               1,
-                //               commentIdx,
-                //             );
-                //       } else {
-                //         await ref
-                //             .watch(commentStateProvider.notifier)
-                //             .loadMoreReplyComment(
-                //               contentIdx,
-                //               memberIdx,
-                //               commentIdx,
-                //             );
-                //       }
-                //       ref
-                //           .watch(commentStateProvider.notifier)
-                //           .increaseLoadMoreClickCount(commentIdx);
-                //     },
-                //     child: Consumer(
-                //       builder: (context, ref, child) {
-                //         final comment = ref.watch(commentStateProvider.select(
-                //             (state) => state.list
-                //                 .firstWhere((c) => c.idx == commentIdx)));
-                //
-                //         int displayedReplies = comment.loadMoreClickCount == 0
-                //             ? 2
-                //             : 2 + (comment.loadMoreClickCount * 10);
-                //
-                //         return replies!.params.pagination!.totalRecordCount! -
-                //                     displayedReplies <=
-                //                 0
-                //             ? Container()
-                //             : Text(
-                //                 "답글 ${replies!.params.pagination!.totalRecordCount! - displayedReplies}개 더 보기",
-                //                 style: kBody12RegularStyle.copyWith(
-                //                     color: kTextBodyColor),
-                //               );
-                //       },
-                //     ),
-                //   ),
-              ],
-            ),
         ],
       ),
     );

@@ -10,7 +10,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 part 'comment_list_state_provider.g.dart';
 
-
 @Riverpod(keepAlive: true)
 class CommentListState extends _$CommentListState {
   int _lastPage = 0;
@@ -48,7 +47,32 @@ class CommentListState extends _$CommentListState {
         memberIdx: loginMemberIdx,
       );
 
-      var searchList = searchResult.data.list;
+      List<CommentData> commentList = [];
+
+      for (var element in searchResult.data.list) {
+        commentList.add(element);
+        if (element.childCommentData != null) {
+          if (element.childCommentData!.list.isNotEmpty) {
+            int totalPageCount = element.childCommentData!.params.pagination!.totalPageCount!;
+            ///NOTE
+            ///아래 mapping은 나중에  API  수정되면 다시 원복
+            ///for문은 mapping 원복 때 제거
+            // List<CommentData> childList = element.childCommentData!.list.map((child) {
+            //   return child.copyWith(isReply: true);
+            // }).toList();
+
+            List<CommentData> childList = [];
+            for (var child in element.childCommentData!.list) {
+              childList.add(child.copyWith(isReply: true));
+              if(childList.length >= 2) {
+                break;
+              }
+            }
+
+            commentList.addAll(childList);
+          }
+        }
+      }
 
       try {
         _lastPage = searchResult.data.params!.pagination!.totalPageCount!;
@@ -57,12 +81,12 @@ class CommentListState extends _$CommentListState {
       }
 
       print('pageKey $pageKey');
-      final nextPageKey = searchList.isEmpty ? null : pageKey + 1;
+      final nextPageKey = commentList.isEmpty ? null : pageKey + 1;
 
       if (pageKey == _lastPage) {
-        state.appendLastPage(searchList);
+        state.appendLastPage(commentList);
       } else {
-        state.appendPage(searchList, nextPageKey);
+        state.appendPage(commentList, nextPageKey);
       }
       _apiStatus = ListAPIStatus.loaded;
     } catch (e) {
@@ -83,7 +107,7 @@ class CommentListState extends _$CommentListState {
 
       var currentPageKey = state.nextPageKey!.toInt() - 1;
       var previousPageKey = 0;
-      if(currentPageKey != null && currentPageKey > 1) {
+      if (currentPageKey != null && currentPageKey > 1) {
         previousPageKey = currentPageKey - 1;
       } else {
         return;
@@ -122,7 +146,7 @@ class CommentListState extends _$CommentListState {
 
     _contentsIdx = contentsIdx;
 
-    if(!state.hasListeners) {
+    if (!state.hasListeners) {
       state.addPageRequestListener(_fetchPage);
     }
 
@@ -148,10 +172,7 @@ class CommentListState extends _$CommentListState {
 
       // _apiStatus = ListAPIStatus.loading;
 
-      var loginMemberIdx = ref
-          .read(userInfoProvider)
-          .userModel!
-          .idx;
+      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
 
       final searchResult = await CommentRepository().getFocusComments(
         loginMemberIdx,
@@ -163,7 +184,7 @@ class CommentListState extends _$CommentListState {
       print('searchResult $searchResult');
       int currentPage = searchResult.data.params!.page!;
       // _lastPage = searchResult.data.params!.pagination!.totalPageCount!;
-      if(currentPage - 1 <= 0) {
+      if (currentPage - 1 <= 0) {
         currentPage = 1;
       } else {
         currentPage = currentPage - 1;

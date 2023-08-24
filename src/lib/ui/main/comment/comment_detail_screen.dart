@@ -111,7 +111,7 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
                   return AutoScrollTag(
                     key: UniqueKey(),
                     controller: _scrollController,
-                    index: item.idx,
+                    index: index,
                     child: CommentDetailItemWidget(
                       key: UniqueKey(),
                       parentIdx: item.parentIdx,
@@ -121,9 +121,9 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
                       comment: item.contents,
                       isSpecialUser: item.isBadge == 1,
                       time: DateTime.parse(item.regDate),
-                      isReply: false,
+                      isReply: item.isReply,
                       likeCount: item.commentLikeCnt ?? 0,
-                      replies: item.childCommentData,
+                      // replies: item.childCommentData,
                       contentIdx: item.contentsIdx,
                       isLike: item.likeState == 1,
                       memberIdx: item.memberIdx,
