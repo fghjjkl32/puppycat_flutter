@@ -15,6 +15,7 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
+import 'package:zoom_pinch_overlay/zoom_pinch_overlay.dart';
 
 class FeedImageDetailWidget extends ConsumerStatefulWidget {
   FeedImageDetailWidget({
@@ -111,6 +112,27 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget>
                         width: double.infinity,
                         height: double.infinity,
                       ),
+                      // ZoomOverlay(
+                      //   modalBarrierColor: Colors.black12, // Optional
+                      //   minScale: 0.5, // Optional
+                      //   maxScale: 3.0, // Optional
+                      //   animationCurve: Curves
+                      //       .fastOutSlowIn, // Defaults to fastOutSlowIn which mimics IOS instagram behavior
+                      //   animationDuration: Duration(
+                      //       milliseconds:
+                      //           300), // Defaults to 100 Milliseconds. Recommended duration is 300 milliseconds for Curves.fastOutSlowIn
+                      //   twoTouchOnly: true, // Defaults to false
+                      //   onScaleStart: () {}, // optional VoidCallback
+                      //   onScaleStop: () {}, // optional VoidCallback
+                      //   child: Image.network(
+                      //     Thumbor(host: thumborHostUrl, key: thumborKey)
+                      //         .buildImage("$imgDomain${i.url}")
+                      //         .toUrl(),
+                      //     fit: BoxFit.cover,
+                      //     width: double.infinity,
+                      //     height: double.infinity,
+                      //   ),
+                      // ),
                     ),
                   ),
                   ...i.imgMemberTagList!.map((tag) {
@@ -196,7 +218,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget>
                                                 isFollow:
                                                     i.imgMemberTagList![index]
                                                             .followState ==
-                                                        0,
+                                                        1,
                                                 followerIdx: i
                                                     .imgMemberTagList![index]
                                                     .memberIdx!,

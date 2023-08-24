@@ -43,7 +43,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
     contentController.addListener(contentsScrollListener);
 
     ref.read(feedDetailStateProvider.notifier).initPosts(
-          loginMemberIdx: ref.read(userModelProvider)!.idx,
+          loginMemberIdx: ref.read(userModelProvider)?.idx,
           memberIdx: widget.memberIdx,
           initPage: 1,
           contentIdx: widget.contentIdx,

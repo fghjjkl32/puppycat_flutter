@@ -102,8 +102,13 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentsResponseModel = await _feedService
-        .getUserContentDetailList(loginMemberIdx, memberIdx, page);
+    FeedResponseModel? contentsResponseModel;
+
+    loginMemberIdx == null
+        ? contentsResponseModel =
+            await _feedService.getLogoutUserContentDetailList(memberIdx, page)
+        : contentsResponseModel = await _feedService.getUserContentDetailList(
+            loginMemberIdx, memberIdx, page);
 
     if (contentsResponseModel == null) {
       return feedNullResponseModel;
@@ -174,10 +179,15 @@ class FeedRepository {
 
   Future<FeedResponseModel> getContentDetail({
     required int contentIdx,
-    required int loginMemberIdx,
+    required int? loginMemberIdx,
   }) async {
-    FeedResponseModel? myContentResponseModel =
-        await _feedService.getContentDetail(contentIdx, loginMemberIdx);
+    FeedResponseModel? myContentResponseModel;
+
+    loginMemberIdx == null
+        ? myContentResponseModel =
+            await _feedService.getLogoutContentDetail(contentIdx)
+        : myContentResponseModel =
+            await _feedService.getContentDetail(contentIdx, loginMemberIdx);
 
     if (myContentResponseModel == null) {
       return feedNullResponseModel;
@@ -246,8 +256,13 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentResponseModel =
-        await _feedService.getRecentDetailList(loginMemberIdx, page);
+    FeedResponseModel? contentResponseModel;
+
+    loginMemberIdx == null
+        ? contentResponseModel =
+            await _feedService.getRecentLogoutDetailList(page)
+        : contentResponseModel =
+            await _feedService.getRecentDetailList(loginMemberIdx, page);
 
     if (contentResponseModel == null) {
       return feedNullResponseModel;

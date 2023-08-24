@@ -6,6 +6,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -351,10 +352,15 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                           setThumborHostUrl();
                           setThumborKey();
                           setThumborDomain();
-                          ref.read(loginStateProvider.notifier).logout(
-                                ref.read(userModelProvider)!.simpleType,
-                                ref.read(userModelProvider)!.appKey,
-                              );
+
+                          if (ref.read(userModelProvider) == null) {
+                            context.pushReplacementNamed("loginScreen");
+                          } else {
+                            ref.read(loginStateProvider.notifier).logout(
+                                  ref.read(userModelProvider)!.simpleType,
+                                  ref.read(userModelProvider)!.appKey,
+                                );
+                          }
                         }
                       },
                       child: const Text('적용')),

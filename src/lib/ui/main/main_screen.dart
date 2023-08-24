@@ -85,7 +85,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
       final loginState = ref.watch(loginStateProvider);
 
       ref.read(recentFeedStateProvider.notifier).initPosts(
-            loginMemberIdx: ref.read(userModelProvider)!.idx,
+            loginMemberIdx: ref.read(userModelProvider)?.idx,
             initPage: 1,
           );
 
@@ -543,7 +543,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain>
                       profileImage: recentFeedState
                               .list[index].memberInfoList?[0].profileImgUrl! ??
                           "",
-                      memberIdx: ref.read(userModelProvider)!.idx,
+                      memberIdx: ref.read(userModelProvider)?.idx,
                       firstTitle:
                           recentFeedState.list[index].memberInfoList![0].nick!,
                       secondTitle: '게시물',

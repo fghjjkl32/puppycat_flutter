@@ -72,7 +72,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     } else if (contentType == "userContent") {
       futures = Future.wait([
         FeedRepository().getContentDetail(
-            loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
+            loginMemberIdx: loginMemberIdx, contentIdx: contentIdx!),
         FeedRepository().getUserContentsDetailList(
             loginMemberIdx: loginMemberIdx, page: page, memberIdx: memberIdx),
       ]);

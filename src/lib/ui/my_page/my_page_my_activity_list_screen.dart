@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_save_state_provider.dart';
+import 'package:thumbor/thumbor.dart';
 
 class MyPageMyActivityListScreen extends ConsumerStatefulWidget {
   const MyPageMyActivityListScreen({super.key});
@@ -264,7 +266,10 @@ class MyPageMyActivityListScreenState
                                 : BorderRadius.circular(0),
                         image: DecorationImage(
                             image: NetworkImage(
-                                "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}"),
+                              Thumbor(host: thumborHostUrl, key: thumborKey)
+                                  .buildImage(lists[index].imgUrl)
+                                  .toUrl(),
+                            ),
                             fit: BoxFit.cover),
                       ),
                     ),
@@ -369,7 +374,10 @@ class MyPageMyActivityListScreenState
                                 : BorderRadius.circular(0),
                         image: DecorationImage(
                             image: NetworkImage(
-                                "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}"),
+                              Thumbor(host: thumborHostUrl, key: thumborKey)
+                                  .buildImage(lists[index].imgUrl)
+                                  .toUrl(),
+                            ),
                             fit: BoxFit.cover),
                       ),
                     ),

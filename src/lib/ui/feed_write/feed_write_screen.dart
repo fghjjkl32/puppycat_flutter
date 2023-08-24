@@ -169,6 +169,13 @@ class FeedWriteScreen extends ConsumerWidget {
                       );
 
                   if (result.result) {
+                    ref.read(feedWriteProvider.notifier).resetTag();
+                    ref
+                        .watch(feedWriteLocationInformationProvider.notifier)
+                        .state = "";
+                    ref
+                        .watch(feedWriteCroppedFilesProvider.notifier)
+                        .removeAll();
                     context.pushReplacement("/home");
                   } else {
                     showDialog(

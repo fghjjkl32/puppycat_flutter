@@ -24,9 +24,9 @@ Widget getProfileAvatar(
         Thumbor(host: thumborHostUrl, key: thumborKey)
             .buildImage("$imgDomain$avatarUrl")
             .toUrl(),
-        width: width,
+        width: double.infinity,
         height: height,
-        fit: BoxFit.fill,
+        fit: BoxFit.cover,
         errorBuilder: (context, exception, stackTrace) {
           return Image.asset(
             "assets/image/chat/icon_profile_small.png",

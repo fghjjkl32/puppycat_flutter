@@ -86,6 +86,12 @@ abstract class FeedService {
     @Path("page") int page,
   );
 
+  @GET('/contents/member/detail?imgLimit=12&memberIdx={memberIdx}&page={page}')
+  Future<FeedResponseModel?> getLogoutUserContentDetailList(
+    @Path("memberIdx") int memberIdx,
+    @Path("page") int page,
+  );
+
   @GET(
       '/contents/tag/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&memberIdx={memberIdx}&page={page}')
   Future<FeedResponseModel?> getUserTagContentDetail(
@@ -124,6 +130,11 @@ abstract class FeedService {
     @Path("loginMemberIdx") int loginMemberIdx,
   );
 
+  @GET('/contents/{contentsIdx}?imgLimit=12')
+  Future<FeedResponseModel?> getLogoutContentDetail(
+    @Path("contentsIdx") int contentsIdx,
+  );
+
   @GET(
       '/my/tag/contents/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
   Future<FeedResponseModel?> getMyTagContentDetailList(
@@ -159,6 +170,11 @@ abstract class FeedService {
       '/contents/recent/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
   Future<FeedResponseModel?> getRecentDetailList(
     @Path("loginMemberIdx") int loginMemberIdx,
+    @Path("page") int page,
+  );
+
+  @GET('/contents/recent/detail?imgLimit=12&&page={page}')
+  Future<FeedResponseModel?> getRecentLogoutDetailList(
     @Path("page") int page,
   );
 
