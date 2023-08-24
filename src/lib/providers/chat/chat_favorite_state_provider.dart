@@ -60,7 +60,7 @@ class ChatFavoriteUserState extends _$ChatFavoriteUserState {
 
 
       try {
-        _lastPage = searchResult.params!.pagination!.endPage!;
+        _lastPage = searchResult.params!.pagination!.totalPageCount!;
       } catch (_) {
         _lastPage = 1;
       }

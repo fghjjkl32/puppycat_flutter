@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
+import 'package:pet_mobile_social_flutter/components/comment/comment_deatil_list_widget.dart';
 import 'package:pet_mobile_social_flutter/main.dart';
+import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
@@ -18,6 +20,7 @@ import 'package:pet_mobile_social_flutter/ui/chat/matrix_chat_room_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_complete_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/main/comment/comment_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/comment/main_comment_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/feed_search/feed_search_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
@@ -99,13 +102,34 @@ class AppRouter {
                 );
               },
             ),
+            // GoRoute(
+            //   path: 'commentDetail/:contentIdx',
+            //   name: 'commentDetail/:contentIdx',
+            //   builder: (BuildContext context, GoRouterState state) {
+            //     final contentIdx = state.pathParameters['contentIdx']!;
+            //     return MainCommentDetailScreen(
+            //       contentIdx: int.parse(contentIdx),
+            //     );
+            //   },
+            // ),
             GoRoute(
               path: 'commentDetail/:contentIdx',
               name: 'commentDetail/:contentIdx',
               builder: (BuildContext context, GoRouterState state) {
                 final contentIdx = state.pathParameters['contentIdx']!;
-                return MainCommentDetailScreen(
-                  contentIdx: int.parse(contentIdx),
+
+                final extraData = state.extra;
+                int? commentFocusIndex;
+                if(extraData != null) {
+                  Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
+                  if(extraMap.keys.contains('focusIndex')) {
+                    commentFocusIndex = extraMap['focusIndex'];
+                  }
+                }
+
+                return CommentDetailScreen(
+                  contentsIdx: int.parse(contentIdx),
+                  commentFocusIndex: commentFocusIndex,
                 );
               },
             ),
@@ -173,11 +197,15 @@ class AppRouter {
                     final contentType = state.pathParameters['contentType']!;
 
                     bool isRouteComment = false;
+                    int? commentFocusIndex;
                     final extraData = state.extra;
                     if(extraData != null) {
                       Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
                       if(extraMap.keys.contains('isRouteComment')) {
                         isRouteComment = extraMap['isRouteComment'];
+                      }
+                      if(extraMap.keys.contains('focusIdx')) {
+                        commentFocusIndex = extraMap['focusIdx'];
                       }
                     }
 
@@ -188,6 +216,7 @@ class AppRouter {
                       contentIdx: int.parse(contentIdx),
                       contentType: contentType,
                       isRouteComment: isRouteComment,
+                      commentFocusIndex: commentFocusIndex,
                     );
                   },
                 ),

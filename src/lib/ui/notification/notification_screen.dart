@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
+import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/setting_state_provider.dart';
@@ -38,9 +39,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
     _notiListPagingController = ref.read(notificationListStateProvider);
     _tapButtonController.selectIndex(0);
     Future(() {
-      ref
-          .read(settingStateProvider.notifier)
-          .initSetting(ref.watch(userModelProvider)!.idx);
+      ref.read(settingStateProvider.notifier).initSetting(ref.watch(userModelProvider)!.idx);
     });
 
     super.initState();
@@ -57,15 +56,14 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
       "memberIdx": "${ref.read(userModelProvider)!.idx}",
     };
 
-    Map<String, int> newSwitchState =
-    Map.from(ref.watch(settingStateProvider).switchState);
+    Map<String, int> newSwitchState = Map.from(ref.watch(settingStateProvider).switchState);
 
     data.addAll(newSwitchState);
 
     await ref.read(settingStateProvider.notifier).putSetting(
-      memberIdx: ref.read(userModelProvider)!.idx,
-      body: data,
-    );
+          memberIdx: ref.read(userModelProvider)!.idx,
+          body: data,
+        );
   }
 
   @override
@@ -77,7 +75,6 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
     });
 
     final switchState = ref.watch(settingStateProvider).switchState;
-
 
     return Material(
       child: WillPopScope(
@@ -101,59 +98,61 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
           ),
           body: Column(
             children: [
-              switchState['main_2'] != 1 ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: kNeutralColor300,
-                  ),
-                  width: double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "혜택 알림이 꺼져 있어요.",
-                              style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
-                            ),
-                            const SizedBox(
-                              height: 2,
-                            ),
-                            Text(
-                              "프로모션 및 이벤트 혜택 정보를 받으려면 ON!",
-                              style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
-                            ),
-                          ],
+              switchState['main_2'] != 1
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: kNeutralColor300,
                         ),
-                        FlutterSwitch(
-                          padding: 4,
-                          width: 38,
-                          height: 20,
-                          activeColor: Theme.of(context).primaryColor,
-                          inactiveColor: kNeutralColor500,
-                          toggleSize: 12.0,
-                          value: switchState['main_2'] == 1,
-                          borderRadius: 50.0,
-                          onToggle: (value) async {
-                            if (value) {
-                              toast(context: context, text: '광고성 정보 수신 여부가 ‘동의’로 변경되었습니다.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
-                            } else {
-                              toast(context: context, text: '광고성 정보 수신 여부가 ‘거부’로 변경되었습니다.', type: ToastType.grey, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
-                            }
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 14),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "혜택 알림이 꺼져 있어요.",
+                                    style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Text(
+                                    "프로모션 및 이벤트 혜택 정보를 받으려면 ON!",
+                                    style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
+                                  ),
+                                ],
+                              ),
+                              FlutterSwitch(
+                                padding: 4,
+                                width: 38,
+                                height: 20,
+                                activeColor: Theme.of(context).primaryColor,
+                                inactiveColor: kNeutralColor500,
+                                toggleSize: 12.0,
+                                value: switchState['main_2'] == 1,
+                                borderRadius: 50.0,
+                                onToggle: (value) async {
+                                  if (value) {
+                                    toast(context: context, text: '광고성 정보 수신 여부가 ‘동의’로 변경되었습니다.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                  } else {
+                                    toast(context: context, text: '광고성 정보 수신 여부가 ‘거부’로 변경되었습니다.', type: ToastType.grey, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                  }
 
-                            _onTap('main_2', value);
-                          },
+                                  _onTap('main_2', value);
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ) : const SizedBox.shrink(),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 8, 14, 12),
                 child: Align(
@@ -273,7 +272,10 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   });
                                 },
                               );
-                            } else if (item.subType == describeEnum(NotiSubType.new_comment) || item.subType == describeEnum(NotiSubType.new_reply)) {
+                            } else if (item.subType == describeEnum(NotiSubType.new_comment) ||
+                                item.subType == describeEnum(NotiSubType.new_reply) ||
+                                item.subType == describeEnum(NotiSubType.mention_comment) ||
+                                item.subType == describeEnum(NotiSubType.like_comment)) {
                               return NotificationCommentItem(
                                 name: item.senderInfo?.first.nick ?? 'unknown',
                                 regDate: item.regDate,
@@ -284,36 +286,48 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                 mentionList: (item.mentionMemberInfo?.isNotEmpty ?? false) ? item.mentionMemberInfo!.first : {},
                                 profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
                                 imgUrl: item.img ?? '',
+                                onTab: () {
+                                  print('item.commentIdx ${item.commentIdx} / ${item.contentsIdx}');
+                                  var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                  context.push("/home/myPage/detail/nickname/게시물/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
+                                    "isRouteComment": true,
+                                    "focusIdx" : item.commentIdx,
+                                  });
+                                },
                               );
-                            } else if (item.subType == describeEnum(NotiSubType.mention_comment)) {
-                              return NotificationCommentItem(
-                                name: item.senderInfo?.first.nick ?? 'unknown',
-                                regDate: item.regDate,
-                                isRead: item.isShow == 1 ? true : false,
-                                notificationType: item.title,
-                                content: item.body,
-                                comment: item.contents ?? '',
-                                mentionList: (item.mentionMemberInfo?.isNotEmpty ?? false) ? item.mentionMemberInfo!.first : {},
-                                profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
-                                imgUrl: item.img ?? '',
-                              );
-                            } else if (item.subType == describeEnum(NotiSubType.like_comment)) {
-                              print(
-                                  'item.mentionMemberInfo == []  ${item.mentionMemberInfo?.isEmpty} / ${item.mentionMemberInfo == null} / ${item.mentionMemberInfo == []} / ${item.mentionMemberInfo ?? [
-                                        {"aa": 1}
-                                      ]}');
-                              return NotificationCommentItem(
-                                name: item.senderInfo?.first.nick ?? 'unknown',
-                                regDate: item.regDate,
-                                isRead: item.isShow == 1 ? true : false,
-                                notificationType: item.title,
-                                content: item.body,
-                                comment: item.contents ?? '',
-                                mentionList: (item.mentionMemberInfo?.isNotEmpty ?? false) ? item.mentionMemberInfo!.first : {},
-                                profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
-                                imgUrl: item.img ?? '',
-                              );
-                            } else if (item.subType == describeEnum(NotiSubType.notice)) {
+                            }
+                            // else if (item.subType == describeEnum(NotiSubType.mention_comment)) {
+                            //   return NotificationCommentItem(
+                            //     name: item.senderInfo?.first.nick ?? 'unknown',
+                            //     regDate: item.regDate,
+                            //     isRead: item.isShow == 1 ? true : false,
+                            //     notificationType: item.title,
+                            //     content: item.body,
+                            //     comment: item.contents ?? '',
+                            //     mentionList: (item.mentionMemberInfo?.isNotEmpty ?? false) ? item.mentionMemberInfo!.first : {},
+                            //     profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                            //     imgUrl: item.img ?? '',
+                            //     onTab: () {
+                            //       print('item.commentIdx ${item.commentIdx} / ${item.contentsIdx}');
+                            //     },
+                            //   );
+                            // } else if (item.subType == describeEnum(NotiSubType.like_comment)) {
+                            //   return NotificationCommentItem(
+                            //     name: item.senderInfo?.first.nick ?? 'unknown',
+                            //     regDate: item.regDate,
+                            //     isRead: item.isShow == 1 ? true : false,
+                            //     notificationType: item.title,
+                            //     content: item.body,
+                            //     comment: item.contents ?? '',
+                            //     mentionList: (item.mentionMemberInfo?.isNotEmpty ?? false) ? item.mentionMemberInfo!.first : {},
+                            //     profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
+                            //     imgUrl: item.img ?? '',
+                            //     onTab: () {
+                            //       print('item.commentIdx ${item.commentIdx} / ${item.contentsIdx}');
+                            //     },
+                            //   );
+                            // }
+                            else if (item.subType == describeEnum(NotiSubType.notice)) {
                               return NotificationNoticeItem(
                                 content: item.body,
                                 regDate: item.regDate,

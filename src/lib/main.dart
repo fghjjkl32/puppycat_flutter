@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appspector/appspector.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -41,9 +43,11 @@ void main() async {
 
   /// Get It
   /// SingleTon
-  GetIt.I.registerSingleton<FireBaseMessageController>(
-      FireBaseMessageController());
-
+  if (!Platform.isIOS) {
+    print('run13124142342?');
+    GetIt.I.registerSingleton<FireBaseMessageController>(
+        FireBaseMessageController());
+  }
   GetIt.I.registerSingleton<UuidUtil>(UuidUtil());
   await GetIt.I<UuidUtil>().init();
 

@@ -1,37 +1,45 @@
 {
   "project_info": {
-    "project_number": "749563510570",
-    "project_id": "pet-mobile-social-flutter",
-    "storage_bucket": "pet-mobile-social-flutter.appspot.com"
+    "project_number": "14263543464",
+    "project_id": "prd-puppycat",
+    "storage_bucket": "prd-puppycat.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:749563510570:android:9cabecdac32bfe144a2853",
+        "mobilesdk_app_id": "1:14263543464:android:b52833d47506d509a9c49d",
         "android_client_info": {
           "package_name": "com.uxplus.test.puppycat"
         }
       },
       "oauth_client": [
         {
-          "client_id": "749563510570-dgg49k93dhgbvmm319a48ccft3jqugri.apps.googleusercontent.com",
+          "client_id": "14263543464-775u5si0ocp1mest7qch552uak2rj7g1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uxplus.test.puppycat",
+            "certificate_hash": "8254a8e63cf377867f575dd08b66e87e266b7ff5"
+          }
+        },
+        {
+          "client_id": "14263543464-sb2ls92uee2aq8ud47eov46ah48cqplp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCoErAInXE9HT9iTKR9nzCtSp13a6KnGDc"
+          "current_key": "AIzaSyBmdFKCBhurDbjj5p6wA6eAQBskNjDmIAg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "749563510570-dgg49k93dhgbvmm319a48ccft3jqugri.apps.googleusercontent.com",
+              "client_id": "14263543464-sb2ls92uee2aq8ud47eov46ah48cqplp.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "749563510570-3je9kstd42unntoi8no8ds13ohg4og3a.apps.googleusercontent.com",
+              "client_id": "14263543464-a7s7l6h3d68vatmij33ddooqn8qt26pl.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.uxplus.test.puppycat"
@@ -42,5 +50,12 @@
       }
     }
   ],
+  "installed":{
+    "client_id":"14263543464-775u5si0ocp1mest7qch552uak2rj7g1.apps.googleusercontent.com",
+    "project_id":"prd-puppycat",
+    "auth_uri":"https://accounts.google.com/o/oauth2/auth",
+    "token_uri":"https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs"
+  },
   "configuration_version": "1"
 }

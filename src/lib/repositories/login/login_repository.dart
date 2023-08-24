@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +8,7 @@ import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/login/login_request_model.dart';
 import 'package:pet_mobile_social_flutter/models/login/login_response_model.dart';
@@ -50,6 +52,12 @@ class LoginRepository {
       }
 
       var appKey = await GetIt.I.get<UuidUtil>().getUUID();
+      String fcmToken;
+      if(Platform.isIOS) {
+        fcmToken = '1234565';
+      } else {
+        fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';
+      }
       LoginRequestModel reqModel = LoginRequestModel(
         id: userModel!.id,
         // id: 'thirdnsov4@gmail.com',
@@ -59,7 +67,9 @@ class LoginRepository {
         appKey: appKey,
         appVer: GetIt.I.get<PackageInformationUtil>().appVersion,
         // domain: "11",
-        fcmToken: "12343535463", isBadge: userModel!.isBadge,
+        // fcmToken: GetIt.I.get<FireBaseMessageController>().fcmToken ?? '',
+        fcmToken: fcmToken,
+        isBadge: userModel!.isBadge,
       );
 
       // var isNeedSignUp = false;
@@ -104,6 +114,12 @@ class LoginRepository {
     // UserModel? userModel = await _socialLoginService?.getUserInfo();
 
     var appKey = await GetIt.I.get<UuidUtil>().getUUID();
+    String fcmToken;
+    if(Platform.isIOS) {
+      fcmToken = '1234565';
+    } else {
+      fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';
+    }
     LoginRequestModel reqModel = LoginRequestModel(
       id: userModel!.id,
       // id: 'thirdnsov4@gmail.com',
@@ -113,7 +129,8 @@ class LoginRepository {
       appKey: appKey,
       appVer: GetIt.I.get<PackageInformationUtil>().appVersion,
       // domain: "11",
-      fcmToken: "12343535463",
+      // fcmToken: GetIt.I.get<FireBaseMessageController>().fcmToken ?? '',
+      fcmToken: fcmToken,
       isBadge: userModel!.isBadge,
     );
 
@@ -202,7 +219,10 @@ class LoginRepository {
     ///errorHandler를 사용하려면 새로 작성해야해서 그냥 try/catch로 ,,
     try {
       var result = await _loginService.logout(body);
+
+      print('result2 $result');
       if (result == null) {
+        print('run???');
         return false;
       }
 
@@ -210,6 +230,7 @@ class LoginRepository {
 
       return result.result;
     } catch (e) {
+      print('here?????? $e');
       return false;
     }
   }

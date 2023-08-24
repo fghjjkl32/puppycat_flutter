@@ -13,6 +13,7 @@ class FirebaseCloudMessagePayload with _$FirebaseCloudMessagePayload{
     required String? type,
     required String? content_id,
     required String? image,
+
   }) = _FirebaseCloudMessagePayload;
 
   factory FirebaseCloudMessagePayload.fromJson(Map<String, dynamic> json) =>

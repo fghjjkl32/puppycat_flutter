@@ -10,7 +10,7 @@ class CommentData with _$CommentData {
   factory CommentData({
     required int isBadge,
     required int memberIdx,
-    required int commentLikeCnt,
+    int? commentLikeCnt,
     required String regDate,
     required int likeState,
     required String uuid,

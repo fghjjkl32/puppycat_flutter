@@ -913,15 +913,15 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                     children: [
                                       Text(
                                         "일상글",
-                                        style: kBody14BoldStyle,
+                                        // style: kBody14BoldStyle,
                                       ),
                                       SizedBox(
                                         width: 6.w,
                                       ),
                                       Text(
                                         "${ref.watch(userContentStateProvider).totalCount}",
-                                        style: kBadge10MediumStyle.copyWith(
-                                            color: kTextBodyColor),
+                                        // style: kBadge10MediumStyle.copyWith(
+                                        //     color: kTextBodyColor),
                                       ),
                                     ],
                                   );

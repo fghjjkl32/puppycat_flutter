@@ -55,14 +55,14 @@ class ChatUserSearchState extends _$ChatUserSearchState {
           .toList();
 
       try {
-        _lastPage = searchResult.data.params!.pagination!.endPage!;
+        _lastPage = searchResult.data.params!.pagination!.totalPageCount!;
       } catch (_) {
         _lastPage = 1;
       }
 
       final nextPageKey = searchList.isEmpty ? null : pageKey + 1;
 
-      if (pageKey == _lastPage) {
+      if (pageKey == _lastPage) { 
         state.appendLastPage(searchList);
       } else {
         state.appendPage(searchList, nextPageKey);

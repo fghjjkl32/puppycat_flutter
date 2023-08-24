@@ -427,19 +427,23 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                     GestureDetector(
                       onTap: () {
                         int now = DateTime.now().millisecondsSinceEpoch;
-                        if (now - lastTap < 500) {
+                        print('now - lastTap ${now - lastTap}');
+                        // if (now - lastTap < 500) {
+                          print('run?????');
                           adminCount++;
                           if (adminCount >= 10) {
                             // Do something
+                            adminCount = 0;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => const PasswordScreen()),
                             );
                           }
-                        } else {
-                          adminCount = 0;
-                        }
+                        // }
+                        // else {
+                        //   adminCount = 0;
+                        // }
                         lastTap = now;
                       },
                       child: Row(
@@ -575,6 +579,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
               GestureDetector(
                 onTap: () {
+                  print('asdasda');
                   ref.read(loginStateProvider.notifier).logout(
                         ref.read(userModelProvider)!.simpleType,
                         ref.read(userModelProvider)!.appKey,

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +34,10 @@ class InitializationApp {
     // var result = Future.delayed(Duration(milliseconds: 300), () async {
     ///TODO
     ///결과값 제대로 받아서 처리하도록
-    await GetIt.I<FireBaseMessageController>().init();
+    if(!Platform.isIOS) {
+      print('run?asdasd');
+      await GetIt.I<FireBaseMessageController>().init();
+    }
     return true;
     // });
 

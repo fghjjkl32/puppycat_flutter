@@ -361,43 +361,47 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   Widget _buildPolicyBody() {
     final policyProvider = ref.watch(policyStateProvider);
-    return Column(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Checkbox(
-              value: ref.watch(policyAllAgreeStateProvider),
-              onChanged: (value) {
-                _nickFocusNode.unfocus();
-                ref.read(policyStateProvider.notifier).toggleAll(value!);
+    return Expanded(
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Checkbox(
+                value: ref.watch(policyAllAgreeStateProvider),
+                onChanged: (value) {
+                  _nickFocusNode.unfocus();
+                  ref.read(policyStateProvider.notifier).toggleAll(value!);
+                },
+              ),
+              Text(
+                '회원가입.전체 동의하기'.tr(),
+                style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+              ),
+            ],
+          ),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              // physics: const NeverScrollableScrollPhysics(),
+              itemCount: policyProvider.length,
+              itemBuilder: (context, idx) {
+                return PolicyCheckBoxWidget(
+                  idx: policyProvider[idx].idx,
+                  isAgreed: policyProvider[idx].isAgreed,
+                  isEssential: policyProvider[idx].required == 'Y' ? true : false,
+                  title: policyProvider[idx].title ?? 'unknown title.',
+                  detail: policyProvider[idx].detail ?? 'unknown detail.',
+                  onChanged: (value) {
+                    _nickFocusNode.unfocus();
+                    ref.read(policyStateProvider.notifier).toggle(policyProvider[idx].idx);
+                  },
+                );
               },
             ),
-            Text(
-              '회원가입.전체 동의하기'.tr(),
-              style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-            ),
-          ],
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          // physics: const NeverScrollableScrollPhysics(),
-          itemCount: policyProvider.length,
-          itemBuilder: (context, idx) {
-            return PolicyCheckBoxWidget(
-              idx: policyProvider[idx].idx,
-              isAgreed: policyProvider[idx].isAgreed,
-              isEssential: policyProvider[idx].required == 'Y' ? true : false,
-              title: policyProvider[idx].title ?? 'unknown title.',
-              detail: policyProvider[idx].detail ?? 'unknown detail.',
-              onChanged: (value) {
-                _nickFocusNode.unfocus();
-                ref.read(policyStateProvider.notifier).toggle(policyProvider[idx].idx);
-              },
-            );
-          },
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -524,47 +528,42 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildTop(),
-              _buildBody(),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: SizedBox(
-                      width: 320.w,
-                      height: 48.h,
-                      child: ElevatedButton(
-                        onPressed: essentialAgreeProvider && isValidNickName && ref.watch(authStateProvider)
-                            ? () {
-                                var userModel = ref.read(userModelProvider.notifier).state;
-                                if (userModel == null) {
-                                  throw 'usermodel is null';
-                                }
-                                userModel = userModel.copyWith(
-                                  nick: nickController.text,
-                                  ci: signUpAuthModel?.ci ?? '',
-                                  di: signUpAuthModel?.di ?? '',
-                                  name: signUpAuthModel?.name ?? '',
-                                  phone: signUpAuthModel?.phone ?? '',
-                                  gender: signUpAuthModel?.gender ?? '',
-                                  birth: signUpAuthModel?.birth ?? '',
-                                );
-                                // ref.read(userModelProvider.notifier).state = userModel;
-                                ref.read(signUpStateProvider.notifier).socialSignUp(userModel); // ㅇㅇㅇ
-                                // chatClientController.changeDisplayName(userModel.id, userModel.nick);
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: kPrimaryColor,
-                          disabledBackgroundColor: kNeutralColor400,
-                          disabledForegroundColor: kTextBodyColor,
-                          elevation: 0,
-                        ),
-                        child: Text(
-                          '확인'.tr(),
-                          style: kButton14BoldStyle,
-                        ),
-                      ),
+              Expanded(child: _buildBody()),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SizedBox(
+                  width: 320,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: essentialAgreeProvider && isValidNickName && ref.watch(authStateProvider)
+                        ? () {
+                            var userModel = ref.read(userModelProvider.notifier).state;
+                            if (userModel == null) {
+                              throw 'usermodel is null';
+                            }
+                            userModel = userModel.copyWith(
+                              nick: nickController.text,
+                              ci: signUpAuthModel?.ci ?? '',
+                              di: signUpAuthModel?.di ?? '',
+                              name: signUpAuthModel?.name ?? '',
+                              phone: signUpAuthModel?.phone ?? '',
+                              gender: signUpAuthModel?.gender ?? '',
+                              birth: signUpAuthModel?.birth ?? '',
+                            );
+                            // ref.read(userModelProvider.notifier).state = userModel;
+                            ref.read(signUpStateProvider.notifier).socialSignUp(userModel); // ㅇㅇㅇ
+                            // chatClientController.changeDisplayName(userModel.id, userModel.nick);
+                          }
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryColor,
+                      disabledBackgroundColor: kNeutralColor400,
+                      disabledForegroundColor: kTextBodyColor,
+                      elevation: 0,
+                    ),
+                    child: Text(
+                      '확인'.tr(),
+                      style: kButton14BoldStyle,
                     ),
                   ),
                 ),

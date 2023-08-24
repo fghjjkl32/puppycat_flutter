@@ -125,6 +125,7 @@ class LoginState extends _$LoginState {
     // final loginRepository = ref.watch(loginRepositoryProvider(provider));
 
     var result = await loginRepository.logout(appKey);
+    print('result $result');
     if (result) {
       ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
       ref.read(userModelProvider.notifier).state = null;

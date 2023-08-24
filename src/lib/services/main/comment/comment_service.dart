@@ -57,4 +57,11 @@ abstract class CommentService {
     @Path("commentIdx") required int commentIdx,
     @Path("memberIdx") required int memberIdx,
   });
+
+  @GET('/contents/{contentsIdx}/comment/{commentIdx}/focus')
+  Future<CommentResponseModel?> getFocusComments({
+    @Path("contentsIdx") required int contentsIdx,
+    @Path("commentIdx") required int commentIdx,
+    @Queries() required Map<String, dynamic> queries,
+  });
 }

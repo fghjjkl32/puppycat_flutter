@@ -27,6 +27,7 @@ class NotificationCommentItem extends StatelessWidget {
     required this.mentionList,
     required this.profileImgUrl,
     required this.imgUrl,
+    this.onTab,
   }) : super(key: key);
 
   final String name;
@@ -38,6 +39,7 @@ class NotificationCommentItem extends StatelessWidget {
   final Map<String, dynamic> mentionList;
   final String profileImgUrl;
   final String imgUrl;
+  final Function? onTab;
 
   // final List<MentionListData> mentionList;
 
@@ -78,129 +80,136 @@ class NotificationCommentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     // final List<String> detections = extractDetections(comment, detectRegExp);
 
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Container(
-              width: 8.0,
-              height: 8.0,
-              decoration: BoxDecoration(
-                color: isRead ? kPrimaryLightColor : kBadgeColor,
-                shape: BoxShape.circle,
+    return InkWell(
+      onTap: () {
+        if(onTab != null) {
+          onTab!();
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Container(
+                width: 8.0,
+                height: 8.0,
+                decoration: BoxDecoration(
+                  color: isRead ? kPrimaryLightColor : kBadgeColor,
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
-          ),
-          getProfileAvatar(
-            profileImgUrl,
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10.0, right: 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 4.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          notificationType,
-                          style: kBody11SemiBoldStyle.copyWith(
-                              color: kTextBodyColor),
-                        ),
-                        Text(
-                          regDate,
-                          style: kBadge10MediumStyle.copyWith(
-                              color: kTextBodyColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          // mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                style: kBody13RegularStyle.copyWith(
-                                    color: kTextTitleColor),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: name.length > 13
-                                        ? '${name.substring(0, 13)}...'
-                                        : name,
-                                    style: kBody13BoldStyle.copyWith(
-                                        color: kTextTitleColor),
-                                  ),
-                                  TextSpan(text: content),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2.0),
-                              child: DetectableText(
-                                text: _replaceMentionHashTag(comment),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                                detectionRegExp:
-                                    detectionRegExp(atSign: true) ??
-                                        RegExp(
-                                          "(?!\\n)(?:^|\\s)([#]([$detectionContentLetters]+))|$urlRegexContent",
-                                          multiLine: true,
-                                        ),
-                                detectedStyle: kBody12RegularStyle.copyWith(
-                                    color: kSecondaryColor),
-                                basicStyle: kBody12RegularStyle.copyWith(
-                                    color: kTextBodyColor),
-                                onTap: (tappedText) {
-                                  ///TODO
-                                  /// 해시태그 검색 페이지 이동
-                                  /// 밖에서 함수 받아오기
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
+            getProfileAvatar(
+              profileImgUrl,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            notificationType,
+                            style: kBody11SemiBoldStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                          Text(
+                            regDate,
+                            style: kBadge10MediumStyle.copyWith(
+                                color: kTextBodyColor),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(8)),
-                          child: Image.network(
-                            Thumbor(host: thumborHostUrl, key: thumborKey)
-                                .buildImage("$imgDomain${imgUrl}")
-                                .toUrl(),
-                            fit: BoxFit.cover,
-                            height: 52,
-                            width: 52,
-                            errorBuilder: (context, e, stackTrace) {
-                              print('error imgUrl $imgUrl');
-                              return const SizedBox(
-                                height: 52,
-                                width: 52,
-                              );
-                            },
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            // mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  style: kBody13RegularStyle.copyWith(
+                                      color: kTextTitleColor),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: name.length > 13
+                                          ? '${name.substring(0, 13)}...'
+                                          : name,
+                                      style: kBody13BoldStyle.copyWith(
+                                          color: kTextTitleColor),
+                                    ),
+                                    TextSpan(text: content),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2.0),
+                                child: DetectableText(
+                                  text: _replaceMentionHashTag(comment),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  detectionRegExp:
+                                      detectionRegExp(atSign: true) ??
+                                          RegExp(
+                                            "(?!\\n)(?:^|\\s)([#]([$detectionContentLetters]+))|$urlRegexContent",
+                                            multiLine: true,
+                                          ),
+                                  detectedStyle: kBody12RegularStyle.copyWith(
+                                      color: kSecondaryColor),
+                                  basicStyle: kBody12RegularStyle.copyWith(
+                                      color: kTextBodyColor),
+                                  onTap: (tappedText) {
+                                    ///TODO
+                                    /// 해시태그 검색 페이지 이동
+                                    /// 밖에서 함수 받아오기
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                ],
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
+                            child: Image.network(
+                              Thumbor(host: thumborHostUrl, key: thumborKey)
+                                  .buildImage("$imgDomain${imgUrl}")
+                                  .toUrl(),
+                              fit: BoxFit.cover,
+                              height: 52,
+                              width: 52,
+                              errorBuilder: (context, e, stackTrace) {
+                                print('error imgUrl $imgUrl');
+                                return const SizedBox(
+                                  height: 52,
+                                  width: 52,
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

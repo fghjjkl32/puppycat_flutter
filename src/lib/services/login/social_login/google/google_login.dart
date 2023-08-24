@@ -57,8 +57,7 @@ class GoogleLoginService implements SocialLoginService {
   }
 
   @override
-  Future logout() {
-    // TODO: implement logout
-    throw UnimplementedError();
+  Future logout() async {
+    await _googleSignIn.signOut();
   }
 }
