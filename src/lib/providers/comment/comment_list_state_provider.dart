@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -5,8 +6,10 @@ import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart'
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 part 'comment_list_state_provider.g.dart';
+
 
 @Riverpod(keepAlive: true)
 class CommentListState extends _$CommentListState {
@@ -14,6 +17,8 @@ class CommentListState extends _$CommentListState {
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
   int _contentsIdx = -1;
   int _commentIdx = -1;
+
+  ListAPIStatus get listStatus => _apiStatus;
 
   @override
   PagingController<int, CommentData> build() {
@@ -117,7 +122,10 @@ class CommentListState extends _$CommentListState {
 
     _contentsIdx = contentsIdx;
 
-    state.addPageRequestListener(_fetchPage);
+    if(!state.hasListeners) {
+      state.addPageRequestListener(_fetchPage);
+    }
+
     state.refresh();
   }
 
@@ -151,19 +159,20 @@ class CommentListState extends _$CommentListState {
         commentIdx,
       );
 
-
       state.removePageRequestListener(_fetchPage);
       print('searchResult $searchResult');
       int currentPage = searchResult.data.params!.page!;
       // _lastPage = searchResult.data.params!.pagination!.totalPageCount!;
-      if(currentPage - 1 < 0) {
-        currentPage = 0;
+      if(currentPage - 1 <= 0) {
+        currentPage = 1;
       } else {
         currentPage = currentPage - 1;
       }
       state.nextPageKey = currentPage;
       print('state.nextPageKey ${state.nextPageKey}');
-      _fetchPage(currentPage);
+      state.itemList = []; //TODO 나중에 함수로 빼두기
+      _fetchPage(3); //TEST
+      // _fetchPage(currentPage); //NOTE 다시 바꿔야함
       state.addPageRequestListener(_fetchPage);
       // state.refresh();
       // state

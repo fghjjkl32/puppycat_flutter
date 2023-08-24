@@ -16,11 +16,13 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class CommentDetailItemWidget extends ConsumerWidget {
@@ -378,24 +380,30 @@ class CommentDetailItemWidget extends ConsumerWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: replies!.list.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return CommentDetailItemWidget(
-                          parentIdx: replies!.list[index].parentIdx,
-                          commentIdx: replies!.list[index].idx,
-                          profileImage: replies!.list[index].url ?? 'assets/image/feed/image/sample_image1.png',
-                          name: replies!.list[index].nick,
-                          comment: replies!.list[index].contents,
-                          isSpecialUser: replies!.list[index].isBadge == 1,
-                          time: DateTime.parse(replies!.list[index].regDate),
-                          isReply: true,
-                          likeCount: replies!.list[index].commentLikeCnt ?? 0,
-                          replies: replies!.list[index].childCommentData,
-                          contentIdx: replies!.list[index].contentsIdx,
-                          isLike: replies!.list[index].likeState == 1,
-                          memberIdx: replies!.list[index].memberIdx,
-                          mentionListData: replies!.list[index].mentionList ?? [],
+                        print('replies!.list[index].idx ${replies!.list[index].idx}');
+                        return AutoScrollTag(
+                          key: UniqueKey(),
+                          controller: ref.read(commentListScrollCtrlProvider),
+                          index: replies!.list[index].idx,
+                          child: CommentDetailItemWidget(
+                            parentIdx: replies!.list[index].parentIdx,
+                            commentIdx: replies!.list[index].idx,
+                            profileImage: replies!.list[index].url ?? 'assets/image/feed/image/sample_image1.png',
+                            name: replies!.list[index].nick,
+                            comment: replies!.list[index].contents,
+                            isSpecialUser: replies!.list[index].isBadge == 1,
+                            time: DateTime.parse(replies!.list[index].regDate),
+                            isReply: true,
+                            likeCount: replies!.list[index].commentLikeCnt ?? 0,
+                            replies: replies!.list[index].childCommentData,
+                            contentIdx: replies!.list[index].contentsIdx,
+                            isLike: replies!.list[index].likeState == 1,
+                            memberIdx: replies!.list[index].memberIdx,
+                            mentionListData: replies!.list[index].mentionList ?? [],
+                          ),
                         );
                       },
                     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
@@ -28,7 +29,7 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
   late int? _commentFocusIndex;
   late PagingController<int, CommentData> _commentPagingController;
   final AutoScrollController _scrollController = AutoScrollController();
-   bool _isInitLoad = true;
+  bool _isInitLoad = true;
 
   @override
   void initState() {
@@ -39,23 +40,41 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
 
     super.initState();
 
-    if(_commentFocusIndex == null) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      if (_commentFocusIndex != null) {
+        print('run??');
+        await _scrollController.scrollToIndex(
+          _commentFocusIndex!,
+          preferPosition: AutoScrollPosition.begin,
+        );
+        _commentFocusIndex = null;
+      }
+    });
+
+    if (_commentFocusIndex == null) {
+      print('_commentFocusIndex $_commentFocusIndex');
       ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
     } else {
-      ref.read(commentListStateProvider.notifier).getFocusingComments(_contentsIdx, _commentFocusIndex!);
-      _scrollController.addListener(() {
-        print('_isInitLoad $_isInitLoad');
-        if (_scrollController.position.atEdge) {
-          if (_scrollController.position.pixels == 0) {
-            // if (!_isInitLoad && _scrollController.position.pixels <= 100) {
-              ref.read(commentListStateProvider.notifier).fetchPreviousPage();
-            }
-          }
-        _isInitLoad = false;
-      });
+      ref.read(commentListStateProvider.notifier).getFocusingComments(17, 99);
+      // ref.read(commentListStateProvider.notifier).getFocusingComments(_contentsIdx, _commentFocusIndex!);
+      // _scrollController.addListener(() {
+      //   print('_isInitLoad $_isInitLoad');
+      //   if (_scrollController.position.atEdge) {
+      //     if (_scrollController.position.pixels == 0) {
+      //       // if (!_isInitLoad && _scrollController.position.pixels <= 100) {
+      //         ref.read(commentListStateProvider.notifier).fetchPreviousPage();
+      //       }
+      //     }
+      //   _isInitLoad = false;
+      // });
     }
     // _commentPagingController.refresh();
   }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +98,14 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
               pagingController: ref.watch(commentListStateProvider),
               scrollController: _scrollController,
               builderDelegate: PagedChildBuilderDelegate<CommentData>(
+                animateTransitions: true,
                 noItemsFoundIndicatorBuilder: (context) {
-                  return const Text('No Comments');
+                  // return const Text('No Comments');
+                  return const SizedBox.shrink();
+                },
+                firstPageProgressIndicatorBuilder: (context) {
+                  // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+                  return const Center(child: CircularProgressIndicator());
                 },
                 itemBuilder: (context, item, index) {
                   return AutoScrollTag(
@@ -109,12 +134,15 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
               ),
             ),
           ),
-          ElevatedButton(onPressed: () async {
-            await _scrollController.scrollToIndex(
-              69,
-              preferPosition: AutoScrollPosition.begin,
-            );
-          }, child: const Text('test'),),
+          ElevatedButton(
+            onPressed: () async {
+              await _scrollController.scrollToIndex(
+                142,
+                preferPosition: AutoScrollPosition.begin,
+              );
+            },
+            child: const Text('test'),
+          ),
           CommentCustomTextField(
             contentIdx: _contentsIdx,
           ),

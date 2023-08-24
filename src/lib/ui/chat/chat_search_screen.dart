@@ -66,6 +66,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
   }
 
   void _onTabListItem(String chatMemberId) {
+    print('chatMemberId $chatMemberId');
     ref.read(chatUserSearchStateProvider.notifier).searchUser(userMemberIdx, '');
     context.pop(chatMemberId);
   }
@@ -175,6 +176,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
           return const SizedBox.shrink();
         },
         itemBuilder: (context, item, index) {
+          print('item.chatMemberId ${item.chatMemberId}');
           return ChatSearchListItem(
             idx: item.memberIdx!,
             nick: item.nick ?? 'unknown',
