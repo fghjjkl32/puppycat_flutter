@@ -5,6 +5,7 @@ import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dar
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
@@ -16,6 +17,7 @@ class FeedDetailScreen extends ConsumerStatefulWidget {
   final int contentIdx;
   final String contentType;
   bool isRouteComment;
+  int? commentFocusIndex;
 
   FeedDetailScreen({
     required this.firstTitle,
@@ -24,6 +26,7 @@ class FeedDetailScreen extends ConsumerStatefulWidget {
     required this.contentIdx,
     required this.contentType,
     this.isRouteComment = false,
+    this.commentFocusIndex,
     super.key,
   });
 
@@ -51,7 +54,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
     if (widget.isRouteComment) {
       Future(() {
-        context.push("/home/commentDetail/${widget.contentIdx}");
+        context.push("/home/commentDetail/${widget.contentIdx}", extra: {
+          "focusIndex": widget.commentFocusIndex,
+        });
       });
       widget.isRouteComment = false;
     }

@@ -219,7 +219,10 @@ class LoginRepository {
     ///errorHandler를 사용하려면 새로 작성해야해서 그냥 try/catch로 ,,
     try {
       var result = await _loginService.logout(body);
+
+      print('result2 $result');
       if (result == null) {
+        print('run???');
         return false;
       }
 
@@ -227,6 +230,7 @@ class LoginRepository {
 
       return result.result;
     } catch (e) {
+      print('here?????? $e');
       return false;
     }
   }

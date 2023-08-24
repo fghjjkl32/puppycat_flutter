@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
+import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/setting_state_provider.dart';
@@ -287,6 +288,11 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                 imgUrl: item.img ?? '',
                                 onTab: () {
                                   print('item.commentIdx ${item.commentIdx} / ${item.contentsIdx}');
+                                  var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                  context.push("/home/myPage/detail/nickname/게시물/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
+                                    "isRouteComment": true,
+                                    "focusIdx" : item.commentIdx,
+                                  });
                                 },
                               );
                             }

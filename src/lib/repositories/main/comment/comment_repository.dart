@@ -7,19 +7,15 @@ import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/main/comment/comment_service.dart';
 
 class CommentRepository {
-  final CommentService _contentsService =
-      CommentService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  final CommentService _contentsService = CommentService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
-  Future<CommentResponseModel> getComment(
-      {required int contentIdx,
-      required int memberIdx,
-      required int page}) async {
+  Future<CommentResponseModel> getComment({required int contentIdx, required int memberIdx, required int page}) async {
     try {
-      CommentResponseModel? commentResponseModel =
-          await _contentsService.getComment(contentIdx, memberIdx, page);
+      CommentResponseModel? commentResponseModel = await _contentsService.getComment(contentIdx, memberIdx, page);
 
       if (commentResponseModel == null) {
         return _getDefaultCommentResponseModel();
@@ -31,14 +27,9 @@ class CommentRepository {
     }
   }
 
-  Future<CommentResponseModel> getReplyComment(
-      {required int contentIdx,
-      required int commentIdx,
-      required int memberIdx,
-      required int page}) async {
+  Future<CommentResponseModel> getReplyComment({required int contentIdx, required int commentIdx, required int memberIdx, required int page}) async {
     try {
-      CommentResponseModel? commentResponseModel = await _contentsService
-          .getReplyComment(contentIdx, commentIdx, memberIdx, page);
+      CommentResponseModel? commentResponseModel = await _contentsService.getReplyComment(contentIdx, commentIdx, memberIdx, page);
 
       if (commentResponseModel == null) {
         return _getDefaultCommentResponseModel();
@@ -98,8 +89,7 @@ class CommentRepository {
       };
     }
 
-    ResponseModel? commentResponseModel =
-        await _contentsService.postComment(contentIdx, body);
+    ResponseModel? commentResponseModel = await _contentsService.postComment(contentIdx, body);
 
     if (commentResponseModel == null) {
       throw "error";
@@ -119,8 +109,7 @@ class CommentRepository {
       "contents": contents,
     };
 
-    ResponseModel? commentResponseModel =
-        await _contentsService.editComment(contentIdx, commentIdx, body);
+    ResponseModel? commentResponseModel = await _contentsService.editComment(contentIdx, commentIdx, body);
 
     if (commentResponseModel == null) {
       throw "error";
@@ -155,8 +144,7 @@ class CommentRepository {
       "memberIdx": memberIdx,
     };
 
-    ResponseModel? commentResponseModel =
-        await _contentsService.postCommentLike(commentIdx, body);
+    ResponseModel? commentResponseModel = await _contentsService.postCommentLike(commentIdx, body);
 
     if (commentResponseModel == null) {
       throw "error";
@@ -169,8 +157,7 @@ class CommentRepository {
     required int commentIdx,
     required int memberIdx,
   }) async {
-    ResponseModel? commentResponseModel =
-        await _contentsService.deleteCommentLike(
+    ResponseModel? commentResponseModel = await _contentsService.deleteCommentLike(
       commentIdx: commentIdx,
       memberIdx: memberIdx,
     );
@@ -205,5 +192,31 @@ class CommentRepository {
         break;
     }
     return (responseModel, true);
+  }
+
+  Future<CommentResponseModel> getFocusComments(int memberIdx, int contentsIdx, int commentIdx, [int page = 1, int limit = 10]) async {
+    Map<String, dynamic> queries = {
+      "memberIdx": memberIdx,
+      "page": page,
+      "limit": limit,
+    };
+
+    try {
+      CommentResponseModel? commentResponseModel = await _contentsService.getFocusComments(
+        contentsIdx: contentsIdx,
+        commentIdx: commentIdx,
+        queries: queries,
+      );
+
+      print('commentResponseModel $commentResponseModel');
+      if (commentResponseModel == null) {
+        return _getDefaultCommentResponseModel();
+      }
+
+      return commentResponseModel;
+    } catch (error) {
+      print('commentResponseModel error $error');
+      return _getDefaultCommentResponseModel();
+    }
   }
 }

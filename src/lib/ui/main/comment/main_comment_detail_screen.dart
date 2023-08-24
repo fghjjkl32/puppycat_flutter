@@ -93,7 +93,7 @@ class MainCommentDetailScreenState
                       isSpecialUser: commentLists[index].isBadge == 1,
                       time: DateTime.parse(commentLists[index].regDate),
                       isReply: false,
-                      likeCount: commentLists[index].commentLikeCnt,
+                      likeCount: commentLists[index].commentLikeCnt ?? 0,
                       replies: commentLists[index].childCommentData,
                       contentIdx: commentLists[index].contentsIdx,
                       isLike: commentLists[index].likeState == 1,
