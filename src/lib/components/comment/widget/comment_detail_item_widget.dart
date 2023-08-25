@@ -41,6 +41,10 @@ class CommentDetailItemWidget extends ConsumerWidget {
     required this.memberIdx,
     required this.mentionListData,
     // this.replies,
+    required this.isLastDisPlayChild,
+    // required this.remainChildCount,
+    this.onMoreChildComment,
+    required this.pageNumber,
     Key? key,
   }) : super(key: key);
 
@@ -55,9 +59,14 @@ class CommentDetailItemWidget extends ConsumerWidget {
   final bool isReply;
   final int likeCount;
   final bool isLike;
+
   // final ChildCommentData? replies;
   final int memberIdx;
   final List<MentionListData> mentionListData;
+  final bool isLastDisPlayChild;
+  // final int remainChildCount;
+  final Function? onMoreChildComment;
+  final int pageNumber;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -367,6 +376,20 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         ),
                       ],
                     ),
+                    if(isLastDisPlayChild)
+                      GestureDetector(
+                        onTap: () {
+                          if(onMoreChildComment != null) {
+                            onMoreChildComment!(pageNumber);
+                          }
+                        },
+                        child: Center(
+                          child: Text(
+                            "답글 10개씩 더 보기",
+                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

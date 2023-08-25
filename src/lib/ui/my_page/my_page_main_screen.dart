@@ -433,6 +433,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                   isLike: commentLists[index].likeState == 1,
                                                                   memberIdx: commentLists[index].memberIdx,
                                                                   mentionListData: commentLists[index].mentionList ?? [],
+                                                                  isLastDisPlayChild: false,
+                                                                  pageNumber: commentLists[index].pageNumber,
                                                                 );
                                                               },
                                                             ),

@@ -33,6 +33,32 @@ class DioWrap {
       ],
     ));
 
+    // dio.interceptors.add(
+    //   InterceptorsWrapper(
+    //     onRequest: (options, handler) async {
+    //       // This is where you call your specific API
+    //       try {
+    //         final response = await Dio().get('https://api.your-specific-api.com');
+    //
+    //         // Maybe you want to modify the options based on the result of the specific API?
+    //         // For example, setting a header:
+    //         // options.headers['Your-Header-Name'] = response.data['someValue'];
+    //
+    //         // Continue with the request
+    //         return handler.next(options);
+    //       } catch (e) {
+    //         // Handle the error accordingly
+    //         return handler.reject(DioError(
+    //           requestOptions: options,
+    //           error: 'Failed to call the specific API.',
+    //         ));
+    //       }
+    //     },
+    //   ),
+    // );
+
+
+
     return dio;
   }
 }

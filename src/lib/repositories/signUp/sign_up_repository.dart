@@ -87,7 +87,7 @@ class SignUpRepository {
       return responseModel;
     });
 
-    if (res == null || isError) {
+    if (res == null) {
       throw 'API Response is Null.';
     }
 

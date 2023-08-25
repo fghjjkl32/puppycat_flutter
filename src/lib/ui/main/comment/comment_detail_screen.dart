@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -30,51 +31,81 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
   late PagingController<int, CommentData> _commentPagingController;
   final AutoScrollController _scrollController = AutoScrollController();
   bool _isInitLoad = true;
+  late PagingController _notifier;
 
   @override
   void initState() {
     _contentsIdx = widget.contentsIdx;
     _commentFocusIndex = widget.commentFocusIndex;
 
-    // _commentPagingController = ref.read(commentListStateProvider);
+    _commentPagingController = ref.read(commentListStateProvider);
 
     super.initState();
-
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
-      if (_commentFocusIndex != null) {
-        print('run??');
-        await _scrollController.scrollToIndex(
-          _commentFocusIndex!,
-          preferPosition: AutoScrollPosition.begin,
-        );
-        _commentFocusIndex = null;
-      }
-    });
 
     if (_commentFocusIndex == null) {
       print('_commentFocusIndex $_commentFocusIndex');
       ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
     } else {
-      ref.read(commentListStateProvider.notifier).getFocusingComments(17, 99);
-      // ref.read(commentListStateProvider.notifier).getFocusingComments(_contentsIdx, _commentFocusIndex!);
-      // _scrollController.addListener(() {
-      //   print('_isInitLoad $_isInitLoad');
-      //   if (_scrollController.position.atEdge) {
-      //     if (_scrollController.position.pixels == 0) {
-      //       // if (!_isInitLoad && _scrollController.position.pixels <= 100) {
-      //         ref.read(commentListStateProvider.notifier).fetchPreviousPage();
-      //       }
-      //     }
-      //   _isInitLoad = false;
-      // });
+      // ref.read(commentListStateProvider.notifier).getFocusingComments(17, 99);
+      ref.read(commentListStateProvider.notifier).getFocusingComments(_contentsIdx, _commentFocusIndex!);
+      _scrollController.addListener(() {
+        // if (_scrollController.position.atEdge) {
+        //   if (_scrollController.position.pixels == 0) {
+        if (!_isInitLoad && _scrollController.position.pixels <= 100) {
+          ref.read(commentListStateProvider.notifier).fetchPreviousPage();
+        }
+        // }
+        if (_scrollController.position.pixels >= 100) {
+          _isInitLoad = false;
+        }
+      });
+
+      _commentPagingController.addListener(() async {
+        if (_commentPagingController.itemList != null) {
+          if (_commentFocusIndex != null) {
+            int scrollIdx = ref.read(commentListStateProvider).itemList!.indexWhere((element) => element.idx == _commentFocusIndex);
+            print('run?? $_commentFocusIndex / scrollIdx $scrollIdx');
+            if (scrollIdx < 0) {
+              return;
+            }
+
+            await _scrollController.scrollToIndex(
+              // _commentFocusIndex!,
+              scrollIdx,
+              preferPosition: AutoScrollPosition.begin,
+            );
+            _commentFocusIndex = null;
+          }
+        }
+      });
     }
     // _commentPagingController.refresh();
+
+    // print('run?? $_commentFocusIndex');
+    // WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    //   if (_commentFocusIndex != null) {
+    //     int scrollIdx = ref.read(commentListStateProvider).itemList!.indexWhere((element) => element.idx == _commentFocusIndex);
+    //     print('run?? $_commentFocusIndex / scrollIdx $scrollIdx');
+    //     if(scrollIdx < 0) {
+    //       return;
+    //     }
+    //
+    //     await _scrollController.scrollToIndex(
+    //       // _commentFocusIndex!,
+    //       scrollIdx,
+    //       preferPosition: AutoScrollPosition.begin,
+    //     );
+    //     _commentFocusIndex = null;
+    //   }
+    // });
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _commentPagingController.itemList = [];
+    // ref.read(commentListStateProvider.notifier).clearCommentEnv();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +126,10 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
         children: [
           Expanded(
             child: PagedListView<int, CommentData>(
-              pagingController: ref.watch(commentListStateProvider),
+              pagingController: _commentPagingController,
               scrollController: _scrollController,
               builderDelegate: PagedChildBuilderDelegate<CommentData>(
-                animateTransitions: true,
+                // animateTransitions: true,
                 noItemsFoundIndicatorBuilder: (context) {
                   // return const Text('No Comments');
                   return const SizedBox.shrink();
@@ -128,6 +159,13 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
                       isLike: item.likeState == 1,
                       memberIdx: item.memberIdx,
                       mentionListData: item.mentionList ?? [],
+                      isLastDisPlayChild: item.isLastDisPlayChild,
+                      // remainChildCount: item.remainChildCount,
+                      onMoreChildComment: (page) {
+                        print('load more child comment');
+                        ref.read(commentListStateProvider.notifier).getChildComments(item.contentsIdx, item.parentIdx, item.idx, page);
+                      },
+                      pageNumber: item.pageNumber,
                     ),
                   );
                 },
@@ -136,8 +174,15 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
           ),
           ElevatedButton(
             onPressed: () async {
+              // int scrollIdx = ref.read(commentListStateProvider).itemList!.indexWhere((element) => element.idx == _commentFocusIndex);
+              // print('run?? $_commentFocusIndex / scrollIdx $scrollIdx');
+              // if(scrollIdx < 0) {
+              //   return;
+              // }
+
               await _scrollController.scrollToIndex(
-                142,
+                // _commentFocusIndex!,
+                9,
                 preferPosition: AutoScrollPosition.begin,
               );
             },
