@@ -7,6 +7,7 @@ import 'package:pet_mobile_social_flutter/components/feed/widget/dot_indicator.d
 import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
@@ -43,7 +44,7 @@ class TagScreen extends ConsumerWidget {
                     Navigator.of(context).pop();
                   },
                   icon: const Icon(
-                    Icons.close,
+                    Puppycat_social.icon_close_large,
                     color: kNeutralColor100,
                   ),
                 ),

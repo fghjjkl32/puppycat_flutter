@@ -15,6 +15,7 @@ import 'package:pet_mobile_social_flutter/components/user_list/widget/recent_sea
 import 'package:pet_mobile_social_flutter/components/user_list/widget/recent_searches_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/full_search_state_notifier.dart';
@@ -166,24 +167,24 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                 minHeight: 24,
               ),
               suffixIcon: _searchController.text.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 8.0),
+                  ? const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Icon(
-                        Icons.search,
-                        color: Colors.grey[600],
+                        Puppycat_social.icon_search_medium,
+                        color: kNeutralColor600,
                       ),
                     )
                   : GestureDetector(
                       onTap: () {
                         _searchController.text = "";
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 8.0),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
                         child: Icon(
-                          Icons.close,
-                          color: Colors.grey[600],
+                          Puppycat_social.icon_close_large,
+                          color: kNeutralColor600,
                         ),
                       ),
                     ),
@@ -195,7 +196,10 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(
+              Puppycat_social.icon_back,
+              size: 40,
+            ),
           ),
         ),
         body: Column(
@@ -313,7 +317,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                 ref.refresh(searchProvider);
 
                                                 context.push(
-                                                    "/home/search/${bestList[index].searchWord!}");
+                                                    "/home/search/${bestList[index].searchWord!}/0");
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
@@ -427,6 +431,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                             memberIdx:
                                                 nickList[index - 1].memberIdx!,
                                             contentType: 'profile',
+                                            oldMemberIdx: 0,
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -451,6 +456,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                         memberIdx:
                                             nickList[index - 1].memberIdx!,
                                         contentType: 'profile',
+                                        oldMemberIdx: 0,
                                       );
                                     }
                                   },
@@ -601,7 +607,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                 ref.refresh(searchProvider);
 
                                                 context.push(
-                                                    "/home/search/${bestList[index].searchWord!}");
+                                                    "/home/search/${bestList[index].searchWord!}/0");
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
@@ -658,6 +664,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       profileList[index].isBadge == 1,
                                   memberIdx: profileList[index].memberIdx!,
                                   contentType: 'profile',
+                                  oldMemberIdx: 0,
                                 );
                               },
                             );
@@ -743,7 +750,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                 ref.refresh(searchProvider);
 
                                                 context.push(
-                                                    "/home/search/${bestList[index].searchWord!}");
+                                                    "/home/search/${bestList[index].searchWord!}/0");
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
@@ -962,6 +969,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                 memberIdx: search.contentId!,
                                 search: search,
                                 dateTime: search.created!,
+                                oldMemberIdx: 0,
                               );
                             } else if (search.content == "hashtag" ||
                                 search.content == "search") {
@@ -970,7 +978,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                   search.content == "search"
                                       ? _searchController.text = search.name!
                                       : context.push(
-                                          "/home/search/${search.content!}");
+                                          "/home/search/${search.content!}/0");
                                 },
                                 child: Padding(
                                   padding: EdgeInsets.only(
@@ -1037,7 +1045,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                             width: 10,
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                            padding: const EdgeInsets.all(4.0),
                                             child: GestureDetector(
                                                 onTap: () async {
                                                   final dbHelper = ref
@@ -1049,7 +1057,12 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                   // Refresh the provider to trigger the search again
                                                   ref.refresh(searchProvider);
                                                 },
-                                                child: Icon(Icons.close)),
+                                                child: const Icon(
+                                                  Puppycat_social
+                                                      .icon_close_medium,
+                                                  color: kTextBodyColor,
+                                                  size: 26,
+                                                )),
                                           ),
                                         ],
                                       ),

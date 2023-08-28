@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
@@ -15,6 +16,13 @@ class UserInformationStateNotifier
     extends StateNotifier<UserInformationListModel> {
   UserInformationStateNotifier() : super(const UserInformationListModel());
 
+  final Map<int, UserInformationListModel> userInformationStateMap = {};
+
+  void getStateForUserInformation(int userIdx) {
+    state =
+        userInformationStateMap[userIdx] ?? const UserInformationListModel();
+  }
+
   getInitUserInformation([
     loginMemberIdx,
     memberIdx,
@@ -28,6 +36,9 @@ class UserInformationStateNotifier
     }
 
     state = state.copyWith(isLoading: false, list: lists.data.info);
+
+    userInformationStateMap[memberIdx] =
+        state.copyWith(isLoading: false, list: lists.data.info);
   }
 
   Future<ResponseModel> postBlock({

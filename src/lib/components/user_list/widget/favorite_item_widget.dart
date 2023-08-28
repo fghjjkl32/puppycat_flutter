@@ -20,6 +20,7 @@ class FavoriteItemWidget extends ConsumerStatefulWidget {
     required this.isFollow,
     required this.followerIdx,
     required this.contentsIdx,
+    required this.oldMemberIdx,
     this.contentType,
     Key? key,
   }) : super(key: key);
@@ -32,6 +33,7 @@ class FavoriteItemWidget extends ConsumerStatefulWidget {
   final int followerIdx;
   final int contentsIdx;
   final String? contentType;
+  final int oldMemberIdx;
   @override
   FavoriteItemWidgetState createState() => FavoriteItemWidgetState();
 }
@@ -53,7 +55,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
         ref.read(userModelProvider)!.idx == widget.followerIdx
             ? context.push("/home/myPage")
             : context.push(
-                "/home/myPage/followList/${widget.followerIdx}/userPage/${widget.userName}/${widget.followerIdx}");
+                "/home/myPage/followList/${widget.followerIdx}/userPage/${widget.userName}/${widget.followerIdx}/${widget.oldMemberIdx}");
       },
       child: Padding(
         padding:

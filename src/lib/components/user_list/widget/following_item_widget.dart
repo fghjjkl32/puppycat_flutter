@@ -20,6 +20,7 @@ class FollowingItemWidget extends ConsumerWidget {
     required this.isNewUser,
     required this.followIdx,
     required this.memberIdx,
+    required this.oldMemberIdx,
     Key? key,
   }) : super(key: key);
 
@@ -31,6 +32,7 @@ class FollowingItemWidget extends ConsumerWidget {
   final bool isNewUser;
   final int followIdx;
   final int memberIdx;
+  final int oldMemberIdx;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,7 +41,7 @@ class FollowingItemWidget extends ConsumerWidget {
         ref.read(userModelProvider)!.idx == followIdx
             ? context.push("/home/myPage")
             : context.push(
-                "/home/myPage/followList/$followIdx/userPage/$userName/$followIdx");
+                "/home/myPage/followList/$followIdx/userPage/$userName/$followIdx/$oldMemberIdx");
       },
       child: Padding(
         padding:

@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
@@ -128,24 +129,24 @@ class FeedWriteTagSearchScreenState
                             minHeight: 24,
                           ),
                           suffixIcon: userSearchController.text.isEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 8.0),
+                              ? const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 8.0),
                                   child: Icon(
-                                    Icons.search,
-                                    color: Colors.grey[600],
+                                    Puppycat_social.icon_search_medium,
+                                    color: kNeutralColor600,
                                   ),
                                 )
                               : GestureDetector(
                                   onTap: () {
                                     userSearchController.text = "";
                                   },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0, vertical: 8.0),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 8.0),
                                     child: Icon(
-                                      Icons.close,
-                                      color: Colors.grey[600],
+                                      Puppycat_social.icon_close_large,
+                                      color: kNeutralColor600,
                                     ),
                                   ),
                                 ),

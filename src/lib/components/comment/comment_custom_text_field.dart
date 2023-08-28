@@ -8,6 +8,7 @@ import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autocomplete_options.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data.dart';
@@ -99,8 +100,8 @@ class CommentCustomTextFieldState
                               initialized.value = false;
                             },
                             icon: const Icon(
-                              Icons.close,
-                              size: 20,
+                              Puppycat_social.icon_close,
+                              size: 26,
                               color: kTextBodyColor,
                             ),
                           ),
@@ -133,8 +134,8 @@ class CommentCustomTextFieldState
                               initialized.value = false;
                             },
                             icon: const Icon(
-                              Icons.close,
-                              size: 20,
+                              Puppycat_social.icon_close,
+                              size: 26,
                               color: kTextBodyColor,
                             ),
                           ),
@@ -274,12 +275,12 @@ class CommentCustomTextFieldState
                                     }
                                   },
                                   icon: const Icon(
-                                    Icons.check_circle,
-                                    color: Colors.green,
+                                    Puppycat_social.icon_send,
+                                    color: kPrimaryColor,
                                   ),
                                 )
                               : const Icon(
-                                  Icons.check_circle,
+                                  Puppycat_social.icon_send,
                                   color: Colors.grey,
                                 ),
                         ),

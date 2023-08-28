@@ -12,6 +12,12 @@ final tagContentStateProvider =
 class TagContentStateNotifier extends StateNotifier<ContentDataListModel> {
   TagContentStateNotifier() : super(const ContentDataListModel());
 
+  final Map<int, ContentDataListModel> userTagContentStateMap = {};
+
+  void getStateForUserTagContent(int userIdx) {
+    state = userTagContentStateMap[userIdx] ?? const ContentDataListModel();
+  }
+
   int maxPages = 1;
   int currentPage = 1;
   initPosts(
@@ -36,6 +42,9 @@ class TagContentStateNotifier extends StateNotifier<ContentDataListModel> {
     }
 
     state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
+
+    userTagContentStateMap[memberIdx] =
+        state.copyWith(page: page, isLoading: false, list: lists.data.list);
   }
 
   loadMorePost(loginMemberIdx, memberIdx) async {

@@ -39,6 +39,7 @@ import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_pri
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_terms_of_service_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/user_unknown_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_select_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
@@ -93,12 +94,14 @@ class AppRouter {
               },
             ),
             GoRoute(
-              path: 'search/:searchWord',
-              name: 'search/:searchWord',
+              path: 'search/:searchWord/:oldMemberIdx',
+              name: 'search/:searchWord/:oldMemberIdx',
               builder: (BuildContext context, GoRouterState state) {
                 final searchWord = state.pathParameters['searchWord']!;
+                final oldMemberIdx = state.pathParameters['oldMemberIdx']!;
                 return FeedSearchListScreen(
                   searchWord: searchWord,
+                  oldMemberIdx: int.parse(oldMemberIdx),
                 );
               },
             ),
@@ -113,16 +116,18 @@ class AppRouter {
             //   },
             // ),
             GoRoute(
-              path: 'commentDetail/:contentIdx',
-              name: 'commentDetail/:contentIdx',
+              path: 'commentDetail/:contentIdx/:oldMemberIdx',
+              name: 'commentDetail/:contentIdx/:oldMemberIdx',
               builder: (BuildContext context, GoRouterState state) {
                 final contentIdx = state.pathParameters['contentIdx']!;
+                final oldMemberIdx = state.pathParameters['oldMemberIdx']!;
 
                 final extraData = state.extra;
                 int? commentFocusIndex;
-                if(extraData != null) {
-                  Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
-                  if(extraMap.keys.contains('focusIndex')) {
+                if (extraData != null) {
+                  Map<String, dynamic> extraMap =
+                      extraData as Map<String, dynamic>;
+                  if (extraMap.keys.contains('focusIndex')) {
                     commentFocusIndex = extraMap['focusIndex'];
                   }
                 }
@@ -130,6 +135,7 @@ class AppRouter {
                 return CommentDetailScreen(
                   contentsIdx: int.parse(contentIdx),
                   commentFocusIndex: commentFocusIndex,
+                  oldMemberIdx: int.parse(oldMemberIdx),
                 );
               },
             ),
@@ -144,9 +150,18 @@ class AppRouter {
               path: 'myPage',
               name: 'myPage',
               builder: (BuildContext context, GoRouterState state) {
-                return const MyPageMainScreen();
+                return const MyPageMainScreen(
+                  oldMemberIdx: 0,
+                );
               },
               routes: [
+                GoRoute(
+                  path: 'userUnknown',
+                  name: 'userUnknown',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const UserUnknownScreen();
+                  },
+                ),
                 GoRoute(
                   path:
                       'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
@@ -199,12 +214,13 @@ class AppRouter {
                     bool isRouteComment = false;
                     int? commentFocusIndex;
                     final extraData = state.extra;
-                    if(extraData != null) {
-                      Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
-                      if(extraMap.keys.contains('isRouteComment')) {
+                    if (extraData != null) {
+                      Map<String, dynamic> extraMap =
+                          extraData as Map<String, dynamic>;
+                      if (extraMap.keys.contains('isRouteComment')) {
                         isRouteComment = extraMap['isRouteComment'];
                       }
-                      if(extraMap.keys.contains('focusIdx')) {
+                      if (extraMap.keys.contains('focusIdx')) {
                         commentFocusIndex = extraMap['focusIdx'];
                       }
                     }
@@ -270,14 +286,17 @@ class AppRouter {
                     },
                     routes: [
                       GoRoute(
-                        path: 'userPage/:nick/:userIdx',
-                        name: 'userPage/:nick/:userIdx',
+                        path: 'userPage/:nick/:userIdx/:oldMemberIdx',
+                        name: 'userPage/:nick/:userIdx/:oldMemberIdx',
                         builder: (BuildContext context, GoRouterState state) {
                           final memberIdx = state.pathParameters['userIdx']!;
                           final nick = state.pathParameters['nick']!;
+                          final oldMemberIdx =
+                              state.pathParameters['oldMemberIdx']!;
                           return UserMainScreen(
                             memberIdx: int.parse(memberIdx),
                             nick: nick,
+                            oldMemberIdx: int.parse(oldMemberIdx),
                           );
                         },
                       )
@@ -413,33 +432,32 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: '/chatMain',
-        name: 'chatMain',
-        builder: (BuildContext context, GoRouterState state) {
-          return const ChatMainScreen();
-        },
-        routes: [
-          GoRoute(
-            path: 'chatRoom',
-            name: 'chatRoom',
-            builder: (BuildContext context, GoRouterState state) {
-              if(state.extra is Room) {
-                return ChatRoomScreen(room: state.extra! as Room);
-                // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
-              } else {
-                return const ChatMainScreen();
-              }
-            },
-          ),
-          GoRoute(
-            path: 'chatSearch',
-            name: 'chatSearch',
-            builder: (BuildContext context, GoRouterState state) {
+          path: '/chatMain',
+          name: 'chatMain',
+          builder: (BuildContext context, GoRouterState state) {
+            return const ChatMainScreen();
+          },
+          routes: [
+            GoRoute(
+              path: 'chatRoom',
+              name: 'chatRoom',
+              builder: (BuildContext context, GoRouterState state) {
+                if (state.extra is Room) {
+                  return ChatRoomScreen(room: state.extra! as Room);
+                  // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
+                } else {
+                  return const ChatMainScreen();
+                }
+              },
+            ),
+            GoRoute(
+              path: 'chatSearch',
+              name: 'chatSearch',
+              builder: (BuildContext context, GoRouterState state) {
                 return const ChatSearchScreen();
-            },
-          ),
-        ]
-      ),
+              },
+            ),
+          ]),
       // GoRoute(
       //   path: '/chatRoomTest',
       //   name: 'chatRoomTest',

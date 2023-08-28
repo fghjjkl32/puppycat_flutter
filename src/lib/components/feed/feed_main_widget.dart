@@ -55,6 +55,7 @@ class FeedMainWidget extends ConsumerWidget {
                 contentIdx: feedData.idx,
                 contentType: contentType,
                 feedData: feedData,
+                oldMemberIdx: memberIdx ?? 0,
               ),
               FeedImageMainWidget(
                 imageList: feedData.imgList!,
@@ -95,6 +96,7 @@ class FeedMainWidget extends ConsumerWidget {
                                     kBody13RegularStyle.copyWith(
                                         color: kSecondaryColor),
                                     ref,
+                                    memberIdx ?? 0,
                                   ),
                                   style: style,
                                 ),
@@ -126,6 +128,7 @@ class FeedMainWidget extends ConsumerWidget {
                               kBody13RegularStyle.copyWith(
                                   color: kSecondaryColor),
                               ref,
+                              memberIdx ?? 0,
                             ),
                             style: style,
                           ),
@@ -143,6 +146,7 @@ class FeedMainWidget extends ConsumerWidget {
                 isLike: feedData.likeState == 1,
                 isSave: feedData.saveState == 1,
                 contentType: contentType,
+                oldMemberIdx: memberIdx ?? 0,
               ),
               Padding(
                 padding: EdgeInsets.all(12.0.h),

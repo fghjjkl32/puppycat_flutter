@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
@@ -20,6 +21,7 @@ class FollowerItemWidget extends ConsumerWidget {
     required this.isFollow,
     required this.followerIdx,
     required this.memberIdx,
+    required this.oldMemberIdx,
     Key? key,
   }) : super(key: key);
 
@@ -30,6 +32,7 @@ class FollowerItemWidget extends ConsumerWidget {
   final bool isFollow;
   final int followerIdx;
   final int memberIdx;
+  final int oldMemberIdx;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,7 +41,7 @@ class FollowerItemWidget extends ConsumerWidget {
         ref.read(userModelProvider)!.idx == followerIdx
             ? context.push("/home/myPage")
             : context.push(
-                "/home/myPage/followList/$followerIdx/userPage/$userName/$followerIdx");
+                "/home/myPage/followList/$followerIdx/userPage/$userName/$followerIdx/$oldMemberIdx");
       },
       child: Padding(
         padding:
@@ -266,7 +269,7 @@ class FollowerItemWidget extends ConsumerWidget {
                                 );
                               },
                               child: const Icon(
-                                Icons.close,
+                                Puppycat_social.icon_close_large,
                                 size: 20,
                                 color: kNeutralColor500,
                               ),

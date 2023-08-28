@@ -27,7 +27,7 @@ final feedDetailStateProvider =
 });
 
 class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
-  final MyFeedStateNotifier myFeedNotifier;
+  final MyFeedState myFeedNotifier;
   final PopularWeekFeedStateNotifier bestFeedNotifier;
   final RecentFeedStateNotifier recentFeedNotifier;
   final FollowFeedStateNotifier followFeedNotifier;
@@ -38,6 +38,16 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
           firstFeedState: const FeedDataListModel(),
           feedListState: const FeedDataListModel(),
         ));
+
+  final Map<int, FeedDetailState> feedStateMap = {};
+
+  void getStateForUser(int userId) {
+    state = feedStateMap[userId] ??
+        FeedDetailState(
+          firstFeedState: const FeedDataListModel(),
+          feedListState: const FeedDataListModel(),
+        );
+  }
 
   int maxPages = 1;
   int currentPage = 1;
@@ -186,10 +196,27 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
         imgDomain: firstLists.data.imgDomain,
       ),
     );
+
+    feedStateMap[memberIdx ?? 0] = FeedDetailState(
+      firstFeedState: state.firstFeedState.copyWith(
+        page: page,
+        isLoading: false,
+        list: firstLists.data.list,
+        memberInfo: firstLists.data.memberInfo,
+        imgDomain: firstLists.data.imgDomain,
+      ),
+      feedListState: state.feedListState.copyWith(
+        page: page,
+        isLoading: false,
+        list: lists.data.list,
+        memberInfo: lists.data.memberInfo,
+        imgDomain: lists.data.imgDomain,
+      ),
+    );
   }
 
   loadMorePost({
-    required int loginMemberIdx,
+    required int? loginMemberIdx,
     required int memberIdx,
     required String contentType,
     String? searchWord,
@@ -230,18 +257,18 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
           memberIdx: memberIdx);
     } else if (contentType == "userTagContent") {
       lists = await FeedRepository().getUserTagContentDetail(
-          loginMemberIdx: loginMemberIdx,
+          loginMemberIdx: loginMemberIdx!,
           page: state.feedListState.page + 1,
           memberIdx: memberIdx);
     } else if (contentType == "myLikeContent") {
       lists = await LikeContentsRepository().getLikeDetailContentList(
-          loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
+          loginMemberIdx: loginMemberIdx!, page: state.feedListState.page + 1);
     } else if (contentType == "mySaveContent") {
       lists = await SaveContentsRepository().getSaveDetailContentList(
-          loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
+          loginMemberIdx: loginMemberIdx!, page: state.feedListState.page + 1);
     } else if (contentType == "searchContent") {
       lists = await FeedRepository().getUserHashtagContentDetailList(
-          loginMemberIdx: loginMemberIdx,
+          loginMemberIdx: loginMemberIdx!,
           searchWord: searchWord!,
           page: state.feedListState.page + 1);
     } else if (contentType == "popularWeekContent") {
@@ -288,7 +315,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
       contentIdx: contentIdx,
       contentType: contentType,
     );
-    myFeedNotifier.refresh(loginMemberIdx);
+    // myFeedNotifier.refresh(loginMemberIdx);
     bestFeedNotifier.refresh(loginMemberIdx);
     recentFeedNotifier.refresh(loginMemberIdx);
     followFeedNotifier.refresh(loginMemberIdx);

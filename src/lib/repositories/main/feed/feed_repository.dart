@@ -56,8 +56,13 @@ class FeedRepository {
     required loginMemberIdx,
     required memberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel =
-        await _feedService.getUserContentList(loginMemberIdx, memberIdx, page);
+    ContentResponseModel? contentsResponseModel;
+
+    loginMemberIdx == null
+        ? contentsResponseModel =
+            await _feedService.getLogoutUserContentList(memberIdx, page)
+        : contentsResponseModel = await _feedService.getUserContentList(
+            loginMemberIdx, memberIdx, page);
 
     if (contentsResponseModel == null) {
       return contentNullResponseModel;
@@ -71,8 +76,13 @@ class FeedRepository {
     required loginMemberIdx,
     required memberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel = await _feedService
-        .getUserTagContentList(loginMemberIdx, memberIdx, page);
+    ContentResponseModel? contentsResponseModel;
+
+    loginMemberIdx == null
+        ? contentsResponseModel =
+            await _feedService.getLogoutUserTagContentList(memberIdx, page)
+        : contentsResponseModel = await _feedService.getUserTagContentList(
+            loginMemberIdx, memberIdx, page);
 
     if (contentsResponseModel == null) {
       return contentNullResponseModel;
@@ -86,8 +96,13 @@ class FeedRepository {
     required searchWord,
     required page,
   }) async {
-    ContentResponseModel? contentsResponseModel = await _feedService
-        .getUserHashtagContentList(memberIdx, searchWord, page);
+    ContentResponseModel? contentsResponseModel;
+
+    memberIdx == null
+        ? contentsResponseModel =
+            await _feedService.getLogoutUserHashtagContentList(searchWord, page)
+        : contentsResponseModel = await _feedService.getUserHashtagContentList(
+            memberIdx, searchWord, page);
 
     if (contentsResponseModel == null) {
       return contentNullResponseModel;
@@ -214,7 +229,9 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentResponseModel =
+    FeedResponseModel? contentResponseModel;
+
+    contentResponseModel =
         await _feedService.getPopularWeekDetailList(loginMemberIdx, page);
 
     if (contentResponseModel == null) {
@@ -228,8 +245,13 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentResponseModel =
-        await _feedService.getPopularHourDetailList(loginMemberIdx, page);
+    FeedResponseModel? contentResponseModel;
+
+    loginMemberIdx == null
+        ? contentResponseModel =
+            await _feedService.getLogoutPopularHourDetailList(page)
+        : contentResponseModel =
+            await _feedService.getPopularHourDetailList(loginMemberIdx, page);
 
     if (contentResponseModel == null) {
       return feedNullResponseModel;

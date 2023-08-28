@@ -11,8 +11,6 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 
-import 'widget/feed_content_detail_widget.dart';
-
 class FeedDetailWidget extends ConsumerWidget {
   final String? profileImage;
   final String? nick;
@@ -47,6 +45,7 @@ class FeedDetailWidget extends ConsumerWidget {
           isKeep: feedData.keepState == 1,
           contentType: contentType,
           contentIdx: feedData.idx,
+          oldMemberIdx: memberIdx!,
         ),
         //feed detail image
         FeedImageDetailWidget(
@@ -72,6 +71,7 @@ class FeedDetailWidget extends ConsumerWidget {
                   context,
                   kBody13RegularStyle.copyWith(color: kSecondaryColor),
                   ref,
+                  memberIdx!,
                 ),
                 style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
               ),
@@ -86,6 +86,7 @@ class FeedDetailWidget extends ConsumerWidget {
           isLike: feedData.likeState == 1,
           isSave: feedData.saveState == 1,
           contentType: contentType,
+          oldMemberIdx: memberIdx!,
         ),
         feedData.commentList!.isEmpty
             ? Container()
@@ -96,6 +97,7 @@ class FeedDetailWidget extends ConsumerWidget {
                 isSpecialUser: feedData.commentList![0].isBadge! == 1,
                 mentionListData: feedData.commentList![0].mentionList ?? [],
                 contentIdx: feedData.idx,
+                oldMemberIdx: memberIdx!,
               ),
         Padding(
           padding: EdgeInsets.all(12.0.h),

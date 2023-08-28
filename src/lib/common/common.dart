@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -28,11 +30,10 @@ Widget getProfileAvatar(
         height: height,
         fit: BoxFit.cover,
         errorBuilder: (context, exception, stackTrace) {
-          return Image.asset(
-            "assets/image/chat/icon_profile_small.png",
-            // width: width,
-            // height: height,
-            // fit: BoxFit.fill,
+          return const Icon(
+            Puppycat_social.icon_profile_small,
+            size: 30,
+            color: kNeutralColor400,
           );
         },
       ),

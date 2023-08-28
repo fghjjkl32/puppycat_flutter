@@ -23,6 +23,7 @@ class UserItemWidget extends ConsumerStatefulWidget {
     required this.isSpecialUser,
     required this.memberIdx,
     required this.contentType,
+    required this.oldMemberIdx,
     Key? key,
   }) : super(key: key);
 
@@ -32,6 +33,7 @@ class UserItemWidget extends ConsumerStatefulWidget {
   final bool isSpecialUser;
   final int memberIdx;
   final String contentType;
+  final int oldMemberIdx;
   @override
   UserItemWidgetState createState() => UserItemWidgetState();
 }
@@ -60,7 +62,7 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
         ref.read(userModelProvider)!.idx == widget.memberIdx
             ? context.push("/home/myPage")
             : context.push(
-                "/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}");
+                "/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
       },
       child: Padding(
         padding:

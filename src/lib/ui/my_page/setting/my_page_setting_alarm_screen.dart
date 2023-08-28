@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/setting_state_provider.dart';
@@ -71,7 +72,10 @@ class MyPageSettingAlarmScreenState
               onPressed: () {
                 context.pop();
               },
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(
+                Puppycat_social.icon_back,
+                size: 40,
+              ),
             ),
           ),
           body: Consumer(builder: (ctx, ref, child) {

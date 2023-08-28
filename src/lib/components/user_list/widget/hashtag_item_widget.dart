@@ -40,7 +40,7 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
 
         ref.refresh(searchProvider);
 
-        context.push("/home/search/${widget.hashTag}");
+        context.push("/home/search/${widget.hashTag}/0");
       },
       child: Padding(
         padding:

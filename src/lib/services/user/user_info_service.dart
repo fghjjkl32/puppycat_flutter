@@ -36,4 +36,9 @@ abstract class UserInfoService {
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
   );
+
+  @GET('/member/info/{memberIdx}')
+  Future<UserInformationResponseModel?> getLogoutUserInformation(
+    @Path("memberIdx") int memberIdx,
+  );
 }

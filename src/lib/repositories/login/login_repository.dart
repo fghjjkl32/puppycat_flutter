@@ -53,7 +53,7 @@ class LoginRepository {
 
       var appKey = await GetIt.I.get<UuidUtil>().getUUID();
       String fcmToken;
-      if(Platform.isIOS) {
+      if (Platform.isIOS) {
         fcmToken = '1234565';
       } else {
         fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';
@@ -115,7 +115,7 @@ class LoginRepository {
 
     var appKey = await GetIt.I.get<UuidUtil>().getUUID();
     String fcmToken;
-    if(Platform.isIOS) {
+    if (Platform.isIOS) {
       fcmToken = '1234565';
     } else {
       fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';

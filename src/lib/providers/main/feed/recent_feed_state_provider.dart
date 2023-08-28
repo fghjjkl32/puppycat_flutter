@@ -59,8 +59,7 @@ class RecentFeedStateNotifier extends StateNotifier<FeedDataListModel> {
       return;
     }
     bf.write(' success');
-    state = state.copyWith(
-        isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+    state = state.copyWith(isLoadMoreDone: false, isLoadMoreError: false);
 
     final lists = await FeedRepository().getRecentDetailList(
         loginMemberIdx: loginMemberIdx, page: state.page + 1);

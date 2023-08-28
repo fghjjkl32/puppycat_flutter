@@ -19,4 +19,7 @@ abstract class UserListService {
   Future<PopularUserListResponseModel?> getPopularUserList(
     @Path("loginMemberIdx") int loginMemberIdx,
   );
+
+  @GET('/main/popular')
+  Future<PopularUserListResponseModel?> getLogoutPopularUserList();
 }

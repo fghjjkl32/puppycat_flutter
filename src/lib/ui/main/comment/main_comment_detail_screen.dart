@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
@@ -66,7 +67,10 @@ class MainCommentDetailScreenState
                     .resetReplyCommentHeader();
                 context.pop();
               },
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(
+                Puppycat_social.icon_back,
+                size: 40,
+              ),
             ),
           ),
           body: Stack(
@@ -99,6 +103,7 @@ class MainCommentDetailScreenState
                       isLike: commentLists[index].likeState == 1,
                       memberIdx: commentLists[index].memberIdx,
                       mentionListData: commentLists[index].mentionList ?? [],
+                      oldMemberIdx: 0,
                     );
                   },
                 );
