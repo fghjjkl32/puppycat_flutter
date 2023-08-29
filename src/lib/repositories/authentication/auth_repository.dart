@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/services/authentication/auth_service.d
 class AuthRepository {
   final AuthService _authService =
       AuthService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+      // AuthService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   Future<String> getPassAuthUrl() async {
     String appKey = await GetIt.I.get<UuidUtil>().getUUID();

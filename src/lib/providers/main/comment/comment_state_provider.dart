@@ -95,11 +95,13 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required memberIdx,
     required contentsIdx,
     required commentIdx,
+    required parentIdx,
   }) async {
     final result = await CommentRepository().deleteComment(
       memberIdx: memberIdx,
       contentsIdx: contentsIdx,
       commentIdx: commentIdx,
+      parentIdx: parentIdx,
     );
 
     await refresh(contentsIdx, memberIdx);

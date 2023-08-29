@@ -45,6 +45,8 @@ class CommentDetailItemWidget extends ConsumerWidget {
     // required this.remainChildCount,
     this.onMoreChildComment,
     required this.pageNumber,
+    required this.isDisplayPreviousMore,
+    this.onPrevMoreChildComment,
     Key? key,
   }) : super(key: key);
 
@@ -64,9 +66,12 @@ class CommentDetailItemWidget extends ConsumerWidget {
   final int memberIdx;
   final List<MentionListData> mentionListData;
   final bool isLastDisPlayChild;
+
   // final int remainChildCount;
   final Function? onMoreChildComment;
   final int pageNumber;
+  final bool isDisplayPreviousMore;
+  final Function? onPrevMoreChildComment;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -95,6 +100,20 @@ class CommentDetailItemWidget extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (isDisplayPreviousMore)
+                      GestureDetector(
+                        onTap: () {
+                          if (onPrevMoreChildComment != null) {
+                            onPrevMoreChildComment!(pageNumber);
+                          }
+                        },
+                        child: Center(
+                          child: Text(
+                            "이전 답글 10개씩 더 보기",
+                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                          ),
+                        ),
+                      ),
                     GestureDetector(
                       onDoubleTap: () {
                         isLike
@@ -164,8 +183,6 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                       title: '수정하기',
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () async {
-                                                        context.pop();
-
                                                         final commentHeaderState = ref.watch(commentHeaderProvider.notifier);
 
                                                         // context.pop();
@@ -175,6 +192,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                         commentHeaderState.setHasInput(true);
 
                                                         commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(comment, mentionListData));
+                                                        context.pop();
                                                       },
                                                     ),
                                                     BottomSheetButtonItem(
@@ -186,6 +204,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                               memberIdx: ref.read(userModelProvider)!.idx,
                                                               contentsIdx: contentIdx,
                                                               commentIdx: commentIdx,
+                                                              parentIdx: parentIdx,
                                                             );
 
                                                         if (result.result) {
@@ -351,12 +370,12 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            // if (replies != null) {
-                            //   ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, commentIdx);
-                            //   ref.watch(commentHeaderProvider.notifier).setHasInput(true);
-                            // } else {
-                            //   ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, parentIdx);
-                            // }
+                            if (!isReply) {
+                              ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, commentIdx);
+                              ref.watch(commentHeaderProvider.notifier).setHasInput(true);
+                            } else {
+                              ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, parentIdx);
+                            }
                           },
                           child: Row(
                             children: [
@@ -376,10 +395,10 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    if(isLastDisPlayChild)
+                    if (isLastDisPlayChild)
                       GestureDetector(
                         onTap: () {
-                          if(onMoreChildComment != null) {
+                          if (onMoreChildComment != null) {
                             onMoreChildComment!(pageNumber);
                           }
                         },

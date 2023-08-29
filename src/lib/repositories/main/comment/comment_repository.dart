@@ -122,11 +122,13 @@ class CommentRepository {
     required int contentsIdx,
     required int commentIdx,
     required int memberIdx,
+    required int parentIdx,
   }) async {
     ResponseModel? commentResponseModel = await _contentsService.deleteComment(
       contentsIdx: contentsIdx,
       commentIdx: commentIdx,
       memberIdx: memberIdx,
+      parentIdx: parentIdx,
     );
 
     if (commentResponseModel == null) {

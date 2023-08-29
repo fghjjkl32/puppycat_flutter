@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_response_model.dart';
@@ -75,5 +76,11 @@ class NotificationRepository {
     }
 
     return notificationResponseModel.data;
+  }
+
+  void checkNewNotifications(int memberIdx) async {
+
+    ResponseModel? result =
+    await _notificationService.checkNewNotifications(memberIdx);
   }
 }

@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_user_model.dart';
+import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_login_state_provider.dart';
@@ -169,4 +172,5 @@ class LoginState extends _$LoginState {
 
     loginByUserModel(userModel: userModel);
   }
+
 }

@@ -19,6 +19,7 @@ class CommentListState extends _$CommentListState {
   int _contentsIdx = -1;
   int _commentIdx = -1;
   CommentDataListModel? _childFocusListModel;
+  bool _isChildMore = false;
 
   ListAPIStatus get listStatus => _apiStatus;
 
@@ -126,6 +127,7 @@ class CommentListState extends _$CommentListState {
       if (element.childCommentData != null) {
         if (element.childCommentData!.list.isNotEmpty) {
           int pageNumber = element.childCommentData!.params.page!;
+          int totalPageCount = element.childCommentData!.params.pagination!.totalPageCount!;
 
           ///NOTE
           ///아래 mapping은 나중에  API  수정되면 다시 원복
@@ -134,34 +136,42 @@ class CommentListState extends _$CommentListState {
             return child.copyWith(isReply: true);
           }).toList();
 
-          childList.last = childList.last.copyWith(isLastDisPlayChild: true, pageNumber: pageNumber);
+          childList.last = childList.last.copyWith(
+            isLastDisPlayChild: pageNumber != totalPageCount,
+            pageNumber: pageNumber,
+          );
 
           commentList.addAll(childList);
         }
       }
     }
 
-    try {
-      if (_childFocusListModel != null) {
-        CommentData commentData = _childFocusListModel!.list.first;
-        int pageNumber = _childFocusListModel!.params!.page!;
-
-        int parentIdx = commentData.parentIdx;
-        commentList.removeWhere((element) => element.parentIdx == parentIdx);
-        int insertIdx = commentList.indexWhere((element) => element.idx == parentIdx);
-        if(insertIdx < 0) {
-          return commentList;
-        }
-
-        print('parentIdx $parentIdx / insertIdx $insertIdx');
-        commentData = commentData.copyWith(isLastDisPlayChild: true, pageNumber: pageNumber + 1, isReply: true);
-        commentList.insert(insertIdx + 1, commentData);
-        // _childFocusListModel = null;
-
-      }
-    } catch(e) {
-      return commentList;
-    }
+    // try {
+    //   if (_childFocusListModel != null && !_isChildMore) {
+    //     CommentData commentData = _childFocusListModel!.list.first;
+    //     int pageNumber = _childFocusListModel!.params!.page!;
+    //     int totalPageCount = _childFocusListModel!.params!.pagination!.totalPageCount!;
+    //
+    //     int parentIdx = commentData.parentIdx;
+    //     commentList.removeWhere((element) => element.parentIdx == parentIdx);
+    //     int insertIdx = commentList.indexWhere((element) => element.idx == parentIdx);
+    //     if (insertIdx < 0) {
+    //       return commentList;
+    //     }
+    //
+    //     print('parentIdx $parentIdx / insertIdx $insertIdx');
+    //     commentData = commentData.copyWith(
+    //       isLastDisPlayChild: pageNumber != totalPageCount,
+    //       pageNumber: pageNumber + 1,
+    //       isReply: true,
+    //       isDisplayPreviousMore: pageNumber > 1,
+    //     );
+    //     commentList.insert(insertIdx + 1, commentData);
+    //     // _childFocusListModel = null;
+    //   }
+    // } catch (e) {
+    //   return commentList;
+    // }
 
     return commentList;
   }
@@ -199,7 +209,7 @@ class CommentListState extends _$CommentListState {
       // }
 
       // _apiStatus = ListAPIStatus.loading;
-
+      _isChildMore = false;
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
 
       CommentResponseModel searchResult = await CommentRepository().getFocusComments(
@@ -210,10 +220,13 @@ class CommentListState extends _$CommentListState {
 
       state.removePageRequestListener(_fetchPage);
 
+      int? childPage;
+      int parentIdx = 0;
       if (searchResult.data.list != null) {
         if (searchResult.data.list.first.parentIdx > 0) {
-          int parentIdx = searchResult.data.list.first.parentIdx;
+          parentIdx = searchResult.data.list.first.parentIdx;
           _childFocusListModel = searchResult.data;
+          childPage = searchResult.data.params?.page;
 
           searchResult = await CommentRepository().getFocusComments(
             loginMemberIdx,
@@ -230,15 +243,53 @@ class CommentListState extends _$CommentListState {
 
       state.nextPageKey = currentPage;
       print('state.nextPageKey ${state.nextPageKey}');
-      _fetchPage(currentPage); //TEST
-      // _fetchPage(currentPage); //NOTE 다시 바꿔야함
-      state.addPageRequestListener(_fetchPage);
-      // state.refresh();
-      // state
-      // var searchList = searchResult.data.list;
-      // state.appendPage(searchList, currentPage + 1);
+      // _fetchPage(currentPage); //TEST
 
-      // _apiStatus = ListAPIStatus.loaded;
+      final parentPageResult = await CommentRepository().getComment(
+        contentIdx: _contentsIdx,
+        page: currentPage,
+        memberIdx: loginMemberIdx,
+      );
+
+      List<CommentData> commentList = _serializationComment(parentPageResult.data.list);
+
+
+
+      if (childPage != null) {
+        final childPageResult = await CommentRepository().getReplyComment(
+          contentIdx: contentsIdx,
+          commentIdx: parentIdx,
+          memberIdx: loginMemberIdx,
+          page: childPage,
+        );
+
+        var searchList = childPageResult.data.list;
+
+        commentList.removeWhere((element) => element.parentIdx == parentIdx);
+        int insertIdx = commentList.indexWhere((element) => element.idx == parentIdx);
+
+        if (insertIdx < 0) {
+          print('here?? $commentIdx / $commentList');
+          return;
+        }
+
+        int pageNumber = childPageResult.data.params!.page!;
+        int totalPageCount = childPageResult.data.params!.pagination!.totalPageCount!;
+        int totalRecordCount = childPageResult.data.params!.pagination!.totalRecordCount!;
+
+        List<CommentData> childList = searchList.map((e) => e.copyWith(isReply: true)).toList();
+        childList.first = childList.first.copyWith(isDisplayPreviousMore: pageNumber > 1, pageNumber: pageNumber - 1);
+        childList.last = childList.last.copyWith(isLastDisPlayChild: pageNumber != totalPageCount, pageNumber: pageNumber + 1);
+
+        commentList.insertAll(insertIdx + 1, childList);
+        print('totalRecordCount - currentList.length ${totalRecordCount - (pageNumber * 10)} / totalRecordCount $totalRecordCount');
+
+        print('searchList.last ${searchList.last}');
+      }
+      state.appendPage(commentList.toSet().toList(), currentPage + 1);
+      state.notifyListeners();
+
+      state.addPageRequestListener(_fetchPage);
     } catch (e) {
       print('eeeeeeeeee $e');
       _apiStatus = ListAPIStatus.error;
@@ -246,7 +297,7 @@ class CommentListState extends _$CommentListState {
     }
   }
 
-  void getChildComments(int contentsIdx, int commentIdx, int lastChildCommentIdx, int page) async {
+  void getChildComments(int contentsIdx, int commentIdx, int lastChildCommentIdx, int page, bool isNext) async {
     if (contentsIdx < 0) {
       return;
     }
@@ -282,14 +333,21 @@ class CommentListState extends _$CommentListState {
       int totalRecordCount = searchResult.data.params!.pagination!.totalRecordCount!;
 
       List<CommentData> childList = searchList.map((e) => e.copyWith(isReply: true)).toList();
-      childList.last = childList.last.copyWith(isLastDisPlayChild: pageNumber != totalPageCount, pageNumber: pageNumber + 1);
 
-      currentList[insertIdx] = currentList[insertIdx].copyWith(isLastDisPlayChild: false);
-      currentList.insertAll(insertIdx + 1, childList);
-      print('totalRecordCount - currentList.length ${totalRecordCount - (pageNumber * 10)} / totalRecordCount $totalRecordCount');
+      if(isNext) {
+        currentList[insertIdx] = currentList[insertIdx].copyWith(isLastDisPlayChild: false);
+        childList.last = childList.last.copyWith(isLastDisPlayChild: pageNumber != totalPageCount, pageNumber: pageNumber + 1);
+      } else {
+        int parentIdx = currentList.indexWhere((element) => element.idx == commentIdx);
+        currentList[parentIdx + 1] = currentList[parentIdx + 1].copyWith(isDisplayPreviousMore: false);
+        childList.first = childList.first.copyWith(isDisplayPreviousMore: pageNumber > 1);
+      }
+
+      currentList.insertAll(isNext ? insertIdx + 1 : insertIdx, childList);
 
       print('searchList.last ${searchList.last}');
       state.itemList = currentList.toSet().toList();
+      _isChildMore = true;
       state.notifyListeners();
     } catch (e) {
       print('error $e');

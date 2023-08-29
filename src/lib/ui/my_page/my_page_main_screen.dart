@@ -435,6 +435,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                   mentionListData: commentLists[index].mentionList ?? [],
                                                                   isLastDisPlayChild: false,
                                                                   pageNumber: commentLists[index].pageNumber,
+                                                                  isDisplayPreviousMore: false,
                                                                 );
                                                               },
                                                             ),
