@@ -6,10 +6,14 @@ import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_
 import 'widget/feed_follow_card_widget.dart';
 
 class FeedFollowWidget extends StatelessWidget {
-  const FeedFollowWidget({Key? key, required this.popularUserListData})
-      : super(key: key);
+  const FeedFollowWidget({
+    Key? key,
+    required this.popularUserListData,
+    required this.oldMemberIdx,
+  }) : super(key: key);
 
   final List<PopularUserListData> popularUserListData;
+  final int oldMemberIdx;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +37,7 @@ class FeedFollowWidget extends StatelessWidget {
                   followCount: popularUserListData[index].followerCnt!,
                   isSpecialUser: popularUserListData[index].isBadge! == 1,
                   memberIdx: popularUserListData[index].memberIdx!,
+                  oldMemberIdx: oldMemberIdx,
                 );
               },
             ),

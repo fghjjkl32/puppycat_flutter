@@ -77,6 +77,7 @@ class MentionListData with _$MentionListData {
     int? memberIdx,
     String? uuid,
     String? nick,
+    int? memberState,
   }) = _MentionListData;
 
   factory MentionListData.fromJson(Map<String, dynamic> json) =>

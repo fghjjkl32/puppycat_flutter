@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +12,9 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class MyPageProfileEditScreen extends ConsumerStatefulWidget {
@@ -134,7 +137,10 @@ class MyPageProfileEditScreenState
                 onPressed: () {
                   context.pop();
                 },
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(
+                  Puppycat_social.icon_back,
+                  size: 40,
+                ),
               ),
               actions: [
                 TextButton(
@@ -160,10 +166,10 @@ class MyPageProfileEditScreenState
                             childSaveLayer: true,
                             mask: Center(
                               child: selectedImage == null
-                                  ? Image.asset(
-                                      'assets/image/feed/image/sample_image3.png',
-                                      height: 84.h,
-                                      fit: BoxFit.fill,
+                                  ? const Icon(
+                                      Puppycat_social.icon_profile_large,
+                                      size: 92,
+                                      color: kNeutralColor500,
                                     )
                                   : Image.file(
                                       File(selectedImage!.path),
@@ -188,8 +194,9 @@ class MyPageProfileEditScreenState
                                 widget: Column(
                                   children: [
                                     BottomSheetButtonItem(
-                                      iconImage:
-                                          'assets/image/feed/icon/small_size/icon_user_de.png',
+                                      icon: const Icon(
+                                        Puppycat_social.icon_photo,
+                                      ),
                                       title: '앨범에서 선택',
                                       titleStyle: kButton14BoldStyle.copyWith(
                                           color: kTextSubTitleColor),
@@ -200,8 +207,10 @@ class MyPageProfileEditScreenState
                                       },
                                     ),
                                     BottomSheetButtonItem(
-                                      iconImage:
-                                          'assets/image/feed/icon/small_size/icon_report.png',
+                                      icon: const Icon(
+                                        Puppycat_social.icon_delete_small,
+                                        color: kBadgeColor,
+                                      ),
                                       title: '프로필 사진 삭제',
                                       titleStyle: kButton14BoldStyle.copyWith(
                                           color: kBadgeColor),
@@ -226,9 +235,9 @@ class MyPageProfileEditScreenState
                                   ),
                                 ],
                               ),
-                              child: const Icon(
-                                Icons.edit,
-                                size: 24,
+                              child: Icon(
+                                Puppycat_social.icon_modify_medium,
+                                color: kTextBodyColor,
                               ),
                             ),
                           ),
@@ -476,6 +485,106 @@ class MyPageProfileEditScreenState
                               ),
                             ),
                           ],
+                        ),
+                      ),
+                      Visibility(
+                        visible: true,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 24.0.w, vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: 100.w,
+                                height: 40.h,
+                                child: ElevatedButton.icon(
+                                  style: ButtonStyle(
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0)),
+                                    ),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            kKakaoLoginColor),
+                                    padding: MaterialStateProperty.all<
+                                            EdgeInsetsGeometry>(
+                                        EdgeInsets.only(left: 5.w, right: 5.w)),
+                                  ),
+                                  onPressed: () {},
+                                  label: Text(
+                                    '회원가입.카카오 인증'.tr(),
+                                    style: kBody12SemiBoldStyle.copyWith(
+                                        color: kTextSubTitleColor),
+                                  ),
+                                  icon: Image.asset(
+                                      'assets/image/signUpScreen/kakao_icon.png'),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 100.w,
+                                height: 40.h,
+                                child: ElevatedButton.icon(
+                                  style: ButtonStyle(
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0)),
+                                    ),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            kNaverLoginColor),
+                                    padding: MaterialStateProperty.all<
+                                            EdgeInsetsGeometry>(
+                                        EdgeInsets.only(left: 5.w, right: 5.w)),
+                                  ),
+                                  onPressed: () {},
+                                  label: Text(
+                                    '회원가입.네이버 인증'.tr(),
+                                    style: kBody12SemiBoldStyle.copyWith(
+                                        color: kNeutralColor100),
+                                  ),
+                                  icon: Image.asset(
+                                      'assets/image/signUpScreen/naver_icon.png'),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 100.w,
+                                height: 40.h,
+                                child: ElevatedButton.icon(
+                                  style: ButtonStyle(
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0)),
+                                    ),
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            kSignUpPassColor),
+                                    padding: MaterialStateProperty.all<
+                                            EdgeInsetsGeometry>(
+                                        EdgeInsets.only(left: 5.w, right: 5.w)),
+                                  ),
+                                  onPressed: () {
+                                    ref
+                                        .read(authStateProvider.notifier)
+                                        .getPassAuthUrl();
+                                  },
+                                  label: Text(
+                                    '회원가입.휴대폰 인증'.tr(),
+                                    style: kBody12SemiBoldStyle.copyWith(
+                                        color: kNeutralColor100),
+                                  ),
+                                  icon: Image.asset(
+                                      'assets/image/signUpScreen/pass_icon.png'),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(

@@ -51,7 +51,10 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               onPressed: () {
                 context.pop();
               },
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(
+                Puppycat_social.icon_back,
+                size: 40,
+              ),
             ),
           ),
           body: ListView(

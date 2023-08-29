@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/location_item.dart';
 
@@ -31,11 +32,11 @@ class LocationUserItemWidget extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: kNeutralColor300,
                   ),
-                  child: Center(
-                    child: Image.asset(
-                      'assets/image/search/icon/icon_place.png',
-                      height: 16.h,
-                      fit: BoxFit.fill,
+                  child: const Center(
+                    child: Icon(
+                      Puppycat_social.icon_place,
+                      size: 22,
+                      color: kTextBodyColor,
                     ),
                   ),
                 ),

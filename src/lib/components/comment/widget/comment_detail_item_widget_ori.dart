@@ -13,6 +13,7 @@ import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
@@ -38,6 +39,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
     required this.isLike,
     required this.memberIdx,
     required this.mentionListData,
+    required this.oldMemberIdx,
     this.replies,
     Key? key,
   }) : super(key: key);
@@ -56,6 +58,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
   final ChildCommentData? replies;
   final int memberIdx;
   final List<MentionListData> mentionListData;
+  final int oldMemberIdx;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -74,9 +77,16 @@ class CommentDetailItemWidget extends ConsumerWidget {
               GestureDetector(
                 onTap: () {
                   ref.read(userModelProvider)!.idx == memberIdx
-                      ? context.push("/home/myPage")
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyPageMainScreen(
+                              oldMemberIdx: oldMemberIdx,
+                            ),
+                          ),
+                        )
                       : context.push(
-                          "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx");
+                          "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
                 },
                 child: getProfileAvatar(profileImage!, 30.w, 30.h),
               ),
@@ -119,9 +129,17 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                   onTap: () {
                                     ref.read(userModelProvider)!.idx ==
                                             memberIdx
-                                        ? context.push("/home/myPage")
+                                        ? Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MyPageMainScreen(
+                                                oldMemberIdx: oldMemberIdx,
+                                              ),
+                                            ),
+                                          )
                                         : context.push(
-                                            "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx");
+                                            "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
                                   },
                                   child: Row(
                                     children: [
@@ -162,8 +180,10 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                 widget: Column(
                                                   children: [
                                                     BottomSheetButtonItem(
-                                                      iconImage:
-                                                          'assets/image/feed/icon/small_size/icon_report.png',
+                                                      icon: const Icon(
+                                                        Puppycat_social
+                                                            .icon_modify,
+                                                      ),
                                                       title: '수정하기',
                                                       titleStyle:
                                                           kButton14BoldStyle
@@ -196,8 +216,11 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                       },
                                                     ),
                                                     BottomSheetButtonItem(
-                                                      iconImage:
-                                                          'assets/image/feed/icon/small_size/icon_report.png',
+                                                      icon: const Icon(
+                                                        Puppycat_social
+                                                            .icon_delete_small,
+                                                        color: kBadgeColor,
+                                                      ),
                                                       title: '삭제하기',
                                                       titleStyle:
                                                           kButton14BoldStyle
@@ -233,8 +256,10 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                 widget: Column(
                                                   children: [
                                                     BottomSheetButtonItem(
-                                                      iconImage:
-                                                          'assets/image/feed/icon/small_size/icon_user_block_on.png',
+                                                      icon: const Icon(
+                                                        Puppycat_social
+                                                            .icon_user_block_ac,
+                                                      ),
                                                       title: '차단하기',
                                                       titleStyle: kButton14BoldStyle
                                                           .copyWith(
@@ -339,8 +364,11 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                       },
                                                     ),
                                                     BottomSheetButtonItem(
-                                                      iconImage:
-                                                          'assets/image/feed/icon/small_size/icon_report.png',
+                                                      icon: const Icon(
+                                                        Puppycat_social
+                                                            .icon_report1,
+                                                        color: kBadgeColor,
+                                                      ),
                                                       title: '신고하기',
                                                       titleStyle:
                                                           kButton14BoldStyle
@@ -357,9 +385,9 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                 ),
                                               );
                                       },
-                                      child: Image.asset(
-                                        'assets/image/feed/icon/small_size/icon_more.png',
-                                        height: 26.w,
+                                      child: const Icon(
+                                        Puppycat_social.icon_more,
+                                        color: kTextBodyColor,
                                       ),
                                     ),
                                   ],
@@ -381,6 +409,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                     kBody11RegularStyle.copyWith(
                                         color: kSecondaryColor),
                                     ref,
+                                    oldMemberIdx,
                                   ),
                                   style: kBody11RegularStyle.copyWith(
                                       color: kTextTitleColor),
@@ -394,8 +423,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                     Row(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(
-                              left: 12.0.w, top: 2.h, right: 2.w),
+                          padding: EdgeInsets.only(left: 12.0.w, right: 2.w),
                           child: isLike
                               ? InkWell(
                                   onTap: () {
@@ -453,11 +481,11 @@ class CommentDetailItemWidget extends ConsumerWidget {
                           child: Row(
                             children: [
                               Padding(
-                                padding: EdgeInsets.only(
-                                    left: 12.0.w, top: 2.h, right: 2.w),
-                                child: Image.asset(
-                                  'assets/image/feed/icon/small_size/icon_comment_comment.png',
-                                  height: 24.w,
+                                padding:
+                                    EdgeInsets.only(left: 12.0.w, right: 2.w),
+                                child: const Icon(
+                                  Puppycat_social.icon_comment_comment,
+                                  color: kTextBodyColor,
                                 ),
                               ),
                               Text(
@@ -497,12 +525,10 @@ class CommentDetailItemWidget extends ConsumerWidget {
                 //                   : replies!.list.length)
                 //           .toDouble(),
                 //   child:
-            Container(
-              child:
-                  Padding(
+                Container(
+                  child: Padding(
                     padding: const EdgeInsets.only(top: 10.0),
-                    child:
-                    ListView.builder(
+                    child: ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: ref
                               .watch(commentStateProvider.select((state) =>
@@ -531,6 +557,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                           memberIdx: replies!.list[index].memberIdx,
                           mentionListData:
                               replies!.list[index].mentionList ?? [],
+                          oldMemberIdx: oldMemberIdx,
                         );
                       },
                     ),

@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autoco
 import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
@@ -161,13 +162,10 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                           children: [
                             Row(
                               children: [
-                                Text(
-                                  "+",
-                                  style: kBody16BoldStyle.copyWith(
-                                      color: kTextSubTitleColor),
-                                ),
-                                SizedBox(
-                                  width: 5.w,
+                                const Icon(
+                                  Puppycat_social.icon_add_small,
+                                  size: 20,
+                                  color: kTextSubTitleColor,
                                 ),
                                 Text(
                                   "사람 태그하기 ",
@@ -332,9 +330,9 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                     IconButton(
                       onPressed: () {},
                       icon: const Icon(
-                        Icons.arrow_forward_ios,
-                        size: 18,
-                        color: kNeutralColor400,
+                        Puppycat_social.icon_next_small,
+                        size: 22,
+                        color: kNeutralColor500,
                       ),
                     ),
                   ],
@@ -374,9 +372,12 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'assets/image/feed/icon/small_size/icon_view_all.png',
-                            height: 26.w,
+                          Icon(
+                            Puppycat_social.icon_view_all,
+                            size: 26,
+                            color: buttonSelected == 1
+                                ? kPrimaryColor
+                                : kTextBodyColor,
                           ),
                           SizedBox(
                             width: 9.w,
@@ -417,9 +418,12 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'assets/image/feed/icon/small_size/icon_view_follow.png',
-                            height: 26.w,
+                          Icon(
+                            Puppycat_social.icon_view_follow,
+                            size: 26,
+                            color: buttonSelected == 2
+                                ? kPrimaryColor
+                                : kTextBodyColor,
                           ),
                           SizedBox(
                             width: 9.w,

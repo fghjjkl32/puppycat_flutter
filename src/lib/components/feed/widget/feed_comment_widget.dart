@@ -19,6 +19,7 @@ class FeedCommentWidget extends ConsumerWidget {
     required this.isSpecialUser,
     required this.mentionListData,
     required this.contentIdx,
+    required this.oldMemberIdx,
     Key? key,
   }) : super(key: key);
 
@@ -28,12 +29,13 @@ class FeedCommentWidget extends ConsumerWidget {
   final bool isSpecialUser;
   final List<MentionListData> mentionListData;
   final int contentIdx;
+  final int oldMemberIdx;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
-        context.push("/home/commentDetail/$contentIdx");
+        context.push("/home/commentDetail/$contentIdx/$oldMemberIdx");
       },
       child: Padding(
         padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 12.h),
@@ -94,6 +96,7 @@ class FeedCommentWidget extends ConsumerWidget {
                             kBody11RegularStyle.copyWith(
                                 color: kSecondaryColor),
                             ref,
+                            oldMemberIdx,
                           ),
                           style: kBody11RegularStyle.copyWith(
                               color: kTextTitleColor),

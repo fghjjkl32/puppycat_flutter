@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/con
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Constants {
@@ -111,7 +112,8 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(
     List<MentionListData> mentionList,
     BuildContext context,
     TextStyle tagStyle,
-    WidgetRef ref) {
+    WidgetRef ref,
+    int oldMemberIdx) {
   List<InlineSpan> spans = [];
 
   // Combining both mention and hashtag patterns
@@ -134,10 +136,19 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(
         spans.add(WidgetSpan(
           child: GestureDetector(
             onTap: () {
-              ref.read(userModelProvider)!.idx == mention.memberIdx
-                  ? context.push("/home/myPage")
-                  : context.push(
-                      "/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}");
+              ref.read(userModelProvider)?.idx == mention.memberIdx
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyPageMainScreen(
+                          oldMemberIdx: oldMemberIdx,
+                        ),
+                      ),
+                    )
+                  : mention.memberState == 0
+                      ? context.push("/home/myPage/userUnknown")
+                      : context.push(
+                          "/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}/${oldMemberIdx}");
             },
             child: Text('@' + (mention.nick ?? ''), style: tagStyle),
           ),
@@ -150,7 +161,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(
       spans.add(WidgetSpan(
         child: GestureDetector(
           onTap: () {
-            context.push("/home/search/$hashtagMatched");
+            context.push("/home/search/$hashtagMatched/$oldMemberIdx");
           },
           child: Text('#' + hashtagMatched,
               style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),

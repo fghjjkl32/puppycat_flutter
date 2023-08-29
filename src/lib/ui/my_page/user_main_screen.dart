@@ -12,10 +12,12 @@ import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
@@ -30,11 +32,12 @@ class UserMainScreen extends ConsumerStatefulWidget {
     super.key,
     required this.memberIdx,
     required this.nick,
+    required this.oldMemberIdx,
   });
 
   final int memberIdx;
   final String nick;
-
+  final int oldMemberIdx;
   @override
   UserMainScreenState createState() => UserMainScreenState();
 }
@@ -69,13 +72,13 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
 
     Future(() {
       ref.watch(userInformationStateProvider.notifier).getInitUserInformation(
-          ref.watch(userModelProvider)!.idx, widget.memberIdx);
+          ref.watch(userModelProvider)?.idx, widget.memberIdx);
       ref
           .read(userContentStateProvider.notifier)
-          .initPosts(ref.read(userModelProvider)!.idx, widget.memberIdx, 1);
+          .initPosts(ref.read(userModelProvider)?.idx, widget.memberIdx, 1);
       ref
           .read(tagContentStateProvider.notifier)
-          .initPosts(ref.read(userModelProvider)!.idx, widget.memberIdx, 1);
+          .initPosts(ref.read(userModelProvider)?.idx, widget.memberIdx, 1);
     });
 
     super.initState();
@@ -145,6 +148,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        ref
+            .read(feedDetailStateProvider.notifier)
+            .getStateForUser(widget.oldMemberIdx ?? 0);
         Navigator.of(context).pop();
 
         return false;
@@ -165,20 +171,32 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                     title: Text(widget.nick),
                     leading: IconButton(
                       onPressed: () {
+                        ref
+                            .read(feedDetailStateProvider.notifier)
+                            .getStateForUser(widget.oldMemberIdx ?? 0);
                         Navigator.of(context).pop();
                       },
-                      icon: const Icon(Icons.arrow_back),
+                      icon: const Icon(
+                        Puppycat_social.icon_back,
+                        size: 40,
+                      ),
                     ),
                     forceElevated: innerBoxIsScrolled,
                     actions: [
                       PopupMenuButton(
-                        icon: const Icon(Icons.more_horiz),
+                        icon: const Icon(
+                          Puppycat_social.icon_more_header,
+                          size: 40,
+                        ),
                         onSelected: (id) {
                           if (id == 'block') {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return CustomDialog(
+                            if (ref.read(userModelProvider) == null) {
+                              context.pushReplacement("/loginScreen");
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return CustomDialog(
                                     content: Padding(
                                       padding: EdgeInsets.symmetric(
                                           vertical: 24.0.h),
@@ -242,9 +260,11 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                       "프로필 차단",
                                       style: kButton14MediumStyle.copyWith(
                                           color: kBadgeColor),
-                                    ));
-                              },
-                            );
+                                    ),
+                                  );
+                                },
+                              );
+                            }
                           }
                         },
                         shape: const RoundedRectangleBorder(
@@ -261,7 +281,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                             diaryPopUpMenuItem(
                               'block',
                               '차단하기',
-                              const Icon(Icons.block),
+                              const Icon(
+                                Puppycat_social.icon_user_block_ac,
+                              ),
                               context,
                             ),
                           );
@@ -363,7 +385,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
         return RefreshIndicator(
           onRefresh: () {
             return ref.read(userContentStateProvider.notifier).refresh(
-                  ref.read(userModelProvider)!.idx,
+                  ref.read(userModelProvider)?.idx,
                   widget.memberIdx,
                 );
           },
@@ -474,7 +496,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
         return RefreshIndicator(
           onRefresh: () {
             return ref.read(tagContentStateProvider.notifier).refresh(
-                  ref.read(userModelProvider)!.idx,
+                  ref.read(userModelProvider)?.idx,
                   widget.memberIdx,
                 );
           },
@@ -604,8 +626,10 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                     ),
                     GestureDetector(
                       onTap: () {
-                        context.push(
-                            "/home/myPage/followList/${widget.memberIdx}");
+                        ref.read(userModelProvider) == null
+                            ? context.pushReplacement("/loginScreen")
+                            : context.push(
+                                "/home/myPage/followList/${widget.memberIdx}");
                       },
                       child: Padding(
                         padding: EdgeInsets.only(top: 8.0.h),
@@ -672,19 +696,24 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                             ? Expanded(
                                 child: GestureDetector(
                                   onTap: () async {
-                                    ref
-                                        .watch(userInformationStateProvider
-                                            .notifier)
-                                        .updateUnBlockState(
-                                            ref.watch(userModelProvider)!.idx,
-                                            widget.memberIdx);
-                                    await ref
-                                        .read(blockStateProvider.notifier)
-                                        .deleteBlock(
-                                          memberIdx:
+                                    if (ref.read(userModelProvider) == null) {
+                                      context.pushReplacement("/loginScreen");
+                                    } else {
+                                      ref
+                                          .watch(userInformationStateProvider
+                                              .notifier)
+                                          .updateUnBlockState(
                                               ref.watch(userModelProvider)!.idx,
-                                          blockIdx: widget.memberIdx,
-                                        );
+                                              widget.memberIdx);
+                                      await ref
+                                          .read(blockStateProvider.notifier)
+                                          .deleteBlock(
+                                            memberIdx: ref
+                                                .watch(userModelProvider)!
+                                                .idx,
+                                            blockIdx: widget.memberIdx,
+                                          );
+                                    }
 
                                     // if (result.result) {
                                     //   ref
@@ -715,21 +744,26 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                 child: data.followState == 1
                                     ? GestureDetector(
                                         onTap: () async {
-                                          ref
-                                              .watch(
-                                                  userInformationStateProvider
-                                                      .notifier)
-                                              .updateUnFollowState();
-
-                                          final result = await ref
-                                              .watch(
-                                                  followStateProvider.notifier)
-                                              .deleteFollow(
-                                                memberIdx: ref
-                                                    .read(userModelProvider)!
-                                                    .idx,
-                                                followIdx: widget.memberIdx,
-                                              );
+                                          if (ref.read(userModelProvider) ==
+                                              null) {
+                                            context.pushReplacement(
+                                                "/loginScreen");
+                                          } else {
+                                            ref
+                                                .watch(
+                                                    userInformationStateProvider
+                                                        .notifier)
+                                                .updateUnFollowState();
+                                            await ref
+                                                .watch(followStateProvider
+                                                    .notifier)
+                                                .deleteFollow(
+                                                  memberIdx: ref
+                                                      .read(userModelProvider)!
+                                                      .idx,
+                                                  followIdx: widget.memberIdx,
+                                                );
+                                          }
 
                                           // if (result.result) {
                                           //   ref
@@ -759,20 +793,26 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                       )
                                     : GestureDetector(
                                         onTap: () async {
-                                          ref
-                                              .watch(
-                                                  userInformationStateProvider
-                                                      .notifier)
-                                              .updateFollowState();
-                                          final result = await ref
-                                              .watch(
-                                                  followStateProvider.notifier)
-                                              .postFollow(
-                                                memberIdx: ref
-                                                    .read(userModelProvider)!
-                                                    .idx,
-                                                followIdx: widget.memberIdx,
-                                              );
+                                          if (ref.read(userModelProvider) ==
+                                              null) {
+                                            context.pushReplacement(
+                                                "/loginScreen");
+                                          } else {
+                                            ref
+                                                .watch(
+                                                    userInformationStateProvider
+                                                        .notifier)
+                                                .updateFollowState();
+                                            await ref
+                                                .watch(followStateProvider
+                                                    .notifier)
+                                                .postFollow(
+                                                  memberIdx: ref
+                                                      .read(userModelProvider)!
+                                                      .idx,
+                                                  followIdx: widget.memberIdx,
+                                                );
+                                          }
 
                                           // if (result.result) {
                                           //   ref
@@ -805,7 +845,11 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                         ),
                         Expanded(
                           child: GestureDetector(
-                            onTap: () async {},
+                            onTap: () async {
+                              ref.read(userModelProvider) == null
+                                  ? context.pushReplacement("/loginScreen")
+                                  : null;
+                            },
                             child: Container(
                               height: 30.h,
                               decoration: const BoxDecoration(
@@ -860,7 +904,8 @@ PopupMenuItem diaryPopUpMenuItem(
 }
 
 class TabBarDelegate extends SliverPersistentHeaderDelegate {
-  const TabBarDelegate();
+  final double tabBarHeight;
+  const TabBarDelegate({this.tabBarHeight = 48});
 
   @override
   Widget build(
@@ -872,6 +917,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
       return lists.isEmpty
           ? Container()
           : Container(
+              height: tabBarHeight,
               decoration: shrinkOffset == 0
                   ? BoxDecoration(
                       color: Colors.white,
@@ -913,15 +959,15 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                     children: [
                                       Text(
                                         "일상글",
-                                        // style: kBody14BoldStyle,
+                                        style: kBody14BoldStyle,
                                       ),
                                       SizedBox(
                                         width: 6.w,
                                       ),
                                       Text(
                                         "${ref.watch(userContentStateProvider).totalCount}",
-                                        // style: kBadge10MediumStyle.copyWith(
-                                        //     color: kTextBodyColor),
+                                        style: kBadge10MediumStyle.copyWith(
+                                            color: kTextBodyColor),
                                       ),
                                     ],
                                   );
@@ -954,10 +1000,14 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 46;
+  double get maxExtent {
+    return tabBarHeight;
+  }
 
   @override
-  double get minExtent => 46;
+  double get minExtent {
+    return tabBarHeight;
+  }
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {

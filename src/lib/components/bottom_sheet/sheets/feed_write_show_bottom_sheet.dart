@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -29,7 +30,7 @@ void feedWriteShowBottomSheet({required BuildContext context}) {
         ),
         SizedBox(height: 16.h),
         SizedBox(
-          height: 60.h,
+          height: 120,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,7 +76,10 @@ void feedWriteShowBottomSheet({required BuildContext context}) {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.add),
+                        Lottie.asset(
+                          'assets/lottie/character_01_dailysharing_80.json',
+                          fit: BoxFit.fill,
+                        ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0.h),
                           child: Text(
@@ -97,7 +101,10 @@ void feedWriteShowBottomSheet({required BuildContext context}) {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.add),
+                      Lottie.asset(
+                        'assets/lottie/character_01_walk_80.json',
+                        fit: BoxFit.fill,
+                      ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8.0.h),
                         child: Text(

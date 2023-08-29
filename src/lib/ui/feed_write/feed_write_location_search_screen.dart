@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/location_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/location_item.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_search_provider.dart';
@@ -25,7 +26,9 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: const Icon(Icons.close),
+          icon: const Icon(
+            Puppycat_social.icon_close_large,
+          ),
         ),
       ),
       resizeToAvoidBottomInset: false,
@@ -79,12 +82,12 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                           suffixIcon: ref
                                   .watch(feedWriteLocationSearchProvider)
                                   .isEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 8.0),
+                              ? const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 8.0),
                                   child: Icon(
-                                    Icons.search,
-                                    color: Colors.grey[600],
+                                    Puppycat_social.icon_search_medium,
+                                    color: kNeutralColor600,
                                   ),
                                 )
                               : GestureDetector(
@@ -94,12 +97,12 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                             .notifier)
                                         .onTextChanged('');
                                   },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0, vertical: 8.0),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 8.0),
                                     child: Icon(
-                                      Icons.close,
-                                      color: Colors.grey[600],
+                                      Puppycat_social.icon_close_large,
+                                      color: kNeutralColor600,
                                     ),
                                   ),
                                 ),

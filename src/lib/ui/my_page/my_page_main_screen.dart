@@ -15,6 +15,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
@@ -26,7 +27,12 @@ import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class MyPageMainScreen extends ConsumerStatefulWidget {
-  const MyPageMainScreen({super.key});
+  const MyPageMainScreen({
+    super.key,
+    required this.oldMemberIdx,
+  });
+
+  final int oldMemberIdx;
 
   @override
   MyPageMainState createState() => MyPageMainState();
@@ -124,6 +130,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        ref
+            .read(feedDetailStateProvider.notifier)
+            .getStateForUser(widget.oldMemberIdx ?? 0);
         Navigator.of(context).pop();
 
         return false;
@@ -144,6 +153,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                     title: const Text('마이페이지'),
                     leading: IconButton(
                       onPressed: () {
+                        ref
+                            .read(feedDetailStateProvider.notifier)
+                            .getStateForUser(widget.oldMemberIdx ?? 0);
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(
@@ -439,6 +451,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                                 contentsIdx:
                                                                     lists[index]
                                                                         .idx,
+                                                                oldMemberIdx: 0,
                                                               );
                                                             },
                                                           ),
@@ -451,18 +464,18 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                             }),
                                           );
                                         },
-                                        child: lists[index].likeCnt == 1
+                                        child: lists[index].selfLike == 1
                                             ? const Icon(
-                                                Puppycat_social
-                                                    .icon_comment_like_de,
-                                                size: 24,
-                                                color: kNeutralColor100,
-                                              )
-                                            : const Icon(
                                                 Puppycat_social
                                                     .icon_comment_like_ac,
                                                 size: 24,
                                                 color: kPrimaryColor,
+                                              )
+                                            : const Icon(
+                                                Puppycat_social
+                                                    .icon_comment_like_de,
+                                                size: 24,
+                                                color: kNeutralColor100,
                                               ),
                                       ),
                                     ),
@@ -588,6 +601,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                                       commentLists[index]
                                                                               .mentionList ??
                                                                           [],
+                                                                  oldMemberIdx:
+                                                                      commentLists[
+                                                                              index]
+                                                                          .memberIdx,
                                                                 );
                                                               },
                                                             ),
@@ -940,45 +957,41 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                 ),
                 tabs: [
                   Consumer(builder: (context, ref, child) {
-                    return Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "일상글",
-                            style: kBody14BoldStyle,
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(
-                            "${ref.watch(myContentStateProvider).totalCount}",
-                            style: kBadge10MediumStyle.copyWith(
-                                color: kTextBodyColor),
-                          ),
-                        ],
-                      ),
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "일상글",
+                          style: kBody14BoldStyle,
+                        ),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        Text(
+                          "${ref.watch(myContentStateProvider).totalCount}",
+                          style: kBadge10MediumStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                      ],
                     );
                   }),
                   Consumer(builder: (context, ref, child) {
-                    return Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "태그됨",
-                            style: kBody14BoldStyle,
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(
-                            "${ref.watch(myTagContentStateProvider).totalCount}",
-                            style: kBadge10MediumStyle.copyWith(
-                                color: kTextBodyColor),
-                          ),
-                        ],
-                      ),
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "태그됨",
+                          style: kBody14BoldStyle,
+                        ),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        Text(
+                          "${ref.watch(myTagContentStateProvider).totalCount}",
+                          style: kBadge10MediumStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                      ],
                     );
                   }),
                 ]),

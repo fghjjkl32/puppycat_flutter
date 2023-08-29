@@ -3,14 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BottomSheetButtonItem extends StatelessWidget {
   const BottomSheetButtonItem({
-    required this.iconImage,
+    required this.icon,
     required this.title,
     required this.titleStyle,
     required this.onTap,
     Key? key,
   }) : super(key: key);
 
-  final String iconImage;
+  final Widget icon;
   final String title;
   final TextStyle titleStyle;
   final VoidCallback? onTap;
@@ -24,10 +24,7 @@ class BottomSheetButtonItem extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 32.w),
           child: Row(
             children: [
-              Image.asset(
-                iconImage,
-                height: 20.w,
-              ),
+              icon,
               Padding(
                 padding: EdgeInsets.only(left: 16.0.w),
                 child: Text(

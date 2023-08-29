@@ -1,100 +1,144 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final myFeedStateProvider =
-    StateNotifierProvider<MyFeedStateNotifier, FeedDataListModel>((ref) {
-  return MyFeedStateNotifier();
-});
+part 'my_feed_state_provider.g.dart';
 
-class MyFeedStateNotifier extends StateNotifier<FeedDataListModel> {
-  MyFeedStateNotifier() : super(const FeedDataListModel());
+final myFeedListEmptyProvider = StateProvider<bool>((ref) => true);
 
-  int maxPages = 1;
-  int currentPage = 1;
-  initPosts({
-    required loginMemberIdx,
-    required int? initPage,
-  }) async {
-    currentPage = 1;
+@Riverpod(keepAlive: true)
+class MyFeedState extends _$MyFeedState {
+  int _lastPage = 0;
+  ListAPIStatus _apiStatus = ListAPIStatus.idle;
 
-    final page = initPage ?? state.page;
-    final lists = await FeedRepository().getMyContentsDetailList(
-      loginMemberIdx: loginMemberIdx,
-      memberIdx: loginMemberIdx,
-      page: page,
-    );
-    maxPages = lists.data.params!.pagination!.endPage!;
+  List<FeedMemberInfoListData>? memberInfo;
+  String? imgDomain;
 
-    state = state.copyWith(
-        totalCount: lists.data.params!.pagination!.totalRecordCount!);
-
-    if (lists == null) {
-      state = state.copyWith(page: page, isLoading: false);
-      return;
-    }
-
-    state = state.copyWith(
-      page: page,
-      isLoading: false,
-      list: lists.data.list,
-      memberInfo: lists.data.memberInfo,
-      imgDomain: lists.data.imgDomain,
-    );
+  @override
+  PagingController<int, FeedData> build() {
+    PagingController<int, FeedData> pagingController =
+        PagingController(firstPageKey: 1);
+    pagingController.addPageRequestListener(_fetchPage);
+    return pagingController;
   }
 
-  loadMorePost({required loginMemberIdx}) async {
-    if (currentPage >= maxPages) {
-      state = state.copyWith(isLoadMoreDone: true);
-      return;
-    }
+  Future<void> _fetchPage(int pageKey) async {
+    try {
+      if (_apiStatus == ListAPIStatus.loading) {
+        return;
+      }
 
-    StringBuffer bf = StringBuffer();
+      _apiStatus = ListAPIStatus.loading;
 
-    bf.write('try to request loading ${state.isLoading} at ${state.page + 1}');
-    if (state.isLoading) {
-      bf.write(' fail');
-      return;
-    }
-    bf.write(' success');
-    state = state.copyWith(
-        isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
-
-    final lists = await FeedRepository().getMyContentsDetailList(
+      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+      var searchResult = await FeedRepository().getMyContentsDetailList(
         loginMemberIdx: loginMemberIdx,
-        page: state.page + 1,
-        memberIdx: loginMemberIdx);
-
-    if (lists == null) {
-      state = state.copyWith(isLoadMoreError: true, isLoading: false);
-      return;
-    }
-
-    if (lists.data.list.isNotEmpty) {
-      state = state.copyWith(
-        page: state.page + 1,
-        isLoading: false,
-        list: [...state.list, ...lists.data.list],
-        memberInfo: [...?state.memberInfo, ...?lists.data.memberInfo],
-        imgDomain: lists.data.imgDomain,
+        memberIdx: loginMemberIdx,
+        page: pageKey,
       );
-      currentPage++;
-    } else {
-      state = state.copyWith(
-        isLoading: false,
-      );
+      memberInfo = searchResult.data.memberInfo;
+      imgDomain = searchResult.data.imgDomain;
+
+      var searchList = searchResult.data.list
+          .map(
+            (e) => FeedData(
+              commentList: e.commentList,
+              keepState: e.keepState,
+              followState: e.followState,
+              isComment: e.isComment,
+              memberIdx: e.memberIdx,
+              isLike: e.isLike,
+              saveState: e.saveState,
+              likeState: e.likeState,
+              isView: e.isView,
+              regDate: e.regDate,
+              imageCnt: e.imageCnt,
+              uuid: e.uuid,
+              likeCnt: e.likeCnt,
+              contents: e.contents,
+              location: e.location,
+              modifyState: e.modifyState,
+              idx: e.idx,
+              mentionList: e.mentionList,
+              commentCnt: e.commentCnt,
+              hashTagList: e.hashTagList,
+              memberInfoList: e.memberInfoList,
+              imgList: e.imgList,
+            ),
+          )
+          .toList();
+
+      try {
+        _lastPage = searchResult.data.params!.pagination!.totalPageCount!;
+      } catch (_) {
+        _lastPage = 1;
+      }
+
+      final nextPageKey = searchList.isEmpty ? null : pageKey + 1;
+
+      if (pageKey == _lastPage) {
+        state.appendLastPage(searchList);
+      } else {
+        state.appendPage(searchList, nextPageKey);
+      }
+      _apiStatus = ListAPIStatus.loaded;
+      ref.read(myFeedListEmptyProvider.notifier).state = searchList.isEmpty;
+    } catch (e) {
+      _apiStatus = ListAPIStatus.error;
+      state.error = e;
     }
   }
 
-  Future<void> refresh(loginMemberIdx) async {
-    initPosts(loginMemberIdx: loginMemberIdx, initPage: 1);
-    currentPage = 1;
-  }
-
-  void updateState(FeedDataListModel newState) {
-    state = newState;
-  }
+  // void setFavorite(int memberIdx, String chatMemberId) async {
+  //   bool result = await ref
+  //       .read(chatFavoriteStateProvider.notifier)
+  //       .setChatFavorite(memberIdx, chatMemberId);
+  //   if (result) {
+  //     changedFavoriteState(chatMemberId, true);
+  //   }
+  // }
+  //
+  // void unSetFavorite(int memberIdx, String chatMemberId) async {
+  //   bool result = await ref
+  //       .read(chatFavoriteStateProvider.notifier)
+  //       .unSetChatFavorite(memberIdx, chatMemberId);
+  //   if (result) {
+  //     changedFavoriteState(chatMemberId, false);
+  //   }
+  // }
+  //
+  // void changedFavoriteState(String chatMemberId, bool isFavorite) {
+  //   if (chatMemberId.isEmpty || chatMemberId == '') {
+  //     ///TODO
+  //     ///Need Error Handling
+  //     return;
+  //   }
+  //   int targetIdx = state.itemList!
+  //       .indexWhere((element) => element.chatMemberId == chatMemberId);
+  //   // int targetIdx = Random().nextInt(state.itemList!.length ?? 4);
+  //   print('targetIdx $targetIdx');
+  //   if (targetIdx >= 0) {
+  //     state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+  //       favoriteState: isFavorite ? 1 : 0,
+  //     );
+  //     state.notifyListeners();
+  //     if (isFavorite) {
+  //       ref
+  //           .read(chatFavoriteUserStateProvider.notifier)
+  //           .addFavorite(state.itemList![targetIdx]);
+  //     } else {
+  //       ref
+  //           .read(chatFavoriteUserStateProvider.notifier)
+  //           .removeFavorite(state.itemList![targetIdx]);
+  //     }
+  //   }
+  // }
 }

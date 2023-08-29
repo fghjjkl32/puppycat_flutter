@@ -10,6 +10,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -21,6 +22,7 @@ class FeedFollowCardWidget extends ConsumerWidget {
     required this.followCount,
     required this.isSpecialUser,
     required this.memberIdx,
+    required this.oldMemberIdx,
     Key? key,
   }) : super(key: key);
 
@@ -30,6 +32,7 @@ class FeedFollowCardWidget extends ConsumerWidget {
   final int followCount;
   final bool isSpecialUser;
   final int memberIdx;
+  final int oldMemberIdx;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,9 +54,16 @@ class FeedFollowCardWidget extends ConsumerWidget {
             GestureDetector(
               onTap: () {
                 ref.read(userModelProvider)!.idx == memberIdx
-                    ? context.push("/home/myPage")
+                    ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyPageMainScreen(
+                            oldMemberIdx: oldMemberIdx,
+                          ),
+                        ),
+                      )
                     : context.push(
-                        "/home/myPage/followList/$memberIdx/userPage/$userName/$memberIdx");
+                        "/home/myPage/followList/$memberIdx/userPage/$userName/$memberIdx/$oldMemberIdx");
               },
               child: Row(
                 children: [

@@ -86,7 +86,7 @@ class MentionAutocompleteOptionsState
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(
                       Thumbor(host: thumborHostUrl, key: thumborKey)
-                          .buildImage(user.profileImgUrl!)
+                          .buildImage("$imgDomain${user.profileImgUrl!}")
                           .toUrl(),
                     ),
                   ),

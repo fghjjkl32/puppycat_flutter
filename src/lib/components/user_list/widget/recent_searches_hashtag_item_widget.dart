@@ -30,7 +30,7 @@ class RecentSearchesHashTagItemWidgetState
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.push("/home/search/${widget.hashTag}");
+        context.push("/home/search/${widget.hashTag}/0");
       },
       child: Padding(
         padding:

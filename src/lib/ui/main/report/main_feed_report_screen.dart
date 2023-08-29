@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/select_button.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
@@ -82,7 +83,10 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                 onPressed: () {
                   context.pop();
                 },
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(
+                  Puppycat_social.icon_back,
+                  size: 40,
+                ),
               ),
             ),
             body: ListView(
@@ -130,7 +134,9 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
               ],
             ),
             bottomNavigationBar: Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

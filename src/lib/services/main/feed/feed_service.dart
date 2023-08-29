@@ -61,6 +61,12 @@ abstract class FeedService {
     @Path("page") int page,
   );
 
+  @GET('/member/{memberIdx}/contents?&page={page}&limit=15')
+  Future<ContentResponseModel?> getLogoutUserContentList(
+    @Path("memberIdx") int memberIdx,
+    @Path("page") int page,
+  );
+
   @GET(
       '/member/{memberIdx}/tag/contents?loginMemberIdx={loginMemberIdx}&page={page}&limit=15')
   Future<ContentResponseModel?> getUserTagContentList(
@@ -69,10 +75,23 @@ abstract class FeedService {
     @Path("page") int page,
   );
 
+  @GET('/member/{memberIdx}/tag/contents?&page={page}&limit=15')
+  Future<ContentResponseModel?> getLogoutUserTagContentList(
+    @Path("memberIdx") int memberIdx,
+    @Path("page") int page,
+  );
+
   @GET(
       '/search/tag/contents?memberIdx={memberIdx}&imgLimit=12&searchWord={searchWord}&page={page}&limit=15')
   Future<ContentResponseModel?> getUserHashtagContentList(
     @Path("memberIdx") int memberIdx,
+    @Path("searchWord") String searchWord,
+    @Path("page") int page,
+  );
+
+  @GET(
+      '/search/tag/contents?imgLimit=12&searchWord={searchWord}&page={page}&limit=15')
+  Future<ContentResponseModel?> getLogoutUserHashtagContentList(
     @Path("searchWord") String searchWord,
     @Path("page") int page,
   );
@@ -155,6 +174,11 @@ abstract class FeedService {
       '/contents/hour/popular/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
   Future<FeedResponseModel?> getPopularHourDetailList(
     @Path("loginMemberIdx") int loginMemberIdx,
+    @Path("page") int page,
+  );
+
+  @GET('/contents/hour/popular/detail?imgLimit=12&&page={page}')
+  Future<FeedResponseModel?> getLogoutPopularHourDetailList(
     @Path("page") int page,
   );
 

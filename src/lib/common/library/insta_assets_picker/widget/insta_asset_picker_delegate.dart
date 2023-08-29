@@ -15,6 +15,7 @@ import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/pr
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/widget/asset_picker_app_bar.dart';
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/widget/platform_progress_indicator.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -307,7 +308,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 child: w,
               ),
               child: Icon(
-                Icons.keyboard_arrow_down,
+                Puppycat_social.icon_down,
                 size: 20,
                 color: theme.iconTheme.color,
               ),
