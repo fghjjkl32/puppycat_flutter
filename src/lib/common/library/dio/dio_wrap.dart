@@ -6,13 +6,15 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/notification/notification_service.dart';
 
 
 final dioProvider = StateProvider<Dio>((ref) {
-  return DioWrap.getDioWithCookie2(ref as WidgetRef);
+  return DioWrap.getDioWithCookie2(ref);
 });
 
 class DioWrap {
@@ -75,7 +77,7 @@ class DioWrap {
 
     return dio;
   }
-  static Dio getDioWithCookie2(WidgetRef ref) {
+  static Dio getDioWithCookie2(Ref ref) {
     // final dio = Dio();
     CookieJar cookieJar = GetIt.I<CookieJar>();
     if (dio.interceptors.whereType<CookieManager>().isEmpty) {
@@ -103,25 +105,7 @@ class DioWrap {
           // This is where you call your specific API
           try {
             if(ref.read(userInfoProvider).userModel != null) {
-            print('path ${options.path} / ${ref.read(userInfoProvider).userModel != null} / ${ref.read(userInfoProvider).userModel}');
-              var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-              Dio notiDio = Dio();
-
-              if (notiDio.interceptors.whereType<CookieManager>().isEmpty) {
-                notiDio.interceptors.add(CookieManager(cookieJar));
-                notiDio.interceptors.add(QueuedInterceptorsWrapper());
-              }
-
-              notiDio.interceptors.add(CookieManager(cookieJar));
-
-              final notificationService = NotificationService(notiDio);
-              final response = await notificationService.checkNewNotifications(loginMemberIdx);
-              ResponseModel resModel = response as ResponseModel;
-              if (resModel.result) {
-                print('no new noti');
-              } else {
-                print('exist new noti');
-              }
+              ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
             }
             // Maybe you want to modify the options based on the result of the specific API?
             // For example, setting a header:
@@ -130,6 +114,7 @@ class DioWrap {
             // Continue with the request
             return handler.next(options);
           } catch (e) {
+            print('noti error $e');
             // Handle the error accordingly
             // return handler.reject(DioError(
             //   requestOptions: options,

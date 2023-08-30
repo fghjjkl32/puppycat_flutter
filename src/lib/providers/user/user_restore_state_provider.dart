@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,7 +15,7 @@ class UserRestoreState extends _$UserRestoreState {
   }
 
   void restoreAccount(String simpleId) async {
-    state = await ref.read(userInfoRepositoryProvider).restoreAccount(simpleId);
+    state = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).restoreAccount(simpleId);
   }
 }
 

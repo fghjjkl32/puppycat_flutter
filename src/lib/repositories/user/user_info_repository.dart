@@ -10,11 +10,18 @@ import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/services/user/user_info_service.dart';
 
 // final accountRepositoryProvider = Provider((ref) => AccountRepository());
-final userInfoRepositoryProvider = Provider((ref) => UserInfoRepository());
+final userInfoRepositoryProvider = Provider.family<UserInfoRepository, Dio>((ref, dio) => UserInfoRepository(dio: dio));
 
 class UserInfoRepository {
-  final UserInfoService _userInfoService =
-      UserInfoService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final UserInfoService _userInfoService; // = UserInfoService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+
+  final Dio dio;
+
+  UserInfoRepository({
+    required this.dio,
+  }) {
+    _userInfoService = UserInfoService(dio, baseUrl: baseUrl);
+  }
 
   Future<bool> restoreAccount(String simpleId) async {
     Map<String, dynamic> body = {
@@ -33,8 +40,7 @@ class UserInfoRepository {
   }
 
   Future<UserInformationItemModel> getMyInfo(String memberIdx) async {
-    UserInformationResponseModel? responseModel =
-        await _userInfoService.getMyInfo(memberIdx);
+    UserInformationResponseModel? responseModel = await _userInfoService.getMyInfo(memberIdx);
 
     if (responseModel == null) {
       ///TODO
@@ -105,10 +111,8 @@ class UserInfoRepository {
   }
 
   //User Info
-  Future<UserInformationResponseModel> getUserInformation(
-      int loginMemberIdx, int memberIdx) async {
-    UserInformationResponseModel? userInformationResponseModel =
-        await _userInfoService.getUserInformation(
+  Future<UserInformationResponseModel> getUserInformation(int loginMemberIdx, int memberIdx) async {
+    UserInformationResponseModel? userInformationResponseModel = await _userInfoService.getUserInformation(
       loginMemberIdx,
       memberIdx,
     );

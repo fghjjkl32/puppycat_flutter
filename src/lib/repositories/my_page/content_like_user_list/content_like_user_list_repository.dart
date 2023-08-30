@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_data_list_model.dart';
@@ -6,18 +7,22 @@ import 'package:pet_mobile_social_flutter/models/params_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/content_like_user_list/content_like_user_list_service.dart';
 
 class ContentLikeUserListRepository {
-  final ContentLikeUserListService _contentLikeUserListService =
-      ContentLikeUserListService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final ContentLikeUserListService _contentLikeUserListService; // = ContentLikeUserListService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+
+  final Dio dio;
+
+  ContentLikeUserListRepository({
+    required this.dio,
+  }) {
+    _contentLikeUserListService = ContentLikeUserListService(dio, baseUrl: baseUrl);
+  }
 
   Future<ContentLikeUserListResponseModel> getContentLikeUserList({
     required int contentsIdx,
     required int memberIdx,
     required int page,
   }) async {
-    ContentLikeUserListResponseModel? contentLikeUserListResponseModel =
-        await _contentLikeUserListService
-            .getContentLikeUserList(contentsIdx, memberIdx, page)
-            .catchError((Object obj) async {});
+    ContentLikeUserListResponseModel? contentLikeUserListResponseModel = await _contentLikeUserListService.getContentLikeUserList(contentsIdx, memberIdx, page).catchError((Object obj) async {});
 
     if (contentLikeUserListResponseModel == null) {
       return ContentLikeUserListResponseModel(

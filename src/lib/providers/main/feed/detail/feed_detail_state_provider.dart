@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
@@ -23,7 +24,7 @@ final feedDetailStateProvider =
   final followFeedNotifier = ref.watch(followFeedStateProvider.notifier);
 
   return FeedDetailStateNotifier(myFeedNotifier, popularWeekFeedNotifier,
-      recentFeedNotifier, followFeedNotifier);
+      recentFeedNotifier, followFeedNotifier, ref);
 });
 
 class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
@@ -31,9 +32,10 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
   final PopularWeekFeedStateNotifier bestFeedNotifier;
   final RecentFeedStateNotifier recentFeedNotifier;
   final FollowFeedStateNotifier followFeedNotifier;
+  final Ref ref;
 
   FeedDetailStateNotifier(this.myFeedNotifier, this.bestFeedNotifier,
-      this.recentFeedNotifier, this.followFeedNotifier)
+      this.recentFeedNotifier, this.followFeedNotifier, this.ref)
       : super(FeedDetailState(
           firstFeedState: const FeedDataListModel(),
           feedListState: const FeedDataListModel(),
@@ -57,63 +59,63 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
 
     if (contentType == "myContent") {
       futures = Future.wait([
-        FeedRepository().getMyContentsDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-        FeedRepository().getMyContentsDetailList(
+        FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(
             loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: page),
       ]);
     } else if (contentType == "myTagContent") {
       futures = Future.wait([
-        FeedRepository().getContentDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-        FeedRepository().getMyTagContentsDetailList(
+        FeedRepository(dio: ref.read(dioProvider)).getMyTagContentsDetailList(
             loginMemberIdx: loginMemberIdx, page: page),
       ]);
     } else if (contentType == "userContent") {
       futures = Future.wait([
-        FeedRepository().getContentDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-        FeedRepository().getUserContentsDetailList(
+        FeedRepository(dio: ref.read(dioProvider)).getUserContentsDetailList(
             loginMemberIdx: loginMemberIdx, page: page, memberIdx: memberIdx),
       ]);
     } else if (contentType == "userTagContent") {
       futures = Future.wait([
-        FeedRepository().getContentDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-        FeedRepository().getUserTagContentDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getUserTagContentDetail(
             loginMemberIdx: loginMemberIdx, page: page, memberIdx: memberIdx!),
       ]);
     } else if (contentType == "myLikeContent") {
       futures = Future.wait([
-        FeedRepository().getContentDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-        LikeContentsRepository().getLikeDetailContentList(
+        LikeContentsRepository(dio: ref.read(dioProvider)).getLikeDetailContentList(
             loginMemberIdx: loginMemberIdx!, page: page),
       ]);
     } else if (contentType == "mySaveContent") {
       futures = Future.wait([
-        FeedRepository().getContentDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-        SaveContentsRepository().getSaveDetailContentList(
+        SaveContentsRepository(dio: ref.read(dioProvider)).getSaveDetailContentList(
             loginMemberIdx: loginMemberIdx, page: page),
       ]);
     } else if (contentType == "myDetailContent") {
       futures = Future.wait([
-        FeedRepository().getMyContentsDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
         Future.value(feedNullResponseModel),
       ]);
     } else if (contentType == "myKeepContent") {
       futures = Future.wait([
-        KeepContentsRepository().getMyKeepContentDetail(
+        KeepContentsRepository(dio: ref.read(dioProvider)).getMyKeepContentDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
         Future.value(feedNullResponseModel),
       ]);
     } else if (contentType == "searchContent") {
       futures = Future.wait([
-        FeedRepository().getContentDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-        FeedRepository().getUserHashtagContentDetailList(
+        FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentDetailList(
           loginMemberIdx: loginMemberIdx,
           searchWord: searchWord!,
           page: page,
@@ -121,25 +123,25 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
       ]);
     } else if (contentType == "popularWeekContent") {
       futures = Future.wait([
-        FeedRepository().getContentDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-        FeedRepository().getPopularWeekDetailList(
+        FeedRepository(dio: ref.read(dioProvider)).getPopularWeekDetailList(
           loginMemberIdx: loginMemberIdx,
           page: page,
         ),
       ]);
     } else if (contentType == "popularHourContent") {
       futures = Future.wait([
-        FeedRepository().getContentDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-        FeedRepository().getPopularHourDetailList(
+        FeedRepository(dio: ref.read(dioProvider)).getPopularHourDetailList(
           loginMemberIdx: loginMemberIdx,
           page: page,
         ),
       ]);
     } else if (contentType == "notificationContent") {
       futures = Future.wait([
-        FeedRepository().getContentDetail(
+        FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
         Future.value(feedNullResponseModel),
       ]);
@@ -216,39 +218,39 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     var lists;
 
     if (contentType == "myContent") {
-      lists = await FeedRepository().getMyContentsDetailList(
+      lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(
           loginMemberIdx: loginMemberIdx,
           memberIdx: memberIdx,
           page: state.feedListState.page + 1);
     } else if (contentType == "myTagContent") {
-      lists = await FeedRepository().getMyTagContentsDetailList(
+      lists = await FeedRepository(dio: ref.read(dioProvider)).getMyTagContentsDetailList(
           loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
     } else if (contentType == "userContent") {
-      lists = await FeedRepository().getUserContentsDetailList(
+      lists = await FeedRepository(dio: ref.read(dioProvider)).getUserContentsDetailList(
           loginMemberIdx: loginMemberIdx,
           page: state.feedListState.page + 1,
           memberIdx: memberIdx);
     } else if (contentType == "userTagContent") {
-      lists = await FeedRepository().getUserTagContentDetail(
+      lists = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentDetail(
           loginMemberIdx: loginMemberIdx,
           page: state.feedListState.page + 1,
           memberIdx: memberIdx);
     } else if (contentType == "myLikeContent") {
-      lists = await LikeContentsRepository().getLikeDetailContentList(
+      lists = await LikeContentsRepository(dio: ref.read(dioProvider)).getLikeDetailContentList(
           loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
     } else if (contentType == "mySaveContent") {
-      lists = await SaveContentsRepository().getSaveDetailContentList(
+      lists = await SaveContentsRepository(dio: ref.read(dioProvider)).getSaveDetailContentList(
           loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
     } else if (contentType == "searchContent") {
-      lists = await FeedRepository().getUserHashtagContentDetailList(
+      lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentDetailList(
           loginMemberIdx: loginMemberIdx,
           searchWord: searchWord!,
           page: state.feedListState.page + 1);
     } else if (contentType == "popularWeekContent") {
-      lists = await FeedRepository().getPopularWeekDetailList(
+      lists = await FeedRepository(dio: ref.read(dioProvider)).getPopularWeekDetailList(
           loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
     } else if (contentType == "popularHourContent") {
-      lists = await FeedRepository().getPopularHourDetailList(
+      lists = await FeedRepository(dio: ref.read(dioProvider)).getPopularHourDetailList(
           loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
     }
 
@@ -301,7 +303,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository()
+    final result = await FeedRepository(dio: ref.read(dioProvider))
         .postLike(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
     await refresh(
@@ -320,7 +322,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository()
+    final result = await FeedRepository(dio: ref.read(dioProvider))
         .deleteLike(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
     await refresh(
@@ -339,7 +341,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository()
+    final result = await FeedRepository(dio: ref.read(dioProvider))
         .postSave(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
     await refresh(
@@ -358,7 +360,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository()
+    final result = await FeedRepository(dio: ref.read(dioProvider))
         .deleteSave(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
     await refresh(
@@ -376,7 +378,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required List<int> contentIdxList,
     required contentType,
   }) async {
-    final result = await KeepContentsRepository()
+    final result = await KeepContentsRepository(dio: ref.read(dioProvider))
         .postKeepContents(memberIdx: loginMemberIdx, idxList: contentIdxList);
 
     await refresh(
@@ -394,7 +396,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required contentIdx,
     required contentType,
   }) async {
-    final result = await KeepContentsRepository()
+    final result = await KeepContentsRepository(dio: ref.read(dioProvider))
         .deleteOneKeepContents(memberIdx: loginMemberIdx, idx: contentIdx);
 
     await refresh(
@@ -412,7 +414,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required int contentIdx,
     required contentType,
   }) async {
-    final result = await FeedRepository()
+    final result = await FeedRepository(dio: ref.read(dioProvider))
         .deleteOneContents(memberIdx: loginMemberIdx, idx: contentIdx);
 
     await refresh(
@@ -431,7 +433,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository()
+    final result = await FeedRepository(dio: ref.read(dioProvider))
         .postHide(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
     return result;
@@ -443,7 +445,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository()
+    final result = await FeedRepository(dio: ref.read(dioProvider))
         .deleteHide(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
     await refresh(
@@ -462,7 +464,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required contentIdx,
     required contentType,
   }) async {
-    final result = await BlockRepository().postBlock(
+    final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
       memberIdx: memberIdx,
       blockIdx: blockIdx,
     );
@@ -484,7 +486,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required String? reason,
     required String reportType,
   }) async {
-    final result = await FeedRepository().postContentReport(
+    final result = await FeedRepository(dio: ref.read(dioProvider)).postContentReport(
       reportType: reportType,
       memberIdx: loginMemberIdx,
       contentIdx: contentIdx,
@@ -500,7 +502,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required int loginMemberIdx,
     required int contentIdx,
   }) async {
-    final result = await FeedRepository().deleteContentReport(
+    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContentReport(
       reportType: reportType,
       memberIdx: loginMemberIdx,
       contentsIdx: contentIdx,
@@ -515,7 +517,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required contentsIdx,
     required contentType,
   }) async {
-    final result = await FollowRepository()
+    final result = await FollowRepository(dio: ref.read(dioProvider))
         .postFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     await refresh(
@@ -533,7 +535,7 @@ class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
     required contentsIdx,
     required contentType,
   }) async {
-    final result = await FollowRepository()
+    final result = await FollowRepository(dio: ref.read(dioProvider))
         .deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     await refresh(

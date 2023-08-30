@@ -16,11 +16,17 @@ import 'package:pet_mobile_social_flutter/services/signUp/sign_up_service.dart';
 // final policyRepositoryProvider = Provider.autoDispose((ref) => PolicyRepository());
 
 class SignUpRepository {
-  final SignUpService _signUpService =
-      SignUpService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final SignUpService _signUpService; // = SignUpService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
-  Future<SignUpStatus> socialSignUp(
-      UserModel userModel, List<PolicyItemModel> policyIdxList) async {
+  final Dio dio;
+
+  SignUpRepository({
+    required this.dio,
+  }) {
+    _signUpService = SignUpService(dio, baseUrl: baseUrl);
+  }
+
+  Future<SignUpStatus> socialSignUp(UserModel userModel, List<PolicyItemModel> policyIdxList) async {
     /// NOTE
     ///테스트용
 
@@ -44,8 +50,7 @@ class SignUpRepository {
     }
 
     bool isError = false;
-    ResponseModel? res =
-        await _signUpService.socialSignUp(body).catchError((Object obj) async {
+    ResponseModel? res = await _signUpService.socialSignUp(body).catchError((Object obj) async {
       (ResponseModel?, bool) errorResult = await errorHandler(obj);
       var responseModel = errorResult.$1;
       isError = errorResult.$2;
@@ -77,9 +82,7 @@ class SignUpRepository {
     };
 
     bool isError = false;
-    ResponseModel? res = await _signUpService
-        .checkNickName(queries)
-        .catchError((Object obj) async {
+    ResponseModel? res = await _signUpService.checkNickName(queries).catchError((Object obj) async {
       (ResponseModel?, bool) errorResult = await errorHandler(obj);
       var responseModel = errorResult.$1;
       isError = errorResult.$2;

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_response_model.dart';
@@ -45,7 +46,7 @@ class CommentListState extends _$CommentListState {
 
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
 
-      final searchResult = await CommentRepository().getComment(
+      final searchResult = await CommentRepository(dio: ref.read(dioProvider)).getComment(
         contentIdx: _contentsIdx,
         page: pageKey,
         memberIdx: loginMemberIdx,
@@ -94,7 +95,7 @@ class CommentListState extends _$CommentListState {
       }
 
       print('previousPageKey $previousPageKey / $currentPageKey');
-      final searchResult = await CommentRepository().getComment(
+      final searchResult = await CommentRepository(dio: ref.read(dioProvider)).getComment(
         contentIdx: _contentsIdx,
         page: previousPageKey,
         memberIdx: loginMemberIdx,
@@ -212,7 +213,7 @@ class CommentListState extends _$CommentListState {
       _isChildMore = false;
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
 
-      CommentResponseModel searchResult = await CommentRepository().getFocusComments(
+      CommentResponseModel searchResult = await CommentRepository(dio: ref.read(dioProvider)).getFocusComments(
         loginMemberIdx,
         contentsIdx,
         commentIdx,
@@ -228,7 +229,7 @@ class CommentListState extends _$CommentListState {
           _childFocusListModel = searchResult.data;
           childPage = searchResult.data.params?.page;
 
-          searchResult = await CommentRepository().getFocusComments(
+          searchResult = await CommentRepository(dio: ref.read(dioProvider)).getFocusComments(
             loginMemberIdx,
             contentsIdx,
             parentIdx,
@@ -245,7 +246,7 @@ class CommentListState extends _$CommentListState {
       print('state.nextPageKey ${state.nextPageKey}');
       // _fetchPage(currentPage); //TEST
 
-      final parentPageResult = await CommentRepository().getComment(
+      final parentPageResult = await CommentRepository(dio: ref.read(dioProvider)).getComment(
         contentIdx: _contentsIdx,
         page: currentPage,
         memberIdx: loginMemberIdx,
@@ -256,7 +257,7 @@ class CommentListState extends _$CommentListState {
 
 
       if (childPage != null) {
-        final childPageResult = await CommentRepository().getReplyComment(
+        final childPageResult = await CommentRepository(dio: ref.read(dioProvider)).getReplyComment(
           contentIdx: contentsIdx,
           commentIdx: parentIdx,
           memberIdx: loginMemberIdx,
@@ -311,7 +312,7 @@ class CommentListState extends _$CommentListState {
     try {
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
 
-      final searchResult = await CommentRepository().getReplyComment(
+      final searchResult = await CommentRepository(dio: ref.read(dioProvider)).getReplyComment(
         contentIdx: contentsIdx,
         commentIdx: commentIdx,
         memberIdx: loginMemberIdx,

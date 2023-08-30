@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
@@ -8,18 +9,20 @@ import 'package:riverpod/riverpod.dart';
 
 final userInformationStateProvider = StateNotifierProvider<
     UserInformationStateNotifier, UserInformationListModel>((ref) {
-  return UserInformationStateNotifier();
+  return UserInformationStateNotifier(ref);
 });
 
 class UserInformationStateNotifier
     extends StateNotifier<UserInformationListModel> {
-  UserInformationStateNotifier() : super(const UserInformationListModel());
+  UserInformationStateNotifier(this.ref) : super(const UserInformationListModel());
+
+  final Ref ref;
 
   getInitUserInformation([
     loginMemberIdx,
     memberIdx,
   ]) async {
-    final lists = await UserInfoRepository()
+    final lists = await UserInfoRepository(dio: ref.read(dioProvider))
         .getUserInformation(loginMemberIdx, memberIdx);
 
     if (lists == null) {
@@ -34,7 +37,7 @@ class UserInformationStateNotifier
     required memberIdx,
     required blockIdx,
   }) async {
-    final result = await BlockRepository().postBlock(
+    final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
       memberIdx: memberIdx,
       blockIdx: blockIdx,
     );
@@ -72,7 +75,7 @@ class UserInformationStateNotifier
       )
     ]);
 
-    final lists = await UserInfoRepository()
+    final lists = await UserInfoRepository(dio: ref.read(dioProvider))
         .getUserInformation(loginMemberIdx, memberIdx);
 
     state = state.copyWith(list: [

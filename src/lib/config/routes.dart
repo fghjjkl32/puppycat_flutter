@@ -7,6 +7,7 @@ import 'package:pet_mobile_social_flutter/main.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
@@ -68,10 +69,15 @@ class AppRouter {
 
   late final GoRouter _goRouter = GoRouter(
     // refreshListenable: AppService(),//redirect 시 사용되는 리스너 이다.
-    initialLocation: '/splash', //제일 처음 보여 줄 route
-    debugLogDiagnostics: false, //router 정보 콘솔에 출력
+    initialLocation: '/splash',
+    //제일 처음 보여 줄 route
+    debugLogDiagnostics: false,
+    //router 정보 콘솔에 출력
     // errorBuilder: (BuildContext context, GoRouterState state) =>
     // const ErrorPage(),
+    observers: [
+      GoRouterObserver(ref: ref),
+    ],
     routes: <GoRoute>[
       GoRoute(
           path: '/home',
@@ -120,9 +126,9 @@ class AppRouter {
 
                 final extraData = state.extra;
                 int? commentFocusIndex;
-                if(extraData != null) {
+                if (extraData != null) {
                   Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
-                  if(extraMap.keys.contains('focusIndex')) {
+                  if (extraMap.keys.contains('focusIndex')) {
                     commentFocusIndex = extraMap['focusIndex'];
                   }
                 }
@@ -148,10 +154,8 @@ class AppRouter {
               },
               routes: [
                 GoRoute(
-                  path:
-                      'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
-                  name:
-                      'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
+                  path: 'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
+                  name: 'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
                   // pageBuilder: (context, state) {
                   //   final firstTitle = state.pathParameters['firstTitle']!;
                   //   final secondTitle = state.pathParameters['secondTitle']!;
@@ -199,12 +203,12 @@ class AppRouter {
                     bool isRouteComment = false;
                     int? commentFocusIndex;
                     final extraData = state.extra;
-                    if(extraData != null) {
+                    if (extraData != null) {
                       Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
-                      if(extraMap.keys.contains('isRouteComment')) {
+                      if (extraMap.keys.contains('isRouteComment')) {
                         isRouteComment = extraMap['isRouteComment'];
                       }
-                      if(extraMap.keys.contains('focusIdx')) {
+                      if (extraMap.keys.contains('focusIdx')) {
                         commentFocusIndex = extraMap['focusIdx'];
                       }
                     }
@@ -237,11 +241,9 @@ class AppRouter {
                             GoRoute(
                                 path: 'withdrawalDetail/:code/:reason',
                                 name: 'withdrawalDetail/:code/:reason',
-                                builder: (BuildContext context,
-                                    GoRouterState state) {
+                                builder: (BuildContext context, GoRouterState state) {
                                   final code = state.pathParameters['code']!;
-                                  final reason =
-                                      state.pathParameters['reason']!;
+                                  final reason = state.pathParameters['reason']!;
                                   return MyPageWithdrawalDetailScreen(
                                     code: int.parse(code),
                                     reason: reason,
@@ -251,8 +253,7 @@ class AppRouter {
                                   GoRoute(
                                     path: 'withdrawalSuccess',
                                     name: 'withdrawalSuccess',
-                                    builder: (BuildContext context,
-                                        GoRouterState state) {
+                                    builder: (BuildContext context, GoRouterState state) {
                                       return const MyPageWithdrawalSuccessScreen();
                                     },
                                   ),
@@ -374,37 +375,32 @@ class AppRouter {
           //   ),
           // ],
           ),
-      GoRoute(
-          path: '/loginScreen',
-          name: 'loginScreen',
-          builder: (_, state) => LoginScreen(),
-          routes: [
+      GoRoute(path: '/loginScreen', name: 'loginScreen', builder: (_, state) => LoginScreen(), routes: [
+        GoRoute(
+          path: 'signupScreen',
+          name: 'signupScreen',
+          builder: (_, state) {
+            return SignUpScreen();
+          },
+          routes: <GoRoute>[
             GoRoute(
-              path: 'signupScreen',
-              name: 'signupScreen',
+              path: 'signupCompleteScreen',
+              name: 'signupCompleteScreen',
               builder: (_, state) {
-                return SignUpScreen();
+                return SignUpCompleteScreen();
               },
-              routes: <GoRoute>[
-                GoRoute(
-                  path: 'signupCompleteScreen',
-                  name: 'signupCompleteScreen',
-                  builder: (_, state) {
-                    return SignUpCompleteScreen();
-                  },
-                ),
-                GoRoute(
-                  path: 'webview/:url',
-                  name: 'webview',
-                  builder: (BuildContext context, GoRouterState state) {
-                    final url =
-                        Uri.decodeComponent(state.pathParameters['url']!);
-                    return WebViewWidget(url: url);
-                  },
-                ),
-              ],
             ),
-          ]),
+            GoRoute(
+              path: 'webview/:url',
+              name: 'webview',
+              builder: (BuildContext context, GoRouterState state) {
+                final url = Uri.decodeComponent(state.pathParameters['url']!);
+                return WebViewWidget(url: url);
+              },
+            ),
+          ],
+        ),
+      ]),
       GoRoute(
         path: '/splash',
         name: 'splash',
@@ -413,33 +409,32 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: '/chatMain',
-        name: 'chatMain',
-        builder: (BuildContext context, GoRouterState state) {
-          return const ChatMainScreen();
-        },
-        routes: [
-          GoRoute(
-            path: 'chatRoom',
-            name: 'chatRoom',
-            builder: (BuildContext context, GoRouterState state) {
-              if(state.extra is Room) {
-                return ChatRoomScreen(room: state.extra! as Room);
-                // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
-              } else {
-                return const ChatMainScreen();
-              }
-            },
-          ),
-          GoRoute(
-            path: 'chatSearch',
-            name: 'chatSearch',
-            builder: (BuildContext context, GoRouterState state) {
+          path: '/chatMain',
+          name: 'chatMain',
+          builder: (BuildContext context, GoRouterState state) {
+            return const ChatMainScreen();
+          },
+          routes: [
+            GoRoute(
+              path: 'chatRoom',
+              name: 'chatRoom',
+              builder: (BuildContext context, GoRouterState state) {
+                if (state.extra is Room) {
+                  return ChatRoomScreen(room: state.extra! as Room);
+                  // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
+                } else {
+                  return const ChatMainScreen();
+                }
+              },
+            ),
+            GoRoute(
+              path: 'chatSearch',
+              name: 'chatSearch',
+              builder: (BuildContext context, GoRouterState state) {
                 return const ChatSearchScreen();
-            },
-          ),
-        ]
-      ),
+              },
+            ),
+          ]),
       // GoRoute(
       //   path: '/chatRoomTest',
       //   name: 'chatRoomTest',
@@ -523,4 +518,39 @@ class AppRouter {
       }
     },
   );
+}
+
+class GoRouterObserver extends NavigatorObserver {
+  final Ref ref;
+
+  GoRouterObserver({
+    required this.ref,
+  });
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('MyTest didPush: $route');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('MyTest didPop: $route / $previousRoute');
+    if(route.settings.name == 'home' || previousRoute?.settings.name == 'home') {
+      checkNewNotification();
+    }
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('MyTest didRemove: $route');
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    print('MyTest didReplace: $newRoute');
+  }
+
+  void checkNewNotification() {
+    ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
+  }
 }

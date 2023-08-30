@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
@@ -6,19 +7,19 @@ import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repo
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
 
-final commentStateProvider =
-    StateNotifierProvider<CommentStateNotifier, CommentDataListModel>((ref) {
-  return CommentStateNotifier();
+final commentStateProvider = StateNotifierProvider<CommentStateNotifier, CommentDataListModel>((ref) {
+  return CommentStateNotifier(ref);
 });
 
 class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
-  CommentStateNotifier() : super(const CommentDataListModel());
+  CommentStateNotifier(this.ref) : super(const CommentDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
 
   int repliesMaxPages = 1;
   int repliesCurrentPage = 1;
+  Ref ref;
 
   getInitComment(
     contentIdx,
@@ -28,13 +29,11 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await CommentRepository()
-        .getComment(page: page, memberIdx: memberIdx, contentIdx: contentIdx);
+    final lists = await CommentRepository(dio: ref.read(dioProvider)).getComment(page: page, memberIdx: memberIdx, contentIdx: contentIdx);
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
-    state = state.copyWith(
-        totalCount: lists.data.params!.pagination!.totalRecordCount!);
+    state = state.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!);
 
     if (lists == null) {
       state = state.copyWith(page: page, isLoading: false);
@@ -58,10 +57,9 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
       return;
     }
     bf.write(' success');
-    state = state.copyWith(
-        isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+    state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await CommentRepository().getComment(
+    final lists = await CommentRepository(dio: ref.read(dioProvider)).getComment(
       contentIdx: contentIdx,
       page: state.page + 1,
       memberIdx: memberIdx,
@@ -73,10 +71,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     }
 
     if (lists.data.list.isNotEmpty) {
-      state = state.copyWith(
-          page: state.page + 1,
-          isLoading: false,
-          list: [...state.list, ...lists.data.list]);
+      state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.data.list]);
 
       currentPage++;
     } else {
@@ -97,7 +92,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required commentIdx,
     required parentIdx,
   }) async {
-    final result = await CommentRepository().deleteComment(
+    final result = await CommentRepository(dio: ref.read(dioProvider)).deleteComment(
       memberIdx: memberIdx,
       contentsIdx: contentsIdx,
       commentIdx: commentIdx,
@@ -115,11 +110,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required contentIdx,
     int? parentIdx,
   }) async {
-    final result = await CommentRepository().postComment(
-        memberIdx: memberIdx,
-        contents: contents,
-        parentIdx: parentIdx,
-        contentIdx: contentIdx);
+    final result = await CommentRepository(dio: ref.read(dioProvider)).postComment(memberIdx: memberIdx, contents: contents, parentIdx: parentIdx, contentIdx: contentIdx);
 
     await refresh(contentIdx, memberIdx);
 
@@ -132,7 +123,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required String contents,
     required int contentIdx,
   }) async {
-    final result = await CommentRepository().editComment(
+    final result = await CommentRepository(dio: ref.read(dioProvider)).editComment(
       memberIdx: memberIdx,
       contents: contents,
       contentIdx: contentIdx,
@@ -149,8 +140,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required commentIdx,
     required contentsIdx,
   }) async {
-    final result = await CommentRepository()
-        .postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+    final result = await CommentRepository(dio: ref.read(dioProvider)).postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
 
     await refresh(contentsIdx, memberIdx);
 
@@ -162,8 +152,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required commentIdx,
     required contentsIdx,
   }) async {
-    final result = await CommentRepository()
-        .deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+    final result = await CommentRepository(dio: ref.read(dioProvider)).deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
 
     await refresh(contentsIdx, memberIdx);
 
@@ -175,7 +164,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required memberIdx,
     required blockIdx,
   }) async {
-    final result = await BlockRepository().postBlock(
+    final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
       memberIdx: memberIdx,
       blockIdx: blockIdx,
     );
@@ -192,7 +181,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required String? reason,
     required String reportType,
   }) async {
-    final result = await FeedRepository().postContentReport(
+    final result = await FeedRepository(dio: ref.read(dioProvider)).postContentReport(
       reportType: reportType,
       memberIdx: loginMemberIdx,
       contentIdx: contentIdx,
@@ -208,7 +197,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required int loginMemberIdx,
     required int contentIdx,
   }) async {
-    final result = await FeedRepository().deleteContentReport(
+    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContentReport(
       reportType: reportType,
       memberIdx: loginMemberIdx,
       contentsIdx: contentIdx,
@@ -226,11 +215,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     repliesCurrentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await CommentRepository().getReplyComment(
-        page: page,
-        memberIdx: memberIdx,
-        contentIdx: contentIdx,
-        commentIdx: commentIdx);
+    final lists = await CommentRepository(dio: ref.read(dioProvider)).getReplyComment(page: page, memberIdx: memberIdx, contentIdx: contentIdx, commentIdx: commentIdx);
 
     repliesMaxPages = lists.data.params!.pagination!.endPage!;
 
@@ -243,10 +228,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     final commentIndex = state.list.indexWhere((c) => c.idx == commentIdx);
 
     // Update the childCommentData of the comment
-    final updatedComment = state.list[commentIndex].copyWith(
-        childCommentData:
-            ChildCommentData(params: lists.data.params!, list: lists.data.list),
-        showAllReplies: true);
+    final updatedComment = state.list[commentIndex].copyWith(childCommentData: ChildCommentData(params: lists.data.params!, list: lists.data.list), showAllReplies: true);
 
     // Update the comment in the state
     state = state.copyWith(list: [
@@ -270,14 +252,9 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
       return;
     }
     bf.write(' success');
-    state = state.copyWith(
-        isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+    state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await CommentRepository().getReplyComment(
-        page: repliesCurrentPage + 1,
-        memberIdx: memberIdx,
-        contentIdx: contentIdx,
-        commentIdx: commentIdx);
+    final lists = await CommentRepository(dio: ref.read(dioProvider)).getReplyComment(page: repliesCurrentPage + 1, memberIdx: memberIdx, contentIdx: contentIdx, commentIdx: commentIdx);
 
     if (lists == null) {
       state = state.copyWith(isLoadMoreError: true, isLoading: false);

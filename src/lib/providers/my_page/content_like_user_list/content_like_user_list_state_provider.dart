@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/content_like_user_list/content_like_user_list_repository.dart';
@@ -7,16 +8,19 @@ import 'package:riverpod/riverpod.dart';
 
 final contentLikeUserListStateProvider = StateNotifierProvider<
     ContentLikeUserListStateNotifier, ContentLikeUserListDataListModel>((ref) {
-  return ContentLikeUserListStateNotifier();
+  return ContentLikeUserListStateNotifier(ref);
 });
 
 class ContentLikeUserListStateNotifier
     extends StateNotifier<ContentLikeUserListDataListModel> {
-  ContentLikeUserListStateNotifier()
+  ContentLikeUserListStateNotifier(this.ref )
       : super(const ContentLikeUserListDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
+
+  final Ref ref;
+
   initContentLikeUserList([
     contentsIdx,
     memberIdx,
@@ -25,7 +29,7 @@ class ContentLikeUserListStateNotifier
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await ContentLikeUserListRepository().getContentLikeUserList(
+    final lists = await ContentLikeUserListRepository(dio: ref.read(dioProvider)).getContentLikeUserList(
       contentsIdx: contentsIdx,
       memberIdx: memberIdx,
       page: page,
@@ -61,7 +65,7 @@ class ContentLikeUserListStateNotifier
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await ContentLikeUserListRepository().getContentLikeUserList(
+    final lists = await ContentLikeUserListRepository(dio: ref.read(dioProvider)).getContentLikeUserList(
         contentsIdx: contentsIdx, memberIdx: memberIdx, page: state.page + 1);
 
     if (lists == null) {
@@ -93,7 +97,7 @@ class ContentLikeUserListStateNotifier
     required followIdx,
     required contentsIdx,
   }) async {
-    final result = await FollowRepository()
+    final result = await FollowRepository(dio: ref.read(dioProvider))
         .postFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     refresh(contentsIdx, memberIdx);
@@ -105,7 +109,7 @@ class ContentLikeUserListStateNotifier
     required followIdx,
     required contentsIdx,
   }) async {
-    final result = await FollowRepository()
+    final result = await FollowRepository(dio: ref.read(dioProvider))
         .deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     refresh(contentsIdx, memberIdx);

@@ -38,7 +38,7 @@ class LoginState extends _$LoginState {
   void login({
     required String provider,
   }) async {
-    final loginRepository = LoginRepository(provider: provider);
+    final loginRepository = LoginRepository(provider: provider, dio: ref.read(dioProvider));
     // final loginRepository = ref.watch(loginRepositoryProvider(provider));
     var loginResult = await loginRepository.login();
     _procLogin(loginResult);
@@ -49,7 +49,7 @@ class LoginState extends _$LoginState {
   void loginByUserModel({
     required UserModel userModel,
   }) async {
-    final loginRepository = LoginRepository(provider: userModel.simpleType);
+    final loginRepository = LoginRepository(provider: userModel.simpleType, dio: ref.read(dioProvider));
     // final loginRepository = ref.watch(loginRepositoryProvider(userModel.simpleType));
     var loginResult = await loginRepository.loginByUserModel(userModel: userModel);
 
@@ -124,7 +124,7 @@ class LoginState extends _$LoginState {
   }
 
   void logout(String provider, String appKey) async {
-    final loginRepository = LoginRepository(provider: provider);
+    final loginRepository = LoginRepository(provider: provider, dio: ref.read(dioProvider));
     // final loginRepository = ref.watch(loginRepositoryProvider(provider));
 
     var result = await loginRepository.logout(appKey);

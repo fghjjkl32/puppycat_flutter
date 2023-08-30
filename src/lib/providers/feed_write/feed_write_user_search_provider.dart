@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
@@ -8,14 +9,15 @@ final feedWriteImageTagSearchProvider =
     StateNotifierProvider<FeedWriteImageTagSearchNotifier, SearchDataListModel>(
         (ref) {
   final loginMemberIdx = ref.watch(userModelProvider)!.idx;
-  return FeedWriteImageTagSearchNotifier(loginMemberIdx);
+  return FeedWriteImageTagSearchNotifier(loginMemberIdx, ref);
 });
 
 class FeedWriteImageTagSearchNotifier
     extends StateNotifier<SearchDataListModel> {
   final int loginMemberIdx;
+  final Ref ref;
 
-  FeedWriteImageTagSearchNotifier(this.loginMemberIdx)
+  FeedWriteImageTagSearchNotifier(this.loginMemberIdx, this.ref)
       : super(const SearchDataListModel()) {
     userSearchQuery.stream
         .debounceTime(const Duration(milliseconds: 500))
@@ -40,7 +42,7 @@ class FeedWriteImageTagSearchNotifier
     imageTagCurrentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await SearchRepository().getImageTagRecommendList(
+    final lists = await SearchRepository(dio: ref.read(dioProvider)).getImageTagRecommendList(
       memberIdx: memberIdx,
       page: page,
     );
@@ -78,7 +80,7 @@ class FeedWriteImageTagSearchNotifier
       state = state.copyWith(
           isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-      final lists = await SearchRepository().getNickSearchList(
+      final lists = await SearchRepository(dio: ref.read(dioProvider)).getNickSearchList(
         memberIdx: memberIdx,
         page: searchUserCurrentPage + 1,
         searchWord: userSearchWord,
@@ -117,7 +119,7 @@ class FeedWriteImageTagSearchNotifier
       state = state.copyWith(
           isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-      final lists = await SearchRepository().getMentionRecommendList(
+      final lists = await SearchRepository(dio: ref.read(dioProvider)).getMentionRecommendList(
         memberIdx: memberIdx,
         page: state.page + 1,
       );
@@ -144,7 +146,7 @@ class FeedWriteImageTagSearchNotifier
     isSearching = true;
     searchUserCurrentPage = 1;
 
-    final lists = await SearchRepository().getNickSearchList(
+    final lists = await SearchRepository(dio: ref.read(dioProvider)).getNickSearchList(
       memberIdx: userMemberIdx,
       page: 1,
       searchWord: searchWord,

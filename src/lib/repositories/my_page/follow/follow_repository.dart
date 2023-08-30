@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -9,8 +10,15 @@ import 'package:pet_mobile_social_flutter/services/follow/follow_service.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/content_like_user_list/content_like_user_list_service.dart';
 
 class FollowRepository {
-  final FollowService _followService =
-      FollowService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final FollowService _followService; // = FollowService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+
+  final Dio dio;
+
+  FollowRepository({
+    required this.dio,
+  }) {
+    _followService = FollowService(dio, baseUrl: baseUrl);
+  }
 
   Future<FollowResponseModel> getFollowerSearchList({
     required int loginMemberIdx,
@@ -18,9 +26,7 @@ class FollowRepository {
     required int page,
     required String searchWord,
   }) async {
-    FollowResponseModel? followResponseModel = await _followService
-        .getFollowerSearchList(loginMemberIdx, memberIdx, page, searchWord)
-        .catchError((Object obj) async {});
+    FollowResponseModel? followResponseModel = await _followService.getFollowerSearchList(loginMemberIdx, memberIdx, page, searchWord).catchError((Object obj) async {});
 
     if (followResponseModel == null) {
       return FollowResponseModel(
@@ -59,9 +65,7 @@ class FollowRepository {
     required int page,
     required String searchWord,
   }) async {
-    FollowResponseModel? followResponseModel = await _followService
-        .getFollowSearchList(loginMemberIdx, memberIdx, page, searchWord)
-        .catchError((Object obj) async {});
+    FollowResponseModel? followResponseModel = await _followService.getFollowSearchList(loginMemberIdx, memberIdx, page, searchWord).catchError((Object obj) async {});
 
     if (followResponseModel == null) {
       return FollowResponseModel(
@@ -99,9 +103,7 @@ class FollowRepository {
     required int memberIdx,
     required int page,
   }) async {
-    FollowResponseModel? followResponseModel = await _followService
-        .getFollowerList(loginMemberIdx, memberIdx, page)
-        .catchError((Object obj) async {});
+    FollowResponseModel? followResponseModel = await _followService.getFollowerList(loginMemberIdx, memberIdx, page).catchError((Object obj) async {});
 
     if (followResponseModel == null) {
       return FollowResponseModel(
@@ -139,9 +141,7 @@ class FollowRepository {
     required int memberIdx,
     required int page,
   }) async {
-    FollowResponseModel? followResponseModel = await _followService
-        .getFollowList(loginMemberIdx, memberIdx, page)
-        .catchError((Object obj) async {});
+    FollowResponseModel? followResponseModel = await _followService.getFollowList(loginMemberIdx, memberIdx, page).catchError((Object obj) async {});
 
     if (followResponseModel == null) {
       return FollowResponseModel(
@@ -178,9 +178,7 @@ class FollowRepository {
     required int followIdx,
     required int memberIdx,
   }) async {
-    ResponseModel? followResponseModel = await _followService
-        .deleteFollow(followIdx, memberIdx)
-        .catchError((Object obj) async {});
+    ResponseModel? followResponseModel = await _followService.deleteFollow(followIdx, memberIdx).catchError((Object obj) async {});
 
     if (followResponseModel == null) {
       throw "error";
@@ -193,9 +191,7 @@ class FollowRepository {
     required int followIdx,
     required int memberIdx,
   }) async {
-    ResponseModel? followResponseModel = await _followService
-        .deleteFollower(followIdx, memberIdx)
-        .catchError((Object obj) async {});
+    ResponseModel? followResponseModel = await _followService.deleteFollower(followIdx, memberIdx).catchError((Object obj) async {});
 
     if (followResponseModel == null) {
       throw "error";
@@ -212,8 +208,7 @@ class FollowRepository {
       "memberIdx": memberIdx,
     };
 
-    ResponseModel? followResponseModel =
-        await _followService.postFollow(followIdx, body);
+    ResponseModel? followResponseModel = await _followService.postFollow(followIdx, body);
 
     if (followResponseModel == null) {
       throw "error";

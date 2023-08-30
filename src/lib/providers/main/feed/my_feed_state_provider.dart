@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
@@ -7,11 +8,13 @@ import 'package:riverpod/riverpod.dart';
 
 final myFeedStateProvider =
     StateNotifierProvider<MyFeedStateNotifier, FeedDataListModel>((ref) {
-  return MyFeedStateNotifier();
+  return MyFeedStateNotifier(ref);
 });
 
 class MyFeedStateNotifier extends StateNotifier<FeedDataListModel> {
-  MyFeedStateNotifier() : super(const FeedDataListModel());
+  MyFeedStateNotifier(this.ref) : super(const FeedDataListModel());
+
+  final Ref ref;
 
   int maxPages = 1;
   int currentPage = 1;
@@ -22,7 +25,7 @@ class MyFeedStateNotifier extends StateNotifier<FeedDataListModel> {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await FeedRepository().getMyContentsDetailList(
+    final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(
       loginMemberIdx: loginMemberIdx,
       memberIdx: loginMemberIdx,
       page: page,
@@ -63,7 +66,7 @@ class MyFeedStateNotifier extends StateNotifier<FeedDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await FeedRepository().getMyContentsDetailList(
+    final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(
         loginMemberIdx: loginMemberIdx,
         page: state.page + 1,
         memberIdx: loginMemberIdx);

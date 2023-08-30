@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
@@ -7,14 +8,17 @@ import 'package:riverpod/riverpod.dart';
 final myTagContentStateProvider =
     StateNotifierProvider<MyTagContentStateNotifier, ContentDataListModel>(
         (ref) {
-  return MyTagContentStateNotifier();
+  return MyTagContentStateNotifier(ref);
 });
 
 class MyTagContentStateNotifier extends StateNotifier<ContentDataListModel> {
-  MyTagContentStateNotifier() : super(const ContentDataListModel());
+  MyTagContentStateNotifier(this.ref) : super(const ContentDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
+
+  final Ref ref;
+
   initPosts(
     loginMemberIdx,
     memberIdx,
@@ -23,7 +27,7 @@ class MyTagContentStateNotifier extends StateNotifier<ContentDataListModel> {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await FeedRepository()
+    final lists = await FeedRepository(dio: ref.read(dioProvider))
         .getMyTagContentList(loginMemberIdx: loginMemberIdx, page: page);
 
     maxPages = lists.data.params!.pagination!.endPage!;
@@ -60,7 +64,7 @@ class MyTagContentStateNotifier extends StateNotifier<ContentDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await FeedRepository().getMyTagContentList(
+    final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyTagContentList(
         loginMemberIdx: loginMemberIdx, page: state.page + 1);
 
     if (lists == null) {

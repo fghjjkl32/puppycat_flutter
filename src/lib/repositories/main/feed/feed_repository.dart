@@ -18,16 +18,22 @@ import 'package:pet_mobile_social_flutter/services/main/feed/feed_service.dart';
 import 'package:http_parser/http_parser.dart';
 
 class FeedRepository {
-  final FeedService _feedService =
-      FeedService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final FeedService _feedService;// = FeedService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+
+  final Dio dio;
+
+  FeedRepository({
+    required this.dio,
+  }) {
+    _feedService = FeedService(dio, baseUrl: baseUrl);
+  }
 
   //user page feed list - my
   Future<ContentResponseModel> getMyContentList({
     required page,
     required loginMemberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel =
-        await _feedService.getMyContentList(loginMemberIdx, page);
+    ContentResponseModel? contentsResponseModel = await _feedService.getMyContentList(loginMemberIdx, page);
 
     if (contentsResponseModel == null) {
       return contentNullResponseModel;
@@ -40,8 +46,7 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel =
-        await _feedService.getMyTagContentList(loginMemberIdx, page);
+    ContentResponseModel? contentsResponseModel = await _feedService.getMyTagContentList(loginMemberIdx, page);
 
     if (contentsResponseModel == null) {
       return contentNullResponseModel;
@@ -56,8 +61,7 @@ class FeedRepository {
     required loginMemberIdx,
     required memberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel =
-        await _feedService.getUserContentList(loginMemberIdx, memberIdx, page);
+    ContentResponseModel? contentsResponseModel = await _feedService.getUserContentList(loginMemberIdx, memberIdx, page);
 
     if (contentsResponseModel == null) {
       return contentNullResponseModel;
@@ -71,8 +75,7 @@ class FeedRepository {
     required loginMemberIdx,
     required memberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel = await _feedService
-        .getUserTagContentList(loginMemberIdx, memberIdx, page);
+    ContentResponseModel? contentsResponseModel = await _feedService.getUserTagContentList(loginMemberIdx, memberIdx, page);
 
     if (contentsResponseModel == null) {
       return contentNullResponseModel;
@@ -86,8 +89,7 @@ class FeedRepository {
     required searchWord,
     required page,
   }) async {
-    ContentResponseModel? contentsResponseModel = await _feedService
-        .getUserHashtagContentList(memberIdx, searchWord, page);
+    ContentResponseModel? contentsResponseModel = await _feedService.getUserHashtagContentList(memberIdx, searchWord, page);
 
     if (contentsResponseModel == null) {
       return contentNullResponseModel;
@@ -102,8 +104,7 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentsResponseModel = await _feedService
-        .getUserContentDetailList(loginMemberIdx, memberIdx, page);
+    FeedResponseModel? contentsResponseModel = await _feedService.getUserContentDetailList(loginMemberIdx, memberIdx, page);
 
     if (contentsResponseModel == null) {
       return feedNullResponseModel;
@@ -117,8 +118,7 @@ class FeedRepository {
     required int page,
     required int loginMemberIdx,
   }) async {
-    FeedResponseModel? tagResponseModel = await _feedService
-        .getUserTagContentDetail(loginMemberIdx, memberIdx, page);
+    FeedResponseModel? tagResponseModel = await _feedService.getUserTagContentDetail(loginMemberIdx, memberIdx, page);
 
     if (tagResponseModel == null) {
       return feedNullResponseModel;
@@ -132,8 +132,7 @@ class FeedRepository {
     required String searchWord,
     required int page,
   }) async {
-    FeedResponseModel? tagResponseModel = await _feedService
-        .getUserHashtagContentDetailList(loginMemberIdx, searchWord, page);
+    FeedResponseModel? tagResponseModel = await _feedService.getUserHashtagContentDetailList(loginMemberIdx, searchWord, page);
 
     if (tagResponseModel == null) {
       return feedNullResponseModel;
@@ -147,8 +146,7 @@ class FeedRepository {
     required int contentIdx,
     required int loginMemberIdx,
   }) async {
-    FeedResponseModel? myContentResponseModel =
-        await _feedService.getMyContentDetail(contentIdx, loginMemberIdx);
+    FeedResponseModel? myContentResponseModel = await _feedService.getMyContentDetail(contentIdx, loginMemberIdx);
 
     if (myContentResponseModel == null) {
       return feedNullResponseModel;
@@ -162,8 +160,7 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? myContentResponseModel = await _feedService
-        .getMyContentDetailList(loginMemberIdx, memberIdx, page);
+    FeedResponseModel? myContentResponseModel = await _feedService.getMyContentDetailList(loginMemberIdx, memberIdx, page);
 
     if (myContentResponseModel == null) {
       return feedNullResponseModel;
@@ -176,8 +173,7 @@ class FeedRepository {
     required int contentIdx,
     required int loginMemberIdx,
   }) async {
-    FeedResponseModel? myContentResponseModel =
-        await _feedService.getContentDetail(contentIdx, loginMemberIdx);
+    FeedResponseModel? myContentResponseModel = await _feedService.getContentDetail(contentIdx, loginMemberIdx);
 
     if (myContentResponseModel == null) {
       return feedNullResponseModel;
@@ -190,8 +186,7 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? myContentResponseModel =
-        await _feedService.getMyTagContentDetailList(loginMemberIdx, page);
+    FeedResponseModel? myContentResponseModel = await _feedService.getMyTagContentDetailList(loginMemberIdx, page);
 
     if (myContentResponseModel == null) {
       return feedNullResponseModel;
@@ -204,8 +199,7 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentResponseModel =
-        await _feedService.getPopularWeekDetailList(loginMemberIdx, page);
+    FeedResponseModel? contentResponseModel = await _feedService.getPopularWeekDetailList(loginMemberIdx, page);
 
     if (contentResponseModel == null) {
       return feedNullResponseModel;
@@ -218,8 +212,7 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentResponseModel =
-        await _feedService.getPopularHourDetailList(loginMemberIdx, page);
+    FeedResponseModel? contentResponseModel = await _feedService.getPopularHourDetailList(loginMemberIdx, page);
 
     if (contentResponseModel == null) {
       return feedNullResponseModel;
@@ -232,8 +225,7 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentResponseModel =
-        await _feedService.getFollowDetailList(loginMemberIdx, page);
+    FeedResponseModel? contentResponseModel = await _feedService.getFollowDetailList(loginMemberIdx, page);
 
     if (contentResponseModel == null) {
       return feedNullResponseModel;
@@ -246,8 +238,7 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentResponseModel =
-        await _feedService.getRecentDetailList(loginMemberIdx, page);
+    FeedResponseModel? contentResponseModel = await _feedService.getRecentDetailList(loginMemberIdx, page);
 
     if (contentResponseModel == null) {
       return feedNullResponseModel;
@@ -264,8 +255,7 @@ class FeedRepository {
       "memberIdx": memberIdx,
     };
 
-    ResponseModel? feedResponseModel =
-        await _feedService.postLike(contentIdx, body);
+    ResponseModel? feedResponseModel = await _feedService.postLike(contentIdx, body);
 
     if (feedResponseModel == null) {
       throw "error";
@@ -298,8 +288,7 @@ class FeedRepository {
       "memberIdx": memberIdx,
     };
 
-    ResponseModel? feedResponseModel =
-        await _feedService.postSave(contentIdx, body);
+    ResponseModel? feedResponseModel = await _feedService.postSave(contentIdx, body);
 
     if (feedResponseModel == null) {
       throw "error";
@@ -332,8 +321,7 @@ class FeedRepository {
       "memberIdx": memberIdx,
     };
 
-    ResponseModel? feedResponseModel =
-        await _feedService.postHide(contentIdx, body);
+    ResponseModel? feedResponseModel = await _feedService.postHide(contentIdx, body);
 
     if (feedResponseModel == null) {
       throw "error";
@@ -358,10 +346,8 @@ class FeedRepository {
     return feedResponseModel;
   }
 
-  Future<ResponseModel> deleteContents(
-      {required int memberIdx, required String idx}) async {
-    ResponseModel? contentsResponseModel =
-        await _feedService.deleteContents(memberIdx, idx);
+  Future<ResponseModel> deleteContents({required int memberIdx, required String idx}) async {
+    ResponseModel? contentsResponseModel = await _feedService.deleteContents(memberIdx, idx);
 
     if (contentsResponseModel == null) {
       throw "error";
@@ -370,10 +356,8 @@ class FeedRepository {
     return contentsResponseModel;
   }
 
-  Future<ResponseModel> deleteOneContents(
-      {required int memberIdx, required int idx}) async {
-    ResponseModel? contentsResponseModel =
-        await _feedService.deleteOneContents(memberIdx, idx);
+  Future<ResponseModel> deleteOneContents({required int memberIdx, required int idx}) async {
+    ResponseModel? contentsResponseModel = await _feedService.deleteOneContents(memberIdx, idx);
 
     if (contentsResponseModel == null) {
       throw "error";
@@ -402,8 +386,7 @@ class FeedRepository {
             "memberIdx": memberIdx,
           };
 
-    ResponseModel? feedResponseModel =
-        await _feedService.postContentReport(reportType, contentIdx, body);
+    ResponseModel? feedResponseModel = await _feedService.postContentReport(reportType, contentIdx, body);
 
     if (feedResponseModel == null) {
       throw "error";
@@ -506,16 +489,13 @@ class FeedRepository {
     for (var tagImage in feedState.tagImage) {
       for (var tag in tagImage.tag) {
         // 초기 태그 리스트에서 해당 태그를 찾습니다.
-        var initialTag = initialTagList
-            .where((e) => e.index == tagImage.index)
-            .expand((e) => e.tag)
-            .firstWhere((t) => t.memberIdx == tag.memberIdx,
-                orElse: () => Tag(
-                      username: '',
-                      memberIdx: 0,
-                      position: Offset(0, 0),
-                      imageIndex: tag.imageIndex,
-                    ));
+        var initialTag = initialTagList.where((e) => e.index == tagImage.index).expand((e) => e.tag).firstWhere((t) => t.memberIdx == tag.memberIdx,
+            orElse: () => Tag(
+                  username: '',
+                  memberIdx: 0,
+                  position: Offset(0, 0),
+                  imageIndex: tag.imageIndex,
+                ));
 
         // 태그의 상태를 결정하는 로직
         String status = "";
@@ -528,36 +508,22 @@ class FeedRepository {
           status = "";
         }
 
-        imgTagList.add({
-          "imgIdx": tag.imageIndex,
-          "memberIdx": tag.memberIdx,
-          "width": tag.position.dx,
-          "height": tag.position.dy,
-          "status": status
-        });
+        imgTagList.add({"imgIdx": tag.imageIndex, "memberIdx": tag.memberIdx, "width": tag.position.dx, "height": tag.position.dy, "status": status});
       }
     }
 
     // 초기 태그 리스트에만 있는 태그를 찾아서 "status": "del"로 설정합니다.
     for (var initialTagImage in initialTagList) {
       for (var initialTag in initialTagImage.tag) {
-        if (!feedState.tagImage.any(
-            (ti) => ti.tag.any((t) => t.memberIdx == initialTag.memberIdx))) {
-          imgTagList.add({
-            "imgIdx": initialTag.imageIndex,
-            "memberIdx": initialTag.memberIdx,
-            "width": initialTag.position.dx,
-            "height": initialTag.position.dy,
-            "status": "del"
-          });
+        if (!feedState.tagImage.any((ti) => ti.tag.any((t) => t.memberIdx == initialTag.memberIdx))) {
+          imgTagList.add({"imgIdx": initialTag.imageIndex, "memberIdx": initialTag.memberIdx, "width": initialTag.position.dx, "height": initialTag.position.dy, "status": "del"});
         }
       }
     }
 
     formDataMap["imgTagList"] = imgTagList;
 
-    ResponseModel? feedResponseModel =
-        await _feedService.putFeed(contentIdx, formDataMap);
+    ResponseModel? feedResponseModel = await _feedService.putFeed(contentIdx, formDataMap);
 
     if (feedResponseModel == null) {
       throw "error posting feed";
