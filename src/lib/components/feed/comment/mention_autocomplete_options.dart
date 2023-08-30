@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
+import 'package:thumbor/thumbor.dart';
 
 class MentionAutocompleteOptions extends ConsumerStatefulWidget {
   const MentionAutocompleteOptions({
@@ -83,7 +85,10 @@ class MentionAutocompleteOptionsState
                   dense: true,
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(
-                        "https://dev-imgs.devlabs.co.kr${user.profileImgUrl!}"),
+                      Thumbor(host: thumborHostUrl, key: thumborKey)
+                          .buildImage("$imgDomain${user.profileImgUrl!}")
+                          .toUrl(),
+                    ),
                   ),
                   title: Text(user.nick ?? ''),
                   subtitle: Text('@${user.intro}'),

@@ -11,6 +11,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/follower_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/following_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_model.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data.dart';
@@ -176,7 +177,6 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
           return const SizedBox.shrink();
         },
         itemBuilder: (context, item, index) {
-          print('item.chatMemberId ${item.chatMemberId}');
           return ChatSearchListItem(
             idx: item.memberIdx!,
             nick: item.nick ?? 'unknown',

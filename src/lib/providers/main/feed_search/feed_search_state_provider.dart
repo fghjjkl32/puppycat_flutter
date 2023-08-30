@@ -18,10 +18,17 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
 
   final Ref ref;
 
+
+  final Map<String, ContentDataListModel> searchStateMap = {};
+
+  void getStateForContent(String searchWord) {
+    state = searchStateMap[searchWord] ?? const ContentDataListModel();
+  }
+
   initPosts(
     memberIdx,
     int? initPage,
-    searchWord,
+    String searchWord,
   ) async {
     currentPage = 1;
 
@@ -40,6 +47,13 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
     }
 
     state = state.copyWith(
+      page: page,
+      isLoading: false,
+      list: lists.data.list,
+      totalCnt: lists.data.totalCnt,
+    );
+
+    searchStateMap[searchWord ?? ""] = state.copyWith(
       page: page,
       isLoading: false,
       list: lists.data.list,

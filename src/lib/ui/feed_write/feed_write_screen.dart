@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button_selected_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_content_provider.dart';
@@ -133,7 +136,9 @@ class FeedWriteScreen extends ConsumerWidget {
                     "";
                 ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
               },
-              icon: const Icon(Icons.close),
+              icon: const Icon(
+                Puppycat_social.icon_close_large,
+              ),
             ),
             actions: [
               TextButton(
@@ -142,14 +147,25 @@ class FeedWriteScreen extends ConsumerWidget {
                   style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
                 ),
                 onPressed: () async {
-                  print(ref.watch(feedWriteCroppedFilesProvider));
-                  print(ref.watch(feedWriteProvider));
-                  print(ref.watch(feedWriteButtonSelectedProvider));
-                  print(ref
-                      .watch(feedWriteLocationInformationProvider.notifier)
-                      .state);
-                  print(
-                      ref.watch(feedWriteContentProvider.notifier).state.text);
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return WillPopScope(
+                        onWillPop: () async => false,
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.6),
+                          ),
+                          child: const SpinKitCircle(
+                            size: 100,
+                            color: kNeutralColor500,
+                          ),
+                        ),
+                      );
+                    },
+                  );
 
                   final result = await ref
                       .watch(feedWriteProvider.notifier)
@@ -167,8 +183,16 @@ class FeedWriteScreen extends ConsumerWidget {
                             .text,
                         feedState: ref.watch(feedWriteProvider),
                       );
+                  context.pop();
 
                   if (result.result) {
+                    ref.read(feedWriteProvider.notifier).resetTag();
+                    ref
+                        .watch(feedWriteLocationInformationProvider.notifier)
+                        .state = "";
+                    ref
+                        .watch(feedWriteCroppedFilesProvider.notifier)
+                        .removeAll();
                     context.pushReplacement("/home");
                   } else {
                     showDialog(

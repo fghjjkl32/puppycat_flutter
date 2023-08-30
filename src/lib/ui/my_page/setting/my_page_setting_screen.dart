@@ -7,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/my_page_setting_provider.dart';
@@ -50,16 +51,22 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               onPressed: () {
                 context.pop();
               },
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(
+                Puppycat_social.icon_back,
+                size: 40,
+              ),
             ),
           ),
           body: ListView(
             children: [
               ProfileButton(
-                icon: const Icon(Icons.notifications),
+                icon: const Icon(
+                  Puppycat_social.icon_bell,
+                  size: 20,
+                ),
                 title: '알림',
                 onPressed: () {
-                  context.go("/home/myPage/setting/settingAlarm");
+                  context.push("/home/myPage/setting/settingAlarm");
                 },
               ),
               Padding(
@@ -67,7 +74,10 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 child: const Divider(),
               ),
               ProfileButton(
-                icon: const Icon(Icons.block),
+                icon: const Icon(
+                  Puppycat_social.icon_user_block_ac,
+                  size: 20,
+                ),
                 title: '차단 친구 관리',
                 onPressed: () {
                   context.go("/home/myPage/setting/settingBlockedUser");
@@ -82,7 +92,10 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                     EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 16.w),
                 child: Row(
                   children: [
-                    const Icon(Icons.note),
+                    const Icon(
+                      Puppycat_social.icon_terms,
+                      size: 20,
+                    ),
                     SizedBox(
                       width: 10.w,
                     ),
@@ -191,7 +204,10 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 padding: EdgeInsets.only(left: 16.0.w, right: 16.0.w),
                 child: Row(
                   children: [
-                    const Icon(Icons.more_horiz),
+                    const Icon(
+                      Puppycat_social.icon_etc,
+                      size: 20,
+                    ),
                     SizedBox(
                       width: 10.w,
                     ),
@@ -329,8 +345,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         ),
                       ),
                       const Icon(
-                        Icons.arrow_forward_ios,
-                        size: 18,
+                        Puppycat_social.icon_next_small,
+                        size: 20,
                         color: kTextBodyColor,
                       ),
                     ],
@@ -429,17 +445,17 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         int now = DateTime.now().millisecondsSinceEpoch;
                         print('now - lastTap ${now - lastTap}');
                         // if (now - lastTap < 500) {
-                          print('run?????');
-                          adminCount++;
-                          if (adminCount >= 10) {
-                            // Do something
-                            adminCount = 0;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const PasswordScreen()),
-                            );
-                          }
+                        print('run?????');
+                        adminCount++;
+                        if (adminCount >= 10) {
+                          // Do something
+                          adminCount = 0;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PasswordScreen()),
+                          );
+                        }
                         // }
                         // else {
                         //   adminCount = 0;
@@ -478,7 +494,10 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                     EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 16.w),
                 child: Row(
                   children: [
-                    const Icon(Icons.headset_mic),
+                    const Icon(
+                      Puppycat_social.icon_cs,
+                      size: 20,
+                    ),
                     SizedBox(
                       width: 10.w,
                     ),
@@ -519,11 +538,11 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(
-                                Icons.quiz,
+                                Puppycat_social.icon_faq,
                                 size: 40,
                               ),
                               SizedBox(
-                                height: 8.h,
+                                height: 4.h,
                               ),
                               Text(
                                 "자주하는 질문",
@@ -537,11 +556,11 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Icon(
-                              Icons.chat_bubble,
+                              Puppycat_social.icon_canneltalk,
                               size: 40,
                             ),
                             SizedBox(
-                              height: 8.h,
+                              height: 4.h,
                             ),
                             Text(
                               "1:1 채널톡",
@@ -558,11 +577,11 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(
-                                Icons.notification_important_outlined,
+                                Puppycat_social.icon_notice,
                                 size: 40,
                               ),
                               SizedBox(
-                                height: 8.h,
+                                height: 4.h,
                               ),
                               Text(
                                 "공지사항",
@@ -639,8 +658,8 @@ class ProfileButton extends StatelessWidget {
               ],
             ),
             const Icon(
-              Icons.arrow_forward_ios,
-              size: 18,
+              Puppycat_social.icon_next_small,
+              size: 20,
               color: kTextBodyColor,
             ),
           ],

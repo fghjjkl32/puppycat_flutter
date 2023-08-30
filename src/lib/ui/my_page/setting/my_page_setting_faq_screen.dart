@@ -5,8 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/setting/my_page_setting_faq_provider.dart';
 
 class MyPageSettingFaqScreen extends ConsumerStatefulWidget {
   const MyPageSettingFaqScreen({super.key});
@@ -55,7 +55,10 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen>
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  icon: const Icon(Icons.arrow_back),
+                  icon: const Icon(
+                    Puppycat_social.icon_back,
+                    size: 40,
+                  ),
                 ),
                 actions: [
                   Align(
@@ -83,76 +86,76 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen>
               ),
               body: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 12.0),
-                    child: FormBuilderTextField(
-                      name: 'search',
-                      initialValue: ref.watch(myPageSettingFaqProvider),
-                      style: kBody13RegularStyle.copyWith(
-                          color: kTextSubTitleColor),
-                      onChanged: (value) => ref
-                          .read(myPageSettingFaqProvider.notifier)
-                          .onTextChanged(value!),
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: kNeutralColor200,
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 16),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(100.0),
-                          gapPadding: 10.0,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(100.0),
-                          gapPadding: 10.0,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(100.0),
-                          gapPadding: 10.0,
-                        ),
-                        suffixIconConstraints: const BoxConstraints(
-                          minWidth: 24,
-                          minHeight: 24,
-                        ),
-                        suffixIcon: ref
-                                .watch(myPageSettingFaqProvider.notifier)
-                                // ignore: invalid_use_of_protected_member
-                                .state
-                                .isEmpty
-                            ? Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 8.0),
-                                child: Icon(
-                                  Icons.search,
-                                  color: Colors.grey[600],
-                                ),
-                              )
-                            : GestureDetector(
-                                onTap: () {
-                                  ref
-                                      .read(myPageSettingFaqProvider.notifier)
-                                      .onTextChanged('');
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 8.0),
-                                  child: Icon(
-                                    Icons.close,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                              ),
-                        hintText: "검색어를 입력해 주세요.",
-                        hintStyle: kBody11RegularStyle.copyWith(
-                            color: kNeutralColor500),
-                      ),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(
+                  //       vertical: 8.0, horizontal: 12.0),
+                  //   child: FormBuilderTextField(
+                  //     name: 'search',
+                  //     initialValue: ref.watch(myPageSettingFaqProvider),
+                  //     style: kBody13RegularStyle.copyWith(
+                  //         color: kTextSubTitleColor),
+                  //     onChanged: (value) => ref
+                  //         .read(myPageSettingFaqProvider.notifier)
+                  //         .onTextChanged(value!),
+                  //     keyboardType: TextInputType.text,
+                  //     decoration: InputDecoration(
+                  //       filled: true,
+                  //       fillColor: kNeutralColor200,
+                  //       contentPadding: const EdgeInsets.symmetric(
+                  //           vertical: 10, horizontal: 16),
+                  //       border: OutlineInputBorder(
+                  //         borderSide: BorderSide.none,
+                  //         borderRadius: BorderRadius.circular(100.0),
+                  //         gapPadding: 10.0,
+                  //       ),
+                  //       focusedBorder: OutlineInputBorder(
+                  //         borderSide: BorderSide.none,
+                  //         borderRadius: BorderRadius.circular(100.0),
+                  //         gapPadding: 10.0,
+                  //       ),
+                  //       enabledBorder: OutlineInputBorder(
+                  //         borderSide: BorderSide.none,
+                  //         borderRadius: BorderRadius.circular(100.0),
+                  //         gapPadding: 10.0,
+                  //       ),
+                  //       suffixIconConstraints: const BoxConstraints(
+                  //         minWidth: 24,
+                  //         minHeight: 24,
+                  //       ),
+                  //       suffixIcon: ref
+                  //               .watch(myPageSettingFaqProvider.notifier)
+                  //               // ignore: invalid_use_of_protected_member
+                  //               .state
+                  //               .isEmpty
+                  //           ? Padding(
+                  //               padding: const EdgeInsets.symmetric(
+                  //                   horizontal: 8.0, vertical: 8.0),
+                  //               child: Icon(
+                  //                 Icons.search,
+                  //                 color: Colors.grey[600],
+                  //               ),
+                  //             )
+                  //           : GestureDetector(
+                  //               onTap: () {
+                  //                 ref
+                  //                     .read(myPageSettingFaqProvider.notifier)
+                  //                     .onTextChanged('');
+                  //               },
+                  //               child: Padding(
+                  //                 padding: const EdgeInsets.symmetric(
+                  //                     horizontal: 8.0, vertical: 8.0),
+                  //                 child: Icon(
+                  //                   Icons.close,
+                  //                   color: Colors.grey[600],
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //       hintText: "검색어를 입력해 주세요.",
+                  //       hintStyle: kBody11RegularStyle.copyWith(
+                  //           color: kNeutralColor500),
+                  //     ),
+                  //   ),
+                  // ),
                   TabBar(
                       controller: tabController,
                       indicatorWeight: 3,

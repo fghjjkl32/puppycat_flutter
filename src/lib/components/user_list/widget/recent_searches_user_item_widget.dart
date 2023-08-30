@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
@@ -25,6 +26,7 @@ class RecentSearchesUserItemWidget extends ConsumerStatefulWidget {
     required this.memberIdx,
     required this.search,
     required this.dateTime,
+    required this.oldMemberIdx,
     Key? key,
   }) : super(key: key);
 
@@ -35,6 +37,7 @@ class RecentSearchesUserItemWidget extends ConsumerStatefulWidget {
   final int memberIdx;
   final Searche search;
   final DateTime dateTime;
+  final int oldMemberIdx;
   @override
   RecentSearchesUserItemWidgetState createState() =>
       RecentSearchesUserItemWidgetState();
@@ -49,7 +52,7 @@ class RecentSearchesUserItemWidgetState
         ref.read(userModelProvider)!.idx == widget.memberIdx
             ? context.push("/home/myPage")
             : context.push(
-                "/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}");
+                "/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
       },
       child: Padding(
         padding:
@@ -114,17 +117,22 @@ class RecentSearchesUserItemWidgetState
                   width: 10,
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(4.0),
                   child: GestureDetector(
-                      onTap: () async {
-                        final dbHelper = ref.read(dbHelperProvider);
-                        // 탭하면 검색 기록을 삭제합니다.
-                        await dbHelper.deleteSearch(widget.search);
+                    onTap: () async {
+                      final dbHelper = ref.read(dbHelperProvider);
+                      // 탭하면 검색 기록을 삭제합니다.
+                      await dbHelper.deleteSearch(widget.search);
 
-                        // Refresh the provider to trigger the search again
-                        ref.refresh(searchProvider);
-                      },
-                      child: Icon(Icons.close)),
+                      // Refresh the provider to trigger the search again
+                      ref.refresh(searchProvider);
+                    },
+                    child: const Icon(
+                      Puppycat_social.icon_close_medium,
+                      color: kTextBodyColor,
+                      size: 26,
+                    ),
+                  ),
                 ),
               ],
             ),

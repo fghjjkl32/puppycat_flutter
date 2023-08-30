@@ -31,7 +31,13 @@ class UserListRepository {
   Future<PopularUserListResponseModel> getPopularUserList({
     required loginMemberIdx,
   }) async {
-    PopularUserListResponseModel? contentsResponseModel = await _userListService.getPopularUserList(loginMemberIdx);
+    PopularUserListResponseModel? contentsResponseModel;
+
+    loginMemberIdx == null
+        ? contentsResponseModel =
+            await _userListService.getLogoutPopularUserList()
+        : contentsResponseModel =
+            await _userListService.getPopularUserList(loginMemberIdx);
 
     if (contentsResponseModel == null) {
       throw "error";

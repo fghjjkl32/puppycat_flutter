@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widge
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
@@ -47,7 +48,7 @@ class EditTagScreen extends ConsumerWidget {
                     Navigator.of(context).pop();
                   },
                   icon: const Icon(
-                    Icons.close,
+                    Puppycat_social.icon_close_large,
                     color: kNeutralColor100,
                   ),
                 ),

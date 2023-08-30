@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 
 /// class [MentionTagWidget]
 class MentionTagWidget extends StatelessWidget {
@@ -81,7 +82,7 @@ class MentionTagWidget extends StatelessWidget {
                       onDelete();
                     },
                     child: const Icon(
-                      Icons.close,
+                      Puppycat_social.icon_close_medium,
                       size: 18,
                       color: kNeutralColor100,
                     ),

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/blocked_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
@@ -83,7 +84,10 @@ class MyPageSettingBlockedUserScreenState
               onPressed: () {
                 context.pop();
               },
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(
+                Puppycat_social.icon_back,
+                size: 40,
+              ),
             ),
           ),
           body: Consumer(builder: (ctx, ref, child) {
@@ -134,24 +138,24 @@ class MyPageSettingBlockedUserScreenState
                               minHeight: 24,
                             ),
                             suffixIcon: blockSearchController.text.isEmpty
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0, vertical: 8.0),
+                                ? const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 8.0),
                                     child: Icon(
-                                      Icons.search,
-                                      color: Colors.grey[600],
+                                      Puppycat_social.icon_search_medium,
+                                      color: kNeutralColor600,
                                     ),
                                   )
                                 : GestureDetector(
                                     onTap: () {
                                       blockSearchController.text = "";
                                     },
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0, vertical: 8.0),
+                                    child: const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16.0, vertical: 8.0),
                                       child: Icon(
-                                        Icons.close,
-                                        color: Colors.grey[600],
+                                        Puppycat_social.icon_close_large,
+                                        color: kNeutralColor600,
                                       ),
                                     ),
                                   ),

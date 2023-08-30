@@ -4,21 +4,27 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed_search/feed_search_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_save_state_provider.dart';
+import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class FeedSearchListScreen extends ConsumerStatefulWidget {
   const FeedSearchListScreen({
     required this.searchWord,
+    required this.oldMemberIdx,
     super.key,
   });
 
   final String searchWord;
+  final int oldMemberIdx;
 
   @override
   FeedSearchListScreenState createState() => FeedSearchListScreenState();
@@ -37,7 +43,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen>
 
     ref
         .read(feedSearchStateProvider.notifier)
-        .initPosts(ref.read(userModelProvider)!.idx, 1, widget.searchWord);
+        .initPosts(ref.read(userModelProvider)?.idx, 1, widget.searchWord);
     super.initState();
   }
 
@@ -64,6 +70,9 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        ref
+            .read(feedDetailStateProvider.notifier)
+            .getStateForUser(widget.oldMemberIdx ?? 0);
         Navigator.of(context).pop();
 
         return false;
@@ -82,9 +91,15 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen>
               ),
               leading: IconButton(
                 onPressed: () {
+                  ref
+                      .read(feedDetailStateProvider.notifier)
+                      .getStateForUser(widget.oldMemberIdx ?? 0);
                   Navigator.of(context).pop();
                 },
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(
+                  Puppycat_social.icon_back,
+                  size: 40,
+                ),
               ),
             ),
             body: Consumer(builder: (ctx, ref, child) {
@@ -138,96 +153,105 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen>
                     ),
                   ),
                   Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () {
-                        return ref
-                            .read(feedSearchStateProvider.notifier)
-                            .refresh(ref.read(userModelProvider)!.idx,
-                                widget.searchWord);
-                      },
-                      child: GridView.builder(
-                        controller: searchContentController,
-                        gridDelegate: SliverQuiltedGridDelegate(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 4,
-                          crossAxisSpacing: 4,
-                          repeatPattern: QuiltedGridRepeatPattern.same,
-                          pattern: [
-                            const QuiltedGridTile(2, 2),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(2, 2),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                          ],
-                        ),
-                        itemCount: lists.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == lists.length) {
-                            if (isLoadMoreError) {
-                              return const Center(
-                                child: Text('Error'),
-                              );
-                            }
-                            if (isLoadMoreDone) {
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: RefreshIndicator(
+                        onRefresh: () {
+                          return ref
+                              .read(feedSearchStateProvider.notifier)
+                              .refresh(ref.read(userModelProvider)!.idx,
+                                  widget.searchWord);
+                        },
+                        child: GridView.builder(
+                          controller: searchContentController,
+                          gridDelegate: SliverQuiltedGridDelegate(
+                            crossAxisCount: 3,
+                            mainAxisSpacing: 4,
+                            crossAxisSpacing: 4,
+                            repeatPattern: QuiltedGridRepeatPattern.same,
+                            pattern: [
+                              const QuiltedGridTile(2, 2),
+                              const QuiltedGridTile(1, 1),
+                              const QuiltedGridTile(1, 1),
+                              const QuiltedGridTile(1, 1),
+                              const QuiltedGridTile(1, 1),
+                              const QuiltedGridTile(1, 1),
+                              const QuiltedGridTile(1, 1),
+                              const QuiltedGridTile(2, 2),
+                              const QuiltedGridTile(1, 1),
+                              const QuiltedGridTile(1, 1),
+                              const QuiltedGridTile(1, 1),
+                              const QuiltedGridTile(1, 1),
+                            ],
+                          ),
+                          itemCount: lists.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == lists.length) {
+                              if (isLoadMoreError) {
+                                return const Center(
+                                  child: Text('Error'),
+                                );
+                              }
+                              if (isLoadMoreDone) {
+                                return Container();
+                              }
                               return Container();
                             }
-                            return Container();
-                          }
 
-                          return GestureDetector(
-                            onTap: () {
-                              context.push(
-                                  "/home/myPage/detail/null/${widget.searchWord}/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/searchContent");
-                            },
-                            child: Stack(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: (index == 0)
-                                        ? const BorderRadius.only(
-                                            topLeft: Radius.circular(10))
-                                        : index == 1
-                                            ? const BorderRadius.only(
-                                                topRight: Radius.circular(10))
-                                            : BorderRadius.circular(0),
-                                    image: DecorationImage(
-                                        image: NetworkImage(
-                                            "https://dev-imgs.devlabs.co.kr${lists[index].imgUrl}"),
-                                        fit: BoxFit.cover),
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 4.w,
-                                  top: 4.w,
-                                  child: Container(
+                            return GestureDetector(
+                              onTap: () {
+                                context.push(
+                                    "/home/myPage/detail/null/${widget.searchWord}/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/searchContent");
+                              },
+                              child: Stack(
+                                children: [
+                                  Container(
                                     decoration: BoxDecoration(
-                                      color: const Color(0xff414348)
-                                          .withOpacity(0.75),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(5.0)),
+                                      borderRadius: (index == 0)
+                                          ? const BorderRadius.only(
+                                              topLeft: Radius.circular(10))
+                                          : index == 1
+                                              ? const BorderRadius.only(
+                                                  topRight: Radius.circular(10))
+                                              : BorderRadius.circular(0),
+                                      image: DecorationImage(
+                                          image: NetworkImage(
+                                            Thumbor(
+                                                    host: thumborHostUrl,
+                                                    key: thumborKey)
+                                                .buildImage(
+                                                    "$imgDomain${lists[index].imgUrl}")
+                                                .toUrl(),
+                                          ),
+                                          fit: BoxFit.cover),
                                     ),
-                                    width: 18.w,
-                                    height: 14.w,
-                                    child: Center(
-                                      child: Text(
-                                        "${lists[index].imageCnt}",
-                                        style: kBadge9RegularStyle.copyWith(
-                                            color: kNeutralColor100),
+                                  ),
+                                  Positioned(
+                                    right: 4.w,
+                                    top: 4.w,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xff414348)
+                                            .withOpacity(0.75),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0)),
+                                      ),
+                                      width: 18.w,
+                                      height: 14.w,
+                                      child: Center(
+                                        child: Text(
+                                          "${lists[index].imageCnt}",
+                                          style: kBadge9RegularStyle.copyWith(
+                                              color: kNeutralColor100),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),

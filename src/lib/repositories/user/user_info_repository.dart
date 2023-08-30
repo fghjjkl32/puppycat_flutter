@@ -111,11 +111,20 @@ class UserInfoRepository {
   }
 
   //User Info
-  Future<UserInformationResponseModel> getUserInformation(int loginMemberIdx, int memberIdx) async {
-    UserInformationResponseModel? userInformationResponseModel = await _userInfoService.getUserInformation(
-      loginMemberIdx,
-      memberIdx,
-    );
+  Future<UserInformationResponseModel> getUserInformation(
+      int? loginMemberIdx, int memberIdx) async {
+    UserInformationResponseModel? userInformationResponseModel;
+
+    loginMemberIdx == null
+        ? userInformationResponseModel =
+            await _userInfoService.getLogoutUserInformation(
+            memberIdx,
+          )
+        : userInformationResponseModel =
+            await _userInfoService.getUserInformation(
+            loginMemberIdx,
+            memberIdx,
+          );
 
     if (userInformationResponseModel == null) {
       throw "error";

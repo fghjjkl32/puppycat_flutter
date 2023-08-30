@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
@@ -17,6 +18,7 @@ class FeedBottomIconWidget extends ConsumerWidget {
     required this.isLike,
     required this.isSave,
     required this.contentType,
+    required this.oldMemberIdx,
   });
 
   final int contentIdx;
@@ -26,6 +28,7 @@ class FeedBottomIconWidget extends ConsumerWidget {
   final bool isLike;
   final bool isSave;
   final String contentType;
+  final int oldMemberIdx;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,9 +51,10 @@ class FeedBottomIconWidget extends ConsumerWidget {
                       },
                       child: Row(
                         children: [
-                          Image.asset(
-                            'assets/image/feed/icon/large_size/icon_like_on.png',
-                            height: 32.w,
+                          const Icon(
+                            Puppycat_social.icon_like_ac,
+                            color: kPrimaryColor,
+                            size: 32,
                           ),
                           Text(
                             '$likeCount',
@@ -62,18 +66,24 @@ class FeedBottomIconWidget extends ConsumerWidget {
                     )
                   : GestureDetector(
                       onTap: () {
-                        ref.watch(feedDetailStateProvider.notifier).postLike(
-                              loginMemberIdx: ref.read(userModelProvider)!.idx,
-                              memberIdx: memberIdx,
-                              contentIdx: contentIdx,
-                              contentType: contentType,
-                            );
+                        ref.read(userModelProvider) == null
+                            ? context.pushReplacement("/loginScreen")
+                            : ref
+                                .watch(feedDetailStateProvider.notifier)
+                                .postLike(
+                                  loginMemberIdx:
+                                      ref.read(userModelProvider)!.idx,
+                                  memberIdx: memberIdx,
+                                  contentIdx: contentIdx,
+                                  contentType: contentType,
+                                );
                       },
                       child: Row(
                         children: [
-                          Image.asset(
-                            'assets/image/feed/icon/large_size/icon_like_off.png',
-                            height: 32.w,
+                          const Icon(
+                            Puppycat_social.icon_like_de,
+                            color: kTextBodyColor,
+                            size: 32,
                           ),
                           Text(
                             '$likeCount',
@@ -86,13 +96,14 @@ class FeedBottomIconWidget extends ConsumerWidget {
               SizedBox(width: 12.w),
               GestureDetector(
                 onTap: () {
-                  context.push("/home/commentDetail/$contentIdx");
+                  context.push("/home/commentDetail/$contentIdx/$oldMemberIdx");
                 },
                 child: Row(
                   children: [
-                    Image.asset(
-                      'assets/image/feed/icon/large_size/icon_comment.png',
-                      height: 32.w,
+                    const Icon(
+                      Puppycat_social.icon_comment,
+                      color: kTextBodyColor,
+                      size: 32,
                     ),
                     Text(
                       '$commentCount',
@@ -107,31 +118,38 @@ class FeedBottomIconWidget extends ConsumerWidget {
           isSave
               ? GestureDetector(
                   onTap: () {
-                    ref.watch(feedDetailStateProvider.notifier).deleteSave(
-                          loginMemberIdx: ref.read(userModelProvider)!.idx,
-                          memberIdx: memberIdx,
-                          contentIdx: contentIdx,
-                          contentType: contentType,
-                        );
+                    ref.read(userModelProvider) == null
+                        ? context.pushReplacement("/loginScreen")
+                        : ref
+                            .watch(feedDetailStateProvider.notifier)
+                            .deleteSave(
+                              loginMemberIdx: ref.read(userModelProvider)!.idx,
+                              memberIdx: memberIdx,
+                              contentIdx: contentIdx,
+                              contentType: contentType,
+                            );
                   },
-                  child: Image.asset(
-                    'assets/image/feed/icon/large_size/icon_bookmark.png',
+                  child: const Icon(
+                    Puppycat_social.icon_bookmark,
+                    size: 32,
                     color: kPrimaryColor,
-                    height: 32.w,
                   ),
                 )
               : GestureDetector(
                   onTap: () {
-                    ref.watch(feedDetailStateProvider.notifier).postSave(
-                          loginMemberIdx: ref.read(userModelProvider)!.idx,
-                          memberIdx: memberIdx,
-                          contentIdx: contentIdx,
-                          contentType: contentType,
-                        );
+                    ref.read(userModelProvider) == null
+                        ? context.pushReplacement("/loginScreen")
+                        : ref.watch(feedDetailStateProvider.notifier).postSave(
+                              loginMemberIdx: ref.read(userModelProvider)!.idx,
+                              memberIdx: memberIdx,
+                              contentIdx: contentIdx,
+                              contentType: contentType,
+                            );
                   },
-                  child: Image.asset(
-                    'assets/image/feed/icon/large_size/icon_bookmark.png',
-                    height: 32.w,
+                  child: const Icon(
+                    Puppycat_social.icon_bookmark,
+                    size: 32,
+                    color: kTextBodyColor,
                   ),
                 ),
         ],

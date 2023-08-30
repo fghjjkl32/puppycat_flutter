@@ -83,6 +83,7 @@ class LoginScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
+        automaticallyImplyLeading: false,
         title: Align(
             alignment: Alignment.centerLeft,
             child: IconButton(

@@ -13,6 +13,12 @@ final userContentStateProvider =
 class UserContentStateNotifier extends StateNotifier<ContentDataListModel> {
   UserContentStateNotifier(this.ref) : super(const ContentDataListModel());
 
+  final Map<int, ContentDataListModel> userContentStateMap = {};
+
+  void getStateForUserContent(int userIdx) {
+    state = userContentStateMap[userIdx] ?? const ContentDataListModel();
+  }
+
   int maxPages = 1;
   int currentPage = 1;
 
@@ -40,6 +46,9 @@ class UserContentStateNotifier extends StateNotifier<ContentDataListModel> {
     }
 
     state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
+
+    userContentStateMap[memberIdx] =
+        state.copyWith(page: page, isLoading: false, list: lists.data.list);
   }
 
   loadMorePost(loginMemberIdx, memberIdx) async {

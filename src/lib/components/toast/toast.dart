@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
 enum ToastType { red, purple, grey }
@@ -101,7 +102,7 @@ void toast({
                             color: kNeutralColor100),
                       ),
                       const Icon(
-                        Icons.refresh,
+                        Puppycat_social.icon_take_back,
                         color: kNeutralColor100,
                       ),
                     ],

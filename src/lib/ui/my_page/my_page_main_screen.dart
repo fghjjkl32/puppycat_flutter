@@ -10,10 +10,12 @@ import 'package:pet_mobile_social_flutter/components/comment/widget/comment_deta
 import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
@@ -25,13 +27,19 @@ import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class MyPageMainScreen extends ConsumerStatefulWidget {
-  const MyPageMainScreen({super.key});
+  const MyPageMainScreen({
+    super.key,
+    required this.oldMemberIdx,
+  });
+
+  final int oldMemberIdx;
 
   @override
   MyPageMainState createState() => MyPageMainState();
 }
 
-class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerProviderStateMixin {
+class MyPageMainState extends ConsumerState<MyPageMainScreen>
+    with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
   ScrollController commentController = ScrollController();
 
@@ -54,12 +62,15 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
       vsync: this,
     );
 
-    ref.read(myInformationStateProvider.notifier).getInitUserInformation(ref.read(userModelProvider)!.idx);
+    ref
+        .read(myInformationStateProvider.notifier)
+        .getInitUserInformation(ref.read(userModelProvider)!.idx);
     ref.read(myContentStateProvider.notifier).initPosts(
           loginMemberIdx: ref.read(userModelProvider)!.idx,
           initPage: 1,
         );
-    ref.read(myTagContentStateProvider.notifier).initPosts(ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx, 1);
+    ref.read(myTagContentStateProvider.notifier).initPosts(
+        ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx, 1);
     super.initState();
   }
 
@@ -68,19 +79,25 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
       setState(() {
         appBarColor = kNeutralColor100;
       });
-    } else if (scrollController.offset < 128.h && appBarColor != Colors.transparent) {
+    } else if (scrollController.offset < 128.h &&
+        appBarColor != Colors.transparent) {
       setState(() {
         appBarColor = Colors.transparent;
       });
     }
 
-    if (scrollController.position.pixels > scrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
+    if (scrollController.position.pixels >
+        scrollController.position.maxScrollExtent -
+            MediaQuery.of(context).size.height) {
       if (tagOldLength == ref.read(myTagContentStateProvider).list.length) {
-        ref.read(myTagContentStateProvider.notifier).loadMorePost(ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx);
+        ref.read(myTagContentStateProvider.notifier).loadMorePost(
+            ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx);
       }
     }
 
-    if (scrollController.position.pixels > scrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
+    if (scrollController.position.pixels >
+        scrollController.position.maxScrollExtent -
+            MediaQuery.of(context).size.height) {
       if (userOldLength == ref.read(myContentStateProvider).list.length) {
         ref.read(myContentStateProvider.notifier).loadMorePost(
               loginMemberIdx: ref.read(userModelProvider)!.idx,
@@ -93,7 +110,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   void _commentScrollListener() {
     if (commentController.position.extentAfter < 200) {
       if (commentOldLength == ref.read(commentStateProvider).list.length) {
-        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userModelProvider)!.idx);
+        ref.read(commentStateProvider.notifier).loadMoreComment(
+            ref.watch(commentStateProvider).list[0].contentsIdx,
+            ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -111,6 +130,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        ref
+            .read(feedDetailStateProvider.notifier)
+            .getStateForUser(widget.oldMemberIdx ?? 0);
         Navigator.of(context).pop();
 
         return false;
@@ -131,14 +153,23 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     title: const Text('마이페이지'),
                     leading: IconButton(
                       onPressed: () {
+                        ref
+                            .read(feedDetailStateProvider.notifier)
+                            .getStateForUser(widget.oldMemberIdx ?? 0);
                         Navigator.of(context).pop();
                       },
-                      icon: const Icon(Icons.arrow_back),
+                      icon: const Icon(
+                        Puppycat_social.icon_back,
+                        size: 40,
+                      ),
                     ),
                     forceElevated: innerBoxIsScrolled,
                     actions: [
                       PopupMenuButton(
-                        icon: const Icon(Icons.more_horiz),
+                        icon: const Icon(
+                          Puppycat_social.icon_more_header,
+                          size: 40,
+                        ),
                         onSelected: (id) {
                           if (id == 'myActivity') {
                             context.go("/home/myPage/myActivity");
@@ -164,7 +195,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                             diaryPopUpMenuItem(
                               'myActivity',
                               '내 활동',
-                              const Icon(Icons.person),
+                              const Icon(
+                                Puppycat_social.icon_myactive,
+                                size: 22,
+                              ),
                               context,
                             ),
                           );
@@ -177,7 +211,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                             diaryPopUpMenuItem(
                               'postsManagement',
                               '내 글 관리',
-                              const Icon(Icons.post_add_outlined),
+                              const Icon(
+                                Puppycat_social.icon_mywrite,
+                                size: 22,
+                              ),
                               context,
                             ),
                           );
@@ -190,7 +227,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                             diaryPopUpMenuItem(
                               'setting',
                               '설정',
-                              const Icon(Icons.settings),
+                              const Icon(
+                                Puppycat_social.icon_set_small,
+                                size: 22,
+                              ),
                               context,
                             ),
                           );
@@ -200,12 +240,15 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     ],
                     expandedHeight: 130.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
-                      final userInformationState = ref.watch(myInformationStateProvider);
+                      final userInformationState =
+                          ref.watch(myInformationStateProvider);
                       final lists = userInformationState.list;
 
-                      return lists.isEmpty ? Container() : _myPageSuccessProfile(lists[0]);
+                      return lists.isEmpty
+                          ? Container()
+                          : _myPageSuccessProfile(lists[0]);
                     })),
-                const SliverPersistentHeader(
+                SliverPersistentHeader(
                   delegate: TabBarDelegate(),
                   pinned: true,
                 ),
@@ -266,16 +309,23 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                       margin: const EdgeInsets.all(10.0),
                       child: GestureDetector(
                         onTap: () {
-                          context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myContent");
+                          context.push(
+                              "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myContent");
                         },
                         child: Center(
                           child: Stack(
                             children: [
                               Positioned.fill(
                                 child: ClipRRect(
-                                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(12)),
                                   child: Image.network(
-                                    Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                    Thumbor(
+                                            host: thumborHostUrl,
+                                            key: thumborKey)
+                                        .buildImage(
+                                            "$imgDomain${lists[index].imgUrl}")
+                                        .toUrl(),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -306,23 +356,37 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                 child: Row(
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.only(left: 6.0.w, top: 2.h, right: 2.w),
+                                      padding: EdgeInsets.only(
+                                          left: 6.0.w, right: 2.w),
                                       child: InkWell(
                                         onTap: () async {
-                                          await ref.read(contentLikeUserListStateProvider.notifier).initContentLikeUserList(
+                                          await ref
+                                              .read(
+                                                  contentLikeUserListStateProvider
+                                                      .notifier)
+                                              .initContentLikeUserList(
                                                 lists[index].idx,
-                                                ref.read(userModelProvider)!.idx,
+                                                ref
+                                                    .read(userModelProvider)!
+                                                    .idx,
                                                 1,
                                               );
 
                                           // ignore: use_build_context_synchronously
                                           showCustomModalBottomSheet(
                                             context: context,
-                                            widget: Consumer(builder: (context, ref, child) {
-                                              final contentLikeUserListContentState = ref.watch(contentLikeUserListStateProvider);
-                                              final contentLikeUserList = contentLikeUserListContentState.list;
+                                            widget: Consumer(
+                                                builder: (context, ref, child) {
+                                              final contentLikeUserListContentState =
+                                                  ref.watch(
+                                                      contentLikeUserListStateProvider);
+                                              final contentLikeUserList =
+                                                  contentLikeUserListContentState
+                                                      .list;
 
-                                              commentOldLength = contentLikeUserList.length ?? 0;
+                                              commentOldLength =
+                                                  contentLikeUserList.length ??
+                                                      0;
                                               return SizedBox(
                                                 height: 500.h,
                                                 child: Stack(
@@ -330,29 +394,64 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                     Column(
                                                       children: [
                                                         Padding(
-                                                          padding: EdgeInsets.only(
+                                                          padding:
+                                                              EdgeInsets.only(
                                                             top: 8.0.h,
                                                             bottom: 10.0.h,
                                                           ),
                                                           child: Text(
                                                             "좋아요",
-                                                            style: kTitle16ExtraBoldStyle.copyWith(color: kTextSubTitleColor),
+                                                            style: kTitle16ExtraBoldStyle
+                                                                .copyWith(
+                                                                    color:
+                                                                        kTextSubTitleColor),
                                                           ),
                                                         ),
                                                         Expanded(
-                                                          child: ListView.builder(
-                                                            controller: commentController,
-                                                            itemCount: contentLikeUserList.length,
-                                                            padding: EdgeInsets.only(bottom: 80.h),
-                                                            itemBuilder: (BuildContext context, int commentIndex) {
+                                                          child:
+                                                              ListView.builder(
+                                                            controller:
+                                                                commentController,
+                                                            itemCount:
+                                                                contentLikeUserList
+                                                                    .length,
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    bottom:
+                                                                        80.h),
+                                                            itemBuilder:
+                                                                (BuildContext
+                                                                        context,
+                                                                    int commentIndex) {
                                                               return FavoriteItemWidget(
-                                                                profileImage: contentLikeUserList[commentIndex].profileImgUrl,
-                                                                userName: contentLikeUserList[commentIndex].nick!,
-                                                                content: contentLikeUserList[commentIndex].intro!,
-                                                                isSpecialUser: contentLikeUserList[commentIndex].isBadge == 1,
-                                                                isFollow: contentLikeUserList[commentIndex].followState == 0,
-                                                                followerIdx: contentLikeUserList[commentIndex].memberIdx!,
-                                                                contentsIdx: lists[index].idx,
+                                                                profileImage:
+                                                                    contentLikeUserList[
+                                                                            commentIndex]
+                                                                        .profileImgUrl,
+                                                                userName:
+                                                                    contentLikeUserList[
+                                                                            commentIndex]
+                                                                        .nick!,
+                                                                content:
+                                                                    contentLikeUserList[
+                                                                            commentIndex]
+                                                                        .intro!,
+                                                                isSpecialUser:
+                                                                    contentLikeUserList[commentIndex]
+                                                                            .isBadge ==
+                                                                        1,
+                                                                isFollow: contentLikeUserList[
+                                                                            commentIndex]
+                                                                        .followState ==
+                                                                    1,
+                                                                followerIdx:
+                                                                    contentLikeUserList[
+                                                                            commentIndex]
+                                                                        .memberIdx!,
+                                                                contentsIdx:
+                                                                    lists[index]
+                                                                        .idx,
+                                                                oldMemberIdx: 0,
                                                               );
                                                             },
                                                           ),
@@ -365,36 +464,56 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                             }),
                                           );
                                         },
-                                        child: lists[index].likeCnt == 1
-                                            ? Image.asset(
-                                                'assets/image/feed/icon/small_size/icon_comment_like_on.png',
-                                                height: 26.w,
+                                        child: lists[index].selfLike == 1
+                                            ? const Icon(
+                                                Puppycat_social
+                                                    .icon_comment_like_ac,
+                                                size: 24,
+                                                color: kPrimaryColor,
                                               )
-                                            : Image.asset(
-                                                'assets/image/feed/icon/small_size/icon_comment_like_off.png',
-                                                height: 26.w,
+                                            : const Icon(
+                                                Puppycat_social
+                                                    .icon_comment_like_de,
+                                                size: 24,
+                                                color: kNeutralColor100,
                                               ),
                                       ),
                                     ),
                                     Text(
                                       '${lists[index].likeCnt}',
-                                      style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                                      style: kBadge10MediumStyle.copyWith(
+                                          color: kNeutralColor100),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.only(left: 6.0.w, top: 2.h, right: 2.w),
+                                      padding: EdgeInsets.only(
+                                          left: 6.0.w, right: 2.w),
                                       child: Builder(builder: (context) {
                                         return InkWell(
                                           onTap: () async {
-                                            await ref.read(commentStateProvider.notifier).getInitComment(lists[index].idx, ref.read(userModelProvider)!.idx, 1);
+                                            await ref
+                                                .read(commentStateProvider
+                                                    .notifier)
+                                                .getInitComment(
+                                                    lists[index].idx,
+                                                    ref
+                                                        .read(
+                                                            userModelProvider)!
+                                                        .idx,
+                                                    1);
 
                                             // ignore: use_build_context_synchronously
                                             showCustomModalBottomSheet(
                                               context: context,
-                                              widget: Consumer(builder: (context, ref, child) {
-                                                final commentContentState = ref.watch(commentStateProvider);
-                                                final commentLists = commentContentState.list;
+                                              widget: Consumer(builder:
+                                                  (context, ref, child) {
+                                                final commentContentState =
+                                                    ref.watch(
+                                                        commentStateProvider);
+                                                final commentLists =
+                                                    commentContentState.list;
 
-                                                commentOldLength = commentLists.length ?? 0;
+                                                commentOldLength =
+                                                    commentLists.length ?? 0;
                                                 return SizedBox(
                                                   height: 500.h,
                                                   child: Stack(
@@ -402,21 +521,35 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                       Column(
                                                         children: [
                                                           Padding(
-                                                            padding: EdgeInsets.only(
+                                                            padding:
+                                                                EdgeInsets.only(
                                                               top: 8.0.h,
                                                               bottom: 10.0.h,
                                                             ),
                                                             child: Text(
                                                               "댓글",
-                                                              style: kTitle16ExtraBoldStyle.copyWith(color: kTextSubTitleColor),
+                                                              style: kTitle16ExtraBoldStyle
+                                                                  .copyWith(
+                                                                      color:
+                                                                          kTextSubTitleColor),
                                                             ),
                                                           ),
                                                           Expanded(
-                                                            child: ListView.builder(
-                                                              controller: commentController,
-                                                              itemCount: commentLists.length,
-                                                              padding: EdgeInsets.only(bottom: 80.h),
-                                                              itemBuilder: (BuildContext context, int index) {
+                                                            child: ListView
+                                                                .builder(
+                                                              controller:
+                                                                  commentController,
+                                                              itemCount:
+                                                                  commentLists
+                                                                      .length,
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      bottom:
+                                                                          80.h),
+                                                              itemBuilder:
+                                                                  (BuildContext
+                                                                          context,
+                                                                      int index) {
                                                                 return CommentDetailItemWidget(
                                                                   key: UniqueKey(),
                                                                   parentIdx: commentLists[index].parentIdx,
@@ -436,6 +569,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                   isLastDisPlayChild: false,
                                                                   pageNumber: commentLists[index].pageNumber,
                                                                   isDisplayPreviousMore: false,
+                                                                  oldMemberIdx: commentLists[index].memberIdx,
                                                                 );
                                                               },
                                                             ),
@@ -446,8 +580,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                         left: 0,
                                                         right: 0,
                                                         bottom: 0,
-                                                        child: CommentCustomTextField(
-                                                          contentIdx: lists[index].idx,
+                                                        child:
+                                                            CommentCustomTextField(
+                                                          contentIdx:
+                                                              lists[index].idx,
                                                         ),
                                                       ),
                                                     ],
@@ -456,16 +592,19 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                               }),
                                             );
                                           },
-                                          child: Image.asset(
-                                            'assets/image/feed/icon/small_size/icon_comment_comment.png',
-                                            height: 24.w,
+                                          child: const Icon(
+                                            Puppycat_social
+                                                .icon_comment_comment,
+                                            size: 24,
+                                            color: kNeutralColor100,
                                           ),
                                         );
                                       }),
                                     ),
                                     Text(
                                       '${lists[index].commentCnt}',
-                                      style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                                      style: kBadge10MediumStyle.copyWith(
+                                          color: kNeutralColor100),
                                     ),
                                   ],
                                 ),
@@ -475,15 +614,18 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                 top: 6.w,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: const Color(0xff414348).withOpacity(0.75),
-                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                    color: const Color(0xff414348)
+                                        .withOpacity(0.75),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(5.0)),
                                   ),
                                   width: 18.w,
                                   height: 14.w,
                                   child: Center(
                                     child: Text(
                                       '${lists[index].imageCnt}',
-                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                      style: kBadge9RegularStyle.copyWith(
+                                          color: kNeutralColor100),
                                     ),
                                   ),
                                 ),
@@ -547,16 +689,23 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                       margin: const EdgeInsets.all(10.0),
                       child: GestureDetector(
                         onTap: () {
-                          context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myTagContent");
+                          context.push(
+                              "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myTagContent");
                         },
                         child: Center(
                           child: Stack(
                             children: [
                               Positioned.fill(
                                 child: ClipRRect(
-                                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(12)),
                                   child: Image.network(
-                                    Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                    Thumbor(
+                                            host: thumborHostUrl,
+                                            key: thumborKey)
+                                        .buildImage(
+                                            "$imgDomain${lists[index].imgUrl}")
+                                        .toUrl(),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -566,15 +715,18 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                 top: 6.w,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: const Color(0xff414348).withOpacity(0.75),
-                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                    color: const Color(0xff414348)
+                                        .withOpacity(0.75),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(5.0)),
                                   ),
                                   width: 18.w,
                                   height: 14.w,
                                   child: Center(
                                     child: Text(
                                       "${lists[index].imageCnt}",
-                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                      style: kBadge9RegularStyle.copyWith(
+                                          color: kNeutralColor100),
                                     ),
                                   ),
                                 ),
@@ -628,7 +780,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         : Container(),
                     Text(
                       "${data.nick}",
-                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                      style: kTitle16ExtraBoldStyle.copyWith(
+                          color: kTextTitleColor),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -636,10 +789,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(5.0),
-                        child: Icon(
-                          Icons.edit,
+                        child: const Icon(
+                          Puppycat_social.icon_modify_small,
                           color: kNeutralColor500,
-                          size: 20,
+                          size: 22,
                         ),
                       ),
                     ),
@@ -649,12 +802,15 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                   height: 3.h,
                 ),
                 Text(
-                  data.intro == null || data.intro == "" ? "소개글이 없습니다." : "${data.intro}",
+                  data.intro == null || data.intro == ""
+                      ? "소개글이 없습니다."
+                      : "${data.intro}",
                   style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                 ),
                 GestureDetector(
                   onTap: () {
-                    context.go("/home/myPage/followList/${ref.read(userModelProvider)!.idx}");
+                    context.go(
+                        "/home/myPage/followList/${ref.read(userModelProvider)!.idx}");
                   },
                   child: Padding(
                     padding: EdgeInsets.only(top: 8.0.h),
@@ -662,23 +818,28 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                       children: [
                         Text(
                           "팔로워 ",
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
                         ),
                         Text(
                           "${data.followerCnt}",
-                          style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                          style: kBody11SemiBoldStyle.copyWith(
+                              color: kTextSubTitleColor),
                         ),
                         Text(
                           "  ·  ",
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
                         ),
                         Text(
                           "팔로잉 ",
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                          style: kBody11RegularStyle.copyWith(
+                              color: kTextBodyColor),
                         ),
                         Text(
                           "${data.followCnt}",
-                          style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                          style: kBody11SemiBoldStyle.copyWith(
+                              color: kTextSubTitleColor),
                         ),
                       ],
                     ),
@@ -719,11 +880,14 @@ PopupMenuItem diaryPopUpMenuItem(
 }
 
 class TabBarDelegate extends SliverPersistentHeaderDelegate {
-  const TabBarDelegate();
+  final double tabBarHeight;
+  const TabBarDelegate({this.tabBarHeight = 48});
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
+      height: tabBarHeight,
       decoration: shrinkOffset == 0
           ? BoxDecoration(
               color: Colors.white,
@@ -758,43 +922,41 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                 ),
                 tabs: [
                   Consumer(builder: (context, ref, child) {
-                    return Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "일상글",
-                            // style: kBody14BoldStyle,
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(
-                            "${ref.watch(myContentStateProvider).totalCount}",
-                            // style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                          ),
-                        ],
-                      ),
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "일상글",
+                          style: kBody14BoldStyle,
+                        ),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        Text(
+                          "${ref.watch(myContentStateProvider).totalCount}",
+                          style: kBadge10MediumStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                      ],
                     );
                   }),
                   Consumer(builder: (context, ref, child) {
-                    return Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "태그됨",
-                            // style: kBody14BoldStyle,
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          Text(
-                            "${ref.watch(myTagContentStateProvider).totalCount}",
-                            // style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                          ),
-                        ],
-                      ),
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "태그됨",
+                          style: kBody14BoldStyle,
+                        ),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        Text(
+                          "${ref.watch(myTagContentStateProvider).totalCount}",
+                          style: kBadge10MediumStyle.copyWith(
+                              color: kTextBodyColor),
+                        ),
+                      ],
                     );
                   }),
                 ]),
@@ -805,10 +967,14 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 46;
+  double get maxExtent {
+    return tabBarHeight;
+  }
 
   @override
-  double get minExtent => 46;
+  double get minExtent {
+    return tabBarHeight;
+  }
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
