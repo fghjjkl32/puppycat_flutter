@@ -551,60 +551,25 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen>
                                                                           context,
                                                                       int index) {
                                                                 return CommentDetailItemWidget(
-                                                                  key:
-                                                                      UniqueKey(),
-                                                                  parentIdx: commentLists[
-                                                                          index]
-                                                                      .parentIdx,
-                                                                  commentIdx:
-                                                                      commentLists[
-                                                                              index]
-                                                                          .idx,
-                                                                  profileImage:
-                                                                      commentLists[index]
-                                                                              .url ??
-                                                                          'assets/image/feed/image/sample_image1.png',
-                                                                  name: commentLists[
-                                                                          index]
-                                                                      .nick,
-                                                                  comment: commentLists[
-                                                                          index]
-                                                                      .contents,
-                                                                  isSpecialUser:
-                                                                      commentLists[index]
-                                                                              .isBadge ==
-                                                                          1,
-                                                                  time: DateTime.parse(
-                                                                      commentLists[
-                                                                              index]
-                                                                          .regDate),
-                                                                  isReply:
-                                                                      false,
-                                                                  likeCount:
-                                                                      commentLists[index]
-                                                                              .commentLikeCnt ??
-                                                                          0,
-                                                                  replies: commentLists[
-                                                                          index]
-                                                                      .childCommentData,
-                                                                  contentIdx: commentLists[
-                                                                          index]
-                                                                      .contentsIdx,
-                                                                  isLike: commentLists[
-                                                                              index]
-                                                                          .likeState ==
-                                                                      1,
-                                                                  memberIdx: commentLists[
-                                                                          index]
-                                                                      .memberIdx,
-                                                                  mentionListData:
-                                                                      commentLists[index]
-                                                                              .mentionList ??
-                                                                          [],
-                                                                  oldMemberIdx:
-                                                                      commentLists[
-                                                                              index]
-                                                                          .memberIdx,
+                                                                  key: UniqueKey(),
+                                                                  parentIdx: commentLists[index].parentIdx,
+                                                                  commentIdx: commentLists[index].idx,
+                                                                  profileImage: commentLists[index].url ?? 'assets/image/feed/image/sample_image1.png',
+                                                                  name: commentLists[index].nick,
+                                                                  comment: commentLists[index].contents,
+                                                                  isSpecialUser: commentLists[index].isBadge == 1,
+                                                                  time: DateTime.parse(commentLists[index].regDate),
+                                                                  isReply: false,
+                                                                  likeCount: commentLists[index].commentLikeCnt ?? 0,
+                                                                  // replies: commentLists[index].childCommentData, // TODO 댓글 위젯 수정하면서 영향이 있음
+                                                                  contentIdx: commentLists[index].contentsIdx,
+                                                                  isLike: commentLists[index].likeState == 1,
+                                                                  memberIdx: commentLists[index].memberIdx,
+                                                                  mentionListData: commentLists[index].mentionList ?? [],
+                                                                  isLastDisPlayChild: false,
+                                                                  pageNumber: commentLists[index].pageNumber,
+                                                                  isDisplayPreviousMore: false,
+                                                                  oldMemberIdx: commentLists[index].memberIdx,
                                                                 );
                                                               },
                                                             ),

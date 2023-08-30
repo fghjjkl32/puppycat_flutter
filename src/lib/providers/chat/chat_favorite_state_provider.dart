@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/chat/chat_repository.dart';
@@ -34,7 +35,7 @@ class ChatFavoriteUserState extends _$ChatFavoriteUserState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      ChatRepository chatRepository = ref.read(chatRepositoryProvider);
+      ChatRepository chatRepository = ref.read(chatRepositoryProvider(ref.read(dioProvider)));
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
       var searchResult = await chatRepository.getChatFavoriteUsers(loginMemberIdx, pageKey);
 
@@ -138,14 +139,14 @@ class ChatFavoriteState extends _$ChatFavoriteState {
   }
 
   void getChatFavorite(int memberIdx) async {
-    ChatRepository chatRepository = ref.read(chatRepositoryProvider);
+    ChatRepository chatRepository = ref.read(chatRepositoryProvider(ref.read(dioProvider)));
 
     state = await chatRepository.getChatFavorite(memberIdx);
     ref.read(chatFavoriteStatusChangedProvider.notifier).state = false;
   }
 
   Future<bool> setChatFavorite(int memberIdx, String chatMemberId) async {
-    ChatRepository chatRepository = ref.read(chatRepositoryProvider);
+    ChatRepository chatRepository = ref.read(chatRepositoryProvider(ref.read(dioProvider)));
 
     bool result = await chatRepository.setChatFavorite(memberIdx, chatMemberId);
 
@@ -155,7 +156,7 @@ class ChatFavoriteState extends _$ChatFavoriteState {
   }
 
   Future<bool> unSetChatFavorite(int memberIdx, String chatMemberId) async {
-    ChatRepository chatRepository = ref.read(chatRepositoryProvider);
+    ChatRepository chatRepository = ref.read(chatRepositoryProvider(ref.read(dioProvider)));
 
     bool result = await chatRepository.unSetChatFavorite(memberIdx, chatMemberId);
 

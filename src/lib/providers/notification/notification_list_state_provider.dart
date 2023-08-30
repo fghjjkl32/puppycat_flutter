@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:matrix/matrix.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -59,7 +60,8 @@ class NotificationListState extends _$NotificationListState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      NotificationRepository repository = ref.read(notificationRepositoryProvider);
+      // NotificationRepository repository = ref.read(notificationRepositoryProvider);
+      NotificationRepository repository = NotificationRepository(dio: ref.read(dioProvider));
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
       int type = _notiType.index;
       var result = await repository.getNotifications(loginMemberIdx, pageKey, type == 0 ? null : type);
@@ -111,42 +113,42 @@ class NotificationListState extends _$NotificationListState {
   }
 
   void setFeedLike(int memberIdx, int contentsIdx) async {
-    final result = await FeedRepository().postLike(memberIdx: memberIdx, contentIdx: contentsIdx);
+    final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(memberIdx: memberIdx, contentIdx: contentsIdx);
     if (result.result) {
       changedLikeState(contentsIdx, true);
     }
   }
 
   void unSetFeedLike(int memberIdx, int contentsIdx) async {
-    final result = await FeedRepository().deleteLike(memberIdx: memberIdx, contentsIdx: contentsIdx);
+    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(memberIdx: memberIdx, contentsIdx: contentsIdx);
     if (result.result) {
       changedLikeState(contentsIdx, false);
     }
   }
 
   void setFollow(int memberIdx, int followIdx) async {
-    final result = await FollowRepository().postFollow(memberIdx: memberIdx, followIdx: followIdx);
+    final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
     if (result.result) {
       changedFollowState(followIdx, true);
     }
   }
 
   void unSetFollow(int memberIdx, int followIdx) async {
-    final result = await FollowRepository().deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+    final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
     if (result.result) {
       changedFollowState(followIdx, false);
     }
   }
 
   void setCommentLike(int memberIdx, int commentIdx) async {
-    final result = await CommentRepository().postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+    final result = await CommentRepository(dio: ref.read(dioProvider)).postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
     if (result.result) {
       changedLikeState(commentIdx, true);
     }
   }
 
   void unSetCommentLike(int memberIdx, int commentIdx) async {
-    final result = await CommentRepository().deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+    final result = await CommentRepository(dio: ref.read(dioProvider)).deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
 
     if (result.result) {
       changedLikeState(commentIdx, false);

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_post_state.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/select_post.dart';
@@ -8,11 +9,11 @@ import 'package:pet_mobile_social_flutter/repositories/my_page/keep_contents/kee
 
 final myPostStateProvider =
     StateNotifierProvider<MyPostStateNotifier, MyPostState>((ref) {
-  return MyPostStateNotifier();
+  return MyPostStateNotifier(ref);
 });
 
 class MyPostStateNotifier extends StateNotifier<MyPostState> {
-  MyPostStateNotifier()
+  MyPostStateNotifier(this.ref)
       : super(MyPostState(
           myPostState: SelectPost(),
           myKeepState: SelectPost(),
@@ -23,12 +24,14 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
   int myKeepMaxPages = 1;
   int myKeepCurrentPage = 1;
 
+  final Ref ref;
+
   initMyPosts([memberIdx, int? initPage]) async {
     myCurrentPage = 1;
 
     final page = initPage ?? state.myPostState.page;
 
-    final lists = await FeedRepository()
+    final lists = await FeedRepository(dio: ref.read(dioProvider))
         .getMyContentList(loginMemberIdx: memberIdx, page: page);
 
     myPostMaxPages = lists.data.params!.pagination!.endPage!;
@@ -115,7 +118,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
         myPostState: state.myPostState.copyWith(
             isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-    final lists = await FeedRepository().getMyContentList(
+    final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(
         loginMemberIdx: memberIdx, page: state.myPostState.page + 1);
 
     if (lists == null) {
@@ -161,7 +164,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
 
   Future<ResponseModel> postKeepContents(
       {required memberIdx, required idxList}) async {
-    final result = await KeepContentsRepository()
+    final result = await KeepContentsRepository(dio: ref.read(dioProvider))
         .postKeepContents(memberIdx: memberIdx, idxList: idxList);
 
     await refreshMyKeeps(memberIdx);
@@ -177,7 +180,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     myKeepCurrentPage = 1;
 
     final page = initPage ?? state.myKeepState.page;
-    final lists = await KeepContentsRepository()
+    final lists = await KeepContentsRepository(dio: ref.read(dioProvider))
         .getKeepContents(memberIdx: memberIdx, page: page);
 
     myKeepMaxPages = lists.data.params!.pagination!.endPage!;
@@ -264,7 +267,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
         myKeepState: state.myKeepState.copyWith(
             isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-    final lists = await KeepContentsRepository().getKeepContents(
+    final lists = await KeepContentsRepository(dio: ref.read(dioProvider)).getKeepContents(
         memberIdx: memberIdx, page: state.myKeepState.page + 1);
 
     if (lists == null) {
@@ -303,7 +306,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
 
   Future<ResponseModel> deleteKeepContents(
       {required memberIdx, required idx}) async {
-    final result = await KeepContentsRepository()
+    final result = await KeepContentsRepository(dio: ref.read(dioProvider))
         .deleteKeepContents(memberIdx: memberIdx, idx: idx);
 
     await refreshMyKeeps(memberIdx);
@@ -337,7 +340,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
   Future<ResponseModel> deleteContents(
       {required memberIdx, required idx}) async {
     final result =
-        await FeedRepository().deleteContents(memberIdx: memberIdx, idx: idx);
+        await FeedRepository(dio: ref.read(dioProvider)).deleteContents(memberIdx: memberIdx, idx: idx);
 
     await refreshMyKeeps(memberIdx);
     await refreshMyPost(memberIdx);

@@ -25,6 +25,11 @@ class CommentData with _$CommentData {
     ChildCommentData? childCommentData,
     @Default(false) bool showAllReplies,
     @Default(0) int loadMoreClickCount,
+    @Default(false) bool isReply,
+    @Default(false) bool isLastDisPlayChild,
+    // @Default(0) int remainChildCount,
+    @Default(1) int pageNumber,
+    @Default(false) bool isDisplayPreviousMore,
   }) = _CommentData;
 
   factory CommentData.fromJson(Map<String, dynamic> json) =>

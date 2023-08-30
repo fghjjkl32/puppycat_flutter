@@ -1,18 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
 final mySaveStateProvider =
     StateNotifierProvider<MySaveStateNotifier, ContentDataListModel>((ref) {
-  return MySaveStateNotifier();
+  return MySaveStateNotifier(ref);
 });
 
 class MySaveStateNotifier extends StateNotifier<ContentDataListModel> {
-  MySaveStateNotifier() : super(const ContentDataListModel());
+  MySaveStateNotifier(this.ref) : super(const ContentDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
+
+  final Ref ref;
+
   initPosts([
     memberIdx,
     int? initPage,
@@ -20,7 +24,7 @@ class MySaveStateNotifier extends StateNotifier<ContentDataListModel> {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await SaveContentsRepository()
+    final lists = await SaveContentsRepository(dio: ref.read(dioProvider))
         .getSaveContents(memberIdx: memberIdx, page: page);
 
     maxPages = lists.data.params!.pagination!.endPage!;
@@ -53,7 +57,7 @@ class MySaveStateNotifier extends StateNotifier<ContentDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await SaveContentsRepository()
+    final lists = await SaveContentsRepository(dio: ref.read(dioProvider))
         .getSaveContents(memberIdx: memberIdx, page: state.page + 1);
 
     if (lists == null) {

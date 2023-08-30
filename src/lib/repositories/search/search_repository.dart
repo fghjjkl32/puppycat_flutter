@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -7,16 +8,21 @@ import 'package:pet_mobile_social_flutter/models/search/search_response_model.da
 import 'package:pet_mobile_social_flutter/services/search/search_service.dart';
 
 class SearchRepository {
-  final SearchService _searchService =
-      SearchService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final SearchService _searchService; // = SearchService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+
+  final Dio dio;
+
+  SearchRepository({
+    required this.dio,
+  }) {
+    _searchService = SearchService(dio, baseUrl: baseUrl);
+  }
 
   Future<SearchResponseModel> getMentionRecommendList({
     required int memberIdx,
     required int page,
   }) async {
-    SearchResponseModel? searchResponseModel = await _searchService
-        .getMentionRecommendList(memberIdx, page)
-        .catchError((Object obj) async {});
+    SearchResponseModel? searchResponseModel = await _searchService.getMentionRecommendList(memberIdx, page).catchError((Object obj) async {});
 
     if (searchResponseModel == null) {
       return SearchResponseModel(
@@ -53,9 +59,7 @@ class SearchRepository {
     required int memberIdx,
     required int page,
   }) async {
-    SearchResponseModel? searchResponseModel = await _searchService
-        .getImageTagRecommendList(memberIdx, page)
-        .catchError((Object obj) async {});
+    SearchResponseModel? searchResponseModel = await _searchService.getImageTagRecommendList(memberIdx, page).catchError((Object obj) async {});
 
     if (searchResponseModel == null) {
       return SearchResponseModel(
@@ -94,9 +98,7 @@ class SearchRepository {
     required String searchWord,
     int limit = 10,
   }) async {
-    SearchResponseModel? searchResponseModel = await _searchService
-        .getNickSearchList(memberIdx, page, searchWord, limit)
-        .catchError((Object obj) async {});
+    SearchResponseModel? searchResponseModel = await _searchService.getNickSearchList(memberIdx, page, searchWord, limit).catchError((Object obj) async {});
 
     if (searchResponseModel == null) {
       return SearchResponseModel(
@@ -135,9 +137,7 @@ class SearchRepository {
     required String searchWord,
     int limit = 10,
   }) async {
-    SearchResponseModel? searchResponseModel = await _searchService
-        .getTagSearchList(memberIdx, page, searchWord, limit)
-        .catchError((Object obj) async {});
+    SearchResponseModel? searchResponseModel = await _searchService.getTagSearchList(memberIdx, page, searchWord, limit).catchError((Object obj) async {});
 
     if (searchResponseModel == null) {
       return SearchResponseModel(
@@ -174,9 +174,7 @@ class SearchRepository {
     required int memberIdx,
     required String searchWord,
   }) async {
-    SearchResponseModel? searchResponseModel = await _searchService
-        .getFullSearchList(memberIdx, searchWord)
-        .catchError((Object obj) async {});
+    SearchResponseModel? searchResponseModel = await _searchService.getFullSearchList(memberIdx, searchWord).catchError((Object obj) async {});
 
     if (searchResponseModel == null) {
       return SearchResponseModel(

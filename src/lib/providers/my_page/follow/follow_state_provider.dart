@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_state.dart';
@@ -11,13 +12,14 @@ import 'package:rxdart/rxdart.dart';
 final followStateProvider =
     StateNotifierProvider<FollowStateNotifier, FollowState>((ref) {
   final loginMemberIdx = ref.watch(userModelProvider)!.idx;
-  return FollowStateNotifier(loginMemberIdx);
+  return FollowStateNotifier(loginMemberIdx, ref);
 });
 
 class FollowStateNotifier extends StateNotifier<FollowState> {
   final int loginMemberIdx;
+  final Ref ref;
 
-  FollowStateNotifier(this.loginMemberIdx)
+  FollowStateNotifier(this.loginMemberIdx, this.ref)
       : super(FollowState(
           followerListState: const FollowDataListModel(),
           followListState: const FollowDataListModel(),
@@ -53,7 +55,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     followerCurrentPage = 1;
 
     final page = initPage ?? state.followerListState.page;
-    final lists = await FollowRepository().getFollowerList(
+    final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowerList(
         memberIdx: memberIdx, page: page, loginMemberIdx: loginMemberIdx);
 
     followerMaxPages = lists.data.params!.pagination!.endPage!;
@@ -97,7 +99,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
           followerListState: state.followerListState.copyWith(
               isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-      final lists = await FollowRepository().getFollowerSearchList(
+      final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowerSearchList(
         memberIdx: memberIdx,
         page: searchFollowerCurrentPage + 1,
         searchWord: followerSearchWord,
@@ -146,7 +148,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
           followerListState: state.followerListState.copyWith(
               isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-      final lists = await FollowRepository().getFollowerList(
+      final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowerList(
         memberIdx: memberIdx,
         page: state.followerListState.page + 1,
         loginMemberIdx: loginMemberIdx,
@@ -185,7 +187,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     followCurrentPage = 1;
 
     final page = initPage ?? state.followListState.page;
-    final lists = await FollowRepository().getFollowList(
+    final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowList(
       memberIdx: memberIdx,
       page: page,
       loginMemberIdx: loginMemberIdx,
@@ -232,7 +234,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
           followListState: state.followListState.copyWith(
               isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-      final lists = await FollowRepository().getFollowSearchList(
+      final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowSearchList(
         memberIdx: memberIdx,
         page: searchFollowCurrentPage + 1,
         searchWord: followSearchWord,
@@ -280,7 +282,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
           followListState: state.followListState.copyWith(
               isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-      final lists = await FollowRepository().getFollowList(
+      final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowList(
         memberIdx: memberIdx,
         page: state.followListState.page + 1,
         loginMemberIdx: loginMemberIdx,
@@ -322,7 +324,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     isFollowerSearching = true;
     searchFollowerCurrentPage = 1;
 
-    final lists = await FollowRepository().getFollowerSearchList(
+    final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowerSearchList(
       memberIdx: userMemberIdx,
       page: 1,
       searchWord: searchWord,
@@ -346,7 +348,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     isFollowSearching = true;
     searchFollowCurrentPage = 1;
 
-    final lists = await FollowRepository().getFollowSearchList(
+    final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowSearchList(
       memberIdx: userMemberIdx,
       page: 1,
       searchWord: searchWord,
@@ -369,7 +371,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required memberIdx,
     required followIdx,
   }) async {
-    final result = await FollowRepository()
+    final result = await FollowRepository(dio: ref.read(dioProvider))
         .postFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     await refreshFollowList(memberIdx);
@@ -382,7 +384,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required memberIdx,
     required followIdx,
   }) async {
-    final result = await FollowRepository()
+    final result = await FollowRepository(dio: ref.read(dioProvider))
         .deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     await refreshFollowList(memberIdx);
@@ -395,7 +397,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required memberIdx,
     required followIdx,
   }) async {
-    final result = await FollowRepository()
+    final result = await FollowRepository(dio: ref.read(dioProvider))
         .deleteFollower(memberIdx: memberIdx, followIdx: followIdx);
 
     await refreshFollowList(memberIdx);

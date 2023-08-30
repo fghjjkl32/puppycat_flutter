@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_favorite_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
@@ -30,7 +31,7 @@ class ChatUserSearchState extends _$ChatUserSearchState {
         return;
       }
 
-      var searchResult = await SearchRepository().getNickSearchList(
+      var searchResult = await SearchRepository(dio: ref.read(dioProvider)).getNickSearchList(
           memberIdx: _loginMemberIdx,
           page: pageKey,
           searchWord: _searchWord,

@@ -44,6 +44,7 @@ abstract class CommentService {
     @Path("contentsIdx") required int contentsIdx,
     @Path("commentIdx") required int commentIdx,
     @Path("memberIdx") required int memberIdx,
+    @Query('parentIdx') required int parentIdx,
   });
 
   @POST('/comment/{commentIdx}/like')

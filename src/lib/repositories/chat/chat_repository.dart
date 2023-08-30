@@ -15,23 +15,26 @@ import 'package:pet_mobile_social_flutter/models/policy/policy_response_model.da
 import 'package:pet_mobile_social_flutter/services/chat/chat_service.dart';
 import 'package:pet_mobile_social_flutter/services/policy/policy_service.dart';
 
-final chatRepositoryProvider =
-    StateProvider<ChatRepository>((ref) => ChatRepository());
+final chatRepositoryProvider = StateProvider.family<ChatRepository, Dio>((ref, dio) => ChatRepository(dio: dio));
 
 class ChatRepository {
-  final ChatService _chatService =
-      ChatService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final ChatService _chatService; // = ChatService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
-  Future<List<ChatFavoriteModel>> getChatFavorite(int memberIdx,
-      [int page = 1, int limit = 10]) async {
+  final Dio dio;
+
+  ChatRepository({
+    required this.dio,
+  }) {
+    _chatService = ChatService(dio, baseUrl: baseUrl);
+  }
+
+  Future<List<ChatFavoriteModel>> getChatFavorite(int memberIdx, [int page = 1, int limit = 10]) async {
     if (memberIdx <= 0) {
       throw "Invalid MemberIdx";
     }
 
     bool isError = false;
-    var chatFavoriteResponseModel = await _chatService
-        .getChatFavorite(memberIdx, page, limit)
-        .catchError((Object obj) async {
+    var chatFavoriteResponseModel = await _chatService.getChatFavorite(memberIdx, page, limit).catchError((Object obj) async {
       (ResponseModel?, bool) errorResult = await errorHandler(obj);
       var responseModel = errorResult.$1;
       isError = errorResult.$2;
@@ -52,16 +55,13 @@ class ChatRepository {
     return chatFavoriteResponseModel.data.list;
   }
 
-  Future<ChatFavoriteDataListModel> getChatFavoriteUsers(int memberIdx,
-      [int page = 1, int limit = 10]) async {
+  Future<ChatFavoriteDataListModel> getChatFavoriteUsers(int memberIdx, [int page = 1, int limit = 10]) async {
     if (memberIdx <= 0) {
       throw "Invalid MemberIdx";
     }
 
     bool isError = false;
-    ChatFavoriteResponseModel? chatFavoriteResponseModel = await _chatService
-        .getChatFavorite(memberIdx, page, limit)
-        .catchError((Object obj) async {
+    ChatFavoriteResponseModel? chatFavoriteResponseModel = await _chatService.getChatFavorite(memberIdx, page, limit).catchError((Object obj) async {
       isError = true;
       return ChatFavoriteResponseModel(
         result: false,
@@ -123,8 +123,7 @@ class ChatRepository {
     return chatFavoriteResponseModel.data;
   }
 
-  Future<bool> setChatFavorite(int memberIdx, String chatMemberId,
-      [int type = 1]) async {
+  Future<bool> setChatFavorite(int memberIdx, String chatMemberId, [int type = 1]) async {
     if (memberIdx <= 0) {
       throw "Invalid MemberIdx";
     }
@@ -146,8 +145,7 @@ class ChatRepository {
     return true;
   }
 
-  Future<bool> unSetChatFavorite(int memberIdx, String chatMemberId,
-      [int type = 1]) async {
+  Future<bool> unSetChatFavorite(int memberIdx, String chatMemberId, [int type = 1]) async {
     if (memberIdx <= 0) {
       throw "Invalid MemberIdx";
     }
@@ -158,8 +156,7 @@ class ChatRepository {
       "chatMemberId": chatMemberId,
     };
 
-    ResponseModel? responseModel =
-        await _chatService.unSetChatFavorite(queries);
+    ResponseModel? responseModel = await _chatService.unSetChatFavorite(queries);
 
     if (responseModel == null) {
       ///TODO

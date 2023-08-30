@@ -43,8 +43,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
   bool _isFavoriteExpanded = true;
   bool _isFollowExpanded = true;
 
-  late PagingController<int, ChatFavoriteModel>
-      _searchPagingController; // = PagingController(firstPageKey: 1);
+  late PagingController<int, ChatFavoriteModel> _searchPagingController; // = PagingController(firstPageKey: 1);
   late PagingController<int, ChatFavoriteModel> _favoriteListPagingController;
   late PagingController<int, ChatFavoriteModel> _followListPagingController;
 
@@ -68,9 +67,8 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
   }
 
   void _onTabListItem(String chatMemberId) {
-    ref
-        .read(chatUserSearchStateProvider.notifier)
-        .searchUser(userMemberIdx, '');
+    print('chatMemberId $chatMemberId');
+    ref.read(chatUserSearchStateProvider.notifier).searchUser(userMemberIdx, '');
     context.pop(chatMemberId);
   }
 
@@ -93,8 +91,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
             Text(
               text,
               textAlign: TextAlign.center,
-              style: kBody13RegularStyle.copyWith(
-                  color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+              style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
             ),
           ],
         ),
@@ -128,13 +125,9 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
               onTab: _onTabListItem,
               onTabFavorite: () {
                 if (item.favoriteState == 1) {
-                  ref
-                      .read(chatUserSearchStateProvider.notifier)
-                      .unSetFavorite(userMemberIdx, item.chatMemberId);
+                  ref.read(chatUserSearchStateProvider.notifier).unSetFavorite(userMemberIdx, item.chatMemberId);
                 } else {
-                  ref
-                      .read(chatUserSearchStateProvider.notifier)
-                      .setFavorite(userMemberIdx, item.chatMemberId);
+                  ref.read(chatUserSearchStateProvider.notifier).setFavorite(userMemberIdx, item.chatMemberId);
                 }
               },
             );
@@ -166,9 +159,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
             tempIdx: index.toString(),
             onTab: _onTabListItem,
             onTabFavorite: () {
-              ref
-                  .read(chatFavoriteUserStateProvider.notifier)
-                  .unSetFavorite(userMemberIdx, item.chatMemberId);
+              ref.read(chatFavoriteUserStateProvider.notifier).unSetFavorite(userMemberIdx, item.chatMemberId);
             },
           );
         },
@@ -198,13 +189,9 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
             onTab: _onTabListItem,
             onTabFavorite: () {
               if (item.favoriteState == 1) {
-                ref
-                    .read(chatFollowUserStateProvider.notifier)
-                    .unSetFavorite(userMemberIdx, item.chatMemberId);
+                ref.read(chatFollowUserStateProvider.notifier).unSetFavorite(userMemberIdx, item.chatMemberId);
               } else {
-                ref
-                    .read(chatFollowUserStateProvider.notifier)
-                    .setFavorite(userMemberIdx, item.chatMemberId);
+                ref.read(chatFollowUserStateProvider.notifier).setFavorite(userMemberIdx, item.chatMemberId);
               }
             },
           );
@@ -220,85 +207,77 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
     bool isFollowEmpty = ref.watch(chatFollowListEmptyProvider);
     bool isViewEmptyPage = isFavoriteEmpty && isFollowEmpty;
 
-    return isViewEmptyPage
-        ? Builder(builder: (context) {
-            ref
-                .read(chatFavoriteUserStateProvider)
-                .notifyPageRequestListeners(1);
-            ref.read(chatFollowUserStateProvider).notifyPageRequestListeners(1);
-            return _buildNoItemsFound('메시지.검색해서 메시지 전송 상대를 찾아보세요'.tr());
-          })
-        : CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: ListTile(
-                  dense: true,
-                  minVerticalPadding: 0,
-                  visualDensity:
-                      const VisualDensity(horizontal: 0, vertical: -4),
-                  title: Text(
-                    '메시지.즐겨찾기'.tr(),
-                    style: kTitle16ExtraBoldStyle.copyWith(
-                        color: kTextTitleColor, height: 1.2),
+    return isViewEmptyPage ? Builder(builder: (context) {
+      ref.read(chatFavoriteUserStateProvider).notifyPageRequestListeners(1);
+      ref.read(chatFollowUserStateProvider).notifyPageRequestListeners(1);
+      return _buildNoItemsFound('메시지.검색해서 메시지 전송 상대를 찾아보세요'.tr());
+    }) : CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: ListTile(
+            dense: true,
+            minVerticalPadding: 0,
+            visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+            title: Text(
+              '메시지.즐겨찾기'.tr(),
+              style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2),
+            ),
+            onTap: () {
+              setState(() {
+                _isFavoriteExpanded = !_isFavoriteExpanded;
+              });
+            },
+            contentPadding: const EdgeInsets.all(0),
+            trailing: _isFavoriteExpanded
+                ? const ImageIcon(
+                    AssetImage('assets/image/chat/icon_up.png'),
+                    size: 20,
+                  )
+                : const ImageIcon(
+                    AssetImage('assets/image/chat/icon_down.png'),
+                    size: 20,
                   ),
-                  onTap: () {
-                    setState(() {
-                      _isFavoriteExpanded = !_isFavoriteExpanded;
-                    });
-                  },
-                  contentPadding: const EdgeInsets.all(0),
-                  trailing: _isFavoriteExpanded
-                      ? const ImageIcon(
-                          AssetImage('assets/image/chat/icon_up.png'),
-                          size: 20,
-                        )
-                      : const ImageIcon(
-                          AssetImage('assets/image/chat/icon_down.png'),
-                          size: 20,
-                        ),
-                ),
-              ),
-              if (_isFavoriteExpanded) _buildFavoriteUsers(),
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                  child: Divider(
-                    height: 1,
-                    color: kNeutralColor300,
+          ),
+        ),
+        if (_isFavoriteExpanded) _buildFavoriteUsers(),
+        const SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+            child: Divider(
+              height: 1,
+              color: kNeutralColor300,
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: ListTile(
+            dense: true,
+            minVerticalPadding: 0,
+            visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+            title: Text(
+              '팔로잉'.tr(),
+              style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2),
+            ),
+            onTap: () {
+              setState(() {
+                _isFollowExpanded = !_isFollowExpanded;
+              });
+            },
+            contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
+            trailing: _isFollowExpanded
+                ? const ImageIcon(
+                    AssetImage('assets/image/chat/icon_up.png'),
+                    size: 20,
+                  )
+                : const ImageIcon(
+                    AssetImage('assets/image/chat/icon_down.png'),
+                    size: 20,
                   ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: ListTile(
-                  dense: true,
-                  minVerticalPadding: 0,
-                  visualDensity:
-                      const VisualDensity(horizontal: 0, vertical: -4),
-                  title: Text(
-                    '팔로잉'.tr(),
-                    style: kTitle16ExtraBoldStyle.copyWith(
-                        color: kTextTitleColor, height: 1.2),
-                  ),
-                  onTap: () {
-                    setState(() {
-                      _isFollowExpanded = !_isFollowExpanded;
-                    });
-                  },
-                  contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                  trailing: _isFollowExpanded
-                      ? const ImageIcon(
-                          AssetImage('assets/image/chat/icon_up.png'),
-                          size: 20,
-                        )
-                      : const ImageIcon(
-                          AssetImage('assets/image/chat/icon_down.png'),
-                          size: 20,
-                        ),
-                ),
-              ),
-              if (_isFollowExpanded) _buildFollowUsers(),
-            ],
-          );
+          ),
+        ),
+        if (_isFollowExpanded) _buildFollowUsers(),
+      ],
+    );
   }
 
   void _search(String keyword) {
@@ -317,9 +296,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
     // _searchWord = keyword;
     _searchDebounceTimer = Timer(const Duration(milliseconds: 500), () {
       setState(() {});
-      ref
-          .read(chatUserSearchStateProvider.notifier)
-          .searchUser(userMemberIdx, keyword);
+      ref.read(chatUserSearchStateProvider.notifier).searchUser(userMemberIdx, keyword);
     });
   }
 
@@ -344,8 +321,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: kNeutralColor200,
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                 border: OutlineInputBorder(
                   borderSide: BorderSide.none,
                   borderRadius: BorderRadius.circular(100.0),
@@ -368,11 +344,9 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
                 // ignore: invalid_use_of_protected_member
                 suffixIcon: searchController.text.isEmpty
                     ? const Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 8.0),
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                         child: ImageIcon(
-                          AssetImage(
-                              'assets/image/chat/icon_search_medium.png'),
+                          AssetImage('assets/image/chat/icon_search_medium.png'),
                           size: 20,
                           color: kTextTitleColor,
                         ),
@@ -384,19 +358,16 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
                           });
                         },
                         child: const Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 8.0),
+                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                           child: ImageIcon(
-                            AssetImage(
-                                'assets/image/chat/icon_close_large.png'),
+                            AssetImage('assets/image/chat/icon_close_large.png'),
                             size: 20,
                             color: kTextTitleColor,
                           ),
                         ),
                       ),
                 hintText: "메시지.닉네임을 검색해주세요".tr(),
-                hintStyle:
-                    kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
               ),
             ),
           ),
@@ -417,9 +388,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        ref
-            .read(chatUserSearchStateProvider.notifier)
-            .searchUser(userMemberIdx, '');
+        ref.read(chatUserSearchStateProvider.notifier).searchUser(userMemberIdx, '');
         context.pop();
 
         return false;
@@ -433,15 +402,10 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
             ),
             leading: IconButton(
               onPressed: () {
-                ref
-                    .read(chatUserSearchStateProvider.notifier)
-                    .searchUser(userMemberIdx, '');
+                ref.read(chatUserSearchStateProvider.notifier).searchUser(userMemberIdx, '');
                 context.pop();
               },
-              icon: const Icon(
-                Puppycat_social.icon_back,
-                size: 40,
-              ),
+              icon: const Icon(Icons.arrow_back),
             ),
           ),
           body: _buildBody(),

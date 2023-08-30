@@ -1,18 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/like_contents/like_contents_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
 final myLikeStateProvider =
     StateNotifierProvider<MyLikeStateNotifier, ContentDataListModel>((ref) {
-  return MyLikeStateNotifier();
+  return MyLikeStateNotifier(ref);
 });
 
 class MyLikeStateNotifier extends StateNotifier<ContentDataListModel> {
-  MyLikeStateNotifier() : super(const ContentDataListModel());
+  MyLikeStateNotifier(this.ref ) : super(const ContentDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
+
+  final Ref ref;
+
   initPosts([
     memberIdx,
     int? initPage,
@@ -20,7 +24,7 @@ class MyLikeStateNotifier extends StateNotifier<ContentDataListModel> {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await LikeContentsRepository()
+    final lists = await LikeContentsRepository(dio: ref.read(dioProvider))
         .getLikeContents(memberIdx: memberIdx, page: page);
 
     maxPages = lists.data.params!.pagination!.endPage!;
@@ -53,7 +57,7 @@ class MyLikeStateNotifier extends StateNotifier<ContentDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await LikeContentsRepository()
+    final lists = await LikeContentsRepository(dio: ref.read(dioProvider))
         .getLikeContents(memberIdx: memberIdx, page: state.page + 1);
 
     if (lists == null) {

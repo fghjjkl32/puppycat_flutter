@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_state.dart';
@@ -13,13 +14,14 @@ import 'package:rxdart/rxdart.dart';
 final blockStateProvider =
     StateNotifierProvider<BlockStateNotifier, SearchDataListModel>((ref) {
   final loginMemberIdx = ref.watch(userModelProvider)!.idx;
-  return BlockStateNotifier(loginMemberIdx);
+  return BlockStateNotifier(loginMemberIdx, ref);
 });
 
 class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
   final int loginMemberIdx;
+  final Ref ref;
 
-  BlockStateNotifier(this.loginMemberIdx) : super(const SearchDataListModel()) {
+  BlockStateNotifier(this.loginMemberIdx, this.ref) : super(const SearchDataListModel()) {
     blockSearchQuery.stream
         .debounceTime(const Duration(milliseconds: 500))
         .listen((query) async {
@@ -37,11 +39,12 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
   int searchBlockMaxPages = 1;
   int searchBlockCurrentPage = 1;
 
+
   initBlockList([memberIdx, int? initPage]) async {
     blockCurrentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await BlockRepository().getBlockList(
+    final lists = await BlockRepository(dio: ref.read(dioProvider)).getBlockList(
       memberIdx: memberIdx,
       page: page,
     );
@@ -79,7 +82,7 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
       state = state.copyWith(
           isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-      final lists = await BlockRepository().getBlockSearchList(
+      final lists = await BlockRepository(dio: ref.read(dioProvider)).getBlockSearchList(
         memberIdx: memberIdx,
         page: searchBlockCurrentPage + 1,
         searchWord: blockSearchWord,
@@ -118,7 +121,7 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
       state = state.copyWith(
           isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-      final lists = await BlockRepository().getBlockList(
+      final lists = await BlockRepository(dio: ref.read(dioProvider)).getBlockList(
         memberIdx: memberIdx,
         page: state.page + 1,
       );
@@ -152,7 +155,7 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
     isBlockSearching = true;
     searchBlockCurrentPage = 1;
 
-    final lists = await BlockRepository().getBlockSearchList(
+    final lists = await BlockRepository(dio: ref.read(dioProvider)).getBlockSearchList(
       memberIdx: userMemberIdx,
       page: 1,
       searchWord: searchWord,
@@ -172,7 +175,7 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
     required memberIdx,
     required blockIdx,
   }) async {
-    final result = await BlockRepository().deleteBlock(
+    final result = await BlockRepository(dio: ref.read(dioProvider)).deleteBlock(
       memberIdx: memberIdx,
       blockIdx: blockIdx,
     );

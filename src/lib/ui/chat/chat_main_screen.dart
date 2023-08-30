@@ -112,6 +112,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                         chatFavoriteList[index].chatMemberId!,
                         enableEncryption: false);
 
+                    print('roomId $roomId');
                     if (await matrixController.checkHideRoom(roomId)) {
                       matrixController.showRoom(roomId);
                     }
@@ -428,6 +429,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
           IconButton(
             onPressed: () async {
               context.push('/chatMain/chatSearch').then((value) async {
+                print('value $value');
                 if (value == null) {
                   return;
                 }
@@ -437,6 +439,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                   matrixController.showRoom(value.toString());
                 }
 
+                print('value.toString() ${value.toString()}');
                 var roomId = await _chatController.client
                     .startDirectChat(value.toString(), enableEncryption: false);
                 Room? room = _chatController.client.rooms

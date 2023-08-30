@@ -35,6 +35,7 @@ class ChatSearchListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        print('chatMemberId 2 $chatMemberId');
         if (onTab != null) {
           onTab!(chatMemberId);
         }
