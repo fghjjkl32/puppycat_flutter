@@ -107,13 +107,7 @@ final FeedResponseModel feedNullResponseModel = FeedResponseModel(
   ),
   message: "",
 );
-List<InlineSpan> replaceMentionsWithNicknamesInContent(
-    String content,
-    List<MentionListData> mentionList,
-    BuildContext context,
-    TextStyle tagStyle,
-    WidgetRef ref,
-    int oldMemberIdx) {
+List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int oldMemberIdx) {
   List<InlineSpan> spans = [];
 
   // Combining both mention and hashtag patterns
@@ -147,10 +141,9 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(
                     )
                   : mention.memberState == 0
                       ? context.push("/home/myPage/userUnknown")
-                      : context.push(
-                          "/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}/${oldMemberIdx}");
+                      : context.push("/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}/${oldMemberIdx}");
             },
-            child: Text('@' + (mention.nick ?? ''), style: tagStyle),
+            child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
           ),
         ));
       } else {
@@ -163,8 +156,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(
           onTap: () {
             context.push("/home/search/$hashtagMatched/$oldMemberIdx");
           },
-          child: Text('#' + hashtagMatched,
-              style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),
+          child: Text('#' + hashtagMatched, style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),
         ),
       ));
     }
@@ -178,14 +170,14 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(
   return spans;
 }
 
-String replaceMentionsWithNicknamesInContentAsString(
-    String content, List<MentionListData> mentionList) {
+String replaceMentionsWithNicknamesInContentAsString(String content, List<MentionListData> mentionList) {
   RegExp pattern = RegExp(r"\[@\[(.*?)\]\]");
   String result = content.replaceAllMapped(pattern, (match) {
     String matchedString = match.group(1) ?? "";
 
     if (mentionList.any((mention) => mention.uuid == matchedString)) {
-      return '@' + mentionList.firstWhere((m) => m.uuid == matchedString).nick!;
+      var mention = mentionList.firstWhere((m) => m.uuid == matchedString);
+      return '@' + (mention.memberState == 0 ? "(알 수 없음)" : mention.nick!);
     } else {
       return '@' + matchedString;
     }
@@ -199,14 +191,14 @@ String replaceMentionsWithNicknamesInContentAsString(
   return result;
 }
 
-String replaceMentionsWithNicknamesInContentAsTextFieldString(
-    String content, List<MentionListData> mentionList) {
+String replaceMentionsWithNicknamesInContentAsTextFieldString(String content, List<MentionListData> mentionList) {
   RegExp pattern = RegExp(r"\[@\[(.*?)\]\]");
   String result = content.replaceAllMapped(pattern, (match) {
     String matchedString = match.group(1) ?? "";
 
     if (mentionList.any((mention) => mention.uuid == matchedString)) {
-      return '@' + mentionList.firstWhere((m) => m.uuid == matchedString).nick!;
+      var mention = mentionList.firstWhere((m) => m.uuid == matchedString);
+      return '@' + (mention.memberState == 0 ? "(알 수 없음)" : mention.nick!);
     } else {
       return '@' + matchedString;
     }

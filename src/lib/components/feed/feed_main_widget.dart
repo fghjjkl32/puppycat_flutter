@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/feed/feed_best_post_widget.dart';
+import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_bottom_icon_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_image_main_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_title_widget.dart';
@@ -9,6 +11,8 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/popular_hour_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 
 class FeedMainWidget extends ConsumerWidget {
   const FeedMainWidget(
@@ -20,6 +24,8 @@ class FeedMainWidget extends ConsumerWidget {
       required this.firstTitle,
       required this.secondTitle,
       required this.imageDomain,
+      required this.index,
+      required this.feedType,
       Key? key})
       : super(key: key);
 
@@ -31,19 +37,68 @@ class FeedMainWidget extends ConsumerWidget {
   final String firstTitle;
   final String secondTitle;
   final String imageDomain;
+  final int index;
+  final String feedType;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
-        context.push(
-            "/home/myPage/detail/$firstTitle/$secondTitle/${feedData.memberIdx}/${feedData.idx}/$contentType");
+        context.push("/home/myPage/detail/$firstTitle/$secondTitle/${feedData.memberIdx}/${feedData.idx}/$contentType");
       },
       child: Material(
         child: Container(
           color: kNeutralColor100,
           child: Column(
             children: [
+              if (index == 0 && feedType == "popular")
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h),
+                      child: Text(
+                        "인기있는 펫 집사들",
+                        style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                      ),
+                    ),
+                    FeedFollowWidget(
+                      popularUserListData: ref.watch(popularUserListStateProvider).list,
+                      oldMemberIdx: 0,
+                    ),
+                  ],
+                ),
+              if (index == 0 && feedType == "popular")
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(12.0.h),
+                      child: const Divider(),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h),
+                      child: Text(
+                        "인기 게시글",
+                        style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                      ),
+                    ),
+                  ],
+                ),
+              if (index == 4 && feedType == "recent")
+                FeedFollowWidget(
+                  popularUserListData: ref.watch(popularUserListStateProvider).list,
+                  oldMemberIdx: 0,
+                ),
+              if (index != 0 && index % 10 == 0 && feedType == "recent")
+                FeedBestPostWidget(
+                  feedData: ref.watch(popularHourFeedStateProvider).list,
+                ),
+              index == 0
+                  ? SizedBox(
+                      height: 20,
+                    )
+                  : Container(),
               FeedTitleWidget(
                 profileImage: profileImage,
                 userName: userName,
@@ -66,8 +121,7 @@ class FeedMainWidget extends ConsumerWidget {
                 padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
-                    final style =
-                        kBody13RegularStyle.copyWith(color: kTextTitleColor);
+                    final style = kBody13RegularStyle.copyWith(color: kTextTitleColor);
                     final double maxWidth = constraints.maxWidth * 0.7;
 
                     final TextPainter textPainter = TextPainter(
@@ -88,13 +142,11 @@ class FeedMainWidget extends ConsumerWidget {
                               alignment: Alignment.centerLeft,
                               child: RichText(
                                 text: TextSpan(
-                                  children:
-                                      replaceMentionsWithNicknamesInContent(
+                                  children: replaceMentionsWithNicknamesInContent(
                                     feedData.contents!,
                                     feedData.mentionList!,
                                     context,
-                                    kBody13RegularStyle.copyWith(
-                                        color: kSecondaryColor),
+                                    kBody13RegularStyle.copyWith(color: kSecondaryColor),
                                     ref,
                                     memberIdx ?? 0,
                                   ),
@@ -105,9 +157,7 @@ class FeedMainWidget extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          SizedBox(
-                              width: 8.0
-                                  .w), // Optional spacing between the text and "더보기"
+                          SizedBox(width: 8.0.w),
                           Text(
                             "더보기",
                             style: kBody13RegularStyle.copyWith(
@@ -125,8 +175,7 @@ class FeedMainWidget extends ConsumerWidget {
                               feedData.contents!,
                               feedData.mentionList!,
                               context,
-                              kBody13RegularStyle.copyWith(
-                                  color: kSecondaryColor),
+                              kBody13RegularStyle.copyWith(color: kSecondaryColor),
                               ref,
                               memberIdx ?? 0,
                             ),

@@ -7,7 +7,7 @@ import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -54,12 +54,10 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
       onTap: () {
         ref.read(userModelProvider)!.idx == widget.followerIdx
             ? context.push("/home/myPage")
-            : context.push(
-                "/home/myPage/followList/${widget.followerIdx}/userPage/${widget.userName}/${widget.followerIdx}/${widget.oldMemberIdx}");
+            : context.push("/home/myPage/followList/${widget.followerIdx}/userPage/${widget.userName}/${widget.followerIdx}/${widget.oldMemberIdx}");
       },
       child: Padding(
-        padding:
-            EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,8 +68,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                   padding: EdgeInsets.only(
                     right: 10.w,
                   ),
-                  child:
-                      getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
+                  child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,8 +90,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             : Container(),
                         Text(
                           widget.userName,
-                          style:
-                              kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                         ),
                       ],
                     ),
@@ -103,39 +99,37 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                     ),
                     Text(
                       widget.content,
-                      style:
-                          kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                     ),
                   ],
                 ),
               ],
             ),
-            ref.read(userModelProvider)!.idx == widget.followerIdx
+            ref.read(userModelProvider)?.idx == widget.followerIdx
                 ? Container()
                 : !isFollowing
                     ? GestureDetector(
                         onTap: () async {
-                          setState(() {
-                            isFollowing = true;
-                          });
-                          if (widget.contentType == null) {
-                            await ref
-                                .watch(
-                                    contentLikeUserListStateProvider.notifier)
-                                .postFollow(
-                                  memberIdx: ref.read(userModelProvider)!.idx,
-                                  followIdx: widget.followerIdx,
-                                  contentsIdx: widget.contentsIdx,
-                                );
+                          if (ref.read(userModelProvider) == null) {
+                            context.pushReplacement("/loginScreen");
                           } else {
-                            ref
-                                .watch(feedDetailStateProvider.notifier)
-                                .postFollow(
-                                  memberIdx: ref.read(userModelProvider)!.idx,
-                                  followIdx: widget.followerIdx,
-                                  contentsIdx: widget.contentsIdx,
-                                  contentType: widget.contentType,
-                                );
+                            setState(() {
+                              isFollowing = true;
+                            });
+                            if (widget.contentType == null) {
+                              await ref.watch(contentLikeUserListStateProvider.notifier).postFollow(
+                                    memberIdx: ref.read(userModelProvider)!.idx,
+                                    followIdx: widget.followerIdx,
+                                    contentsIdx: widget.contentsIdx,
+                                  );
+                            } else {
+                              ref.watch(feedListStateProvider.notifier).postFollow(
+                                    memberIdx: ref.read(userModelProvider)!.idx,
+                                    followIdx: widget.followerIdx,
+                                    contentsIdx: widget.contentsIdx,
+                                    contentType: widget.contentType,
+                                  );
+                            }
                           }
                         },
                         child: Container(
@@ -150,8 +144,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                           child: Center(
                             child: Text(
                               "팔로우",
-                              style: kButton12BoldStyle.copyWith(
-                                  color: kNeutralColor100),
+                              style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
                             ),
                           ),
                         ),
@@ -163,18 +156,13 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                           });
 
                           if (widget.contentType == null) {
-                            await ref
-                                .watch(
-                                    contentLikeUserListStateProvider.notifier)
-                                .deleteFollow(
+                            await ref.watch(contentLikeUserListStateProvider.notifier).deleteFollow(
                                   memberIdx: ref.read(userModelProvider)!.idx,
                                   followIdx: widget.followerIdx,
                                   contentsIdx: widget.contentsIdx,
                                 );
                           } else {
-                            ref
-                                .watch(feedDetailStateProvider.notifier)
-                                .deleteFollow(
+                            ref.watch(feedListStateProvider.notifier).deleteFollow(
                                   memberIdx: ref.read(userModelProvider)!.idx,
                                   followIdx: widget.followerIdx,
                                   contentsIdx: widget.contentsIdx,
@@ -194,8 +182,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                           child: Center(
                             child: Text(
                               "팔로잉",
-                              style: kButton12BoldStyle.copyWith(
-                                  color: kTextBodyColor),
+                              style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
                             ),
                           ),
                         ),

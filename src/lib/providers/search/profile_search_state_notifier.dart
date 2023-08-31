@@ -7,22 +7,17 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-final profileSearchStateProvider =
-    StateNotifierProvider<ProfileSearchStateNotifier, SearchDataListModel>(
-        (ref) {
-  final loginMemberIdx = ref.watch(userModelProvider)!.idx;
+final profileSearchStateProvider = StateNotifierProvider<ProfileSearchStateNotifier, SearchDataListModel>((ref) {
+  final loginMemberIdx = ref.watch(userModelProvider)?.idx;
   return ProfileSearchStateNotifier(loginMemberIdx, ref);
 });
 
 class ProfileSearchStateNotifier extends StateNotifier<SearchDataListModel> {
-  final int loginMemberIdx;
+  final int? loginMemberIdx;
   final Ref ref;
 
-  ProfileSearchStateNotifier(this.loginMemberIdx, this.ref)
-      : super(const SearchDataListModel()) {
-    searchQuery.stream
-        .debounceTime(const Duration(milliseconds: 500))
-        .listen((query) async {
+  ProfileSearchStateNotifier(this.loginMemberIdx, this.ref) : super(const SearchDataListModel()) {
+    searchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
       await searchTagList(query);
     });
   }
@@ -73,8 +68,7 @@ class ProfileSearchStateNotifier extends StateNotifier<SearchDataListModel> {
     }
     bf.write(' success');
 
-    state = state.copyWith(
-        isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+    state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
     final lists = await SearchRepository(dio: ref.read(dioProvider)).getNickSearchList(
       memberIdx: memberIdx,

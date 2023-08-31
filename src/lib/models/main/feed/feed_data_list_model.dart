@@ -9,7 +9,7 @@ part 'feed_data_list_model.g.dart';
 class FeedDataListModel with _$FeedDataListModel {
   const factory FeedDataListModel({
     @Default([]) List<FeedData> list,
-    List<FeedMemberInfoListData>? memberInfo,
+    List<MemberInfoListData>? memberInfo,
     String? imgDomain,
     ParamsModel? params,
     @Default(1) int page,
@@ -19,6 +19,5 @@ class FeedDataListModel with _$FeedDataListModel {
     @Default(0) int totalCount,
   }) = _FeedDataListModel;
 
-  factory FeedDataListModel.fromJson(Map<String, dynamic> json) =>
-      _$FeedDataListModelFromJson(json);
+  factory FeedDataListModel.fromJson(Map<String, dynamic> json) => _$FeedDataListModelFromJson(json);
 }

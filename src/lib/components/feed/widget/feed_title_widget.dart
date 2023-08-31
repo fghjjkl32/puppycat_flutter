@@ -14,7 +14,7 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_edit_screen.dart';
@@ -157,8 +157,8 @@ class FeedTitleWidget extends ConsumerWidget {
                                         context.pop();
 
                                         final result = await ref
-                                            .watch(feedDetailStateProvider
-                                                .notifier)
+                                            .watch(
+                                                feedListStateProvider.notifier)
                                             .deleteOneKeepContents(
                                               loginMemberIdx: ref
                                                   .read(userModelProvider)!
@@ -187,8 +187,8 @@ class FeedTitleWidget extends ConsumerWidget {
                                         context.pop();
 
                                         final result = await ref
-                                            .watch(feedDetailStateProvider
-                                                .notifier)
+                                            .watch(
+                                                feedListStateProvider.notifier)
                                             .postKeepContents(
                                               loginMemberIdx: ref
                                                   .read(userModelProvider)!
@@ -236,7 +236,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                   context.pop();
 
                                   final result = await ref
-                                      .watch(feedDetailStateProvider.notifier)
+                                      .watch(feedListStateProvider.notifier)
                                       .deleteOneContents(
                                         loginMemberIdx:
                                             ref.read(userModelProvider)!.idx,
@@ -274,7 +274,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                     context.pop();
 
                                     final result = await ref
-                                        .watch(feedDetailStateProvider.notifier)
+                                        .watch(feedListStateProvider.notifier)
                                         .postHide(
                                           loginMemberIdx:
                                               ref.read(userModelProvider)!.idx,
@@ -291,7 +291,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                         buttonText: "숨기기 취소",
                                         buttonOnTap: () async {
                                           final result = await ref
-                                              .watch(feedDetailStateProvider
+                                              .watch(feedListStateProvider
                                                   .notifier)
                                               .deleteHide(
                                                 loginMemberIdx: ref
@@ -327,8 +327,8 @@ class FeedTitleWidget extends ConsumerWidget {
                                         context.pop();
 
                                         ref
-                                            .watch(feedDetailStateProvider
-                                                .notifier)
+                                            .watch(
+                                                feedListStateProvider.notifier)
                                             .deleteFollow(
                                               memberIdx: ref
                                                   .read(userModelProvider)!
@@ -399,7 +399,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                               context.pop();
 
                                               final result = await ref
-                                                  .read(feedDetailStateProvider
+                                                  .read(feedListStateProvider
                                                       .notifier)
                                                   .postBlock(
                                                     memberIdx: ref

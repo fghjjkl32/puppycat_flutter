@@ -66,7 +66,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 ),
                 title: '알림',
                 onPressed: () {
-                  context.push("/home/myPage/setting/settingAlarm");
+                  ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingAlarm");
                 },
               ),
               Padding(
@@ -80,7 +80,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 ),
                 title: '차단 친구 관리',
                 onPressed: () {
-                  context.go("/home/myPage/setting/settingBlockedUser");
+                  ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.go("/home/myPage/setting/settingBlockedUser");
                 },
               ),
               Padding(
@@ -88,8 +88,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 child: const Divider(),
               ),
               Padding(
-                padding:
-                    EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 16.w),
+                padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 16.w),
                 child: Row(
                   children: [
                     const Icon(
@@ -131,8 +130,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                               child: Text(
                                 "서비스 이용약관",
-                                style: kBody11RegularStyle.copyWith(
-                                    color: kTextSubTitleColor),
+                                style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
                               ),
                             ),
                           ),
@@ -157,8 +155,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                               child: Text(
                                 "개인정보 처리 방침",
-                                style: kBody11RegularStyle.copyWith(
-                                    color: kTextSubTitleColor),
+                                style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
                               ),
                             ),
                           ),
@@ -169,8 +166,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          context
-                              .go("/home/myPage/setting/PrivacyPolicyAccepted");
+                          context.go("/home/myPage/setting/PrivacyPolicyAccepted");
                         },
                         child: Container(
                           decoration: const BoxDecoration(
@@ -184,8 +180,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                               child: Text(
                                 "개인정보 수집/이용 동의",
-                                style: kBody11RegularStyle.copyWith(
-                                    color: kTextSubTitleColor),
+                                style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
                               ),
                             ),
                           ),
@@ -196,8 +191,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 ),
               ),
               Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 8.h),
+                padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 8.h),
                 child: const Divider(),
               ),
               Padding(
@@ -230,74 +224,64 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           padding: EdgeInsets.only(top: 20.0.h),
                           child: Text(
                             '앱 권한 설정',
-                            style: kTitle16ExtraBoldStyle.copyWith(
-                                color: kTextTitleColor),
+                            style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: 10.0.h, bottom: 4.0.h),
                           child: Text(
                             '편리한 퍼피캣 앱 사용을 위해 접근 권한을 허용해 주세요.',
-                            style: kBody12SemiBoldStyle.copyWith(
-                                color: kTextSubTitleColor),
+                            style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                             textAlign: TextAlign.center,
                           ),
                         ),
                         Text(
                           '선택적 접근 권한은 해당 기능 이용 시 동의를 받고 있습니다.\n허용하지 않으셔도 포레스트 앱의 서비스를 이용 가능하며,\n일부 관련 서비스 이용 시 사용제 제한이 있을 수 있습니다.',
-                          style: kBody12RegularStyle.copyWith(
-                              color: kTextSubTitleColor),
+                          style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
                           textAlign: TextAlign.center,
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16.0.w, vertical: 4.h),
+                          padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 4.h),
                           child: const Divider(),
                         ),
                         Text(
                           "저장 공간 (필수)",
-                          style: kBody13BoldStyle.copyWith(
-                              color: kTextSubTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
                         ),
                         SizedBox(
                           height: 3.h,
                         ),
                         Text(
                           "사진, 미디어, 파일 등의 이용 및 로그를 저장합니다.",
-                          style: kBody12RegularStyle.copyWith(
-                              color: kTextSubTitleColor),
+                          style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
                         ),
                         SizedBox(
                           height: 10.h,
                         ),
                         Text(
                           "전화 (필수)",
-                          style: kBody13BoldStyle.copyWith(
-                              color: kTextSubTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
                         ),
                         SizedBox(
                           height: 3.h,
                         ),
                         Text(
                           "PUSH 알림 발송을 위한 기기 ID를 확인합니다.",
-                          style: kBody12RegularStyle.copyWith(
-                              color: kTextSubTitleColor),
+                          style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
                         ),
                         SizedBox(
                           height: 10.h,
                         ),
                         Text(
                           "위치 서비스 (필수)",
-                          style: kBody13BoldStyle.copyWith(
-                              color: kTextSubTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
                         ),
                         SizedBox(
                           height: 3.h,
                         ),
                         Text(
                           "맵 서비스 등 이용하실 때 가까운 정보 및\n장소를 찾으실 수 있도록 도와줍니다.",
-                          style: kBody12RegularStyle.copyWith(
-                              color: kTextSubTitleColor),
+                          style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(
@@ -333,8 +317,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   );
                 },
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      top: 8.h, left: 50.w, right: 16.w, bottom: 8.h),
+                  padding: EdgeInsets.only(top: 8.h, left: 50.w, right: 16.w, bottom: 8.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -363,31 +346,26 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           padding: EdgeInsets.symmetric(vertical: 24.0.h),
                           child: Text(
                             "캐시를 삭제하시겠습니까?",
-                            style: kBody16BoldStyle.copyWith(
-                                color: kTextTitleColor),
+                            style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                           ),
                         ),
                         confirmTap: () {
                           context.pop();
-                          ref
-                              .watch(myPageSettingProvider.notifier)
-                              .clearCache(context);
+                          ref.watch(myPageSettingProvider.notifier).clearCache(context);
                         },
                         cancelTap: () {
                           context.pop();
                         },
                         confirmWidget: Text(
                           "삭제",
-                          style:
-                              kButton14MediumStyle.copyWith(color: kBadgeColor),
+                          style: kButton14MediumStyle.copyWith(color: kBadgeColor),
                         ),
                       );
                     },
                   );
                 },
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      top: 8.h, left: 50.w, right: 16.w, bottom: 8.h),
+                  padding: EdgeInsets.only(top: 8.h, left: 50.w, right: 16.w, bottom: 8.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -408,8 +386,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    top: 8.h, left: 50.w, right: 16.w, bottom: 8.h),
+                padding: EdgeInsets.only(top: 8.h, left: 50.w, right: 16.w, bottom: 8.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -429,8 +406,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    top: 8.h, left: 50.w, right: 16.w, bottom: 10.h),
+                padding: EdgeInsets.only(top: 8.h, left: 50.w, right: 16.w, bottom: 10.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -452,8 +428,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           adminCount = 0;
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => const PasswordScreen()),
+                            MaterialPageRoute(builder: (context) => const PasswordScreen()),
                           );
                         }
                         // }
@@ -490,8 +465,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 child: const Divider(),
               ),
               Padding(
-                padding:
-                    EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 16.w),
+                padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 16.w),
                 child: Row(
                   children: [
                     const Icon(
@@ -546,8 +520,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               ),
                               Text(
                                 "자주하는 질문",
-                                style: kBody11SemiBoldStyle.copyWith(
-                                    color: kTextSubTitleColor),
+                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                               ),
                             ],
                           ),
@@ -564,8 +537,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                             ),
                             Text(
                               "1:1 채널톡",
-                              style: kBody11SemiBoldStyle.copyWith(
-                                  color: kTextSubTitleColor),
+                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                             ),
                           ],
                         ),
@@ -585,8 +557,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               ),
                               Text(
                                 "공지사항",
-                                style: kBody11SemiBoldStyle.copyWith(
-                                    color: kTextSubTitleColor),
+                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                               ),
                             ],
                           ),
@@ -596,24 +567,25 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  print('asdasda');
-                  ref.read(loginStateProvider.notifier).logout(
-                        ref.read(userModelProvider)!.simpleType,
-                        ref.read(userModelProvider)!.appKey,
-                      );
-                },
-                child: Padding(
-                  padding: EdgeInsets.only(top: 60.0.h, bottom: 20.h),
-                  child: Center(
-                    child: Text(
-                      "로그아웃",
-                      style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+              ref.read(userModelProvider) == null
+                  ? Container()
+                  : GestureDetector(
+                      onTap: () {
+                        ref.read(loginStateProvider.notifier).logout(
+                              ref.read(userModelProvider)!.simpleType,
+                              ref.read(userModelProvider)!.appKey,
+                            );
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 60.0.h, bottom: 20.h),
+                        child: Center(
+                          child: Text(
+                            "로그아웃",
+                            style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
