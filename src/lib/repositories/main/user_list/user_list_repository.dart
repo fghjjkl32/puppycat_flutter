@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_response_model.dart';
@@ -5,14 +6,20 @@ import 'package:pet_mobile_social_flutter/models/main/user_list/user_list_respon
 import 'package:pet_mobile_social_flutter/services/main/user_list/user_list_service.dart';
 
 class UserListRepository {
-  final UserListService _userListService =
-      UserListService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final UserListService _userListService; // = UserListService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+
+  final Dio dio;
+
+  UserListRepository({
+    required this.dio,
+  }) {
+    _userListService = UserListService(dio, baseUrl: baseUrl);
+  }
 
   Future<UserListResponseModel> getFavoriteUserList({
     required loginMemberIdx,
   }) async {
-    UserListResponseModel? contentsResponseModel =
-        await _userListService.getFavoriteUserList(loginMemberIdx);
+    UserListResponseModel? contentsResponseModel = await _userListService.getFavoriteUserList(loginMemberIdx);
 
     if (contentsResponseModel == null) {
       throw "error";

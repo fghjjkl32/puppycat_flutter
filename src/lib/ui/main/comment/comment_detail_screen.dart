@@ -38,25 +38,44 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
     _contentsIdx = widget.contentsIdx;
     _commentFocusIndex = widget.commentFocusIndex;
 
-    // _commentPagingController = ref.read(commentListStateProvider);
+    _commentPagingController = ref.read(commentListStateProvider);
 
     super.initState();
 
-    if (_commentFocusIndex == null) {
+    if(_commentFocusIndex == null) {
       ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
     } else {
-      ref
-          .read(commentListStateProvider.notifier)
-          .getFocusingComments(_contentsIdx, _commentFocusIndex!);
-      _scrollController.addListener(() {
-        print('_isInitLoad $_isInitLoad');
-        if (_scrollController.position.atEdge) {
-          if (_scrollController.position.pixels == 0) {
-            // if (!_isInitLoad && _scrollController.position.pixels <= 100) {
-            ref.read(commentListStateProvider.notifier).fetchPreviousPage();
+      // ref.read(commentListStateProvider.notifier).getFocusingComments(17, 99);
+      ref.read(commentListStateProvider.notifier).getFocusingComments(_contentsIdx, _commentFocusIndex!);
+      // _scrollController.addListener(() {
+      //   // if (_scrollController.position.atEdge) {
+      //   //   if (_scrollController.position.pixels == 0) {
+      //   if (!_isInitLoad && _scrollController.position.pixels <= 100) {
+      //     ref.read(commentListStateProvider.notifier).fetchPreviousPage();
+      //   }
+      //   // }
+      //   if (_scrollController.position.pixels >= 100) {
+      //     _isInitLoad = false;
+      //   }
+      // });
+
+      _commentPagingController.addListener(() async {
+        if (_commentPagingController.itemList != null) {
+          if (_commentFocusIndex != null) {
+            int scrollIdx = ref.read(commentListStateProvider).itemList!.indexWhere((element) => element.idx == _commentFocusIndex);
+            print('run?? $_commentFocusIndex / scrollIdx $scrollIdx');
+            if (scrollIdx < 0) {
+              return;
+            }
+
+            await _scrollController.scrollToIndex(
+              // _commentFocusIndex!,
+              scrollIdx,
+              preferPosition: AutoScrollPosition.begin,
+            );
+            _commentFocusIndex = null;
           }
         }
-        _isInitLoad = false;
       });
     }
     // _commentPagingController.refresh();
@@ -84,49 +103,69 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
         children: [
           Expanded(
             child: PagedListView<int, CommentData>(
-              pagingController: ref.watch(commentListStateProvider),
+              pagingController: _commentPagingController,
               scrollController: _scrollController,
               builderDelegate: PagedChildBuilderDelegate<CommentData>(
+                // animateTransitions: true,
                 noItemsFoundIndicatorBuilder: (context) {
-                  return const Text('No Comments');
+                  // return const Text('No Comments');
+                  return const SizedBox.shrink();
+                },
+                firstPageProgressIndicatorBuilder: (context) {
+                  // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+                  return const Center(child: CircularProgressIndicator());
                 },
                 itemBuilder: (context, item, index) {
                   return AutoScrollTag(
                     key: UniqueKey(),
                     controller: _scrollController,
-                    index: item.idx,
+                    index: index,
                     child: CommentDetailItemWidget(
                       key: UniqueKey(),
                       parentIdx: item.parentIdx,
                       commentIdx: item.idx,
-                      profileImage: item.url ??
-                          'assets/image/feed/image/sample_image1.png',
+                      profileImage: item.url ?? 'assets/image/feed/image/sample_image1.png',
                       name: item.nick,
                       comment: item.contents,
                       isSpecialUser: item.isBadge == 1,
                       time: DateTime.parse(item.regDate),
-                      isReply: false,
+                      isReply: item.isReply,
                       likeCount: item.commentLikeCnt ?? 0,
-                      replies: item.childCommentData,
+                      // replies: item.childCommentData,
                       contentIdx: item.contentsIdx,
                       isLike: item.likeState == 1,
                       memberIdx: item.memberIdx,
                       mentionListData: item.mentionList ?? [],
                       oldMemberIdx: widget.oldMemberIdx,
+                      isLastDisPlayChild: item.isLastDisPlayChild,
+                      // remainChildCount: item.remainChildCount,
+                      onMoreChildComment: (page) {
+                        print('load more child comment');
+                        ref.read(commentListStateProvider.notifier).getChildComments(
+                              item.contentsIdx,
+                              item.parentIdx,
+                              item.idx,
+                              page,
+                              true,
+                            );
+                      },
+                      pageNumber: item.pageNumber,
+                      isDisplayPreviousMore: item.isDisplayPreviousMore,
+                      onPrevMoreChildComment: (page) {
+                        print('load prev more child comment');
+                        ref.read(commentListStateProvider.notifier).getChildComments(
+                          item.contentsIdx,
+                          item.parentIdx,
+                          item.idx,
+                          page,
+                          false,
+                        );
+                      },
                     ),
                   );
                 },
               ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              await _scrollController.scrollToIndex(
-                69,
-                preferPosition: AutoScrollPosition.begin,
-              );
-            },
-            child: const Text('test'),
           ),
           CommentCustomTextField(
             contentIdx: _contentsIdx,

@@ -9,8 +9,16 @@ import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/authentication/auth_service.dart';
 
 class AuthRepository {
-  final AuthService _authService =
-      AuthService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final AuthService _authService; // = AuthService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+
+  // AuthService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  final Dio dio;
+
+  AuthRepository({
+    required this.dio,
+  }) {
+    _authService = AuthService(dio, baseUrl: baseUrl);
+  }
 
   Future<String> getPassAuthUrl() async {
     String appKey = await GetIt.I.get<UuidUtil>().getUUID();
@@ -26,9 +34,7 @@ class AuthRepository {
     // print('test : $response');
 
     // ResponseModel? responseModel = await _authService.getPassAuthUrl(queries).catchError((obj) => throw 'some error.');
-    ResponseModel? responseModel = await _authService
-        .getPassAuthUrl(appKey: appKey, token: token)
-        .catchError((obj) => throw 'some error.');
+    ResponseModel? responseModel = await _authService.getPassAuthUrl(appKey: appKey, token: token).catchError((obj) => throw 'some error.');
     if (responseModel == null) {
       throw 'response body is null';
     }

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
@@ -8,16 +9,18 @@ import 'package:riverpod/riverpod.dart';
 final popularHourFeedStateProvider =
     StateNotifierProvider<PopularHourFeedStateNotifier, FeedDataListModel>(
         (ref) {
-  return PopularHourFeedStateNotifier();
+  return PopularHourFeedStateNotifier(ref);
 });
 
 class PopularHourFeedStateNotifier extends StateNotifier<FeedDataListModel> {
-  PopularHourFeedStateNotifier() : super(const FeedDataListModel());
+  PopularHourFeedStateNotifier(this.ref) : super(const FeedDataListModel());
+
+  final Ref ref;
 
   initPosts({
     required loginMemberIdx,
   }) async {
-    final lists = await FeedRepository().getPopularHourDetailList(
+    final lists = await FeedRepository(dio: ref.read(dioProvider)).getPopularHourDetailList(
       loginMemberIdx: loginMemberIdx,
       page: 1,
     );

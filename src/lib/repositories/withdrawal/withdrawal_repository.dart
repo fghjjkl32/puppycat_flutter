@@ -8,11 +8,17 @@ import 'package:pet_mobile_social_flutter/providers/my_page/withdrawal/withdrawa
 import 'package:pet_mobile_social_flutter/services/withdrawal/withdrawal_service.dart';
 
 class WithdrawalRepository {
-  final WithdrawalService _withdrawalService =
-      WithdrawalService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final WithdrawalService _withdrawalService; // = WithdrawalService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
-  Future<WithdrawalStatus> withdrawalUser(
-      {required int idx, required int code, String? reason}) async {
+  final Dio dio;
+
+  WithdrawalRepository({
+    required this.dio,
+  }) {
+    _withdrawalService = WithdrawalService(dio, baseUrl: baseUrl);
+  }
+
+  Future<WithdrawalStatus> withdrawalUser({required int idx, required int code, String? reason}) async {
     Map<String, dynamic> body = reason != null
         ? {
             "memberIdx": idx,
@@ -25,9 +31,7 @@ class WithdrawalRepository {
           };
 
     bool isError = false;
-    ResponseModel? res = await _withdrawalService
-        .withdrawalUser(body)
-        .catchError((Object obj) async {
+    ResponseModel? res = await _withdrawalService.withdrawalUser(body).catchError((Object obj) async {
       (ResponseModel?, bool) errorResult = await errorHandler(obj);
       var responseModel = errorResult.$1;
       isError = errorResult.$2;

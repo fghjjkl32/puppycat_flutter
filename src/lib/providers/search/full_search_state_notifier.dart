@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
@@ -8,13 +9,14 @@ import 'package:rxdart/rxdart.dart';
 
 final fullSearchStateProvider = StateNotifierProvider<FullSearchStateNotifier, SearchDataListModel>((ref) {
   final loginMemberIdx = ref.watch(userModelProvider)?.idx;
-  return FullSearchStateNotifier(loginMemberIdx);
+  return FullSearchStateNotifier(loginMemberIdx, ref);
 });
 
 class FullSearchStateNotifier extends StateNotifier<SearchDataListModel> {
   final int? loginMemberIdx;
+  final Ref ref;
 
-  FullSearchStateNotifier(this.loginMemberIdx) : super(const SearchDataListModel()) {
+  FullSearchStateNotifier(this.loginMemberIdx, this.ref) : super(const SearchDataListModel()) {
     searchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
       await searchFullList(query);
     });
@@ -27,7 +29,7 @@ class FullSearchStateNotifier extends StateNotifier<SearchDataListModel> {
   Future<void> searchFullList(String searchWord) async {
     searchSearchWord = searchWord;
 
-    final lists = await SearchRepository().getFullSearchList(
+    final lists = await SearchRepository(dio: ref.read(dioProvider)).getFullSearchList(
       memberIdx: loginMemberIdx,
       searchWord: searchSearchWord,
     );

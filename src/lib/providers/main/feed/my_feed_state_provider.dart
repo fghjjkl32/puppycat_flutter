@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
@@ -38,7 +39,7 @@ class MyFeedState extends _$MyFeedState {
       _apiStatus = ListAPIStatus.loading;
 
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-      var feedResult = await FeedRepository().getMyContentsDetailList(
+      var feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(
         loginMemberIdx: loginMemberIdx,
         memberIdx: loginMemberIdx,
         page: pageKey,

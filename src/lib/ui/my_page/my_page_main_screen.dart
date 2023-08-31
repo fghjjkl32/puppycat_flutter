@@ -461,11 +461,14 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                   time: DateTime.parse(commentLists[index].regDate),
                                                                   isReply: false,
                                                                   likeCount: commentLists[index].commentLikeCnt ?? 0,
-                                                                  replies: commentLists[index].childCommentData,
+                                                                  // replies: commentLists[index].childCommentData, // TODO 댓글 위젯 수정하면서 영향이 있음
                                                                   contentIdx: commentLists[index].contentsIdx,
                                                                   isLike: commentLists[index].likeState == 1,
                                                                   memberIdx: commentLists[index].memberIdx,
                                                                   mentionListData: commentLists[index].mentionList ?? [],
+                                                                  isLastDisPlayChild: false,
+                                                                  pageNumber: commentLists[index].pageNumber,
+                                                                  isDisplayPreviousMore: false,
                                                                   oldMemberIdx: commentLists[index].memberIdx,
                                                                 );
                                                               },

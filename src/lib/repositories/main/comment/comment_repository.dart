@@ -11,7 +11,14 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/services/main/comment/comment_service.dart';
 
 class CommentRepository {
-  final CommentService _contentsService = CommentService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final CommentService _contentsService; // = CommentService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  final Dio dio;
+
+  CommentRepository({
+    required this.dio,
+}) {
+    _contentsService = CommentService(dio, baseUrl: baseUrl);
+  }
 
   Future<CommentResponseModel> getComment({required int contentIdx, required int memberIdx, required int page}) async {
     try {
@@ -122,11 +129,13 @@ class CommentRepository {
     required int contentsIdx,
     required int commentIdx,
     required int memberIdx,
+    required int parentIdx,
   }) async {
     ResponseModel? commentResponseModel = await _contentsService.deleteComment(
       contentsIdx: contentsIdx,
       commentIdx: commentIdx,
       memberIdx: memberIdx,
+      parentIdx: parentIdx,
     );
 
     if (commentResponseModel == null) {

@@ -28,6 +28,7 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_
 import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/main/popupmenu_with_reddot_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
 import 'package:thumbor/thumbor.dart';
@@ -348,93 +349,87 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             size: 40,
           ),
         ),
-        PopupMenuButton(
-          onSelected: (id) {
-            if (id == 'notification') {
-              ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.go("/home/notification");
-            }
-            if (id == 'search') {
-              context.go("/home/search");
-            }
-            if (id == 'message') {
-              ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain');
-            }
-            if (id == 'setting') {
-              context.push("/home/myPage/setting");
-            }
-          },
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(16.0),
-              bottomRight: Radius.circular(16.0),
-              topLeft: Radius.circular(16.0),
-              topRight: Radius.circular(16.0),
-            ),
-          ),
-          itemBuilder: (context) {
-            final list = <PopupMenuEntry>[];
-            list.add(
-              diaryPopUpMenuItem(
-                'notification',
-                '알림',
-                const Icon(
-                  Puppycat_social.icon_bell,
-                ),
-                context,
-              ),
-            );
-            list.add(
-              const PopupMenuDivider(
-                height: 5,
-              ),
-            );
-            list.add(
-              diaryPopUpMenuItem(
-                'search',
-                '검색',
-                const Icon(
-                  Puppycat_social.icon_search_medium,
-                ),
-                context,
-              ),
-            );
-            list.add(
-              const PopupMenuDivider(
-                height: 5,
-              ),
-            );
-            list.add(
-              diaryPopUpMenuItem(
-                'message',
-                '메시지',
-                const Icon(
-                  Puppycat_social.icon_chat,
-                ),
-                context,
-              ),
-            );
-            list.add(
-              const PopupMenuDivider(
-                height: 5,
-              ),
-            );
-            list.add(
-              diaryPopUpMenuItem(
-                'setting',
-                '설정',
-                const Icon(
-                  Puppycat_social.icon_set_small,
-                ),
-                context,
-              ),
-            );
-            return list;
-          },
-          child: const Icon(
-            Puppycat_social.icon_more_header,
-            size: 40,
-          ),
-        ),
+        PopupMenuWithReddot(),
+        // PopupMenuButton(
+        //   padding: EdgeInsets.zero,
+        //   icon: Image.asset(
+        //     'assets/image/header/icon/large_size/icon_more_h.png',
+        //     height: 26.h,
+        //   ),
+        //   onSelected: (id) {
+        //     if (id == 'notification') {
+        //       context.go("/home/notification");
+        //     }
+        //     if (id == 'search') {
+        //       context.go("/home/search");
+        //     }
+        //     if (id == 'message') {
+        //       context.push('/chatMain');
+        //     }
+        //     if (id == 'setting') {
+        //       context.push("/home/myPage/setting");
+        //     }
+        //   },
+        //   shape: const RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.only(
+        //       bottomLeft: Radius.circular(16.0),
+        //       bottomRight: Radius.circular(16.0),
+        //       topLeft: Radius.circular(16.0),
+        //       topRight: Radius.circular(16.0),
+        //     ),
+        //   ),
+        //   itemBuilder: (context) {
+        //     final list = <PopupMenuEntry>[];
+        //     list.add(
+        //       diaryPopUpMenuItem(
+        //         'notification',
+        //         '알림',
+        //         const Icon(Icons.notifications),
+        //         context,
+        //       ),
+        //     );
+        //     list.add(
+        //       const PopupMenuDivider(
+        //         height: 5,
+        //       ),
+        //     );
+        //     list.add(
+        //       diaryPopUpMenuItem(
+        //         'search',
+        //         '검색',
+        //         const Icon(Icons.search),
+        //         context,
+        //       ),
+        //     );
+        //     list.add(
+        //       const PopupMenuDivider(
+        //         height: 5,
+        //       ),
+        //     );
+        //     list.add(
+        //       diaryPopUpMenuItem(
+        //         'message',
+        //         '메시지',
+        //         const Icon(Icons.message),
+        //         context,
+        //       ),
+        //     );
+        //     list.add(
+        //       const PopupMenuDivider(
+        //         height: 5,
+        //       ),
+        //     );
+        //     list.add(
+        //       diaryPopUpMenuItem(
+        //         'setting',
+        //         '설정',
+        //         const Icon(Icons.settings),
+        //         context,
+        //       ),
+        //     );
+        //     return list;
+        //   },
+        // ),
         GestureDetector(
           onTap: () {
             context.go("/home/myPage");
@@ -495,6 +490,18 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         ),
       ],
     );
+    // Padding(
+    //   padding: EdgeInsets.only(top: 16.0.h),
+    //   child: const FeedMainWidget(),
+    // ),
+    // const FeedMainWidget(),
+    // const FeedMainWidget(),
+    // const FeedMainWidget(),
+    // const FeedBestPostWidget(),
+    // const FeedMainWidget(),
+    // const FeedMainWidget(),
+    // const FeedMainWidget(),
+    // const FeedMainWidget(),
   }
 
   Widget _thirdTab() {

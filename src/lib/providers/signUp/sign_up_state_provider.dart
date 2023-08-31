@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
@@ -37,10 +38,11 @@ final nickNameProvider = StateProvider<NickNameStatus>((ref) => NickNameStatus.n
 @Riverpod(keepAlive: true)
 // @riverpod
 class SignUpState extends _$SignUpState {
-  final SignUpRepository _signUpRepository = SignUpRepository();
+  late final SignUpRepository _signUpRepository; // = SignUpRepository(dio: ref.read(dioProvider));
 
   @override
   SignUpStatus build() {
+    _signUpRepository = SignUpRepository(dio: ref.read(dioProvider));
     return SignUpStatus.none;
   }
 

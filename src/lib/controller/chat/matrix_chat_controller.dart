@@ -16,7 +16,8 @@ class MatrixChatClientController implements AbstractChatController {
 
   Client get client => _chatClient;
 
-  MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://sns-chat.devlabs.co.kr:8008']) {
+  MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://sns-chat.pcstg.co.kr:8008']) {
+  // MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://sns-chat.devlabs.co.kr:8008']) {
   // MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://dev2.office.uxplus.kr']) {
     print('homeServer $homeServer / clientName $clientName');
     init(clientName, homeServer);
@@ -312,9 +313,14 @@ class MatrixChatClientController implements AbstractChatController {
   }
 
   Future<List<dynamic>> getHideRooms() async {
-    Map<String, Object?> hiddenRoomsData = await client.getAccountData(_chatClient.userID!, 'hidden_rooms');
-    List<dynamic> hiddenRoomIds = hiddenRoomsData['room_ids'] as List<dynamic>;
-    return hiddenRoomIds;
+    try {
+      Map<String, Object?> hiddenRoomsData = await client.getAccountData(_chatClient.userID!, 'hidden_rooms');
+      List<dynamic> hiddenRoomIds = hiddenRoomsData['room_ids'] as List<dynamic>;
+      return hiddenRoomIds;
+    } catch(e) {
+      print(e);
+      return [];
+    }
   }
 
   Future<bool> checkHideRoom(String roomId) async {

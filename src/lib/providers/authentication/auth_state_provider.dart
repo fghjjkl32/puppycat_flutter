@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/authentication/auth_repository.dart';
 import 'package:riverpod/riverpod.dart';
@@ -19,7 +20,7 @@ class AuthState extends _$AuthState {
   }
 
   void getPassAuthUrl() async {
-    final authRepository = AuthRepository();
+    final authRepository = AuthRepository(dio: ref.read(dioProvider));
     try {
       String passUrl = await authRepository.getPassAuthUrl();
       // passUrl = "http://172.16.4.8:3037";

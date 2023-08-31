@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/policy/policy_repository.dart';
 import 'package:riverpod/riverpod.dart';
@@ -26,7 +27,7 @@ class PolicyState extends _$PolicyState {
   }
 
   void getPolicies() async {
-    final PolicyRepository policyRepository = PolicyRepository();
+    final PolicyRepository policyRepository = PolicyRepository(dio: ref.read(dioProvider));
     try {
       List<PolicyItemModel> result = await policyRepository.getPolicies();
 

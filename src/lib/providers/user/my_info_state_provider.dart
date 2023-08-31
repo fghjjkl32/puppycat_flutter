@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
@@ -20,12 +21,12 @@ class MyInfoState extends _$MyInfoState {
   }
 
   void getMyInfo(String memberIdx) async {
-    UserInformationItemModel userInfoModel  = await ref.read(userInfoRepositoryProvider).getMyInfo(memberIdx);
+    UserInformationItemModel userInfoModel  = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).getMyInfo(memberIdx);
     state = userInfoModel;
   }
 
   void updateMyChatInfo(UserInfoModel userInfoModel) async {
-    var result = await ref.read(userInfoRepositoryProvider).updateMyChatInfo(userInfoModel);
+    var result = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).updateMyChatInfo(userInfoModel);
   }
 
   bool checkChatInfo(UserInformationItemModel userInfoModel) {

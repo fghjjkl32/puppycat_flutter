@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -7,7 +8,15 @@ import 'package:pet_mobile_social_flutter/models/search/search_response_model.da
 import 'package:pet_mobile_social_flutter/services/search/search_service.dart';
 
 class SearchRepository {
-  final SearchService _searchService = SearchService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final SearchService _searchService;
+
+  final Dio dio;
+
+  SearchRepository({
+    required this.dio,
+  }) {
+    _searchService = SearchService(dio, baseUrl: baseUrl);
+  }
 
   Future<SearchResponseModel> getMentionRecommendList({
     required int memberIdx,

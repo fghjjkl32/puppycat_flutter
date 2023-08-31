@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
@@ -58,34 +59,34 @@ class FeedListState extends _$FeedListState {
       FeedResponseModel feedResult = feedNullResponseModel;
 
       if (contentType == "myContent") {
-        feedResult = await FeedRepository().getMyContentsDetailList(loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: pageKey);
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: pageKey);
       } else if (contentType == "myTagContent") {
-        feedResult = await FeedRepository().getMyTagContentsDetailList(loginMemberIdx: loginMemberIdx, page: pageKey);
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyTagContentsDetailList(loginMemberIdx: loginMemberIdx, page: pageKey);
       } else if (contentType == "userContent") {
-        feedResult = await FeedRepository().getUserContentsDetailList(loginMemberIdx: loginMemberIdx, page: pageKey, memberIdx: memberIdx);
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserContentsDetailList(loginMemberIdx: loginMemberIdx, page: pageKey, memberIdx: memberIdx);
       } else if (contentType == "userTagContent") {
-        feedResult = await FeedRepository().getUserTagContentDetail(loginMemberIdx: loginMemberIdx!, page: pageKey, memberIdx: memberIdx!);
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentDetail(loginMemberIdx: loginMemberIdx!, page: pageKey, memberIdx: memberIdx!);
       } else if (contentType == "myLikeContent") {
-        feedResult = await LikeContentsRepository().getLikeDetailContentList(loginMemberIdx: loginMemberIdx!, page: pageKey);
+        feedResult = await LikeContentsRepository(dio: ref.read(dioProvider)).getLikeDetailContentList(loginMemberIdx: loginMemberIdx!, page: pageKey);
       } else if (contentType == "mySaveContent") {
-        feedResult = await SaveContentsRepository().getSaveDetailContentList(loginMemberIdx: loginMemberIdx!, page: pageKey);
+        feedResult = await SaveContentsRepository(dio: ref.read(dioProvider)).getSaveDetailContentList(loginMemberIdx: loginMemberIdx!, page: pageKey);
       } else if (contentType == "myDetailContent") {
         feedResult = await Future.value(feedNullResponseModel);
       } else if (contentType == "myKeepContent") {
         feedResult = await Future.value(feedNullResponseModel);
       } else if (contentType == "searchContent") {
-        feedResult = await FeedRepository().getUserHashtagContentDetailList(
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentDetailList(
           loginMemberIdx: loginMemberIdx!,
           searchWord: searchWord!,
           page: pageKey,
         );
       } else if (contentType == "popularWeekContent") {
-        feedResult = await FeedRepository().getPopularWeekDetailList(
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getPopularWeekDetailList(
           loginMemberIdx: loginMemberIdx,
           page: pageKey,
         );
       } else if (contentType == "popularHourContent") {
-        feedResult = await FeedRepository().getPopularHourDetailList(
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getPopularHourDetailList(
           loginMemberIdx: loginMemberIdx,
           page: pageKey,
         );
@@ -384,7 +385,7 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository().postLike(memberIdx: loginMemberIdx, contentIdx: contentIdx);
+    final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
     int targetIdx = -1;
 
@@ -424,7 +425,7 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository().deleteLike(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
+    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
     int targetIdx = -1;
 
@@ -464,7 +465,7 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository().postSave(memberIdx: loginMemberIdx, contentIdx: contentIdx);
+    final result = await FeedRepository(dio: ref.read(dioProvider)).postSave(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
     int targetIdx = -1;
 
@@ -502,7 +503,7 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository().deleteSave(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
+    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteSave(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
     int targetIdx = -1;
 
@@ -539,7 +540,7 @@ class FeedListState extends _$FeedListState {
     required List<int> contentIdxList,
     required contentType,
   }) async {
-    final result = await KeepContentsRepository().postKeepContents(memberIdx: loginMemberIdx, idxList: contentIdxList);
+    final result = await KeepContentsRepository(dio: ref.read(dioProvider)).postKeepContents(memberIdx: loginMemberIdx, idxList: contentIdxList);
 
     int targetIdx = -1;
 
@@ -576,7 +577,7 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required contentType,
   }) async {
-    final result = await KeepContentsRepository().deleteOneKeepContents(memberIdx: loginMemberIdx, idx: contentIdx);
+    final result = await KeepContentsRepository(dio: ref.read(dioProvider)).deleteOneKeepContents(memberIdx: loginMemberIdx, idx: contentIdx);
 
     int targetIdx = -1;
 
@@ -613,7 +614,7 @@ class FeedListState extends _$FeedListState {
     required int contentIdx,
     required contentType,
   }) async {
-    final result = await FeedRepository().deleteOneContents(memberIdx: loginMemberIdx, idx: contentIdx);
+    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteOneContents(memberIdx: loginMemberIdx, idx: contentIdx);
 
     int targetIdx = -1;
 
@@ -647,7 +648,7 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository().postHide(memberIdx: loginMemberIdx, contentIdx: contentIdx);
+    final result = await FeedRepository(dio: ref.read(dioProvider)).postHide(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
     int targetIdx = -1;
 
@@ -685,7 +686,7 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository().deleteHide(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
+    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteHide(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
     state.itemList?.add(tempFeedData!);
 
@@ -700,7 +701,7 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required contentType,
   }) async {
-    final result = await BlockRepository().postBlock(
+    final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
       memberIdx: memberIdx,
       blockIdx: blockIdx,
     );
@@ -738,7 +739,7 @@ class FeedListState extends _$FeedListState {
     required String? reason,
     required String reportType,
   }) async {
-    final result = await FeedRepository().postContentReport(
+    final result = await FeedRepository(dio: ref.read(dioProvider)).postContentReport(
       reportType: reportType,
       memberIdx: loginMemberIdx,
       contentIdx: contentIdx,
@@ -781,7 +782,7 @@ class FeedListState extends _$FeedListState {
     required int loginMemberIdx,
     required int contentIdx,
   }) async {
-    final result = await FeedRepository().deleteContentReport(
+    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContentReport(
       reportType: reportType,
       memberIdx: loginMemberIdx,
       contentsIdx: contentIdx,
@@ -800,7 +801,7 @@ class FeedListState extends _$FeedListState {
     required contentsIdx,
     required contentType,
   }) async {
-    final result = await FollowRepository().postFollow(memberIdx: memberIdx, followIdx: followIdx);
+    final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     int targetIdx = -1;
 
@@ -838,7 +839,7 @@ class FeedListState extends _$FeedListState {
     required contentsIdx,
     required contentType,
   }) async {
-    final result = await FollowRepository().deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+    final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     int targetIdx = -1;
 

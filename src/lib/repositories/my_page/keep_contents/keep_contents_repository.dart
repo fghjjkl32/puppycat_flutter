@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -6,7 +7,14 @@ import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/con
 import 'package:pet_mobile_social_flutter/services/my_page/keep_contents/keep_contents_service.dart';
 
 class KeepContentsRepository {
-  final KeepContentsService _keepContentsService = KeepContentsService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final KeepContentsService _keepContentsService;
+  final Dio dio;
+
+  KeepContentsRepository({
+    required this.dio,
+  }) {
+    _keepContentsService = KeepContentsService(dio, baseUrl: baseUrl);
+  }
 
   Future<ContentResponseModel> getKeepContents({required int memberIdx, required int page}) async {
     ContentResponseModel? keepContentsResponseModel = await _keepContentsService.getKeepContents(memberIdx, page);

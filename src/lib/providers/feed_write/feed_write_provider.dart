@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
@@ -10,16 +11,18 @@ import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository
 
 final feedWriteProvider =
     StateNotifierProvider<PostFeedWriteNotifier, PostFeedState>((ref) {
-  return PostFeedWriteNotifier([]);
+  return PostFeedWriteNotifier([], ref);
 });
 
 class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
-  PostFeedWriteNotifier(List<TagImages> initialTags)
+  PostFeedWriteNotifier(List<TagImages> initialTags, this.ref)
       : super(PostFeedState(
             initialTagList: initialTags,
             tagList: [],
             tagImage: [],
             offsetCount: 0));
+
+  final Ref ref;
 
   // 이미지에 태그를 추가하는 함수입니다.
   void addTag(Tag tag, int imageIndex, BuildContext context) {
@@ -136,7 +139,7 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     String? contents,
     required PostFeedState feedState,
   }) async {
-    final result = await FeedRepository().postFeed(
+    final result = await FeedRepository(dio: ref.read(dioProvider)).postFeed(
       files: files,
       memberIdx: memberIdx,
       isView: isView,
@@ -157,7 +160,7 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     required int contentIdx,
     required List<TagImages> initialTagList,
   }) async {
-    final result = await FeedRepository().putFeed(
+    final result = await FeedRepository(dio: ref.read(dioProvider)).putFeed(
       memberIdx: memberIdx,
       isView: isView,
       location: location,

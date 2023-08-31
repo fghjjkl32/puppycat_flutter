@@ -18,16 +18,22 @@ import 'package:pet_mobile_social_flutter/services/main/feed/feed_service.dart';
 import 'package:http_parser/http_parser.dart';
 
 class FeedRepository {
-  final FeedService _feedService =
-      FeedService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final FeedService _feedService;// = FeedService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+
+  final Dio dio;
+
+  FeedRepository({
+    required this.dio,
+  }) {
+    _feedService = FeedService(dio, baseUrl: baseUrl);
+  }
 
   //user page feed list - my
   Future<ContentResponseModel> getMyContentList({
     required page,
     required loginMemberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel =
-        await _feedService.getMyContentList(loginMemberIdx, page);
+    ContentResponseModel? contentsResponseModel = await _feedService.getMyContentList(loginMemberIdx, page);
 
     if (contentsResponseModel == null) {
       return contentNullResponseModel;
@@ -40,8 +46,7 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel =
-        await _feedService.getMyTagContentList(loginMemberIdx, page);
+    ContentResponseModel? contentsResponseModel = await _feedService.getMyTagContentList(loginMemberIdx, page);
 
     if (contentsResponseModel == null) {
       return contentNullResponseModel;

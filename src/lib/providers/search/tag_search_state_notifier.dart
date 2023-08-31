@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
@@ -8,13 +9,14 @@ import 'package:rxdart/rxdart.dart';
 
 final tagSearchStateProvider = StateNotifierProvider<TagSearchStateNotifier, SearchDataListModel>((ref) {
   final loginMemberIdx = ref.watch(userModelProvider)?.idx;
-  return TagSearchStateNotifier(loginMemberIdx);
+  return TagSearchStateNotifier(loginMemberIdx, ref);
 });
 
 class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
   final int? loginMemberIdx;
+  final Ref ref;
 
-  TagSearchStateNotifier(this.loginMemberIdx) : super(const SearchDataListModel()) {
+  TagSearchStateNotifier(this.loginMemberIdx, this.ref) : super(const SearchDataListModel()) {
     searchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
       await searchTagList(query);
     });
@@ -30,7 +32,7 @@ class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
   Future<void> searchTagList(String searchWord) async {
     searchSearchWord = searchWord;
 
-    final lists = await SearchRepository().getTagSearchList(
+    final lists = await SearchRepository(dio: ref.read(dioProvider)).getTagSearchList(
       memberIdx: loginMemberIdx,
       searchWord: searchSearchWord,
       page: 1,
@@ -68,7 +70,7 @@ class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
 
     state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await SearchRepository().getTagSearchList(
+    final lists = await SearchRepository(dio: ref.read(dioProvider)).getTagSearchList(
       memberIdx: memberIdx,
       page: searchTagCurrentPage + 1,
       searchWord: searchSearchWord,

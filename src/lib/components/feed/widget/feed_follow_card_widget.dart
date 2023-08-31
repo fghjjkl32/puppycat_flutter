@@ -53,7 +53,7 @@ class FeedFollowCardWidget extends ConsumerWidget {
           children: [
             GestureDetector(
               onTap: () {
-                ref.read(userModelProvider)!.idx == memberIdx
+                ref.read(userModelProvider)?.idx == memberIdx
                     ? Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -62,8 +62,7 @@ class FeedFollowCardWidget extends ConsumerWidget {
                           ),
                         ),
                       )
-                    : context.push(
-                        "/home/myPage/followList/$memberIdx/userPage/$userName/$memberIdx/$oldMemberIdx");
+                    : context.push("/home/myPage/followList/$memberIdx/userPage/$userName/$memberIdx/$oldMemberIdx");
               },
               child: Row(
                 children: [
@@ -96,18 +95,15 @@ class FeedFollowCardWidget extends ConsumerWidget {
                               : Container(),
                           Text(
                             userName,
-                            style: kBody13BoldStyle.copyWith(
-                                color: kTextTitleColor),
+                            style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                           ),
                           Text(
                             "  ·  ",
-                            style: kBody11RegularStyle.copyWith(
-                                color: kNeutralColor400),
+                            style: kBody11RegularStyle.copyWith(color: kNeutralColor400),
                           ),
                           Text(
                             "팔로우",
-                            style: kButton12BoldStyle.copyWith(
-                                color: kPrimaryColor),
+                            style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
                           ),
                         ],
                       ),
@@ -116,8 +112,7 @@ class FeedFollowCardWidget extends ConsumerWidget {
                       ),
                       Text(
                         "팔로워 ${NumberFormat('###,###,###,###').format(followCount)}",
-                        style:
-                            kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                        style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                       ),
                     ],
                   ),
@@ -135,9 +130,7 @@ class FeedFollowCardWidget extends ConsumerWidget {
                             bottomLeft: Radius.circular(12.0),
                           ),
                           child: Image.network(
-                            Thumbor(host: thumborHostUrl, key: thumborKey)
-                                .buildImage("$imgDomain${imageList[0].imgUrl!}")
-                                .toUrl(),
+                            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].imgUrl!}").toUrl(),
                             fit: BoxFit.cover,
                             height: 147.h,
                             width: double.infinity,
@@ -149,16 +142,14 @@ class FeedFollowCardWidget extends ConsumerWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5.0)),
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                             ),
                             width: 18.w,
                             height: 14.w,
                             child: Center(
                               child: Text(
                                 "${imageList[0].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(
-                                    color: kNeutralColor100),
+                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
                               ),
                             ),
                           ),
@@ -180,9 +171,7 @@ class FeedFollowCardWidget extends ConsumerWidget {
                             bottomLeft: Radius.circular(12.0),
                           ),
                           child: Image.network(
-                            Thumbor(host: thumborHostUrl, key: thumborKey)
-                                .buildImage("$imgDomain${imageList[0].imgUrl!}")
-                                .toUrl(),
+                            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].imgUrl!}").toUrl(),
                             fit: BoxFit.cover,
                             height: 147.h,
                             width: double.infinity,
@@ -194,16 +183,14 @@ class FeedFollowCardWidget extends ConsumerWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5.0)),
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                             ),
                             width: 18.w,
                             height: 14.w,
                             child: Center(
                               child: Text(
                                 "${imageList[0].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(
-                                    color: kNeutralColor100),
+                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
                               ),
                             ),
                           ),
@@ -223,9 +210,7 @@ class FeedFollowCardWidget extends ConsumerWidget {
                             bottomRight: Radius.circular(12.0),
                           ),
                           child: Image.network(
-                            Thumbor(host: thumborHostUrl, key: thumborKey)
-                                .buildImage("$imgDomain${imageList[1].imgUrl!}")
-                                .toUrl(),
+                            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].imgUrl!}").toUrl(),
                             fit: BoxFit.cover,
                             height: 147.h,
                             width: double.infinity,
@@ -237,16 +222,14 @@ class FeedFollowCardWidget extends ConsumerWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5.0)),
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                             ),
                             width: 18.w,
                             height: 14.w,
                             child: Center(
                               child: Text(
                                 "${imageList[1].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(
-                                    color: kNeutralColor100),
+                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
                               ),
                             ),
                           ),
@@ -268,9 +251,7 @@ class FeedFollowCardWidget extends ConsumerWidget {
                             bottomLeft: Radius.circular(12.0),
                           ),
                           child: Image.network(
-                            Thumbor(host: thumborHostUrl, key: thumborKey)
-                                .buildImage("$imgDomain${imageList[0].imgUrl!}")
-                                .toUrl(),
+                            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].imgUrl!}").toUrl(),
                             fit: BoxFit.cover,
                             height: 147.h,
                             width: double.infinity,
@@ -282,16 +263,14 @@ class FeedFollowCardWidget extends ConsumerWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5.0)),
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                             ),
                             width: 18.w,
                             height: 14.w,
                             child: Center(
                               child: Text(
                                 "${imageList[0].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(
-                                    color: kNeutralColor100),
+                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
                               ),
                             ),
                           ),
@@ -309,10 +288,7 @@ class FeedFollowCardWidget extends ConsumerWidget {
                         Stack(
                           children: [
                             Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey)
-                                  .buildImage(
-                                      "$imgDomain${imageList[1].imgUrl!}")
-                                  .toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].imgUrl!}").toUrl(),
                               fit: BoxFit.cover,
                               height: 73.h,
                               width: double.infinity,
@@ -322,18 +298,15 @@ class FeedFollowCardWidget extends ConsumerWidget {
                               top: 4.w,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color:
-                                      const Color(0xff414348).withOpacity(0.75),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(5.0)),
+                                  color: const Color(0xff414348).withOpacity(0.75),
+                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                 ),
                                 width: 18.w,
                                 height: 14.w,
                                 child: Center(
                                   child: Text(
                                     "${imageList[1].imageCnt}",
-                                    style: kBadge9RegularStyle.copyWith(
-                                        color: kNeutralColor100),
+                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
                                   ),
                                 ),
                               ),
@@ -350,10 +323,7 @@ class FeedFollowCardWidget extends ConsumerWidget {
                           child: Stack(
                             children: [
                               Image.network(
-                                Thumbor(host: thumborHostUrl, key: thumborKey)
-                                    .buildImage(
-                                        "$imgDomain${imageList[2].imgUrl!}")
-                                    .toUrl(),
+                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[2].imgUrl!}").toUrl(),
                                 fit: BoxFit.cover,
                                 height: 73.h,
                                 width: double.infinity,
@@ -363,18 +333,15 @@ class FeedFollowCardWidget extends ConsumerWidget {
                                 top: 4.w,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: const Color(0xff414348)
-                                        .withOpacity(0.75),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(5.0)),
+                                    color: const Color(0xff414348).withOpacity(0.75),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                   ),
                                   width: 18.w,
                                   height: 14.w,
                                   child: Center(
                                     child: Text(
                                       "${imageList[2].imageCnt}",
-                                      style: kBadge9RegularStyle.copyWith(
-                                          color: kNeutralColor100),
+                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
                                     ),
                                   ),
                                 ),

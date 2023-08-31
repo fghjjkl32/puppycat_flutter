@@ -7,6 +7,7 @@ import 'package:pet_mobile_social_flutter/main.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
@@ -69,10 +70,15 @@ class AppRouter {
 
   late final GoRouter _goRouter = GoRouter(
     // refreshListenable: AppService(),//redirect 시 사용되는 리스너 이다.
-    initialLocation: '/splash', //제일 처음 보여 줄 route
-    debugLogDiagnostics: true, //router 정보 콘솔에 출력
+    initialLocation: '/splash',
+    //제일 처음 보여 줄 route
+    debugLogDiagnostics: false,
+    //router 정보 콘솔에 출력
     // errorBuilder: (BuildContext context, GoRouterState state) =>
     // const ErrorPage(),
+    observers: [
+      GoRouterObserver(ref: ref),
+    ],
     routes: <GoRoute>[
       GoRoute(
           path: '/home',
@@ -105,16 +111,6 @@ class AppRouter {
                 );
               },
             ),
-            // GoRoute(
-            //   path: 'commentDetail/:contentIdx',
-            //   name: 'commentDetail/:contentIdx',
-            //   builder: (BuildContext context, GoRouterState state) {
-            //     final contentIdx = state.pathParameters['contentIdx']!;
-            //     return MainCommentDetailScreen(
-            //       contentIdx: int.parse(contentIdx),
-            //     );
-            //   },
-            // ),
             GoRoute(
               path: 'commentDetail/:contentIdx/:oldMemberIdx',
               name: 'commentDetail/:contentIdx/:oldMemberIdx',
@@ -125,8 +121,7 @@ class AppRouter {
                 final extraData = state.extra;
                 int? commentFocusIndex;
                 if (extraData != null) {
-                  Map<String, dynamic> extraMap =
-                      extraData as Map<String, dynamic>;
+                  Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
                   if (extraMap.keys.contains('focusIndex')) {
                     commentFocusIndex = extraMap['focusIndex'];
                   }
@@ -163,47 +158,8 @@ class AppRouter {
                   },
                 ),
                 GoRoute(
-                  path:
-                      'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
-                  name:
-                      'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
-                  // pageBuilder: (context, state) {
-                  //   final firstTitle = state.pathParameters['firstTitle']!;
-                  //   final secondTitle = state.pathParameters['secondTitle']!;
-                  //   final memberIdx = state.pathParameters['memberIdx']!;
-                  //   final contentIdx = state.pathParameters['contentIdx']!;
-                  //   final contentType = state.pathParameters['contentType']!;
-                  //
-                  //   bool isRouteComment = false;
-                  //   final extraData = state.extra;
-                  //   if(extraData != null) {
-                  //     Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
-                  //     if(extraMap.keys.contains('isRouteComment')) {
-                  //       isRouteComment = extraMap['isRouteComment'];
-                  //     }
-                  //   }
-                  //
-                  //   return CustomTransitionPage(
-                  //     key: state.pageKey,
-                  //     child: FeedDetailScreen(
-                  //       firstTitle: firstTitle,
-                  //       secondTitle: secondTitle,
-                  //       memberIdx: int.parse(memberIdx),
-                  //       contentIdx: int.parse(contentIdx),
-                  //       contentType: contentType,
-                  //       isRouteComment: isRouteComment,
-                  //     ),
-                  //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                  //       // Change the opacity of the screen using a Curve based on the the animation's
-                  //       // value
-                  //       return FadeTransition(
-                  //         opacity:
-                  //         CurveTween(curve: Curves.easeInOutCirc).animate(animation),
-                  //         child: child,
-                  //       );
-                  //     },
-                  //   );
-                  // },
+                  path: 'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
+                  name: 'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
                   builder: (BuildContext context, GoRouterState state) {
                     final firstTitle = state.pathParameters['firstTitle']!;
                     final secondTitle = state.pathParameters['secondTitle']!;
@@ -215,8 +171,7 @@ class AppRouter {
                     int? commentFocusIndex;
                     final extraData = state.extra;
                     if (extraData != null) {
-                      Map<String, dynamic> extraMap =
-                          extraData as Map<String, dynamic>;
+                      Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
                       if (extraMap.keys.contains('isRouteComment')) {
                         isRouteComment = extraMap['isRouteComment'];
                       }
@@ -253,11 +208,9 @@ class AppRouter {
                             GoRoute(
                                 path: 'withdrawalDetail/:code/:reason',
                                 name: 'withdrawalDetail/:code/:reason',
-                                builder: (BuildContext context,
-                                    GoRouterState state) {
+                                builder: (BuildContext context, GoRouterState state) {
                                   final code = state.pathParameters['code']!;
-                                  final reason =
-                                      state.pathParameters['reason']!;
+                                  final reason = state.pathParameters['reason']!;
                                   return MyPageWithdrawalDetailScreen(
                                     code: int.parse(code),
                                     reason: reason,
@@ -267,8 +220,7 @@ class AppRouter {
                                   GoRoute(
                                     path: 'withdrawalSuccess',
                                     name: 'withdrawalSuccess',
-                                    builder: (BuildContext context,
-                                        GoRouterState state) {
+                                    builder: (BuildContext context, GoRouterState state) {
                                       return const MyPageWithdrawalSuccessScreen();
                                     },
                                   ),
@@ -383,47 +335,33 @@ class AppRouter {
               },
             ),
           ]
-          // routes: [
-          //   /// sub Page를 설정할수 있다.
-          //   GoRoute(
-          //     path: 'geo',//sub page는 '/'를 생략해야 한다. 아니면 error
-          //     builder: (BuildContext context, GoRouterState state) {
-          //       return const GeoPage();
-          //     },
-          //   ),
-          // ],
           ),
-      GoRoute(
-          path: '/loginScreen',
-          name: 'loginScreen',
-          builder: (_, state) => LoginScreen(),
-          routes: [
+      GoRoute(path: '/loginScreen', name: 'loginScreen', builder: (_, state) => LoginScreen(), routes: [
+        GoRoute(
+          path: 'signupScreen',
+          name: 'signupScreen',
+          builder: (_, state) {
+            return SignUpScreen();
+          },
+          routes: <GoRoute>[
             GoRoute(
-              path: 'signupScreen',
-              name: 'signupScreen',
+              path: 'signupCompleteScreen',
+              name: 'signupCompleteScreen',
               builder: (_, state) {
-                return SignUpScreen();
+                return SignUpCompleteScreen();
               },
-              routes: <GoRoute>[
-                GoRoute(
-                  path: 'signupCompleteScreen',
-                  name: 'signupCompleteScreen',
-                  builder: (_, state) {
-                    return SignUpCompleteScreen();
-                  },
-                ),
-                GoRoute(
-                  path: 'webview/:url',
-                  name: 'webview',
-                  builder: (BuildContext context, GoRouterState state) {
-                    final url =
-                        Uri.decodeComponent(state.pathParameters['url']!);
-                    return WebViewWidget(url: url);
-                  },
-                ),
-              ],
             ),
-          ]),
+            GoRoute(
+              path: 'webview/:url',
+              name: 'webview',
+              builder: (BuildContext context, GoRouterState state) {
+                final url = Uri.decodeComponent(state.pathParameters['url']!);
+                return WebViewWidget(url: url);
+              },
+            ),
+          ],
+        ),
+      ]),
       GoRoute(
         path: '/splash',
         name: 'splash',
@@ -457,45 +395,10 @@ class AppRouter {
                 return const ChatSearchScreen();
               },
             ),
-          ]),
-      // GoRoute(
-      //   path: '/chatRoomTest',
-      //   name: 'chatRoomTest',
-      //   builder: (BuildContext context, GoRouterState state) {
-      //       // return ChatRoomScreen(room: state.extra! as Room);
-      //       return ChatScreen(room: state.extra! as Room);
-      //   },
-      // ),
-
-      // GoRoute(//id를 넘겨주어 navigarion 하는 방법
-      //   path: '/book/:id',
-      //   builder: (BuildContext context, GoRouterState state) {
-      //     return const BookPage(id : state.params['id']);
-      //   },
-      //   routes: [
-      //     /// sub Page를 설정할수 있다.
-      //     GoRoute(
-      //       path: 'review',//동일하게 sub rout를 가질 수 있다.
-      //       builder: (BuildContext context, GoRouterState state) {
-      //         return const ReviewPage();
-      //       },
-      //     ),
-      //   ],
-      // ),
+          ]
+      ),
     ],
-    //   routes: [
-    //     /// sub Page를 설정할수 있다.
-    //     GoRoute(
-    //       path: 'chatRoom',
-    //       name: 'chatRoom',
-    //       builder: (BuildContext context, GoRouterState state) {
-    //         return const ReviewPage();
-    //       },
-    //     ),
-    //   ],
-    // ),
-    // ],
-    //redirect: 에서 앱 init되었는지, 로그인 여부, 세팅 등을 체크후 route한다.
+
     redirect: (BuildContext context, GoRouterState state) {
       const homeLocation = '/home';
       const loginLocation = '/loginScreen';
@@ -541,4 +444,39 @@ class AppRouter {
       }
     },
   );
+}
+
+class GoRouterObserver extends NavigatorObserver {
+  final Ref ref;
+
+  GoRouterObserver({
+    required this.ref,
+  });
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('MyTest didPush: $route');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('MyTest didPop: $route / $previousRoute');
+    if(route.settings.name == 'home' || previousRoute?.settings.name == 'home') {
+      checkNewNotification();
+    }
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('MyTest didRemove: $route');
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    print('MyTest didReplace: $newRoute');
+  }
+
+  void checkNewNotification() {
+    ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -7,17 +8,22 @@ import 'package:pet_mobile_social_flutter/models/search/search_response_model.da
 import 'package:pet_mobile_social_flutter/services/my_page/block/block_service.dart';
 
 class BlockRepository {
-  final BlockService _blockService =
-      BlockService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final BlockService _blockService; //= BlockService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+
+  final Dio dio;
+
+  BlockRepository({
+    required this.dio,
+  }) {
+    _blockService = BlockService(dio, baseUrl: baseUrl);
+  }
 
   Future<SearchResponseModel> getBlockSearchList({
     required int memberIdx,
     required int page,
     required String searchWord,
   }) async {
-    SearchResponseModel? searchResponseModel = await _blockService
-        .getBlockSearchList(memberIdx, page, searchWord)
-        .catchError((Object obj) async {});
+    SearchResponseModel? searchResponseModel = await _blockService.getBlockSearchList(memberIdx, page, searchWord).catchError((Object obj) async {});
 
     if (searchResponseModel == null) {
       return SearchResponseModel(
@@ -54,9 +60,7 @@ class BlockRepository {
     required int memberIdx,
     required int page,
   }) async {
-    SearchResponseModel? searchResponseModel = await _blockService
-        .getBlockList(memberIdx, page)
-        .catchError((Object obj) async {});
+    SearchResponseModel? searchResponseModel = await _blockService.getBlockList(memberIdx, page).catchError((Object obj) async {});
 
     if (searchResponseModel == null) {
       return SearchResponseModel(
@@ -93,9 +97,7 @@ class BlockRepository {
     required int blockIdx,
     required int memberIdx,
   }) async {
-    ResponseModel? blockResponseModel = await _blockService
-        .deleteBlock(blockIdx, memberIdx)
-        .catchError((Object obj) async {});
+    ResponseModel? blockResponseModel = await _blockService.deleteBlock(blockIdx, memberIdx).catchError((Object obj) async {});
 
     if (blockResponseModel == null) {
       throw "error";
@@ -112,8 +114,7 @@ class BlockRepository {
       "memberIdx": memberIdx,
     };
 
-    ResponseModel? followResponseModel =
-        await _blockService.postBlock(blockIdx, body);
+    ResponseModel? followResponseModel = await _blockService.postBlock(blockIdx, body);
 
     if (followResponseModel == null) {
       throw "error";

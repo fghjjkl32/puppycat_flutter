@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_response_model.dart';
@@ -12,28 +13,21 @@ import 'package:pet_mobile_social_flutter/models/policy/policy_response_model.da
 import 'package:pet_mobile_social_flutter/services/notification/notification_service.dart';
 import 'package:pet_mobile_social_flutter/services/policy/policy_service.dart';
 
-final notificationRepositoryProvider =
-    Provider.autoDispose((ref) => NotificationRepository());
+// final notificationRepositoryProvider = Provider.autoDispose((ref) => NotificationRepository());
 
 class NotificationRepository {
-  final NotificationService _notificationService =
-      NotificationService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  final Dio dio;
 
-  // Future<List<NotificationListItemModel>> getNotifications(int memberIdx, [int page = 1, int? type, int limit = 10]) async {
-  //   NotificationResponseModel? notificationResponseModel = await _notificationService.getNotifications(memberIdx, page, limit);
-  //
-  //   if(notificationResponseModel == null) {
-  //     ///NOTE
-  //     ///204  케이스
-  //     ///  or Error 인데  Error 핸들링 필요, 우선은 204라고만 가정
-  //     return [];
-  //   }
-  //
-  //   return notificationResponseModel.data.list;
-  // }
+  NotificationRepository({
+    required this.dio,
+  }) {
+    _notificationService = NotificationService(dio, baseUrl: baseUrl);
+  }
 
-  Future<NotificationDataListModel> getNotifications(int memberIdx,
-      [int page = 1, int? type, int limit = 10]) async {
+  late final NotificationService _notificationService; // = NotificationService(dio, baseUrl: baseUrl);
+
+
+  Future<NotificationDataListModel> getNotifications(int memberIdx, [int page = 1, int? type, int limit = 10]) async {
     Map<String, dynamic> queries = {
       'memberIdx': memberIdx,
       'page': page,
@@ -45,8 +39,7 @@ class NotificationRepository {
     }
 
     // NotificationResponseModel? notificationResponseModel = await _notificationService.getNotifications(memberIdx, page, limit);
-    NotificationResponseModel? notificationResponseModel =
-        await _notificationService.getNotifications(queries);
+    NotificationResponseModel? notificationResponseModel = await _notificationService.getNotifications(queries);
 
     if (notificationResponseModel == null) {
       ///NOTE
@@ -75,5 +68,22 @@ class NotificationRepository {
     }
 
     return notificationResponseModel.data;
+  }
+
+  Future<bool> checkNewNotifications(int memberIdx) async {
+    ResponseModel? result = await _notificationService.checkNewNotifications(memberIdx);
+    if(result == null) {
+      ///TODO
+      ///errorHandling해서 진짜 오류가 아니면  true
+      print('asdasdasd');
+      return false;
+    }
+
+    print('result!.result ${result!.result}');
+    if(result!.result) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
@@ -53,29 +54,29 @@ class FirstFeedState extends _$FirstFeedState {
       FeedResponseModel searchResult = feedNullResponseModel;
 
       if (contentType == "myContent") {
-        searchResult = await FeedRepository().getMyContentsDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "myTagContent") {
-        searchResult = await FeedRepository().getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "userContent") {
-        searchResult = await FeedRepository().getContentDetail(loginMemberIdx: loginMemberIdx, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx, contentIdx: contentIdx!);
       } else if (contentType == "userTagContent") {
-        searchResult = await FeedRepository().getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "myLikeContent") {
-        searchResult = await FeedRepository().getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "mySaveContent") {
-        searchResult = await FeedRepository().getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "myDetailContent") {
-        searchResult = await FeedRepository().getMyContentsDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "myKeepContent") {
-        searchResult = await KeepContentsRepository().getMyKeepContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await KeepContentsRepository(dio: ref.read(dioProvider)).getMyKeepContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "searchContent") {
-        searchResult = await FeedRepository().getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "popularWeekContent") {
-        searchResult = await FeedRepository().getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "popularHourContent") {
-        searchResult = await FeedRepository().getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "notificationContent") {
-        searchResult = await FeedRepository().getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       }
 
       memberInfo = searchResult.data.memberInfo;
@@ -136,7 +137,7 @@ class FirstFeedState extends _$FirstFeedState {
     required memberIdx,
     required followIdx,
   }) async {
-    final result = await FollowRepository().postFollow(memberIdx: memberIdx, followIdx: followIdx);
+    final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     state.itemList![0] = state.itemList![0].copyWith(
       followState: 1,
@@ -150,7 +151,7 @@ class FirstFeedState extends _$FirstFeedState {
     required memberIdx,
     required followIdx,
   }) async {
-    final result = await FollowRepository().deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+    final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     state.itemList![0] = state.itemList![0].copyWith(
       followState: 0,

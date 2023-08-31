@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
@@ -37,7 +38,7 @@ class PopularWeekFeedState extends _$PopularWeekFeedState {
       _apiStatus = ListAPIStatus.loading;
 
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-      var feedResult = await FeedRepository().getPopularWeekDetailList(
+      var feedResult = await FeedRepository(dio: ref.read(dioProvider)).getPopularWeekDetailList(
         loginMemberIdx: loginMemberIdx,
         page: pageKey,
       );

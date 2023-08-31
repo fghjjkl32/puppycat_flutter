@@ -25,20 +25,22 @@ import 'package:pet_mobile_social_flutter/services/login/social_login/social_log
 //   return ref.read(accountRepositoryProvider).restoreAccount(restoreInfo.$1, restoreInfo.$2);
 // });
 
-final loginRepositoryProvider = StateProvider.family<LoginRepository, String>(
-    (ref, provider) => LoginRepository(provider: provider));
+// final loginRepositoryProvider = StateProvider.family<LoginRepository, String>(
+//     (ref, provider) => LoginRepository(provider: provider));
 
 class LoginRepository {
-  final LoginService _loginService =
-      LoginService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final LoginService _loginService; // = LoginService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
   late SocialLoginService? _socialLoginService;
   final String provider;
+  final Dio dio;
 
   // late UserModel? userModel;
 
   LoginRepository({
     required this.provider,
+    required this.dio,
   }) {
+    _loginService = LoginService(dio, baseUrl: baseUrl);
     _socialLoginService = _setSocialLoginService(provider);
   }
 
@@ -74,9 +76,7 @@ class LoginRepository {
 
       // var isNeedSignUp = false;
       LoginStatus loginStatus = LoginStatus.success;
-      ResponseModel? result = await _loginService
-          .socialLogin(reqModel.toJson())
-          .catchError((Object obj) async {
+      ResponseModel? result = await _loginService.socialLogin(reqModel.toJson()).catchError((Object obj) async {
         (ResponseModel?, LoginStatus) errorResult = await errorHandler(obj);
         var responseModel = errorResult.$1;
         loginStatus = errorResult.$2;
@@ -99,10 +99,7 @@ class LoginRepository {
       print('result : $result');
 
       print('loginStatus 2 $loginStatus');
-      userModel = userModel.copyWith(
-          loginStatus: loginStatus,
-          idx: int.parse(_getMemberIdx(result) ?? '0'),
-          appKey: appKey);
+      userModel = userModel.copyWith(loginStatus: loginStatus, idx: int.parse(_getMemberIdx(result) ?? '0'), appKey: appKey);
 
       return userModel;
     } else {
@@ -136,9 +133,7 @@ class LoginRepository {
 
     // var isNeedSignUp = false;
     LoginStatus loginStatus = LoginStatus.success;
-    ResponseModel? result = await _loginService
-        .socialLogin(reqModel.toJson())
-        .catchError((Object obj) async {
+    ResponseModel? result = await _loginService.socialLogin(reqModel.toJson()).catchError((Object obj) async {
       (ResponseModel?, LoginStatus) errorResult = await errorHandler(obj);
       var responseModel = errorResult.$1;
       loginStatus = errorResult.$2;

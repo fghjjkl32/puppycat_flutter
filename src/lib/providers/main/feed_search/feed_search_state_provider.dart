@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
@@ -6,14 +7,17 @@ import 'package:riverpod/riverpod.dart';
 
 final feedSearchStateProvider =
     StateNotifierProvider<FeedSearchStateNotifier, ContentDataListModel>((ref) {
-  return FeedSearchStateNotifier();
+  return FeedSearchStateNotifier(ref);
 });
 
 class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
-  FeedSearchStateNotifier() : super(const ContentDataListModel());
+  FeedSearchStateNotifier(this.ref) : super(const ContentDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
+
+  final Ref ref;
+
 
   final Map<String, ContentDataListModel> searchStateMap = {};
 
@@ -29,7 +33,7 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await FeedRepository().getUserHashtagContentList(
+    final lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentList(
         memberIdx: memberIdx, page: page, searchWord: searchWord);
 
     maxPages = lists.data.params!.pagination!.endPage!;
@@ -74,7 +78,7 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
     state = state.copyWith(
         isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await FeedRepository().getUserHashtagContentList(
+    final lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentList(
         memberIdx: memberIdx, page: state.page + 1, searchWord: searchWord);
 
     if (lists == null) {
