@@ -53,8 +53,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   void initState() {
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
-c
-    ref.read(feedListStatecProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+
+    ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
     ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
 
     commentController.addListener(_commentScrollListener);
