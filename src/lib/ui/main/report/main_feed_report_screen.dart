@@ -10,7 +10,7 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 
 enum ReportSelectEnum {
   adOrPromotion,
@@ -174,7 +174,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                                           reportType: "comment",
                                         )
                                     : await ref
-                                        .watch(feedDetailStateProvider.notifier)
+                                        .watch(feedListStateProvider.notifier)
                                         .postContentReport(
                                           loginMemberIdx:
                                               ref.watch(userModelProvider)!.idx,
@@ -206,7 +206,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                                                     : "contents",
                                               )
                                           : await ref
-                                              .watch(feedDetailStateProvider
+                                              .watch(feedListStateProvider
                                                   .notifier)
                                               .deleteContentReport(
                                                 loginMemberIdx: ref

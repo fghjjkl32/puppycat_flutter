@@ -20,7 +20,6 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
 

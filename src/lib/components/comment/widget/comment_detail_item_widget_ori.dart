@@ -20,7 +20,6 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -85,8 +84,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                             ),
                           ),
                         )
-                      : context.push(
-                          "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
+                      : context.push("/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
                 },
                 child: getProfileAvatar(profileImage!, 30.w, 30.h),
               ),
@@ -101,9 +99,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                       onDoubleTap: () {
                         isLike
                             ? null
-                            : ref
-                                .watch(commentStateProvider.notifier)
-                                .postCommentLike(
+                            : ref.watch(commentStateProvider.notifier).postCommentLike(
                                   commentIdx: commentIdx,
                                   memberIdx: ref.read(userModelProvider)!.idx,
                                   contentsIdx: contentIdx,
@@ -117,8 +113,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         nip: BubbleNip.leftTop,
                         nipOffset: 15.h,
                         color: kNeutralColor200,
-                        padding: BubbleEdges.only(
-                            left: 12.w, right: 12.w, top: 10.h, bottom: 12.h),
+                        padding: BubbleEdges.only(left: 12.w, right: 12.w, top: 10.h, bottom: 12.h),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -127,19 +122,16 @@ class CommentDetailItemWidget extends ConsumerWidget {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    ref.read(userModelProvider)!.idx ==
-                                            memberIdx
+                                    ref.read(userModelProvider)!.idx == memberIdx
                                         ? Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MyPageMainScreen(
+                                              builder: (context) => MyPageMainScreen(
                                                 oldMemberIdx: oldMemberIdx,
                                               ),
                                             ),
                                           )
-                                        : context.push(
-                                            "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
+                                        : context.push("/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
                                   },
                                   child: Row(
                                     children: [
@@ -158,8 +150,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                           : Container(),
                                       Text(
                                         name,
-                                        style: kBody12SemiBoldStyle.copyWith(
-                                            color: kTextSubTitleColor),
+                                        style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                                       ),
                                     ],
                                   ),
@@ -168,79 +159,47 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                   children: [
                                     Text(
                                       displayedAt(time),
-                                      style: kBody11RegularStyle.copyWith(
-                                          color: kTextBodyColor),
+                                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        memberIdx ==
-                                                ref.read(userModelProvider)!.idx
+                                        memberIdx == ref.read(userModelProvider)!.idx
                                             ? showCustomModalBottomSheet(
                                                 context: context,
                                                 widget: Column(
                                                   children: [
                                                     BottomSheetButtonItem(
                                                       icon: const Icon(
-                                                        Puppycat_social
-                                                            .icon_modify,
+                                                        Puppycat_social.icon_modify,
                                                       ),
                                                       title: '수정하기',
-                                                      titleStyle:
-                                                          kButton14BoldStyle
-                                                              .copyWith(
-                                                                  color:
-                                                                      kBadgeColor),
+                                                      titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () async {
                                                         context.pop();
 
-                                                        final commentHeaderState =
-                                                            ref.watch(
-                                                                commentHeaderProvider
-                                                                    .notifier);
+                                                        final commentHeaderState = ref.watch(commentHeaderProvider.notifier);
 
                                                         // context.pop();
 
-                                                        commentHeaderState
-                                                            .addEditCommentHeader(
-                                                                comment,
-                                                                commentIdx);
+                                                        commentHeaderState.addEditCommentHeader(comment, commentIdx);
 
-                                                        commentHeaderState
-                                                            .setHasInput(true);
+                                                        commentHeaderState.setHasInput(true);
 
-                                                        commentHeaderState
-                                                            .setControllerValue(
-                                                                replaceMentionsWithNicknamesInContentAsString(
-                                                                    comment,
-                                                                    mentionListData));
+                                                        commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(comment, mentionListData));
                                                       },
                                                     ),
                                                     BottomSheetButtonItem(
                                                       icon: const Icon(
-                                                        Puppycat_social
-                                                            .icon_delete_small,
+                                                        Puppycat_social.icon_delete_small,
                                                         color: kBadgeColor,
                                                       ),
                                                       title: '삭제하기',
-                                                      titleStyle:
-                                                          kButton14BoldStyle
-                                                              .copyWith(
-                                                                  color:
-                                                                      kBadgeColor),
+                                                      titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () async {
-                                                        final result = await ref
-                                                            .watch(
-                                                                commentStateProvider
-                                                                    .notifier)
-                                                            .deleteContents(
-                                                              memberIdx: ref
-                                                                  .read(
-                                                                      userModelProvider)!
-                                                                  .idx,
-                                                              contentsIdx:
-                                                                  contentIdx,
-                                                              commentIdx:
-                                                                  commentIdx,
+                                                        final result = await ref.watch(commentStateProvider.notifier).deleteContents(
+                                                              memberIdx: ref.read(userModelProvider)!.idx,
+                                                              contentsIdx: contentIdx,
+                                                              commentIdx: commentIdx,
                                                             );
 
                                                         if (result.result) {
@@ -257,107 +216,70 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                   children: [
                                                     BottomSheetButtonItem(
                                                       icon: const Icon(
-                                                        Puppycat_social
-                                                            .icon_user_block_ac,
+                                                        Puppycat_social.icon_user_block_ac,
                                                       ),
                                                       title: '차단하기',
-                                                      titleStyle: kButton14BoldStyle
-                                                          .copyWith(
-                                                              color:
-                                                                  kTextSubTitleColor),
+                                                      titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                                       onTap: () async {
                                                         context.pop();
 
                                                         showDialog(
                                                           context: context,
-                                                          builder: (BuildContext
-                                                              context) {
+                                                          builder: (BuildContext context) {
                                                             return CustomDialog(
-                                                                content:
-                                                                    Padding(
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          vertical:
-                                                                              24.0.h),
+                                                                content: Padding(
+                                                                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
                                                                   child: Column(
                                                                     children: [
                                                                       Text(
                                                                         "‘${name}’님을\n차단하시겠어요?",
-                                                                        style: kBody16BoldStyle.copyWith(
-                                                                            color:
-                                                                                kTextTitleColor),
-                                                                        textAlign:
-                                                                            TextAlign.center,
+                                                                        style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                                        textAlign: TextAlign.center,
                                                                       ),
                                                                       SizedBox(
-                                                                        height:
-                                                                            8.h,
+                                                                        height: 8.h,
                                                                       ),
                                                                       Text(
                                                                         "‘${name}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
-                                                                        style: kBody12RegularStyle.copyWith(
-                                                                            color:
-                                                                                kTextBodyColor),
-                                                                        textAlign:
-                                                                            TextAlign.center,
+                                                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                                        textAlign: TextAlign.center,
                                                                       ),
                                                                       SizedBox(
-                                                                        height:
-                                                                            8.h,
+                                                                        height: 8.h,
                                                                       ),
                                                                       Text(
                                                                         " ‘${name}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
-                                                                        style: kBody12RegularStyle.copyWith(
-                                                                            color:
-                                                                                kTextBodyColor),
-                                                                        textAlign:
-                                                                            TextAlign.center,
+                                                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                                        textAlign: TextAlign.center,
                                                                       ),
                                                                     ],
                                                                   ),
                                                                 ),
-                                                                confirmTap:
-                                                                    () async {
+                                                                confirmTap: () async {
                                                                   context.pop();
 
-                                                                  final result = await ref
-                                                                      .read(commentStateProvider
-                                                                          .notifier)
-                                                                      .postBlock(
-                                                                        memberIdx: ref
-                                                                            .watch(userModelProvider)!
-                                                                            .idx,
-                                                                        blockIdx:
-                                                                            memberIdx,
-                                                                        contentsIdx:
-                                                                            contentIdx,
+                                                                  final result = await ref.read(commentStateProvider.notifier).postBlock(
+                                                                        memberIdx: ref.watch(userModelProvider)!.idx,
+                                                                        blockIdx: memberIdx,
+                                                                        contentsIdx: contentIdx,
                                                                       );
 
-                                                                  if (result
-                                                                      .result) {
-                                                                    context
-                                                                        .pop();
+                                                                  if (result.result) {
+                                                                    context.pop();
 
                                                                     toast(
-                                                                      context:
-                                                                          context,
-                                                                      text:
-                                                                          "‘${name}’님을 차단하였습니다.",
-                                                                      type: ToastType
-                                                                          .purple,
+                                                                      context: context,
+                                                                      text: "‘${name}’님을 차단하였습니다.",
+                                                                      type: ToastType.purple,
                                                                     );
                                                                   }
                                                                 },
                                                                 cancelTap: () {
                                                                   context.pop();
                                                                 },
-                                                                confirmWidget:
-                                                                    Text(
+                                                                confirmWidget: Text(
                                                                   "유저 차단",
-                                                                  style: kButton14MediumStyle
-                                                                      .copyWith(
-                                                                          color:
-                                                                              kBadgeColor),
+                                                                  style: kButton14MediumStyle.copyWith(color: kBadgeColor),
                                                                 ));
                                                           },
                                                         );
@@ -365,20 +287,14 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                     ),
                                                     BottomSheetButtonItem(
                                                       icon: const Icon(
-                                                        Puppycat_social
-                                                            .icon_report1,
+                                                        Puppycat_social.icon_report1,
                                                         color: kBadgeColor,
                                                       ),
                                                       title: '신고하기',
-                                                      titleStyle:
-                                                          kButton14BoldStyle
-                                                              .copyWith(
-                                                                  color:
-                                                                      kBadgeColor),
+                                                      titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () {
                                                         context.pop();
-                                                        context.push(
-                                                            "/home/report/true/$commentIdx");
+                                                        context.push("/home/report/true/$commentIdx");
                                                       },
                                                     ),
                                                   ],
@@ -401,18 +317,15 @@ class CommentDetailItemWidget extends ConsumerWidget {
                               alignment: Alignment.centerLeft,
                               child: RichText(
                                 text: TextSpan(
-                                  children:
-                                      replaceMentionsWithNicknamesInContent(
+                                  children: replaceMentionsWithNicknamesInContent(
                                     comment,
                                     mentionListData,
                                     context,
-                                    kBody11RegularStyle.copyWith(
-                                        color: kSecondaryColor),
+                                    kBody11RegularStyle.copyWith(color: kSecondaryColor),
                                     ref,
                                     oldMemberIdx,
                                   ),
-                                  style: kBody11RegularStyle.copyWith(
-                                      color: kTextTitleColor),
+                                  style: kBody11RegularStyle.copyWith(color: kTextTitleColor),
                                 ),
                               ),
                             ),
@@ -427,12 +340,9 @@ class CommentDetailItemWidget extends ConsumerWidget {
                           child: isLike
                               ? InkWell(
                                   onTap: () {
-                                    ref
-                                        .watch(commentStateProvider.notifier)
-                                        .deleteCommentLike(
+                                    ref.watch(commentStateProvider.notifier).deleteCommentLike(
                                           commentIdx: commentIdx,
-                                          memberIdx:
-                                              ref.read(userModelProvider)!.idx,
+                                          memberIdx: ref.read(userModelProvider)!.idx,
                                           contentsIdx: contentIdx,
                                         );
                                   },
@@ -443,12 +353,9 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                 )
                               : InkWell(
                                   onTap: () {
-                                    ref
-                                        .watch(commentStateProvider.notifier)
-                                        .postCommentLike(
+                                    ref.watch(commentStateProvider.notifier).postCommentLike(
                                           commentIdx: commentIdx,
-                                          memberIdx:
-                                              ref.read(userModelProvider)!.idx,
+                                          memberIdx: ref.read(userModelProvider)!.idx,
                                           contentsIdx: contentIdx,
                                         );
                                   },
@@ -460,29 +367,21 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         ),
                         Text(
                           '$likeCount',
-                          style: kBody11SemiBoldStyle.copyWith(
-                              color: kTextBodyColor),
+                          style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                         ),
                         GestureDetector(
                           onTap: () {
                             if (replies != null) {
-                              ref
-                                  .watch(commentHeaderProvider.notifier)
-                                  .addReplyCommentHeader(name, commentIdx);
-                              ref
-                                  .watch(commentHeaderProvider.notifier)
-                                  .setHasInput(true);
+                              ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, commentIdx);
+                              ref.watch(commentHeaderProvider.notifier).setHasInput(true);
                             } else {
-                              ref
-                                  .watch(commentHeaderProvider.notifier)
-                                  .addReplyCommentHeader(name, parentIdx);
+                              ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, parentIdx);
                             }
                           },
                           child: Row(
                             children: [
                               Padding(
-                                padding:
-                                    EdgeInsets.only(left: 12.0.w, right: 2.w),
+                                padding: EdgeInsets.only(left: 12.0.w, right: 2.w),
                                 child: const Icon(
                                   Puppycat_social.icon_comment_comment,
                                   color: kTextBodyColor,
@@ -490,8 +389,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                               ),
                               Text(
                                 '답글쓰기',
-                                style: kBody11SemiBoldStyle.copyWith(
-                                    color: kTextBodyColor),
+                                style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                               ),
                             ],
                           ),
@@ -530,11 +428,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                     padding: const EdgeInsets.only(top: 10.0),
                     child: ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: ref
-                              .watch(commentStateProvider.select((state) =>
-                                  state.list
-                                      .firstWhere((c) => c.idx == commentIdx)))
-                              .showAllReplies
+                      itemCount: ref.watch(commentStateProvider.select((state) => state.list.firstWhere((c) => c.idx == commentIdx))).showAllReplies
                           ? replies!.list.length
                           : replies!.list.length > 2
                               ? 2
@@ -543,8 +437,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         return CommentDetailItemWidget(
                           parentIdx: replies!.list[index].parentIdx,
                           commentIdx: replies!.list[index].idx,
-                          profileImage: replies!.list[index].url ??
-                              'assets/image/feed/image/sample_image1.png',
+                          profileImage: replies!.list[index].url ?? 'assets/image/feed/image/sample_image1.png',
                           name: replies!.list[index].nick,
                           comment: replies!.list[index].contents,
                           isSpecialUser: replies!.list[index].isBadge == 1,
@@ -555,8 +448,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                           contentIdx: replies!.list[index].contentsIdx,
                           isLike: replies!.list[index].likeState == 1,
                           memberIdx: replies!.list[index].memberIdx,
-                          mentionListData:
-                              replies!.list[index].mentionList ?? [],
+                          mentionListData: replies!.list[index].mentionList ?? [],
                           oldMemberIdx: oldMemberIdx,
                         );
                       },

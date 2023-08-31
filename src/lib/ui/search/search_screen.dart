@@ -53,24 +53,15 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
     profileScrollController.addListener(_profileScrollListener);
 
     _searchController.addListener(() {
-      ref
-          .watch(fullSearchStateProvider.notifier)
-          .searchQuery
-          .add(_searchController.text);
+      ref.watch(fullSearchStateProvider.notifier).searchQuery.add(_searchController.text);
     });
 
     _searchController.addListener(() {
-      ref
-          .watch(tagSearchStateProvider.notifier)
-          .searchQuery
-          .add(_searchController.text);
+      ref.watch(tagSearchStateProvider.notifier).searchQuery.add(_searchController.text);
     });
 
     _searchController.addListener(() {
-      ref
-          .watch(profileSearchStateProvider.notifier)
-          .searchQuery
-          .add(_searchController.text);
+      ref.watch(profileSearchStateProvider.notifier).searchQuery.add(_searchController.text);
     });
 
     _searchController.addListener(() {
@@ -87,26 +78,17 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _tagScrollListener() {
-    if (tagScrollController.position.pixels >
-        tagScrollController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
+    if (tagScrollController.position.pixels > tagScrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (tagOldLength == ref.read(tagSearchStateProvider).list.length) {
-        ref
-            .read(tagSearchStateProvider.notifier)
-            .loadMoreTagSearchList(ref.read(userModelProvider)!.idx);
+        ref.read(tagSearchStateProvider.notifier).loadMoreTagSearchList(ref.read(userModelProvider)!.idx);
       }
     }
   }
 
   void _profileScrollListener() {
-    if (profileScrollController.position.pixels >
-        profileScrollController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
-      if (profileOldLength ==
-          ref.read(profileSearchStateProvider).list.length) {
-        ref
-            .read(profileSearchStateProvider.notifier)
-            .loadMoreNickSearchList(ref.read(userModelProvider)!.idx);
+    if (profileScrollController.position.pixels > profileScrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
+      if (profileOldLength == ref.read(profileSearchStateProvider).list.length) {
+        ref.read(profileSearchStateProvider.notifier).loadMoreNickSearchList(ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -145,8 +127,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
             decoration: InputDecoration(
               filled: true,
               fillColor: kNeutralColor200,
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
               border: OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius: BorderRadius.circular(100.0),
@@ -168,8 +149,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
               ),
               suffixIcon: _searchController.text.isEmpty
                   ? const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Icon(
                         Puppycat_social.icon_search_medium,
                         color: kNeutralColor600,
@@ -180,8 +160,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                         _searchController.text = "";
                       },
                       child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 8.0),
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                         child: Icon(
                           Puppycat_social.icon_close_large,
                           color: kNeutralColor600,
@@ -239,34 +218,33 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                   ? TabBarView(
                       children: [
                         Consumer(builder: (ctx, ref, child) {
-                          final fullSearchState =
-                              ref.watch(fullSearchStateProvider);
-                          final isLoadMoreError =
-                              fullSearchState.isLoadMoreError;
+                          final fullSearchState = ref.watch(fullSearchStateProvider);
+                          final isLoadMoreError = fullSearchState.isLoadMoreError;
                           final isLoadMoreDone = fullSearchState.isLoadMoreDone;
                           final isLoading = fullSearchState.isLoading;
                           final nickList = fullSearchState.nick_list;
                           final tagList = fullSearchState.tag_list;
                           final bestList = fullSearchState.best_list;
 
+                          print(fullSearchState);
+                          print(fullSearchState);
+                          print(fullSearchState);
+
                           if (tagList!.isEmpty && nickList!.isEmpty) {
                             return ListView(
                               children: [
                                 Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 80.0),
+                                    padding: const EdgeInsets.symmetric(vertical: 80.0),
                                     child: Text(
                                       "'${_searchController.text}'에 대한\n검색 내용이 없습니다.",
                                       textAlign: TextAlign.center,
-                                      style: kBody12RegularStyle.copyWith(
-                                          color: kTextBodyColor),
+                                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8.0, horizontal: 12.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                                   child: Divider(
                                     thickness: 1.h,
                                     height: 1.h,
@@ -285,8 +263,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       ),
                                       child: Text(
                                         "지금 많이 찾고 있어요!",
-                                        style: kTitle16ExtraBoldStyle.copyWith(
-                                            color: kTextTitleColor),
+                                        style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                                       ),
                                     ),
                                     Padding(
@@ -299,38 +276,28 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                           (int index) {
                                             return ElevatedButton(
                                               onPressed: () async {
-                                                final dbHelper =
-                                                    ref.read(dbHelperProvider);
-                                                final hashtag =
-                                                    SearchesCompanion(
-                                                  name: Value(bestList[index]
-                                                      .searchWord!),
-                                                  content:
-                                                      const Value("hashtag"),
-                                                  created:
-                                                      Value(DateTime.now()),
+                                                final dbHelper = ref.read(dbHelperProvider);
+                                                final hashtag = SearchesCompanion(
+                                                  name: Value(bestList[index].searchWord!),
+                                                  content: const Value("hashtag"),
+                                                  created: Value(DateTime.now()),
                                                 );
 
-                                                await dbHelper
-                                                    .insertSearch(hashtag);
+                                                await dbHelper.insertSearch(hashtag);
 
                                                 ref.refresh(searchProvider);
 
-                                                context.push(
-                                                    "/home/search/${bestList[index].searchWord!}/0");
+                                                context.push("/home/search/${bestList[index].searchWord!}/0");
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    kPrimaryLightColor,
+                                                backgroundColor: kPrimaryLightColor,
                                                 shadowColor: Colors.transparent,
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(60),
+                                                  borderRadius: BorderRadius.circular(60),
                                                 ),
                                               ),
                                               child: Row(
-                                                mainAxisSize: MainAxisSize
-                                                    .min, // 여기에 min을 설정
+                                                mainAxisSize: MainAxisSize.min, // 여기에 min을 설정
                                                 children: [
                                                   Image.asset(
                                                     'assets/image/search/icon/icon_tag_large.png',
@@ -343,10 +310,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                   ),
                                                   Text(
                                                     bestList[index].searchWord!,
-                                                    style: kBody13RegularStyle
-                                                        .copyWith(
-                                                            color:
-                                                                kTextSubTitleColor),
+                                                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                                                   ),
                                                 ],
                                               ),
@@ -366,47 +330,34 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemCount: nickList!.length + 1,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
+                                  itemBuilder: (BuildContext context, int index) {
                                     if (index == 0) {
                                       return nickList.isEmpty
                                           ? Container()
                                           : Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
+                                                  padding: const EdgeInsets.only(
                                                     top: 18,
                                                     left: 12,
                                                     right: 12,
                                                     bottom: 6,
                                                   ),
                                                   child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
                                                       Text(
                                                         "프로필",
-                                                        style: kTitle16ExtraBoldStyle
-                                                            .copyWith(
-                                                                color:
-                                                                    kTextTitleColor),
+                                                        style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                                                       ),
                                                       GestureDetector(
                                                         onTap: () {
-                                                          DefaultTabController
-                                                                  .of(context)
-                                                              .animateTo(1);
+                                                          DefaultTabController.of(context).animateTo(1);
                                                         },
                                                         child: Text(
                                                           "전체보기",
-                                                          style: kBody11SemiBoldStyle
-                                                              .copyWith(
-                                                                  color:
-                                                                      kTextBodyColor),
+                                                          style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                                                         ),
                                                       ),
                                                     ],
@@ -421,22 +372,16 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       return Column(
                                         children: [
                                           UserItemWidget(
-                                            profileImage: nickList[index - 1]
-                                                .profileImgUrl,
+                                            profileImage: nickList[index - 1].profileImgUrl,
                                             userName: nickList[index - 1].nick!,
                                             content: nickList[index - 1].intro!,
-                                            isSpecialUser:
-                                                nickList[index - 1].isBadge ==
-                                                    1,
-                                            memberIdx:
-                                                nickList[index - 1].memberIdx!,
+                                            isSpecialUser: nickList[index - 1].isBadge == 1,
+                                            memberIdx: nickList[index - 1].memberIdx!,
                                             contentType: 'profile',
                                             oldMemberIdx: 0,
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 8.0,
-                                                horizontal: 12.0),
+                                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                                             child: Divider(
                                               thickness: 1.h,
                                               height: 1.h,
@@ -447,14 +392,11 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       );
                                     } else {
                                       return UserItemWidget(
-                                        profileImage:
-                                            nickList[index - 1].profileImgUrl,
+                                        profileImage: nickList[index - 1].profileImgUrl,
                                         userName: nickList[index - 1].nick!,
                                         content: nickList[index - 1].intro!,
-                                        isSpecialUser:
-                                            nickList[index - 1].isBadge == 1,
-                                        memberIdx:
-                                            nickList[index - 1].memberIdx!,
+                                        isSpecialUser: nickList[index - 1].isBadge == 1,
+                                        memberIdx: nickList[index - 1].memberIdx!,
                                         contentType: 'profile',
                                         oldMemberIdx: 0,
                                       );
@@ -466,47 +408,34 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                   itemCount: tagList.length + 1,
                                   physics: NeverScrollableScrollPhysics(),
                                   padding: EdgeInsets.only(bottom: 80.h),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
+                                  itemBuilder: (BuildContext context, int index) {
                                     if (index == 0) {
                                       return tagList.isEmpty
                                           ? Container()
                                           : Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
+                                                  padding: const EdgeInsets.only(
                                                     top: 18,
                                                     left: 12,
                                                     right: 12,
                                                     bottom: 6,
                                                   ),
                                                   child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
                                                       Text(
                                                         "해시태그",
-                                                        style: kTitle16ExtraBoldStyle
-                                                            .copyWith(
-                                                                color:
-                                                                    kTextTitleColor),
+                                                        style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                                                       ),
                                                       GestureDetector(
                                                         onTap: () {
-                                                          DefaultTabController
-                                                                  .of(context)
-                                                              .animateTo(2);
+                                                          DefaultTabController.of(context).animateTo(2);
                                                         },
                                                         child: Text(
                                                           "전체보기",
-                                                          style: kBody11SemiBoldStyle
-                                                              .copyWith(
-                                                                  color:
-                                                                      kTextBodyColor),
+                                                          style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                                                         ),
                                                       ),
                                                     ],
@@ -517,8 +446,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                     }
                                     return HashTagItemWidget(
                                       hashTag: tagList[index - 1].hashTag!,
-                                      hashTagCnt: tagList[index - 1]
-                                          .hashTagContentsCnt!,
+                                      hashTagCnt: tagList[index - 1].hashTagContentsCnt!,
                                     );
                                   },
                                 ),
@@ -527,12 +455,9 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                           }
                         }),
                         Consumer(builder: (ctx, ref, child) {
-                          final profileSearchState =
-                              ref.watch(profileSearchStateProvider);
-                          final isLoadMoreError =
-                              profileSearchState.isLoadMoreError;
-                          final isLoadMoreDone =
-                              profileSearchState.isLoadMoreDone;
+                          final profileSearchState = ref.watch(profileSearchStateProvider);
+                          final isLoadMoreError = profileSearchState.isLoadMoreError;
+                          final isLoadMoreDone = profileSearchState.isLoadMoreDone;
                           final isLoading = profileSearchState.isLoading;
                           final bestList = profileSearchState.best_list;
                           final profileList = profileSearchState.list;
@@ -544,19 +469,16 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                               children: [
                                 Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 80.0),
+                                    padding: const EdgeInsets.symmetric(vertical: 80.0),
                                     child: Text(
                                       "'${_searchController.text}'에 대한\n검색 내용이 없습니다.",
                                       textAlign: TextAlign.center,
-                                      style: kBody12RegularStyle.copyWith(
-                                          color: kTextBodyColor),
+                                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8.0, horizontal: 12.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                                   child: Divider(
                                     thickness: 1.h,
                                     height: 1.h,
@@ -575,8 +497,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       ),
                                       child: Text(
                                         "지금 많이 찾고 있어요!",
-                                        style: kTitle16ExtraBoldStyle.copyWith(
-                                            color: kTextTitleColor),
+                                        style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                                       ),
                                     ),
                                     Padding(
@@ -589,38 +510,28 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                           (int index) {
                                             return ElevatedButton(
                                               onPressed: () async {
-                                                final dbHelper =
-                                                    ref.read(dbHelperProvider);
-                                                final hashtag =
-                                                    SearchesCompanion(
-                                                  name: Value(bestList[index]
-                                                      .searchWord!),
-                                                  content:
-                                                      const Value("hashtag"),
-                                                  created:
-                                                      Value(DateTime.now()),
+                                                final dbHelper = ref.read(dbHelperProvider);
+                                                final hashtag = SearchesCompanion(
+                                                  name: Value(bestList[index].searchWord!),
+                                                  content: const Value("hashtag"),
+                                                  created: Value(DateTime.now()),
                                                 );
 
-                                                await dbHelper
-                                                    .insertSearch(hashtag);
+                                                await dbHelper.insertSearch(hashtag);
 
                                                 ref.refresh(searchProvider);
 
-                                                context.push(
-                                                    "/home/search/${bestList[index].searchWord!}/0");
+                                                context.push("/home/search/${bestList[index].searchWord!}/0");
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    kPrimaryLightColor,
+                                                backgroundColor: kPrimaryLightColor,
                                                 shadowColor: Colors.transparent,
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(60),
+                                                  borderRadius: BorderRadius.circular(60),
                                                 ),
                                               ),
                                               child: Row(
-                                                mainAxisSize: MainAxisSize
-                                                    .min, // 여기에 min을 설정
+                                                mainAxisSize: MainAxisSize.min, // 여기에 min을 설정
                                                 children: [
                                                   Image.asset(
                                                     'assets/image/search/icon/icon_tag_large.png',
@@ -633,10 +544,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                   ),
                                                   Text(
                                                     bestList[index].searchWord!,
-                                                    style: kBody13RegularStyle
-                                                        .copyWith(
-                                                            color:
-                                                                kTextSubTitleColor),
+                                                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                                                   ),
                                                 ],
                                               ),
@@ -656,12 +564,10 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                               physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (BuildContext context, int index) {
                                 return UserItemWidget(
-                                  profileImage:
-                                      profileList[index].profileImgUrl,
+                                  profileImage: profileList[index].profileImgUrl,
                                   userName: profileList[index].nick!,
                                   content: profileList[index].intro!,
-                                  isSpecialUser:
-                                      profileList[index].isBadge == 1,
+                                  isSpecialUser: profileList[index].isBadge == 1,
                                   memberIdx: profileList[index].memberIdx!,
                                   contentType: 'profile',
                                   oldMemberIdx: 0,
@@ -671,10 +577,8 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                           }
                         }),
                         Consumer(builder: (ctx, ref, child) {
-                          final tagSearchState =
-                              ref.watch(tagSearchStateProvider);
-                          final isLoadMoreError =
-                              tagSearchState.isLoadMoreError;
+                          final tagSearchState = ref.watch(tagSearchStateProvider);
+                          final isLoadMoreError = tagSearchState.isLoadMoreError;
                           final isLoadMoreDone = tagSearchState.isLoadMoreDone;
                           final isLoading = tagSearchState.isLoading;
                           final bestList = tagSearchState.best_list;
@@ -687,19 +591,16 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                               children: [
                                 Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 80.0),
+                                    padding: const EdgeInsets.symmetric(vertical: 80.0),
                                     child: Text(
                                       "'${_searchController.text}'에 대한\n검색 내용이 없습니다.",
                                       textAlign: TextAlign.center,
-                                      style: kBody12RegularStyle.copyWith(
-                                          color: kTextBodyColor),
+                                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8.0, horizontal: 12.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                                   child: Divider(
                                     thickness: 1.h,
                                     height: 1.h,
@@ -718,8 +619,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       ),
                                       child: Text(
                                         "지금 많이 찾고 있어요!",
-                                        style: kTitle16ExtraBoldStyle.copyWith(
-                                            color: kTextTitleColor),
+                                        style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                                       ),
                                     ),
                                     Padding(
@@ -732,38 +632,28 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                           (int index) {
                                             return ElevatedButton(
                                               onPressed: () async {
-                                                final dbHelper =
-                                                    ref.read(dbHelperProvider);
-                                                final hashtag =
-                                                    SearchesCompanion(
-                                                  name: Value(bestList[index]
-                                                      .searchWord!),
-                                                  content:
-                                                      const Value("hashtag"),
-                                                  created:
-                                                      Value(DateTime.now()),
+                                                final dbHelper = ref.read(dbHelperProvider);
+                                                final hashtag = SearchesCompanion(
+                                                  name: Value(bestList[index].searchWord!),
+                                                  content: const Value("hashtag"),
+                                                  created: Value(DateTime.now()),
                                                 );
 
-                                                await dbHelper
-                                                    .insertSearch(hashtag);
+                                                await dbHelper.insertSearch(hashtag);
 
                                                 ref.refresh(searchProvider);
 
-                                                context.push(
-                                                    "/home/search/${bestList[index].searchWord!}/0");
+                                                context.push("/home/search/${bestList[index].searchWord!}/0");
                                               },
                                               style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    kPrimaryLightColor,
+                                                backgroundColor: kPrimaryLightColor,
                                                 shadowColor: Colors.transparent,
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(60),
+                                                  borderRadius: BorderRadius.circular(60),
                                                 ),
                                               ),
                                               child: Row(
-                                                mainAxisSize: MainAxisSize
-                                                    .min, // 여기에 min을 설정
+                                                mainAxisSize: MainAxisSize.min, // 여기에 min을 설정
                                                 children: [
                                                   Image.asset(
                                                     'assets/image/search/icon/icon_tag_large.png',
@@ -776,10 +666,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                   ),
                                                   Text(
                                                     bestList[index].searchWord!,
-                                                    style: kBody13RegularStyle
-                                                        .copyWith(
-                                                            color:
-                                                                kTextSubTitleColor),
+                                                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                                                   ),
                                                 ],
                                               ),
@@ -800,8 +687,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                               itemBuilder: (BuildContext context, int index) {
                                 return HashTagItemWidget(
                                   hashTag: tagList[index].hashTag!,
-                                  hashTagCnt:
-                                      tagList[index].hashTagContentsCnt!,
+                                  hashTagCnt: tagList[index].hashTagContentsCnt!,
                                 );
                               },
                             );
@@ -831,13 +717,11 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       bottom: 6,
                                     ),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "최근검색어",
-                                          style: kTitle16ExtraBoldStyle
-                                              .copyWith(color: kTextTitleColor),
+                                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                                         ),
                                         GestureDetector(
                                           onTap: () async {
@@ -846,29 +730,20 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                               widget: Column(
                                                 children: [
                                                   Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: 20.h,
-                                                        bottom: 10.h),
+                                                    padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
                                                     child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         Text(
                                                           "최근 검색어를 모두\n삭제하시겠습니까?",
-                                                          style: kBody16BoldStyle
-                                                              .copyWith(
-                                                                  color:
-                                                                      kTextTitleColor),
+                                                          style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                                                         ),
                                                       ],
                                                     ),
                                                   ),
                                                   SizedBox(height: 10.h),
                                                   Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
                                                       GestureDetector(
                                                         onTap: () async {
@@ -877,24 +752,16 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                         child: Container(
                                                           width: 152.w,
                                                           height: 36.h,
-                                                          decoration:
-                                                              const BoxDecoration(
-                                                            color:
-                                                                kNeutralColor300,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .all(
-                                                              Radius.circular(
-                                                                  8.0),
+                                                          decoration: const BoxDecoration(
+                                                            color: kNeutralColor300,
+                                                            borderRadius: BorderRadius.all(
+                                                              Radius.circular(8.0),
                                                             ),
                                                           ),
                                                           child: Center(
                                                             child: Text(
                                                               "취소",
-                                                              style: kButton14BoldStyle
-                                                                  .copyWith(
-                                                                      color:
-                                                                          kTextSubTitleColor),
+                                                              style: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                                             ),
                                                           ),
                                                         ),
@@ -906,34 +773,24 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                         onTap: () async {
                                                           context.pop();
 
-                                                          final dbHelper = ref.read(
-                                                              dbHelperProvider);
-                                                          await dbHelper
-                                                              .deleteAllSearches();
+                                                          final dbHelper = ref.read(dbHelperProvider);
+                                                          await dbHelper.deleteAllSearches();
 
-                                                          ref.refresh(
-                                                              searchProvider);
+                                                          ref.refresh(searchProvider);
                                                         },
                                                         child: Container(
                                                           width: 152.w,
                                                           height: 36.h,
-                                                          decoration:
-                                                              const BoxDecoration(
+                                                          decoration: const BoxDecoration(
                                                             color: kBadgeColor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .all(
-                                                              Radius.circular(
-                                                                  8.0),
+                                                            borderRadius: BorderRadius.all(
+                                                              Radius.circular(8.0),
                                                             ),
                                                           ),
                                                           child: Center(
                                                             child: Text(
                                                               "삭제",
-                                                              style: kButton14BoldStyle
-                                                                  .copyWith(
-                                                                      color:
-                                                                          kNeutralColor100),
+                                                              style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
                                                             ),
                                                           ),
                                                         ),
@@ -946,9 +803,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                           },
                                           child: Text(
                                             "전체 삭제",
-                                            style:
-                                                kBody11SemiBoldStyle.copyWith(
-                                                    color: kTextBodyColor),
+                                            style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                                           ),
                                         ),
                                       ],
@@ -971,25 +826,16 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                 dateTime: search.created!,
                                 oldMemberIdx: 0,
                               );
-                            } else if (search.content == "hashtag" ||
-                                search.content == "search") {
+                            } else if (search.content == "hashtag" || search.content == "search") {
                               return InkWell(
                                 onTap: () {
-                                  search.content == "search"
-                                      ? _searchController.text = search.name!
-                                      : context.push(
-                                          "/home/search/${search.content!}/0");
+                                  search.content == "search" ? _searchController.text = search.name! : context.push("/home/search/${search.content!}/0");
                                 },
                                 child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 12.0.w,
-                                      right: 12.w,
-                                      bottom: 8.h,
-                                      top: 8.h),
+                                  padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
@@ -1001,8 +847,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                 blendMode: BlendMode.srcATop,
                                                 childSaveLayer: true,
                                                 mask: Center(
-                                                  child: search.content! ==
-                                                          "search"
+                                                  child: search.content! == "search"
                                                       ? Image.asset(
                                                           'assets/image/header/icon/small_size/icon_search_medium.png',
                                                           height: 20.h,
@@ -1020,14 +865,11 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                 ),
                                               )),
                                           Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 search.name!,
-                                                style:
-                                                    kBody13BoldStyle.copyWith(
-                                                        color: kTextTitleColor),
+                                                style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                                               ),
                                             ],
                                           ),
@@ -1036,10 +878,8 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       Row(
                                         children: [
                                           Text(
-                                            DateFormat('MM.dd')
-                                                .format(search.created!),
-                                            style: kBadge10MediumStyle.copyWith(
-                                                color: kTextBodyColor),
+                                            DateFormat('MM.dd').format(search.created!),
+                                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                                           ),
                                           SizedBox(
                                             width: 10,
@@ -1048,18 +888,15 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                             padding: const EdgeInsets.all(4.0),
                                             child: GestureDetector(
                                                 onTap: () async {
-                                                  final dbHelper = ref
-                                                      .read(dbHelperProvider);
+                                                  final dbHelper = ref.read(dbHelperProvider);
                                                   // 탭하면 검색 기록을 삭제합니다.
-                                                  await dbHelper
-                                                      .deleteSearch(search);
+                                                  await dbHelper.deleteSearch(search);
 
                                                   // Refresh the provider to trigger the search again
                                                   ref.refresh(searchProvider);
                                                 },
                                                 child: const Icon(
-                                                  Puppycat_social
-                                                      .icon_close_medium,
+                                                  Puppycat_social.icon_close_medium,
                                                   color: kTextBodyColor,
                                                   size: 26,
                                                 )),

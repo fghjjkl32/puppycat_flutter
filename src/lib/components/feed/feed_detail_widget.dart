@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_bottom_icon_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_comment_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_image_detail_widget.dart';
@@ -10,6 +11,7 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 
 class FeedDetailWidget extends ConsumerWidget {
   final String? profileImage;
@@ -18,6 +20,7 @@ class FeedDetailWidget extends ConsumerWidget {
   final int? memberIdx;
   final String contentType;
   final String imgDomain;
+  final int index;
 
   const FeedDetailWidget({
     required this.profileImage,
@@ -26,6 +29,7 @@ class FeedDetailWidget extends ConsumerWidget {
     required this.memberIdx,
     required this.contentType,
     required this.imgDomain,
+    required this.index,
     Key? key,
   }) : super(key: key);
 
@@ -103,6 +107,11 @@ class FeedDetailWidget extends ConsumerWidget {
           padding: EdgeInsets.all(12.0.h),
           child: const Divider(),
         ),
+        if (index != 0 && index % 4 == 0)
+          FeedFollowWidget(
+            popularUserListData: ref.watch(popularUserListStateProvider).list,
+            oldMemberIdx: memberIdx!,
+          ),
       ],
     );
   }

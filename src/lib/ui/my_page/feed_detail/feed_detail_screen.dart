@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_detail_state.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed_search/feed_search_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
@@ -41,57 +45,40 @@ class FeedDetailScreen extends ConsumerStatefulWidget {
 }
 
 class MyPageMainState extends ConsumerState<FeedDetailScreen> {
-  ScrollController contentController = ScrollController();
-  int oldLength = 0;
+  late final PagingController<int, FeedData> _firstFeedPagingController = ref.read(firstFeedStateProvider);
+
+  late final PagingController<int, FeedData> _feedListPagingController = ref.read(feedListStateProvider);
 
   @override
   void initState() {
-    contentController.addListener(contentsScrollListener);
+    ref.read(firstFeedStateProvider.notifier).loginMemberIdx = ref.read(userModelProvider)?.idx;
+    ref.read(feedListStateProvider.notifier).loginMemberIdx = ref.read(userModelProvider)?.idx;
 
-    ref.read(feedDetailStateProvider.notifier).initPosts(
-          loginMemberIdx: ref.read(userModelProvider)?.idx,
-          memberIdx: widget.memberIdx,
-          initPage: 1,
-          contentIdx: widget.contentIdx,
-          contentType: widget.contentType,
-          searchWord: widget.secondTitle,
-        );
+    ref.read(firstFeedStateProvider.notifier).contentType = widget.contentType;
+    ref.read(firstFeedStateProvider.notifier).contentIdx = widget.contentIdx;
+    ref.read(feedListStateProvider.notifier).contentType = widget.contentType;
+    ref.read(feedListStateProvider.notifier).memberIdx = widget.memberIdx;
+    ref.read(feedListStateProvider.notifier).searchWord = widget.secondTitle;
+    ref.read(feedListStateProvider.notifier).idxToRemove = widget.contentIdx;
+
+    _firstFeedPagingController.refresh();
+
+    _feedListPagingController.refresh();
 
     super.initState();
 
     if (widget.isRouteComment) {
       Future(() {
-        context.push(
-            "/home/commentDetail/${widget.contentIdx}/${widget.memberIdx}",
-            extra: {
-              "focusIndex": widget.commentFocusIndex,
-            });
+        context.push("/home/commentDetail/${widget.contentIdx}/${widget.memberIdx}", extra: {
+          "focusIndex": widget.commentFocusIndex,
+        });
       });
       widget.isRouteComment = false;
     }
   }
 
-  void contentsScrollListener() {
-    if (contentController.position.pixels >
-        contentController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
-      if (oldLength ==
-          ref.read(feedDetailStateProvider).feedListState.list.length) {
-        ref.read(feedDetailStateProvider.notifier).loadMorePost(
-              loginMemberIdx: ref.read(userModelProvider)?.idx,
-              memberIdx: widget.memberIdx,
-              contentType: widget.contentType,
-              searchWord: widget.secondTitle,
-            );
-      }
-    }
-  }
-
   @override
   void dispose() {
-    contentController.removeListener(contentsScrollListener);
-    contentController.dispose();
-
     super.dispose();
   }
 
@@ -99,21 +86,13 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        ref
-            .read(feedSearchStateProvider.notifier)
-            .getStateForContent(widget.secondTitle ?? "");
+        ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");
 
-        ref
-            .read(userInformationStateProvider.notifier)
-            .getStateForUserInformation(widget.memberIdx);
+        ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberIdx);
 
-        ref
-            .read(userContentStateProvider.notifier)
-            .getStateForUserContent(widget.memberIdx);
+        ref.read(userContentStateProvider.notifier).getStateForUserContent(widget.memberIdx);
 
-        ref
-            .read(tagContentStateProvider.notifier)
-            .getStateForUserTagContent(widget.memberIdx);
+        ref.read(tagContentStateProvider.notifier).getStateForUserTagContent(widget.memberIdx);
 
         Navigator.of(context).pop();
 
@@ -122,80 +101,120 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
       child: Material(
         child: WillPopScope(
           onWillPop: () async {
-            ref
-                .read(feedSearchStateProvider.notifier)
-                .getStateForContent(widget.secondTitle ?? "");
+            ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");
 
-            ref
-                .read(userInformationStateProvider.notifier)
-                .getStateForUserInformation(widget.memberIdx);
+            ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberIdx);
 
-            ref
-                .read(userContentStateProvider.notifier)
-                .getStateForUserContent(widget.memberIdx);
+            ref.read(userContentStateProvider.notifier).getStateForUserContent(widget.memberIdx);
 
-            ref
-                .read(tagContentStateProvider.notifier)
-                .getStateForUserTagContent(widget.memberIdx);
+            ref.read(tagContentStateProvider.notifier).getStateForUserTagContent(widget.memberIdx);
 
             Navigator.of(context).pop();
             return false;
           },
           child: Consumer(builder: (ctx, ref, child) {
-            final contentState = ref.watch(feedDetailStateProvider);
-            final isLoadMoreError = contentState.feedListState.isLoadMoreError;
-            final isLoadMoreDone = contentState.feedListState.isLoadMoreDone;
-            final popularUserState = ref.watch(popularUserListStateProvider);
-            final isLoading = contentState.feedListState.isLoading;
-            final firstList = contentState.firstFeedState.list;
-            final lists = contentState.feedListState.list;
-
-            oldLength = lists.length ?? 0;
+            final contentState = ref.watch(firstFeedStateProvider.notifier);
+            var apiStatus = contentState.apiStatus;
+            apiStatus = ListAPIStatus.idle;
 
             AppBar appBarWidget() {
-              if (isLoading) {
+              if (apiStatus == ListAPIStatus.loading || apiStatus == ListAPIStatus.idle) {
                 return AppBar(
                   backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                   title: widget.firstTitle == "null"
                       ? Text(
-                          widget.contentType == "searchContent"
-                              ? "#${widget.secondTitle}"
-                              : widget.secondTitle,
+                          widget.contentType == "searchContent" ? "#${widget.secondTitle}" : widget.secondTitle,
                         )
                       : Column(
                           children: [
                             Text(
-                              widget.contentType != "notificationContent"
-                                  ? widget.firstTitle
-                                  : ref
-                                          .read(feedDetailStateProvider)
-                                          .firstFeedState
-                                          .memberInfo?[0]
-                                          .nick ??
-                                      '',
-                              style: kBody11RegularStyle.copyWith(
-                                  color: kTextBodyColor),
+                              widget.contentType != "notificationContent" ? widget.firstTitle : ref.read(firstFeedStateProvider.notifier).memberInfo?[0].nick ?? '',
+                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                             ),
                             Text(widget.secondTitle),
                           ],
                         ),
                   leading: IconButton(
                     onPressed: () {
-                      ref
-                          .read(feedSearchStateProvider.notifier)
-                          .getStateForContent(widget.secondTitle ?? "");
+                      ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");
 
-                      ref
-                          .read(userInformationStateProvider.notifier)
-                          .getStateForUserInformation(widget.memberIdx);
+                      ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberIdx);
 
-                      ref
-                          .read(userContentStateProvider.notifier)
-                          .getStateForUserContent(widget.memberIdx);
+                      ref.read(userContentStateProvider.notifier).getStateForUserContent(widget.memberIdx);
 
-                      ref
-                          .read(tagContentStateProvider.notifier)
-                          .getStateForUserTagContent(widget.memberIdx);
+                      ref.read(tagContentStateProvider.notifier).getStateForUserTagContent(widget.memberIdx);
+                      Navigator.of(context).pop();
+                    },
+                    icon: const Icon(
+                      Puppycat_social.icon_back,
+                      size: 40,
+                    ),
+                  ),
+                );
+              } else if (apiStatus == ListAPIStatus.loaded) {
+                return AppBar(
+                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  actions: [
+                    widget.contentType == "userContent" && ref.watch(firstFeedStateProvider).itemList![0].memberIdx != ref.read(userModelProvider)?.idx
+                        ? ref.watch(firstFeedStateProvider).itemList![0].followState == 1
+                            ? InkWell(
+                                onTap: () {
+                                  ref.read(userModelProvider) == null
+                                      ? context.pushReplacement("/loginScreen")
+                                      : ref.watch(firstFeedStateProvider.notifier).deleteFollow(
+                                            memberIdx: ref.read(userModelProvider)!.idx,
+                                            followIdx: ref.watch(firstFeedStateProvider).itemList![0].memberIdx!,
+                                          );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Text(
+                                    "팔로잉",
+                                    style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor500),
+                                  ),
+                                ),
+                              )
+                            : InkWell(
+                                onTap: () {
+                                  ref.read(userModelProvider) == null
+                                      ? context.pushReplacement("/loginScreen")
+                                      : ref.watch(firstFeedStateProvider.notifier).postFollow(
+                                            memberIdx: ref.read(userModelProvider)!.idx,
+                                            followIdx: ref.watch(firstFeedStateProvider).itemList![0].memberIdx!,
+                                          );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Text(
+                                    "팔로우",
+                                    style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                  ),
+                                ),
+                              )
+                        : Container()
+                  ],
+                  title: widget.firstTitle == "null"
+                      ? Text(
+                          widget.contentType == "searchContent" ? "#${widget.secondTitle}" : widget.secondTitle,
+                        )
+                      : Column(
+                          children: [
+                            Text(
+                              widget.contentType != "notificationContent" ? widget.firstTitle : ref.read(firstFeedStateProvider.notifier).memberInfo?[0].nick ?? '',
+                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                            ),
+                            Text(widget.secondTitle),
+                          ],
+                        ),
+                  leading: IconButton(
+                    onPressed: () {
+                      ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");
+
+                      ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberIdx);
+
+                      ref.read(userContentStateProvider.notifier).getStateForUserContent(widget.memberIdx);
+
+                      ref.read(tagContentStateProvider.notifier).getStateForUserTagContent(widget.memberIdx);
                       Navigator.of(context).pop();
                     },
                     icon: const Icon(
@@ -205,198 +224,62 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                   ),
                 );
               }
-              return AppBar(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                actions: [
-                  widget.contentType == "userContent" &&
-                          contentState.firstFeedState.list[0].memberIdx !=
-                              ref.read(userModelProvider)?.idx
-                      ? contentState.firstFeedState.list[0].followState == 1
-                          ? InkWell(
-                              onTap: () {
-                                ref.read(userModelProvider) == null
-                                    ? context.pushReplacement("/loginScreen")
-                                    : ref
-                                        .watch(feedDetailStateProvider.notifier)
-                                        .deleteFollow(
-                                          memberIdx:
-                                              ref.read(userModelProvider)!.idx,
-                                          followIdx: contentState
-                                              .firstFeedState.list[0].memberIdx,
-                                          contentsIdx: contentState
-                                              .firstFeedState.list[0].idx,
-                                          contentType: widget.contentType,
-                                        );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Text(
-                                  "팔로잉",
-                                  style: kBody12SemiBoldStyle.copyWith(
-                                      color: kNeutralColor500),
-                                ),
-                              ),
-                            )
-                          : InkWell(
-                              onTap: () {
-                                ref.read(userModelProvider) == null
-                                    ? context.pushReplacement("/loginScreen")
-                                    : ref
-                                        .watch(feedDetailStateProvider.notifier)
-                                        .postFollow(
-                                          memberIdx:
-                                              ref.read(userModelProvider)!.idx,
-                                          followIdx: contentState
-                                              .firstFeedState.list[0].memberIdx,
-                                          contentsIdx: contentState
-                                              .firstFeedState.list[0].idx,
-                                          contentType: widget.contentType,
-                                        );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Text(
-                                  "팔로우",
-                                  style: kBody12SemiBoldStyle.copyWith(
-                                      color: kPrimaryColor),
-                                ),
-                              ),
-                            )
-                      : Container()
-                ],
-                title: widget.firstTitle == "null"
-                    ? Text(
-                        widget.contentType == "searchContent"
-                            ? "#${widget.secondTitle}"
-                            : widget.secondTitle,
-                      )
-                    : Column(
-                        children: [
-                          Text(
-                            widget.contentType != "notificationContent"
-                                ? widget.firstTitle
-                                : ref
-                                        .read(feedDetailStateProvider)
-                                        .firstFeedState
-                                        .memberInfo?[0]
-                                        .nick ??
-                                    '',
-                            style: kBody11RegularStyle.copyWith(
-                                color: kTextBodyColor),
-                          ),
-                          Text(widget.secondTitle),
-                        ],
-                      ),
-                leading: IconButton(
-                  onPressed: () {
-                    ref
-                        .read(feedSearchStateProvider.notifier)
-                        .getStateForContent(widget.secondTitle ?? "");
-
-                    ref
-                        .read(userInformationStateProvider.notifier)
-                        .getStateForUserInformation(widget.memberIdx);
-
-                    ref
-                        .read(userContentStateProvider.notifier)
-                        .getStateForUserContent(widget.memberIdx);
-
-                    ref
-                        .read(tagContentStateProvider.notifier)
-                        .getStateForUserTagContent(widget.memberIdx);
-                    Navigator.of(context).pop();
-                  },
-                  icon: const Icon(
-                    Puppycat_social.icon_back,
-                    size: 40,
-                  ),
-                ),
-              );
+              return AppBar();
             }
 
             return Scaffold(
               appBar: appBarWidget(),
-              body: lists.isEmpty && firstList.isEmpty
-                  ? Container()
-                  : ListView.builder(
-                      itemCount: lists.length + (lists.length ~/ 4) + 1,
-                      controller: contentController,
-                      itemBuilder: (BuildContext context, int index) {
-                        int realIndex = index;
-
-                        // 인덱스 조정 로직
-                        if (index > 0) realIndex -= (index - 1) ~/ 4;
-
-                        if (index != 0 && index % 4 == 0) {
-                          return FeedFollowWidget(
-                            popularUserListData: popularUserState.list,
-                            oldMemberIdx: widget.memberIdx,
-                          );
-                        }
-
-                        if (index == 0) {
-                          return FeedDetailWidget(
-                            feedData: firstList[0],
-                            nick: ref
-                                    .watch(feedDetailStateProvider)
-                                    .firstFeedState
-                                    .memberInfo?[0]
-                                    .nick ??
-                                lists[0].memberInfoList?[0].nick,
-                            profileImage: ref
-                                    .watch(feedDetailStateProvider)
-                                    .firstFeedState
-                                    .memberInfo?[0]
-                                    .profileImgUrl ??
-                                "",
-                            memberIdx: ref
-                                    .watch(feedDetailStateProvider)
-                                    .firstFeedState
-                                    .memberInfo?[0]
-                                    .memberIdx ??
-                                lists[0].memberInfoList?[0].memberIdx,
-                            contentType: widget.contentType,
-                            imgDomain: ref
-                                .watch(feedDetailStateProvider)
-                                .firstFeedState
-                                .imgDomain!,
-                          );
-                        } else {
-                          if (widget.contentIdx == lists[realIndex - 1].idx) {
-                            return Container();
-                          } else {
-                            return FeedDetailWidget(
-                              feedData: lists[realIndex - 1],
-                              nick: ref
-                                      .watch(feedDetailStateProvider)
-                                      .feedListState
-                                      .memberInfo?[0]
-                                      .nick ??
-                                  lists[realIndex - 1].memberInfoList?[0].nick,
-                              profileImage: ref
-                                      .watch(feedDetailStateProvider)
-                                      .feedListState
-                                      .memberInfo?[0]
-                                      .profileImgUrl ??
-                                  lists[realIndex - 1]
-                                      .memberInfoList?[0]
-                                      .profileImgUrl,
-                              memberIdx: ref
-                                      .watch(feedDetailStateProvider)
-                                      .firstFeedState
-                                      .memberInfo?[0]
-                                      .memberIdx ??
-                                  lists[0].memberInfoList?[0].memberIdx,
+              body: CustomScrollView(
+                slivers: <Widget>[
+                  PagedSliverList<int, FeedData>(
+                    shrinkWrapFirstPageIndicators: true,
+                    pagingController: _firstFeedPagingController,
+                    builderDelegate: PagedChildBuilderDelegate<FeedData>(
+                      noItemsFoundIndicatorBuilder: (context) {
+                        return const SizedBox.shrink();
+                      },
+                      itemBuilder: (context, item, index) {
+                        return Column(
+                          children: [
+                            FeedDetailWidget(
+                              feedData: item,
+                              nick: item.memberInfoList != null ? item.memberInfoList![0].nick : ref.read(firstFeedStateProvider.notifier).memberInfo?[0].nick,
+                              profileImage: item.memberInfoList != null ? item.memberInfoList![0].profileImgUrl : ref.watch(firstFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
+                              memberIdx: item.memberInfoList != null ? item.memberInfoList![0].memberIdx : ref.read(firstFeedStateProvider.notifier).memberInfo?[0].memberIdx,
                               contentType: widget.contentType,
-                              imgDomain: ref
-                                  .watch(feedDetailStateProvider)
-                                  .firstFeedState
-                                  .imgDomain!,
-                            );
-                          }
-                        }
+                              imgDomain: ref.watch(firstFeedStateProvider.notifier).imgDomain!,
+                              index: index,
+                            ),
+                          ],
+                        );
                       },
                     ),
+                  ),
+                  PagedSliverList<int, FeedData>(
+                    shrinkWrapFirstPageIndicators: true,
+                    pagingController: _feedListPagingController,
+                    builderDelegate: PagedChildBuilderDelegate<FeedData>(
+                      noItemsFoundIndicatorBuilder: (context) {
+                        return const SizedBox.shrink();
+                      },
+                      itemBuilder: (context, item, index) {
+                        return Column(
+                          children: [
+                            FeedDetailWidget(
+                                feedData: item,
+                                nick: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].nick : ref.read(feedListStateProvider.notifier).memberInfo?[0].nick,
+                                profileImage: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].profileImgUrl : ref.watch(feedListStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
+                                memberIdx: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberIdx : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberIdx,
+                                contentType: widget.contentType,
+                                imgDomain: ref.watch(feedListStateProvider.notifier).imgDomain!,
+                                index: index),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             );
           }),
         ),

@@ -6,20 +6,16 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-final fullSearchStateProvider =
-    StateNotifierProvider<FullSearchStateNotifier, SearchDataListModel>((ref) {
-  final loginMemberIdx = ref.watch(userModelProvider)!.idx;
+final fullSearchStateProvider = StateNotifierProvider<FullSearchStateNotifier, SearchDataListModel>((ref) {
+  final loginMemberIdx = ref.watch(userModelProvider)?.idx;
   return FullSearchStateNotifier(loginMemberIdx);
 });
 
 class FullSearchStateNotifier extends StateNotifier<SearchDataListModel> {
-  final int loginMemberIdx;
+  final int? loginMemberIdx;
 
-  FullSearchStateNotifier(this.loginMemberIdx)
-      : super(const SearchDataListModel()) {
-    searchQuery.stream
-        .debounceTime(const Duration(milliseconds: 500))
-        .listen((query) async {
+  FullSearchStateNotifier(this.loginMemberIdx) : super(const SearchDataListModel()) {
+    searchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
       await searchFullList(query);
     });
   }

@@ -17,7 +17,8 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
@@ -42,8 +43,7 @@ class UserMainScreen extends ConsumerStatefulWidget {
   UserMainScreenState createState() => UserMainScreenState();
 }
 
-class UserMainScreenState extends ConsumerState<UserMainScreen>
-    with SingleTickerProviderStateMixin {
+class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
   ScrollController userContentController = ScrollController();
   ScrollController tagContentController = ScrollController();
@@ -57,8 +57,15 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
 
   @override
   void initState() {
+    print(widget.memberIdx);
+    print(widget.memberIdx);
+    print(widget.memberIdx);
+
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
+
+    ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
 
     userContentController.addListener(_userContentsScrollListener);
     tagContentController.addListener(_tagContentsScrollListener);
@@ -71,14 +78,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
     );
 
     Future(() {
-      ref.watch(userInformationStateProvider.notifier).getInitUserInformation(
-          ref.watch(userModelProvider)?.idx, widget.memberIdx);
-      ref
-          .read(userContentStateProvider.notifier)
-          .initPosts(ref.read(userModelProvider)?.idx, widget.memberIdx, 1);
-      ref
-          .read(tagContentStateProvider.notifier)
-          .initPosts(ref.read(userModelProvider)?.idx, widget.memberIdx, 1);
+      ref.watch(userInformationStateProvider.notifier).getInitUserInformation(ref.watch(userModelProvider)?.idx, widget.memberIdx);
+      ref.read(userContentStateProvider.notifier).initPosts(ref.read(userModelProvider)?.idx, widget.memberIdx, 1);
+      ref.read(tagContentStateProvider.notifier).initPosts(ref.read(userModelProvider)?.idx, widget.memberIdx, 1);
     });
 
     super.initState();
@@ -89,8 +91,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
       setState(() {
         appBarColor = kNeutralColor100;
       });
-    } else if (scrollController.offset < 128.h &&
-        appBarColor != Colors.transparent) {
+    } else if (scrollController.offset < 128.h && appBarColor != Colors.transparent) {
       setState(() {
         appBarColor = Colors.transparent;
       });
@@ -98,25 +99,17 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
   }
 
   void _userContentsScrollListener() {
-    if (userContentController.position.pixels >
-        userContentController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
+    if (userContentController.position.pixels > userContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (userOldLength == ref.read(userContentStateProvider).list.length) {
-        ref
-            .read(userContentStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx, widget.memberIdx);
+        ref.read(userContentStateProvider.notifier).loadMorePost(ref.read(userModelProvider)!.idx, widget.memberIdx);
       }
     }
   }
 
   void _tagContentsScrollListener() {
-    if (tagContentController.position.pixels >
-        tagContentController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
+    if (tagContentController.position.pixels > tagContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (tagOldLength == ref.read(tagContentStateProvider).list.length) {
-        ref
-            .read(tagContentStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx, widget.memberIdx);
+        ref.read(tagContentStateProvider.notifier).loadMorePost(ref.read(userModelProvider)!.idx, widget.memberIdx);
       }
     }
   }
@@ -124,9 +117,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
   void _commentScrollListener() {
     if (commentController.position.extentAfter < 200) {
       if (commentOldLength == ref.read(commentStateProvider).list.length) {
-        ref.read(commentStateProvider.notifier).loadMoreComment(
-            ref.watch(commentStateProvider).list[0].contentsIdx,
-            ref.read(userModelProvider)!.idx);
+        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -148,9 +139,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        ref
-            .read(feedDetailStateProvider.notifier)
-            .getStateForUser(widget.oldMemberIdx ?? 0);
+        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
         Navigator.of(context).pop();
 
         return false;
@@ -171,9 +161,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                     title: Text(widget.nick),
                     leading: IconButton(
                       onPressed: () {
-                        ref
-                            .read(feedDetailStateProvider.notifier)
-                            .getStateForUser(widget.oldMemberIdx ?? 0);
+                        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(
@@ -198,14 +187,12 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                 builder: (BuildContext context) {
                                   return CustomDialog(
                                     content: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 24.0.h),
+                                      padding: EdgeInsets.symmetric(vertical: 24.0.h),
                                       child: Column(
                                         children: [
                                           Text(
                                             "‘${widget.nick}’님을\n차단하시겠어요?",
-                                            style: kBody16BoldStyle.copyWith(
-                                                color: kTextTitleColor),
+                                            style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                                             textAlign: TextAlign.center,
                                           ),
                                           SizedBox(
@@ -213,8 +200,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                           ),
                                           Text(
                                             "‘${widget.nick}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
-                                            style: kBody12RegularStyle.copyWith(
-                                                color: kTextBodyColor),
+                                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                             textAlign: TextAlign.center,
                                           ),
                                           SizedBox(
@@ -222,8 +208,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                           ),
                                           Text(
                                             " ‘${widget.nick}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
-                                            style: kBody12RegularStyle.copyWith(
-                                                color: kTextBodyColor),
+                                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                             textAlign: TextAlign.center,
                                           ),
                                         ],
@@ -236,21 +221,13 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                         text: "‘${widget.nick}’님을 차단하였습니다.",
                                         type: ToastType.purple,
                                       );
-                                      final result = await ref
-                                          .read(userInformationStateProvider
-                                              .notifier)
-                                          .postBlock(
-                                            memberIdx: ref
-                                                .watch(userModelProvider)!
-                                                .idx,
+                                      final result = await ref.read(userInformationStateProvider.notifier).postBlock(
+                                            memberIdx: ref.watch(userModelProvider)!.idx,
                                             blockIdx: widget.memberIdx,
                                           );
 
                                       if (result.result) {
-                                        ref
-                                            .watch(userInformationStateProvider
-                                                .notifier)
-                                            .updateBlockState();
+                                        ref.watch(userInformationStateProvider.notifier).updateBlockState();
                                       }
                                     },
                                     cancelTap: () {
@@ -258,8 +235,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                     },
                                     confirmWidget: Text(
                                       "프로필 차단",
-                                      style: kButton14MediumStyle.copyWith(
-                                          color: kBadgeColor),
+                                      style: kButton14MediumStyle.copyWith(color: kBadgeColor),
                                     ),
                                   );
                                 },
@@ -293,13 +269,10 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                     ],
                     expandedHeight: 146.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
-                      final userInformationState =
-                          ref.watch(userInformationStateProvider);
+                      final userInformationState = ref.watch(userInformationStateProvider);
                       final lists = userInformationState.list;
 
-                      return lists.isEmpty
-                          ? Container()
-                          : _myPageSuccessProfile(lists[0]);
+                      return lists.isEmpty ? Container() : _myPageSuccessProfile(lists[0]);
                     })),
                 const SliverPersistentHeader(
                   delegate: TabBarDelegate(),
@@ -308,8 +281,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
               ];
             },
             body: Consumer(builder: (context, ref, _) {
-              final userInformationState =
-                  ref.watch(userInformationStateProvider);
+              final userInformationState = ref.watch(userInformationStateProvider);
               final lists = userInformationState.list;
 
               return lists.isEmpty
@@ -330,8 +302,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                               Text(
                                 "차단한 유저의 정보는 확인할 수 없습니다.\n정보를 보시려면 차단을 해제해 주세요.",
                                 textAlign: TextAlign.center,
-                                style: kBody12RegularStyle.copyWith(
-                                    color: kTextBodyColor),
+                                style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                               ),
                             ],
                           ),
@@ -352,8 +323,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                   Text(
                                     "정보를 확인할 수 없습니다.",
                                     textAlign: TextAlign.center,
-                                    style: kBody12RegularStyle.copyWith(
-                                        color: kTextBodyColor),
+                                    style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                   ),
                                 ],
                               ),
@@ -420,13 +390,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                       children: [
                         Positioned.fill(
                           child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(12)),
+                            borderRadius: const BorderRadius.all(Radius.circular(12)),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey)
-                                  .buildImage(
-                                      "$imgDomain${lists[index].imgUrl}")
-                                  .toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -456,16 +422,14 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                           child: Container(
                             decoration: BoxDecoration(
                               color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5.0)),
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                             ),
                             width: 18.w,
                             height: 14.w,
                             child: Center(
                               child: Text(
                                 '${lists[index].imageCnt}',
-                                style: kBadge9RegularStyle.copyWith(
-                                    color: kNeutralColor100),
+                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
                               ),
                             ),
                           ),
@@ -531,13 +495,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                       children: [
                         Positioned.fill(
                           child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(12)),
+                            borderRadius: const BorderRadius.all(Radius.circular(12)),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey)
-                                  .buildImage(
-                                      "$imgDomain${lists[index].imgUrl}")
-                                  .toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -548,16 +508,14 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                           child: Container(
                             decoration: BoxDecoration(
                               color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5.0)),
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                             ),
                             width: 18.w,
                             height: 14.w,
                             child: Center(
                               child: Text(
                                 "${lists[index].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(
-                                    color: kNeutralColor100),
+                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
                               ),
                             ),
                           ),
@@ -609,8 +567,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                             : Container(),
                         Text(
                           "${data.nick}",
-                          style: kTitle16ExtraBoldStyle.copyWith(
-                              color: kTextTitleColor),
+                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                         ),
                       ],
                     ),
@@ -618,18 +575,12 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                       height: 3.h,
                     ),
                     Text(
-                      data.intro == null || data.intro == ""
-                          ? "소개글이 없습니다."
-                          : "${data.intro}",
-                      style:
-                          kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                      data.intro == null || data.intro == "" ? "소개글이 없습니다." : "${data.intro}",
+                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                     ),
                     GestureDetector(
                       onTap: () {
-                        ref.read(userModelProvider) == null
-                            ? context.pushReplacement("/loginScreen")
-                            : context.push(
-                                "/home/myPage/followList/${widget.memberIdx}");
+                        ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/followList/${widget.memberIdx}");
                       },
                       child: Padding(
                         padding: EdgeInsets.only(top: 8.0.h),
@@ -637,28 +588,23 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                           children: [
                             Text(
                               "팔로워 ",
-                              style: kBody11RegularStyle.copyWith(
-                                  color: kTextBodyColor),
+                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                             ),
                             Text(
                               "${data.followerCnt}",
-                              style: kBody11SemiBoldStyle.copyWith(
-                                  color: kTextSubTitleColor),
+                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                             ),
                             Text(
                               "  ·  ",
-                              style: kBody11RegularStyle.copyWith(
-                                  color: kTextBodyColor),
+                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                             ),
                             Text(
                               "팔로잉 ",
-                              style: kBody11RegularStyle.copyWith(
-                                  color: kTextBodyColor),
+                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                             ),
                             Text(
                               "${data.followCnt}",
-                              style: kBody11SemiBoldStyle.copyWith(
-                                  color: kTextSubTitleColor),
+                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                             ),
                           ],
                         ),
@@ -683,8 +629,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                         child: Center(
                           child: Text(
                             "유저를 찾을 수 없습니다.",
-                            style: kButton12BoldStyle.copyWith(
-                                color: kTextBodyColor),
+                            style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
                           ),
                         ),
                       ),
@@ -699,18 +644,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                     if (ref.read(userModelProvider) == null) {
                                       context.pushReplacement("/loginScreen");
                                     } else {
-                                      ref
-                                          .watch(userInformationStateProvider
-                                              .notifier)
-                                          .updateUnBlockState(
-                                              ref.watch(userModelProvider)!.idx,
-                                              widget.memberIdx);
-                                      await ref
-                                          .read(blockStateProvider.notifier)
-                                          .deleteBlock(
-                                            memberIdx: ref
-                                                .watch(userModelProvider)!
-                                                .idx,
+                                      ref.watch(userInformationStateProvider.notifier).updateUnBlockState(ref.watch(userModelProvider)!.idx, widget.memberIdx);
+                                      await ref.read(blockStateProvider.notifier).deleteBlock(
+                                            memberIdx: ref.watch(userModelProvider)!.idx,
                                             blockIdx: widget.memberIdx,
                                           );
                                     }
@@ -733,8 +669,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                     child: Center(
                                       child: Text(
                                         "차단 해제",
-                                        style: kButton12BoldStyle.copyWith(
-                                            color: kNeutralColor100),
+                                        style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
                                       ),
                                     ),
                                   ),
@@ -744,23 +679,12 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                 child: data.followState == 1
                                     ? GestureDetector(
                                         onTap: () async {
-                                          if (ref.read(userModelProvider) ==
-                                              null) {
-                                            context.pushReplacement(
-                                                "/loginScreen");
+                                          if (ref.read(userModelProvider) == null) {
+                                            context.pushReplacement("/loginScreen");
                                           } else {
-                                            ref
-                                                .watch(
-                                                    userInformationStateProvider
-                                                        .notifier)
-                                                .updateUnFollowState();
-                                            await ref
-                                                .watch(followStateProvider
-                                                    .notifier)
-                                                .deleteFollow(
-                                                  memberIdx: ref
-                                                      .read(userModelProvider)!
-                                                      .idx,
+                                            ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
+                                            await ref.watch(followStateProvider.notifier).deleteFollow(
+                                                  memberIdx: ref.read(userModelProvider)!.idx,
                                                   followIdx: widget.memberIdx,
                                                 );
                                           }
@@ -783,33 +707,19 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                           child: Center(
                                             child: Text(
                                               "팔로잉",
-                                              style:
-                                                  kButton12BoldStyle.copyWith(
-                                                      color:
-                                                          kTextSubTitleColor),
+                                              style: kButton12BoldStyle.copyWith(color: kTextSubTitleColor),
                                             ),
                                           ),
                                         ),
                                       )
                                     : GestureDetector(
                                         onTap: () async {
-                                          if (ref.read(userModelProvider) ==
-                                              null) {
-                                            context.pushReplacement(
-                                                "/loginScreen");
+                                          if (ref.read(userModelProvider) == null) {
+                                            context.pushReplacement("/loginScreen");
                                           } else {
-                                            ref
-                                                .watch(
-                                                    userInformationStateProvider
-                                                        .notifier)
-                                                .updateFollowState();
-                                            await ref
-                                                .watch(followStateProvider
-                                                    .notifier)
-                                                .postFollow(
-                                                  memberIdx: ref
-                                                      .read(userModelProvider)!
-                                                      .idx,
+                                            ref.watch(userInformationStateProvider.notifier).updateFollowState();
+                                            await ref.watch(followStateProvider.notifier).postFollow(
+                                                  memberIdx: ref.read(userModelProvider)!.idx,
                                                   followIdx: widget.memberIdx,
                                                 );
                                           }
@@ -832,9 +742,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                                           child: Center(
                                             child: Text(
                                               "팔로우",
-                                              style:
-                                                  kButton12BoldStyle.copyWith(
-                                                      color: kNeutralColor100),
+                                              style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
                                             ),
                                           ),
                                         ),
@@ -846,9 +754,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                         Expanded(
                           child: GestureDetector(
                             onTap: () async {
-                              ref.read(userModelProvider) == null
-                                  ? context.pushReplacement("/loginScreen")
-                                  : null;
+                              ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : null;
                             },
                             child: Container(
                               height: 30.h,
@@ -861,8 +767,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen>
                               child: Center(
                                 child: Text(
                                   "메세지",
-                                  style: kButton12BoldStyle.copyWith(
-                                      color: kPrimaryColor),
+                                  style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
                                 ),
                               ),
                             ),
@@ -908,8 +813,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
   const TabBarDelegate({this.tabBarHeight = 48});
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Consumer(builder: (ctx, ref, child) {
       final userInformationState = ref.watch(userInformationStateProvider);
       final lists = userInformationState.list;
@@ -966,8 +870,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                       ),
                                       Text(
                                         "${ref.watch(userContentStateProvider).totalCount}",
-                                        style: kBadge10MediumStyle.copyWith(
-                                            color: kTextBodyColor),
+                                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                                       ),
                                     ],
                                   );
@@ -985,8 +888,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                       ),
                                       Text(
                                         "${ref.watch(tagContentStateProvider).totalCount}",
-                                        style: kBadge10MediumStyle.copyWith(
-                                            color: kTextBodyColor),
+                                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                                       ),
                                     ],
                                   );

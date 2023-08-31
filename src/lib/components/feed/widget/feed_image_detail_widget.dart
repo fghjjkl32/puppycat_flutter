@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
@@ -13,7 +14,7 @@ import 'package:pet_mobile_social_flutter/config/theme/size_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
 
 class FeedImageDetailWidget extends ConsumerStatefulWidget {
@@ -38,8 +39,7 @@ class FeedImageDetailWidget extends ConsumerStatefulWidget {
   FeedImageDetailWidgetState createState() => FeedImageDetailWidgetState();
 }
 
-class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget>
-    with SingleTickerProviderStateMixin {
+class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> with SingleTickerProviderStateMixin {
   final ValueNotifier<int> _counter = ValueNotifier<int>(0);
   final ValueNotifier<bool> _isTagVisible = ValueNotifier<bool>(true);
 
@@ -48,8 +48,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget>
   @override
   void initState() {
     super.initState();
-    _fadeController = AnimationController(
-        vsync: this, duration: Duration(seconds: 1), value: 1.0);
+    _fadeController = AnimationController(vsync: this, duration: Duration(seconds: 1), value: 1.0);
 
     Future.delayed(Duration(seconds: 2), () {
       if (mounted) {
@@ -82,7 +81,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget>
           onDoubleTap: () {
             widget.isLike
                 ? null
-                : ref.watch(feedDetailStateProvider.notifier).postLike(
+                : ref.watch(feedListStateProvider.notifier).postLike(
                       loginMemberIdx: ref.read(userModelProvider)!.idx,
                       memberIdx: widget.memberIdx,
                       contentIdx: widget.contentIdx,
@@ -106,9 +105,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget>
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Image.network(
-                        Thumbor(host: thumborHostUrl, key: thumborKey)
-                            .buildImage("$imgDomain${i.url}")
-                            .toUrl(),
+                        Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${i.url}").toUrl(),
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: double.infinity,
@@ -144,20 +141,18 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget>
                         opacity: _fadeController,
                         child: ValueListenableBuilder<bool>(
                           valueListenable: _isTagVisible,
-                          builder: (BuildContext context, bool isTagVisible,
-                              Widget? child) {
+                          builder: (BuildContext context, bool isTagVisible, Widget? child) {
                             return isTagVisible
                                 ? GestureDetector(
                                     onTap: () {
-                                      _isTagVisible.value =
-                                          !_isTagVisible.value;
+                                      ref.read(userModelProvider)!.idx == tag.memberIdx
+                                          ? context.push("/home/myPage")
+                                          : context.push("/home/myPage/followList/${tag.memberIdx}/userPage/${tag.nick!}/${tag.memberIdx}/${tag.memberIdx}");
                                     },
                                     child: MentionTagWidget(
                                       isCanClose: false,
-                                      color:
-                                          kTextSubTitleColor.withOpacity(0.8),
-                                      textStyle: kBody11RegularStyle.copyWith(
-                                          color: kNeutralColor100),
+                                      color: kTextSubTitleColor.withOpacity(0.8),
+                                      textStyle: kBody11RegularStyle.copyWith(color: kNeutralColor100),
                                       text: tag.nick!,
                                       onDelete: () {},
                                     ),
@@ -189,39 +184,21 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget>
                                         ),
                                         child: Text(
                                           "태그된 대상",
-                                          style:
-                                              kTitle16ExtraBoldStyle.copyWith(
-                                                  color: kTextSubTitleColor),
+                                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextSubTitleColor),
                                         ),
                                       ),
                                       Expanded(
                                         child: ListView.builder(
                                           itemCount: i.imgMemberTagList!.length,
-                                          padding:
-                                              EdgeInsets.only(bottom: 80.h),
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
+                                          padding: EdgeInsets.only(bottom: 80.h),
+                                          itemBuilder: (BuildContext context, int index) {
                                             return FavoriteItemWidget(
-                                              profileImage: i
-                                                  .imgMemberTagList![index]
-                                                  .profileImgUrl,
-                                              userName: i
-                                                  .imgMemberTagList![index]
-                                                  .nick!,
-                                              content: i
-                                                  .imgMemberTagList![index]
-                                                  .intro!,
-                                              isSpecialUser: i
-                                                      .imgMemberTagList![index]
-                                                      .isBadge ==
-                                                  1,
-                                              isFollow: i
-                                                      .imgMemberTagList![index]
-                                                      .followState ==
-                                                  1,
-                                              followerIdx: i
-                                                  .imgMemberTagList![index]
-                                                  .memberIdx!,
+                                              profileImage: i.imgMemberTagList![index].profileImgUrl,
+                                              userName: i.imgMemberTagList![index].nick!,
+                                              content: i.imgMemberTagList![index].intro!,
+                                              isSpecialUser: i.imgMemberTagList![index].isBadge == 1,
+                                              isFollow: i.imgMemberTagList![index].followState == 1,
+                                              followerIdx: i.imgMemberTagList![index].memberIdx!,
                                               contentsIdx: widget.contentIdx,
                                               contentType: widget.contentType,
                                               oldMemberIdx: widget.memberIdx!,

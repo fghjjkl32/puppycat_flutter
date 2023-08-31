@@ -6,20 +6,16 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-final tagSearchStateProvider =
-    StateNotifierProvider<TagSearchStateNotifier, SearchDataListModel>((ref) {
-  final loginMemberIdx = ref.watch(userModelProvider)!.idx;
+final tagSearchStateProvider = StateNotifierProvider<TagSearchStateNotifier, SearchDataListModel>((ref) {
+  final loginMemberIdx = ref.watch(userModelProvider)?.idx;
   return TagSearchStateNotifier(loginMemberIdx);
 });
 
 class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
-  final int loginMemberIdx;
+  final int? loginMemberIdx;
 
-  TagSearchStateNotifier(this.loginMemberIdx)
-      : super(const SearchDataListModel()) {
-    searchQuery.stream
-        .debounceTime(const Duration(milliseconds: 500))
-        .listen((query) async {
+  TagSearchStateNotifier(this.loginMemberIdx) : super(const SearchDataListModel()) {
+    searchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
       await searchTagList(query);
     });
   }
@@ -70,8 +66,7 @@ class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
     }
     bf.write(' success');
 
-    state = state.copyWith(
-        isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+    state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
     final lists = await SearchRepository().getTagSearchList(
       memberIdx: memberIdx,
