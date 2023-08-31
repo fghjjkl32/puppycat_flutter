@@ -30,8 +30,7 @@ class FeedData with _$FeedData {
     List<FeedImgListData>? imgList,
   }) = _FeedData;
 
-  factory FeedData.fromJson(Map<String, dynamic> json) =>
-      _$FeedDataFromJson(json);
+  factory FeedData.fromJson(Map<String, dynamic> json) => _$FeedDataFromJson(json);
 }
 
 @freezed
@@ -49,26 +48,7 @@ class FeedCommentData with _$FeedCommentData {
     List<MentionListData>? mentionList,
   }) = _FeedCommentData;
 
-  factory FeedCommentData.fromJson(Map<String, dynamic> json) =>
-      _$FeedCommentDataFromJson(json);
-}
-
-@freezed
-class FeedMemberInfoListData with _$FeedMemberInfoListData {
-  factory FeedMemberInfoListData({
-    String? nick,
-    String? simpleType,
-    int? isBadge,
-    int? memberIdx,
-    int? followerCnt,
-    String? profileImgUrl,
-    String? intro,
-    int? followCnt,
-    String? email,
-  }) = _FeedMemberInfoListData;
-
-  factory FeedMemberInfoListData.fromJson(Map<String, dynamic> json) =>
-      _$FeedMemberInfoListDataFromJson(json);
+  factory FeedCommentData.fromJson(Map<String, dynamic> json) => _$FeedCommentDataFromJson(json);
 }
 
 @freezed
@@ -80,8 +60,7 @@ class MentionListData with _$MentionListData {
     int? memberState,
   }) = _MentionListData;
 
-  factory MentionListData.fromJson(Map<String, dynamic> json) =>
-      _$MentionListDataFromJson(json);
+  factory MentionListData.fromJson(Map<String, dynamic> json) => _$MentionListDataFromJson(json);
 }
 
 @freezed
@@ -92,8 +71,7 @@ class FeedHashTagListData with _$FeedHashTagListData {
     String? nick,
   }) = _FeedHashTagListData;
 
-  factory FeedHashTagListData.fromJson(Map<String, dynamic> json) =>
-      _$FeedHashTagListDataFromJson(json);
+  factory FeedHashTagListData.fromJson(Map<String, dynamic> json) => _$FeedHashTagListDataFromJson(json);
 }
 
 @freezed
@@ -106,8 +84,7 @@ class FeedImgListData with _$FeedImgListData {
     String? url,
   }) = _FeedImgListData;
 
-  factory FeedImgListData.fromJson(Map<String, dynamic> json) =>
-      _$FeedImgListDataFromJson(json);
+  factory FeedImgListData.fromJson(Map<String, dynamic> json) => _$FeedImgListDataFromJson(json);
 }
 
 @freezed
@@ -124,8 +101,7 @@ class ImgMemberTagListData with _$ImgMemberTagListData {
     String? intro,
   }) = _ImgMemberTagListData;
 
-  factory ImgMemberTagListData.fromJson(Map<String, dynamic> json) =>
-      _$ImgMemberTagListDataFromJson(json);
+  factory ImgMemberTagListData.fromJson(Map<String, dynamic> json) => _$ImgMemberTagListDataFromJson(json);
 }
 
 @freezed
@@ -142,6 +118,5 @@ class MemberInfoListData with _$MemberInfoListData {
     String? email,
   }) = _MemberInfoListData;
 
-  factory MemberInfoListData.fromJson(Map<String, dynamic> json) =>
-      _$MemberInfoListDataFromJson(json);
+  factory MemberInfoListData.fromJson(Map<String, dynamic> json) => _$MemberInfoListDataFromJson(json);
 }

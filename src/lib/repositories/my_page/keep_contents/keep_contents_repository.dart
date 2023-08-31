@@ -7,8 +7,7 @@ import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/con
 import 'package:pet_mobile_social_flutter/services/my_page/keep_contents/keep_contents_service.dart';
 
 class KeepContentsRepository {
-  late final KeepContentsService _keepContentsService; //= KeepContentsService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
-
+  late final KeepContentsService _keepContentsService;
   final Dio dio;
 
   KeepContentsRepository({
@@ -21,7 +20,7 @@ class KeepContentsRepository {
     ContentResponseModel? keepContentsResponseModel = await _keepContentsService.getKeepContents(memberIdx, page);
 
     if (keepContentsResponseModel == null) {
-      throw contentNullResponseModel;
+      return contentNullResponseModel;
     }
 
     return keepContentsResponseModel;

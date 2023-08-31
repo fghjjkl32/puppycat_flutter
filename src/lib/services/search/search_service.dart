@@ -32,6 +32,13 @@ abstract class SearchService {
     @Query("limit") int limit,
   );
 
+  @GET('/search/nick')
+  Future<SearchResponseModel?> getLogoutNickSearchList(
+    @Query("page") int page,
+    @Query("searchWord") String searchWord,
+    @Query("limit") int limit,
+  );
+
   @GET('/search/tag')
   Future<SearchResponseModel?> getTagSearchList(
     @Query("memberIdx") int memberIdx,
@@ -40,9 +47,21 @@ abstract class SearchService {
     @Query("limit") int limit,
   );
 
+  @GET('/search/tag')
+  Future<SearchResponseModel?> getLogoutTagSearchList(
+    @Query("page") int page,
+    @Query("searchWord") String searchWord,
+    @Query("limit") int limit,
+  );
+
   @GET('/search')
   Future<SearchResponseModel?> getFullSearchList(
     @Query("memberIdx") int memberIdx,
+    @Query("searchWord") String searchWord,
+  );
+
+  @GET('/search')
+  Future<SearchResponseModel?> getLogoutFullSearchList(
     @Query("searchWord") String searchWord,
   );
 }

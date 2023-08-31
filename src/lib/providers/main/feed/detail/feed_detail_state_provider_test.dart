@@ -1,5 +1,4 @@
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 // import 'package:pet_mobile_social_flutter/config/constanst.dart';
 // import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 // import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
@@ -24,7 +23,7 @@
 //   final followFeedNotifier = ref.watch(followFeedStateProvider.notifier);
 //
 //   return FeedDetailStateNotifier(myFeedNotifier, popularWeekFeedNotifier,
-//       recentFeedNotifier, followFeedNotifier, ref);
+//       recentFeedNotifier, followFeedNotifier);
 // });
 //
 // class FeedDetailStateNotifier extends StateNotifier<FeedDetailState> {
@@ -32,10 +31,9 @@
 //   final PopularWeekFeedStateNotifier bestFeedNotifier;
 //   final RecentFeedStateNotifier recentFeedNotifier;
 //   final FollowFeedStateNotifier followFeedNotifier;
-//   final Ref ref;
 //
 //   FeedDetailStateNotifier(this.myFeedNotifier, this.bestFeedNotifier,
-//       this.recentFeedNotifier, this.followFeedNotifier, this.ref)
+//       this.recentFeedNotifier, this.followFeedNotifier)
 //       : super(FeedDetailState(
 //           firstFeedState: const FeedDataListModel(),
 //           feedListState: const FeedDataListModel(),
@@ -69,63 +67,63 @@
 //
 //     if (contentType == "myContent") {
 //       futures = Future.wait([
-//         FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(
+//         FeedRepository().getMyContentsDetail(
 //             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-//         FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(
+//         FeedRepository().getMyContentsDetailList(
 //             loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: page),
 //       ]);
 //     } else if (contentType == "myTagContent") {
 //       futures = Future.wait([
-//         FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
+//         FeedRepository().getContentDetail(
 //             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-//         FeedRepository(dio: ref.read(dioProvider)).getMyTagContentsDetailList(
+//         FeedRepository().getMyTagContentsDetailList(
 //             loginMemberIdx: loginMemberIdx, page: page),
 //       ]);
 //     } else if (contentType == "userContent") {
 //       futures = Future.wait([
-//         FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
-//             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-//         FeedRepository(dio: ref.read(dioProvider)).getUserContentsDetailList(
+//         FeedRepository().getContentDetail(
+//             loginMemberIdx: loginMemberIdx, contentIdx: contentIdx!),
+//         FeedRepository().getUserContentsDetailList(
 //             loginMemberIdx: loginMemberIdx, page: page, memberIdx: memberIdx),
 //       ]);
 //     } else if (contentType == "userTagContent") {
 //       futures = Future.wait([
-//         FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
+//         FeedRepository().getContentDetail(
 //             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-//         FeedRepository(dio: ref.read(dioProvider)).getUserTagContentDetail(
+//         FeedRepository().getUserTagContentDetail(
 //             loginMemberIdx: loginMemberIdx, page: page, memberIdx: memberIdx!),
 //       ]);
 //     } else if (contentType == "myLikeContent") {
 //       futures = Future.wait([
-//         FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
+//         FeedRepository().getContentDetail(
 //             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-//         LikeContentsRepository(dio: ref.read(dioProvider)).getLikeDetailContentList(
+//         LikeContentsRepository().getLikeDetailContentList(
 //             loginMemberIdx: loginMemberIdx!, page: page),
 //       ]);
 //     } else if (contentType == "mySaveContent") {
 //       futures = Future.wait([
-//         FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
+//         FeedRepository().getContentDetail(
 //             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-//         SaveContentsRepository(dio: ref.read(dioProvider)).getSaveDetailContentList(
+//         SaveContentsRepository().getSaveDetailContentList(
 //             loginMemberIdx: loginMemberIdx, page: page),
 //       ]);
 //     } else if (contentType == "myDetailContent") {
 //       futures = Future.wait([
-//         FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(
+//         FeedRepository().getMyContentsDetail(
 //             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
 //         Future.value(feedNullResponseModel),
 //       ]);
 //     } else if (contentType == "myKeepContent") {
 //       futures = Future.wait([
-//         KeepContentsRepository(dio: ref.read(dioProvider)).getMyKeepContentDetail(
+//         KeepContentsRepository().getMyKeepContentDetail(
 //             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
 //         Future.value(feedNullResponseModel),
 //       ]);
 //     } else if (contentType == "searchContent") {
 //       futures = Future.wait([
-//         FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
+//         FeedRepository().getContentDetail(
 //             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-//         FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentDetailList(
+//         FeedRepository().getUserHashtagContentDetailList(
 //           loginMemberIdx: loginMemberIdx,
 //           searchWord: searchWord!,
 //           page: page,
@@ -133,25 +131,25 @@
 //       ]);
 //     } else if (contentType == "popularWeekContent") {
 //       futures = Future.wait([
-//         FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
+//         FeedRepository().getContentDetail(
 //             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-//         FeedRepository(dio: ref.read(dioProvider)).getPopularWeekDetailList(
+//         FeedRepository().getPopularWeekDetailList(
 //           loginMemberIdx: loginMemberIdx,
 //           page: page,
 //         ),
 //       ]);
 //     } else if (contentType == "popularHourContent") {
 //       futures = Future.wait([
-//         FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
+//         FeedRepository().getContentDetail(
 //             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
-//         FeedRepository(dio: ref.read(dioProvider)).getPopularHourDetailList(
+//         FeedRepository().getPopularHourDetailList(
 //           loginMemberIdx: loginMemberIdx,
 //           page: page,
 //         ),
 //       ]);
 //     } else if (contentType == "notificationContent") {
 //       futures = Future.wait([
-//         FeedRepository(dio: ref.read(dioProvider)).getContentDetail(
+//         FeedRepository().getContentDetail(
 //             loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!),
 //         Future.value(feedNullResponseModel),
 //       ]);
@@ -245,39 +243,39 @@
 //     var lists;
 //
 //     if (contentType == "myContent") {
-//       lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(
+//       lists = await FeedRepository().getMyContentsDetailList(
 //           loginMemberIdx: loginMemberIdx,
 //           memberIdx: memberIdx,
 //           page: state.feedListState.page + 1);
 //     } else if (contentType == "myTagContent") {
-//       lists = await FeedRepository(dio: ref.read(dioProvider)).getMyTagContentsDetailList(
+//       lists = await FeedRepository().getMyTagContentsDetailList(
 //           loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
 //     } else if (contentType == "userContent") {
-//       lists = await FeedRepository(dio: ref.read(dioProvider)).getUserContentsDetailList(
+//       lists = await FeedRepository().getUserContentsDetailList(
 //           loginMemberIdx: loginMemberIdx,
 //           page: state.feedListState.page + 1,
 //           memberIdx: memberIdx);
 //     } else if (contentType == "userTagContent") {
-//       lists = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentDetail(
+//       lists = await FeedRepository().getUserTagContentDetail(
 //           loginMemberIdx: loginMemberIdx!,
 //           page: state.feedListState.page + 1,
 //           memberIdx: memberIdx);
 //     } else if (contentType == "myLikeContent") {
-//       lists = await LikeContentsRepository(dio: ref.read(dioProvider)).getLikeDetailContentList(
+//       lists = await LikeContentsRepository().getLikeDetailContentList(
 //           loginMemberIdx: loginMemberIdx!, page: state.feedListState.page + 1);
 //     } else if (contentType == "mySaveContent") {
-//       lists = await SaveContentsRepository(dio: ref.read(dioProvider)).getSaveDetailContentList(
+//       lists = await SaveContentsRepository().getSaveDetailContentList(
 //           loginMemberIdx: loginMemberIdx!, page: state.feedListState.page + 1);
 //     } else if (contentType == "searchContent") {
-//       lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentDetailList(
+//       lists = await FeedRepository().getUserHashtagContentDetailList(
 //           loginMemberIdx: loginMemberIdx!,
 //           searchWord: searchWord!,
 //           page: state.feedListState.page + 1);
 //     } else if (contentType == "popularWeekContent") {
-//       lists = await FeedRepository(dio: ref.read(dioProvider)).getPopularWeekDetailList(
+//       lists = await FeedRepository().getPopularWeekDetailList(
 //           loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
 //     } else if (contentType == "popularHourContent") {
-//       lists = await FeedRepository(dio: ref.read(dioProvider)).getPopularHourDetailList(
+//       lists = await FeedRepository().getPopularHourDetailList(
 //           loginMemberIdx: loginMemberIdx, page: state.feedListState.page + 1);
 //     }
 //
@@ -330,7 +328,7 @@
 //     required contentIdx,
 //     required String contentType,
 //   }) async {
-//     final result = await FeedRepository(dio: ref.read(dioProvider))
+//     final result = await FeedRepository()
 //         .postLike(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 //
 //     await refresh(
@@ -349,7 +347,7 @@
 //     required contentIdx,
 //     required String contentType,
 //   }) async {
-//     final result = await FeedRepository(dio: ref.read(dioProvider))
+//     final result = await FeedRepository()
 //         .deleteLike(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 //
 //     await refresh(
@@ -368,7 +366,7 @@
 //     required contentIdx,
 //     required String contentType,
 //   }) async {
-//     final result = await FeedRepository(dio: ref.read(dioProvider))
+//     final result = await FeedRepository()
 //         .postSave(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 //
 //     await refresh(
@@ -387,7 +385,7 @@
 //     required contentIdx,
 //     required String contentType,
 //   }) async {
-//     final result = await FeedRepository(dio: ref.read(dioProvider))
+//     final result = await FeedRepository()
 //         .deleteSave(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 //
 //     await refresh(
@@ -405,7 +403,7 @@
 //     required List<int> contentIdxList,
 //     required contentType,
 //   }) async {
-//     final result = await KeepContentsRepository(dio: ref.read(dioProvider))
+//     final result = await KeepContentsRepository()
 //         .postKeepContents(memberIdx: loginMemberIdx, idxList: contentIdxList);
 //
 //     await refresh(
@@ -423,7 +421,7 @@
 //     required contentIdx,
 //     required contentType,
 //   }) async {
-//     final result = await KeepContentsRepository(dio: ref.read(dioProvider))
+//     final result = await KeepContentsRepository()
 //         .deleteOneKeepContents(memberIdx: loginMemberIdx, idx: contentIdx);
 //
 //     await refresh(
@@ -441,7 +439,7 @@
 //     required int contentIdx,
 //     required contentType,
 //   }) async {
-//     final result = await FeedRepository(dio: ref.read(dioProvider))
+//     final result = await FeedRepository()
 //         .deleteOneContents(memberIdx: loginMemberIdx, idx: contentIdx);
 //
 //     await refresh(
@@ -460,7 +458,7 @@
 //     required contentIdx,
 //     required String contentType,
 //   }) async {
-//     final result = await FeedRepository(dio: ref.read(dioProvider))
+//     final result = await FeedRepository()
 //         .postHide(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 //
 //     return result;
@@ -472,7 +470,7 @@
 //     required contentIdx,
 //     required String contentType,
 //   }) async {
-//     final result = await FeedRepository(dio: ref.read(dioProvider))
+//     final result = await FeedRepository()
 //         .deleteHide(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 //
 //     await refresh(
@@ -491,7 +489,7 @@
 //     required contentIdx,
 //     required contentType,
 //   }) async {
-//     final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
+//     final result = await BlockRepository().postBlock(
 //       memberIdx: memberIdx,
 //       blockIdx: blockIdx,
 //     );
@@ -513,7 +511,7 @@
 //     required String? reason,
 //     required String reportType,
 //   }) async {
-//     final result = await FeedRepository(dio: ref.read(dioProvider)).postContentReport(
+//     final result = await FeedRepository().postContentReport(
 //       reportType: reportType,
 //       memberIdx: loginMemberIdx,
 //       contentIdx: contentIdx,
@@ -529,7 +527,7 @@
 //     required int loginMemberIdx,
 //     required int contentIdx,
 //   }) async {
-//     final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContentReport(
+//     final result = await FeedRepository().deleteContentReport(
 //       reportType: reportType,
 //       memberIdx: loginMemberIdx,
 //       contentsIdx: contentIdx,
@@ -544,7 +542,7 @@
 //     required contentsIdx,
 //     required contentType,
 //   }) async {
-//     final result = await FollowRepository(dio: ref.read(dioProvider))
+//     final result = await FollowRepository()
 //         .postFollow(memberIdx: memberIdx, followIdx: followIdx);
 //
 //     await refresh(
@@ -562,7 +560,7 @@
 //     required contentsIdx,
 //     required contentType,
 //   }) async {
-//     final result = await FollowRepository(dio: ref.read(dioProvider))
+//     final result = await FollowRepository()
 //         .deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
 //
 //     await refresh(

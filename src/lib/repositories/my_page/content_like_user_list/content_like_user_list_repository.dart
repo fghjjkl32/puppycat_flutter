@@ -7,7 +7,7 @@ import 'package:pet_mobile_social_flutter/models/params_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/content_like_user_list/content_like_user_list_service.dart';
 
 class ContentLikeUserListRepository {
-  late final ContentLikeUserListService _contentLikeUserListService; // = ContentLikeUserListService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final ContentLikeUserListService _contentLikeUserListService;
 
   final Dio dio;
 
@@ -19,10 +19,14 @@ class ContentLikeUserListRepository {
 
   Future<ContentLikeUserListResponseModel> getContentLikeUserList({
     required int contentsIdx,
-    required int memberIdx,
+    required int? memberIdx,
     required int page,
   }) async {
-    ContentLikeUserListResponseModel? contentLikeUserListResponseModel = await _contentLikeUserListService.getContentLikeUserList(contentsIdx, memberIdx, page).catchError((Object obj) async {});
+    ContentLikeUserListResponseModel? contentLikeUserListResponseModel;
+
+    memberIdx == null
+        ? contentLikeUserListResponseModel = await _contentLikeUserListService.getLogoutContentLikeUserList(contentsIdx, page).catchError((Object obj) async {})
+        : contentLikeUserListResponseModel = await _contentLikeUserListService.getContentLikeUserList(contentsIdx, memberIdx, page).catchError((Object obj) async {});
 
     if (contentLikeUserListResponseModel == null) {
       return ContentLikeUserListResponseModel(

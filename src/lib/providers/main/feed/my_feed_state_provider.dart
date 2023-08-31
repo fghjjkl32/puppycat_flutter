@@ -20,13 +20,12 @@ class MyFeedState extends _$MyFeedState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
 
-  List<FeedMemberInfoListData>? memberInfo;
+  List<MemberInfoListData>? memberInfo;
   String? imgDomain;
 
   @override
   PagingController<int, FeedData> build() {
-    PagingController<int, FeedData> pagingController =
-        PagingController(firstPageKey: 1);
+    PagingController<int, FeedData> pagingController = PagingController(firstPageKey: 1);
     pagingController.addPageRequestListener(_fetchPage);
     return pagingController;
   }
@@ -40,15 +39,15 @@ class MyFeedState extends _$MyFeedState {
       _apiStatus = ListAPIStatus.loading;
 
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-      var searchResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(
+      var feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(
         loginMemberIdx: loginMemberIdx,
         memberIdx: loginMemberIdx,
         page: pageKey,
       );
-      memberInfo = searchResult.data.memberInfo;
-      imgDomain = searchResult.data.imgDomain;
+      memberInfo = feedResult.data.memberInfo;
+      imgDomain = feedResult.data.imgDomain;
 
-      var searchList = searchResult.data.list
+      List<FeedData> feedList = feedResult.data.list
           .map(
             (e) => FeedData(
               commentList: e.commentList,
@@ -78,68 +77,23 @@ class MyFeedState extends _$MyFeedState {
           .toList();
 
       try {
-        _lastPage = searchResult.data.params!.pagination!.totalPageCount!;
+        _lastPage = feedResult.data.params!.pagination!.totalPageCount!;
       } catch (_) {
         _lastPage = 1;
       }
 
-      final nextPageKey = searchList.isEmpty ? null : pageKey + 1;
+      final nextPageKey = feedList.isEmpty ? null : pageKey + 1;
 
       if (pageKey == _lastPage) {
-        state.appendLastPage(searchList);
+        state.appendLastPage(feedList);
       } else {
-        state.appendPage(searchList, nextPageKey);
+        state.appendPage(feedList, nextPageKey);
       }
       _apiStatus = ListAPIStatus.loaded;
-      ref.read(myFeedListEmptyProvider.notifier).state = searchList.isEmpty;
+      ref.read(myFeedListEmptyProvider.notifier).state = feedList.isEmpty;
     } catch (e) {
       _apiStatus = ListAPIStatus.error;
       state.error = e;
     }
   }
-
-  // void setFavorite(int memberIdx, String chatMemberId) async {
-  //   bool result = await ref
-  //       .read(chatFavoriteStateProvider.notifier)
-  //       .setChatFavorite(memberIdx, chatMemberId);
-  //   if (result) {
-  //     changedFavoriteState(chatMemberId, true);
-  //   }
-  // }
-  //
-  // void unSetFavorite(int memberIdx, String chatMemberId) async {
-  //   bool result = await ref
-  //       .read(chatFavoriteStateProvider.notifier)
-  //       .unSetChatFavorite(memberIdx, chatMemberId);
-  //   if (result) {
-  //     changedFavoriteState(chatMemberId, false);
-  //   }
-  // }
-  //
-  // void changedFavoriteState(String chatMemberId, bool isFavorite) {
-  //   if (chatMemberId.isEmpty || chatMemberId == '') {
-  //     ///TODO
-  //     ///Need Error Handling
-  //     return;
-  //   }
-  //   int targetIdx = state.itemList!
-  //       .indexWhere((element) => element.chatMemberId == chatMemberId);
-  //   // int targetIdx = Random().nextInt(state.itemList!.length ?? 4);
-  //   print('targetIdx $targetIdx');
-  //   if (targetIdx >= 0) {
-  //     state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-  //       favoriteState: isFavorite ? 1 : 0,
-  //     );
-  //     state.notifyListeners();
-  //     if (isFavorite) {
-  //       ref
-  //           .read(chatFavoriteUserStateProvider.notifier)
-  //           .addFavorite(state.itemList![targetIdx]);
-  //     } else {
-  //       ref
-  //           .read(chatFavoriteUserStateProvider.notifier)
-  //           .removeFavorite(state.itemList![targetIdx]);
-  //     }
-  //   }
-  // }
 }

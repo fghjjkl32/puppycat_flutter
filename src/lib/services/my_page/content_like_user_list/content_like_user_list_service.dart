@@ -7,13 +7,18 @@ part 'content_like_user_list_service.g.dart';
 
 @RestApi()
 abstract class ContentLikeUserListService {
-  factory ContentLikeUserListService(Dio dio, {String baseUrl}) =
-      _ContentLikeUserListService;
+  factory ContentLikeUserListService(Dio dio, {String baseUrl}) = _ContentLikeUserListService;
 
   @GET('/contents/{contentsIdx}/like?memberIdx={memberIdx}&page={page}')
   Future<ContentLikeUserListResponseModel?> getContentLikeUserList(
     @Path("contentsIdx") int contentsIdx,
     @Path("memberIdx") int memberIdx,
+    @Path("page") int page,
+  );
+
+  @GET('/contents/{contentsIdx}/like?&page={page}')
+  Future<ContentLikeUserListResponseModel?> getLogoutContentLikeUserList(
+    @Path("contentsIdx") int contentsIdx,
     @Path("page") int page,
   );
 }
