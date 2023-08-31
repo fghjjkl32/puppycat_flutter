@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data.dart';
+import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
@@ -26,8 +27,7 @@ class CommentCustomTextField extends ConsumerStatefulWidget {
   CommentCustomTextFieldState createState() => CommentCustomTextFieldState();
 }
 
-class CommentCustomTextFieldState
-    extends ConsumerState<CommentCustomTextField> {
+class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> {
   TextEditingController _controller = TextEditingController();
   int lineCount = 0;
   bool hasInput = false;
@@ -45,22 +45,17 @@ class CommentCustomTextFieldState
         child: Consumer(builder: (context, ref, child) {
           final commentHeaderState = ref.watch(commentHeaderProvider);
 
-          if (commentHeaderState.hasSetControllerValue &&
-              commentHeaderState.controllerValue != _controller.text) {
+          if (commentHeaderState.hasSetControllerValue && commentHeaderState.controllerValue != _controller.text) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted) {
                 hasInput = commentHeaderState.hasInput;
                 _controller.text = commentHeaderState.controllerValue;
-                ref
-                    .read(commentHeaderProvider.notifier)
-                    .resetHasSetControllerValue();
+                ref.read(commentHeaderProvider.notifier).resetHasSetControllerValue();
               }
             });
           }
 
-          if (_controller.text != '@${commentHeaderState.name} ' &&
-              commentHeaderState.isReply &&
-              !initialized.value) {
+          if (_controller.text != '@${commentHeaderState.name} ' && commentHeaderState.isReply && !initialized.value) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted) {
                 _controller.value = TextEditingValue(
@@ -86,15 +81,12 @@ class CommentCustomTextFieldState
                             padding: EdgeInsets.only(left: 12.0.w),
                             child: Text(
                               "@${ref.watch(commentHeaderProvider).name} 님에게 답글 남기기",
-                              style: kBody11RegularStyle.copyWith(
-                                  color: kTextBodyColor),
+                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                             ),
                           ),
                           IconButton(
                             onPressed: () {
-                              ref
-                                  .watch(commentHeaderProvider.notifier)
-                                  .resetReplyCommentHeader();
+                              ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
                               _controller.text = '';
                               hasInput = false;
                               initialized.value = false;
@@ -120,15 +112,12 @@ class CommentCustomTextFieldState
                             padding: EdgeInsets.only(left: 12.0.w),
                             child: Text(
                               "댓글 수정",
-                              style: kBody11RegularStyle.copyWith(
-                                  color: kTextBodyColor),
+                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                             ),
                           ),
                           IconButton(
                             onPressed: () {
-                              ref
-                                  .watch(commentHeaderProvider.notifier)
-                                  .resetReplyCommentHeader();
+                              ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
                               _controller.text = '';
                               hasInput = false;
                               initialized.value = false;
@@ -148,15 +137,12 @@ class CommentCustomTextFieldState
                 autocompleteTriggers: [
                   AutocompleteTrigger(
                     trigger: '@',
-                    optionsViewBuilder:
-                        (context, autocompleteQuery, controller) {
+                    optionsViewBuilder: (context, autocompleteQuery, controller) {
                       return MentionAutocompleteOptions(
                         query: autocompleteQuery.query,
                         onMentionUserTap: (user) {
-                          final autocomplete =
-                              MultiTriggerAutocomplete.of(context);
-                          return autocomplete
-                              .acceptAutocompleteOption(user.nick!);
+                          final autocomplete = MultiTriggerAutocomplete.of(context);
+                          return autocomplete.acceptAutocompleteOption(user.nick!);
                         },
                       );
                     },
@@ -170,9 +156,7 @@ class CommentCustomTextFieldState
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: kNeutralColor400, width: 1),
-                        borderRadius: BorderRadius.all(lineCount <= 2
-                            ? const Radius.circular(50)
-                            : const Radius.circular(10)),
+                        borderRadius: BorderRadius.all(lineCount <= 2 ? const Radius.circular(50) : const Radius.circular(10)),
                       ),
                       child: TextField(
                         focusNode: focusNode,
@@ -188,28 +172,21 @@ class CommentCustomTextFieldState
                             int from = text.lastIndexOf('@', cursorPos);
                             if (from != -1) {
                               int prevCharPos = from - 1;
-                              if (prevCharPos >= 0 &&
-                                  text[prevCharPos] != ' ') {
+                              if (prevCharPos >= 0 && text[prevCharPos] != ' ') {
                                 return;
                               }
 
                               int nextSpace = text.indexOf(' ', from);
                               if (nextSpace == -1 || nextSpace >= cursorPos) {
-                                String toSearch =
-                                    text.substring(from + 1, cursorPos);
+                                String toSearch = text.substring(from + 1, cursorPos);
                                 toSearch = toSearch.trim();
 
                                 if (toSearch.isNotEmpty) {
                                   if (toSearch.length >= 1) {
-                                    ref
-                                        .watch(searchStateProvider.notifier)
-                                        .searchQuery
-                                        .add(toSearch);
+                                    ref.watch(searchStateProvider.notifier).searchQuery.add(toSearch);
                                   }
                                 } else {
-                                  ref
-                                      .watch(searchStateProvider.notifier)
-                                      .getMentionRecommendList(initPage: 1);
+                                  ref.watch(searchStateProvider.notifier).getMentionRecommendList(initPage: 1);
                                 }
                               }
                             }
@@ -224,55 +201,48 @@ class CommentCustomTextFieldState
                           border: InputBorder.none,
                           counterText: "",
                           hintText: '댓글을 입력해주세요.',
-                          hintStyle: kBody12RegularStyle.copyWith(
-                              color: kNeutralColor500),
+                          hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
                           contentPadding: const EdgeInsets.all(16),
                           suffixIcon: hasInput
                               ? IconButton(
                                   onPressed: () async {
+                                    print('ref.read(commentHeaderProvider) ${ref.read(commentHeaderProvider)}');
                                     final result = commentHeaderState.isEdit
-                                        ? await ref
-                                            .watch(
-                                                commentStateProvider.notifier)
-                                            .editContents(
-                                              memberIdx: ref
-                                                  .read(userModelProvider)!
-                                                  .idx,
+                                        ? await ref.watch(commentStateProvider.notifier).editContents(
+                                              memberIdx: ref.read(userModelProvider)!.idx,
                                               contents: _controller.value.text,
                                               contentIdx: widget.contentIdx,
-                                              commentIdx: ref
-                                                  .watch(commentHeaderProvider)
-                                                  .commentIdx!,
+                                              commentIdx: ref.watch(commentHeaderProvider).commentIdx!,
                                             )
-                                        : await ref
-                                            .watch(
-                                                commentStateProvider.notifier)
-                                            .postContents(
-                                              memberIdx: ref
-                                                  .read(userModelProvider)!
-                                                  .idx,
+                                        : await ref.watch(commentStateProvider.notifier).postContents(
+                                              memberIdx: ref.read(userModelProvider)!.idx,
                                               contents: _controller.value.text,
                                               contentIdx: widget.contentIdx,
-                                              parentIdx: ref
-                                                      .watch(
-                                                          commentHeaderProvider)
-                                                      .isReply
-                                                  ? ref
-                                                      .watch(
-                                                          commentHeaderProvider)
-                                                      .commentIdx
-                                                  : null,
+                                              parentIdx: ref.watch(commentHeaderProvider).isReply ? ref.watch(commentHeaderProvider).commentIdx : null,
                                             );
 
-                                    if (result.result) {
-                                      FocusScope.of(context).unfocus();
-                                      ref
-                                          .watch(commentHeaderProvider.notifier)
-                                          .resetReplyCommentHeader();
+                                    int commentIdx = -1;
+                                    if (ref.read(commentHeaderProvider).commentIdx != null) {
+                                      commentIdx = ref.read(commentHeaderProvider).commentIdx!;
+                                    }
+
+
+
+                                    print('ref.watch(commentHeaderProvider).isReply ${ref.watch(commentHeaderProvider).isReply}');
+                                    if (ref.watch(commentHeaderProvider).isReply) {
+                                      ref.read(commentListRefreshFocusProvider.notifier).state = ref.read(commentHeaderProvider).commentIdx!;
+                                      ref.read(commentListStateProvider.notifier).getFocusingComments(widget.contentIdx, ref.watch(commentHeaderProvider).commentIdx!);
+                                    } else {
+                                      ref.read(commentListStateProvider).refresh();
+                                    }
+
+                                    // if (result.result) {
+                                    //   FocusScope.of(context).unfocus();
+                                      ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
                                       _controller.text = '';
                                       hasInput = false;
                                       initialized.value = false;
-                                    }
+                                    // }
                                   },
                                   icon: const Icon(
                                     Puppycat_social.icon_send,
@@ -284,8 +254,7 @@ class CommentCustomTextFieldState
                                   color: Colors.grey,
                                 ),
                         ),
-                        style: kBody13RegularStyle.copyWith(
-                            color: kTextSubTitleColor),
+                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                         keyboardType: TextInputType.multiline,
                         textAlignVertical: TextAlignVertical.center,
                       ),

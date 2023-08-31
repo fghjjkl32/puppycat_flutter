@@ -14,6 +14,7 @@ import 'package:pet_mobile_social_flutter/services/notification/notification_ser
 
 
 final dioProvider = StateProvider<Dio>((ref) {
+  // return DioWrap.getDioWithCookie();
   return DioWrap.getDioWithCookie2(ref);
 });
 
@@ -41,39 +42,6 @@ class DioWrap {
         Duration(seconds: 3), // wait 3 sec before third retry
       ],
     ));
-
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          // This is where you call your specific API
-          try {
-            print('path ${options.path}');
-            final notificationService = NotificationService(dio);
-            final response = await notificationService.checkNewNotifications(1);
-            ResponseModel resModel = response as ResponseModel;
-            if (resModel.result) {
-              print('no new noti');
-            } else {
-              print('exist new noti');
-            }
-            // Maybe you want to modify the options based on the result of the specific API?
-            // For example, setting a header:
-            // options.headers['Your-Header-Name'] = response.data['someValue'];
-
-            // Continue with the request
-            return handler.next(options);
-          } catch (e) {
-            // Handle the error accordingly
-            // return handler.reject(DioError(
-            //   requestOptions: options,
-            //   error: 'Failed to call the specific API.',
-            // ));
-            return handler.next(options);
-          }
-          return handler.next(options);
-        },
-      ),
-    );
 
     return dio;
   }

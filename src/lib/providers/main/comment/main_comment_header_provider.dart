@@ -10,6 +10,7 @@ class CommentHeaderNotifier extends StateNotifier<CommentHeaderState> {
   CommentHeaderNotifier() : super(CommentHeaderState());
 
   void addReplyCommentHeader(name, commentIdx) {
+    print('commentIdx $commentIdx');
     state = state.copyWith(
         name: name, isReply: true, isEdit: false, commentIdx: commentIdx);
   }

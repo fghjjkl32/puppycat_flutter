@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/customer_support/customer_support_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class MyPageSettingNoticeScreen extends ConsumerStatefulWidget {
   const MyPageSettingNoticeScreen({super.key});
 
   @override
-  MyPageSettingNoticeScreenState createState() =>
-      MyPageSettingNoticeScreenState();
+  MyPageSettingNoticeScreenState createState() => MyPageSettingNoticeScreenState();
 }
 
-class MyPageSettingNoticeScreenState
-    extends ConsumerState<MyPageSettingNoticeScreen>
-    with SingleTickerProviderStateMixin {
+class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeScreen> with SingleTickerProviderStateMixin {
   late TabController tabController;
+  late PagingController<int, CustomerSupportItemModel> _noticePagingController;
 
   @override
   void initState() {
@@ -27,6 +30,8 @@ class MyPageSettingNoticeScreenState
       length: 3,
       vsync: this,
     );
+
+    _noticePagingController = ref.read(noticeListStateProvider);
     super.initState();
   }
 
@@ -70,12 +75,10 @@ class MyPageSettingNoticeScreenState
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 6.0.h, horizontal: 12.0.w),
+                        padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 12.0.w),
                         child: Text(
                           "1:1채널톡",
-                          style:
-                              kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                          style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
                         ),
                       ),
                     ),
@@ -111,31 +114,41 @@ class MyPageSettingNoticeScreenState
             body: TabBarView(
               controller: tabController,
               children: [
-                ListView(
+                PagedListView<int, CustomerSupportItemModel>(
+                  pagingController: _noticePagingController,
+                  builderDelegate: PagedChildBuilderDelegate<CustomerSupportItemModel>(
+                    // animateTransitions: true,
+                    noItemsFoundIndicatorBuilder: (context) {
+                      // return const Text('No Comments');
+                      return const SizedBox.shrink();
+                    },
+                    firstPageProgressIndicatorBuilder: (context) {
+                      // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                    itemBuilder: (context, item, index) {
+                      return _noticeItem(item);
+                    },
+                  ),
+                ),
+                Column(
                   children: [
-                    _noticeItem(),
-                    _noticeItem(),
-                    _noticeItem(),
-                    _noticeItem(),
-                    _noticeItem(),
+                    const Text('a'),
+                    // _noticeItem(),
+                    // _noticeItem(),
+                    // _noticeItem(),
+                    // _noticeItem(),
+                    // _noticeItem(),
                   ],
                 ),
                 Column(
                   children: [
-                    _noticeItem(),
-                    _noticeItem(),
-                    _noticeItem(),
-                    _noticeItem(),
-                    _noticeItem(),
-                  ],
-                ),
-                Column(
-                  children: [
-                    _noticeItem(),
-                    _noticeItem(),
-                    _noticeItem(),
-                    _noticeItem(),
-                    _noticeItem(),
+                    const Text('b'),
+                    // _noticeItem(),
+                    // _noticeItem(),
+                    // _noticeItem(),
+                    // _noticeItem(),
+                    // _noticeItem(),
                   ],
                 ),
               ],
@@ -146,7 +159,7 @@ class MyPageSettingNoticeScreenState
     );
   }
 
-  Widget _noticeItem() {
+  Widget _noticeItem(CustomerSupportItemModel itemModel) {
     return Column(
       children: [
         Theme(
@@ -160,12 +173,10 @@ class MyPageSettingNoticeScreenState
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 8.0.h, horizontal: 14.0.w),
+                      padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 14.0.w),
                       child: Text(
-                        "일반",
-                        style: kBody11SemiBoldStyle.copyWith(
-                            color: kTextBodyColor),
+                        itemModel.menuName ?? 'unknown',
+                        style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                       ),
                     ),
                   ),
@@ -176,14 +187,12 @@ class MyPageSettingNoticeScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "공지사항 메뉴 개편 안내",
-                        style: kBody13RegularStyle.copyWith(
-                            color: kTextSubTitleColor),
+                        itemModel.title ?? 'unknown',
+                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                       ),
                       Text(
-                        DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                        style:
-                            kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                        DateFormat('yyyy-MM-dd').format(itemModel.regDate != null ? DateTime.parse(itemModel.regDate!) : DateTime.now()),
+                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                       ),
                     ],
                   ),
@@ -199,23 +208,15 @@ class MyPageSettingNoticeScreenState
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 16.0.h, horizontal: 20.0.w),
-                      child: Text(
-                        '''안녕하세요, 포레스트 담당자입니다.
-
-공지사항 안내
-메뉴 개편 관련하여 안내드립니다.
-.
-.
-.
-.
-.
-.
-감사합니다.''',
-                        style: kBody13RegularStyle.copyWith(
-                            color: kTextSubTitleColor),
+                      padding: EdgeInsets.symmetric(vertical: 16.0.h, horizontal: 20.0.w),
+                      child: Html(
+                        data: itemModel.contents ?? 'unknown',
                       ),
+                      // Text(
+                      //   itemModel.contents ?? 'unknown',
+                      //   style: kBody13RegularStyle.copyWith(
+                      //       color: kTextSubTitleColor),
+                      // ),
                     ),
                   ),
                 ),
