@@ -13,6 +13,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 part 'comment_list_state_provider.g.dart';
 
+final commentListRefreshFocusProvider = StateProvider<int>((ref) => 0);
+
 @Riverpod(keepAlive: true)
 class CommentListState extends _$CommentListState {
   int _lastPage = 0;
@@ -31,12 +33,7 @@ class CommentListState extends _$CommentListState {
     return pagingController;
   }
 
-  // PagingController<int, CommentData> _initController(int firstPageKey) {
-  //   PagingController<int, CommentData> pagingController = PagingController(firstPageKey: firstPageKey);
-  //   return pagingController;
-  // }
-
-  Future<void> _fetchPage(int pageKey, [CommentDataListModel? childFocusModel]) async {
+  Future<void> fetchPage(int pageKey, [CommentDataListModel? childFocusModel]) async {
     try {
       if (_apiStatus == ListAPIStatus.loading) {
         return;
@@ -185,7 +182,7 @@ class CommentListState extends _$CommentListState {
     _contentsIdx = contentsIdx;
 
     if (!state.hasListeners) {
-      state.addPageRequestListener(_fetchPage);
+      state.addPageRequestListener(fetchPage);
     }
 
     state.refresh();
@@ -219,7 +216,7 @@ class CommentListState extends _$CommentListState {
         commentIdx,
       );
 
-      state.removePageRequestListener(_fetchPage);
+      state.removePageRequestListener(fetchPage);
 
       int? childPage;
       int parentIdx = 0;
@@ -290,7 +287,7 @@ class CommentListState extends _$CommentListState {
       state.appendPage(commentList.toSet().toList(), currentPage + 1);
       state.notifyListeners();
 
-      state.addPageRequestListener(_fetchPage);
+      state.addPageRequestListener(fetchPage);
     } catch (e) {
       print('eeeeeeeeee $e');
       _apiStatus = ListAPIStatus.error;

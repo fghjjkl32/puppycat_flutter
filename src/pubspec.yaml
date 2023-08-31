@@ -24,7 +24,7 @@ dependencies:
 #  bubble: ^1.2.1
   linkfy_text: ^1.1.5
   intl: ^0.18.0
-  flutter_svg: ^2.0.6
+  flutter_svg: ^2.0.7
   widget_mask: ^1.0.0+0
   fluttertoast: ^8.2.2
   flutter_switch: ^0.3.2
@@ -117,6 +117,7 @@ dependencies:
   thumbor: ^1.0.4
   zoom_pinch_overlay: ^1.4.1+3
   lottie: ^2.6.0
+  flutter_html: ^3.0.0-beta.2
 
 dev_dependencies:
   flutter_test:
