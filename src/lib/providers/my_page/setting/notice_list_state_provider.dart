@@ -8,10 +8,20 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'notice_list_state_provider.g.dart';
 
+final noticeFocusIdxStateProvider = StateProvider<int>((ref) => 0);
+final noticeExpansionIdxStateProvider = StateProvider<int>((ref) => 0);
+
+enum NoticeType {
+  all,
+  normal,
+  event,
+}
+
 @Riverpod(keepAlive: true)
 class NoticeListState extends _$NoticeListState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
+  NoticeType _noticeType = NoticeType.all;
 
   @override
   PagingController<int, CustomerSupportItemModel> build() {
@@ -29,10 +39,9 @@ class NoticeListState extends _$NoticeListState {
       _apiStatus = ListAPIStatus.loading;
 
       CustomerSupportRepository customerSupportRepository = CustomerSupportRepository(dio: ref.read(dioProvider));
-      var searchResult = await customerSupportRepository.getNoticeList(page:pageKey);
+      var searchResult = await customerSupportRepository.getNoticeList(pageKey, _noticeType == NoticeType.all ? null : _noticeType.index);
 
       if(searchResult == null) {
-        print('asdasdasd');
         _apiStatus = ListAPIStatus.loaded;
         state.appendPage([], 0);
         return;
@@ -47,17 +56,32 @@ class NoticeListState extends _$NoticeListState {
         _lastPage = 1;
       }
 
-      final nextPageKey = searchList.isEmpty ? null : pageKey + 1;
+      final nextPageKey = searchList.isEmpty ? 0 : pageKey + 1;
 
       if (pageKey == _lastPage) {
         state.appendLastPage(searchList);
       } else {
         state.appendPage(searchList, nextPageKey);
       }
+
+      var focusIdx = ref.read(noticeFocusIdxStateProvider);
+      if(focusIdx > 0) {
+        List<CustomerSupportItemModel> currentList = state.itemList ?? [];
+        if(currentList.indexWhere((element) => element.idx == focusIdx) < 0) {
+          print('nextPageKey $nextPageKey');
+          state.notifyPageRequestListeners(nextPageKey);
+        }
+      }
+
       _apiStatus = ListAPIStatus.loaded;
     } catch (e) {
       _apiStatus = ListAPIStatus.error;
       state.error = e;
     }
+  }
+
+  void setNoticeType(NoticeType type) {
+    _noticeType = type;
+    state.refresh();
   }
 }

@@ -22,6 +22,7 @@ class MyPageSettingNoticeScreen extends ConsumerStatefulWidget {
 class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeScreen> with SingleTickerProviderStateMixin {
   late TabController tabController;
   late PagingController<int, CustomerSupportItemModel> _noticePagingController;
+  final AutoScrollController _scrollController = AutoScrollController();
 
   @override
   void initState() {
@@ -31,8 +32,33 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
       vsync: this,
     );
 
+    tabController.addListener(() {
+      print('tabController Idx ${tabController.index}');
+      ref.read(noticeListStateProvider.notifier).setNoticeType(NoticeType.values[tabController.index]);
+    });
+
     _noticePagingController = ref.read(noticeListStateProvider);
     super.initState();
+
+    _noticePagingController.addListener(() async {
+      print('not run? ');
+      if (_noticePagingController.itemList != null) {
+        int focusIdx = ref.read(noticeFocusIdxStateProvider);
+
+        int scrollIdx = ref.read(noticeListStateProvider).itemList!.indexWhere((element) => element.idx == focusIdx);
+        print('run?? $focusIdx / scrollIdx $scrollIdx');
+        if (scrollIdx < 0) {
+          return;
+        }
+
+        await _scrollController.scrollToIndex(
+          // _commentFocusIndex!,
+          scrollIdx,
+          preferPosition: AutoScrollPosition.begin,
+        );
+        ref.read(noticeFocusIdxStateProvider.notifier).state = 0;
+      }
+    });
   }
 
   @override
@@ -111,50 +137,47 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
                     ),
                   ]),
             ),
-            body: TabBarView(
+            body:
+            // GestureDetector(
+            //   on
+            //   child: _buildListView(),
+            // ),
+            TabBarView(
               controller: tabController,
               children: [
-                PagedListView<int, CustomerSupportItemModel>(
-                  pagingController: _noticePagingController,
-                  builderDelegate: PagedChildBuilderDelegate<CustomerSupportItemModel>(
-                    // animateTransitions: true,
-                    noItemsFoundIndicatorBuilder: (context) {
-                      // return const Text('No Comments');
-                      return const SizedBox.shrink();
-                    },
-                    firstPageProgressIndicatorBuilder: (context) {
-                      // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                    itemBuilder: (context, item, index) {
-                      return _noticeItem(item);
-                    },
-                  ),
-                ),
-                Column(
-                  children: [
-                    const Text('a'),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Text('b'),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                  ],
-                ),
+                _buildListView(),
+                _buildListView(),
+                _buildListView(),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildListView() {
+    return PagedListView<int, CustomerSupportItemModel>(
+      pagingController: _noticePagingController,
+      scrollController: _scrollController,
+      builderDelegate: PagedChildBuilderDelegate<CustomerSupportItemModel>(
+        // animateTransitions: true,
+        noItemsFoundIndicatorBuilder: (context) {
+          // return const Text('No Comments');
+          return const SizedBox.shrink();
+        },
+        firstPageProgressIndicatorBuilder: (context) {
+          // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+          return const Center(child: CircularProgressIndicator());
+        },
+        itemBuilder: (context, item, index) {
+          return AutoScrollTag(
+            key: UniqueKey(),
+            controller: _scrollController,
+            index: index,
+            child: _noticeItem(item),
+          );
+        },
       ),
     );
   }
@@ -165,62 +188,69 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
         Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
-              title: Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: kNeutralColor300,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 14.0.w),
-                      child: Text(
-                        itemModel.menuName ?? 'unknown',
-                        style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10.w,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        itemModel.title ?? 'unknown',
-                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-                      ),
-                      Text(
-                        DateFormat('yyyy-MM-dd').format(itemModel.regDate != null ? DateTime.parse(itemModel.regDate!) : DateTime.now()),
-                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            initiallyExpanded: itemModel.idx == ref.watch(noticeExpansionIdxStateProvider),
+            onExpansionChanged: (isExpansion) {
+              if (isExpansion) {
+                ref.read(noticeExpansionIdxStateProvider.notifier).state = itemModel.idx!;
+              }
+            },
+            title: Row(
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 14.0.w),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: kNeutralColor200,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0.h, horizontal: 20.0.w),
-                      child: Html(
-                        data: itemModel.contents ?? 'unknown',
-                      ),
-                      // Text(
-                      //   itemModel.contents ?? 'unknown',
-                      //   style: kBody13RegularStyle.copyWith(
-                      //       color: kTextSubTitleColor),
-                      // ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: kNeutralColor300,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 14.0.w),
+                    child: Text(
+                      itemModel.menuName ?? 'unknown',
+                      style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                     ),
                   ),
                 ),
-              ]),
+                SizedBox(
+                  width: 10.w,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      itemModel.title ?? 'unknown',
+                      style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    ),
+                    Text(
+                      DateFormat('yyyy-MM-dd').format(itemModel.regDate != null ? DateTime.parse(itemModel.regDate!) : DateTime.now()),
+                      style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14.0.w),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: kNeutralColor200,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16.0.h, horizontal: 20.0.w),
+                    child: Html(
+                      data: itemModel.contents ?? 'unknown',
+                    ),
+                    // Text(
+                    //   itemModel.contents ?? 'unknown',
+                    //   style: kBody13RegularStyle.copyWith(
+                    //       color: kTextSubTitleColor),
+                    // ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0.w),
