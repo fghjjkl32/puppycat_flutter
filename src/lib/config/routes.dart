@@ -76,6 +76,7 @@ class AppRouter {
     // _pushPayloadState = ref.watch(pushPayloadNotifierProvider);
   }
 
+
   late final GoRouter _goRouter = GoRouter(
     // refreshListenable: AppService(),//redirect 시 사용되는 리스너 이다.
     initialLocation: '/splash',
