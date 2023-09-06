@@ -1,13 +1,39 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
+import 'package:easy_localization/src/easy_localization_controller.dart';
+import 'package:easy_localization/src/localization.dart';
 
 import 'firebase_options.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await EasyLocalization.ensureInitialized();
+  final controller = EasyLocalizationController(
+    saveLocale: true,
+    fallbackLocale: const Locale('ko', 'KR'),
+    supportedLocales: const [
+      Locale('ko', 'KR'),
+    ],
+    assetLoader: const RootBundleAssetLoader(),
+    useOnlyLangCode: false,
+    useFallbackTranslations: true,
+    path: 'assets/translations',
+    onLoadError: (FlutterError e) {},
+  );
+
+  //Load translations from assets
+  await controller.loadTranslations();
+
+  //load translations into exploitable data, kept in memory
+  Localization.load(controller.locale,
+      translations: controller.translations,
+      fallbackTranslations: controller.fallbackTranslations);
+
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   NotificationController notificationController = NotificationController();
   print("run1  $message");
@@ -18,7 +44,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class FireBaseMessageController {
-  late NotificationController notificationController;
+  // late NotificationController notificationController;
   late String? _fcmToken;
 
   String? get fcmToken => _fcmToken;
@@ -41,14 +67,18 @@ class FireBaseMessageController {
     }
 
     // Permissions.requestNotificationPermission();
-    notificationController = NotificationController();
-    _setupNotificationChannel();
+    // notificationController = NotificationController();
+    // _setupNotificationChannel();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('onMessageOpenedApp $message');
     });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('onMessage $message');
+      // NotificationController notificationController = NotificationController();
+      // notificationController.createChannel('puppycat', 'Puppycat Notification', '');
+      // notificationController.showFlutterDataPush(message);
+
     });
 
     // await FirebaseMessaging.instance.subscribeToTopic("topic_test");
@@ -83,7 +113,7 @@ class FireBaseMessageController {
     });
   }
 
-  void _setupNotificationChannel() {
-    notificationController.createChannel('puppycat', 'Puppycat Notification', '');
-  }
+  // void _setupNotificationChannel() {
+  //   notificationController.createChannel('puppycat', 'Puppycat Notification', '');
+  // }
 }

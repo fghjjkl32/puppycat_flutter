@@ -6,6 +6,8 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
+final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
+
 enum ListAPIStatus {
   idle,
   loading,

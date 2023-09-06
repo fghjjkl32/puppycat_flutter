@@ -16,15 +16,21 @@ abstract class CustomerSupportService {
 
   @GET('/faq')
   Future<CustomerSupportResponseModel?> getFaqList(
-    @Path("page") int page,
+    @Query("page") int page,
   );
 
   @GET('/faq/menu')
   Future<MenuResponseModel?> getFaqMenuList();
 
+  // @GET('/notice')
+  // Future<CustomerSupportResponseModel?> getNoticeList(
+  //   @Query("page") int page,
+  //   @Query("type") int type,
+  // );
+
   @GET('/notice')
   Future<CustomerSupportResponseModel?> getNoticeList(
-    @Path("page") int page,
+    @Queries() Map<String, dynamic> queries,
   );
 
   @GET('notice/menu')

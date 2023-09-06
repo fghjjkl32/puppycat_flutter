@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/repositories/notification/notification
 import 'package:pet_mobile_social_flutter/repositories/policy/policy_repository.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:ua_client_hints/ua_client_hints.dart';
 
 part 'new_notification_state_provider.g.dart';
 
@@ -27,10 +28,13 @@ class NewNotificationState extends _$NewNotificationState {
     var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
     CookieJar cookieJar = GetIt.I<CookieJar>();
 
+    var header = await userAgentClientHintsHeader();
+
     final options = BaseOptions(
       baseUrl: baseUrl,
       // connectTimeout: Duration(seconds: 5),
       // receiveTimeout: Duration(seconds: 3),
+      headers: header,
     );
 
     Dio notiDio = Dio(options);

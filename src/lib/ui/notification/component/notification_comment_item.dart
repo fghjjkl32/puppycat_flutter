@@ -27,7 +27,7 @@ class NotificationCommentItem extends StatelessWidget {
     required this.mentionList,
     required this.profileImgUrl,
     required this.imgUrl,
-    this.onTab,
+    this.onTap,
   }) : super(key: key);
 
   final String name;
@@ -39,7 +39,7 @@ class NotificationCommentItem extends StatelessWidget {
   final Map<String, dynamic> mentionList;
   final String profileImgUrl;
   final String imgUrl;
-  final Function? onTab;
+  final Function? onTap;
 
   // final List<MentionListData> mentionList;
 
@@ -82,8 +82,8 @@ class NotificationCommentItem extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        if(onTab != null) {
-          onTab!();
+        if(onTap != null) {
+          onTap!();
         }
       },
       child: Padding(

@@ -41,10 +41,17 @@ class CustomerSupportRepository {
     return customerSupportResponseModel;
   }
 
-  Future<CustomerSupportResponseModel?> getNoticeList({
-    required int page,
-  }) async {
-    CustomerSupportResponseModel? customerSupportResponseModel = await _settingService.getNoticeList(page).catchError((Object obj) async {});
+  Future<CustomerSupportResponseModel?> getNoticeList(int page, [int? type, int limit = 10]) async {
+    Map<String, dynamic> queries = {
+      'page': page,
+      'limit': limit,
+    };
+
+    if (type != null) {
+      queries['type'] = type;
+    }
+
+    CustomerSupportResponseModel? customerSupportResponseModel = await _settingService.getNoticeList(queries).catchError((Object obj) async {});
 
     if (customerSupportResponseModel == null) {
       return null;
