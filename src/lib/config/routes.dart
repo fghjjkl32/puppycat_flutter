@@ -1,14 +1,19 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_deatil_list_widget.dart';
+import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
 import 'package:pet_mobile_social_flutter/main.dart';
+import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_main_screen.dart';
@@ -57,6 +62,7 @@ class AppRouter {
   var _loginRouteState = LoginRoute.none;
   var _signUpState = SignUpRoute.none;
   bool _splashState = false;
+  var _pushPayloadState = null;
 
   final Ref ref;
 
@@ -66,13 +72,15 @@ class AppRouter {
     _loginRouteState = ref.watch(loginRouteStateProvider);
     _signUpState = ref.watch(signUpRouteStateProvider);
     _splashState = ref.watch(splashStateProvider);
+    _pushPayloadState = ref.watch(pushPayloadStateProvider);
+    // _pushPayloadState = ref.watch(pushPayloadNotifierProvider);
   }
 
   late final GoRouter _goRouter = GoRouter(
     // refreshListenable: AppService(),//redirect 시 사용되는 리스너 이다.
     initialLocation: '/splash',
     //제일 처음 보여 줄 route
-    debugLogDiagnostics: false,
+    debugLogDiagnostics: true,
     //router 정보 콘솔에 출력
     // errorBuilder: (BuildContext context, GoRouterState state) =>
     // const ErrorPage(),
@@ -399,7 +407,7 @@ class AppRouter {
       ),
     ],
 
-    redirect: (BuildContext context, GoRouterState state) {
+    redirect: (BuildContext context, GoRouterState state)  {
       const homeLocation = '/home';
       const loginLocation = '/loginScreen';
       const splashLocation = '/splash';
@@ -410,6 +418,14 @@ class AppRouter {
       ///NOTE 테스트용 임시
 
       InitializationApp.initialize(ref);
+
+      // FirebaseCloudMessagePayload? payload = _pushPayloadState;
+      // if(payload != null) {
+      //   PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
+      //   print('pushType $pushType');
+      //   // ref.read(pushPayloadStateProvider.notifier).state = null;
+      //   return signUpCompleteLocation;
+      // }
 
       bool isSplashPage = state.matchedLocation == splashLocation;
       if (isSplashPage) {
@@ -456,6 +472,7 @@ class GoRouterObserver extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     print('MyTest didPush: $route');
+    // ref.read(pushPayloadStateProvider.notifier).state = null;
   }
 
   @override

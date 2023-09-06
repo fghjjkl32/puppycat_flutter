@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/notification/notification_service.dart';
+import 'package:ua_client_hints/ua_client_hints.dart';
 
 
 final dioProvider = StateProvider<Dio>((ref) {
@@ -80,6 +81,14 @@ class DioWrap {
             // options.headers['Your-Header-Name'] = response.data['someValue'];
 
             // Continue with the request
+            // var userAgent = options.headers['user-agent'];
+            // userAgent = userAgent + 'Puppycat v0.0.2';
+            // options.headers['user-agent'] = await userAgent();
+            options.headers.addAll(await userAgentClientHintsHeader());
+
+
+            print('options.headers ${options.headers}');
+
             return handler.next(options);
           } catch (e) {
             print('noti error $e');
