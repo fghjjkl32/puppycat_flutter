@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -19,7 +20,10 @@ class SignUpCompleteScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('assets/image/signUpScreen/corgi_1.png'),
+                  Lottie.asset(
+                    'assets/lottie/character_00_welcome_220.json',
+                    fit: BoxFit.fill,
+                  ),
                   SizedBox(
                     height: 12.h,
                   ),

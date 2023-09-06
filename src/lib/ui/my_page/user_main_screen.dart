@@ -57,10 +57,6 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
   @override
   void initState() {
-    print(widget.memberIdx);
-    print(widget.memberIdx);
-    print(widget.memberIdx);
-
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
 
@@ -172,100 +168,109 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                     ),
                     forceElevated: innerBoxIsScrolled,
                     actions: [
-                      PopupMenuButton(
-                        icon: const Icon(
-                          Puppycat_social.icon_more_header,
-                          size: 40,
-                        ),
-                        onSelected: (id) {
-                          if (id == 'block') {
-                            if (ref.read(userModelProvider) == null) {
-                              context.pushReplacement("/loginScreen");
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return CustomDialog(
-                                    content: Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            "‘${widget.nick}’님을\n차단하시겠어요?",
-                                            style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          SizedBox(
-                                            height: 8.h,
-                                          ),
-                                          Text(
-                                            "‘${widget.nick}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
-                                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          SizedBox(
-                                            height: 8.h,
-                                          ),
-                                          Text(
-                                            " ‘${widget.nick}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
-                                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    confirmTap: () async {
-                                      context.pop();
-                                      toast(
-                                        context: context,
-                                        text: "‘${widget.nick}’님을 차단하였습니다.",
-                                        type: ToastType.purple,
-                                      );
-                                      final result = await ref.read(userInformationStateProvider.notifier).postBlock(
-                                            memberIdx: ref.watch(userModelProvider)!.idx,
-                                            blockIdx: widget.memberIdx,
-                                          );
+                      Consumer(builder: (context, ref, _) {
+                        final userInformationState = ref.watch(userInformationStateProvider);
+                        final lists = userInformationState.list;
 
-                                      if (result.result) {
-                                        ref.watch(userInformationStateProvider.notifier).updateBlockState();
+                        return lists.isEmpty
+                            ? Container()
+                            : lists[0].blockedState == 1 || lists[0].blockedMeState == 1
+                                ? Container()
+                                : PopupMenuButton(
+                                    icon: const Icon(
+                                      Puppycat_social.icon_more_header,
+                                      size: 40,
+                                    ),
+                                    onSelected: (id) {
+                                      if (id == 'block') {
+                                        if (ref.read(userModelProvider) == null) {
+                                          context.pushReplacement("/loginScreen");
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return CustomDialog(
+                                                content: Padding(
+                                                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        "‘${widget.nick}’님을\n차단하시겠어요?",
+                                                        style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 8.h,
+                                                      ),
+                                                      Text(
+                                                        "‘${widget.nick}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
+                                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 8.h,
+                                                      ),
+                                                      Text(
+                                                        " ‘${widget.nick}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
+                                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                confirmTap: () async {
+                                                  context.pop();
+                                                  toast(
+                                                    context: context,
+                                                    text: "‘${widget.nick}’님을 차단하였습니다.",
+                                                    type: ToastType.purple,
+                                                  );
+                                                  final result = await ref.read(userInformationStateProvider.notifier).postBlock(
+                                                        memberIdx: ref.watch(userModelProvider)!.idx,
+                                                        blockIdx: widget.memberIdx,
+                                                      );
+
+                                                  if (result.result) {
+                                                    ref.watch(userInformationStateProvider.notifier).updateBlockState();
+                                                  }
+                                                },
+                                                cancelTap: () {
+                                                  context.pop();
+                                                },
+                                                confirmWidget: Text(
+                                                  "프로필 차단",
+                                                  style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        }
                                       }
                                     },
-                                    cancelTap: () {
-                                      context.pop();
-                                    },
-                                    confirmWidget: Text(
-                                      "프로필 차단",
-                                      style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(16.0),
+                                        bottomRight: Radius.circular(16.0),
+                                        topLeft: Radius.circular(16.0),
+                                        topRight: Radius.circular(16.0),
+                                      ),
                                     ),
+                                    itemBuilder: (context) {
+                                      final list = <PopupMenuEntry>[];
+                                      list.add(
+                                        diaryPopUpMenuItem(
+                                          'block',
+                                          '차단하기',
+                                          const Icon(
+                                            Puppycat_social.icon_user_block_ac,
+                                          ),
+                                          context,
+                                        ),
+                                      );
+                                      return list;
+                                    },
                                   );
-                                },
-                              );
-                            }
-                          }
-                        },
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(16.0),
-                            bottomRight: Radius.circular(16.0),
-                            topLeft: Radius.circular(16.0),
-                            topRight: Radius.circular(16.0),
-                          ),
-                        ),
-                        itemBuilder: (context) {
-                          final list = <PopupMenuEntry>[];
-                          list.add(
-                            diaryPopUpMenuItem(
-                              'block',
-                              '차단하기',
-                              const Icon(
-                                Puppycat_social.icon_user_block_ac,
-                              ),
-                              context,
-                            ),
-                          );
-                          return list;
-                        },
-                      ),
+                      }),
                     ],
                     expandedHeight: 146.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
@@ -293,7 +298,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                'assets/image/feed_write/image/corgi-2 1.png',
+                                'assets/image/character/character_07_block_88 (1).png',
                                 height: 68.h,
                               ),
                               SizedBox(
@@ -314,7 +319,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.asset(
-                                    'assets/image/feed_write/image/corgi-2 1.png',
+                                    'character_07_block_me_88.png',
                                     height: 68.h,
                                   ),
                                   SizedBox(
@@ -352,96 +357,120 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
         userOldLength = lists.length ?? 0;
 
-        return RefreshIndicator(
-          onRefresh: () {
-            return ref.read(userContentStateProvider.notifier).refresh(
-                  ref.read(userModelProvider)?.idx,
-                  widget.memberIdx,
-                );
-          },
-          child: GridView.builder(
-            controller: userContentController,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-            ),
-            itemCount: lists.length,
-            itemBuilder: (context, index) {
-              if (index == lists.length) {
-                if (isLoadMoreError) {
-                  return const Center(
-                    child: Text('Error'),
-                  );
-                }
-                if (isLoadMoreDone) {
-                  return Container();
-                }
-                return Container();
-              }
-
-              return Container(
-                margin: const EdgeInsets.all(10.0),
-                child: GestureDetector(
-                  onTap: () {
-                    context.push(
-                        "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/게시물/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userContent");
-                  },
-                  child: Center(
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.all(Radius.circular(12)),
-                            child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            height: 30,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Colors.black.withOpacity(0.5),
-                                  Colors.transparent,
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 6.w,
-                          top: 6.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                            width: 18.w,
-                            height: 14.w,
-                            child: Center(
-                              child: Text(
-                                '${lists[index].imageCnt}',
-                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+        return lists.isEmpty
+            ? Container(
+                color: kNeutralColor100,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                        width: 88,
+                        height: 88,
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Text(
+                        '게시물이 없습니다.',
+                        textAlign: TextAlign.center,
+                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                      ),
+                    ],
                   ),
                 ),
+              )
+            : RefreshIndicator(
+                onRefresh: () {
+                  return ref.read(userContentStateProvider.notifier).refresh(
+                        ref.read(userModelProvider)?.idx,
+                        widget.memberIdx,
+                      );
+                },
+                child: GridView.builder(
+                  controller: userContentController,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                  ),
+                  itemCount: lists.length,
+                  itemBuilder: (context, index) {
+                    if (index == lists.length) {
+                      if (isLoadMoreError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      }
+                      if (isLoadMoreDone) {
+                        return Container();
+                      }
+                      return Container();
+                    }
+
+                    return Container(
+                      margin: const EdgeInsets.all(10.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          context.push(
+                              "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/게시물/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userContent");
+                        },
+                        child: Center(
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                  child: Image.network(
+                                    Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.5),
+                                        Colors.transparent,
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: 6.w,
+                                top: 6.w,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff414348).withOpacity(0.75),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  width: 18.w,
+                                  height: 14.w,
+                                  child: Center(
+                                    child: Text(
+                                      '${lists[index].imageCnt}',
+                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               );
-            },
-          ),
-        );
       },
     );
   }
@@ -464,69 +493,93 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                   widget.memberIdx,
                 );
           },
-          child: GridView.builder(
-            controller: tagContentController,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-            ),
-            itemCount: lists.length,
-            itemBuilder: (context, index) {
-              if (index == lists.length) {
-                if (isLoadMoreError) {
-                  return const Center(
-                    child: Text('Error'),
-                  );
-                }
-                if (isLoadMoreDone) {
-                  return Container();
-                }
-                return Container();
-              }
-
-              return Container(
-                margin: const EdgeInsets.all(10.0),
-                child: GestureDetector(
-                  onTap: () {
-                    context.push(
-                        "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userTagContent");
-                  },
+          child: lists.isEmpty
+              ? Container(
+                  color: kNeutralColor100,
                   child: Center(
-                    child: Stack(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Positioned.fill(
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.all(Radius.circular(12)),
-                            child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                        Image.asset(
+                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                          width: 88,
+                          height: 88,
                         ),
-                        Positioned(
-                          right: 6.w,
-                          top: 6.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                            width: 18.w,
-                            height: 14.w,
-                            child: Center(
-                              child: Text(
-                                "${lists[index].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
-                              ),
-                            ),
-                          ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Text(
+                          '게시물이 없습니다.',
+                          textAlign: TextAlign.center,
+                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                         ),
                       ],
                     ),
                   ),
+                )
+              : GridView.builder(
+                  controller: tagContentController,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                  ),
+                  itemCount: lists.length,
+                  itemBuilder: (context, index) {
+                    if (index == lists.length) {
+                      if (isLoadMoreError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      }
+                      if (isLoadMoreDone) {
+                        return Container();
+                      }
+                      return Container();
+                    }
+
+                    return Container(
+                      margin: const EdgeInsets.all(10.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          context.push(
+                              "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userTagContent");
+                        },
+                        child: Center(
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                  child: Image.network(
+                                    Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: 6.w,
+                                top: 6.w,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff414348).withOpacity(0.75),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  width: 18.w,
+                                  height: 14.w,
+                                  child: Center(
+                                    child: Text(
+                                      "${lists[index].imageCnt}",
+                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         );
       },
     );

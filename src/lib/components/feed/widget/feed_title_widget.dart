@@ -62,8 +62,7 @@ class FeedTitleWidget extends ConsumerWidget {
                   ),
                 ),
               )
-            : context.push(
-                "/home/myPage/followList/$memberIdx/userPage/$userName/$memberIdx/$oldMemberIdx");
+            : context.push("/home/myPage/followList/$memberIdx/userPage/$userName/$memberIdx/$oldMemberIdx");
       },
       child: Material(
         color: kNeutralColor100,
@@ -84,8 +83,7 @@ class FeedTitleWidget extends ConsumerWidget {
                     children: [
                       Text(
                         "${userName}",
-                        style:
-                            kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+                        style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
                       ),
                       SizedBox(
                         height: 1.h,
@@ -94,15 +92,13 @@ class FeedTitleWidget extends ConsumerWidget {
                         children: [
                           Text(
                             address,
-                            style: kBody11RegularStyle.copyWith(
-                                color: kTextBodyColor),
+                            style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                           ),
                           Row(
                             children: [
                               Text(
                                 " · ",
-                                style: kBody11RegularStyle.copyWith(
-                                    color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                               ),
                               // Text(
                               //   displayedAt(time),
@@ -111,8 +107,7 @@ class FeedTitleWidget extends ConsumerWidget {
                               // ),
                               Text(
                                 time,
-                                style: kBody11RegularStyle.copyWith(
-                                    color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                               ),
                             ],
                           ),
@@ -121,13 +116,11 @@ class FeedTitleWidget extends ConsumerWidget {
                                   children: [
                                     Text(
                                       " · ",
-                                      style: kBody11RegularStyle.copyWith(
-                                          color: kTextBodyColor),
+                                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                                     ),
                                     Text(
                                       "수정됨",
-                                      style: kBody11RegularStyle.copyWith(
-                                          color: kTextBodyColor),
+                                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                                     ),
                                   ],
                                 )
@@ -151,18 +144,12 @@ class FeedTitleWidget extends ConsumerWidget {
                                         Puppycat_social.icon_user_ac,
                                       ),
                                       title: '프로필 표시하기',
-                                      titleStyle: kButton14BoldStyle.copyWith(
-                                          color: kTextSubTitleColor),
+                                      titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                       onTap: () async {
                                         context.pop();
 
-                                        final result = await ref
-                                            .watch(
-                                                feedListStateProvider.notifier)
-                                            .deleteOneKeepContents(
-                                              loginMemberIdx: ref
-                                                  .read(userModelProvider)!
-                                                  .idx,
+                                        final result = await ref.watch(feedListStateProvider.notifier).deleteOneKeepContents(
+                                              loginMemberIdx: ref.read(userModelProvider)!.idx,
                                               contentType: contentType,
                                               contentIdx: contentIdx,
                                             );
@@ -181,18 +168,12 @@ class FeedTitleWidget extends ConsumerWidget {
                                         Puppycat_social.icon_keep,
                                       ),
                                       title: '보관하기',
-                                      titleStyle: kButton14BoldStyle.copyWith(
-                                          color: kTextSubTitleColor),
+                                      titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                       onTap: () async {
                                         context.pop();
 
-                                        final result = await ref
-                                            .watch(
-                                                feedListStateProvider.notifier)
-                                            .postKeepContents(
-                                              loginMemberIdx: ref
-                                                  .read(userModelProvider)!
-                                                  .idx,
+                                        final result = await ref.watch(feedListStateProvider.notifier).postKeepContents(
+                                              loginMemberIdx: ref.read(userModelProvider)!.idx,
                                               contentIdxList: [contentIdx],
                                               contentType: contentType,
                                             );
@@ -211,8 +192,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                   Puppycat_social.icon_modify,
                                 ),
                                 title: '수정하기',
-                                titleStyle: kButton14BoldStyle.copyWith(
-                                    color: kTextSubTitleColor),
+                                titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
@@ -230,16 +210,12 @@ class FeedTitleWidget extends ConsumerWidget {
                                   color: kBadgeColor,
                                 ),
                                 title: '삭제하기',
-                                titleStyle: kButton14BoldStyle.copyWith(
-                                    color: kBadgeColor),
+                                titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                 onTap: () async {
                                   context.pop();
 
-                                  final result = await ref
-                                      .watch(feedListStateProvider.notifier)
-                                      .deleteOneContents(
-                                        loginMemberIdx:
-                                            ref.read(userModelProvider)!.idx,
+                                  final result = await ref.watch(feedListStateProvider.notifier).deleteOneContents(
+                                        loginMemberIdx: ref.read(userModelProvider)!.idx,
                                         contentType: contentType,
                                         contentIdx: contentIdx,
                                       );
@@ -265,19 +241,15 @@ class FeedTitleWidget extends ConsumerWidget {
                                   Puppycat_social.icon_user_de,
                                 ),
                                 title: '숨기기',
-                                titleStyle: kButton14BoldStyle.copyWith(
-                                    color: kTextSubTitleColor),
+                                titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                 onTap: () async {
                                   if (ref.read(userModelProvider) == null) {
                                     context.pushReplacement("/loginScreen");
                                   } else {
                                     context.pop();
 
-                                    final result = await ref
-                                        .watch(feedListStateProvider.notifier)
-                                        .postHide(
-                                          loginMemberIdx:
-                                              ref.read(userModelProvider)!.idx,
+                                    final result = await ref.watch(feedListStateProvider.notifier).postHide(
+                                          loginMemberIdx: ref.read(userModelProvider)!.idx,
                                           contentType: contentType,
                                           contentIdx: contentIdx,
                                           memberIdx: memberIdx,
@@ -290,13 +262,8 @@ class FeedTitleWidget extends ConsumerWidget {
                                         type: ToastType.purple,
                                         buttonText: "숨기기 취소",
                                         buttonOnTap: () async {
-                                          final result = await ref
-                                              .watch(feedListStateProvider
-                                                  .notifier)
-                                              .deleteHide(
-                                                loginMemberIdx: ref
-                                                    .read(userModelProvider)!
-                                                    .idx,
+                                          final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
+                                                loginMemberIdx: ref.read(userModelProvider)!.idx,
                                                 contentType: contentType,
                                                 contentIdx: contentIdx,
                                                 memberIdx: memberIdx,
@@ -321,18 +288,12 @@ class FeedTitleWidget extends ConsumerWidget {
                                         Puppycat_social.icon_follow_cancel,
                                       ),
                                       title: '팔로우 취소',
-                                      titleStyle: kButton14BoldStyle.copyWith(
-                                          color: kTextSubTitleColor),
+                                      titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                       onTap: () async {
                                         context.pop();
 
-                                        ref
-                                            .watch(
-                                                feedListStateProvider.notifier)
-                                            .deleteFollow(
-                                              memberIdx: ref
-                                                  .read(userModelProvider)!
-                                                  .idx,
+                                        ref.watch(feedListStateProvider.notifier).deleteFollow(
+                                              memberIdx: ref.read(userModelProvider)!.idx,
                                               followIdx: feedData.memberIdx,
                                               contentsIdx: feedData.idx,
                                               contentType: contentType,
@@ -345,8 +306,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                   Puppycat_social.icon_user_block_ac,
                                 ),
                                 title: '차단하기',
-                                titleStyle: kButton14BoldStyle.copyWith(
-                                    color: kTextSubTitleColor),
+                                titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                 onTap: () async {
                                   if (ref.read(userModelProvider) == null) {
                                     context.pushReplacement("/loginScreen");
@@ -358,16 +318,12 @@ class FeedTitleWidget extends ConsumerWidget {
                                       builder: (BuildContext context) {
                                         return CustomDialog(
                                             content: Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 24.0.h),
+                                              padding: EdgeInsets.symmetric(vertical: 24.0.h),
                                               child: Column(
                                                 children: [
                                                   Text(
                                                     "‘${userName}’님을\n차단하시겠어요?",
-                                                    style: kBody16BoldStyle
-                                                        .copyWith(
-                                                            color:
-                                                                kTextTitleColor),
+                                                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   SizedBox(
@@ -375,10 +331,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                                   ),
                                                   Text(
                                                     "‘${userName}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
-                                                    style: kBody12RegularStyle
-                                                        .copyWith(
-                                                            color:
-                                                                kTextBodyColor),
+                                                    style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   SizedBox(
@@ -386,10 +339,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                                   ),
                                                   Text(
                                                     " ‘${userName}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
-                                                    style: kBody12RegularStyle
-                                                        .copyWith(
-                                                            color:
-                                                                kTextBodyColor),
+                                                    style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                                     textAlign: TextAlign.center,
                                                   ),
                                                 ],
@@ -398,14 +348,8 @@ class FeedTitleWidget extends ConsumerWidget {
                                             confirmTap: () async {
                                               context.pop();
 
-                                              final result = await ref
-                                                  .read(feedListStateProvider
-                                                      .notifier)
-                                                  .postBlock(
-                                                    memberIdx: ref
-                                                        .watch(
-                                                            userModelProvider)!
-                                                        .idx,
+                                              final result = await ref.read(feedListStateProvider.notifier).postBlock(
+                                                    memberIdx: ref.watch(userModelProvider)!.idx,
                                                     blockIdx: memberIdx,
                                                     contentType: contentType,
                                                     contentIdx: contentIdx,
@@ -416,8 +360,7 @@ class FeedTitleWidget extends ConsumerWidget {
 
                                                 toast(
                                                   context: context,
-                                                  text:
-                                                      "‘${userName}’님을 차단하였습니다.",
+                                                  text: "‘${userName}’님을 차단하였습니다.",
                                                   type: ToastType.purple,
                                                 );
                                               }
@@ -427,8 +370,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                             },
                                             confirmWidget: Text(
                                               "유저 차단",
-                                              style: kButton14MediumStyle
-                                                  .copyWith(color: kBadgeColor),
+                                              style: kButton14MediumStyle.copyWith(color: kBadgeColor),
                                             ));
                                       },
                                     );
@@ -441,15 +383,13 @@ class FeedTitleWidget extends ConsumerWidget {
                                   color: kBadgeColor,
                                 ),
                                 title: '신고하기',
-                                titleStyle: kButton14BoldStyle.copyWith(
-                                    color: kBadgeColor),
+                                titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                 onTap: () {
                                   if (ref.read(userModelProvider) == null) {
                                     context.pushReplacement("/loginScreen");
                                   } else {
                                     context.pop();
-                                    context
-                                        .push("/home/report/false/$contentIdx");
+                                    context.push("/home/report/false/$contentIdx");
                                   }
                                 },
                               ),

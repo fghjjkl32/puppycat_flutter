@@ -9,7 +9,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'my_info_state_provider.g.dart';
 
-
 ///TODO
 ///  myInformationStateProvider 와 헷갈릴 수 있는데 이 부분은 추후 정리 필요
 ///  마이페이지, 유저페이지용  API 와 모양이 유사할뿐 내용이 달라서 따로 작성
@@ -21,7 +20,7 @@ class MyInfoState extends _$MyInfoState {
   }
 
   void getMyInfo(String memberIdx) async {
-    UserInformationItemModel userInfoModel  = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).getMyInfo(memberIdx);
+    UserInformationItemModel userInfoModel = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).getMyInfo(memberIdx);
     state = userInfoModel;
   }
 
@@ -30,13 +29,10 @@ class MyInfoState extends _$MyInfoState {
   }
 
   bool checkChatInfo(UserInformationItemModel userInfoModel) {
-    if(userInfoModel.chatMemberId == null) {
+    if (userInfoModel.chatMemberId == null) {
       return false;
     } else {
       return true;
     }
   }
 }
-
-
-

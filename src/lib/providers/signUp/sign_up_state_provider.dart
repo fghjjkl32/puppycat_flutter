@@ -22,8 +22,8 @@ enum NickNameStatus {
   invalidLetter,
   invalidWord,
   failure,
+  nonValid,
 }
-
 
 enum SignUpStatus {
   none,
@@ -50,7 +50,7 @@ class SignUpState extends _$SignUpState {
     var idxList = ref.read(policyStateProvider.notifier).getSelectPolicy();
     var result = await _signUpRepository.socialSignUp(userModel, idxList);
 
-    if(result == SignUpStatus.success) {
+    if (result == SignUpStatus.success) {
       ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.success;
       // ref.read(chatRegisterStateProvider.notifier).register(userModel);
     }

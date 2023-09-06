@@ -50,6 +50,7 @@ class FirstFeedState extends _$FirstFeedState {
       }
 
       apiStatus = ListAPIStatus.loading;
+      state.notifyListeners();
 
       FeedResponseModel searchResult = feedNullResponseModel;
 
@@ -174,7 +175,5 @@ class FirstFeedState extends _$FirstFeedState {
   void saveStateForUser(int userId) {
     firstFeedStateMap[userId ?? 0] = state.itemList;
     firstFeedMemberInfoStateMap[userId ?? 0] = memberInfo ?? state.itemList?[0].memberInfoList;
-
-    state.notifyListeners();
   }
 }

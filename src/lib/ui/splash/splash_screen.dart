@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
@@ -34,7 +35,7 @@ class InitializationApp {
     // var result = Future.delayed(Duration(milliseconds: 300), () async {
     ///TODO
     ///결과값 제대로 받아서 처리하도록
-    if(!Platform.isIOS) {
+    if (!Platform.isIOS) {
       print('run?asdasd');
       await GetIt.I<FireBaseMessageController>().init();
     }
@@ -77,7 +78,7 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
 
-    _splashTimer = Timer(const Duration(seconds: 3), () {
+    _splashTimer = Timer(const Duration(milliseconds: 2500), () {
       if (ref.read(_initStateProvider)) {
         ref.read(splashStateProvider.notifier).state = true;
       }
@@ -100,13 +101,13 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
 
     return WillPopScope(
       onWillPop: () async => false,
-      child: const Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Splash Screen'),
-            ],
+      child: Scaffold(
+        body: Container(
+          height: double.infinity,
+          width: double.infinity,
+          child: Lottie.asset(
+            'assets/lottie/character_00_introSplash_360x640.json',
+            fit: BoxFit.fill,
           ),
         ),
       ),

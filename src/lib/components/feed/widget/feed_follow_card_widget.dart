@@ -5,16 +5,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class FeedFollowCardWidget extends ConsumerWidget {
+class FeedFollowCardWidget extends ConsumerStatefulWidget {
   const FeedFollowCardWidget({
     required this.profileImage,
     required this.userName,
@@ -35,7 +38,14 @@ class FeedFollowCardWidget extends ConsumerWidget {
   final int oldMemberIdx;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  FeedFollowCardWidgetState createState() => FeedFollowCardWidgetState();
+}
+
+class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
+  bool isFollow = false;
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w),
       child: Container(
@@ -53,16 +63,16 @@ class FeedFollowCardWidget extends ConsumerWidget {
           children: [
             GestureDetector(
               onTap: () {
-                ref.read(userModelProvider)?.idx == memberIdx
+                ref.read(userModelProvider)?.idx == widget.memberIdx
                     ? Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => MyPageMainScreen(
-                            oldMemberIdx: oldMemberIdx,
+                            oldMemberIdx: widget.oldMemberIdx,
                           ),
                         ),
                       )
-                    : context.push("/home/myPage/followList/$memberIdx/userPage/$userName/$memberIdx/$oldMemberIdx");
+                    : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
               },
               child: Row(
                 children: [
@@ -73,14 +83,14 @@ class FeedFollowCardWidget extends ConsumerWidget {
                       bottom: 12.h,
                       right: 8.w,
                     ),
-                    child: getProfileAvatar(profileImage ?? "", 32.w, 32.h),
+                    child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          isSpecialUser
+                          widget.isSpecialUser
                               ? Row(
                                   children: [
                                     Image.asset(
@@ -94,24 +104,65 @@ class FeedFollowCardWidget extends ConsumerWidget {
                                 )
                               : Container(),
                           Text(
-                            userName,
+                            widget.userName,
                             style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                           ),
                           Text(
                             "  ·  ",
                             style: kBody11RegularStyle.copyWith(color: kNeutralColor400),
                           ),
-                          Text(
-                            "팔로우",
-                            style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
-                          ),
+                          isFollow
+                              ? InkWell(
+                                  onTap: () async {
+                                    if (ref.read(userModelProvider) == null) {
+                                      context.pushReplacement("/loginScreen");
+                                    } else {
+                                      final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(
+                                        memberIdx: ref.read(userModelProvider)!.idx,
+                                        followIdx: widget.memberIdx,
+                                      );
+
+                                      if (result.result) {
+                                        setState(() {
+                                          isFollow = false;
+                                        });
+                                      }
+                                    }
+                                  },
+                                  child: Text(
+                                    "팔로잉",
+                                    style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor500),
+                                  ),
+                                )
+                              : InkWell(
+                                  onTap: () async {
+                                    if (ref.read(userModelProvider) == null) {
+                                      context.pushReplacement("/loginScreen");
+                                    } else {
+                                      final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(
+                                        memberIdx: ref.read(userModelProvider)!.idx,
+                                        followIdx: widget.memberIdx,
+                                      );
+
+                                      if (result.result) {
+                                        setState(() {
+                                          isFollow = true;
+                                        });
+                                      }
+                                    }
+                                  },
+                                  child: Text(
+                                    "팔로우",
+                                    style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                  ),
+                                ),
                         ],
                       ),
                       SizedBox(
                         height: 3.h,
                       ),
                       Text(
-                        "팔로워 ${NumberFormat('###,###,###,###').format(followCount)}",
+                        "팔로워 ${NumberFormat('###,###,###,###').format(widget.followCount)}",
                         style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                       ),
                     ],
@@ -119,83 +170,93 @@ class FeedFollowCardWidget extends ConsumerWidget {
                 ],
               ),
             ),
-            if (imageList.length == 1) ...[
-              Row(
-                children: [
-                  Flexible(
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(12.0),
-                          ),
-                          child: Image.network(
-                            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].imgUrl!}").toUrl(),
-                            fit: BoxFit.cover,
-                            height: 147.h,
-                            width: double.infinity,
-                          ),
-                        ),
-                        Positioned(
-                          right: 4.w,
-                          top: 4.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+            if (widget.imageList.length == 1) ...[
+              GestureDetector(
+                onTap: () {
+                  context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[0].idx}/userContent");
+                },
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(12.0),
                             ),
-                            width: 18.w,
-                            height: 14.w,
-                            child: Center(
-                              child: Text(
-                                "${imageList[0].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                            child: Image.network(
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[0].imgUrl!}").toUrl(),
+                              fit: BoxFit.cover,
+                              height: 147.h,
+                              width: double.infinity,
+                            ),
+                          ),
+                          Positioned(
+                            right: 4.w,
+                            top: 4.w,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xff414348).withOpacity(0.75),
+                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                              width: 18.w,
+                              height: 14.w,
+                              child: Center(
+                                child: Text(
+                                  "${widget.imageList[0].imageCnt}",
+                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ] else if (imageList.length == 2) ...[
+            ] else if (widget.imageList.length == 2) ...[
               Row(
                 children: [
                   Flexible(
                     flex: 1,
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(12.0),
-                          ),
-                          child: Image.network(
-                            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].imgUrl!}").toUrl(),
-                            fit: BoxFit.cover,
-                            height: 147.h,
-                            width: double.infinity,
-                          ),
-                        ),
-                        Positioned(
-                          right: 4.w,
-                          top: 4.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[0].idx}/userContent");
+                      },
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(12.0),
                             ),
-                            width: 18.w,
-                            height: 14.w,
-                            child: Center(
-                              child: Text(
-                                "${imageList[0].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                            child: Image.network(
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[0].imgUrl!}").toUrl(),
+                              fit: BoxFit.cover,
+                              height: 147.h,
+                              width: double.infinity,
+                            ),
+                          ),
+                          Positioned(
+                            right: 4.w,
+                            top: 4.w,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xff414348).withOpacity(0.75),
+                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                              width: 18.w,
+                              height: 14.w,
+                              child: Center(
+                                child: Text(
+                                  "${widget.imageList[0].imageCnt}",
+                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -203,79 +264,89 @@ class FeedFollowCardWidget extends ConsumerWidget {
                   ),
                   Flexible(
                     flex: 1,
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            bottomRight: Radius.circular(12.0),
-                          ),
-                          child: Image.network(
-                            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].imgUrl!}").toUrl(),
-                            fit: BoxFit.cover,
-                            height: 147.h,
-                            width: double.infinity,
-                          ),
-                        ),
-                        Positioned(
-                          right: 4.w,
-                          top: 4.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[1].idx}/userContent");
+                      },
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomRight: Radius.circular(12.0),
                             ),
-                            width: 18.w,
-                            height: 14.w,
-                            child: Center(
-                              child: Text(
-                                "${imageList[1].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                            child: Image.network(
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[1].imgUrl!}").toUrl(),
+                              fit: BoxFit.cover,
+                              height: 147.h,
+                              width: double.infinity,
+                            ),
+                          ),
+                          Positioned(
+                            right: 4.w,
+                            top: 4.w,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xff414348).withOpacity(0.75),
+                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                              width: 18.w,
+                              height: 14.w,
+                              child: Center(
+                                child: Text(
+                                  "${widget.imageList[1].imageCnt}",
+                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
-            ] else if (imageList.length == 3) ...[
+            ] else if (widget.imageList.length == 3) ...[
               Row(
                 children: [
                   Flexible(
                     flex: 10,
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(12.0),
-                          ),
-                          child: Image.network(
-                            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].imgUrl!}").toUrl(),
-                            fit: BoxFit.cover,
-                            height: 147.h,
-                            width: double.infinity,
-                          ),
-                        ),
-                        Positioned(
-                          right: 4.w,
-                          top: 4.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[0].idx}/userContent");
+                      },
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(12.0),
                             ),
-                            width: 18.w,
-                            height: 14.w,
-                            child: Center(
-                              child: Text(
-                                "${imageList[0].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                            child: Image.network(
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[0].imgUrl!}").toUrl(),
+                              fit: BoxFit.cover,
+                              height: 147.h,
+                              width: double.infinity,
+                            ),
+                          ),
+                          Positioned(
+                            right: 4.w,
+                            top: 4.w,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xff414348).withOpacity(0.75),
+                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                              width: 18.w,
+                              height: 14.w,
+                              child: Center(
+                                child: Text(
+                                  "${widget.imageList[0].imageCnt}",
+                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -285,45 +356,14 @@ class FeedFollowCardWidget extends ConsumerWidget {
                     flex: 7,
                     child: Column(
                       children: [
-                        Stack(
-                          children: [
-                            Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].imgUrl!}").toUrl(),
-                              fit: BoxFit.cover,
-                              height: 73.h,
-                              width: double.infinity,
-                            ),
-                            Positioned(
-                              right: 4.w,
-                              top: 4.w,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff414348).withOpacity(0.75),
-                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                                width: 18.w,
-                                height: 14.w,
-                                child: Center(
-                                  child: Text(
-                                    "${imageList[1].imageCnt}",
-                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 1.h,
-                        ),
-                        ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            bottomRight: Radius.circular(12.0),
-                          ),
+                        GestureDetector(
+                          onTap: () {
+                            context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[1].idx}/userContent");
+                          },
                           child: Stack(
                             children: [
                               Image.network(
-                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[2].imgUrl!}").toUrl(),
+                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[1].imgUrl!}").toUrl(),
                                 fit: BoxFit.cover,
                                 height: 73.h,
                                 width: double.infinity,
@@ -340,13 +380,54 @@ class FeedFollowCardWidget extends ConsumerWidget {
                                   height: 14.w,
                                   child: Center(
                                     child: Text(
-                                      "${imageList[2].imageCnt}",
+                                      "${widget.imageList[1].imageCnt}",
                                       style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
                                     ),
                                   ),
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 1.h,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[2].idx}/userContent");
+                          },
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomRight: Radius.circular(12.0),
+                            ),
+                            child: Stack(
+                              children: [
+                                Image.network(
+                                  Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[2].imgUrl!}").toUrl(),
+                                  fit: BoxFit.cover,
+                                  height: 73.h,
+                                  width: double.infinity,
+                                ),
+                                Positioned(
+                                  right: 4.w,
+                                  top: 4.w,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xff414348).withOpacity(0.75),
+                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                    ),
+                                    width: 18.w,
+                                    height: 14.w,
+                                    child: Center(
+                                      child: Text(
+                                        "${widget.imageList[2].imageCnt}",
+                                        style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],

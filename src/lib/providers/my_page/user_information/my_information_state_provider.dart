@@ -5,14 +5,11 @@ import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository
 // import 'package:pet_mobile_social_flutter/repositories/my_page/user_information/user_information_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
-final myInformationStateProvider =
-    StateNotifierProvider<MyInformationStateNotifier, UserInformationListModel>(
-        (ref) {
+final myInformationStateProvider = StateNotifierProvider<MyInformationStateNotifier, UserInformationListModel>((ref) {
   return MyInformationStateNotifier(ref);
 });
 
-class MyInformationStateNotifier
-    extends StateNotifier<UserInformationListModel> {
+class MyInformationStateNotifier extends StateNotifier<UserInformationListModel> {
   MyInformationStateNotifier(this.ref) : super(const UserInformationListModel());
 
   final Ref ref;
@@ -20,11 +17,11 @@ class MyInformationStateNotifier
   getInitUserInformation([
     memberIdx,
   ]) async {
-    final lists = await UserInfoRepository(dio: ref.read(dioProvider))
-        .getUserInformation(memberIdx, memberIdx);
+    final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(memberIdx, memberIdx);
 
     if (lists == null) {
       state = state.copyWith(isLoading: false);
+
       return;
     }
 
