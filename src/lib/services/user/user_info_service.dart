@@ -21,14 +21,12 @@ abstract class UserInfoService {
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
-  Future<UserInformationResponseModel?> getMyInfo(
-      @Query("memberIdx") String memberIdx);
+  Future<UserInformationResponseModel?> getMyInfo(@Query("memberIdx") String memberIdx);
 
   @PUT('/my/info')
-  @MultiPart()
-  // Future<ResponseModel> updateMyInfo(@Part() MultiPart file, @Body() Map<String, dynamic> params);
   Future<ResponseModel> updateMyInfo(
-      @Part() Map<String, dynamic> params); //TODO  File  넣어야함
+    @Body() Map<String, dynamic> formData,
+  );
 
   //User Info
   @GET('/member/info/{memberIdx}?loginMemberIdx={loginMemberIdx}')

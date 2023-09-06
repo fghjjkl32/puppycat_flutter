@@ -58,14 +58,12 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
 
         ref.refresh(searchProvider);
 
-        ref.read(userModelProvider)!.idx == widget.memberIdx
+        ref.read(userModelProvider)?.idx == widget.memberIdx
             ? context.push("/home/myPage")
-            : context.push(
-                "/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
+            : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
       },
       child: Padding(
-        padding:
-            EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -76,8 +74,7 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
                   padding: EdgeInsets.only(
                     right: 10.w,
                   ),
-                  child:
-                      getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
+                  child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,8 +96,7 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
                             : Container(),
                         Text(
                           widget.userName,
-                          style:
-                              kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                         ),
                       ],
                     ),
@@ -109,8 +105,7 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
                     ),
                     Text(
                       widget.content,
-                      style:
-                          kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                     ),
                   ],
                 ),

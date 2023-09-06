@@ -8,13 +8,11 @@ import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository
 // import 'package:pet_mobile_social_flutter/repositories/my_page/user_information/user_information_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
-final userInformationStateProvider = StateNotifierProvider<
-    UserInformationStateNotifier, UserInformationListModel>((ref) {
+final userInformationStateProvider = StateNotifierProvider<UserInformationStateNotifier, UserInformationListModel>((ref) {
   return UserInformationStateNotifier(ref);
 });
 
-class UserInformationStateNotifier
-    extends StateNotifier<UserInformationListModel> {
+class UserInformationStateNotifier extends StateNotifier<UserInformationListModel> {
   UserInformationStateNotifier(this.ref) : super(const UserInformationListModel());
 
   final Ref ref;
@@ -22,16 +20,14 @@ class UserInformationStateNotifier
   final Map<int, UserInformationListModel> userInformationStateMap = {};
 
   void getStateForUserInformation(int userIdx) {
-    state =
-        userInformationStateMap[userIdx] ?? const UserInformationListModel();
+    state = userInformationStateMap[userIdx] ?? const UserInformationListModel();
   }
 
   getInitUserInformation([
     loginMemberIdx,
     memberIdx,
   ]) async {
-    final lists = await UserInfoRepository(dio: ref.read(dioProvider))
-        .getUserInformation(loginMemberIdx, memberIdx);
+    final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(loginMemberIdx, memberIdx);
 
     if (lists == null) {
       state = state.copyWith(isLoading: false);
@@ -40,8 +36,7 @@ class UserInformationStateNotifier
 
     state = state.copyWith(isLoading: false, list: lists.data.info);
 
-    userInformationStateMap[memberIdx] =
-        state.copyWith(isLoading: false, list: lists.data.info);
+    userInformationStateMap[memberIdx] = state.copyWith(isLoading: false, list: lists.data.info);
   }
 
   Future<ResponseModel> postBlock({
@@ -57,23 +52,15 @@ class UserInformationStateNotifier
   }
 
   void updateFollowState() {
-    state = state.copyWith(list: [
-      state.list[0]
-          .copyWith(followState: 1, followerCnt: state.list[0].followerCnt! + 1)
-    ]);
+    state = state.copyWith(list: [state.list[0].copyWith(followState: 1, followerCnt: state.list[0].followerCnt! + 1)]);
   }
 
   void updateUnFollowState() {
-    state = state.copyWith(list: [
-      state.list[0]
-          .copyWith(followState: 0, followerCnt: state.list[0].followerCnt! - 1)
-    ]);
+    state = state.copyWith(list: [state.list[0].copyWith(followState: 0, followerCnt: state.list[0].followerCnt! - 1)]);
   }
 
   Future<void> updateBlockState() async {
-    state = state.copyWith(list: [
-      state.list[0].copyWith(blockedState: 1, followerCnt: 0, followCnt: 0)
-    ]);
+    state = state.copyWith(list: [state.list[0].copyWith(blockedState: 1, followerCnt: 0, followCnt: 0)]);
   }
 
   Future<void> updateUnBlockState(loginMemberIdx, memberIdx) async {
@@ -86,8 +73,7 @@ class UserInformationStateNotifier
       )
     ]);
 
-    final lists = await UserInfoRepository(dio: ref.read(dioProvider))
-        .getUserInformation(loginMemberIdx, memberIdx);
+    final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(loginMemberIdx, memberIdx);
 
     state = state.copyWith(list: [
       state.list[0].copyWith(

@@ -5,17 +5,19 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/withdrawal/withdrawal_provider.dart';
 
 class MyPageWithdrawalSuccessScreen extends ConsumerStatefulWidget {
   const MyPageWithdrawalSuccessScreen({super.key});
 
   @override
-  MyPageWithdrawalSuccessScreenState createState() =>
-      MyPageWithdrawalSuccessScreenState();
+  MyPageWithdrawalSuccessScreenState createState() => MyPageWithdrawalSuccessScreenState();
 }
 
-class MyPageWithdrawalSuccessScreenState
-    extends ConsumerState<MyPageWithdrawalSuccessScreen> {
+class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalSuccessScreen> {
   @override
   void initState() {
     super.initState();
@@ -25,14 +27,17 @@ class MyPageWithdrawalSuccessScreenState
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        context.pop();
+        ref.watch(loginRouteStateProvider.notifier).state = LoginRoute.none;
+        ref.read(loginStateProvider.notifier).state = LoginStatus.none;
 
         return false;
       },
       child: Material(
         child: WillPopScope(
           onWillPop: () async {
-            context.pop();
+            ref.watch(loginRouteStateProvider.notifier).state = LoginRoute.none;
+            ref.read(loginStateProvider.notifier).state = LoginStatus.none;
+
             return false;
           },
           child: Scaffold(
@@ -41,37 +46,60 @@ class MyPageWithdrawalSuccessScreenState
               title: const Text(
                 "회원 탈퇴",
               ),
-              leading: IconButton(
-                onPressed: () {
-                  context.pop();
-                },
-                icon: const Icon(
-                  Puppycat_social.icon_back,
-                  size: 40,
-                ),
-              ),
+              automaticallyImplyLeading: false,
             ),
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/image/feed_write/image/corgi-2 1.png',
-                    height: 68.h,
+                    'assets/image/character/character_07_Withdrawal_complete.png',
                   ),
                   SizedBox(
                     height: 10.h,
                   ),
                   Text(
-                    "그동안 포레스트를\n이용해 주셔서 감사합니다.",
+                    "그동안 퍼피캣을\n이용해 주셔서 감사합니다.",
                     style: kBody14BoldStyle.copyWith(color: kTextTitleColor),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
-                    height: 6.h,
+                    height: 12,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: kNeutralColor200,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "새 계정을 원하시면",
+                            style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            " 7일 이후 ",
+                            style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            "가능합니다!",
+                            style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12,
                   ),
                   Text(
-                    "회원 탈퇴가 완료되었으며 7일 후 재가입이 가능합니다.\n보다 나은 서비스로 다시 만나길 바랍니다.",
+                    "회원 탈퇴가 완료되었습니다.\n보다 나은 서비스로 다시 만나길 바랍니다.",
                     style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                     textAlign: TextAlign.center,
                   ),
@@ -99,13 +127,15 @@ class MyPageWithdrawalSuccessScreenState
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          ref.watch(loginRouteStateProvider.notifier).state = LoginRoute.none;
+                          ref.read(loginStateProvider.notifier).state = LoginStatus.none;
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Text(
                             '확인',
-                            style: kBody14BoldStyle.copyWith(
-                                color: kNeutralColor100),
+                            style: kBody14BoldStyle.copyWith(color: kNeutralColor100),
                           ),
                         ),
                       ),

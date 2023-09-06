@@ -23,7 +23,6 @@ import 'package:pet_mobile_social_flutter/providers/search/profile_search_state_
 import 'package:pet_mobile_social_flutter/providers/search/search_helper_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/tag_search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/services/search/search_db_helper.dart';
-import 'package:pet_mobile_social_flutter/ui/search/search_result_scren.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 final searchProvider = FutureProvider<List<Searche>>((ref) async {
@@ -561,7 +560,6 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                             return ListView.builder(
                               controller: profileScrollController,
                               itemCount: profileList.length,
-                              physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (BuildContext context, int index) {
                                 return UserItemWidget(
                                   profileImage: profileList[index].profileImgUrl,
@@ -683,7 +681,6 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                             return ListView.builder(
                               controller: tagScrollController,
                               itemCount: tagList.length,
-                              physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (BuildContext context, int index) {
                                 return HashTagItemWidget(
                                   hashTag: tagList[index].hashTag!,

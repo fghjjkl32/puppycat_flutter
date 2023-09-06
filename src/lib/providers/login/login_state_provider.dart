@@ -76,23 +76,26 @@ class LoginState extends _$LoginState {
         ref.read(myInfoStateProvider.notifier).getMyInfo(userModel.idx.toString());
         ref.listen(myInfoStateProvider, (previous, next) {
           print('next $next');
-          if (previous == next) {
-            return;
-          }
+
+          ///TODO
+          /// previous와 next값 (이전값)이 같을때 해당 로직 무시하는 코드
+          /// 회원탈퇴하고, 7일전 데이터로 다시 로그인 하면 스테이트가 변경되자 않아서 주석처리 진행
+          // if (previous == next) {
+          //   return;
+          // }
 
           userInfoModel = userInfoModel.copyWith(
-            userModel: userModel.copyWith(
-              idx: next.memberIdx ?? userModel.idx,
-              nick: next.nick ?? userModel.nick,
-              id: next.email ?? userModel.id,
-              // id: 'thirdnsov4@gmail.com',
-              name: next.name ?? userModel.name,
-              phone: next.phone ?? userModel.phone,
-              introText: next.intro,
-              profileImgUrl: next.profileImgUrl,
-              // password: '2809229088121356223',
-            )
-          );
+              userModel: userModel.copyWith(
+            idx: next.memberIdx ?? userModel.idx,
+            nick: next.nick ?? userModel.nick,
+            id: next.email ?? userModel.id,
+            // id: 'thirdnsov4@gmail.com',
+            name: next.name ?? userModel.name,
+            phone: next.phone ?? userModel.phone,
+            introText: next.intro,
+            profileImgUrl: next.profileImgUrl,
+            // password: '2809229088121356223',
+          ));
 
           if (ref.read(myInfoStateProvider.notifier).checkChatInfo(next)) {
             // ref.read(chatRegisterStateProvider.notifier).register(userModel);
@@ -132,6 +135,7 @@ class LoginState extends _$LoginState {
     if (result) {
       ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
       ref.read(userModelProvider.notifier).state = null;
+      ref.read(userInfoProvider.notifier).state = UserInfoModel();
       saveUserModel(null);
       state = LoginStatus.none;
     }
@@ -172,5 +176,4 @@ class LoginState extends _$LoginState {
 
     loginByUserModel(userModel: userModel);
   }
-
 }

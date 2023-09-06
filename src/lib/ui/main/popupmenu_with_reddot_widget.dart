@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 
 class PopupMenuWithReddot extends ConsumerStatefulWidget {
@@ -44,35 +46,15 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
   Widget build(BuildContext context) {
     return PopupMenuButton(
       padding: EdgeInsets.zero,
-      icon: Stack(
-        children: [
-          Image.asset(
-            'assets/image/header/icon/large_size/icon_more_h.png',
-            height: 26,
-          ),
-          Visibility(
-            visible: ref.watch(newNotificationStateProvider),
-            child: const Positioned(
-              top: 0,
-              right: 0,
-              child: Icon(
-                Icons.circle,
-                color: Colors.red,
-                size: 6,
-              ),
-            ),
-          ),
-        ],
-      ),
       onSelected: (id) {
         if (id == 'notification') {
-          context.go("/home/notification");
+          ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.go("/home/notification");
         }
         if (id == 'search') {
           context.go("/home/search");
         }
         if (id == 'message') {
-          context.push('/chatMain');
+          ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain');
         }
         if (id == 'setting') {
           context.push("/home/myPage/setting");
@@ -92,7 +74,9 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
           diaryPopUpMenuItem(
             'notification',
             '알림',
-            const Icon(Icons.notifications),
+            const Icon(
+              Puppycat_social.icon_bell,
+            ),
             ref.watch(newNotificationStateProvider),
           ),
         );
@@ -105,7 +89,9 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
           diaryPopUpMenuItem(
             'search',
             '검색',
-            const Icon(Icons.search),
+            const Icon(
+              Puppycat_social.icon_search_medium,
+            ),
             false,
           ),
         );
@@ -118,7 +104,9 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
           diaryPopUpMenuItem(
             'message',
             '메시지',
-            const Icon(Icons.message),
+            const Icon(
+              Puppycat_social.icon_chat,
+            ),
             false,
           ),
         );
@@ -131,12 +119,34 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
           diaryPopUpMenuItem(
             'setting',
             '설정',
-            const Icon(Icons.settings),
+            const Icon(
+              Puppycat_social.icon_set_small,
+            ),
             false,
           ),
         );
         return list;
       },
+      child: Stack(
+        children: [
+          const Icon(
+            Puppycat_social.icon_more_header,
+            size: 40,
+          ),
+          Visibility(
+            visible: ref.watch(newNotificationStateProvider),
+            child: const Positioned(
+              top: 4,
+              right: 4,
+              child: Icon(
+                Icons.circle,
+                color: Colors.red,
+                size: 6,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

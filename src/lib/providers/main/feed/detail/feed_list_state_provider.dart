@@ -152,8 +152,6 @@ class FeedListState extends _$FeedListState {
   void feedRefresh(contentIdx, String type) {
     int targetIdx = -1;
 
-    print(type);
-
     if (ref.read(myFeedStateProvider).itemList != null) {
       targetIdx = ref.read(myFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
@@ -883,8 +881,6 @@ class FeedListState extends _$FeedListState {
 
   void saveStateForUser(int? userId) {
     feedStateMap[userId ?? 0] = state.itemList;
-    feedMemberInfoStateMap[userId ?? 0] = memberInfo ?? state.itemList?[0].memberInfoList;
-
-    state.notifyListeners();
+    feedMemberInfoStateMap[userId ?? 0] = memberInfo;
   }
 }

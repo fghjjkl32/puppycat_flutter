@@ -214,15 +214,10 @@ class AppRouter {
                           },
                           routes: [
                             GoRoute(
-                                path: 'withdrawalDetail/:code/:reason',
-                                name: 'withdrawalDetail/:code/:reason',
+                                path: 'withdrawalDetail',
+                                name: 'withdrawalDetail',
                                 builder: (BuildContext context, GoRouterState state) {
-                                  final code = state.pathParameters['code']!;
-                                  final reason = state.pathParameters['reason']!;
-                                  return MyPageWithdrawalDetailScreen(
-                                    code: int.parse(code),
-                                    reason: reason,
-                                  );
+                                  return MyPageWithdrawalDetailScreen();
                                 },
                                 routes: [
                                   GoRoute(
@@ -251,8 +246,7 @@ class AppRouter {
                         builder: (BuildContext context, GoRouterState state) {
                           final memberIdx = state.pathParameters['userIdx']!;
                           final nick = state.pathParameters['nick']!;
-                          final oldMemberIdx =
-                              state.pathParameters['oldMemberIdx']!;
+                          final oldMemberIdx = state.pathParameters['oldMemberIdx']!;
                           return UserMainScreen(
                             memberIdx: int.parse(memberIdx),
                             nick: nick,
@@ -342,8 +336,7 @@ class AppRouter {
                 return const NotificationScreen();
               },
             ),
-          ]
-          ),
+          ]),
       GoRoute(path: '/loginScreen', name: 'loginScreen', builder: (_, state) => LoginScreen(), routes: [
         GoRoute(
           path: 'signupScreen',
@@ -403,8 +396,7 @@ class AppRouter {
                 return const ChatSearchScreen();
               },
             ),
-          ]
-      ),
+          ]),
     ],
 
     redirect: (BuildContext context, GoRouterState state)  {
@@ -478,7 +470,7 @@ class GoRouterObserver extends NavigatorObserver {
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     print('MyTest didPop: $route / $previousRoute');
-    if(route.settings.name == 'home' || previousRoute?.settings.name == 'home') {
+    if (route.settings.name == 'home' || previousRoute?.settings.name == 'home') {
       checkNewNotification();
     }
   }
