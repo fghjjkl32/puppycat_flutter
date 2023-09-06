@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,7 @@ import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/con
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -210,4 +212,29 @@ String replaceMentionsWithNicknamesInContentAsTextFieldString(String content, Li
   });
 
   return result;
+}
+
+String toLowercase(String input) {
+  return input.replaceAllMapped(RegExp(r'[A-Z]'), (match) {
+    return match.group(0)!.toLowerCase();
+  });
+}
+
+String? getNickDescription(NickNameStatus nickNameStatus) {
+  switch (nickNameStatus) {
+    case NickNameStatus.duplication:
+      return '회원가입.이미 존재하는 닉네임입니다'.tr();
+    case NickNameStatus.maxLength:
+      return '회원가입.닉네임은 20자를 초과할 수 없습니다'.tr();
+    case NickNameStatus.minLength:
+      return '회원가입.닉네임은 최소 2자 이상 설정 가능합니다'.tr();
+    case NickNameStatus.invalidLetter:
+      return '회원가입.닉네임 입력 예외 메시지'.tr();
+    case NickNameStatus.valid:
+      return '회원가입.사용 가능한 닉네임입니다'.tr();
+    case NickNameStatus.invalidWord:
+      return '회원가입.사용할 수 없는 닉네임입니다'.tr();
+    default:
+      return null;
+  }
 }

@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
@@ -35,7 +36,7 @@ class SignUpScreen extends ConsumerStatefulWidget {
 
 class SignUpScreenState extends ConsumerState<SignUpScreen> {
   TextEditingController nickController = TextEditingController();
-  final RegExp _letterRegExp = RegExp(r'[가-힣a-zA-Z0-9._]');
+  final RegExp _letterRegExp = RegExp(r'[가-힣a-zA-Z0-9_]');
   final FocusNode _nickFocusNode = FocusNode();
   bool isCheckableNickName = false;
   bool isValidNickName = false;
@@ -226,7 +227,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                       ? InputDecoration(
                           hintText: '회원가입.닉네임을 입력해주세요'.tr(),
                           errorStyle: kBody11RegularStyle.copyWith(color: kBadgeColor, fontWeight: FontWeight.w400, height: 1.2),
-                          errorText: _getNickDescription(nickProvider),
+                          errorText: getNickDescription(nickProvider),
                           errorBorder: const OutlineInputBorder(
                             borderSide: BorderSide(
                               width: 1,
@@ -263,7 +264,9 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   autovalidateMode: AutovalidateMode.always,
                   onChanged: (value) {
                     if (value.isNotEmpty) {
-                      ref.read(checkButtonProvider.notifier).state = true;
+                      if (value.length > 1) {
+                        ref.read(checkButtonProvider.notifier).state = true;
+                      }
                       String lastChar = value[value.length - 1];
                       if (lastChar.contains(RegExp(r'[a-zA-Z]'))) {
                         nickController.value = TextEditingValue(text: toLowercase(value), selection: nickController.selection);
@@ -278,9 +281,9 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                     if (value != null) {
                       if (value.isNotEmpty) {
                         if (_letterRegExp.allMatches(value).length != value.length) {
-                          return _getNickDescription(NickNameStatus.invalidLetter);
+                          return getNickDescription(NickNameStatus.invalidLetter);
                         } else if (value.isNotEmpty && value.length < 2) {
-                          return _getNickDescription(NickNameStatus.minLength);
+                          return getNickDescription(NickNameStatus.minLength);
                         } else {
                           isCheckableNickName = true;
                           return null;
@@ -332,31 +335,6 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
         // ),
       ],
     );
-  }
-
-  String toLowercase(String input) {
-    return input.replaceAllMapped(RegExp(r'[A-Z]'), (match) {
-      return match.group(0)!.toLowerCase();
-    });
-  }
-
-  String? _getNickDescription(NickNameStatus nickNameStatus) {
-    switch (nickNameStatus) {
-      case NickNameStatus.duplication:
-        return '회원가입.이미 존재하는 닉네임입니다'.tr();
-      case NickNameStatus.maxLength:
-        return '회원가입.닉네임은 20자를 초과할 수 없습니다'.tr();
-      case NickNameStatus.minLength:
-        return '회원가입.닉네임은 최소 2자 이상 설정 가능합니다'.tr();
-      case NickNameStatus.invalidLetter:
-        return '회원가입.닉네임 입력 예외 메시지'.tr();
-      case NickNameStatus.valid:
-        return '회원가입.사용 가능한 닉네임입니다'.tr();
-      case NickNameStatus.invalidWord:
-        return '회원가입.사용할 수 없는 닉네임입니다'.tr();
-      default:
-        return null;
-    }
   }
 
   Widget _buildPolicyBody() {

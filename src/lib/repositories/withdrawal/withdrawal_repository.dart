@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/main/select_button/select_button_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/withdrawal/withdrawal_detail_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/withdrawal/withdrawal_provider.dart';
 import 'package:pet_mobile_social_flutter/services/withdrawal/withdrawal_service.dart';
 
@@ -16,6 +18,26 @@ class WithdrawalRepository {
     required this.dio,
   }) {
     _withdrawalService = WithdrawalService(dio, baseUrl: baseUrl);
+  }
+
+  Future<SelectButtonResponseModel> getWithdrawalReasonList() async {
+    SelectButtonResponseModel? withdrawalResponseModel = await _withdrawalService.getWithdrawalReasonList();
+
+    if (withdrawalResponseModel == null) {
+      throw "error";
+    }
+
+    return withdrawalResponseModel;
+  }
+
+  Future<WithdrawalDetailResponseModel> getWithdrawalDetailList(memberIdx) async {
+    WithdrawalDetailResponseModel? withdrawalResponseModel = await _withdrawalService.getWithdrawalDetailList(memberIdx);
+
+    if (withdrawalResponseModel == null) {
+      throw "error";
+    }
+
+    return withdrawalResponseModel;
   }
 
   Future<WithdrawalStatus> withdrawalUser({required int idx, required int code, String? reason}) async {
@@ -42,14 +64,6 @@ class WithdrawalRepository {
     if (res == null || isError) {
       throw 'API Response is Null.';
     }
-
-    print(res.result);
-    print(res.result);
-    print(res.result);
-    print(res.result);
-    print(res.result);
-    print(res.result);
-    print(res.result);
 
     if (res.result) {
       return WithdrawalStatus.success;

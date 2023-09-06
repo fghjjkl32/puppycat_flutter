@@ -38,24 +38,20 @@ class RecentSearchesUserItemWidget extends ConsumerStatefulWidget {
   final DateTime dateTime;
   final int oldMemberIdx;
   @override
-  RecentSearchesUserItemWidgetState createState() =>
-      RecentSearchesUserItemWidgetState();
+  RecentSearchesUserItemWidgetState createState() => RecentSearchesUserItemWidgetState();
 }
 
-class RecentSearchesUserItemWidgetState
-    extends ConsumerState<RecentSearchesUserItemWidget> {
+class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUserItemWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        ref.read(userModelProvider)!.idx == widget.memberIdx
+        ref.read(userModelProvider)?.idx == widget.memberIdx
             ? context.push("/home/myPage")
-            : context.push(
-                "/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
+            : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
       },
       child: Padding(
-        padding:
-            EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -66,8 +62,7 @@ class RecentSearchesUserItemWidgetState
                   padding: EdgeInsets.only(
                     right: 10.w,
                   ),
-                  child:
-                      getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
+                  child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,8 +84,7 @@ class RecentSearchesUserItemWidgetState
                             : Container(),
                         Text(
                           widget.userName,
-                          style:
-                              kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                         ),
                       ],
                     ),
@@ -99,8 +93,7 @@ class RecentSearchesUserItemWidgetState
                     ),
                     Text(
                       widget.content,
-                      style:
-                          kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                     ),
                   ],
                 ),

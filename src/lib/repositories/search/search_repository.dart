@@ -96,7 +96,7 @@ class SearchRepository {
     required int? memberIdx,
     required int page,
     required String searchWord,
-    int limit = 10,
+    int limit = 20,
   }) async {
     SearchResponseModel? searchResponseModel;
     memberIdx == null
@@ -138,7 +138,7 @@ class SearchRepository {
     required int? memberIdx,
     required int page,
     required String searchWord,
-    int limit = 10,
+    int limit = 20,
   }) async {
     SearchResponseModel? searchResponseModel;
     memberIdx == null
@@ -181,7 +181,6 @@ class SearchRepository {
     required String searchWord,
   }) async {
     SearchResponseModel? searchResponseModel;
-    print(await _searchService.getLogoutFullSearchList(searchWord).catchError((Object obj) async {}));
     memberIdx == null
         ? searchResponseModel = await _searchService.getLogoutFullSearchList(searchWord).catchError((Object obj) async {})
         : searchResponseModel = await _searchService.getFullSearchList(memberIdx, searchWord).catchError((Object obj) async {});

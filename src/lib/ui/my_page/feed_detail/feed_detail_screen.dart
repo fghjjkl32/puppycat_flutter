@@ -51,6 +51,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
   @override
   void initState() {
+    ref.read(firstFeedStateProvider.notifier).apiStatus = ListAPIStatus.idle;
     ref.read(firstFeedStateProvider.notifier).loginMemberIdx = ref.read(userModelProvider)?.idx;
     ref.read(feedListStateProvider.notifier).loginMemberIdx = ref.read(userModelProvider)?.idx;
 
@@ -115,7 +116,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
           child: Consumer(builder: (ctx, ref, child) {
             final contentState = ref.watch(firstFeedStateProvider.notifier);
             var apiStatus = contentState.apiStatus;
-            apiStatus = ListAPIStatus.idle;
+            print(apiStatus);
+
+            print(ref.watch(firstFeedStateProvider).itemList);
 
             AppBar appBarWidget() {
               if (apiStatus == ListAPIStatus.loading || apiStatus == ListAPIStatus.idle) {
