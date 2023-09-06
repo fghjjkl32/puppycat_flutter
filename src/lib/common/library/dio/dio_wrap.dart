@@ -6,13 +6,15 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
+import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/notification/notification_service.dart';
 import 'package:ua_client_hints/ua_client_hints.dart';
-
 
 final dioProvider = StateProvider<Dio>((ref) {
   // return DioWrap.getDioWithCookie();
@@ -46,6 +48,7 @@ class DioWrap {
 
     return dio;
   }
+
   static Dio getDioWithCookie2(Ref ref) {
     // final dio = Dio();
     CookieJar cookieJar = GetIt.I<CookieJar>();
@@ -73,19 +76,28 @@ class DioWrap {
         onRequest: (options, handler) async {
           // This is where you call your specific API
           try {
-            if(ref.read(userInfoProvider).userModel != null) {
+            if (ref.read(userInfoProvider).userModel != null) {
               ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
             }
-            // Maybe you want to modify the options based on the result of the specific API?
-            // For example, setting a header:
-            // options.headers['Your-Header-Name'] = response.data['someValue'];
 
-            // Continue with the request
-            // var userAgent = options.headers['user-agent'];
-            // userAgent = userAgent + 'Puppycat v0.0.2';
-            // options.headers['user-agent'] = await userAgent();
+            //Add user agent
             options.headers.addAll(await userAgentClientHintsHeader());
 
+            //add referrer
+            options.headers['referrer'] = ref.read(routerProvider).routeInformationProvider.value.location;
+
+            PackageInformationUtil pkgInfo = GetIt.I.get<PackageInformationUtil>();
+            // Map<String, dynamic> appInfo = {
+            //   'uid' : await GetIt.I.get<UuidUtil>().getUUID(),
+            //   'name' : pkgInfo.pkgName,
+            //   'version' : pkgInfo.appVersion,
+            //   'build' : pkgInfo.appBuildNumber,
+            // };
+
+            String uuid = await GetIt.I.get<UuidUtil>().getUUID();
+            String appInfo = 'uid=$uuid&name=${pkgInfo.pkgName}&version=${pkgInfo.appVersion}&build=${pkgInfo.appBuildNumber}';
+
+            options.headers['App-Info'] = appInfo;
 
             print('options.headers ${options.headers}');
 
