@@ -133,6 +133,9 @@ class LoginState extends _$LoginState {
     var result = await loginRepository.logout(appKey);
     print('result $result');
     if (result) {
+      var userInfoModel = ref.read(userInfoProvider);
+      var chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${userInfoModel.userModel!.idx}')));
+      chatController.controller.logout();
       ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
       ref.read(userModelProvider.notifier).state = null;
       ref.read(userInfoProvider.notifier).state = UserInfoModel();
