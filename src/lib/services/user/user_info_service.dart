@@ -25,7 +25,7 @@ abstract class UserInfoService {
 
   @PUT('/my/info')
   Future<ResponseModel> updateMyInfo(
-    @Body() Map<String, dynamic> formData,
+    @Body() FormData formData,
   );
 
   //User Info

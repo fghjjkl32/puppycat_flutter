@@ -30,6 +30,7 @@ import 'package:pet_mobile_social_flutter/ui/main/comment/comment_detail_screen.
 import 'package:pet_mobile_social_flutter/ui/main/comment/main_comment_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/feed_search/feed_search_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/maintenance/maintenance_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
@@ -63,6 +64,7 @@ class AppRouter {
   var _signUpState = SignUpRoute.none;
   bool _splashState = false;
   var _pushPayloadState = null;
+  bool _maintenanceState = false;
 
   final Ref ref;
 
@@ -73,6 +75,7 @@ class AppRouter {
     _signUpState = ref.watch(signUpRouteStateProvider);
     _splashState = ref.watch(splashStateProvider);
     _pushPayloadState = ref.watch(pushPayloadStateProvider);
+    _maintenanceState = ref.watch(isMaintenanceProvider);
     // _pushPayloadState = ref.watch(pushPayloadNotifierProvider);
   }
 
@@ -397,15 +400,23 @@ class AppRouter {
               },
             ),
           ]),
+      GoRoute(
+        path: '/maintenance',
+        name: 'maintenance',
+        builder: (BuildContext context, GoRouterState state) {
+          return const MaintenanceScreen();
+        },
+      ),
     ],
 
-    redirect: (BuildContext context, GoRouterState state)  {
+    redirect: (BuildContext context, GoRouterState state) {
       const homeLocation = '/home';
       const loginLocation = '/loginScreen';
       const splashLocation = '/splash';
       const signUpLocation = '$loginLocation/signupScreen';
       const signUpCompleteLocation = '$signUpLocation/signupCompleteScreen';
       const chatMainLocation = '/chatMain';
+      const maintenanceLocation = '/maintenance';
 
       ///NOTE 테스트용 임시
 
@@ -422,7 +433,9 @@ class AppRouter {
       bool isSplashPage = state.matchedLocation == splashLocation;
       if (isSplashPage) {
         if (_splashState) {
-          if (_loginRouteState == LoginRoute.success) {
+          if (_maintenanceState) {
+            return maintenanceLocation;
+          } else if (_loginRouteState == LoginRoute.success) {
             return homeLocation;
           }
           return loginLocation;

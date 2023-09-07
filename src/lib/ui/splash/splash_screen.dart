@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -21,6 +22,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_
 final splashStateProvider = StateProvider<bool>((ref) => false);
 final splashProgressStateProvider = StateProvider<double>((ref) => 0.0);
 final _initStateProvider = StateProvider<bool>((ref) => false);
+final isMaintenanceProvider = StateProvider<bool>((ref) => false);
 
 class InitializationApp {
   static void initialize(Ref ref) async {
@@ -32,8 +34,12 @@ class InitializationApp {
     if (await _checkNetwork()) {
       if (await _checkServers()) {
         if (await _initFirebase()) {
-          ref.read(_initStateProvider.notifier).state = true;
-          await ref.read(loginStateProvider.notifier).autoLogin();
+          if (await getSinglePage(ref)) {
+            ref.read(_initStateProvider.notifier).state = true;
+          } else {
+            ref.read(_initStateProvider.notifier).state = true;
+            await ref.read(loginStateProvider.notifier).autoLogin();
+          }
         }
       }
     }
@@ -43,7 +49,7 @@ class InitializationApp {
     // var result = Future.delayed(Duration(milliseconds: 300), () async {
     ///TODO
     ///결과값 제대로 받아서 처리하도록
-    if(!Platform.isIOS) {
+    if (!Platform.isIOS) {
       print('run?asdasd');
       await GetIt.I<FireBaseMessageController>().init();
     }
@@ -69,6 +75,40 @@ class InitializationApp {
     });
 
     return result;
+  }
+
+  static Future<bool> getSinglePage(ref) async {
+    const int maxRetries = 3;
+    int currentRetries = 0;
+
+    final remoteConfig = FirebaseRemoteConfig.instance;
+
+    while (currentRetries < maxRetries) {
+      try {
+        await remoteConfig.fetchAndActivate();
+        await remoteConfig.setConfigSettings(RemoteConfigSettings(
+          fetchTimeout: const Duration(seconds: 1),
+          minimumFetchInterval: const Duration(seconds: 1),
+        ));
+
+        if (remoteConfig.getBool("is_all_service_maintenance")) {
+          Future.delayed(Duration(milliseconds: 1000), () {
+            ref.read(isMaintenanceProvider.notifier).state = true;
+          });
+          return true;
+        }
+        return false;
+      } catch (e) {
+        currentRetries++; // 재시도 횟수를 증가시킵니다.
+        if (currentRetries == maxRetries) {
+          print("Remote Config 데이터를 가져오는 데 실패했습니다: $e");
+        } else {
+          print("재시도 중... ($currentRetries/$maxRetries)");
+          await Future.delayed(Duration(seconds: 2)); // 2초 동안 기다립니다.
+        }
+      }
+    }
+    return false;
   }
 }
 
