@@ -151,9 +151,13 @@ class MatrixChatClientController implements AbstractChatController {
   }
 
   @override
-  Future logout() {
-    // TODO: implement logout
-    throw UnimplementedError();
+  Future logout() async {
+    try {
+      print('chat logout');
+      await _chatClient.logoutAll();
+    } catch (e) {
+      throw 'logout failure. (e : $e)';
+    }
   }
 
   @override
