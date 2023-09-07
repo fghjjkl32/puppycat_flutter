@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -38,10 +39,23 @@ class FeedBottomIconWidget extends ConsumerStatefulWidget {
   MyPageMainState createState() => MyPageMainState();
 }
 
-class MyPageMainState extends ConsumerState<FeedBottomIconWidget> {
+class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerProviderStateMixin {
+  bool showLikeLottieAnimation = false;
+  bool showSaveLottieAnimation = false;
+
+  late final AnimationController likeController;
+  late final AnimationController saveController;
+
   @override
   void initState() {
     commentController.addListener(_commentScrollListener);
+
+    likeController = AnimationController(
+      vsync: this,
+    );
+    saveController = AnimationController(
+      vsync: this,
+    );
 
     super.initState();
   }
@@ -61,6 +75,8 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> {
   void dispose() {
     commentController.removeListener(_commentScrollListener);
     commentController.dispose();
+    likeController.dispose();
+    saveController.dispose();
     super.dispose();
   }
 
@@ -85,11 +101,20 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> {
                       },
                       child: Row(
                         children: [
-                          const Icon(
-                            Puppycat_social.icon_like_ac,
-                            color: kPrimaryColor,
-                            size: 32,
-                          ),
+                          showLikeLottieAnimation
+                              ? Lottie.asset(
+                                  'assets/lottie/icon_like.json',
+                                  controller: likeController,
+                                  onLoaded: (composition) {
+                                    likeController.duration = composition.duration;
+                                    likeController.forward();
+                                  },
+                                )
+                              : const Icon(
+                                  Puppycat_social.icon_like_ac,
+                                  color: kPrimaryColor,
+                                  size: 32,
+                                ),
                           InkWell(
                             onTap: () async {
                               await ref.read(contentLikeUserListStateProvider.notifier).initContentLikeUserList(
@@ -158,15 +183,21 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> {
                       ),
                     )
                   : GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         ref.read(userModelProvider) == null
                             ? context.pushReplacement("/loginScreen")
-                            : ref.watch(feedListStateProvider.notifier).postLike(
+                            : await ref.watch(feedListStateProvider.notifier).postLike(
                                   loginMemberIdx: ref.read(userModelProvider)!.idx,
                                   memberIdx: widget.memberIdx,
                                   contentIdx: widget.contentIdx,
                                   contentType: widget.contentType,
                                 );
+
+                        setState(() {
+                          showLikeLottieAnimation = true;
+                        });
+
+                        likeController.forward(from: 0);
                       },
                       child: Row(
                         children: [
@@ -275,22 +306,40 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> {
                               contentType: widget.contentType,
                             );
                   },
-                  child: const Icon(
-                    Puppycat_social.icon_bookmark,
-                    size: 32,
-                    color: kPrimaryColor,
-                  ),
+                  child: showSaveLottieAnimation
+                      ? Lottie.asset(
+                          'assets/lottie/icon_bookmark.json',
+                          controller: saveController,
+                          onLoaded: (composition) {
+                            saveController.duration = composition.duration;
+                            saveController.forward();
+                          },
+                        )
+                      : Lottie.asset(
+                          'assets/lottie/icon_bookmark.json',
+                          controller: saveController,
+                          onLoaded: (composition) {
+                            saveController.duration = composition.duration;
+                            saveController.value = 1.0;
+                          },
+                        ),
                 )
               : GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     ref.read(userModelProvider) == null
                         ? context.pushReplacement("/loginScreen")
-                        : ref.watch(feedListStateProvider.notifier).postSave(
+                        : await ref.watch(feedListStateProvider.notifier).postSave(
                               loginMemberIdx: ref.read(userModelProvider)!.idx,
                               memberIdx: widget.memberIdx,
                               contentIdx: widget.contentIdx,
                               contentType: widget.contentType,
                             );
+
+                    setState(() {
+                      showSaveLottieAnimation = true;
+                    });
+
+                    saveController.forward(from: 0);
                   },
                   child: const Icon(
                     Puppycat_social.icon_bookmark,

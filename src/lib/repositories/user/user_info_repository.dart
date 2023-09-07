@@ -62,54 +62,32 @@ class UserInfoRepository {
     return infoModel;
   }
 
-  Future<ResponseModel> updateMyInfo(UserModel userInfoModel, XFile? file, String beforeNick) async {
-    Map<String, dynamic> params;
+  Future<ResponseModel> updateMyInfo(UserModel userInfoModel, XFile? file, String beforeNick, bool isProfileImageDelete) async {
+    // 기본 파라미터 설정
+    Map<String, dynamic> baseParams = {
+      "intro": userInfoModel.introText,
+      "memberIdx": userInfoModel.idx,
+      "name": userInfoModel.name,
+      "phone": userInfoModel.phone,
+      "ci": userInfoModel.ci,
+      "di": userInfoModel.di,
+      "resetState": isProfileImageDelete ? 1 : 0,
+    };
 
-    file == null
-        ? beforeNick == userInfoModel.nick
-            ? params = {
-                "intro": userInfoModel.introText,
-                "memberIdx": userInfoModel.idx,
-                "name": userInfoModel.name,
-                "phone": userInfoModel.phone,
-                "ci": userInfoModel.ci,
-                "di": userInfoModel.di,
-              }
-            : params = {
-                "intro": userInfoModel.introText,
-                "nick": userInfoModel.nick,
-                "memberIdx": userInfoModel.idx,
-                "name": userInfoModel.name,
-                "phone": userInfoModel.phone,
-                "ci": userInfoModel.ci,
-                "di": userInfoModel.di,
-              }
-        : beforeNick == userInfoModel.nick
-            ? params = {
-                "uploadFile": MultipartFileRecreatable.fromFileSync(
-                  file.path,
-                  contentType: MediaType('image', 'jpg'),
-                ),
-                "intro": userInfoModel.introText,
-                "memberIdx": userInfoModel.idx,
-                "name": userInfoModel.name,
-                "phone": userInfoModel.phone,
-                "ci": userInfoModel.ci,
-                "di": userInfoModel.di,
-              }
-            : params = {
-                "uploadFile": MultipartFileRecreatable.fromFileSync(
-                  file.path,
-                  contentType: MediaType('image', 'jpg'),
-                ),
-                "intro": userInfoModel.introText,
-                "nick": userInfoModel.nick,
-                "memberIdx": userInfoModel.idx,
-                "name": userInfoModel.name,
-                "phone": userInfoModel.phone,
-                "ci": userInfoModel.ci,
-                "di": userInfoModel.di,
-              };
+    // nick 변경이 있는 경우에만 추가
+    if (beforeNick != userInfoModel.nick) {
+      baseParams["nick"] = userInfoModel.nick;
+    }
+
+    // 파일이 있는 경우에만 추가
+    if (file != null) {
+      baseParams["uploadFile"] = MultipartFile.fromFileSync(
+        file.path,
+        contentType: MediaType('image', 'jpg'),
+      );
+    }
+
+    FormData params = FormData.fromMap(baseParams);
 
     ResponseModel? responseModel = await _userInfoService.updateMyInfo(params);
 
@@ -121,7 +99,7 @@ class UserInfoRepository {
   }
 
   Future<bool> updateMyChatInfo(UserInfoModel userInfoModel) async {
-    Map<String, dynamic> params = {
+    FormData params = FormData.fromMap({
       "memberIdx": userInfoModel.userModel!.idx,
       // "chatInfo" : {
       "chatMemberId": userInfoModel.chatUserModel!.chatMemberId,
@@ -129,7 +107,7 @@ class UserInfoRepository {
       "chatAccessToken": userInfoModel.chatUserModel!.accessToken,
       "chatDeviceId": userInfoModel.chatUserModel!.deviceId,
       // }
-    };
+    });
 
     ResponseModel? responseModel = await _userInfoService.updateMyInfo(params);
 

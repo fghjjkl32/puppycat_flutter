@@ -16,13 +16,10 @@ class MyPageMyActivityListScreen extends ConsumerStatefulWidget {
   const MyPageMyActivityListScreen({super.key});
 
   @override
-  MyPageMyActivityListScreenState createState() =>
-      MyPageMyActivityListScreenState();
+  MyPageMyActivityListScreenState createState() => MyPageMyActivityListScreenState();
 }
 
-class MyPageMyActivityListScreenState
-    extends ConsumerState<MyPageMyActivityListScreen>
-    with SingleTickerProviderStateMixin {
+class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityListScreen> with SingleTickerProviderStateMixin {
   late TabController tabController;
   ScrollController myLikeContentController = ScrollController();
   ScrollController mySaveContentController = ScrollController();
@@ -40,35 +37,23 @@ class MyPageMyActivityListScreenState
       length: 2,
       vsync: this,
     );
-    ref
-        .read(myLikeStateProvider.notifier)
-        .initPosts(ref.read(userModelProvider)!.idx, 1);
-    ref
-        .read(mySaveStateProvider.notifier)
-        .initPosts(ref.read(userModelProvider)!.idx, 1);
+    ref.read(myLikeStateProvider.notifier).initPosts(ref.read(userModelProvider)!.idx, 1);
+    ref.read(mySaveStateProvider.notifier).initPosts(ref.read(userModelProvider)!.idx, 1);
     super.initState();
   }
 
   void _myLikeContentsScrollListener() {
-    if (myLikeContentController.position.pixels >
-        myLikeContentController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
+    if (myLikeContentController.position.pixels > myLikeContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (myLikeOldLength == ref.read(myLikeStateProvider).list.length) {
-        ref
-            .read(myLikeStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx);
+        ref.read(myLikeStateProvider.notifier).loadMorePost(ref.read(userModelProvider)!.idx);
       }
     }
   }
 
   void _mySaveContentsScrollListener() {
-    if (mySaveContentController.position.pixels >
-        mySaveContentController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
+    if (mySaveContentController.position.pixels > mySaveContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (mySaveOldLength == ref.read(mySaveStateProvider).list.length) {
-        ref
-            .read(mySaveStateProvider.notifier)
-            .loadMorePost(ref.read(userModelProvider)!.idx);
+        ref.read(mySaveStateProvider.notifier).loadMorePost(ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -136,8 +121,7 @@ class MyPageMyActivityListScreenState
                           ),
                           Text(
                             "${ref.watch(myLikeStateProvider).totalCount}",
-                            style: kBadge10MediumStyle.copyWith(
-                                color: kTextBodyColor),
+                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                           ),
                         ],
                       );
@@ -155,8 +139,7 @@ class MyPageMyActivityListScreenState
                           ),
                           Text(
                             "${ref.watch(mySaveStateProvider).totalCount}",
-                            style: kBadge10MediumStyle.copyWith(
-                                color: kTextBodyColor),
+                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                           ),
                         ],
                       );
@@ -254,26 +237,20 @@ class MyPageMyActivityListScreenState
 
               return GestureDetector(
                 onTap: () {
-                  context.push(
-                      "/home/myPage/detail/null/좋아요한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myLikeContent");
+                  context.push("/home/myPage/detail/null/좋아요한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myLikeContent");
                 },
                 child: Stack(
                   children: [
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: (index == 0)
-                            ? const BorderRadius.only(
-                                topLeft: Radius.circular(10))
+                            ? const BorderRadius.only(topLeft: Radius.circular(10))
                             : index == 1
-                                ? const BorderRadius.only(
-                                    topRight: Radius.circular(10))
+                                ? const BorderRadius.only(topRight: Radius.circular(10))
                                 : BorderRadius.circular(0),
                         image: DecorationImage(
                             image: NetworkImage(
-                              Thumbor(host: thumborHostUrl, key: thumborKey)
-                                  .buildImage(
-                                      "$imgDomain${lists[index].imgUrl}")
-                                  .toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
                             ),
                             fit: BoxFit.cover),
                       ),
@@ -284,16 +261,14 @@ class MyPageMyActivityListScreenState
                       child: Container(
                         decoration: BoxDecoration(
                           color: const Color(0xff414348).withOpacity(0.75),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5.0)),
+                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                         ),
                         width: 18.w,
                         height: 14.w,
                         child: Center(
                           child: Text(
                             "${lists[index].imageCnt}",
-                            style: kBadge9RegularStyle.copyWith(
-                                color: kNeutralColor100),
+                            style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
                           ),
                         ),
                       ),
@@ -363,26 +338,20 @@ class MyPageMyActivityListScreenState
 
               return GestureDetector(
                 onTap: () {
-                  context.push(
-                      "/home/myPage/detail/null/저장한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/mySaveContent");
+                  context.push("/home/myPage/detail/null/저장한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/mySaveContent");
                 },
                 child: Stack(
                   children: [
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: (index == 0)
-                            ? const BorderRadius.only(
-                                topLeft: Radius.circular(10))
+                            ? const BorderRadius.only(topLeft: Radius.circular(10))
                             : index == 1
-                                ? const BorderRadius.only(
-                                    topRight: Radius.circular(10))
+                                ? const BorderRadius.only(topRight: Radius.circular(10))
                                 : BorderRadius.circular(0),
                         image: DecorationImage(
                             image: NetworkImage(
-                              Thumbor(host: thumborHostUrl, key: thumborKey)
-                                  .buildImage(
-                                      "$imgDomain${lists[index].imgUrl}")
-                                  .toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
                             ),
                             fit: BoxFit.cover),
                       ),
@@ -393,16 +362,14 @@ class MyPageMyActivityListScreenState
                       child: Container(
                         decoration: BoxDecoration(
                           color: const Color(0xff414348).withOpacity(0.75),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5.0)),
+                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                         ),
                         width: 18.w,
                         height: 14.w,
                         child: Center(
                           child: Text(
                             "${lists[index].imageCnt}",
-                            style: kBadge9RegularStyle.copyWith(
-                                color: kNeutralColor100),
+                            style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
                           ),
                         ),
                       ),

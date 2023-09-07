@@ -242,6 +242,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                           UserModel userModel = ref.watch(editStateProvider).userInfoModel!.userModel!;
 
                           UserModel editUserModel = userModel.copyWith(
+                            profileImgUrl: selectedImage == null ? null : selectedImage!.path,
                             idx: ref.watch(editStateProvider).userInfoModel!.userModel!.idx,
                             nick: nickController.text == "" ? ref.watch(editStateProvider).userInfoModel!.userModel!.nick : nickController.text,
                             introText: introController.text == "" ? ref.watch(editStateProvider).userInfoModel!.userModel!.introText : introController.text,
@@ -254,6 +255,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                 userInfoModel: editUserModel,
                                 file: selectedImage,
                                 beforeNick: ref.read(userInfoProvider).userModel!.nick,
+                                isProfileImageDelete: isProfileImageDelete,
                               );
 
                           context.pop();
