@@ -36,7 +36,7 @@ class FeedBestPostWidget extends StatelessWidget {
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
                         onTap: () {
-                          context.push("/home/myPage/detail/${feedData[index].memberInfoList![0].nick}/게시물/${feedData[index].memberInfoList![0].memberIdx}/${feedData[index].idx}/userContent");
+                          context.push("/home/myPage/detail/null/인기 급상승/${feedData[index].memberInfoList![0].memberIdx}/${feedData[index].idx}/popularWeekContent");
                         },
                         child: FeedBestPostItemWidget(
                           imageCount: feedData[index].imgList!.length,

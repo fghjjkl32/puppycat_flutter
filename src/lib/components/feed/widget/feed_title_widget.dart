@@ -94,22 +94,15 @@ class FeedTitleWidget extends ConsumerWidget {
                             address,
                             style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                " · ",
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                              ),
-                              // Text(
-                              //   displayedAt(time),
-                              //   style: kBody11RegularStyle.copyWith(
-                              //       color: kTextBodyColor),
-                              // ),
-                              Text(
-                                time,
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                              ),
-                            ],
+                          address == ""
+                              ? Container()
+                              : Text(
+                                  " · ",
+                                  style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                ),
+                          Text(
+                            time,
+                            style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                           ),
                           isEdit
                               ? Row(
@@ -338,7 +331,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                                     height: 8.h,
                                                   ),
                                                   Text(
-                                                    " ‘${userName}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
+                                                    " ‘${userName}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
                                                     style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                                     textAlign: TextAlign.center,
                                                   ),

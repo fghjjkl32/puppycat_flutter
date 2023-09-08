@@ -14,12 +14,10 @@ class MyPageSettingBlockedUserScreen extends ConsumerStatefulWidget {
   const MyPageSettingBlockedUserScreen({super.key});
 
   @override
-  MyPageSettingBlockedUserScreenState createState() =>
-      MyPageSettingBlockedUserScreenState();
+  MyPageSettingBlockedUserScreenState createState() => MyPageSettingBlockedUserScreenState();
 }
 
-class MyPageSettingBlockedUserScreenState
-    extends ConsumerState<MyPageSettingBlockedUserScreen> {
+class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlockedUserScreen> {
   ScrollController blockController = ScrollController();
   final TextEditingController blockSearchController = TextEditingController();
 
@@ -30,30 +28,20 @@ class MyPageSettingBlockedUserScreenState
     super.initState();
 
     Future(() {
-      ref.watch(blockStateProvider.notifier).userMemberIdx =
-          ref.watch(userModelProvider)!.idx;
-      ref
-          .read(blockStateProvider.notifier)
-          .initBlockList(ref.watch(userModelProvider)!.idx, 1);
+      ref.watch(blockStateProvider.notifier).userMemberIdx = ref.watch(userModelProvider)!.idx;
+      ref.read(blockStateProvider.notifier).initBlockList(ref.watch(userModelProvider)!.idx, 1);
     });
 
     blockController.addListener(_blockScrollListener);
     blockSearchController.addListener(() {
-      ref
-          .watch(blockStateProvider.notifier)
-          .blockSearchQuery
-          .add(blockSearchController.text);
+      ref.watch(blockStateProvider.notifier).blockSearchQuery.add(blockSearchController.text);
     });
   }
 
   void _blockScrollListener() {
-    if (blockController.position.pixels >
-        blockController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
+    if (blockController.position.pixels > blockController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (blockOldLength == ref.read(blockStateProvider).list.length) {
-        ref
-            .read(blockStateProvider.notifier)
-            .loadMoreBlockList(ref.watch(userModelProvider)!.idx);
+        ref.read(blockStateProvider.notifier).loadMoreBlockList(ref.watch(userModelProvider)!.idx);
       }
     }
   }
@@ -78,7 +66,7 @@ class MyPageSettingBlockedUserScreenState
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: const Text(
-              "차단 친구 관리",
+              "차단 유저 관리",
             ),
             leading: IconButton(
               onPressed: () {
@@ -105,19 +93,16 @@ class MyPageSettingBlockedUserScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 12.0),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                         child: FormBuilderTextField(
                           name: 'search',
                           controller: blockSearchController,
-                          style: kBody13RegularStyle.copyWith(
-                              color: kTextSubTitleColor),
+                          style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: kNeutralColor200,
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 16),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                             border: OutlineInputBorder(
                               borderSide: BorderSide.none,
                               borderRadius: BorderRadius.circular(100.0),
@@ -139,8 +124,7 @@ class MyPageSettingBlockedUserScreenState
                             ),
                             suffixIcon: blockSearchController.text.isEmpty
                                 ? const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8.0),
+                                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                     child: Icon(
                                       Puppycat_social.icon_search_medium,
                                       color: kNeutralColor600,
@@ -151,8 +135,7 @@ class MyPageSettingBlockedUserScreenState
                                       blockSearchController.text = "";
                                     },
                                     child: const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 16.0, vertical: 8.0),
+                                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                       child: Icon(
                                         Puppycat_social.icon_close_large,
                                         color: kNeutralColor600,
@@ -160,8 +143,7 @@ class MyPageSettingBlockedUserScreenState
                                     ),
                                   ),
                             hintText: "검색어를 입력해 주세요.",
-                            hintStyle: kBody11RegularStyle.copyWith(
-                                color: kNeutralColor500),
+                            hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
                           ),
                         ),
                       ),
@@ -170,24 +152,28 @@ class MyPageSettingBlockedUserScreenState
                       ),
                       Expanded(
                         child: lists.isEmpty
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Center(
-                                    child: Image.asset(
-                                      'assets/image/feed_write/image/corgi-2 1.png',
-                                      height: 68.h,
-                                    ),
+                            ? Container(
+                                color: kNeutralColor100,
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/image/character/character_08_user_notfound_100.png',
+                                        width: 88,
+                                        height: 88,
+                                      ),
+                                      const SizedBox(
+                                        height: 12,
+                                      ),
+                                      Text(
+                                        '유저를 찾을 수 없습니다.',
+                                        textAlign: TextAlign.center,
+                                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Text(
-                                    "유저를 찾을 수 없습니다.",
-                                    style: kBody12RegularStyle.copyWith(
-                                        color: kTextBodyColor),
-                                  ),
-                                ],
+                                ),
                               )
                             : ListView.builder(
                                 controller: blockController,
@@ -207,12 +193,8 @@ class MyPageSettingBlockedUserScreenState
                                   return BlockUserItemWidget(
                                     profileImage: lists[index].profileImgUrl,
                                     userName: lists[index].nick!,
-                                    content: lists[index].intro! == ""
-                                        ? "소개글이 없습니다."
-                                        : lists[index].intro!,
-                                    isSpecialUser: lists[index].isBadge == null
-                                        ? false
-                                        : lists[index].isBadge! == 1,
+                                    content: lists[index].intro! == "" ? "소개글이 없습니다." : lists[index].intro!,
+                                    isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
                                     memberIdx: lists[index].memberIdx!,
                                   );
                                 },

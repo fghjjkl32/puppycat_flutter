@@ -10,14 +10,13 @@ part 'like_contents_service.g.dart';
 abstract class LikeContentsService {
   factory LikeContentsService(Dio dio, {String baseUrl}) = _LikeContentsService;
 
-  @GET('/my/like/contents?memberIdx={memberIdx}&page={page}')
+  @GET('/my/like/contents?memberIdx={memberIdx}&page={page}&limit=15')
   Future<ContentResponseModel?> getLikeContents(
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
-  @GET(
-      '/my/like/contents/detail?loginMemberIdx={loginMemberIdx}&page={page}&imgLimit=12')
+  @GET('/my/like/contents/detail?loginMemberIdx={loginMemberIdx}&page={page}&imgLimit=12')
   Future<FeedResponseModel?> getLikeDetailContentList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("page") int page,

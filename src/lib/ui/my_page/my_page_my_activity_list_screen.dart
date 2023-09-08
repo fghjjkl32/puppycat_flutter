@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -193,92 +194,127 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
         myLikeOldLength = lists.length ?? 0;
 
-        return RefreshIndicator(
-          onRefresh: () {
-            return ref.read(myLikeStateProvider.notifier).refresh(
-                  ref.read(userModelProvider)!.idx,
-                );
-          },
-          child: GridView.builder(
-            controller: myLikeContentController,
-            gridDelegate: SliverQuiltedGridDelegate(
-              crossAxisCount: 3,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-              repeatPattern: QuiltedGridRepeatPattern.same,
-              pattern: [
-                const QuiltedGridTile(2, 2),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(2, 2),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-              ],
-            ),
-            itemCount: lists.length + 1,
-            itemBuilder: (context, index) {
-              if (index == lists.length) {
-                if (isLoadMoreError) {
-                  return const Center(
-                    child: Text('Error'),
-                  );
-                }
-                if (isLoadMoreDone) {
-                  return Container();
-                }
-                return Container();
-              }
-
-              return GestureDetector(
-                onTap: () {
-                  context.push("/home/myPage/detail/null/좋아요한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myLikeContent");
+        return lists.isEmpty
+            ? Container(
+                color: kNeutralColor100,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                        width: 88,
+                        height: 88,
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Text(
+                        '게시물이 없습니다.\n좋아요한 게시물이 여기에 표시됩니다.',
+                        textAlign: TextAlign.center,
+                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : RefreshIndicator(
+                onRefresh: () {
+                  return ref.read(myLikeStateProvider.notifier).refresh(
+                        ref.read(userModelProvider)!.idx,
+                      );
                 },
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: (index == 0)
-                            ? const BorderRadius.only(topLeft: Radius.circular(10))
-                            : index == 1
-                                ? const BorderRadius.only(topRight: Radius.circular(10))
-                                : BorderRadius.circular(0),
-                        image: DecorationImage(
-                            image: NetworkImage(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
+                  child: GridView.builder(
+                    controller: myLikeContentController,
+                    addAutomaticKeepAlives: false,
+                    addRepaintBoundaries: false,
+                    gridDelegate: SliverQuiltedGridDelegate(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 4,
+                      crossAxisSpacing: 4,
+                      repeatPattern: QuiltedGridRepeatPattern.same,
+                      pattern: [
+                        const QuiltedGridTile(2, 2),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(2, 2),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                      ],
+                    ),
+                    itemCount: lists.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == lists.length) {
+                        if (isLoadMoreError) {
+                          return const Center(
+                            child: Text('Error'),
+                          );
+                        }
+                        if (isLoadMoreDone) {
+                          return Container();
+                        }
+                        return Container();
+                      }
+
+                      return GestureDetector(
+                        onTap: () {
+                          context.push("/home/myPage/detail/null/좋아요한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myLikeContent");
+                        },
+                        child: Stack(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                              imageBuilder: (context, imageProvider) => Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: (index == 0)
+                                      ? const BorderRadius.only(topLeft: Radius.circular(10))
+                                      : index == 1
+                                          ? const BorderRadius.only(topRight: Radius.circular(10))
+                                          : BorderRadius.circular(0),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) => Container(
+                                color: kNeutralColor300,
+                              ),
+                              errorWidget: (context, url, error) => Icon(Icons.error),
                             ),
-                            fit: BoxFit.cover),
-                      ),
-                    ),
-                    Positioned(
-                      right: 4.w,
-                      top: 4.w,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff414348).withOpacity(0.75),
-                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                            Positioned(
+                              right: 4.w,
+                              top: 4.w,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff414348).withOpacity(0.75),
+                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                width: 18.w,
+                                height: 14.w,
+                                child: Center(
+                                  child: Text(
+                                    "${lists[index].imageCnt}",
+                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        width: 18.w,
-                        height: 14.w,
-                        child: Center(
-                          child: Text(
-                            "${lists[index].imageCnt}",
-                            style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                      );
+                    },
+                  ),
                 ),
               );
-            },
-          ),
-        );
       },
     );
   }
@@ -294,92 +330,125 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
         mySaveOldLength = lists.length ?? 0;
 
-        return RefreshIndicator(
-          onRefresh: () {
-            return ref.read(mySaveStateProvider.notifier).refresh(
-                  ref.read(userModelProvider)!.idx,
-                );
-          },
-          child: GridView.builder(
-            controller: mySaveContentController,
-            gridDelegate: SliverQuiltedGridDelegate(
-              crossAxisCount: 3,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-              repeatPattern: QuiltedGridRepeatPattern.same,
-              pattern: [
-                const QuiltedGridTile(2, 2),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(2, 2),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-                const QuiltedGridTile(1, 1),
-              ],
-            ),
-            itemCount: lists.length + 1,
-            itemBuilder: (context, index) {
-              if (index == lists.length) {
-                if (isLoadMoreError) {
-                  return const Center(
-                    child: Text('Error'),
-                  );
-                }
-                if (isLoadMoreDone) {
-                  return Container();
-                }
-                return Container();
-              }
-
-              return GestureDetector(
-                onTap: () {
-                  context.push("/home/myPage/detail/null/저장한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/mySaveContent");
+        return lists.isEmpty
+            ? Container(
+                color: kNeutralColor100,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                        width: 88,
+                        height: 88,
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Text(
+                        '게시물이 없습니다.\n저장한 게시물이 여기에 표시됩니다.',
+                        textAlign: TextAlign.center,
+                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : RefreshIndicator(
+                onRefresh: () {
+                  return ref.read(mySaveStateProvider.notifier).refresh(
+                        ref.read(userModelProvider)!.idx,
+                      );
                 },
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: (index == 0)
-                            ? const BorderRadius.only(topLeft: Radius.circular(10))
-                            : index == 1
-                                ? const BorderRadius.only(topRight: Radius.circular(10))
-                                : BorderRadius.circular(0),
-                        image: DecorationImage(
-                            image: NetworkImage(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
+                  child: GridView.builder(
+                    controller: mySaveContentController,
+                    gridDelegate: SliverQuiltedGridDelegate(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 4,
+                      crossAxisSpacing: 4,
+                      repeatPattern: QuiltedGridRepeatPattern.same,
+                      pattern: [
+                        const QuiltedGridTile(2, 2),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(2, 2),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                        const QuiltedGridTile(1, 1),
+                      ],
+                    ),
+                    itemCount: lists.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == lists.length) {
+                        if (isLoadMoreError) {
+                          return const Center(
+                            child: Text('Error'),
+                          );
+                        }
+                        if (isLoadMoreDone) {
+                          return Container();
+                        }
+                        return Container();
+                      }
+
+                      return GestureDetector(
+                        onTap: () {
+                          context.push("/home/myPage/detail/null/저장한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/mySaveContent");
+                        },
+                        child: Stack(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                              imageBuilder: (context, imageProvider) => Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: (index == 0)
+                                      ? const BorderRadius.only(topLeft: Radius.circular(10))
+                                      : index == 1
+                                          ? const BorderRadius.only(topRight: Radius.circular(10))
+                                          : BorderRadius.circular(0),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) => Container(
+                                color: kNeutralColor300,
+                              ),
+                              errorWidget: (context, url, error) => Icon(Icons.error),
                             ),
-                            fit: BoxFit.cover),
-                      ),
-                    ),
-                    Positioned(
-                      right: 4.w,
-                      top: 4.w,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xff414348).withOpacity(0.75),
-                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                            Positioned(
+                              right: 4.w,
+                              top: 4.w,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff414348).withOpacity(0.75),
+                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                width: 18.w,
+                                height: 14.w,
+                                child: Center(
+                                  child: Text(
+                                    "${lists[index].imageCnt}",
+                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        width: 18.w,
-                        height: 14.w,
-                        child: Center(
-                          child: Text(
-                            "${lists[index].imageCnt}",
-                            style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                      );
+                    },
+                  ),
                 ),
               );
-            },
-          ),
-        );
       },
     );
   }

@@ -91,6 +91,8 @@ class InitializationApp {
           minimumFetchInterval: const Duration(seconds: 1),
         ));
 
+        lastestBuildVersion = remoteConfig.getString("lastest_build_version");
+
         if (remoteConfig.getBool("is_all_service_maintenance")) {
           Future.delayed(Duration(milliseconds: 1000), () {
             ref.read(isMaintenanceProvider.notifier).state = true;
@@ -191,7 +193,6 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
     }
   }
 
-
   @override
   void dispose() {
     _splashTimer?.cancel();
@@ -200,12 +201,12 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(_initStateProvider, (previous, next) {
-      if (!_splashTimer.isActive) {
-        checkPushAppLaunch();
-        ref.read(splashStateProvider.notifier).state = true;
-      }
-    });
+    // ref.listen(_initStateProvider, (previous, next) {
+    //   if (!_splashTimer.isActive) {
+    //     checkPushAppLaunch();
+    //     ref.read(splashStateProvider.notifier).state = true;
+    //   }
+    // });
 
     return WillPopScope(
       onWillPop: () async => false,

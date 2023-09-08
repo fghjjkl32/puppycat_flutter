@@ -27,12 +27,30 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
 
+class ScrollBehaviorModified extends ScrollBehavior {
+  const ScrollBehaviorModified();
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    switch (getPlatform(context)) {
+      case TargetPlatform.iOS:
+      case TargetPlatform.macOS:
+      case TargetPlatform.android:
+        return const BouncingScrollPhysics();
+      case TargetPlatform.fuchsia:
+      case TargetPlatform.linux:
+      case TargetPlatform.windows:
+        return const ClampingScrollPhysics();
+    }
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   baseUrl = await Constants.getBaseUrl();
   thumborHostUrl = await Constants.getThumborHostUrl();
   thumborKey = await Constants.getThumborKey();
   imgDomain = await Constants.getThumborDomain();
+  firstInstallTime = await Constants.checkFirstInstall();
 
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp(
@@ -182,6 +200,9 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> {
             title: 'Flutter Demo',
             theme: themeData(context),
             debugShowCheckedModeBanner: false,
+            builder: (context, widget) {
+              return ScrollConfiguration(behavior: ScrollBehaviorModified(), child: widget!);
+            },
           ),
         );
       },

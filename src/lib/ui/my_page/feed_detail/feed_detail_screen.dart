@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
@@ -241,6 +242,21 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                       noItemsFoundIndicatorBuilder: (context) {
                         return const SizedBox.shrink();
                       },
+                      newPageProgressIndicatorBuilder: (context) {
+                        return Container();
+                      },
+                      firstPageProgressIndicatorBuilder: (context) {
+                        return Column(
+                          children: [
+                            Lottie.asset(
+                              'assets/lottie/icon_loading.json',
+                              fit: BoxFit.fill,
+                              width: 80,
+                              height: 80,
+                            ),
+                          ],
+                        );
+                      },
                       itemBuilder: (context, item, index) {
                         return Column(
                           children: [
@@ -264,6 +280,76 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                     builderDelegate: PagedChildBuilderDelegate<FeedData>(
                       noItemsFoundIndicatorBuilder: (context) {
                         return const SizedBox.shrink();
+                      },
+                      noMoreItemsIndicatorBuilder: (context) {
+                        return ref.read(userInfoProvider).userModel!.nick != ref.read(firstFeedStateProvider.notifier).memberInfo?[0].nick
+                            ? Column(
+                                children: [
+                                  SizedBox(
+                                    height: 12,
+                                  ),
+                                  Lottie.asset(
+                                    'assets/lottie/feed_end.json',
+                                    width: 48,
+                                    height: 48,
+                                    fit: BoxFit.fill,
+                                    repeat: false,
+                                  ),
+                                  SizedBox(
+                                    height: 12,
+                                  ),
+                                  Text(
+                                    "${ref.read(firstFeedStateProvider.notifier).memberInfo?[0].nick} 님의\n게시물을 모두 확인했어요!",
+                                    textAlign: TextAlign.center,
+                                    style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    "다른 유저의 게시물도 보시겠어요?",
+                                    textAlign: TextAlign.center,
+                                    style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                  ),
+                                  SizedBox(
+                                    height: 12,
+                                  ),
+                                  Material(
+                                    child: Container(
+                                      color: kNeutralColor100,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          context.pushReplacement("/home");
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Text(
+                                            "다른 유저 게시물 볼래요",
+                                            textAlign: TextAlign.center,
+                                            style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container();
+                      },
+                      newPageProgressIndicatorBuilder: (context) {
+                        return Column(
+                          children: [
+                            Lottie.asset(
+                              'assets/lottie/icon_loading.json',
+                              fit: BoxFit.fill,
+                              width: 80,
+                              height: 80,
+                            ),
+                          ],
+                        );
+                      },
+                      firstPageProgressIndicatorBuilder: (context) {
+                        return Container();
                       },
                       itemBuilder: (context, item, index) {
                         return Column(

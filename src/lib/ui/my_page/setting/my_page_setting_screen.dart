@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -78,7 +81,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   Puppycat_social.icon_user_block_ac,
                   size: 20,
                 ),
-                title: '차단 친구 관리',
+                title: '차단 유저 관리',
                 onPressed: () {
                   ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.go("/home/myPage/setting/settingBlockedUser");
                 },
@@ -397,7 +400,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       ),
                     ),
                     Text(
-                      "2023-10-01",
+                      DateFormat('yyyy-MM-dd').format(DateTime.parse(firstInstallTime)),
                       style: kBody13RegularStyle.copyWith(
                         color: kTextSubTitleColor,
                       ),
@@ -439,17 +442,24 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       },
                       child: Row(
                         children: [
-                          Text(
-                            "최신 버전 사용 중",
-                            style: kBadge10MediumStyle.copyWith(
-                              color: kTextBodyColor,
-                            ),
-                          ),
+                          lastestBuildVersion == GetIt.I<PackageInformationUtil>().appVersion
+                              ? Text(
+                                  "최신 버전 사용 중",
+                                  style: kBadge10MediumStyle.copyWith(
+                                    color: kTextBodyColor,
+                                  ),
+                                )
+                              : Text(
+                                  "구 버전 사용 중",
+                                  style: kBadge10MediumStyle.copyWith(
+                                    color: kTextBodyColor,
+                                  ),
+                                ),
                           SizedBox(
                             width: 10.w,
                           ),
                           Text(
-                            "1.0.0",
+                            GetIt.I<PackageInformationUtil>().appVersion,
                             style: kBody13RegularStyle.copyWith(
                               color: kTextSubTitleColor,
                             ),

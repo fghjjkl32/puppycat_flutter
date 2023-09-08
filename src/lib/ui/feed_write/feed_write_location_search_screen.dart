@@ -42,24 +42,18 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 12.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                       child: FormBuilderTextField(
                         name: 'search',
-                        initialValue:
-                            ref.watch(feedWriteLocationSearchProvider),
+                        initialValue: ref.watch(feedWriteLocationSearchProvider),
                         // controller: locationSearchController,
-                        onChanged: (value) => ref
-                            .read(feedWriteLocationSearchProvider.notifier)
-                            .onTextChanged(value!),
-                        style: kBody13RegularStyle.copyWith(
-                            color: kTextSubTitleColor),
+                        onChanged: (value) => ref.read(feedWriteLocationSearchProvider.notifier).onTextChanged(value!),
+                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: kNeutralColor200,
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 16),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
                             borderRadius: BorderRadius.circular(100.0),
@@ -79,12 +73,9 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                             minWidth: 24,
                             minHeight: 24,
                           ),
-                          suffixIcon: ref
-                                  .watch(feedWriteLocationSearchProvider)
-                                  .isEmpty
+                          suffixIcon: ref.watch(feedWriteLocationSearchProvider).isEmpty
                               ? const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 8.0),
+                                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                   child: Icon(
                                     Puppycat_social.icon_search_medium,
                                     color: kNeutralColor600,
@@ -92,14 +83,10 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                 )
                               : GestureDetector(
                                   onTap: () {
-                                    ref
-                                        .watch(feedWriteLocationSearchProvider
-                                            .notifier)
-                                        .onTextChanged('');
+                                    ref.watch(feedWriteLocationSearchProvider.notifier).onTextChanged('');
                                   },
                                   child: const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8.0),
+                                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                     child: Icon(
                                       Puppycat_social.icon_close_large,
                                       color: kNeutralColor600,
@@ -107,8 +94,7 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                   ),
                                 ),
                           hintText: "장소를 입력해 주세요.",
-                          hintStyle: kBody11RegularStyle.copyWith(
-                              color: kNeutralColor500),
+                          hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
                         ),
                       ),
                     ),
@@ -119,22 +105,18 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                         ? Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
                                       "최근 검색어",
-                                      style: kTitle16ExtraBoldStyle.copyWith(
-                                          color: kTextTitleColor),
+                                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                                     ),
                                     Text(
                                       "전체 삭제",
-                                      style: kBody11SemiBoldStyle.copyWith(
-                                          color: kTextBodyColor),
+                                      style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                                     ),
                                   ],
                                 ),
@@ -146,55 +128,41 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                           )
                         : Container(),
                     Expanded(
-                      child: ref
-                              .watch(feedWriteLocationSearchProvider.notifier)
-                              .searchResult
-                              .isEmpty
-                          ? Center(
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    'assets/image/feed_write/image/corgi-2 1.png',
-                                    height: 68.h,
-                                  ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Text(
-                                    "장소를 찾을 수 없습니다.",
-                                    style: kBody12RegularStyle.copyWith(
-                                        color: kTextBodyColor),
-                                  ),
-                                ],
+                      child: ref.watch(feedWriteLocationSearchProvider.notifier).searchResult.isEmpty
+                          ? Container(
+                              color: kNeutralColor100,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/image/character/character_08_user_notfound_100.png',
+                                      width: 88,
+                                      height: 88,
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Text(
+                                      '장소를 찾을 수 없습니다.',
+                                      textAlign: TextAlign.center,
+                                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                    ),
+                                  ],
+                                ),
                               ),
                             )
                           : ListView.builder(
-                              itemCount: ref
-                                  .watch(
-                                      feedWriteLocationSearchProvider.notifier)
-                                  .searchResult
-                                  .length,
+                              itemCount: ref.watch(feedWriteLocationSearchProvider.notifier).searchResult.length,
                               itemBuilder: (context, index) {
                                 return InkWell(
                                   onTap: () {
-                                    Navigator.of(context).pop(ref
-                                        .watch(feedWriteLocationSearchProvider
-                                            .notifier)
-                                        .searchResult[index]
-                                        .name);
+                                    Navigator.of(context).pop(ref.watch(feedWriteLocationSearchProvider.notifier).searchResult[index].name);
                                   },
                                   child: LocationUserItemWidget(
                                     locationItem: LocationItem(
-                                      name: ref
-                                          .watch(feedWriteLocationSearchProvider
-                                              .notifier)
-                                          .searchResult[index]
-                                          .name,
-                                      subName: ref
-                                          .watch(feedWriteLocationSearchProvider
-                                              .notifier)
-                                          .searchResult[index]
-                                          .subName,
+                                      name: ref.watch(feedWriteLocationSearchProvider.notifier).searchResult[index].name,
+                                      subName: ref.watch(feedWriteLocationSearchProvider.notifier).searchResult[index].subName,
                                     ),
                                   ),
                                 );

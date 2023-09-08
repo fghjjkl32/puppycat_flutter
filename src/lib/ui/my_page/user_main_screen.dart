@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
@@ -48,6 +50,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   ScrollController userContentController = ScrollController();
   ScrollController tagContentController = ScrollController();
   ScrollController commentController = ScrollController();
+
+  bool showLottieAnimation = false;
 
   late TabController tabController;
   Color appBarColor = Colors.transparent;
@@ -177,11 +181,28 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                             : lists[0].blockedState == 1 || lists[0].blockedMeState == 1
                                 ? Container()
                                 : PopupMenuButton(
-                                    icon: const Icon(
-                                      Puppycat_social.icon_more_header,
-                                      size: 40,
-                                    ),
+                                    padding: EdgeInsets.zero,
+                                    offset: Offset(0, 42),
+                                    child: showLottieAnimation
+                                        ? Lottie.asset(
+                                            'assets/lottie/icon_more_header.json',
+                                          )
+                                        : Padding(
+                                            padding: const EdgeInsets.only(right: 8.0),
+                                            child: const Icon(
+                                              Puppycat_social.icon_more_header,
+                                              size: 40,
+                                            ),
+                                          ),
+                                    onCanceled: () {
+                                      setState(() {
+                                        showLottieAnimation = false;
+                                      });
+                                    },
                                     onSelected: (id) {
+                                      setState(() {
+                                        showLottieAnimation = false;
+                                      });
                                       if (id == 'block') {
                                         if (ref.read(userModelProvider) == null) {
                                           context.pushReplacement("/loginScreen");
@@ -211,7 +232,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                         height: 8.h,
                                                       ),
                                                       Text(
-                                                        " ‘${widget.nick}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
+                                                        " ‘${widget.nick}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
                                                         style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                                         textAlign: TextAlign.center,
                                                       ),
@@ -256,6 +277,11 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                       ),
                                     ),
                                     itemBuilder: (context) {
+                                      Future.delayed(Duration.zero, () {
+                                        setState(() {
+                                          showLottieAnimation = true;
+                                        });
+                                      });
                                       final list = <PopupMenuEntry>[];
                                       list.add(
                                         diaryPopUpMenuItem(
@@ -388,87 +414,93 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         widget.memberIdx,
                       );
                 },
-                child: GridView.builder(
-                  controller: userContentController,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  itemCount: lists.length,
-                  itemBuilder: (context, index) {
-                    if (index == lists.length) {
-                      if (isLoadMoreError) {
-                        return const Center(
-                          child: Text('Error'),
-                        );
-                      }
-                      if (isLoadMoreDone) {
+                child: Container(
+                  color: kNeutralColor100,
+                  child: GridView.builder(
+                    controller: userContentController,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    itemCount: lists.length,
+                    itemBuilder: (context, index) {
+                      if (index == lists.length) {
+                        if (isLoadMoreError) {
+                          return const Center(
+                            child: Text('Error'),
+                          );
+                        }
+                        if (isLoadMoreDone) {
+                          return Container();
+                        }
                         return Container();
                       }
-                      return Container();
-                    }
 
-                    return Container(
-                      margin: const EdgeInsets.all(10.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          context.push(
-                              "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/게시물/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userContent");
-                        },
-                        child: Center(
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                  child: Image.network(
-                                    Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                child: Container(
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    gradient: LinearGradient(
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                      colors: [
-                                        Colors.black.withOpacity(0.5),
-                                        Colors.transparent,
-                                      ],
+                      return Container(
+                        margin: const EdgeInsets.all(10.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            context.push(
+                                "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/게시물/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userContent");
+                          },
+                          child: Center(
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                    child: CachedNetworkImage(
+                                      placeholder: (context, url) => Container(
+                                        color: kNeutralColor300,
+                                      ),
+                                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
-                              ),
-                              Positioned(
-                                right: 6.w,
-                                top: 6.w,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xff414348).withOpacity(0.75),
-                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                  ),
-                                  width: 18.w,
-                                  height: 14.w,
-                                  child: Center(
-                                    child: Text(
-                                      '${lists[index].imageCnt}',
-                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: Container(
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      gradient: LinearGradient(
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                        colors: [
+                                          Colors.black.withOpacity(0.5),
+                                          Colors.transparent,
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  right: 6.w,
+                                  top: 6.w,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xff414348).withOpacity(0.75),
+                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                    ),
+                                    width: 18.w,
+                                    height: 14.w,
+                                    child: Center(
+                                      child: Text(
+                                        '${lists[index].imageCnt}',
+                                        style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               );
       },
@@ -517,68 +549,74 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                     ),
                   ),
                 )
-              : GridView.builder(
-                  controller: tagContentController,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  itemCount: lists.length,
-                  itemBuilder: (context, index) {
-                    if (index == lists.length) {
-                      if (isLoadMoreError) {
-                        return const Center(
-                          child: Text('Error'),
-                        );
-                      }
-                      if (isLoadMoreDone) {
+              : Container(
+                  color: kNeutralColor100,
+                  child: GridView.builder(
+                    controller: tagContentController,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    itemCount: lists.length,
+                    itemBuilder: (context, index) {
+                      if (index == lists.length) {
+                        if (isLoadMoreError) {
+                          return const Center(
+                            child: Text('Error'),
+                          );
+                        }
+                        if (isLoadMoreDone) {
+                          return Container();
+                        }
                         return Container();
                       }
-                      return Container();
-                    }
 
-                    return Container(
-                      margin: const EdgeInsets.all(10.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          context.push(
-                              "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userTagContent");
-                        },
-                        child: Center(
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                  child: Image.network(
-                                    Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                right: 6.w,
-                                top: 6.w,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xff414348).withOpacity(0.75),
-                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                  ),
-                                  width: 18.w,
-                                  height: 14.w,
-                                  child: Center(
-                                    child: Text(
-                                      "${lists[index].imageCnt}",
-                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                      return Container(
+                        margin: const EdgeInsets.all(10.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            context.push(
+                                "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userTagContent");
+                          },
+                          child: Center(
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: ClipRRect(
+                                    borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                    child: CachedNetworkImage(
+                                      placeholder: (context, url) => Container(
+                                        color: kNeutralColor300,
+                                      ),
+                                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  right: 6.w,
+                                  top: 6.w,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xff414348).withOpacity(0.75),
+                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                    ),
+                                    width: 18.w,
+                                    height: 14.w,
+                                    child: Center(
+                                      child: Text(
+                                        "${lists[index].imageCnt}",
+                                        style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
         );
       },

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -30,10 +31,12 @@ class FeedImageMainWidget extends StatelessWidget {
                 padding: kPrimarySideFeedImagePadding,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
-                  child: Image.network(
-                    Thumbor(host: thumborHostUrl, key: thumborKey)
-                        .buildImage("$imgDomain${imageList[0].url!}")
-                        .toUrl(),
+                  child: CachedNetworkImage(
+                    imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
+                    placeholder: (context, url) => Container(
+                      color: kNeutralColor300,
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                     fit: BoxFit.cover,
                     height: 266.h,
                     width: double.infinity,
@@ -50,10 +53,12 @@ class FeedImageMainWidget extends StatelessWidget {
                       bottomLeft: Radius.circular(12.0),
                       topLeft: Radius.circular(12.0),
                     ),
-                    child: Image.network(
-                      Thumbor(host: thumborHostUrl, key: thumborKey)
-                          .buildImage("$imgDomain${imageList[0].url!}")
-                          .toUrl(),
+                    child: CachedNetworkImage(
+                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
+                      placeholder: (context, url) => Container(
+                        color: kNeutralColor300,
+                      ),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                       fit: BoxFit.cover,
                       height: 266.h,
                       width: double.infinity,
@@ -69,10 +74,12 @@ class FeedImageMainWidget extends StatelessWidget {
                       bottomRight: Radius.circular(12.0),
                       topRight: Radius.circular(12.0),
                     ),
-                    child: Image.network(
-                      Thumbor(host: thumborHostUrl, key: thumborKey)
-                          .buildImage("$imgDomain${imageList[1].url!}")
-                          .toUrl(),
+                    child: CachedNetworkImage(
+                      placeholder: (context, url) => Container(
+                        color: kNeutralColor300,
+                      ),
+                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].url!}").toUrl(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
                       fit: BoxFit.cover,
                       height: 266.h,
                       width: double.infinity,
@@ -90,10 +97,11 @@ class FeedImageMainWidget extends StatelessWidget {
                       bottomLeft: Radius.circular(12.0),
                       topLeft: Radius.circular(12.0),
                     ),
-                    child: Image.network(
-                      Thumbor(host: thumborHostUrl, key: thumborKey)
-                          .buildImage("$imgDomain${imageList[0].url!}")
-                          .toUrl(),
+                    child: CachedNetworkImage(
+                      placeholder: (context, url) => Container(
+                        color: kNeutralColor300,
+                      ),
+                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
                       fit: BoxFit.cover,
                       height: 266.h,
                       width: double.infinity,
@@ -110,10 +118,11 @@ class FeedImageMainWidget extends StatelessWidget {
                         borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(12.0),
                         ),
-                        child: Image.network(
-                          Thumbor(host: thumborHostUrl, key: thumborKey)
-                              .buildImage("$imgDomain${imageList[1].url!}")
-                              .toUrl(),
+                        child: CachedNetworkImage(
+                          placeholder: (context, url) => Container(
+                            color: kNeutralColor300,
+                          ),
+                          imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].url!}").toUrl(),
                           fit: BoxFit.cover,
                           height: 132.h,
                           width: double.infinity,
@@ -126,10 +135,11 @@ class FeedImageMainWidget extends StatelessWidget {
                         borderRadius: const BorderRadius.only(
                           bottomRight: Radius.circular(12.0),
                         ),
-                        child: Image.network(
-                          Thumbor(host: thumborHostUrl, key: thumborKey)
-                              .buildImage("$imgDomain${imageList[2].url!}")
-                              .toUrl(),
+                        child: CachedNetworkImage(
+                          placeholder: (context, url) => Container(
+                            color: kNeutralColor300,
+                          ),
+                          imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[2].url!}").toUrl(),
                           fit: BoxFit.cover,
                           height: 132.h,
                           width: double.infinity,
@@ -149,10 +159,11 @@ class FeedImageMainWidget extends StatelessWidget {
                       bottomLeft: Radius.circular(12.0),
                       topLeft: Radius.circular(12.0),
                     ),
-                    child: Image.network(
-                      Thumbor(host: thumborHostUrl, key: thumborKey)
-                          .buildImage("$imgDomain${imageList[0].url!}")
-                          .toUrl(),
+                    child: CachedNetworkImage(
+                      placeholder: (context, url) => Container(
+                        color: kNeutralColor300,
+                      ),
+                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
                       fit: BoxFit.cover,
                       height: 266.h,
                       width: double.infinity,
@@ -169,10 +180,11 @@ class FeedImageMainWidget extends StatelessWidget {
                         borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(12.0),
                         ),
-                        child: Image.network(
-                          Thumbor(host: thumborHostUrl, key: thumborKey)
-                              .buildImage("$imgDomain${imageList[1].url!}")
-                              .toUrl(),
+                        child: CachedNetworkImage(
+                          placeholder: (context, url) => Container(
+                            color: kNeutralColor300,
+                          ),
+                          imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].url!}").toUrl(),
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: 132.h,
@@ -187,10 +199,11 @@ class FeedImageMainWidget extends StatelessWidget {
                             borderRadius: const BorderRadius.only(
                               bottomRight: Radius.circular(12.0),
                             ),
-                            child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey)
-                                  .buildImage("$imgDomain${imageList[2].url!}")
-                                  .toUrl(),
+                            child: CachedNetworkImage(
+                              placeholder: (context, url) => Container(
+                                color: kNeutralColor300,
+                              ),
+                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[2].url!}").toUrl(),
                               fit: BoxFit.cover,
                               height: 132.h,
                               width: double.infinity,
@@ -208,8 +221,7 @@ class FeedImageMainWidget extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 '+ ${imageList.length - 3}',
-                                style: kTitle18BoldStyle.copyWith(
-                                    color: kNeutralColor100),
+                                style: kTitle18BoldStyle.copyWith(color: kNeutralColor100),
                               ),
                             ),
                           ),

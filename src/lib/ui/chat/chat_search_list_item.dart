@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
-class ChatSearchListItem extends StatelessWidget {
+class ChatSearchListItem extends StatefulWidget {
   final int idx;
   final String nick;
   final String intro;
@@ -32,12 +34,36 @@ class ChatSearchListItem extends StatelessWidget {
   });
 
   @override
+  State<ChatSearchListItem> createState() => _ChatSearchListItemState();
+}
+
+class _ChatSearchListItemState extends State<ChatSearchListItem> with TickerProviderStateMixin {
+  bool showFavoriteLottieAnimation = false;
+
+  late final AnimationController favoriteController;
+
+  @override
+  void initState() {
+    favoriteController = AnimationController(
+      vsync: this,
+    );
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    favoriteController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        print('chatMemberId 2 $chatMemberId');
-        if (onTab != null) {
-          onTab!(chatMemberId);
+        print('chatMemberId 2 ${widget.chatMemberId}');
+        if (widget.onTab != null) {
+          widget.onTab!(widget.chatMemberId);
         }
       },
       child: Padding(
@@ -46,7 +72,7 @@ class ChatSearchListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             getProfileAvatar(
-              profileImgUrl,
+              widget.profileImgUrl,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0, right: 8.0),
@@ -55,41 +81,66 @@ class ChatSearchListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    nick,
-                    style: kBody13BoldStyle.copyWith(
-                        color: kTextTitleColor,
-                        letterSpacing: 0.2,
-                        height: 1.4),
+                    widget.nick,
+                    style: kBody13BoldStyle.copyWith(color: kTextTitleColor, letterSpacing: 0.2, height: 1.4),
                   ),
                   Text(
-                    intro,
-                    style: kBody11RegularStyle.copyWith(
-                        color: kTextBodyColor, letterSpacing: 0.2, height: 1.2),
+                    widget.intro,
+                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor, letterSpacing: 0.2, height: 1.2),
                   ),
                 ],
               ),
             ),
             const Spacer(),
-            IconButton(
-              padding: const EdgeInsets.all(0),
-              alignment: Alignment.centerRight,
-              icon: isFavorite
-                  ? const ImageIcon(
-                      AssetImage('assets/image/chat/icon_star_s_on.png'),
-                      size: 20,
-                      color: kPrimaryColor,
-                    )
-                  : const ImageIcon(
-                      AssetImage('assets/image/chat/icon_star_s_off.png'),
-                      size: 20,
-                      color: kTextBodyColor,
+            widget.isFavorite
+                ? GestureDetector(
+                    onTap: () {
+                      if (widget.onTabFavorite != null) {
+                        widget.onTabFavorite!();
+                      }
+                    },
+                    child: showFavoriteLottieAnimation
+                        ? Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Lottie.asset(
+                              'assets/lottie/icon_star.json',
+                              controller: favoriteController,
+                              onLoaded: (composition) {
+                                favoriteController.duration = composition.duration;
+                                favoriteController.forward();
+                              },
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: const Icon(
+                              Puppycat_social.icon_star_small_ac,
+                              color: kPrimaryColor,
+                              size: 20,
+                            ),
+                          ),
+                  )
+                : GestureDetector(
+                    onTap: () async {
+                      if (widget.onTabFavorite != null) {
+                        widget.onTabFavorite!();
+                      }
+
+                      setState(() {
+                        showFavoriteLottieAnimation = true;
+                      });
+
+                      favoriteController.forward(from: 0);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Icon(
+                        Puppycat_social.icon_star_small_de,
+                        color: kTextBodyColor,
+                        size: 20,
+                      ),
                     ),
-              onPressed: () {
-                if (onTabFavorite != null) {
-                  onTabFavorite!();
-                }
-              },
-            ),
+                  ),
           ],
         ),
       ),
