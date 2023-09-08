@@ -34,9 +34,30 @@ class UserUnknownScreen extends StatelessWidget {
             ),
           ),
           body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Center(
+                child: Image.asset(
+                  'assets/image/character/character_08_user_notfound_100.png',
+                  width: 100,
+                  height: 100,
+                ),
+              ),
+              SizedBox(
+                height: 12,
+              ),
               Text(
                 "유저를 찾을 수 없습니다.",
+                style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Text(
+                "클릭하신 링크가 잘못되었거나\n페이지가 삭제되었습니다.",
+                style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                textAlign: TextAlign.center,
               ),
             ],
           ),

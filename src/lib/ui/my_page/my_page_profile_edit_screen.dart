@@ -9,6 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
@@ -230,9 +231,17 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                   decoration: BoxDecoration(
                                     color: Colors.black.withOpacity(0.6),
                                   ),
-                                  child: const SpinKitCircle(
-                                    size: 100,
-                                    color: kNeutralColor500,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Lottie.asset(
+                                        'assets/lottie/icon_loading.json',
+                                        fit: BoxFit.fill,
+                                        width: 80,
+                                        height: 80,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               );

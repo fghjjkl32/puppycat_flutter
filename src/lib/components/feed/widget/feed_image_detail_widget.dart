@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -104,8 +105,11 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                     padding: kPrimarySideFeedImagePadding,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
-                      child: Image.network(
-                        Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${i.url}").toUrl(),
+                      child: CachedNetworkImage(
+                        placeholder: (context, url) => Container(
+                          color: kNeutralColor300,
+                        ),
+                        imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${i.url}").toUrl(),
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: double.infinity,

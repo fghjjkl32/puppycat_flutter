@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -22,8 +23,7 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_locati
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
 
 class FeedEditScreen extends ConsumerWidget {
-  const FeedEditScreen(
-      {super.key, required this.feedData, required this.contentIdx});
+  const FeedEditScreen({super.key, required this.feedData, required this.contentIdx});
 
   final FeedData feedData;
   final int contentIdx;
@@ -49,8 +49,7 @@ class FeedEditScreen extends ConsumerWidget {
                     ),
                     Text(
                       "지금 돌아가시면\n입력한 내용이 모두 삭제됩니다.",
-                      style:
-                          kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -61,8 +60,7 @@ class FeedEditScreen extends ConsumerWidget {
                 context.pop();
 
                 ref.read(feedWriteProvider.notifier).resetTag();
-                ref.watch(feedWriteLocationInformationProvider.notifier).state =
-                    "";
+                ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
                 ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
               },
               cancelTap: () {
@@ -89,16 +87,14 @@ class FeedEditScreen extends ConsumerWidget {
                     children: [
                       Text(
                         "이전으로 돌아가시겠어요?",
-                        style:
-                            kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                        style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                       ),
                       SizedBox(
                         height: 4.h,
                       ),
                       Text(
                         "지금 돌아가시면\n입력한 내용이 모두 삭제됩니다.",
-                        style:
-                            kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -109,9 +105,7 @@ class FeedEditScreen extends ConsumerWidget {
                   context.pop();
 
                   ref.read(feedWriteProvider.notifier).resetTag();
-                  ref
-                      .watch(feedWriteLocationInformationProvider.notifier)
-                      .state = "";
+                  ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
                   ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
                 },
                 cancelTap: () {
@@ -136,8 +130,7 @@ class FeedEditScreen extends ConsumerWidget {
                 Navigator.of(context).pop();
 
                 ref.read(feedWriteProvider.notifier).resetTag();
-                ref.watch(feedWriteLocationInformationProvider.notifier).state =
-                    "";
+                ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
                 ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
               },
               icon: const Icon(
@@ -162,46 +155,39 @@ class FeedEditScreen extends ConsumerWidget {
                           decoration: BoxDecoration(
                             color: Colors.black.withOpacity(0.6),
                           ),
-                          child: const SpinKitCircle(
-                            size: 100,
-                            color: kNeutralColor500,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Lottie.asset(
+                                'assets/lottie/icon_loading.json',
+                                fit: BoxFit.fill,
+                                width: 80,
+                                height: 80,
+                              ),
+                            ],
                           ),
                         ),
                       );
                     },
                   );
 
-                  final result = await ref
-                      .watch(feedWriteProvider.notifier)
-                      .putFeed(
+                  final result = await ref.watch(feedWriteProvider.notifier).putFeed(
                         memberIdx: ref.watch(userModelProvider)!.idx,
                         isView: ref.watch(feedWriteButtonSelectedProvider),
-                        location: ref
-                            .watch(
-                                feedWriteLocationInformationProvider.notifier)
-                            .state,
-                        contents: ref
-                            .watch(feedEditContentProvider.notifier)
-                            .state
-                            .text,
+                        location: ref.watch(feedWriteLocationInformationProvider.notifier).state,
+                        contents: ref.watch(feedEditContentProvider.notifier).state.text,
                         feedState: ref.watch(feedWriteProvider),
                         contentIdx: contentIdx,
-                        initialTagList: ref
-                            .read(feedWriteProvider.notifier)
-                            .state
-                            .initialTagList,
+                        initialTagList: ref.read(feedWriteProvider.notifier).state.initialTagList,
                       );
 
                   context.pop();
 
                   if (result.result) {
                     ref.read(feedWriteProvider.notifier).resetTag();
-                    ref
-                        .watch(feedWriteLocationInformationProvider.notifier)
-                        .state = "";
-                    ref
-                        .watch(feedWriteCroppedFilesProvider.notifier)
-                        .removeAll();
+                    ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+                    ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
                     context.pushReplacement("/home");
                   } else {
                     showDialog(
@@ -215,16 +201,14 @@ class FeedEditScreen extends ConsumerWidget {
                                 children: [
                                   Text(
                                     "게시물을 등록할 수 없습니다.",
-                                    style: kBody16BoldStyle.copyWith(
-                                        color: kTextTitleColor),
+                                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                                   ),
                                   SizedBox(
                                     height: 4.h,
                                   ),
                                   Text(
                                     "죄송합니다.\n게시물 등록 중 오류가 발생하였습니다.\n다시 시도해 주세요.",
-                                    style: kBody12RegularStyle.copyWith(
-                                        color: kTextBodyColor),
+                                    style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
@@ -235,8 +219,7 @@ class FeedEditScreen extends ConsumerWidget {
                             },
                             confirmWidget: Text(
                               "확인",
-                              style: kButton14MediumStyle.copyWith(
-                                  color: kPrimaryColor),
+                              style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
                             ));
                       },
                     );

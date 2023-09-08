@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_write_show_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_best_post_widget.dart';
@@ -51,6 +52,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   late final PagingController<int, FeedData> _recentFeedListPagingController = ref.read(recentFeedStateProvider);
   late final PagingController<int, FeedData> _followFeedListPagingController = ref.read(followFeedStateProvider);
   late final PagingController<int, FeedData> _popularWeekFeedListPagingController = ref.read(popularWeekFeedStateProvider);
+
+  bool showLottieAnimation = false;
 
   List<Widget> getTabs() {
     final loginState = ref.read(loginStateProvider);
@@ -135,155 +138,161 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     bool isBigDevice = MediaQuery.of(context).size.width >= 320;
     final loginState = ref.watch(loginStateProvider);
 
-    return Scaffold(
-      appBar: isBigDevice
-          ? null
-          : PreferredSize(
-              preferredSize: Size.fromHeight(30.0),
-              child: AppBar(
-                automaticallyImplyLeading: false,
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "PUPPYCAT",
-                      style: kTitle18BoldStyle,
-                    ),
-                    _buttonWidget(),
-                  ],
+    return WillPopScope(
+      onWillPop: () async {
+        bool backResult = onBackPressed();
+        return await Future.value(backResult);
+      },
+      child: Scaffold(
+        appBar: isBigDevice
+            ? null
+            : PreferredSize(
+                preferredSize: Size.fromHeight(30.0),
+                child: AppBar(
+                  automaticallyImplyLeading: false,
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "PUPPYCAT",
+                        style: kTitle18BoldStyle,
+                      ),
+                      _buttonWidget(),
+                    ],
+                  ),
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
                 ),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
               ),
-            ),
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () {
-            return Future(() {
-              final loginState = ref.watch(loginStateProvider);
+        body: SafeArea(
+          child: RefreshIndicator(
+            onRefresh: () {
+              return Future(() {
+                final loginState = ref.watch(loginStateProvider);
 
-              _recentFeedListPagingController.refresh();
+                _recentFeedListPagingController.refresh();
 
-              ref.read(popularUserListStateProvider.notifier).getInitUserList(
-                    ref.read(userModelProvider)?.idx,
-                  );
+                ref.read(popularUserListStateProvider.notifier).getInitUserList(
+                      ref.read(userModelProvider)?.idx,
+                    );
 
-              ref.read(popularHourFeedStateProvider.notifier).initPosts(
-                    loginMemberIdx: ref.read(userModelProvider)?.idx,
-                  );
+                ref.read(popularHourFeedStateProvider.notifier).initPosts(
+                      loginMemberIdx: ref.read(userModelProvider)?.idx,
+                    );
 
-              scrollController.addListener(_myPostScrollListener);
+                scrollController.addListener(_myPostScrollListener);
 
-              if (loginState == LoginStatus.success) {
-                _myFeedListPagingController.refresh();
+                if (loginState == LoginStatus.success) {
+                  _myFeedListPagingController.refresh();
 
-                _popularWeekFeedListPagingController.refresh();
+                  _popularWeekFeedListPagingController.refresh();
 
-                _followFeedListPagingController.refresh();
+                  _followFeedListPagingController.refresh();
 
-                ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userModelProvider)!.idx);
-              }
-            });
-          },
-          child: Consumer(builder: (context, ref, _) {
-            return DefaultTabController(
-              length: loginState == LoginStatus.success ? 4 : 2,
-              child: NestedScrollView(
-                controller: scrollController,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    isBigDevice
-                        ? SliverAppBar(
-                            pinned: true,
-                            snap: false,
-                            floating: true,
-                            expandedHeight: 220.0,
-                            centerTitle: false,
-                            leading: null,
-                            titleSpacing: 0,
-                            backgroundColor: kNeutralColor100,
-                            automaticallyImplyLeading: false,
-                            title: Row(
-                              children: [
-                                const Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4.0),
-                                  child: _buttonWidget(),
-                                ),
-                              ],
-                            ),
-                            flexibleSpace: FlexibleSpaceBar(
-                              titlePadding: EdgeInsets.zero,
-                              expandedTitleScale: 1.0,
+                  ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userModelProvider)!.idx);
+                }
+              });
+            },
+            child: Consumer(builder: (context, ref, _) {
+              return DefaultTabController(
+                length: loginState == LoginStatus.success ? 4 : 2,
+                child: NestedScrollView(
+                  controller: scrollController,
+                  headerSliverBuilder: (context, innerBoxIsScrolled) {
+                    return [
+                      isBigDevice
+                          ? SliverAppBar(
+                              pinned: true,
+                              snap: false,
+                              floating: true,
+                              expandedHeight: 220.0,
                               centerTitle: false,
-                              collapseMode: CollapseMode.pin,
-                              title: _buildTabbar(innerBoxIsScrolled),
-                              background: Container(
-                                color: kNeutralColor100,
-                                child: Stack(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        top: 16.0.h,
-                                        left: 10.w,
+                              leading: null,
+                              titleSpacing: 0,
+                              backgroundColor: kNeutralColor100,
+                              automaticallyImplyLeading: false,
+                              title: Row(
+                                children: [
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4.0),
+                                    child: _buttonWidget(),
+                                  ),
+                                ],
+                              ),
+                              flexibleSpace: FlexibleSpaceBar(
+                                titlePadding: EdgeInsets.zero,
+                                expandedTitleScale: 1.0,
+                                centerTitle: false,
+                                collapseMode: CollapseMode.pin,
+                                title: _buildTabbar(innerBoxIsScrolled),
+                                background: Container(
+                                  color: kNeutralColor100,
+                                  child: Stack(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: 16.0.h,
+                                          left: 10.w,
+                                        ),
+                                        child: Text(
+                                          "PUPPYCAT",
+                                          style: kTitle18BoldStyle,
+                                        ),
                                       ),
-                                      child: Text(
-                                        "PUPPYCAT",
-                                        style: kTitle18BoldStyle,
-                                      ),
-                                    ),
-                                    _buildBackGround(),
-                                  ],
+                                      _buildBackGround(),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          : SliverAppBar(
+                              pinned: true,
+                              snap: false,
+                              floating: true,
+                              expandedHeight: 180.0,
+                              centerTitle: false,
+                              leading: null,
+                              titleSpacing: 0,
+                              backgroundColor: kNeutralColor100,
+                              automaticallyImplyLeading: false,
+                              flexibleSpace: FlexibleSpaceBar(
+                                titlePadding: EdgeInsets.zero,
+                                expandedTitleScale: 1.0,
+                                centerTitle: false,
+                                collapseMode: CollapseMode.pin,
+                                title: _buildTabbar(innerBoxIsScrolled),
+                                background: Container(
+                                  color: kNeutralColor100,
+                                  child: Stack(
+                                    children: [
+                                      _buildBackGround(),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          )
-                        : SliverAppBar(
-                            pinned: true,
-                            snap: false,
-                            floating: true,
-                            expandedHeight: 180.0,
-                            centerTitle: false,
-                            leading: null,
-                            titleSpacing: 0,
-                            backgroundColor: kNeutralColor100,
-                            automaticallyImplyLeading: false,
-                            flexibleSpace: FlexibleSpaceBar(
-                              titlePadding: EdgeInsets.zero,
-                              expandedTitleScale: 1.0,
-                              centerTitle: false,
-                              collapseMode: CollapseMode.pin,
-                              title: _buildTabbar(innerBoxIsScrolled),
-                              background: Container(
-                                color: kNeutralColor100,
-                                child: Stack(
-                                  children: [
-                                    _buildBackGround(),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                  ];
-                },
-                body: TabBarView(
-                  controller: tabController,
-                  children: [
-                    _firstTab(),
-                    Container(
-                      color: Colors.blue,
-                    ),
-                    if (loginState == LoginStatus.success) ...[
-                      _thirdTab(),
+                    ];
+                  },
+                  body: TabBarView(
+                    controller: tabController,
+                    children: [
+                      _firstTab(),
+                      Container(
+                        color: Colors.blue,
+                      ),
+                      if (loginState == LoginStatus.success) ...[
+                        _thirdTab(),
+                      ],
+                      if (loginState == LoginStatus.success) ...[
+                        _fourthTab(),
+                      ],
                     ],
-                    if (loginState == LoginStatus.success) ...[
-                      _fourthTab(),
-                    ],
-                  ],
+                  ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ),
       ),
     );
@@ -363,6 +372,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 : ref.watch(restrainWriteStateProvider).restrain.state == null
                     ? feedWriteShowBottomSheet(
                         context: context,
+                        onClose: () {
+                          setState(() {
+                            showLottieAnimation = false;
+                          });
+                        },
                       )
                     : showDialog(
                         barrierDismissible: false,
@@ -375,11 +389,19 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                           endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
                         ),
                       );
+
+            setState(() {
+              showLottieAnimation = true;
+            });
           },
-          child: const Icon(
-            Puppycat_social.icon_feed,
-            size: 40,
-          ),
+          child: showLottieAnimation
+              ? Lottie.asset(
+                  'assets/lottie/icon_feed.json',
+                )
+              : const Icon(
+                  Puppycat_social.icon_feed,
+                  size: 40,
+                ),
         ),
         const PopupMenuWithReddot(),
         GestureDetector(
@@ -396,10 +418,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       blendMode: BlendMode.srcATop,
                       childSaveLayer: true,
                       mask: Center(
-                        child: Image.asset(
-                          'assets/image/feed/icon/large_size/icon_taguser.png',
-                          height: 22.h,
-                          fit: BoxFit.fill,
+                        child: Icon(
+                          Puppycat_social.icon_profile_small,
+                          size: 22,
+                          color: kNeutralColor400,
                         ),
                       ),
                       child: SvgPicture.asset(
@@ -438,8 +460,56 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           shrinkWrapFirstPageIndicators: true,
           pagingController: _recentFeedListPagingController,
           builderDelegate: PagedChildBuilderDelegate<FeedData>(
+            newPageProgressIndicatorBuilder: (context) {
+              return Column(
+                children: [
+                  Lottie.asset(
+                    'assets/lottie/icon_loading.json',
+                    fit: BoxFit.fill,
+                    width: 80,
+                    height: 80,
+                  ),
+                ],
+              );
+            },
+            firstPageProgressIndicatorBuilder: (context) {
+              return Column(
+                children: [
+                  Lottie.asset(
+                    'assets/lottie/icon_loading.json',
+                    fit: BoxFit.fill,
+                    width: 80,
+                    height: 80,
+                  ),
+                ],
+              );
+            },
             noItemsFoundIndicatorBuilder: (context) {
-              return const SizedBox.shrink();
+              return Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 100.0),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                          width: 88,
+                          height: 88,
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Text(
+                          '등록된 게시물이 없습니다.',
+                          textAlign: TextAlign.center,
+                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
             },
             itemBuilder: (context, item, index) {
               return FeedMainWidget(
@@ -471,6 +541,21 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             noItemsFoundIndicatorBuilder: (context) {
               return const SizedBox.shrink();
             },
+            newPageProgressIndicatorBuilder: (context) {
+              return Container();
+            },
+            firstPageProgressIndicatorBuilder: (context) {
+              return Column(
+                children: [
+                  Lottie.asset(
+                    'assets/lottie/icon_loading.json',
+                    fit: BoxFit.fill,
+                    width: 80,
+                    height: 80,
+                  ),
+                ],
+              );
+            },
             itemBuilder: (context, item, index) {
               return FeedMainWidget(
                 feedData: item,
@@ -492,20 +577,63 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           pagingController: _popularWeekFeedListPagingController,
           builderDelegate: PagedChildBuilderDelegate<FeedData>(
             noItemsFoundIndicatorBuilder: (context) {
-              return const SizedBox.shrink();
+              return Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 100.0),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                          width: 88,
+                          height: 88,
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Text(
+                          '등록된 게시물이 없습니다.',
+                          textAlign: TextAlign.center,
+                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+            newPageProgressIndicatorBuilder: (context) {
+              return Column(
+                children: [
+                  Lottie.asset(
+                    'assets/lottie/icon_loading.json',
+                    fit: BoxFit.fill,
+                    width: 80,
+                    height: 80,
+                  ),
+                ],
+              );
+            },
+            firstPageProgressIndicatorBuilder: (context) {
+              return Container();
             },
             itemBuilder: (context, item, index) {
               return FeedMainWidget(
                 feedData: item,
-                contentType: 'popularWeekContent',
+                // contentType: 'popularWeekContent',
+                contentType: 'userContent',
                 userName: item.memberInfoList![0].nick!,
                 profileImage: item.memberInfoList![0].profileImgUrl! ?? "",
                 memberIdx: ref.read(userModelProvider)?.idx,
-                firstTitle: "null",
-                secondTitle: '인기 급상승',
+                // firstTitle: "null",
+                firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
+                // secondTitle: '인기 급상승',
+                secondTitle: '게시물',
                 imageDomain: ref.read(popularWeekFeedStateProvider.notifier).imgDomain!,
                 index: index,
-                feedType: 'popular',
+                // feedType: 'popular',
+                feedType: 'follow',
               );
             },
           ),
@@ -563,6 +691,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                 : ref.watch(restrainWriteStateProvider).restrain.state == null
                                     ? feedWriteShowBottomSheet(
                                         context: context,
+                                        onClose: () {
+                                          setState(() {
+                                            showLottieAnimation = false;
+                                          });
+                                        },
                                       )
                                     : showDialog(
                                         barrierDismissible: false,
@@ -589,6 +722,30 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                         ),
                       ),
                     ),
+                  ),
+                ],
+              );
+            },
+            newPageProgressIndicatorBuilder: (context) {
+              return Column(
+                children: [
+                  Lottie.asset(
+                    'assets/lottie/icon_loading.json',
+                    fit: BoxFit.fill,
+                    width: 80,
+                    height: 80,
+                  ),
+                ],
+              );
+            },
+            firstPageProgressIndicatorBuilder: (context) {
+              return Column(
+                children: [
+                  Lottie.asset(
+                    'assets/lottie/icon_loading.json',
+                    fit: BoxFit.fill,
+                    width: 80,
+                    height: 80,
                   ),
                 ],
               );
@@ -713,10 +870,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 blendMode: BlendMode.srcATop,
                 childSaveLayer: true,
                 mask: Center(
-                  child: Image.asset(
-                    'assets/image/feed/icon/large_size/icon_taguser.png',
-                    height: 46.h,
-                    fit: BoxFit.fill,
+                  child: Icon(
+                    Puppycat_social.icon_profile_small,
+                    size: 46,
+                    color: kNeutralColor400,
                   ),
                 ),
                 child: SvgPicture.asset(

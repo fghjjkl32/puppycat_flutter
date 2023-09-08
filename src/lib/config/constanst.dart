@@ -1,7 +1,9 @@
+import 'package:app_install_date/app_install_date.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -37,12 +39,19 @@ class Constants {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('thumborDomain') ?? "https://imgs.pcstg.co.kr";
   }
+
+  static Future<String> checkFirstInstall() async {
+    final DateTime date = await AppInstallDate().installDate;
+    return date.toString();
+  }
 }
 
 String baseUrl = "https://api.pcstg.co.kr/v1";
 String thumborHostUrl = "https://tb.pcstg.co.kr/";
 String thumborKey = "Tjaqhvpt";
 String imgDomain = "https://imgs.pcstg.co.kr";
+String firstInstallTime = "";
+String lastestBuildVersion = "";
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
@@ -237,4 +246,22 @@ String? getNickDescription(NickNameStatus nickNameStatus) {
     default:
       return null;
   }
+}
+
+DateTime? currentBackPressTime;
+
+bool onBackPressed() {
+  DateTime now = DateTime.now();
+  if (currentBackPressTime == null || now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
+    currentBackPressTime = now;
+    Fluttertoast.showToast(
+      msg: "한번 더 누르시면 종료됩니다.",
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: kNeutralColor500,
+      fontSize: 14,
+      toastLength: Toast.LENGTH_SHORT,
+    );
+    return false;
+  }
+  return true;
 }

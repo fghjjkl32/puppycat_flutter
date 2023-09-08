@@ -17,36 +17,33 @@ class FeedFollowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // context.push("/home/myPage/detail/아지다멍/게시물");
-      },
-      child: Column(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            height: 205.h,
-            child: ListView.builder(
-              itemCount: popularUserListData.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                return FeedFollowCardWidget(
-                  imageList: popularUserListData[index].contentsList!,
-                  profileImage: popularUserListData[index].profileImgUrl,
-                  userName: popularUserListData[index].nick!,
-                  followCount: popularUserListData[index].followerCnt!,
-                  isSpecialUser: popularUserListData[index].isBadge! == 1,
-                  memberIdx: popularUserListData[index].memberIdx!,
-                  oldMemberIdx: oldMemberIdx,
-                );
-              },
-            ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-        ],
-      ),
-    );
+    return popularUserListData.isEmpty
+        ? Container()
+        : Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                height: 205.h,
+                child: ListView.builder(
+                  itemCount: popularUserListData.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, int index) {
+                    return FeedFollowCardWidget(
+                      imageList: popularUserListData[index].contentsList!,
+                      profileImage: popularUserListData[index].profileImgUrl,
+                      userName: popularUserListData[index].nick!,
+                      followCount: popularUserListData[index].followerCnt!,
+                      isSpecialUser: popularUserListData[index].isBadge! == 1,
+                      memberIdx: popularUserListData[index].memberIdx!,
+                      oldMemberIdx: oldMemberIdx,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+            ],
+          );
   }
 }

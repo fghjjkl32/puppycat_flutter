@@ -24,12 +24,10 @@ class FeedWriteTagSearchScreen extends ConsumerStatefulWidget {
   }) : super(key: key);
 
   @override
-  FeedWriteTagSearchScreenState createState() =>
-      FeedWriteTagSearchScreenState();
+  FeedWriteTagSearchScreenState createState() => FeedWriteTagSearchScreenState();
 }
 
-class FeedWriteTagSearchScreenState
-    extends ConsumerState<FeedWriteTagSearchScreen> {
+class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScreen> {
   ScrollController userScrollController = ScrollController();
   final TextEditingController userSearchController = TextEditingController();
 
@@ -40,31 +38,20 @@ class FeedWriteTagSearchScreenState
     super.initState();
 
     Future(() {
-      ref.watch(feedWriteImageTagSearchProvider.notifier).userMemberIdx =
-          ref.watch(userModelProvider)!.idx;
-      ref
-          .read(feedWriteImageTagSearchProvider.notifier)
-          .initImageTagUserList(ref.watch(userModelProvider)!.idx, 1);
+      ref.watch(feedWriteImageTagSearchProvider.notifier).userMemberIdx = ref.watch(userModelProvider)!.idx;
+      ref.read(feedWriteImageTagSearchProvider.notifier).initImageTagUserList(ref.watch(userModelProvider)!.idx, 1);
     });
 
     userScrollController.addListener(_blockScrollListener);
     userSearchController.addListener(() {
-      ref
-          .watch(feedWriteImageTagSearchProvider.notifier)
-          .userSearchQuery
-          .add(userSearchController.text);
+      ref.watch(feedWriteImageTagSearchProvider.notifier).userSearchQuery.add(userSearchController.text);
     });
   }
 
   void _blockScrollListener() {
-    if (userScrollController.position.pixels >
-        userScrollController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
-      if (userOldLength ==
-          ref.read(feedWriteImageTagSearchProvider).list.length) {
-        ref
-            .read(feedWriteImageTagSearchProvider.notifier)
-            .loadMoreUserList(ref.watch(userModelProvider)!.idx);
+    if (userScrollController.position.pixels > userScrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
+      if (userOldLength == ref.read(feedWriteImageTagSearchProvider).list.length) {
+        ref.read(feedWriteImageTagSearchProvider.notifier).loadMoreUserList(ref.watch(userModelProvider)!.idx);
       }
     }
   }
@@ -96,19 +83,16 @@ class FeedWriteTagSearchScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 12.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                       child: FormBuilderTextField(
                         name: 'search',
                         controller: userSearchController,
-                        style: kBody13RegularStyle.copyWith(
-                            color: kTextSubTitleColor),
+                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: kNeutralColor200,
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 16),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
                             borderRadius: BorderRadius.circular(100.0),
@@ -130,8 +114,7 @@ class FeedWriteTagSearchScreenState
                           ),
                           suffixIcon: userSearchController.text.isEmpty
                               ? const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 8.0),
+                                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                   child: Icon(
                                     Puppycat_social.icon_search_medium,
                                     color: kNeutralColor600,
@@ -142,8 +125,7 @@ class FeedWriteTagSearchScreenState
                                     userSearchController.text = "";
                                   },
                                   child: const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8.0),
+                                    padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                     child: Icon(
                                       Puppycat_social.icon_close_large,
                                       color: kNeutralColor600,
@@ -151,8 +133,7 @@ class FeedWriteTagSearchScreenState
                                   ),
                                 ),
                           hintText: "검색어를 입력해 주세요.",
-                          hintStyle: kBody11RegularStyle.copyWith(
-                              color: kNeutralColor500),
+                          hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
                         ),
                       ),
                     ),
@@ -163,21 +144,17 @@ class FeedWriteTagSearchScreenState
                         ? Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                 child: Text(
                                   "태그하고 싶은 사람을 검색해 보세요!",
-                                  style: kTitle16ExtraBoldStyle.copyWith(
-                                      color: kTextTitleColor),
+                                  style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                 child: Text(
                                   "닉네임 선택 시 선택한 위치에 태그가 표시됩니다.",
-                                  style: kBody12RegularStyle.copyWith(
-                                      color: kTextBodyColor),
+                                  style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                 ),
                               ),
                             ],
@@ -191,22 +168,27 @@ class FeedWriteTagSearchScreenState
                     ),
                     Expanded(
                       child: lists.isEmpty
-                          ? Center(
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    'assets/image/feed_write/image/corgi-2 1.png',
-                                    height: 68.h,
-                                  ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Text(
-                                    "유저를 찾을 수 없습니다.",
-                                    style: kBody12RegularStyle.copyWith(
-                                        color: kTextBodyColor),
-                                  ),
-                                ],
+                          ? Container(
+                              color: kNeutralColor100,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/image/character/character_08_user_notfound_100.png',
+                                      width: 88,
+                                      height: 88,
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Text(
+                                      '유저를 찾을 수 없습니다.',
+                                      textAlign: TextAlign.center,
+                                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                    ),
+                                  ],
+                                ),
                               ),
                             )
                           : ListView.builder(
@@ -215,9 +197,7 @@ class FeedWriteTagSearchScreenState
                               itemBuilder: (context, index) {
                                 return InkWell(
                                   onTap: () {
-                                    ref
-                                        .watch(feedWriteProvider.notifier)
-                                        .addTag(
+                                    ref.watch(feedWriteProvider.notifier).addTag(
                                           Tag(
                                             username: lists[index].nick!,
                                             position: widget.offset,
@@ -233,12 +213,8 @@ class FeedWriteTagSearchScreenState
                                   child: TagUserItemWidget(
                                     profileImage: lists[index].profileImgUrl!,
                                     userName: lists[index].nick!,
-                                    content: lists[index].intro! == ""
-                                        ? "소개글이 없습니다."
-                                        : lists[index].intro!,
-                                    isSpecialUser: lists[index].isBadge == null
-                                        ? false
-                                        : lists[index].isBadge! == 1,
+                                    content: lists[index].intro! == "" ? "소개글이 없습니다." : lists[index].intro!,
+                                    isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
                                   ),
                                 );
                               },

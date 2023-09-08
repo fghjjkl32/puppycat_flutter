@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -20,6 +21,8 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
     super.initState();
     // WidgetsBinding.instance!.addObserver(this);
   }
+
+  bool showLottieAnimation = false;
 
   //
   // @override
@@ -45,8 +48,12 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
+      offset: Offset(0, 40),
       padding: EdgeInsets.zero,
       onSelected: (id) {
+        setState(() {
+          showLottieAnimation = false;
+        });
         if (id == 'notification') {
           ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.go("/home/notification");
         }
@@ -60,6 +67,11 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
           context.push("/home/myPage/setting");
         }
       },
+      onCanceled: () {
+        setState(() {
+          showLottieAnimation = false;
+        });
+      },
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(16.0),
@@ -69,6 +81,12 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
         ),
       ),
       itemBuilder: (context) {
+        Future.delayed(Duration.zero, () {
+          setState(() {
+            showLottieAnimation = true;
+          });
+        });
+
         final list = <PopupMenuEntry>[];
         list.add(
           diaryPopUpMenuItem(
@@ -129,10 +147,14 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
       },
       child: Stack(
         children: [
-          const Icon(
-            Puppycat_social.icon_more_header,
-            size: 40,
-          ),
+          showLottieAnimation
+              ? Lottie.asset(
+                  'assets/lottie/icon_more_header.json',
+                )
+              : const Icon(
+                  Puppycat_social.icon_more_header,
+                  size: 40,
+                ),
           Visibility(
             visible: ref.watch(newNotificationStateProvider),
             child: const Positioned(

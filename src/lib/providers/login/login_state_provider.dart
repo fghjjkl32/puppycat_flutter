@@ -94,6 +94,7 @@ class LoginState extends _$LoginState {
             phone: next.phone ?? userModel.phone,
             introText: next.intro,
             profileImgUrl: next.profileImgUrl,
+            isBadge: next.isBadge ?? 0,
             // password: '2809229088121356223',
           ));
 

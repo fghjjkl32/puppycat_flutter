@@ -285,7 +285,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                                         height: 8.h,
                                                                       ),
                                                                       Text(
-                                                                        " ‘${name}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 친구 관리] 에서\n언제든지 해제할 수 있습니다.",
+                                                                        " ‘${name}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
                                                                         style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                                                         textAlign: TextAlign.center,
                                                                       ),

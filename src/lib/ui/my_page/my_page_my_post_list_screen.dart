@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,8 +21,7 @@ class MyPageMyPostListScreen extends ConsumerStatefulWidget {
   MyPageMyPostListScreenState createState() => MyPageMyPostListScreenState();
 }
 
-class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
-    with SingleTickerProviderStateMixin {
+class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> with SingleTickerProviderStateMixin {
   late TabController tabController;
   ScrollController myPostContentController = ScrollController();
   ScrollController myKeepContentController = ScrollController();
@@ -40,12 +40,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
       vsync: this,
     );
 
-    ref
-        .read(myPostStateProvider.notifier)
-        .initMyPosts(ref.read(userModelProvider)!.idx, 1);
-    ref
-        .read(myPostStateProvider.notifier)
-        .initMyKeeps(ref.read(userModelProvider)!.idx, 1);
+    ref.read(myPostStateProvider.notifier).initMyPosts(ref.read(userModelProvider)!.idx, 1);
+    ref.read(myPostStateProvider.notifier).initMyKeeps(ref.read(userModelProvider)!.idx, 1);
 
     Future(() {
       ref.watch(myPostStateProvider.notifier).resetMyPostSelection();
@@ -56,27 +52,17 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
   }
 
   void _myPostContentsScrollListener() {
-    if (myPostContentController.position.pixels >
-        myPostContentController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
-      if (myPostOldLength ==
-          ref.read(myPostStateProvider).myPostState.list.length) {
-        ref
-            .read(myPostStateProvider.notifier)
-            .loadMoreMyPost(ref.read(userModelProvider)!.idx);
+    if (myPostContentController.position.pixels > myPostContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
+      if (myPostOldLength == ref.read(myPostStateProvider).myPostState.list.length) {
+        ref.read(myPostStateProvider.notifier).loadMoreMyPost(ref.read(userModelProvider)!.idx);
       }
     }
   }
 
   void _myKeepContentsScrollListener() {
-    if (myKeepContentController.position.pixels >
-        myKeepContentController.position.maxScrollExtent -
-            MediaQuery.of(context).size.height) {
-      if (myKeepOldLength ==
-          ref.read(myPostStateProvider).myKeepState.list.length) {
-        ref
-            .read(myPostStateProvider.notifier)
-            .loadMoreMyKeeps(ref.read(userModelProvider)!.idx);
+    if (myKeepContentController.position.pixels > myKeepContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
+      if (myKeepOldLength == ref.read(myPostStateProvider).myKeepState.list.length) {
+        ref.read(myPostStateProvider.notifier).loadMoreMyKeeps(ref.read(userModelProvider)!.idx);
       }
     }
   }
@@ -142,8 +128,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                           ),
                           Text(
                             "${ref.watch(myPostStateProvider).myPostState.totalCount}",
-                            style: kBadge10MediumStyle.copyWith(
-                                color: kTextBodyColor),
+                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                           ),
                         ],
                       );
@@ -161,8 +146,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
                           ),
                           Text(
                             "${ref.watch(myPostStateProvider).myKeepState.totalCount}",
-                            style: kBadge10MediumStyle.copyWith(
-                                color: kTextBodyColor),
+                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                           ),
                         ],
                       );
@@ -195,474 +179,426 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
 
         myPostOldLength = lists.length ?? 0;
 
-        return Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
-              child: GridView.builder(
-                controller: myPostContentController,
-                gridDelegate: SliverQuiltedGridDelegate(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                  repeatPattern: QuiltedGridRepeatPattern.same,
-                  pattern: [
-                    const QuiltedGridTile(2, 2),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(2, 2),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                  ],
-                ),
-                itemCount: lists.length + 1,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == lists.length) {
-                    if (isLoadMoreError) {
-                      return const Center(
-                        child: Text('Error'),
-                      );
-                    }
-                    if (isLoadMoreDone) {
-                      return Container();
-                    }
-                    return Container();
-                  }
-
-                  return GestureDetector(
-                    onTap: () {
-                      context.push(
-                          "/home/myPage/detail/null/일상글 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myDetailContent");
-                    },
-                    child: Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: (index == 0)
-                                ? const BorderRadius.only(
-                                    topLeft: Radius.circular(10))
-                                : index == 1
-                                    ? const BorderRadius.only(
-                                        topRight: Radius.circular(10))
-                                    : BorderRadius.circular(0),
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                  Thumbor(host: thumborHostUrl, key: thumborKey)
-                                      .buildImage(
-                                          "$imgDomain${lists[index].imgUrl}")
-                                      .toUrl(),
-                                ),
-                                fit: BoxFit.cover),
-                          ),
-                        ),
-                        Positioned(
-                          right: 4.w,
-                          top: 4.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                            width: 18.w,
-                            height: 14.w,
-                            child: Center(
-                              child: Text(
-                                '${lists[index].imageCnt}',
-                                style: kBadge9RegularStyle.copyWith(
-                                    color: kNeutralColor100),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            child: Align(
-                              alignment: AlignmentDirectional.topStart,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () => myPageMyPostController
-                                    .updateMyPostNumber(index),
-                                child: AnimatedContainer(
-                                  duration:
-                                      const Duration(milliseconds: 300) * 0.75,
-                                  width: 20,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    border: myPageMyPostState.myPostState
-                                                .selectOrder[index] !=
-                                            -1
-                                        ? Border.all(
-                                            color:
-                                                kPrimaryColor.withOpacity(0.7),
-                                            width: 2.w)
-                                        : Border.all(
-                                            color: kNeutralColor100
-                                                .withOpacity(0.7),
-                                            width: 2.w),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: myPageMyPostState.myPostState
-                                                  .selectOrder[index] !=
-                                              -1
-                                          ? kPrimaryColor
-                                          : kNeutralColor100,
-                                    ),
-                                    child: FittedBox(
-                                      child: AnimatedSwitcher(
-                                        duration:
-                                            const Duration(milliseconds: 300) *
-                                                0.75,
-                                        reverseDuration:
-                                            const Duration(milliseconds: 300) *
-                                                0.75,
-                                        child: myPageMyPostState.myPostState
-                                                    .selectOrder[index] !=
-                                                -1
-                                            ? Center(
-                                                child: Text(
-                                                  (myPageMyPostState.myPostState
-                                                          .selectOrder[index])
-                                                      .toString(),
-                                                  style: kBadge10MediumStyle
-                                                      .copyWith(
-                                                          color:
-                                                              kNeutralColor100),
-                                                ),
-                                              )
-                                            : const SizedBox.shrink(),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              left: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: <Color>[
-                      kNeutralColor100.withOpacity(0.0),
-                      kNeutralColor100.withOpacity(0.7),
-                      kNeutralColor100.withOpacity(1.0),
-                      kNeutralColor100.withOpacity(1.0),
-                      kNeutralColor100.withOpacity(1.0),
-                    ],
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
+        return lists.isEmpty
+            ? Container(
+                color: kNeutralColor100,
+                child: Center(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        child: Container(
-                          width: 152.w,
-                          height: 36.h,
-                          decoration: BoxDecoration(
-                            color:
-                                myPageMyPostController.hasMyPostSelectedImage()
-                                    ? kPrimaryLightColor
-                                    : kNeutralColor400,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(8.0),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '보관하기',
-                              style: kButton14BoldStyle.copyWith(
-                                color: myPageMyPostController
-                                        .hasMyPostSelectedImage()
-                                    ? kPrimaryColor
-                                    : kTextBodyColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          myPageMyPostController.hasMyPostSelectedImage()
-                              ? showCustomModalBottomSheet(
-                                  context: context,
-                                  widget: Column(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 20.h, bottom: 10.h),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "게시물을 보관하시겠어요?",
-                                              style: kBody16BoldStyle.copyWith(
-                                                  color: kTextTitleColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Text(
-                                        "보관된 게시물은 언제든지 프로필에",
-                                        style: kBody12RegularStyle.copyWith(
-                                            color: kTextBodyColor),
-                                      ),
-                                      Text(
-                                        "다시 표시 가능합니다.",
-                                        style: kBody12RegularStyle.copyWith(
-                                            color: kTextBodyColor),
-                                      ),
-                                      SizedBox(height: 20.h),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              context.pop();
-                                            },
-                                            child: Container(
-                                              width: 152.w,
-                                              height: 36.h,
-                                              decoration: const BoxDecoration(
-                                                color: kPrimaryLightColor,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(8.0),
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  "취소",
-                                                  style: kButton14BoldStyle
-                                                      .copyWith(
-                                                          color: kPrimaryColor),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 8.w,
-                                          ),
-                                          GestureDetector(
-                                            onTap: () async {
-                                              context.pop();
-
-                                              final result =
-                                                  await myPageMyPostController
-                                                      .postKeepContents(
-                                                memberIdx: ref
-                                                    .read(userModelProvider)!
-                                                    .idx,
-                                                idxList: myPageMyPostController
-                                                    .getSelectedMyPostImageIdx(),
-                                              );
-
-                                              if (result.result) {
-                                                toast(
-                                                  context: context,
-                                                  text: '게시물 보관이 완료되었습니다.',
-                                                  type: ToastType.purple,
-                                                );
-                                              }
-                                            },
-                                            child: Container(
-                                              width: 152.w,
-                                              height: 36.h,
-                                              decoration: const BoxDecoration(
-                                                color: kPrimaryColor,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(8.0),
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  "보관",
-                                                  style: kButton14BoldStyle
-                                                      .copyWith(
-                                                          color:
-                                                              kNeutralColor100),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                )
-                              : null;
-                        },
+                      Image.asset(
+                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                        width: 88,
+                        height: 88,
                       ),
-                      SizedBox(
-                        width: 10.w,
+                      const SizedBox(
+                        height: 12,
                       ),
-                      GestureDetector(
-                        child: Container(
-                          width: 152.w,
-                          height: 36.h,
-                          decoration: BoxDecoration(
-                            color:
-                                myPageMyPostController.hasMyPostSelectedImage()
-                                    ? kBadgeColor
-                                    : kNeutralColor400,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(8.0),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '삭제하기',
-                              style: kButton14BoldStyle.copyWith(
-                                color: myPageMyPostController
-                                        .hasMyPostSelectedImage()
-                                    ? kNeutralColor100
-                                    : kTextBodyColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          myPageMyPostController.hasMyPostSelectedImage()
-                              ? showCustomModalBottomSheet(
-                                  context: context,
-                                  widget: Column(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 20.h, bottom: 10.h),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "게시물을 삭제하시겠어요?",
-                                              style: kBody16BoldStyle.copyWith(
-                                                  color: kTextTitleColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Text(
-                                        "삭제한 게시물은",
-                                        style: kBody12RegularStyle.copyWith(
-                                            color: kTextBodyColor),
-                                      ),
-                                      Text(
-                                        "복구할 수 없습니다.",
-                                        style: kBody12RegularStyle.copyWith(
-                                            color: kTextBodyColor),
-                                      ),
-                                      SizedBox(height: 20.h),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              context.pop();
-                                            },
-                                            child: Container(
-                                              width: 152.w,
-                                              height: 36.h,
-                                              decoration: const BoxDecoration(
-                                                color: kPrimaryLightColor,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(8.0),
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  "취소",
-                                                  style: kButton14BoldStyle
-                                                      .copyWith(
-                                                          color: kPrimaryColor),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 8.w,
-                                          ),
-                                          GestureDetector(
-                                            onTap: () async {
-                                              context.pop();
-
-                                              final result =
-                                                  await myPageMyPostController
-                                                      .deleteContents(
-                                                memberIdx: ref
-                                                    .read(userModelProvider)!
-                                                    .idx,
-                                                idx: myPageMyPostController
-                                                    .getSelectedImageIndices(
-                                                        isKeepSelect: false),
-                                              );
-
-                                              if (result.result) {
-                                                toast(
-                                                  context: context,
-                                                  text: '게시물 삭제가 완료되었습니다.',
-                                                  type: ToastType.purple,
-                                                );
-                                              }
-                                            },
-                                            child: Container(
-                                              width: 152.w,
-                                              height: 36.h,
-                                              decoration: const BoxDecoration(
-                                                color: kBadgeColor,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(8.0),
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  "삭제",
-                                                  style: kButton14BoldStyle
-                                                      .copyWith(
-                                                          color:
-                                                              kNeutralColor100),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                )
-                              : null;
-                        },
+                      Text(
+                        '게시물이 없습니다.',
+                        textAlign: TextAlign.center,
+                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ),
-          ],
-        );
+              )
+            : Stack(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
+                    child: GridView.builder(
+                      controller: myPostContentController,
+                      gridDelegate: SliverQuiltedGridDelegate(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 4,
+                        crossAxisSpacing: 4,
+                        repeatPattern: QuiltedGridRepeatPattern.same,
+                        pattern: [
+                          const QuiltedGridTile(2, 2),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(2, 2),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                        ],
+                      ),
+                      itemCount: lists.length + 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == lists.length) {
+                          if (isLoadMoreError) {
+                            return const Center(
+                              child: Text('Error'),
+                            );
+                          }
+                          if (isLoadMoreDone) {
+                            return Container();
+                          }
+                          return Container();
+                        }
+
+                        return GestureDetector(
+                          onTap: () {
+                            context.push("/home/myPage/detail/null/일상글 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myDetailContent");
+                          },
+                          child: Stack(
+                            children: [
+                              CachedNetworkImage(
+                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                imageBuilder: (context, imageProvider) => Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: (index == 0)
+                                        ? const BorderRadius.only(topLeft: Radius.circular(10))
+                                        : index == 1
+                                            ? const BorderRadius.only(topRight: Radius.circular(10))
+                                            : BorderRadius.circular(0),
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                placeholder: (context, url) => Container(
+                                  color: kNeutralColor300,
+                                ),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
+                              ),
+                              Positioned(
+                                right: 4.w,
+                                top: 4.w,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff414348).withOpacity(0.75),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  width: 18.w,
+                                  height: 14.w,
+                                  child: Center(
+                                    child: Text(
+                                      '${lists[index].imageCnt}',
+                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Align(
+                                    alignment: AlignmentDirectional.topStart,
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () => myPageMyPostController.updateMyPostNumber(index),
+                                      child: AnimatedContainer(
+                                        duration: const Duration(milliseconds: 300) * 0.75,
+                                        width: 20,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          border: myPageMyPostState.myPostState.selectOrder[index] != -1
+                                              ? Border.all(color: kPrimaryColor.withOpacity(0.7), width: 2.w)
+                                              : Border.all(color: kNeutralColor100.withOpacity(0.7), width: 2.w),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: myPageMyPostState.myPostState.selectOrder[index] != -1 ? kPrimaryColor : kNeutralColor100,
+                                          ),
+                                          child: FittedBox(
+                                            child: AnimatedSwitcher(
+                                              duration: const Duration(milliseconds: 300) * 0.75,
+                                              reverseDuration: const Duration(milliseconds: 300) * 0.75,
+                                              child: myPageMyPostState.myPostState.selectOrder[index] != -1
+                                                  ? Center(
+                                                      child: Text(
+                                                        (myPageMyPostState.myPostState.selectOrder[index]).toString(),
+                                                        style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                                                      ),
+                                                    )
+                                                  : const SizedBox.shrink(),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[
+                            kNeutralColor100.withOpacity(0.0),
+                            kNeutralColor100.withOpacity(0.7),
+                            kNeutralColor100.withOpacity(1.0),
+                            kNeutralColor100.withOpacity(1.0),
+                            kNeutralColor100.withOpacity(1.0),
+                          ],
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              child: Container(
+                                width: 152.w,
+                                height: 36.h,
+                                decoration: BoxDecoration(
+                                  color: myPageMyPostController.hasMyPostSelectedImage() ? kPrimaryLightColor : kNeutralColor400,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(8.0),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '보관하기',
+                                    style: kButton14BoldStyle.copyWith(
+                                      color: myPageMyPostController.hasMyPostSelectedImage() ? kPrimaryColor : kTextBodyColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                myPageMyPostController.hasMyPostSelectedImage()
+                                    ? showCustomModalBottomSheet(
+                                        context: context,
+                                        widget: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "게시물을 보관하시겠어요?",
+                                                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Text(
+                                              "보관된 게시물은 언제든지 프로필에",
+                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                            ),
+                                            Text(
+                                              "다시 표시 가능합니다.",
+                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                            ),
+                                            SizedBox(height: 20.h),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    context.pop();
+                                                  },
+                                                  child: Container(
+                                                    width: 152.w,
+                                                    height: 36.h,
+                                                    decoration: const BoxDecoration(
+                                                      color: kPrimaryLightColor,
+                                                      borderRadius: BorderRadius.all(
+                                                        Radius.circular(8.0),
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "취소",
+                                                        style: kButton14BoldStyle.copyWith(color: kPrimaryColor),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 8.w,
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () async {
+                                                    context.pop();
+
+                                                    final result = await myPageMyPostController.postKeepContents(
+                                                      memberIdx: ref.read(userModelProvider)!.idx,
+                                                      idxList: myPageMyPostController.getSelectedMyPostImageIdx(),
+                                                    );
+
+                                                    if (result.result) {
+                                                      toast(
+                                                        context: context,
+                                                        text: '게시물 보관이 완료되었습니다.',
+                                                        type: ToastType.purple,
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    width: 152.w,
+                                                    height: 36.h,
+                                                    decoration: const BoxDecoration(
+                                                      color: kPrimaryColor,
+                                                      borderRadius: BorderRadius.all(
+                                                        Radius.circular(8.0),
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "보관",
+                                                        style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    : null;
+                              },
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            GestureDetector(
+                              child: Container(
+                                width: 152.w,
+                                height: 36.h,
+                                decoration: BoxDecoration(
+                                  color: myPageMyPostController.hasMyPostSelectedImage() ? kBadgeColor : kNeutralColor400,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(8.0),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '삭제하기',
+                                    style: kButton14BoldStyle.copyWith(
+                                      color: myPageMyPostController.hasMyPostSelectedImage() ? kNeutralColor100 : kTextBodyColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                myPageMyPostController.hasMyPostSelectedImage()
+                                    ? showCustomModalBottomSheet(
+                                        context: context,
+                                        widget: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "게시물을 삭제하시겠어요?",
+                                                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Text(
+                                              "삭제한 게시물은",
+                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                            ),
+                                            Text(
+                                              "복구할 수 없습니다.",
+                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                            ),
+                                            SizedBox(height: 20.h),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    context.pop();
+                                                  },
+                                                  child: Container(
+                                                    width: 152.w,
+                                                    height: 36.h,
+                                                    decoration: const BoxDecoration(
+                                                      color: kPrimaryLightColor,
+                                                      borderRadius: BorderRadius.all(
+                                                        Radius.circular(8.0),
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "취소",
+                                                        style: kButton14BoldStyle.copyWith(color: kPrimaryColor),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 8.w,
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () async {
+                                                    context.pop();
+
+                                                    final result = await myPageMyPostController.deleteContents(
+                                                      memberIdx: ref.read(userModelProvider)!.idx,
+                                                      idx: myPageMyPostController.getSelectedImageIndices(isKeepSelect: false),
+                                                    );
+
+                                                    if (result.result) {
+                                                      toast(
+                                                        context: context,
+                                                        text: '게시물 삭제가 완료되었습니다.',
+                                                        type: ToastType.purple,
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    width: 152.w,
+                                                    height: 36.h,
+                                                    decoration: const BoxDecoration(
+                                                      color: kBadgeColor,
+                                                      borderRadius: BorderRadius.all(
+                                                        Radius.circular(8.0),
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "삭제",
+                                                        style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    : null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
       },
     );
   }
@@ -703,374 +639,344 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen>
 
         myKeepOldLength = lists.length ?? 0;
 
-        return Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
-              child: GridView.builder(
-                controller: myKeepContentController,
-                gridDelegate: SliverQuiltedGridDelegate(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                  repeatPattern: QuiltedGridRepeatPattern.same,
-                  pattern: [
-                    const QuiltedGridTile(2, 2),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(2, 2),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                    const QuiltedGridTile(1, 1),
-                  ],
-                ),
-                itemCount: lists.length + 1,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == lists.length) {
-                    if (isLoadMoreError) {
-                      return const Center(
-                        child: Text('Error'),
-                      );
-                    }
-                    if (isLoadMoreDone) {
-                      return Container();
-                    }
-                    return Container();
-                  }
-                  return GestureDetector(
-                    onTap: () {
-                      context.push(
-                          "/home/myPage/detail/null/보관한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myKeepContent");
-                    },
-                    child: Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: (index == 0)
-                                ? const BorderRadius.only(
-                                    topLeft: Radius.circular(10))
-                                : index == 1
-                                    ? const BorderRadius.only(
-                                        topRight: Radius.circular(10))
-                                    : BorderRadius.circular(0),
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                  Thumbor(host: thumborHostUrl, key: thumborKey)
-                                      .buildImage(
-                                          "$imgDomain${lists[index].imgUrl}")
-                                      .toUrl(),
-                                ),
-                                fit: BoxFit.cover),
-                          ),
-                        ),
-                        Positioned(
-                          right: 4.w,
-                          top: 4.w,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xff414348).withOpacity(0.75),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                            width: 18.w,
-                            height: 14.w,
-                            child: Center(
-                              child: Text(
-                                "${lists[index].imageCnt}",
-                                style: kBadge9RegularStyle.copyWith(
-                                    color: kNeutralColor100),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            child: Align(
-                              alignment: AlignmentDirectional.topStart,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () =>
-                                    myKeepController.updateMyKeepNumber(index),
-                                child: AnimatedContainer(
-                                  duration:
-                                      const Duration(milliseconds: 300) * 0.75,
-                                  width: 20,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    border: myKeepState.myKeepState
-                                                .selectOrder[index] !=
-                                            -1
-                                        ? Border.all(
-                                            color:
-                                                kPrimaryColor.withOpacity(0.7),
-                                            width: 2.w)
-                                        : Border.all(
-                                            color: kNeutralColor100
-                                                .withOpacity(0.7),
-                                            width: 2.w),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: myKeepState.myKeepState
-                                                  .selectOrder[index] !=
-                                              -1
-                                          ? kPrimaryColor
-                                          : kNeutralColor100,
-                                    ),
-                                    child: FittedBox(
-                                      child: AnimatedSwitcher(
-                                        duration:
-                                            const Duration(milliseconds: 300) *
-                                                0.75,
-                                        reverseDuration:
-                                            const Duration(milliseconds: 300) *
-                                                0.75,
-                                        child: myKeepState.myKeepState
-                                                    .selectOrder[index] !=
-                                                -1
-                                            ? Center(
-                                                child: Text(
-                                                  (myKeepState.myKeepState
-                                                          .selectOrder[index])
-                                                      .toString(),
-                                                  style: kBadge10MediumStyle
-                                                      .copyWith(
-                                                          color:
-                                                              kNeutralColor100),
-                                                ),
-                                              )
-                                            : const SizedBox.shrink(),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              left: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: <Color>[
-                      kNeutralColor100.withOpacity(0.0),
-                      kNeutralColor100.withOpacity(0.7),
-                      kNeutralColor100.withOpacity(1.0),
-                      kNeutralColor100.withOpacity(1.0),
-                      kNeutralColor100.withOpacity(1.0),
-                    ],
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
+        return lists.isEmpty
+            ? Container(
+                color: kNeutralColor100,
+                child: Center(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        child: Container(
-                          width: 152.w,
-                          height: 36.h,
-                          decoration: BoxDecoration(
-                            color: myKeepController.hasMyKeepSelectedImage()
-                                ? kPrimaryLightColor
-                                : kNeutralColor400,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(8.0),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '프로필 표시',
-                              style: kButton14BoldStyle.copyWith(
-                                color: myKeepController.hasMyKeepSelectedImage()
-                                    ? kPrimaryColor
-                                    : kTextBodyColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        onTap: () async {
-                          final result =
-                              await myKeepController.deleteKeepContents(
-                            memberIdx: ref.read(userModelProvider)!.idx,
-                            idx: myKeepController.getSelectedImageIndices(
-                                isKeepSelect: true),
-                          );
-
-                          if (result.result) {
-                            toast(
-                              context: context,
-                              text: '프로필 표시가 완료되었습니다.',
-                              type: ToastType.purple,
-                            );
-                          }
-                        },
+                      Image.asset(
+                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                        width: 88,
+                        height: 88,
                       ),
-                      SizedBox(
-                        width: 10.w,
+                      const SizedBox(
+                        height: 12,
                       ),
-                      GestureDetector(
-                        child: Container(
-                          width: 152.w,
-                          height: 36.h,
-                          decoration: BoxDecoration(
-                            color: myKeepController.hasMyKeepSelectedImage()
-                                ? kBadgeColor
-                                : kNeutralColor400,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(8.0),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '삭제하기',
-                              style: kButton14BoldStyle.copyWith(
-                                color: myKeepController.hasMyKeepSelectedImage()
-                                    ? kNeutralColor100
-                                    : kTextBodyColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          myKeepController.hasMyKeepSelectedImage()
-                              ? showCustomModalBottomSheet(
-                                  context: context,
-                                  widget: Column(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 20.h, bottom: 10.h),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "게시물을 삭제하시겠어요?",
-                                              style: kBody16BoldStyle.copyWith(
-                                                  color: kTextTitleColor),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Text(
-                                        "삭제한 게시물은",
-                                        style: kBody12RegularStyle.copyWith(
-                                            color: kTextBodyColor),
-                                      ),
-                                      Text(
-                                        "복구할 수 없습니다.",
-                                        style: kBody12RegularStyle.copyWith(
-                                            color: kTextBodyColor),
-                                      ),
-                                      SizedBox(height: 20.h),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              context.pop();
-                                            },
-                                            child: Container(
-                                              width: 152.w,
-                                              height: 36.h,
-                                              decoration: const BoxDecoration(
-                                                color: kPrimaryLightColor,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(8.0),
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  "취소",
-                                                  style: kButton14BoldStyle
-                                                      .copyWith(
-                                                          color: kPrimaryColor),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 8.w,
-                                          ),
-                                          GestureDetector(
-                                            onTap: () async {
-                                              context.pop();
-
-                                              final result =
-                                                  await myKeepController
-                                                      .deleteContents(
-                                                memberIdx: ref
-                                                    .read(userModelProvider)!
-                                                    .idx,
-                                                idx: myKeepController
-                                                    .getSelectedImageIndices(
-                                                        isKeepSelect: true),
-                                              );
-
-                                              if (result.result) {
-                                                toast(
-                                                  context: context,
-                                                  text: '게시물 삭제가 완료되었습니다.',
-                                                  type: ToastType.purple,
-                                                );
-                                              }
-                                            },
-                                            child: Container(
-                                              width: 152.w,
-                                              height: 36.h,
-                                              decoration: const BoxDecoration(
-                                                color: kBadgeColor,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(8.0),
-                                                ),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  "삭제",
-                                                  style: kButton14BoldStyle
-                                                      .copyWith(
-                                                          color:
-                                                              kNeutralColor100),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                )
-                              : null;
-                        },
+                      Text(
+                        '게시물이 없습니다.\n보관한 게시물이 여기에 표시됩니다.',
+                        textAlign: TextAlign.center,
+                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ),
-          ],
-        );
+              )
+            : Stack(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
+                    child: GridView.builder(
+                      controller: myKeepContentController,
+                      gridDelegate: SliverQuiltedGridDelegate(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 4,
+                        crossAxisSpacing: 4,
+                        repeatPattern: QuiltedGridRepeatPattern.same,
+                        pattern: [
+                          const QuiltedGridTile(2, 2),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(2, 2),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                          const QuiltedGridTile(1, 1),
+                        ],
+                      ),
+                      itemCount: lists.length + 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == lists.length) {
+                          if (isLoadMoreError) {
+                            return const Center(
+                              child: Text('Error'),
+                            );
+                          }
+                          if (isLoadMoreDone) {
+                            return Container();
+                          }
+                          return Container();
+                        }
+                        return GestureDetector(
+                          onTap: () {
+                            context.push("/home/myPage/detail/null/보관한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myKeepContent");
+                          },
+                          child: Stack(
+                            children: [
+                              CachedNetworkImage(
+                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                imageBuilder: (context, imageProvider) => Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: (index == 0)
+                                        ? const BorderRadius.only(topLeft: Radius.circular(10))
+                                        : index == 1
+                                            ? const BorderRadius.only(topRight: Radius.circular(10))
+                                            : BorderRadius.circular(0),
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                placeholder: (context, url) => Container(
+                                  color: kNeutralColor300,
+                                ),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
+                              ),
+                              Positioned(
+                                right: 4.w,
+                                top: 4.w,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff414348).withOpacity(0.75),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  width: 18.w,
+                                  height: 14.w,
+                                  child: Center(
+                                    child: Text(
+                                      "${lists[index].imageCnt}",
+                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned.fill(
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Align(
+                                    alignment: AlignmentDirectional.topStart,
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () => myKeepController.updateMyKeepNumber(index),
+                                      child: AnimatedContainer(
+                                        duration: const Duration(milliseconds: 300) * 0.75,
+                                        width: 20,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          border: myKeepState.myKeepState.selectOrder[index] != -1
+                                              ? Border.all(color: kPrimaryColor.withOpacity(0.7), width: 2.w)
+                                              : Border.all(color: kNeutralColor100.withOpacity(0.7), width: 2.w),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: myKeepState.myKeepState.selectOrder[index] != -1 ? kPrimaryColor : kNeutralColor100,
+                                          ),
+                                          child: FittedBox(
+                                            child: AnimatedSwitcher(
+                                              duration: const Duration(milliseconds: 300) * 0.75,
+                                              reverseDuration: const Duration(milliseconds: 300) * 0.75,
+                                              child: myKeepState.myKeepState.selectOrder[index] != -1
+                                                  ? Center(
+                                                      child: Text(
+                                                        (myKeepState.myKeepState.selectOrder[index]).toString(),
+                                                        style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                                                      ),
+                                                    )
+                                                  : const SizedBox.shrink(),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[
+                            kNeutralColor100.withOpacity(0.0),
+                            kNeutralColor100.withOpacity(0.7),
+                            kNeutralColor100.withOpacity(1.0),
+                            kNeutralColor100.withOpacity(1.0),
+                            kNeutralColor100.withOpacity(1.0),
+                          ],
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              child: Container(
+                                width: 152.w,
+                                height: 36.h,
+                                decoration: BoxDecoration(
+                                  color: myKeepController.hasMyKeepSelectedImage() ? kPrimaryLightColor : kNeutralColor400,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(8.0),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '프로필 표시',
+                                    style: kButton14BoldStyle.copyWith(
+                                      color: myKeepController.hasMyKeepSelectedImage() ? kPrimaryColor : kTextBodyColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              onTap: () async {
+                                final result = await myKeepController.deleteKeepContents(
+                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
+                                );
+
+                                if (result.result) {
+                                  toast(
+                                    context: context,
+                                    text: '프로필 표시가 완료되었습니다.',
+                                    type: ToastType.purple,
+                                  );
+                                }
+                              },
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            GestureDetector(
+                              child: Container(
+                                width: 152.w,
+                                height: 36.h,
+                                decoration: BoxDecoration(
+                                  color: myKeepController.hasMyKeepSelectedImage() ? kBadgeColor : kNeutralColor400,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(8.0),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '삭제하기',
+                                    style: kButton14BoldStyle.copyWith(
+                                      color: myKeepController.hasMyKeepSelectedImage() ? kNeutralColor100 : kTextBodyColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              onTap: () {
+                                myKeepController.hasMyKeepSelectedImage()
+                                    ? showCustomModalBottomSheet(
+                                        context: context,
+                                        widget: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "게시물을 삭제하시겠어요?",
+                                                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Text(
+                                              "삭제한 게시물은",
+                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                            ),
+                                            Text(
+                                              "복구할 수 없습니다.",
+                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                            ),
+                                            SizedBox(height: 20.h),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    context.pop();
+                                                  },
+                                                  child: Container(
+                                                    width: 152.w,
+                                                    height: 36.h,
+                                                    decoration: const BoxDecoration(
+                                                      color: kPrimaryLightColor,
+                                                      borderRadius: BorderRadius.all(
+                                                        Radius.circular(8.0),
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "취소",
+                                                        style: kButton14BoldStyle.copyWith(color: kPrimaryColor),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 8.w,
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () async {
+                                                    context.pop();
+
+                                                    final result = await myKeepController.deleteContents(
+                                                      memberIdx: ref.read(userModelProvider)!.idx,
+                                                      idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
+                                                    );
+
+                                                    if (result.result) {
+                                                      toast(
+                                                        context: context,
+                                                        text: '게시물 삭제가 완료되었습니다.',
+                                                        type: ToastType.purple,
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    width: 152.w,
+                                                    height: 36.h,
+                                                    decoration: const BoxDecoration(
+                                                      color: kBadgeColor,
+                                                      borderRadius: BorderRadius.all(
+                                                        Radius.circular(8.0),
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "삭제",
+                                                        style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    : null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
       },
     );
   }
