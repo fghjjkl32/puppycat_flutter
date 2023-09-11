@@ -165,134 +165,105 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 ),
               ),
         body: SafeArea(
-          child: RefreshIndicator(
-            onRefresh: () {
-              return Future(() {
-                final loginState = ref.watch(loginStateProvider);
-
-                _recentFeedListPagingController.refresh();
-
-                ref.read(popularUserListStateProvider.notifier).getInitUserList(
-                      ref.read(userModelProvider)?.idx,
-                    );
-
-                ref.read(popularHourFeedStateProvider.notifier).initPosts(
-                      loginMemberIdx: ref.read(userModelProvider)?.idx,
-                    );
-
-                scrollController.addListener(_myPostScrollListener);
-
-                if (loginState == LoginStatus.success) {
-                  _myFeedListPagingController.refresh();
-
-                  _popularWeekFeedListPagingController.refresh();
-
-                  _followFeedListPagingController.refresh();
-
-                  ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userModelProvider)!.idx);
-                }
-              });
-            },
-            child: Consumer(builder: (context, ref, _) {
-              return DefaultTabController(
-                length: loginState == LoginStatus.success ? 4 : 2,
-                child: NestedScrollView(
-                  controller: scrollController,
-                  headerSliverBuilder: (context, innerBoxIsScrolled) {
-                    return [
-                      isBigDevice
-                          ? SliverAppBar(
-                              pinned: true,
-                              snap: false,
-                              floating: true,
-                              expandedHeight: 220.0,
-                              centerTitle: false,
-                              leading: null,
-                              titleSpacing: 0,
-                              backgroundColor: kNeutralColor100,
-                              automaticallyImplyLeading: false,
-                              title: Row(
-                                children: [
-                                  const Spacer(),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4.0),
-                                    child: _buttonWidget(),
-                                  ),
-                                ],
-                              ),
-                              flexibleSpace: FlexibleSpaceBar(
-                                titlePadding: EdgeInsets.zero,
-                                expandedTitleScale: 1.0,
-                                centerTitle: false,
-                                collapseMode: CollapseMode.pin,
-                                title: _buildTabbar(innerBoxIsScrolled),
-                                background: Container(
-                                  color: kNeutralColor100,
-                                  child: Stack(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          top: 16.0.h,
-                                          left: 10.w,
-                                        ),
-                                        child: Text(
-                                          "PUPPYCAT",
-                                          style: kTitle18BoldStyle,
-                                        ),
-                                      ),
-                                      _buildBackGround(),
-                                    ],
-                                  ),
+          child: Consumer(builder: (context, ref, _) {
+            return DefaultTabController(
+              length: loginState == LoginStatus.success ? 4 : 2,
+              child: NestedScrollView(
+                controller: scrollController,
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    isBigDevice
+                        ? SliverAppBar(
+                            pinned: true,
+                            snap: false,
+                            floating: true,
+                            expandedHeight: 220.0,
+                            centerTitle: false,
+                            leading: null,
+                            titleSpacing: 0,
+                            backgroundColor: kNeutralColor100,
+                            automaticallyImplyLeading: false,
+                            title: Row(
+                              children: [
+                                const Spacer(),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4.0),
+                                  child: _buttonWidget(),
                                 ),
-                              ),
-                            )
-                          : SliverAppBar(
-                              pinned: true,
-                              snap: false,
-                              floating: true,
-                              expandedHeight: 180.0,
+                              ],
+                            ),
+                            flexibleSpace: FlexibleSpaceBar(
+                              titlePadding: EdgeInsets.zero,
+                              expandedTitleScale: 1.0,
                               centerTitle: false,
-                              leading: null,
-                              titleSpacing: 0,
-                              backgroundColor: kNeutralColor100,
-                              automaticallyImplyLeading: false,
-                              flexibleSpace: FlexibleSpaceBar(
-                                titlePadding: EdgeInsets.zero,
-                                expandedTitleScale: 1.0,
-                                centerTitle: false,
-                                collapseMode: CollapseMode.pin,
-                                title: _buildTabbar(innerBoxIsScrolled),
-                                background: Container(
-                                  color: kNeutralColor100,
-                                  child: Stack(
-                                    children: [
-                                      _buildBackGround(),
-                                    ],
-                                  ),
+                              collapseMode: CollapseMode.pin,
+                              title: _buildTabbar(innerBoxIsScrolled),
+                              background: Container(
+                                color: kNeutralColor100,
+                                child: Stack(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: 16.0.h,
+                                        left: 10.w,
+                                      ),
+                                      child: Text(
+                                        "PUPPYCAT",
+                                        style: kTitle18BoldStyle,
+                                      ),
+                                    ),
+                                    _buildBackGround(),
+                                  ],
                                 ),
                               ),
                             ),
-                    ];
-                  },
-                  body: TabBarView(
-                    controller: tabController,
-                    children: [
-                      _firstTab(),
-                      Container(
-                        color: Colors.blue,
-                      ),
-                      if (loginState == LoginStatus.success) ...[
-                        _thirdTab(),
-                      ],
-                      if (loginState == LoginStatus.success) ...[
-                        _fourthTab(),
-                      ],
+                          )
+                        : SliverAppBar(
+                            pinned: true,
+                            snap: false,
+                            floating: true,
+                            expandedHeight: 180.0,
+                            centerTitle: false,
+                            leading: null,
+                            titleSpacing: 0,
+                            backgroundColor: kNeutralColor100,
+                            automaticallyImplyLeading: false,
+                            flexibleSpace: FlexibleSpaceBar(
+                              titlePadding: EdgeInsets.zero,
+                              expandedTitleScale: 1.0,
+                              centerTitle: false,
+                              collapseMode: CollapseMode.pin,
+                              title: _buildTabbar(innerBoxIsScrolled),
+                              background: Container(
+                                color: kNeutralColor100,
+                                child: Stack(
+                                  children: [
+                                    _buildBackGround(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                  ];
+                },
+                body: TabBarView(
+                  controller: tabController,
+                  children: [
+                    _firstTab(),
+                    Container(
+                      color: Colors.blue,
+                    ),
+                    if (loginState == LoginStatus.success) ...[
+                      _thirdTab(),
                     ],
-                  ),
+                    if (loginState == LoginStatus.success) ...[
+                      _fourthTab(),
+                    ],
+                  ],
                 ),
-              );
-            }),
-          ),
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -453,320 +424,407 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   Widget _firstTab() {
-    return CustomScrollView(
-      slivers: <Widget>[
-        PagedSliverList<int, FeedData>(
-          // shrinkWrap: true,
-          shrinkWrapFirstPageIndicators: true,
-          pagingController: _recentFeedListPagingController,
-          builderDelegate: PagedChildBuilderDelegate<FeedData>(
-            newPageProgressIndicatorBuilder: (context) {
-              return Column(
-                children: [
-                  Lottie.asset(
-                    'assets/lottie/icon_loading.json',
-                    fit: BoxFit.fill,
-                    width: 80,
-                    height: 80,
-                  ),
-                ],
+    return RefreshIndicator(
+      onRefresh: () {
+        return Future(() {
+          final loginState = ref.watch(loginStateProvider);
+
+          _recentFeedListPagingController.refresh();
+
+          ref.read(popularUserListStateProvider.notifier).getInitUserList(
+                ref.read(userModelProvider)?.idx,
               );
-            },
-            firstPageProgressIndicatorBuilder: (context) {
-              return Column(
-                children: [
-                  Lottie.asset(
-                    'assets/lottie/icon_loading.json',
-                    fit: BoxFit.fill,
-                    width: 80,
-                    height: 80,
-                  ),
-                ],
+
+          ref.read(popularHourFeedStateProvider.notifier).initPosts(
+                loginMemberIdx: ref.read(userModelProvider)?.idx,
               );
-            },
-            noItemsFoundIndicatorBuilder: (context) {
-              return Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 100.0),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                          width: 88,
-                          height: 88,
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          '등록된 게시물이 없습니다.',
-                          textAlign: TextAlign.center,
-                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                        ),
-                      ],
+
+          scrollController.addListener(_myPostScrollListener);
+
+          if (loginState == LoginStatus.success) {
+            _myFeedListPagingController.refresh();
+
+            _popularWeekFeedListPagingController.refresh();
+
+            _followFeedListPagingController.refresh();
+
+            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userModelProvider)!.idx);
+          }
+        });
+      },
+      child: CustomScrollView(
+        slivers: <Widget>[
+          PagedSliverList<int, FeedData>(
+            // shrinkWrap: true,
+            shrinkWrapFirstPageIndicators: true,
+            pagingController: _recentFeedListPagingController,
+            builderDelegate: PagedChildBuilderDelegate<FeedData>(
+              newPageProgressIndicatorBuilder: (context) {
+                return Column(
+                  children: [
+                    Lottie.asset(
+                      'assets/lottie/icon_loading.json',
+                      fit: BoxFit.fill,
+                      width: 80,
+                      height: 80,
                     ),
-                  ),
-                ],
-              );
-            },
-            itemBuilder: (context, item, index) {
-              return FeedMainWidget(
-                feedData: item,
-                contentType: 'userContent',
-                userName: item.memberInfoList![0].nick!,
-                profileImage: item.memberInfoList?[0].profileImgUrl! ?? "",
-                memberIdx: ref.read(userModelProvider)?.idx,
-                firstTitle: item.memberInfoList![0].nick!,
-                secondTitle: '게시물',
-                imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
-                index: index,
-                feedType: 'recent',
-              );
-            },
+                  ],
+                );
+              },
+              firstPageProgressIndicatorBuilder: (context) {
+                return Column(
+                  children: [
+                    Lottie.asset(
+                      'assets/lottie/icon_loading.json',
+                      fit: BoxFit.fill,
+                      width: 80,
+                      height: 80,
+                    ),
+                  ],
+                );
+              },
+              noItemsFoundIndicatorBuilder: (context) {
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 100.0),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                            width: 88,
+                            height: 88,
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Text(
+                            '등록된 게시물이 없습니다.',
+                            textAlign: TextAlign.center,
+                            style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+              itemBuilder: (context, item, index) {
+                return FeedMainWidget(
+                  feedData: item,
+                  contentType: 'userContent',
+                  userName: item.memberInfoList![0].nick!,
+                  profileImage: item.memberInfoList?[0].profileImgUrl! ?? "",
+                  memberIdx: ref.read(userModelProvider)?.idx,
+                  firstTitle: item.memberInfoList![0].nick!,
+                  secondTitle: '게시물',
+                  imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
+                  index: index,
+                  feedType: 'recent',
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _thirdTab() {
-    return CustomScrollView(
-      slivers: <Widget>[
-        PagedSliverList<int, FeedData>(
-          shrinkWrapFirstPageIndicators: true,
-          pagingController: _followFeedListPagingController,
-          builderDelegate: PagedChildBuilderDelegate<FeedData>(
-            noItemsFoundIndicatorBuilder: (context) {
-              return const SizedBox.shrink();
-            },
-            newPageProgressIndicatorBuilder: (context) {
-              return Container();
-            },
-            firstPageProgressIndicatorBuilder: (context) {
-              return Column(
-                children: [
-                  Lottie.asset(
-                    'assets/lottie/icon_loading.json',
-                    fit: BoxFit.fill,
-                    width: 80,
-                    height: 80,
-                  ),
-                ],
+    return RefreshIndicator(
+      onRefresh: () {
+        return Future(() {
+          final loginState = ref.watch(loginStateProvider);
+
+          _recentFeedListPagingController.refresh();
+
+          ref.read(popularUserListStateProvider.notifier).getInitUserList(
+                ref.read(userModelProvider)?.idx,
               );
-            },
-            itemBuilder: (context, item, index) {
-              return FeedMainWidget(
-                feedData: item,
-                contentType: 'userContent',
-                userName: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
-                profileImage: ref.read(followFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? item.memberInfoList![0].profileImgUrl! ?? "",
-                memberIdx: ref.read(userModelProvider)!.idx,
-                firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
-                secondTitle: '게시물',
-                imageDomain: ref.read(followFeedStateProvider.notifier).imgDomain!,
-                index: index,
-                feedType: 'follow',
+
+          ref.read(popularHourFeedStateProvider.notifier).initPosts(
+                loginMemberIdx: ref.read(userModelProvider)?.idx,
               );
-            },
-          ),
-        ),
-        PagedSliverList<int, FeedData>(
-          shrinkWrapFirstPageIndicators: true,
-          pagingController: _popularWeekFeedListPagingController,
-          builderDelegate: PagedChildBuilderDelegate<FeedData>(
-            noItemsFoundIndicatorBuilder: (context) {
-              return Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 100.0),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                          width: 88,
-                          height: 88,
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          '등록된 게시물이 없습니다.',
-                          textAlign: TextAlign.center,
-                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                        ),
-                      ],
+
+          scrollController.addListener(_myPostScrollListener);
+
+          if (loginState == LoginStatus.success) {
+            _myFeedListPagingController.refresh();
+
+            _popularWeekFeedListPagingController.refresh();
+
+            _followFeedListPagingController.refresh();
+
+            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userModelProvider)!.idx);
+          }
+        });
+      },
+      child: CustomScrollView(
+        slivers: <Widget>[
+          PagedSliverList<int, FeedData>(
+            shrinkWrapFirstPageIndicators: true,
+            pagingController: _followFeedListPagingController,
+            builderDelegate: PagedChildBuilderDelegate<FeedData>(
+              noItemsFoundIndicatorBuilder: (context) {
+                return const SizedBox.shrink();
+              },
+              newPageProgressIndicatorBuilder: (context) {
+                return Container();
+              },
+              firstPageProgressIndicatorBuilder: (context) {
+                return Column(
+                  children: [
+                    Lottie.asset(
+                      'assets/lottie/icon_loading.json',
+                      fit: BoxFit.fill,
+                      width: 80,
+                      height: 80,
                     ),
-                  ),
-                ],
-              );
-            },
-            newPageProgressIndicatorBuilder: (context) {
-              return Column(
-                children: [
-                  Lottie.asset(
-                    'assets/lottie/icon_loading.json',
-                    fit: BoxFit.fill,
-                    width: 80,
-                    height: 80,
-                  ),
-                ],
-              );
-            },
-            firstPageProgressIndicatorBuilder: (context) {
-              return Container();
-            },
-            itemBuilder: (context, item, index) {
-              return FeedMainWidget(
-                feedData: item,
-                // contentType: 'popularWeekContent',
-                contentType: 'userContent',
-                userName: item.memberInfoList![0].nick!,
-                profileImage: item.memberInfoList![0].profileImgUrl! ?? "",
-                memberIdx: ref.read(userModelProvider)?.idx,
-                // firstTitle: "null",
-                firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
-                // secondTitle: '인기 급상승',
-                secondTitle: '게시물',
-                imageDomain: ref.read(popularWeekFeedStateProvider.notifier).imgDomain!,
-                index: index,
-                // feedType: 'popular',
-                feedType: 'follow',
-              );
-            },
+                  ],
+                );
+              },
+              itemBuilder: (context, item, index) {
+                return FeedMainWidget(
+                  feedData: item,
+                  contentType: 'userContent',
+                  userName: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
+                  profileImage: ref.read(followFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? item.memberInfoList![0].profileImgUrl! ?? "",
+                  memberIdx: ref.read(userModelProvider)!.idx,
+                  firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
+                  secondTitle: '게시물',
+                  imageDomain: ref.read(followFeedStateProvider.notifier).imgDomain!,
+                  index: index,
+                  feedType: 'follow',
+                );
+              },
+            ),
           ),
-        ),
-      ],
+          PagedSliverList<int, FeedData>(
+            shrinkWrapFirstPageIndicators: true,
+            pagingController: _popularWeekFeedListPagingController,
+            builderDelegate: PagedChildBuilderDelegate<FeedData>(
+              noItemsFoundIndicatorBuilder: (context) {
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 100.0),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                            width: 88,
+                            height: 88,
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Text(
+                            '등록된 게시물이 없습니다.',
+                            textAlign: TextAlign.center,
+                            style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+              newPageProgressIndicatorBuilder: (context) {
+                return Column(
+                  children: [
+                    Lottie.asset(
+                      'assets/lottie/icon_loading.json',
+                      fit: BoxFit.fill,
+                      width: 80,
+                      height: 80,
+                    ),
+                  ],
+                );
+              },
+              firstPageProgressIndicatorBuilder: (context) {
+                return Container();
+              },
+              itemBuilder: (context, item, index) {
+                return FeedMainWidget(
+                  feedData: item,
+                  // contentType: 'popularWeekContent',
+                  contentType: 'userContent',
+                  userName: item.memberInfoList![0].nick!,
+                  profileImage: item.memberInfoList![0].profileImgUrl! ?? "",
+                  memberIdx: ref.read(userModelProvider)?.idx,
+                  // firstTitle: "null",
+                  firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
+                  // secondTitle: '인기 급상승',
+                  secondTitle: '게시물',
+                  imageDomain: ref.read(popularWeekFeedStateProvider.notifier).imgDomain!,
+                  index: index,
+                  // feedType: 'popular',
+                  feedType: 'follow',
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _fourthTab() {
-    return CustomScrollView(
-      slivers: <Widget>[
-        PagedSliverList<int, FeedData>(
-          // shrinkWrap: true,
-          shrinkWrapFirstPageIndicators: true,
-          pagingController: _myFeedListPagingController,
-          builderDelegate: PagedChildBuilderDelegate<FeedData>(
-            noItemsFoundIndicatorBuilder: (context) {
-              return Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 100.0),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                          width: 88,
-                          height: 88,
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          '등록된 작성 글이 없습니다.\n게시물을 등록해 주세요!',
-                          textAlign: TextAlign.center,
-                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 70,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: SizedBox(
-                        width: 320,
-                        height: 48,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            ref.read(userModelProvider) == null
-                                ? context.pushReplacement("/loginScreen")
-                                : ref.watch(restrainWriteStateProvider).restrain.state == null
-                                    ? feedWriteShowBottomSheet(
-                                        context: context,
-                                        onClose: () {
-                                          setState(() {
-                                            showLottieAnimation = false;
-                                          });
-                                        },
-                                      )
-                                    : showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        builder: (context) => RestrictionDialog(
-                                          isForever: false,
-                                          date: ref.watch(restrainWriteStateProvider).restrain.date,
-                                          restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-                                          startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-                                          endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-                                        ),
-                                      );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: kPrimaryColor,
-                            disabledBackgroundColor: kNeutralColor400,
-                            disabledForegroundColor: kTextBodyColor,
-                            elevation: 0,
+    return RefreshIndicator(
+      onRefresh: () {
+        return Future(() {
+          final loginState = ref.watch(loginStateProvider);
+
+          _recentFeedListPagingController.refresh();
+
+          ref.read(popularUserListStateProvider.notifier).getInitUserList(
+                ref.read(userModelProvider)?.idx,
+              );
+
+          ref.read(popularHourFeedStateProvider.notifier).initPosts(
+                loginMemberIdx: ref.read(userModelProvider)?.idx,
+              );
+
+          scrollController.addListener(_myPostScrollListener);
+
+          if (loginState == LoginStatus.success) {
+            _myFeedListPagingController.refresh();
+
+            _popularWeekFeedListPagingController.refresh();
+
+            _followFeedListPagingController.refresh();
+
+            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userModelProvider)!.idx);
+          }
+        });
+      },
+      child: CustomScrollView(
+        slivers: <Widget>[
+          PagedSliverList<int, FeedData>(
+            // shrinkWrap: true,
+            shrinkWrapFirstPageIndicators: true,
+            pagingController: _myFeedListPagingController,
+            builderDelegate: PagedChildBuilderDelegate<FeedData>(
+              noItemsFoundIndicatorBuilder: (context) {
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 100.0),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                            width: 88,
+                            height: 88,
                           ),
-                          child: Text(
-                            '게시글 등록하기',
-                            style: kButton14MediumStyle,
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Text(
+                            '등록된 작성 글이 없습니다.\n게시물을 등록해 주세요!',
+                            textAlign: TextAlign.center,
+                            style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 70,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SizedBox(
+                          width: 320,
+                          height: 48,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              ref.read(userModelProvider) == null
+                                  ? context.pushReplacement("/loginScreen")
+                                  : ref.watch(restrainWriteStateProvider).restrain.state == null
+                                      ? feedWriteShowBottomSheet(
+                                          context: context,
+                                          onClose: () {
+                                            setState(() {
+                                              showLottieAnimation = false;
+                                            });
+                                          },
+                                        )
+                                      : showDialog(
+                                          barrierDismissible: false,
+                                          context: context,
+                                          builder: (context) => RestrictionDialog(
+                                            isForever: false,
+                                            date: ref.watch(restrainWriteStateProvider).restrain.date,
+                                            restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
+                                            startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
+                                            endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
+                                          ),
+                                        );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: kPrimaryColor,
+                              disabledBackgroundColor: kNeutralColor400,
+                              disabledForegroundColor: kTextBodyColor,
+                              elevation: 0,
+                            ),
+                            child: Text(
+                              '게시글 등록하기',
+                              style: kButton14MediumStyle,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              );
-            },
-            newPageProgressIndicatorBuilder: (context) {
-              return Column(
-                children: [
-                  Lottie.asset(
-                    'assets/lottie/icon_loading.json',
-                    fit: BoxFit.fill,
-                    width: 80,
-                    height: 80,
-                  ),
-                ],
-              );
-            },
-            firstPageProgressIndicatorBuilder: (context) {
-              return Column(
-                children: [
-                  Lottie.asset(
-                    'assets/lottie/icon_loading.json',
-                    fit: BoxFit.fill,
-                    width: 80,
-                    height: 80,
-                  ),
-                ],
-              );
-            },
-            itemBuilder: (context, item, index) {
-              return FeedMainWidget(
-                feedData: item,
-                contentType: 'myContent',
-                userName: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
-                profileImage: ref.read(myFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
-                memberIdx: ref.read(userModelProvider)!.idx,
-                firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
-                secondTitle: '게시물',
-                imageDomain: ref.read(myFeedStateProvider.notifier).imgDomain!,
-                index: index,
-                feedType: 'my',
-              );
-            },
+                  ],
+                );
+              },
+              newPageProgressIndicatorBuilder: (context) {
+                return Column(
+                  children: [
+                    Lottie.asset(
+                      'assets/lottie/icon_loading.json',
+                      fit: BoxFit.fill,
+                      width: 80,
+                      height: 80,
+                    ),
+                  ],
+                );
+              },
+              firstPageProgressIndicatorBuilder: (context) {
+                return Column(
+                  children: [
+                    Lottie.asset(
+                      'assets/lottie/icon_loading.json',
+                      fit: BoxFit.fill,
+                      width: 80,
+                      height: 80,
+                    ),
+                  ],
+                );
+              },
+              itemBuilder: (context, item, index) {
+                return FeedMainWidget(
+                  feedData: item,
+                  contentType: 'myContent',
+                  userName: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
+                  profileImage: ref.read(myFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
+                  memberIdx: ref.read(userModelProvider)!.idx,
+                  firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
+                  secondTitle: '게시물',
+                  imageDomain: ref.read(myFeedStateProvider.notifier).imgDomain!,
+                  index: index,
+                  feedType: 'my',
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
