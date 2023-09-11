@@ -117,7 +117,6 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
           child: Consumer(builder: (ctx, ref, child) {
             final contentState = ref.watch(firstFeedStateProvider.notifier);
             var apiStatus = contentState.apiStatus;
-            print(apiStatus);
 
             print(ref.watch(firstFeedStateProvider).itemList);
 

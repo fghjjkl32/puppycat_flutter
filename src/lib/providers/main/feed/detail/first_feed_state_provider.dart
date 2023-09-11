@@ -127,6 +127,10 @@ class FirstFeedState extends _$FirstFeedState {
         state.appendPage(searchList, nextPageKey);
         apiStatus = ListAPIStatus.loaded;
       }
+      print("---------------------------------------------------------");
+      print(apiStatus);
+      print("---------------------------------------------------------");
+
       ref.read(firstFeedEmptyProvider.notifier).state = searchList.isEmpty;
     } catch (e) {
       apiStatus = ListAPIStatus.error;

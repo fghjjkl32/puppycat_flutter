@@ -17,6 +17,8 @@ import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
+final followProvider = StateProvider.family<bool, int>((ref, memberIdx) => false);
+
 class FeedFollowCardWidget extends ConsumerStatefulWidget {
   const FeedFollowCardWidget({
     required this.profileImage,
@@ -42,10 +44,10 @@ class FeedFollowCardWidget extends ConsumerStatefulWidget {
 }
 
 class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
-  bool isFollow = false;
-
   @override
   Widget build(BuildContext context) {
+    final isFollow = ref.watch(followProvider(widget.memberIdx));
+
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w),
       child: Container(
@@ -61,7 +63,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            GestureDetector(
+            InkWell(
               onTap: () {
                 ref.read(userModelProvider)?.idx == widget.memberIdx
                     ? Navigator.push(
@@ -124,7 +126,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
 
                                       if (result.result) {
                                         setState(() {
-                                          isFollow = false;
+                                          ref.read(followProvider(widget.memberIdx).notifier).state = false;
                                         });
                                       }
                                     }
@@ -146,7 +148,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
 
                                       if (result.result) {
                                         setState(() {
-                                          isFollow = true;
+                                          ref.read(followProvider(widget.memberIdx).notifier).state = true;
                                         });
                                       }
                                     }
