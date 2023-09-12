@@ -14,6 +14,7 @@ import 'package:pet_mobile_social_flutter/models/login/login_request_model.dart'
 import 'package:pet_mobile_social_flutter/models/login/login_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/services/login/login_service.dart';
+import 'package:pet_mobile_social_flutter/services/login/social_login/apple/apple_login.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/google/google_login.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/kakao/kakao_login.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/naver/naver_login.dart';
@@ -282,6 +283,7 @@ class LoginRepository {
         socialService = GoogleLoginService();
         break;
       case "apple":
+        socialService = AppleLoginService();
         break;
       default:
         socialService = null;
