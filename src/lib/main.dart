@@ -68,9 +68,9 @@ void main() async {
 
   /// Get It
   /// SingleTon
-  if (!Platform.isIOS) {
-    GetIt.I.registerSingleton<FireBaseMessageController>(FireBaseMessageController());
-  }
+  // if (!Platform.isIOS) {
+  GetIt.I.registerSingleton<FireBaseMessageController>(FireBaseMessageController());
+  // }
   GetIt.I.registerSingleton<UuidUtil>(UuidUtil());
   await GetIt.I<UuidUtil>().init();
 
