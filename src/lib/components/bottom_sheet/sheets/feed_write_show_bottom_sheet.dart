@@ -76,6 +76,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                         children: [
                           Lottie.asset(
                             'assets/lottie/character_01_dailysharing_80.json',
+                            repeat: false,
                             fit: BoxFit.fill,
                           ),
                           Padding(
@@ -99,6 +100,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                       children: [
                         Lottie.asset(
                           'assets/lottie/character_01_walk_80.json',
+                          repeat: false,
                           fit: BoxFit.fill,
                         ),
                         Padding(

@@ -17,9 +17,7 @@ import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_prov
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_main_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/chat/chat_room_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_search_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/chat/chatview_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/matrix_chat_room_screen.dart';
 
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';

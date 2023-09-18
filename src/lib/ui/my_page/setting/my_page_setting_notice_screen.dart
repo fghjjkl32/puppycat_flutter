@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -63,94 +64,81 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        context.pop();
-
-        return false;
-      },
-      child: Material(
-        child: WillPopScope(
-          onWillPop: () async {
-            context.pop();
-            return false;
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: const Text(
-                "공지사항",
-              ),
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(
-                  Puppycat_social.icon_back,
-                  size: 40,
+    return Material(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text(
+            "공지사항",
+          ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Puppycat_social.icon_back,
+              size: 40,
+            ),
+          ),
+          actions: [
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: EdgeInsets.only(right: 8.0.w),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 12.0.w),
+                    child: Text(
+                      "1:1채널톡",
+                      style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                    ),
+                  ),
                 ),
               ),
-              actions: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 8.0.w),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: kPrimaryLightColor,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 12.0.w),
-                        child: Text(
-                          "1:1채널톡",
-                          style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-              bottom: TabBar(
-                  controller: tabController,
-                  indicatorWeight: 3,
-                  labelColor: kPrimaryColor,
-                  indicatorColor: kPrimaryColor,
-                  unselectedLabelColor: kNeutralColor500,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelPadding: EdgeInsets.only(
-                    top: 10.h,
-                    bottom: 10.h,
-                  ),
-                  tabs: [
-                    Text(
-                      "전체",
-                      style: kBody14BoldStyle,
-                    ),
-                    Text(
-                      "일반",
-                      style: kBody14BoldStyle,
-                    ),
-                    Text(
-                      "이벤트",
-                      style: kBody14BoldStyle,
-                    ),
-                  ]),
-            ),
-            body:
+            )
+          ],
+          bottom: TabBar(
+              controller: tabController,
+              indicatorWeight: 3,
+              labelColor: kPrimaryColor,
+              indicatorColor: kPrimaryColor,
+              unselectedLabelColor: kNeutralColor500,
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelPadding: EdgeInsets.only(
+                top: 10.h,
+                bottom: 10.h,
+              ),
+              tabs: [
+                Text(
+                  "전체",
+                  style: kBody14BoldStyle,
+                ),
+                Text(
+                  "일반",
+                  style: kBody14BoldStyle,
+                ),
+                Text(
+                  "이벤트",
+                  style: kBody14BoldStyle,
+                ),
+              ]),
+        ),
+        body:
             // GestureDetector(
             //   on
             //   child: _buildListView(),
             // ),
             TabBarView(
-              controller: tabController,
-              children: [
-                _buildListView(),
-                _buildListView(),
-                _buildListView(),
-              ],
-            ),
-          ),
+          controller: tabController,
+          children: [
+            _buildListView(),
+            _buildListView(),
+            _buildListView(),
+          ],
         ),
       ),
     );

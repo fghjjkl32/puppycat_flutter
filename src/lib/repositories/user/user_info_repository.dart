@@ -106,7 +106,7 @@ class UserInfoRepository {
       "chatHomeServer": userInfoModel.chatUserModel!.homeServer,
       "chatAccessToken": userInfoModel.chatUserModel!.accessToken,
       "chatDeviceId": userInfoModel.chatUserModel!.deviceId,
-      "resetState": 1,
+      "resetState": 0,
       // }
     });
 

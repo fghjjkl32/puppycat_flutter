@@ -43,8 +43,7 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
         context.push("/home/search/${widget.hashTag}/0");
       },
       child: Padding(
-        padding:
-            EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,8 +82,7 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
                     ),
                     Text(
                       "${widget.hashTagCnt}+",
-                      style:
-                          kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                     ),
                   ],
                 ),

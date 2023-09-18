@@ -1,10 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:collection/collection.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:matrix/matrix.dart' hide Visibility;
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
@@ -16,7 +20,9 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/controller/chat/chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
@@ -137,13 +143,10 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return FocusDetector(
+      onFocusLost: () async {
         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
         ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-        Navigator.of(context).pop();
-
-        return false;
       },
       child: Material(
         child: SafeArea(
@@ -186,6 +189,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     child: showLottieAnimation
                                         ? Lottie.asset(
                                             'assets/lottie/icon_more_header.json',
+                                            repeat: false,
                                           )
                                         : Padding(
                                             padding: const EdgeInsets.only(right: 8.0),
@@ -662,12 +666,19 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 3.h,
-                    ),
-                    Text(
-                      data.intro == null || data.intro == "" ? "소개글이 없습니다." : "${data.intro}",
-                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                    Visibility(
+                      visible: data.intro != "",
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 3,
+                          ),
+                          Text(
+                            "${data.intro}",
+                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                          ),
+                        ],
+                      ),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -845,7 +856,17 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         Expanded(
                           child: GestureDetector(
                             onTap: () async {
-                              ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : null;
+                              if (data.chatMemberId != null) {
+                                ChatController chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${data.memberIdx}')));
+
+                                var roomId = await chatController.client.startDirectChat(data.chatMemberId!, enableEncryption: false);
+
+                                Room? room = chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
+
+                                if (mounted) {
+                                  ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain/chatRoom', extra: room);
+                                }
+                              }
                             },
                             child: Container(
                               height: 30.h,
@@ -857,7 +878,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                               ),
                               child: Center(
                                 child: Text(
-                                  "메세지",
+                                  "메시지",
                                   style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
                                 ),
                               ),

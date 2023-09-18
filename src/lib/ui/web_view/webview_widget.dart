@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/controller/webview_bridge/webview_bridge.dart';
@@ -32,7 +33,6 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
   int adminCount = 0;
   int lastTap = DateTime.now().millisecondsSinceEpoch;
 
-
   @override
   void initState() {
     super.initState();
@@ -47,7 +47,6 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
       onCloseWindow: webViewOnCloseWindow,
     ));
   }
-
 
   void webViewOnWebViewCreated(InAppWebViewController controller) {
     webViewControllerList.add(controller);
@@ -87,7 +86,6 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
       url: createWindowAction.request.url.toString(),
     );
 
-
     setState(() {
       webViewList.add(webview);
     });
@@ -96,8 +94,8 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => _goBack(context),
+    return FocusDetector(
+      onFocusLost: () => _goBack(context),
       child: Stack(
         children: webViewList,
         // children: [
@@ -106,7 +104,6 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
       ),
     );
   }
-
 
   Future<bool> _goBack(BuildContext context) async {
     final webViewController = webViewControllerList.last;

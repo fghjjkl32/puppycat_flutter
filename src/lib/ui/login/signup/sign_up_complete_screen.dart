@@ -22,6 +22,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                 children: [
                   Lottie.asset(
                     'assets/lottie/character_00_welcome_220.json',
+                    repeat: false,
                     fit: BoxFit.fill,
                   ),
                   SizedBox(

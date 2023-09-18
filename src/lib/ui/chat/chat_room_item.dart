@@ -62,8 +62,7 @@ class ChatRoomItem extends ConsumerWidget {
   ///NOTE
   ///GPT Code
   void _showMenu(BuildContext context, Offset position) {
-    final RenderBox overlay =
-        Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    final RenderBox overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
     final screenHeight = overlay.size.height;
 
     selectedItemBuilder(BuildContext context) {
@@ -78,8 +77,7 @@ class ChatRoomItem extends ConsumerWidget {
                 children: [
                   Text(
                     roomModel.isPin ? '메시지.고정 해제'.tr() : '메시지.고정'.tr(),
-                    style: kBody12SemiBoldStyle.copyWith(
-                        color: kTextSubTitleColor),
+                    style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                   ),
                   Spacer(),
                   roomModel.isPin
@@ -110,8 +108,7 @@ class ChatRoomItem extends ConsumerWidget {
                 children: [
                   Text(
                     roomModel.isFavorite ? '메시지.즐겨찾기 해제'.tr() : '메시지.즐겨찾기'.tr(),
-                    style: kBody12SemiBoldStyle.copyWith(
-                        color: kTextSubTitleColor),
+                    style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                   ),
                   Spacer(),
                   roomModel.isFavorite
@@ -165,9 +162,7 @@ class ChatRoomItem extends ConsumerWidget {
     final menuHeight = selectedItemBuilder(context).length * menuItemHeight;
 
     // Calculate top of the menu
-    final double menuTop = position.dy < screenHeight / 2
-        ? position.dy
-        : max(0, position.dy - menuHeight);
+    final double menuTop = position.dy < screenHeight / 2 ? position.dy : max(0, position.dy - menuHeight);
 
     showMenu(
       shape: RoundedRectangleBorder(
@@ -175,8 +170,7 @@ class ChatRoomItem extends ConsumerWidget {
       ),
       context: context,
       items: selectedItemBuilder(context),
-      position: RelativeRect.fromLTRB(position.dx, menuTop,
-          overlay.size.width - position.dx, overlay.size.height - menuTop),
+      position: RelativeRect.fromLTRB(position.dx, menuTop, overlay.size.width - position.dx, overlay.size.height - menuTop),
       elevation: 8.0,
     ).then<void>((RoomContextMenuType? newValue) {
       if (newValue == null) return;
@@ -211,12 +205,10 @@ class ChatRoomItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var pinBackgroundColor =
-        roomModel.isPin ? kNeutralColor300 : kPrimaryLightColor;
+    var pinBackgroundColor = roomModel.isPin ? kNeutralColor300 : kPrimaryLightColor;
     var pinForegroundColor = roomModel.isPin ? kTextBodyColor : kPrimaryColor;
 
-    var favoriteBackgroundColor =
-        roomModel.isFavorite ? kTextBodyColor : kPrimaryColor;
+    var favoriteBackgroundColor = roomModel.isFavorite ? kTextBodyColor : kPrimaryColor;
     var favoriteForegroundColor = kNeutralColor100;
 
     return Slidable(
@@ -317,14 +309,12 @@ class ChatRoomItem extends ConsumerWidget {
                         children: [
                           Text(
                             roomModel.nick,
-                            style: kBody13BoldStyle.copyWith(
-                                color: kTextTitleColor),
+                            style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                           ),
                           Visibility(
                             visible: roomModel.isPin,
                             child: const ImageIcon(
-                              AssetImage(
-                                  'assets/image/chat/icon_fix_small.png'),
+                              AssetImage('assets/image/chat/icon_fix_small.png'),
                               size: 20,
                               color: kNeutralColor400,
                             ),
@@ -334,14 +324,12 @@ class ChatRoomItem extends ConsumerWidget {
                               ? const SizedBox.shrink()
                               : roomModel.isRead
                                   ? const ImageIcon(
-                                      AssetImage(
-                                          'assets/image/chat/icon_check_pair.png'),
+                                      AssetImage('assets/image/chat/icon_check_pair.png'),
                                       size: 20,
                                       color: kNeutralColor500,
                                     )
                                   : const ImageIcon(
-                                      AssetImage(
-                                          'assets/image/chat/icon_check_single.png'),
+                                      AssetImage('assets/image/chat/icon_check_single.png'),
                                       size: 20,
                                       color: kNeutralColor500,
                                     ),
@@ -349,8 +337,7 @@ class ChatRoomItem extends ConsumerWidget {
                             padding: EdgeInsets.only(left: 4.0.w),
                             child: Text(
                               roomModel.msgDateTime,
-                              style: kBadge10MediumStyle.copyWith(
-                                  color: kNeutralColor500),
+                              style: kBadge10MediumStyle.copyWith(color: kNeutralColor500),
                             ),
                           ),
                         ],
@@ -360,11 +347,7 @@ class ChatRoomItem extends ConsumerWidget {
                           Expanded(
                             child: Text(
                               roomModel.lastMsg,
-                              style: roomModel.isRead
-                                  ? kBody12RegularStyle400.copyWith(
-                                      color: kTextBodyColor, height: 1.3)
-                                  : kBody12ExtraBoldStyle.copyWith(
-                                      color: kTextBodyColor, height: 1.3),
+                              style: roomModel.isRead ? kBody12RegularStyle400.copyWith(color: kTextBodyColor, height: 1.3) : kBody12ExtraBoldStyle.copyWith(color: kTextBodyColor, height: 1.3),
                               softWrap: false,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -377,14 +360,12 @@ class ChatRoomItem extends ConsumerWidget {
                             Container(
                               width: 20.w,
                               height: 20.h,
-                              decoration: const BoxDecoration(
-                                  color: kBadgeColor, shape: BoxShape.circle),
+                              decoration: const BoxDecoration(color: kBadgeColor, shape: BoxShape.circle),
                               child: Center(
                                 child: roomModel.newCount > 0
                                     ? Text(
                                         roomModel.newCount.toString(),
-                                        style: kBadge8RegularStyle.copyWith(
-                                            color: kNeutralColor100),
+                                        style: kBadge8RegularStyle.copyWith(color: kNeutralColor100),
                                       )
                                     : const SizedBox.shrink(),
                               ),

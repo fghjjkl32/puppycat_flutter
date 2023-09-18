@@ -22,7 +22,6 @@ import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_pro
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_room_item.dart';
-import 'package:pet_mobile_social_flutter/ui/chat/matrix_chat_room_list_item.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 // final emptyChatRoomProvider = StateProvider<bool>((ref) => false);
@@ -46,9 +45,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
     getChatFavoriteList();
     _scrollController = ScrollController();
     var userInfoModel = ref.read(userInfoProvider);
-    _chatController = ref.read(chatControllerProvider(ChatControllerInfo(
-        provider: 'matrix',
-        clientName: 'puppycat_${userInfoModel.userModel!.idx}')));
+    _chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${userInfoModel.userModel!.idx}')));
     _waitForFirstSync();
     super.initState();
   }
@@ -106,19 +103,15 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
               return InkWell(
                 onTap: () async {
                   if (chatFavoriteList[index].chatMemberId != null) {
-                    var matrixController = _chatController.controller
-                        as MatrixChatClientController;
-                    var roomId = await _chatController.client.startDirectChat(
-                        chatFavoriteList[index].chatMemberId!,
-                        enableEncryption: false);
+                    var matrixController = _chatController.controller as MatrixChatClientController;
+                    var roomId = await _chatController.client.startDirectChat(chatFavoriteList[index].chatMemberId!, enableEncryption: false);
 
                     print('roomId $roomId');
                     if (await matrixController.checkHideRoom(roomId)) {
                       matrixController.showRoom(roomId);
                     }
 
-                    Room? room = _chatController.client.rooms
-                        .firstWhereOrNull((element) => element.id == roomId);
+                    Room? room = _chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
                     if (room != null) {
                       // await room.setHistoryVisibility(HistoryVisibility.joined);
                       // print('historyVisibility ${room.historyVisibility}');
@@ -160,9 +153,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                             ? Positioned(
                                 top: 1.h,
                                 right: 1.w,
-                                child: Image.asset(
-                                    'assets/image/common/icon_special.png',
-                                    width: 12.w),
+                                child: Image.asset('assets/image/common/icon_special.png', width: 12.w),
                               )
                             : const SizedBox.shrink(),
                       ],
@@ -170,8 +161,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                     SizedBox(height: 6.0.h),
                     Text(
                       chatFavoriteList[index].nick,
-                      style:
-                          kBody12RegularStyle.copyWith(color: kTextTitleColor),
+                      style: kBody12RegularStyle.copyWith(color: kTextTitleColor),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -199,8 +189,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
               Text(
                 '메시지.주고받은 메시지가 없습니다'.tr(),
                 textAlign: TextAlign.center,
-                style: kBody13RegularStyle.copyWith(
-                    color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
               ),
             ],
           ),
@@ -213,7 +202,9 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
               width: 320,
               height: 48,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.push('/chatMain/chatSearch');
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kPrimaryColor,
                   disabledBackgroundColor: kNeutralColor400,
@@ -221,7 +212,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                   elevation: 0,
                 ),
                 child: Text(
-                  '회원가입.퍼피캣 이용하기'.tr(),
+                  '메시지 보내기',
                   style: kButton14MediumStyle,
                 ),
               ),
@@ -233,8 +224,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
   }
 
   Widget _buildRoomList() {
-    var matrixController =
-        _chatController.controller as MatrixChatClientController;
+    var matrixController = _chatController.controller as MatrixChatClientController;
 
     return StreamBuilder(
       stream: _chatController.controller.getRoomListStream(),
@@ -264,13 +254,10 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   ///NOTE 2023. 07. 12.
                   ///여기부터 우선 의존성, 확장성 무시하고 결과 먼저 보기로
-                  Room matrixRoom = matrixController.client.getRoomById(
-                          matrixController.client.rooms[index].id) ??
-                      matrixController.client.rooms[index];
+                  Room matrixRoom = matrixController.client.getRoomById(matrixController.client.rooms[index].id) ?? matrixController.client.rooms[index];
 
                   ChatRoomModel room = roomList[index].copyWith(
-                    isFavorite:
-                        _checkChatFavorite(matrixRoom.directChatMatrixID ?? ''),
+                    isFavorite: _checkChatFavorite(matrixRoom.directChatMatrixID ?? ''),
                   );
                   // print('room id : ${room.id} / membership ${room.isJoined}');
                   return Padding(
@@ -296,17 +283,12 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                         if (chatMemberId == null) {
                           return;
                         }
-                        var memberIdx =
-                            ref.read(userInfoProvider).userModel!.idx;
+                        var memberIdx = ref.read(userInfoProvider).userModel!.idx;
 
                         if (isFavorite) {
-                          ref
-                              .read(chatFavoriteStateProvider.notifier)
-                              .unSetChatFavorite(memberIdx, chatMemberId);
+                          ref.read(chatFavoriteStateProvider.notifier).unSetChatFavorite(memberIdx, chatMemberId);
                         } else {
-                          ref
-                              .read(chatFavoriteStateProvider.notifier)
-                              .setChatFavorite(memberIdx, chatMemberId);
+                          ref.read(chatFavoriteStateProvider.notifier).setChatFavorite(memberIdx, chatMemberId);
                         }
                       },
                     ),
@@ -330,8 +312,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
   bool _checkChatFavorite(String chatMemberId) {
     var chatFavoriteList = ref.read(chatFavoriteStateProvider);
 
-    return chatFavoriteList
-        .any((element) => element.chatMemberId == chatMemberId);
+    return chatFavoriteList.any((element) => element.chatMemberId == chatMemberId);
   }
 
   Future<bool> _setJoin(Room room) async {
@@ -360,8 +341,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
               ),
               Text(
                 '회원가입.퍼피캣의 가족이 되신 걸 환영해요'.tr(),
-                style: kTitle14BoldStyle.copyWith(
-                    height: 1.4, color: kTextTitleColor),
+                style: kTitle14BoldStyle.copyWith(height: 1.4, color: kTextTitleColor),
                 textAlign: TextAlign.center,
               ),
               SizedBox(
@@ -369,8 +349,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
               ),
               Text(
                 '회원가입.회원가입 환영 메시지'.tr(),
-                style: kBody12RegularStyle.copyWith(
-                    height: 1.3, color: kTextBodyColor),
+                style: kBody12RegularStyle.copyWith(height: 1.3, color: kTextBodyColor),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -386,9 +365,7 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   var userModel = ref.read(userModelProvider);
-                  ref
-                      .read(loginStateProvider.notifier)
-                      .loginByUserModel(userModel: userModel!);
+                  ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel!);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kPrimaryColor,
@@ -414,15 +391,13 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
     bool isEmptyRoom = _chatController.controller.getRoomList().isEmpty;
     bool isViewEmptyPage = chatFavoriteList.isEmpty && isEmptyRoom;
 
-    print(
-        'isEmptyRoom $isEmptyRoom / ${chatFavoriteList.isEmpty} / ${chatFavoriteList.isEmpty && isEmptyRoom}');
+    print('isEmptyRoom $isEmptyRoom / ${chatFavoriteList.isEmpty} / ${chatFavoriteList.isEmpty && isEmptyRoom}');
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           '메시지.메시지'.tr(),
-          style:
-              kTitle18BoldStyle.copyWith(color: kTextTitleColor, height: 1.4.h),
+          style: kTitle18BoldStyle.copyWith(color: kTextTitleColor, height: 1.4.h),
         ),
         backgroundColor: kNeutralColor100,
         actions: [
@@ -433,17 +408,18 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                 if (value == null) {
                   return;
                 }
-                var matrixController =
-                    _chatController.controller as MatrixChatClientController;
+                var matrixController = _chatController.controller as MatrixChatClientController;
                 if (await matrixController.checkHideRoom(value.toString())) {
                   matrixController.showRoom(value.toString());
                 }
 
                 print('value.toString() ${value.toString()}');
-                var roomId = await _chatController.client
-                    .startDirectChat(value.toString(), enableEncryption: false);
-                Room? room = _chatController.client.rooms
-                    .firstWhereOrNull((element) => element.id == roomId);
+                var roomId = await _chatController.client.startDirectChat(value.toString(), enableEncryption: false);
+                print(roomId);
+                print(roomId);
+                print(roomId);
+
+                Room? room = _chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
                 if (room != null) {
                   // await room.setHistoryVisibility(HistoryVisibility.joined);
                   if (mounted) {
@@ -467,16 +443,14 @@ class ChatMainScreenState extends ConsumerState<ChatMainScreen> {
                     chatFavoriteList.isEmpty
                         ? const SizedBox.shrink()
                         : Padding(
-                            padding: EdgeInsets.only(
-                                left: 12.0.w, top: 8.0.h, bottom: 12.0.h),
+                            padding: EdgeInsets.only(left: 12.0.w, top: 8.0.h, bottom: 12.0.h),
                             child: Column(
                               children: [
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     '메시지.즐겨찾기'.tr(),
-                                    style: kTitle16ExtraBoldStyle.copyWith(
-                                        color: kTextTitleColor, height: 1.2.h),
+                                    style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2.h),
                                   ),
                                 ),
                                 SizedBox(

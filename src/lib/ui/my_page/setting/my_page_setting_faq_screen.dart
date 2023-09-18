@@ -43,210 +43,197 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        context.pop();
-
-        return false;
-      },
-      child: Material(
-        child: WillPopScope(
-          onWillPop: () async {
-            context.pop();
-            return false;
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: const Text(
-                "자주하는 질문",
-              ),
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(
-                  Puppycat_social.icon_back,
-                  size: 40,
-                ),
-              ),
-              actions: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 8.0.w),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: kPrimaryLightColor,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 12.0.w),
-                        child: Text(
-                          "1:1채널톡",
-                          style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(110.0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                      child: FormBuilderTextField(
-                        name: 'search',
-                        // initialValue: '',
-                        controller: searchController,
-                        onChanged: (value) {
-                          if (_searchDebounceTimer?.isActive ?? false) {
-                            _searchDebounceTimer?.cancel();
-                          }
-                          // _searchWord = keyword;
-                          _searchDebounceTimer = Timer(const Duration(milliseconds: 500), () {
-                            setState(() {});
-                            ref.read(faqListStateProvider.notifier).search(searchController.text);
-                          });
-                        },
-                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: kNeutralColor200,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(100.0),
-                            gapPadding: 10.0,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(100.0),
-                            gapPadding: 10.0,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(100.0),
-                            gapPadding: 10.0,
-                          ),
-                          suffixIconConstraints: const BoxConstraints(
-                            minWidth: 24,
-                            minHeight: 24,
-                          ),
-                          suffixIcon: searchController.text.isEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                                  child: Icon(
-                                    Icons.search,
-                                    color: Colors.grey[600],
-                                  ),
-                                )
-                              : GestureDetector(
-                                  onTap: () {
-                                    searchController.text = '';
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                                    child: Icon(
-                                      Icons.close,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                          hintText: "검색어를 입력해 주세요.",
-                          hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
-                        ),
-                      ),
-                    ),
-                    TabBar(
-                        controller: tabController,
-                        indicatorWeight: 4,
-                        labelColor: kPrimaryColor,
-                        indicatorColor: kPrimaryColor,
-                        unselectedLabelColor: kNeutralColor500,
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        labelPadding: EdgeInsets.only(
-                          top: 10.h,
-                          bottom: 10.h,
-                        ),
-                        tabs: [
-                          Text(
-                            "전체",
-                            style: kBody14BoldStyle,
-                          ),
-                          Text(
-                            "계정",
-                            style: kBody14BoldStyle,
-                          ),
-                          Text(
-                            "서비스",
-                            style: kBody14BoldStyle,
-                          ),
-                          Text(
-                            "이벤트",
-                            style: kBody14BoldStyle,
-                          ),
-                        ]),
-                  ],
-                ),
-              ),
+    return Material(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text(
+            "자주하는 질문",
+          ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Puppycat_social.icon_back,
+              size: 40,
             ),
-            body: TabBarView(
-              controller: tabController,
-              children: [
-                PagedListView<int, CustomerSupportItemModel>(
-                  pagingController: _faqPagingController,
-                  builderDelegate: PagedChildBuilderDelegate<CustomerSupportItemModel>(
-                    // animateTransitions: true,
-                    noItemsFoundIndicatorBuilder: (context) {
-                      // return const Text('No Comments');
-                      return const SizedBox.shrink();
-                    },
-                    firstPageProgressIndicatorBuilder: (context) {
-                      // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                    itemBuilder: (context, item, index) {
-                      return _noticeItem(item);
-                    },
+          ),
+          actions: [
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: EdgeInsets.only(right: 8.0.w),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 12.0.w),
+                    child: Text(
+                      "1:1채널톡",
+                      style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                    ),
                   ),
                 ),
-                Column(
-                  children: [
-                    const Text('a'),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                  ],
+              ),
+            )
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(110.0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  child: FormBuilderTextField(
+                    name: 'search',
+                    // initialValue: '',
+                    controller: searchController,
+                    onChanged: (value) {
+                      if (_searchDebounceTimer?.isActive ?? false) {
+                        _searchDebounceTimer?.cancel();
+                      }
+                      // _searchWord = keyword;
+                      _searchDebounceTimer = Timer(const Duration(milliseconds: 500), () {
+                        setState(() {});
+                        ref.read(faqListStateProvider.notifier).search(searchController.text);
+                      });
+                    },
+                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: kNeutralColor200,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(100.0),
+                        gapPadding: 10.0,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(100.0),
+                        gapPadding: 10.0,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(100.0),
+                        gapPadding: 10.0,
+                      ),
+                      suffixIconConstraints: const BoxConstraints(
+                        minWidth: 24,
+                        minHeight: 24,
+                      ),
+                      suffixIcon: searchController.text.isEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                              child: Icon(
+                                Icons.search,
+                                color: Colors.grey[600],
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                searchController.text = '';
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ),
+                      hintText: "검색어를 입력해 주세요.",
+                      hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                    ),
+                  ),
                 ),
-                Column(
-                  children: [
-                    const Text('b'),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Text('c'),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                    // _noticeItem(),
-                  ],
-                ),
+                TabBar(
+                    controller: tabController,
+                    indicatorWeight: 4,
+                    labelColor: kPrimaryColor,
+                    indicatorColor: kPrimaryColor,
+                    unselectedLabelColor: kNeutralColor500,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelPadding: EdgeInsets.only(
+                      top: 10.h,
+                      bottom: 10.h,
+                    ),
+                    tabs: [
+                      Text(
+                        "전체",
+                        style: kBody14BoldStyle,
+                      ),
+                      Text(
+                        "계정",
+                        style: kBody14BoldStyle,
+                      ),
+                      Text(
+                        "서비스",
+                        style: kBody14BoldStyle,
+                      ),
+                      Text(
+                        "이벤트",
+                        style: kBody14BoldStyle,
+                      ),
+                    ]),
               ],
             ),
           ),
+        ),
+        body: TabBarView(
+          controller: tabController,
+          children: [
+            PagedListView<int, CustomerSupportItemModel>(
+              pagingController: _faqPagingController,
+              builderDelegate: PagedChildBuilderDelegate<CustomerSupportItemModel>(
+                // animateTransitions: true,
+                noItemsFoundIndicatorBuilder: (context) {
+                  // return const Text('No Comments');
+                  return const SizedBox.shrink();
+                },
+                firstPageProgressIndicatorBuilder: (context) {
+                  // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+                  return const Center(child: CircularProgressIndicator());
+                },
+                itemBuilder: (context, item, index) {
+                  return _noticeItem(item);
+                },
+              ),
+            ),
+            Column(
+              children: [
+                const Text('a'),
+                // _noticeItem(),
+                // _noticeItem(),
+                // _noticeItem(),
+                // _noticeItem(),
+                // _noticeItem(),
+              ],
+            ),
+            Column(
+              children: [
+                const Text('b'),
+                // _noticeItem(),
+                // _noticeItem(),
+                // _noticeItem(),
+                // _noticeItem(),
+                // _noticeItem(),
+              ],
+            ),
+            Column(
+              children: [
+                const Text('c'),
+                // _noticeItem(),
+                // _noticeItem(),
+                // _noticeItem(),
+                // _noticeItem(),
+                // _noticeItem(),
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:cupertino_will_pop_scope/cupertino_will_pop_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -15,6 +16,12 @@ ThemeData themeData(context) => ThemeData(
             return const BorderSide(width: 1.0, color: kNeutralColor400);
           }
         }),
+      ),
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: ZoomPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoWillPopScopePageTransionsBuilder(),
+        },
       ),
       scaffoldBackgroundColor: kNeutralColor100,
       primaryColor: kPrimaryColor,

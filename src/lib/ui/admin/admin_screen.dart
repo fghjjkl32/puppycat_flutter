@@ -61,10 +61,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     super.initState();
     getDevelopMode();
 
-    devUrlController =
-        TextEditingController(text: "https://sns-api.devlabs.co.kr:28080/v1");
-    stgUrlController =
-        TextEditingController(text: "https://api.pcstg.co.kr/v1");
+    devUrlController = TextEditingController(text: "https://sns-api.devlabs.co.kr:28080/v1");
+    stgUrlController = TextEditingController(text: "https://api.pcstg.co.kr/v1");
     prdUrlController = TextEditingController(text: "");
     selUrlController = TextEditingController(text: '');
     selThumborHostController = TextEditingController(text: '');
@@ -170,205 +168,196 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
         });
       },
       child: Scaffold(
-        body: WillPopScope(
-          onWillPop: () async {
-            Navigator.pop(context);
-            return true;
-          },
-          child: SafeArea(
-              child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: [
-                    // const Text('DEV'),
-                    // const SizedBox(
-                    //   width: 20,
-                    // ),
-                    Flexible(
-                      child: TextField(
-                        controller: devUrlController,
-                        focusNode: devFocusNode,
-                        decoration: const InputDecoration(label: Text('Dev')),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        setSelectURL(devUrlController, devThumborHostUrl,
-                            devThumborKey, devThumborDomainUrl);
-                      },
-                      child: const Text('선택'),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: TextField(
-                        controller: stgUrlController,
-                        focusNode: stgFocusNode,
-                        decoration:
-                            const InputDecoration(label: Text('Staging')),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        setSelectURL(stgUrlController, stgThumborHostUrl,
-                            stgThumborKey, stgThumborDomainUrl);
-                      },
-                      child: const Text('선택'),
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        body: SafeArea(
+            child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
                 children: [
-                  const Text("개발자 모드"),
-                  SizedBox(
-                    width: 10.w,
+                  // const Text('DEV'),
+                  // const SizedBox(
+                  //   width: 20,
+                  // ),
+                  Flexible(
+                    child: TextField(
+                      controller: devUrlController,
+                      focusNode: devFocusNode,
+                      decoration: const InputDecoration(label: Text('Dev')),
+                    ),
                   ),
-                  FlutterSwitch(
-                    padding: 2,
-                    width: 52.0.w,
-                    height: 32.0.h,
-                    activeColor: kPrimaryColor,
-                    inactiveColor: kNeutralColor300,
-                    toggleSize: 28.0.w,
-                    value: developMode,
-                    borderRadius: 50.0.w,
-                    onToggle: (val) async {
-                      setDevelopMode(val);
-
-                      setState(() {
-                        developMode = val;
-                      });
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setSelectURL(devUrlController, devThumborHostUrl, devThumborKey, devThumborDomainUrl);
                     },
+                    child: const Text('선택'),
                   ),
                 ],
               ),
-              const Divider(),
-              Flexible(
-                child: TextField(
-                  controller: selUrlController,
-                  focusNode: selFocusNode,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    label: Text('Select Url'),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Flexible(
-                child: TextField(
-                  controller: selThumborHostController,
-                  focusNode: selFocusNode2,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    label: Text('thumbor Host Url'),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Flexible(
-                child: TextField(
-                  controller: selThumborKeyController,
-                  focusNode: selFocusNode3,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    label: Text('Thumbor Key'),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Flexible(
-                child: TextField(
-                  controller: selThumborDomainController,
-                  focusNode: selFocusNode4,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    label: Text('Thumbor Domain'),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
                 children: [
+                  Flexible(
+                    child: TextField(
+                      controller: stgUrlController,
+                      focusNode: stgFocusNode,
+                      decoration: const InputDecoration(label: Text('Staging')),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
                   ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('취소')),
-
-                  /// 230512 smkang
-                  /// 상단, 하단 제어 기능 불필요로 주석 처리
-                  /// 추후 완전히 필요 없다 생각되면 제거 예정
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       if (selUrlController.text.isEmpty) {
-                  //         FocusScope.of(context).requestFocus(selFocusNode);
-                  //         return;
-                  //       }
-                  //       Navigator.pushAndRemoveUntil(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //               builder: (BuildContext context) =>
-                  //                   ToonWebViewWidget(
-                  //                     url: selUrlController.text,
-                  //                   )),
-                  //           (route) => false);
-                  //       // Navigator.pop(context);
-                  //     },
-                  //     child: const Text('적용')),
-                  ElevatedButton(
-                      onPressed: () {
-                        if (selUrlController.text.isEmpty) {
-                          FocusScope.of(context).requestFocus(selFocusNode);
-                          return;
-                        } else {
-                          setUrlValue();
-                          setThumborHostUrl();
-                          setThumborKey();
-                          setThumborDomain();
-
-                          if (ref.read(userModelProvider) == null) {
-                            context.pushReplacementNamed("loginScreen");
-                          } else {
-                            ref.read(loginStateProvider.notifier).logout(
-                                  ref.read(userModelProvider)!.simpleType,
-                                  ref.read(userModelProvider)!.appKey,
-                                );
-                          }
-                        }
-                      },
-                      child: const Text('적용')),
+                    onPressed: () {
+                      setSelectURL(stgUrlController, stgThumborHostUrl, stgThumborKey, stgThumborDomainUrl);
+                    },
+                    child: const Text('선택'),
+                  ),
                 ],
-              )
-            ],
-          )),
-        ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("개발자 모드"),
+                SizedBox(
+                  width: 10.w,
+                ),
+                FlutterSwitch(
+                  padding: 2,
+                  width: 52.0.w,
+                  height: 32.0.h,
+                  activeColor: kPrimaryColor,
+                  inactiveColor: kNeutralColor300,
+                  toggleSize: 28.0.w,
+                  value: developMode,
+                  borderRadius: 50.0.w,
+                  onToggle: (val) async {
+                    setDevelopMode(val);
+
+                    setState(() {
+                      developMode = val;
+                    });
+                  },
+                ),
+              ],
+            ),
+            const Divider(),
+            Flexible(
+              child: TextField(
+                controller: selUrlController,
+                focusNode: selFocusNode,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  label: Text('Select Url'),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Flexible(
+              child: TextField(
+                controller: selThumborHostController,
+                focusNode: selFocusNode2,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  label: Text('thumbor Host Url'),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Flexible(
+              child: TextField(
+                controller: selThumborKeyController,
+                focusNode: selFocusNode3,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  label: Text('Thumbor Key'),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Flexible(
+              child: TextField(
+                controller: selThumborDomainController,
+                focusNode: selFocusNode4,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  label: Text('Thumbor Domain'),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('취소')),
+
+                /// 230512 smkang
+                /// 상단, 하단 제어 기능 불필요로 주석 처리
+                /// 추후 완전히 필요 없다 생각되면 제거 예정
+                // ElevatedButton(
+                //     onPressed: () {
+                //       if (selUrlController.text.isEmpty) {
+                //         FocusScope.of(context).requestFocus(selFocusNode);
+                //         return;
+                //       }
+                //       Navigator.pushAndRemoveUntil(
+                //           context,
+                //           MaterialPageRoute(
+                //               builder: (BuildContext context) =>
+                //                   ToonWebViewWidget(
+                //                     url: selUrlController.text,
+                //                   )),
+                //           (route) => false);
+                //       // Navigator.pop(context);
+                //     },
+                //     child: const Text('적용')),
+                ElevatedButton(
+                    onPressed: () {
+                      if (selUrlController.text.isEmpty) {
+                        FocusScope.of(context).requestFocus(selFocusNode);
+                        return;
+                      } else {
+                        setUrlValue();
+                        setThumborHostUrl();
+                        setThumborKey();
+                        setThumborDomain();
+
+                        if (ref.read(userModelProvider) == null) {
+                          context.pushReplacementNamed("loginScreen");
+                        } else {
+                          ref.read(loginStateProvider.notifier).logout(
+                                ref.read(userModelProvider)!.simpleType,
+                                ref.read(userModelProvider)!.appKey,
+                              );
+                        }
+                      }
+                    },
+                    child: const Text('적용')),
+              ],
+            )
+          ],
+        )),
       ),
     );
   }

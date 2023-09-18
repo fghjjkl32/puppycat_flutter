@@ -5,6 +5,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/widget/crop_viewer.dart';
@@ -47,8 +48,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     SpecialItemPosition? specialItemPosition,
     this.closeOnComplete = false,
     InstaAssetCropDelegate cropDelegate = const InstaAssetCropDelegate(),
-  })  : _cropController =
-            InstaAssetsCropController(keepScrollOffset, cropDelegate),
+  })  : _cropController = InstaAssetsCropController(keepScrollOffset, cropDelegate),
         super(
           shouldRevertGrid: false,
           specialItemPosition: specialItemPosition ?? SpecialItemPosition.none,
@@ -104,9 +104,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   /// Returns thumbnail [index] position in scroll view
   double indexPosition(BuildContext context, int index) {
     final row = (index / gridCount).floor();
-    final size =
-        (MediaQuery.of(context).size.width - itemSpacing * (gridCount - 1)) /
-            gridCount;
+    final size = (MediaQuery.of(context).size.width - itemSpacing * (gridCount - 1)) / gridCount;
     return row * size + (row * itemSpacing);
   }
 
@@ -131,16 +129,14 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     if (_cropController.previewAsset.value != null) return;
 
     if (p.selectedAssets.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback(
-          (_) => _cropController.previewAsset.value = p.selectedAssets.last);
+      WidgetsBinding.instance.addPostFrameCallback((_) => _cropController.previewAsset.value = p.selectedAssets.last);
     }
 
     // when asset list is available and no asset is selected,
     // preview the first of the list
     if (shouldDisplayAssets && p.selectedAssets.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
-        final list =
-            await p.currentPath?.path.getAssetListRange(start: 0, end: 1);
+        final list = await p.currentPath?.path.getAssetListRange(start: 0, end: 1);
         if (list?.isNotEmpty ?? false) {
           _cropController.previewAsset.value = list!.first;
         }
@@ -160,12 +156,9 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     }
 
     // if is preview asset, unselect it
-    if (provider.selectedAssets.isNotEmpty &&
-        _cropController.previewAsset.value == currentAsset) {
+    if (provider.selectedAssets.isNotEmpty && _cropController.previewAsset.value == currentAsset) {
       selectAsset(context, currentAsset, index, true);
-      _cropController.previewAsset.value = provider.selectedAssets.isEmpty
-          ? currentAsset
-          : provider.selectedAssets.last;
+      _cropController.previewAsset.value = provider.selectedAssets.isEmpty ? currentAsset : provider.selectedAssets.last;
       return;
     }
 
@@ -193,9 +186,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     final selectedAssets = provider.selectedAssets;
     if (prevCount < selectedAssets.length) {
       _cropController.previewAsset.value = asset;
-    } else if (selected &&
-        asset == _cropController.previewAsset.value &&
-        selectedAssets.isNotEmpty) {
+    } else if (selected && asset == _cropController.previewAsset.value && selectedAssets.isNotEmpty) {
       _cropController.previewAsset.value = selectedAssets.last;
     }
 
@@ -209,10 +200,8 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     double position,
     double reducedPosition,
   ) {
-    final isScrollUp = gridScrollController.position.userScrollDirection ==
-        ScrollDirection.reverse;
-    final isScrollDown = gridScrollController.position.userScrollDirection ==
-        ScrollDirection.forward;
+    final isScrollUp = gridScrollController.position.userScrollDirection == ScrollDirection.reverse;
+    final isScrollDown = gridScrollController.position.userScrollDirection == ScrollDirection.forward;
 
     if (notification is ScrollEndNotification) {
       _lastEndScrollOffset = gridScrollController.offset;
@@ -224,26 +213,17 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     }
 
     // expand crop view
-    if (isScrollDown &&
-        gridScrollController.offset <= 0 &&
-        position < _kExtendedCropViewPosition) {
+    if (isScrollDown && gridScrollController.offset <= 0 && position < _kExtendedCropViewPosition) {
       // if scroll at edge, compute position based on scroll
       if (_lastScrollOffset > gridScrollController.offset) {
-        _cropViewPosition.value -=
-            (_lastScrollOffset.abs() - gridScrollController.offset.abs()) * 6;
+        _cropViewPosition.value -= (_lastScrollOffset.abs() - gridScrollController.offset.abs()) * 6;
       } else {
         // otherwise just expand it
         _expandCropView();
       }
-    } else if (isScrollUp &&
-        (gridScrollController.offset - _lastEndScrollOffset) *
-                _kScrollMultiplier >
-            cropViewHeight(context) - position &&
-        position > reducedPosition) {
+    } else if (isScrollUp && (gridScrollController.offset - _lastEndScrollOffset) * _kScrollMultiplier > cropViewHeight(context) - position && position > reducedPosition) {
       // reduce crop view
-      _cropViewPosition.value = cropViewHeight(context) -
-          (gridScrollController.offset - _lastEndScrollOffset) *
-              _kScrollMultiplier;
+      _cropViewPosition.value = cropViewHeight(context) - (gridScrollController.offset - _lastEndScrollOffset) * _kScrollMultiplier;
     }
 
     _lastScrollOffset = gridScrollController.offset;
@@ -268,8 +248,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   Widget pathEntitySelector(BuildContext context) {
     Widget selector(BuildContext context) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4)
-            .copyWith(top: 8, bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 4).copyWith(top: 8, bottom: 12),
         child: TextButton(
           style: TextButton.styleFrom(
             foregroundColor: theme.splashColor,
@@ -281,8 +260,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
             Feedback.forTap(context);
             isSwitchingPath.value = !isSwitchingPath.value;
           },
-          child: Selector<DefaultAssetPickerProvider,
-              PathWrapper<AssetPathEntity>?>(
+          child: Selector<DefaultAssetPickerProvider, PathWrapper<AssetPathEntity>?>(
             selector: (_, DefaultAssetPickerProvider p) => p.currentPath,
             builder: (_, PathWrapper<AssetPathEntity>? p, Widget? w) => Row(
               mainAxisSize: MainAxisSize.min,
@@ -290,9 +268,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 if (p != null)
                   Flexible(
                     child: Text(
-                      isPermissionLimited && p.path.isAll
-                          ? textDelegate.accessiblePathName
-                          : p.path.name,
+                      isPermissionLimited && p.path.isAll ? textDelegate.accessiblePathName : p.path.name,
                       style: theme.textTheme.bodyLarge?.copyWith(fontSize: 16),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -334,12 +310,9 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
         builder: (_, DefaultAssetPickerProvider p, __) {
           return TextButton(
             style: TextButton.styleFrom(
-              foregroundColor:
-                  p.isSelectedNotEmpty ? themeColor : theme.dividerColor,
+              foregroundColor: p.isSelectedNotEmpty ? themeColor : theme.dividerColor,
             ),
-            onPressed: isLoaded && p.isSelectedNotEmpty
-                ? () => onConfirm(context)
-                : null,
+            onPressed: isLoaded && p.isSelectedNotEmpty ? () => onConfirm(context) : null,
             child: isLoaded
                 ? Text(p.isSelectedNotEmpty && !isSingleAssetMode
                     ? '다음'
@@ -362,10 +335,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   @override
   Widget androidLayout(BuildContext context) {
     // height of appbar + cropview + path selector row
-    final topWidgetHeight = cropViewHeight(context) +
-        kToolbarHeight +
-        _kPathSelectorRowHeight +
-        MediaQuery.of(context).padding.top;
+    final topWidgetHeight = cropViewHeight(context) + kToolbarHeight + _kPathSelectorRowHeight + MediaQuery.of(context).padding.top;
 
     return ChangeNotifierProvider<DefaultAssetPickerProvider>.value(
       value: provider,
@@ -373,36 +343,21 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           valueListenable: _cropViewPosition,
           builder: (context, position, child) {
             // the top position when the crop view is reduced
-            final topReducedPosition = -(cropViewHeight(context) -
-                _kReducedCropViewHeight +
-                kToolbarHeight);
-            position =
-                position.clamp(topReducedPosition, _kExtendedCropViewPosition);
+            final topReducedPosition = -(cropViewHeight(context) - _kReducedCropViewHeight + kToolbarHeight);
+            position = position.clamp(topReducedPosition, _kExtendedCropViewPosition);
             // the height of the crop view visible on screen
-            final cropViewVisibleHeight = (topWidgetHeight +
-                    position -
-                    MediaQuery.of(context).padding.top -
-                    kToolbarHeight -
-                    _kPathSelectorRowHeight)
-                .clamp(_kReducedCropViewHeight, topWidgetHeight);
+            final cropViewVisibleHeight = (topWidgetHeight + position - MediaQuery.of(context).padding.top - kToolbarHeight - _kPathSelectorRowHeight).clamp(_kReducedCropViewHeight, topWidgetHeight);
             // opacity is calculated based on the position of the crop view
-            final opacity =
-                ((position / -topReducedPosition) + 1).clamp(0.4, 1.0);
-            final animationDuration = position == topReducedPosition ||
-                    position == _kExtendedCropViewPosition
-                ? const Duration(milliseconds: 250)
-                : Duration.zero;
+            final opacity = ((position / -topReducedPosition) + 1).clamp(0.4, 1.0);
+            final animationDuration = position == topReducedPosition || position == _kExtendedCropViewPosition ? const Duration(milliseconds: 250) : Duration.zero;
 
-            double gridHeight = MediaQuery.of(context).size.height -
-                kToolbarHeight -
-                _kReducedCropViewHeight;
+            double gridHeight = MediaQuery.of(context).size.height - kToolbarHeight - _kReducedCropViewHeight;
             // when not assets are displayed, compute the exact height to show the loader
             if (!provider.hasAssetsToDisplay) {
               gridHeight -= cropViewHeight(context) - -_cropViewPosition.value;
             }
             final topPadding = topWidgetHeight + position;
-            if (gridScrollController.hasClients &&
-                _scrollTargetOffset != null) {
+            if (gridScrollController.hasClients && _scrollTargetOffset != null) {
               gridScrollController.jumpTo(_scrollTargetOffset!);
             }
             _scrollTargetOffset = null;
@@ -450,8 +405,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                                 _expandCropView();
                                 // stop scroll event
                                 if (gridScrollController.hasClients) {
-                                  gridScrollController
-                                      .jumpTo(gridScrollController.offset);
+                                  gridScrollController.jumpTo(gridScrollController.offset);
                                 }
                               },
                               child: CropViewer(
@@ -478,8 +432,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                               child: Container(
                                 height: _kPathSelectorRowHeight,
                                 decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(10)),
+                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
                                   color: Colors.white,
                                   boxShadow: [
                                     BoxShadow(
@@ -491,13 +444,10 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                                   ],
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Row(
                                         children: [
@@ -510,8 +460,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                                           ),
                                           Text(
                                             "프레임 비율을 선택해 주세요!",
-                                            style: kBody13RegularStyle.copyWith(
-                                                color: kTextBodyColor),
+                                            style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
                                           ),
                                         ],
                                       ),
@@ -519,15 +468,13 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                              if (_cropController
-                                                  .isCropViewReady.value) {
-                                                _cropController
-                                                    .nextCropRatio(0);
+                                              if (_cropController.isCropViewReady.value) {
+                                                _cropController.nextCropRatio(0);
                                               }
                                             },
-                                            child: Image.asset(
-                                              'assets/image/feed/icon/small_size/icon_3_4.png',
-                                              height: 24.w,
+                                            child: Lottie.asset(
+                                              'assets/lottie/icon_frame_3-4.json',
+                                              repeat: false,
                                             ),
                                           ),
                                           const SizedBox(
@@ -535,15 +482,13 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                                           ),
                                           GestureDetector(
                                             onTap: () {
-                                              if (_cropController
-                                                  .isCropViewReady.value) {
-                                                _cropController
-                                                    .nextCropRatio(1);
+                                              if (_cropController.isCropViewReady.value) {
+                                                _cropController.nextCropRatio(1);
                                               }
                                             },
-                                            child: Image.asset(
-                                              'assets/image/feed/icon/small_size/icon_1_1.png',
-                                              height: 24.w,
+                                            child: Lottie.asset(
+                                              'assets/lottie/icon_frame_1-1.json',
+                                              repeat: false,
                                             ),
                                           ),
                                           const SizedBox(
@@ -551,15 +496,13 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                                           ),
                                           GestureDetector(
                                             onTap: () {
-                                              if (_cropController
-                                                  .isCropViewReady.value) {
-                                                _cropController
-                                                    .nextCropRatio(2);
+                                              if (_cropController.isCropViewReady.value) {
+                                                _cropController.nextCropRatio(2);
                                               }
                                             },
-                                            child: Image.asset(
-                                              'assets/image/feed/icon/small_size/icon_4_3.png',
-                                              height: 20.w,
+                                            child: Lottie.asset(
+                                              'assets/lottie/icon_frame_4-3.json',
+                                              repeat: false,
                                             ),
                                           ),
                                         ],
@@ -598,18 +541,14 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
 
   /// Returns the [ListView] containing the albums
   Widget _buildListAlbums(context) {
-    return Consumer<DefaultAssetPickerProvider>(
-        builder: (BuildContext context, provider, __) {
+    return Consumer<DefaultAssetPickerProvider>(builder: (BuildContext context, provider, __) {
       if (isAppleOS) return pathEntityListWidget(context);
 
       // NOTE: fix position on android, quite hacky could be optimized
       return ValueListenableBuilder<bool>(
         valueListenable: isSwitchingPath,
-        builder: (_, bool isSwitchingPath, Widget? child) =>
-            Transform.translate(
-          offset: isSwitchingPath
-              ? Offset(0, kToolbarHeight + MediaQuery.of(context).padding.top)
-              : Offset.zero,
+        builder: (_, bool isSwitchingPath, Widget? child) => Transform.translate(
+          offset: isSwitchingPath ? Offset(0, kToolbarHeight + MediaQuery.of(context).padding.top) : Offset.zero,
           child: Stack(
             children: [pathEntityListWidget(context)],
           ),
@@ -622,8 +561,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   Widget _buildGrid(BuildContext context) {
     return Consumer<DefaultAssetPickerProvider>(
       builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
-        final bool shouldDisplayAssets =
-            p.hasAssetsToDisplay || shouldBuildSpecialItem;
+        final bool shouldDisplayAssets = p.hasAssetsToDisplay || shouldBuildSpecialItem;
         _initializePreviewAsset(p, shouldDisplayAssets);
 
         return AnimatedSwitcher(
@@ -660,9 +598,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       width: _kIndicatorSize,
       height: _kIndicatorSize,
       decoration: BoxDecoration(
-        border: isSelected
-            ? Border.all(color: kPrimaryColor.withOpacity(0.7), width: 2.w)
-            : Border.all(color: kNeutralColor100.withOpacity(0.7), width: 2.w),
+        border: isSelected ? Border.all(color: kPrimaryColor.withOpacity(0.7), width: 2.w) : Border.all(color: kNeutralColor100.withOpacity(0.7), width: 2.w),
         shape: BoxShape.circle,
       ),
       child: Container(
@@ -678,8 +614,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 ? Center(
                     child: Text(
                       (indexSelected + 1).toString(),
-                      style:
-                          kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                      style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
                     ),
                   )
                 : const SizedBox.shrink(),
@@ -695,15 +630,11 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
 
         return Positioned.fill(
           child: GestureDetector(
-            onTap: isPreviewEnabled
-                ? () => viewAsset(context, index, asset)
-                : null,
+            onTap: isPreviewEnabled ? () => viewAsset(context, index, asset) : null,
             child: AnimatedContainer(
               duration: switchingPathDuration,
               decoration: BoxDecoration(
-                color: isPreview
-                    ? theme.unselectedWidgetColor.withOpacity(.5)
-                    : theme.colorScheme.background.withOpacity(.1),
+                color: isPreview ? theme.unselectedWidgetColor.withOpacity(.5) : theme.colorScheme.background.withOpacity(.1),
                 border: isSelected && !isSingleAssetMode
                     ? Border.all(
                         color: kPrimaryColor.withOpacity(0.7),
@@ -717,8 +648,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 child: isSelected && !isSingleAssetMode
                     ? GestureDetector(
                         behavior: HitTestBehavior.opaque,
-                        onTap: () =>
-                            selectAsset(context, asset, index, isSelected),
+                        onTap: () => selectAsset(context, asset, index, isSelected),
                         child: innerSelector,
                       )
                     : innerSelector,
@@ -731,6 +661,5 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   }
 
   @override
-  Widget selectedBackdrop(BuildContext context, int index, AssetEntity asset) =>
-      const SizedBox.shrink();
+  Widget selectedBackdrop(BuildContext context, int index, AssetEntity asset) => const SizedBox.shrink();
 }

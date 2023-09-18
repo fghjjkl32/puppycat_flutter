@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -76,91 +77,78 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.of(context).pop();
-
-        return false;
-      },
-      child: Material(
-        child: WillPopScope(
-          onWillPop: () async {
-            Navigator.of(context).pop();
-            return false;
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: const Text(
-                "내 글 관리",
-              ),
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(
-                  Puppycat_social.icon_back,
-                  size: 40,
-                ),
-              ),
-              bottom: TabBar(
-                  controller: tabController,
-                  indicatorWeight: 3,
-                  labelColor: kPrimaryColor,
-                  indicatorColor: kPrimaryColor,
-                  unselectedLabelColor: kNeutralColor500,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelPadding: EdgeInsets.only(
-                    top: 10.h,
-                    bottom: 10.h,
-                  ),
-                  tabs: [
-                    Consumer(builder: (context, ref, child) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "일상글",
-                            style: kBody14BoldStyle,
-                          ),
-                          SizedBox(
-                            width: 6.w,
-                          ),
-                          Text(
-                            "${ref.watch(myPostStateProvider).myPostState.totalCount}",
-                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                          ),
-                        ],
-                      );
-                    }),
-                    Consumer(builder: (context, ref, child) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "보관글",
-                            style: kBody14BoldStyle,
-                          ),
-                          SizedBox(
-                            width: 6.w,
-                          ),
-                          Text(
-                            "${ref.watch(myPostStateProvider).myKeepState.totalCount}",
-                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                          ),
-                        ],
-                      );
-                    }),
-                  ]),
-            ),
-            body: TabBarView(
-              controller: tabController,
-              children: [
-                _firstTabBody(),
-                _secondTabBody(),
-              ],
+    return Material(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text(
+            "내 글 관리",
+          ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Puppycat_social.icon_back,
+              size: 40,
             ),
           ),
+          bottom: TabBar(
+              controller: tabController,
+              indicatorWeight: 3,
+              labelColor: kPrimaryColor,
+              indicatorColor: kPrimaryColor,
+              unselectedLabelColor: kNeutralColor500,
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelPadding: EdgeInsets.only(
+                top: 10.h,
+                bottom: 10.h,
+              ),
+              tabs: [
+                Consumer(builder: (context, ref, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "일상글",
+                        style: kBody14BoldStyle,
+                      ),
+                      SizedBox(
+                        width: 6.w,
+                      ),
+                      Text(
+                        "${ref.watch(myPostStateProvider).myPostState.totalCount}",
+                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                      ),
+                    ],
+                  );
+                }),
+                Consumer(builder: (context, ref, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "보관글",
+                        style: kBody14BoldStyle,
+                      ),
+                      SizedBox(
+                        width: 6.w,
+                      ),
+                      Text(
+                        "${ref.watch(myPostStateProvider).myKeepState.totalCount}",
+                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                      ),
+                    ],
+                  );
+                }),
+              ]),
+        ),
+        body: TabBarView(
+          controller: tabController,
+          children: [
+            _firstTabBody(),
+            _secondTabBody(),
+          ],
         ),
       ),
     );
