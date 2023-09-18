@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -123,13 +125,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return FocusDetector(
+      onFocusLost: () async {
         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
         ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-        Navigator.of(context).pop();
-
-        return false;
       },
       child: Material(
         child: SafeArea(
@@ -164,6 +163,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         child: showLottieAnimation
                             ? Lottie.asset(
                                 'assets/lottie/icon_more_header.json',
+                                repeat: false,
                               )
                             : Padding(
                                 padding: const EdgeInsets.only(right: 8.0),
@@ -424,25 +424,51 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                     style: kTitle16ExtraBoldStyle.copyWith(color: kTextSubTitleColor),
                                                                   ),
                                                                 ),
-                                                                Expanded(
-                                                                  child: ListView.builder(
-                                                                    controller: commentController,
-                                                                    itemCount: contentLikeUserList.length,
-                                                                    padding: EdgeInsets.only(bottom: 80.h),
-                                                                    itemBuilder: (BuildContext context, int commentIndex) {
-                                                                      return FavoriteItemWidget(
-                                                                        profileImage: contentLikeUserList[commentIndex].profileImgUrl,
-                                                                        userName: contentLikeUserList[commentIndex].nick!,
-                                                                        content: contentLikeUserList[commentIndex].intro!,
-                                                                        isSpecialUser: contentLikeUserList[commentIndex].isBadge == 1,
-                                                                        isFollow: contentLikeUserList[commentIndex].followState == 1,
-                                                                        followerIdx: contentLikeUserList[commentIndex].memberIdx!,
-                                                                        contentsIdx: lists[index].idx,
-                                                                        oldMemberIdx: 0,
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                ),
+                                                                contentLikeUserList.isEmpty
+                                                                    ? Expanded(
+                                                                        child: Container(
+                                                                          color: kNeutralColor100,
+                                                                          child: Center(
+                                                                            child: Column(
+                                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                                              children: [
+                                                                                Image.asset(
+                                                                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                                                                  width: 88,
+                                                                                  height: 88,
+                                                                                ),
+                                                                                const SizedBox(
+                                                                                  height: 12,
+                                                                                ),
+                                                                                Text(
+                                                                                  '좋아요 한 유저가 없습니다.',
+                                                                                  textAlign: TextAlign.center,
+                                                                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    : Expanded(
+                                                                        child: ListView.builder(
+                                                                          controller: commentController,
+                                                                          itemCount: contentLikeUserList.length,
+                                                                          padding: EdgeInsets.only(bottom: 80.h),
+                                                                          itemBuilder: (BuildContext context, int commentIndex) {
+                                                                            return FavoriteItemWidget(
+                                                                              profileImage: contentLikeUserList[commentIndex].profileImgUrl,
+                                                                              userName: contentLikeUserList[commentIndex].nick!,
+                                                                              content: contentLikeUserList[commentIndex].intro!,
+                                                                              isSpecialUser: contentLikeUserList[commentIndex].isBadge == 1,
+                                                                              isFollow: contentLikeUserList[commentIndex].followState == 1,
+                                                                              followerIdx: contentLikeUserList[commentIndex].memberIdx!,
+                                                                              contentsIdx: lists[index].idx,
+                                                                              oldMemberIdx: 0,
+                                                                            );
+                                                                          },
+                                                                        ),
+                                                                      ),
                                                               ],
                                                             ),
                                                           ],
@@ -766,12 +792,19 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 3.h,
-                ),
-                Text(
-                  data.intro == null || data.intro == "" ? "소개글이 없습니다." : "${data.intro}",
-                  style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                Visibility(
+                  visible: data.intro != "",
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Text(
+                        "${data.intro}",
+                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                      ),
+                    ],
+                  ),
                 ),
                 GestureDetector(
                   onTap: () {

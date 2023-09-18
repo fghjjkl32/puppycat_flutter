@@ -8,6 +8,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:matrix/matrix.dart' hide Visibility;
 import 'package:pet_mobile_social_flutter/common/util/extensions/date_time_extension.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/filtered_timeline_extension.dart';
@@ -22,6 +23,7 @@ import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_msg_item.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -55,6 +57,10 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     _client = (ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${userInfoModel.userModel!.idx}'))).controller as MatrixChatClientController).client;
     readMarkerEventId = widget.room.fullyRead;
     loadTimelineFuture = _getTimeline(eventContextId: readMarkerEventId);
+
+    // Future(() {
+    //   ref.watch(userInformationStateProvider.notifier).getInitUserInformation(ref.watch(userModelProvider)?.idx, widget.memberIdx);
+    // });
   }
 
   Future<void> _getTimeline({
@@ -121,7 +127,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       replyEvent = _timeline?.events[replyModel.idx];
     }
 
-    if(widget.room.isAbandonedDMRoom) {
+    if (widget.room.isAbandonedDMRoom) {
       // widget.room.client.startDirectChat(widget.room.getDmID(), enableEncryption: false);
       await widget.room.client.inviteUser(widget.room.id, widget.room.getDmID());
     }
@@ -616,10 +622,12 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       });
       return;
     }
-    await _scrollController.scrollToIndex(
-      eventIndex,
-      preferPosition: AutoScrollPosition.middle,
-    ).then((value) => ref.read(chatBubbleFocusProvider.notifier).state = eventIndex);
+    await _scrollController
+        .scrollToIndex(
+          eventIndex,
+          preferPosition: AutoScrollPosition.middle,
+        )
+        .then((value) => ref.read(chatBubbleFocusProvider.notifier).state = eventIndex);
     _updateScrollController();
   }
 
@@ -683,12 +691,11 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
               ),
             ),
           ),
-          child: WillPopScope(
-            onWillPop: () async {
+          child: FocusDetector(
+            onFocusLost: () async {
               ref.read(chatReplyProvider.notifier).state = null;
               ref.read(chatEditProvider.notifier).state = null;
               setReadMarker();
-              return true;
             },
             child: GestureDetector(
               onTap: () {

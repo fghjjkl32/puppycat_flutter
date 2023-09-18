@@ -225,10 +225,6 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                           final tagList = fullSearchState.tag_list;
                           final bestList = fullSearchState.best_list;
 
-                          print(fullSearchState);
-                          print(fullSearchState);
-                          print(fullSearchState);
-
                           if (tagList!.isEmpty && nickList!.isEmpty) {
                             return ListView(
                               children: [
@@ -696,7 +692,29 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                   : ref.watch(searchProvider).when(
                       data: (searches) {
                         if (searches.isEmpty) {
-                          return Center(child: Text('No results'));
+                          return Container(
+                            color: kNeutralColor100,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                    width: 88,
+                                    height: 88,
+                                  ),
+                                  const SizedBox(
+                                    height: 12,
+                                  ),
+                                  Text(
+                                    '최근 검색어가 없습니다.',
+                                    textAlign: TextAlign.center,
+                                    style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
                         }
 
                         return ListView.builder(
@@ -826,7 +844,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                             } else if (search.content == "hashtag" || search.content == "search") {
                               return InkWell(
                                 onTap: () {
-                                  search.content == "search" ? _searchController.text = search.name! : context.push("/home/search/${search.content!}/0");
+                                  search.content == "search" ? _searchController.text = search.name! : context.push("/home/search/${search.name}/0");
                                 },
                                 child: Padding(
                                   padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),

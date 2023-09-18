@@ -1,7 +1,9 @@
+import 'package:cupertino_will_pop_scope/cupertino_will_pop_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
@@ -30,7 +32,8 @@ class FeedEditScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return WillPopScope(
+    return ConditionalWillPopScope(
+      shouldAddCallback: true,
       onWillPop: () async {
         showDialog(
           context: context,
@@ -75,162 +78,116 @@ class FeedEditScreen extends ConsumerWidget {
         );
         return false;
       },
-      child: WillPopScope(
-        onWillPop: () async {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return CustomDialog(
-                content: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                  child: Column(
-                    children: [
-                      Text(
-                        "이전으로 돌아가시겠어요?",
-                        style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                      ),
-                      SizedBox(
-                        height: 4.h,
-                      ),
-                      Text(
-                        "지금 돌아가시면\n입력한 내용이 모두 삭제됩니다.",
-                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-                confirmTap: () {
-                  context.pop();
-                  context.pop();
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text('게시물 수정'),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
 
+              ref.read(feedWriteProvider.notifier).resetTag();
+              ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+              ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
+            },
+            icon: const Icon(
+              Puppycat_social.icon_close_large,
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text(
+                '등록',
+                style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+              ),
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return WillPopScope(
+                      onWillPop: () async => false,
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Lottie.asset(
+                              'assets/lottie/icon_loading.json',
+                              fit: BoxFit.fill,
+                              width: 80,
+                              height: 80,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+
+                final result = await ref.watch(feedWriteProvider.notifier).putFeed(
+                      memberIdx: ref.watch(userModelProvider)!.idx,
+                      isView: ref.watch(feedWriteButtonSelectedProvider),
+                      location: ref.watch(feedWriteLocationInformationProvider.notifier).state,
+                      contents: ref.watch(feedEditContentProvider.notifier).state.text,
+                      feedState: ref.watch(feedWriteProvider),
+                      contentIdx: contentIdx,
+                      initialTagList: ref.read(feedWriteProvider.notifier).state.initialTagList,
+                    );
+
+                context.pop();
+
+                if (result.result) {
                   ref.read(feedWriteProvider.notifier).resetTag();
                   ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
                   ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
-                },
-                cancelTap: () {
-                  context.pop();
-                },
-                confirmWidget: Text(
-                  "삭제",
-                  style: kButton14MediumStyle.copyWith(color: kBadgeColor),
-                ),
-              );
-            },
-          );
-          return false;
-        },
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: const Text('게시물 수정'),
-            leading: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-
-                ref.read(feedWriteProvider.notifier).resetTag();
-                ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
-                ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
-              },
-              icon: const Icon(
-                Puppycat_social.icon_close_large,
-              ),
-            ),
-            actions: [
-              TextButton(
-                child: Text(
-                  '등록',
-                  style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
-                ),
-                onPressed: () async {
+                  context.pushReplacement("/home");
+                } else {
                   showDialog(
-                    context: context,
                     barrierDismissible: false,
-                    builder: (BuildContext context) {
-                      return WillPopScope(
-                        onWillPop: () async => false,
-                        child: Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.6),
+                    context: context,
+                    builder: (context) {
+                      return CustomDialog(
+                          content: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "게시물을 등록할 수 없습니다.",
+                                  style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                ),
+                                SizedBox(
+                                  height: 4.h,
+                                ),
+                                Text(
+                                  "죄송합니다.\n게시물 등록 중 오류가 발생하였습니다.\n다시 시도해 주세요.",
+                                  style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Lottie.asset(
-                                'assets/lottie/icon_loading.json',
-                                fit: BoxFit.fill,
-                                width: 80,
-                                height: 80,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+                          confirmTap: () {
+                            context.pop();
+                          },
+                          confirmWidget: Text(
+                            "확인",
+                            style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                          ));
                     },
                   );
-
-                  final result = await ref.watch(feedWriteProvider.notifier).putFeed(
-                        memberIdx: ref.watch(userModelProvider)!.idx,
-                        isView: ref.watch(feedWriteButtonSelectedProvider),
-                        location: ref.watch(feedWriteLocationInformationProvider.notifier).state,
-                        contents: ref.watch(feedEditContentProvider.notifier).state.text,
-                        feedState: ref.watch(feedWriteProvider),
-                        contentIdx: contentIdx,
-                        initialTagList: ref.read(feedWriteProvider.notifier).state.initialTagList,
-                      );
-
-                  context.pop();
-
-                  if (result.result) {
-                    ref.read(feedWriteProvider.notifier).resetTag();
-                    ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
-                    ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
-                    context.pushReplacement("/home");
-                  } else {
-                    showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (context) {
-                        return CustomDialog(
-                            content: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "게시물을 등록할 수 없습니다.",
-                                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                                  ),
-                                  SizedBox(
-                                    height: 4.h,
-                                  ),
-                                  Text(
-                                    "죄송합니다.\n게시물 등록 중 오류가 발생하였습니다.\n다시 시도해 주세요.",
-                                    style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            confirmTap: () {
-                              context.pop();
-                            },
-                            confirmWidget: Text(
-                              "확인",
-                              style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
-                            ));
-                      },
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
-          body: EditFeedView(
-            feedData: feedData,
-          ),
+                }
+              },
+            ),
+          ],
+        ),
+        body: EditFeedView(
+          feedData: feedData,
         ),
       ),
     );

@@ -150,6 +150,7 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
           showLottieAnimation
               ? Lottie.asset(
                   'assets/lottie/icon_more_header.json',
+                  repeat: false,
                 )
               : const Icon(
                   Puppycat_social.icon_more_header,

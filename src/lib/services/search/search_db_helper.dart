@@ -15,13 +15,23 @@ class SearchDbHelper extends _$SearchDbHelper {
   @override
   int get schemaVersion => 6;
 
-  Future<List<Searche>> getAllSearches() => (select(searches)
-        ..orderBy(
-            [(t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc)]))
-      .get();
+  Future<List<Searche>> getAllSearches() => (select(searches)..orderBy([(t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc)])).get();
 
-  Future insertSearch(SearchesCompanion search) =>
-      into(searches).insert(search);
+  Future insertSearch(SearchesCompanion search) async {
+    final existingSearches = await getAllSearches();
+    final existingSearch = existingSearches.firstWhere(
+      (e) => e.name == search.name.value,
+      orElse: () => Searche(id: 0),
+    );
+
+    if (existingSearch != null) {
+      // 이미 존재하는 검색어를 삭제합니다.
+      await deleteSearch(existingSearch);
+    }
+
+    // 새로운 검색어를 삽입합니다.
+    into(searches).insert(search);
+  }
 
   Future deleteSearch(Searche search) => delete(searches).delete(search);
 

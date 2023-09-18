@@ -125,6 +125,8 @@ dependencies:
   firebase_remote_config: ^4.2.5
   cached_network_image: ^3.2.3
   app_install_date: ^0.1.2
+  focus_detector: ^2.0.1
+  cupertino_will_pop_scope: ^1.2.1
 
 dev_dependencies:
   flutter_test:

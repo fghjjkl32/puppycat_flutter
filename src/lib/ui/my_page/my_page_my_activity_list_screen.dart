@@ -70,91 +70,78 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.of(context).pop();
-
-        return false;
-      },
-      child: Material(
-        child: WillPopScope(
-          onWillPop: () async {
-            Navigator.of(context).pop();
-            return false;
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: const Text(
-                "내 활동",
-              ),
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(
-                  Puppycat_social.icon_back,
-                  size: 40,
-                ),
-              ),
-              bottom: TabBar(
-                  controller: tabController,
-                  indicatorWeight: 3,
-                  labelColor: kPrimaryColor,
-                  indicatorColor: kPrimaryColor,
-                  unselectedLabelColor: kNeutralColor500,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  labelPadding: EdgeInsets.only(
-                    top: 10.h,
-                    bottom: 10.h,
-                  ),
-                  tabs: [
-                    Consumer(builder: (context, ref, child) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "좋아요",
-                            style: kBody14BoldStyle,
-                          ),
-                          SizedBox(
-                            width: 6.w,
-                          ),
-                          Text(
-                            "${ref.watch(myLikeStateProvider).totalCount}",
-                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                          ),
-                        ],
-                      );
-                    }),
-                    Consumer(builder: (context, ref, child) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "저장",
-                            style: kBody14BoldStyle,
-                          ),
-                          SizedBox(
-                            width: 6.w,
-                          ),
-                          Text(
-                            "${ref.watch(mySaveStateProvider).totalCount}",
-                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                          ),
-                        ],
-                      );
-                    }),
-                  ]),
-            ),
-            body: TabBarView(
-              controller: tabController,
-              children: [
-                _firstTabBody(),
-                _secondTabBody(),
-              ],
+    return Material(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text(
+            "내 활동",
+          ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(
+              Puppycat_social.icon_back,
+              size: 40,
             ),
           ),
+          bottom: TabBar(
+              controller: tabController,
+              indicatorWeight: 3,
+              labelColor: kPrimaryColor,
+              indicatorColor: kPrimaryColor,
+              unselectedLabelColor: kNeutralColor500,
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelPadding: EdgeInsets.only(
+                top: 10.h,
+                bottom: 10.h,
+              ),
+              tabs: [
+                Consumer(builder: (context, ref, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "좋아요",
+                        style: kBody14BoldStyle,
+                      ),
+                      SizedBox(
+                        width: 6.w,
+                      ),
+                      Text(
+                        "${ref.watch(myLikeStateProvider).totalCount}",
+                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                      ),
+                    ],
+                  );
+                }),
+                Consumer(builder: (context, ref, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "저장",
+                        style: kBody14BoldStyle,
+                      ),
+                      SizedBox(
+                        width: 6.w,
+                      ),
+                      Text(
+                        "${ref.watch(mySaveStateProvider).totalCount}",
+                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                      ),
+                    ],
+                  );
+                }),
+              ]),
+        ),
+        body: TabBarView(
+          controller: tabController,
+          children: [
+            _firstTabBody(),
+            _secondTabBody(),
+          ],
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/follower_item_widget.dart';
@@ -207,77 +208,79 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
     bool isFollowEmpty = ref.watch(chatFollowListEmptyProvider);
     bool isViewEmptyPage = isFavoriteEmpty && isFollowEmpty;
 
-    return isViewEmptyPage ? Builder(builder: (context) {
-      ref.read(chatFavoriteUserStateProvider).notifyPageRequestListeners(1);
-      ref.read(chatFollowUserStateProvider).notifyPageRequestListeners(1);
-      return _buildNoItemsFound('메시지.검색해서 메시지 전송 상대를 찾아보세요'.tr());
-    }) : CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: ListTile(
-            dense: true,
-            minVerticalPadding: 0,
-            visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
-            title: Text(
-              '메시지.즐겨찾기'.tr(),
-              style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2),
-            ),
-            onTap: () {
-              setState(() {
-                _isFavoriteExpanded = !_isFavoriteExpanded;
-              });
-            },
-            contentPadding: const EdgeInsets.all(0),
-            trailing: _isFavoriteExpanded
-                ? const ImageIcon(
-                    AssetImage('assets/image/chat/icon_up.png'),
-                    size: 20,
-                  )
-                : const ImageIcon(
-                    AssetImage('assets/image/chat/icon_down.png'),
-                    size: 20,
+    return isViewEmptyPage
+        ? Builder(builder: (context) {
+            ref.read(chatFavoriteUserStateProvider).notifyPageRequestListeners(1);
+            ref.read(chatFollowUserStateProvider).notifyPageRequestListeners(1);
+            return _buildNoItemsFound('메시지.검색해서 메시지 전송 상대를 찾아보세요'.tr());
+          })
+        : CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: ListTile(
+                  dense: true,
+                  minVerticalPadding: 0,
+                  visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                  title: Text(
+                    '메시지.즐겨찾기'.tr(),
+                    style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2),
                   ),
-          ),
-        ),
-        if (_isFavoriteExpanded) _buildFavoriteUsers(),
-        const SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-            child: Divider(
-              height: 1,
-              color: kNeutralColor300,
-            ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: ListTile(
-            dense: true,
-            minVerticalPadding: 0,
-            visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
-            title: Text(
-              '팔로잉'.tr(),
-              style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2),
-            ),
-            onTap: () {
-              setState(() {
-                _isFollowExpanded = !_isFollowExpanded;
-              });
-            },
-            contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-            trailing: _isFollowExpanded
-                ? const ImageIcon(
-                    AssetImage('assets/image/chat/icon_up.png'),
-                    size: 20,
-                  )
-                : const ImageIcon(
-                    AssetImage('assets/image/chat/icon_down.png'),
-                    size: 20,
+                  onTap: () {
+                    setState(() {
+                      _isFavoriteExpanded = !_isFavoriteExpanded;
+                    });
+                  },
+                  contentPadding: const EdgeInsets.all(0),
+                  trailing: _isFavoriteExpanded
+                      ? const ImageIcon(
+                          AssetImage('assets/image/chat/icon_up.png'),
+                          size: 20,
+                        )
+                      : const ImageIcon(
+                          AssetImage('assets/image/chat/icon_down.png'),
+                          size: 20,
+                        ),
+                ),
+              ),
+              if (_isFavoriteExpanded) _buildFavoriteUsers(),
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                  child: Divider(
+                    height: 1,
+                    color: kNeutralColor300,
                   ),
-          ),
-        ),
-        if (_isFollowExpanded) _buildFollowUsers(),
-      ],
-    );
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: ListTile(
+                  dense: true,
+                  minVerticalPadding: 0,
+                  visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                  title: Text(
+                    '팔로잉'.tr(),
+                    style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _isFollowExpanded = !_isFollowExpanded;
+                    });
+                  },
+                  contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
+                  trailing: _isFollowExpanded
+                      ? const ImageIcon(
+                          AssetImage('assets/image/chat/icon_up.png'),
+                          size: 20,
+                        )
+                      : const ImageIcon(
+                          AssetImage('assets/image/chat/icon_down.png'),
+                          size: 20,
+                        ),
+                ),
+              ),
+              if (_isFollowExpanded) _buildFollowUsers(),
+            ],
+          );
   }
 
   void _search(String keyword) {
@@ -386,12 +389,9 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return FocusDetector(
+      onFocusLost: () {
         ref.read(chatUserSearchStateProvider.notifier).searchUser(userMemberIdx, '');
-        context.pop();
-
-        return false;
       },
       child: Material(
         child: Scaffold(

@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -74,8 +75,7 @@ class ChatMessageItem extends ConsumerStatefulWidget {
   ChatMessageItemState createState() => ChatMessageItemState();
 }
 
-class ChatMessageItemState extends ConsumerState<ChatMessageItem>
-    with SingleTickerProviderStateMixin {
+class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTickerProviderStateMixin {
   Offset? _lastPointerDownPosition;
   late ChatMessageModel chatMessageModel;
   bool isMine = false;
@@ -96,8 +96,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
 
     // _bubbleColor = isMineXorReply ? kPrimaryLightColor : kNeutralColor200;
     _updateBubbleColor(false);
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1000));
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
     // _animationController.stop();
 
     super.initState();
@@ -132,8 +131,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
   ///NOTE
   ///GPT Code
   void _showMenu(BuildContext context, Offset position, bool isMine) {
-    final RenderBox overlay =
-        Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    final RenderBox overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
     final screenHeight = overlay.size.height;
 
     List<PopupMenuEntry<ContextMenuType>> menuItems = [];
@@ -170,8 +168,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
               children: [
                 Text(
                   '메시지.수정'.tr(),
-                  style:
-                      kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                  style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                 ),
                 const Spacer(),
                 Image.asset(
@@ -248,44 +245,62 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     InkWell(
-                      child: Text('😀'),
+                      child: Lottie.asset(
+                        'assets/lottie/character_05_1_Good_24.json',
+                        repeat: false,
+                      ),
                       onTap: () {
-                        _reaction('😀');
+                        _reaction('assets/lottie/character_05_1_Good_24.json');
                         Navigator.pop(context);
                       },
                     ),
                     InkWell(
-                      child: Text('😃'),
+                      child: Lottie.asset(
+                        'assets/lottie/character_05_2_like_24.json',
+                        repeat: false,
+                      ),
                       onTap: () {
-                        _reaction('😃');
+                        _reaction('assets/lottie/character_05_2_like_24.json');
                         Navigator.pop(context);
                       },
                     ),
                     InkWell(
-                      child: Text('😄'),
+                      child: Lottie.asset(
+                        'assets/lottie/character_05_3_dislike_24.json',
+                        repeat: false,
+                      ),
                       onTap: () {
-                        _reaction('😀');
+                        _reaction('assets/lottie/character_05_3_dislike_24.json');
                         Navigator.pop(context);
                       },
                     ),
                     InkWell(
-                      child: Text('😁'),
+                      child: Lottie.asset(
+                        'assets/lottie/character_05_4_laugh_24.json',
+                        repeat: false,
+                      ),
                       onTap: () {
-                        _reaction('😁');
+                        _reaction('assets/lottie/character_05_4_laugh_24.json');
                         Navigator.pop(context);
                       },
                     ),
                     InkWell(
-                      child: Text('😆'),
+                      child: Lottie.asset(
+                        'assets/lottie/character_05_5_sad_24.json',
+                        repeat: false,
+                      ),
                       onTap: () {
-                        _reaction('😆');
+                        _reaction('assets/lottie/character_05_5_sad_24.json');
                         Navigator.pop(context);
                       },
                     ),
                     InkWell(
-                      child: Text('😅'),
+                      child: Lottie.asset(
+                        'assets/lottie/character_05_6_angry_24.json',
+                        repeat: false,
+                      ),
                       onTap: () {
-                        _reaction('😅');
+                        _reaction('assets/lottie/character_05_6_angry_24.json');
                         Navigator.pop(context);
                       },
                     ),
@@ -304,9 +319,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
     final menuHeight = menuItems.length * menuItemHeight;
 
     // Calculate top of the menu
-    final double menuTop = position.dy < screenHeight / 2
-        ? position.dy
-        : max(0, position.dy - menuHeight);
+    final double menuTop = position.dy < screenHeight / 2 ? position.dy : max(0, position.dy - menuHeight);
 
     // print('position.dx ${position.dx} / menuTop : $menuTop / overlay w ${overlay.size.width} / overlay h ${overlay.size.height}');
     // print('L ${position.dx} / T : $menuTop / R ${overlay.size.width - position.dx} / B ${overlay.size.height - menuTop}');
@@ -317,8 +330,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
       ),
       context: context,
       items: menuItems,
-      position: RelativeRect.fromLTRB(position.dx, menuTop,
-          overlay.size.width - position.dx, overlay.size.height - menuTop),
+      position: RelativeRect.fromLTRB(position.dx, menuTop, overlay.size.width - position.dx, overlay.size.height - menuTop),
       elevation: 8.0,
     ).then<void>((ContextMenuType? newValue) {
       _updateBubbleColor(false);
@@ -352,8 +364,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
   }
 
   void _edit() {
-    final bool isMineXorReply =
-        chatMessageModel.isMine ^ chatMessageModel.isReply;
+    final bool isMineXorReply = chatMessageModel.isMine ^ chatMessageModel.isReply;
     if (!isMineXorReply) {
       return;
     }
@@ -368,8 +379,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
   }
 
   void _delete() {
-    final bool isMineXorReply =
-        chatMessageModel.isMine ^ chatMessageModel.isReply;
+    final bool isMineXorReply = chatMessageModel.isMine ^ chatMessageModel.isReply;
     if (!isMineXorReply) {
       return;
     }
@@ -399,8 +409,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
             multiLine: true,
           ),
       detectedStyle: kBody13RegularStyle.copyWith(color: kSecondaryColor),
-      basicStyle: kBody13RegularStyle.copyWith(
-          color: widget.isRedacted ? kTextBodyColor : kTextSubTitleColor),
+      basicStyle: kBody13RegularStyle.copyWith(color: widget.isRedacted ? kTextBodyColor : kTextSubTitleColor),
       onTap: (tappedText) {
         ///TODO
         /// 해시태그 검색 페이지 이동
@@ -494,9 +503,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
           isEdit
               ? Padding(
                   padding: const EdgeInsets.only(left: 4.0),
-                  child: Text('메시지.수정됨'.tr(),
-                      style: kBadge10MediumStyle.copyWith(
-                          color: kNeutralColor500)),
+                  child: Text('메시지.수정됨'.tr(), style: kBadge10MediumStyle.copyWith(color: kNeutralColor500)),
                 )
               : const SizedBox.shrink(),
         ],
@@ -504,10 +511,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
     } else {
       rows = Row(
         children: [
-          isEdit
-              ? Text('메시지.수정됨'.tr(),
-                  style: kBadge10MediumStyle.copyWith(color: kNeutralColor500))
-              : const SizedBox.shrink(),
+          isEdit ? Text('메시지.수정됨'.tr(), style: kBadge10MediumStyle.copyWith(color: kNeutralColor500)) : const SizedBox.shrink(),
           const SizedBox(
             width: 4,
           ),
@@ -651,9 +655,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
         child: Padding(
           padding: EdgeInsets.only(bottom: widget.bottomPadding),
           child: Row(
-            mainAxisAlignment: isMineXorReply
-                ? MainAxisAlignment.end
-                : MainAxisAlignment.start,
+            mainAxisAlignment: isMineXorReply ? MainAxisAlignment.end : MainAxisAlignment.start,
             // crossAxisAlignment: isMineXorReply ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -669,18 +671,13 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
                           // color: Colors.red,
                           width: isAvatarCondition ? 28 : 35,
                           height: 28,
-                          child: isAvatarCondition
-                              ? getProfileAvatar(chatMessageModel.avatarUrl)
-                              : const SizedBox.shrink(),
+                          child: isAvatarCondition ? getProfileAvatar(chatMessageModel.avatarUrl) : const SizedBox.shrink(),
                         ),
                       ),
                     ),
               Flexible(
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      right: isMineXorReply && chatMessageModel.isConsecutively
-                          ? 8.0
-                          : 0),
+                  padding: EdgeInsets.only(right: isMineXorReply && chatMessageModel.isConsecutively ? 8.0 : 0),
                   // child: _buildMsgWidget(chatMessageModel.msg, chatMessageModel.isRead, isMineXorReply),
                   child: Column(
                     // mainAxisSize: MainAxisSize.min,
@@ -690,7 +687,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
                         onHighlightChanged: (_) {
                           // _updateBubbleColor(true);
                         }, //isMineXorReply ? kPrimaryLightColor : kNeutralColor200,
-                        onDoubleTap: () => _reaction('😀'),
+                        onDoubleTap: () => _reaction('assets/lottie/character_05_1_Good_24.json'),
                         onLongPress: () {
                           if (widget.isRedacted) {
                             return;
@@ -699,17 +696,14 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
                           if (widget.onLongPress != null) {
                             widget.onLongPress!(_lastPointerDownPosition);
                           } else {
-                            _showMenu(context, _lastPointerDownPosition!,
-                                isMineXorReply);
+                            _showMenu(context, _lastPointerDownPosition!, isMineXorReply);
                           }
                         },
                         radius: const Radius.circular(10),
                         borderColor: Colors.transparent,
                         shadowColor: Colors.transparent,
                         padding: const BubbleEdges.fromLTRB(12, 8, 12, 8),
-                        alignment: isMineXorReply
-                            ? Alignment.topRight
-                            : Alignment.topLeft,
+                        alignment: isMineXorReply ? Alignment.topRight : Alignment.topLeft,
                         nip: chatMessageModel.isConsecutively
                             ? BubbleNip.no
                             : isMineXorReply
@@ -718,45 +712,32 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem>
                         nipOffset: 16.0,
                         leftChild: isMineXorReply
                             ? [
-                                widget.isError
-                                    ? _buildErrorArea()
-                                    : _buildDateTimeArea(
-                                        chatMessageModel.isRead,
-                                        chatMessageModel.isEdited,
-                                        isMineXorReply),
+                                widget.isError ? _buildErrorArea() : _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply),
                                 // _buildErrorArea(),
                               ]
                             : [],
                         rightChild: !isMineXorReply
                             ? [
-                                _buildDateTimeArea(chatMessageModel.isRead,
-                                    chatMessageModel.isEdited, isMineXorReply),
+                                _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply),
                               ]
                             : [],
-                        mainAxisAlignment: isMineXorReply
-                            ? MainAxisAlignment.end
-                            : MainAxisAlignment.start,
+                        mainAxisAlignment: isMineXorReply ? MainAxisAlignment.end : MainAxisAlignment.start,
                         child: Container(
                           constraints: BoxConstraints(
-                            maxWidth: isMineXorReply
-                                ? 0.6.sw
-                                : 0.50
-                                    .sw, // Maximum width for the Bubble widget.
+                            maxWidth: isMineXorReply ? 0.6.sw : 0.50.sw, // Maximum width for the Bubble widget.
                           ),
-                          child: _buildMsgArea(
-                              chatMessageModel.isReply, msg, isMineXorReply),
+                          child: _buildMsgArea(chatMessageModel.isReply, msg, isMineXorReply),
                         ),
                       ),
                       hasReaction
                           ? Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 2.0, left: 8, right: 8),
+                              padding: const EdgeInsets.only(top: 2.0, left: 8, right: 8),
                               child: Align(
-                                  alignment: isMineXorReply
-                                      ? Alignment.centerRight
-                                      : Alignment.centerLeft,
-                                  child:
-                                      Text(chatMessageModel.reactions.first)),
+                                  alignment: isMineXorReply ? Alignment.centerRight : Alignment.centerLeft,
+                                  child: Lottie.asset(
+                                    chatMessageModel.reactions.first,
+                                    repeat: false,
+                                  )),
                             )
                           : const SizedBox.shrink(),
                     ],

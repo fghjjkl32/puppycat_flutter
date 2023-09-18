@@ -56,157 +56,150 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: WillPopScope(
-        onWillPop: () async {
-          context.pop();
-
-          return false;
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: const Text(
-              "차단 유저 관리",
-            ),
-            leading: IconButton(
-              onPressed: () {
-                context.pop();
-              },
-              icon: const Icon(
-                Puppycat_social.icon_back,
-                size: 40,
-              ),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text(
+            "차단 유저 관리",
+          ),
+          leading: IconButton(
+            onPressed: () {
+              context.pop();
+            },
+            icon: const Icon(
+              Puppycat_social.icon_back,
+              size: 40,
             ),
           ),
-          body: Consumer(builder: (ctx, ref, child) {
-            final blockState = ref.watch(blockStateProvider);
-            final isLoadMoreError = blockState.isLoadMoreError;
-            final isLoadMoreDone = blockState.isLoadMoreDone;
-            final isLoading = blockState.isLoading;
-            final lists = blockState.list;
+        ),
+        body: Consumer(builder: (ctx, ref, child) {
+          final blockState = ref.watch(blockStateProvider);
+          final isLoadMoreError = blockState.isLoadMoreError;
+          final isLoadMoreDone = blockState.isLoadMoreDone;
+          final isLoading = blockState.isLoading;
+          final lists = blockState.list;
 
-            blockOldLength = lists.length ?? 0;
-            return Column(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                        child: FormBuilderTextField(
-                          name: 'search',
-                          controller: blockSearchController,
-                          style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: kNeutralColor200,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(100.0),
-                              gapPadding: 10.0,
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(100.0),
-                              gapPadding: 10.0,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(100.0),
-                              gapPadding: 10.0,
-                            ),
-                            suffixIconConstraints: const BoxConstraints(
-                              minWidth: 24,
-                              minHeight: 24,
-                            ),
-                            suffixIcon: blockSearchController.text.isEmpty
-                                ? const Padding(
+          blockOldLength = lists.length ?? 0;
+          return Column(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                      child: FormBuilderTextField(
+                        name: 'search',
+                        controller: blockSearchController,
+                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: kNeutralColor200,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(100.0),
+                            gapPadding: 10.0,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(100.0),
+                            gapPadding: 10.0,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(100.0),
+                            gapPadding: 10.0,
+                          ),
+                          suffixIconConstraints: const BoxConstraints(
+                            minWidth: 24,
+                            minHeight: 24,
+                          ),
+                          suffixIcon: blockSearchController.text.isEmpty
+                              ? const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                  child: Icon(
+                                    Puppycat_social.icon_search_medium,
+                                    color: kNeutralColor600,
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    blockSearchController.text = "";
+                                  },
+                                  child: const Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                     child: Icon(
-                                      Puppycat_social.icon_search_medium,
+                                      Puppycat_social.icon_close_large,
                                       color: kNeutralColor600,
                                     ),
-                                  )
-                                : GestureDetector(
-                                    onTap: () {
-                                      blockSearchController.text = "";
-                                    },
-                                    child: const Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                      child: Icon(
-                                        Puppycat_social.icon_close_large,
-                                        color: kNeutralColor600,
-                                      ),
-                                    ),
-                                  ),
-                            hintText: "검색어를 입력해 주세요.",
-                            hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4.h,
-                      ),
-                      Expanded(
-                        child: lists.isEmpty
-                            ? Container(
-                                color: kNeutralColor100,
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'assets/image/character/character_08_user_notfound_100.png',
-                                        width: 88,
-                                        height: 88,
-                                      ),
-                                      const SizedBox(
-                                        height: 12,
-                                      ),
-                                      Text(
-                                        '유저를 찾을 수 없습니다.',
-                                        textAlign: TextAlign.center,
-                                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                                      ),
-                                    ],
                                   ),
                                 ),
-                              )
-                            : ListView.builder(
-                                controller: blockController,
-                                itemCount: lists.length + 1,
-                                itemBuilder: (context, index) {
-                                  if (index == lists.length) {
-                                    if (isLoadMoreError) {
-                                      return const Center(
-                                        child: Text('Error'),
-                                      );
-                                    }
-                                    if (isLoadMoreDone) {
-                                      return Container();
-                                    }
+                          hintText: "검색어를 입력해 주세요.",
+                          hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4.h,
+                    ),
+                    Expanded(
+                      child: lists.isEmpty
+                          ? Container(
+                              color: kNeutralColor100,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/image/character/character_08_user_notfound_100.png',
+                                      width: 88,
+                                      height: 88,
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Text(
+                                      '유저를 찾을 수 없습니다.',
+                                      textAlign: TextAlign.center,
+                                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : ListView.builder(
+                              controller: blockController,
+                              itemCount: lists.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index == lists.length) {
+                                  if (isLoadMoreError) {
+                                    return const Center(
+                                      child: Text('Error'),
+                                    );
+                                  }
+                                  if (isLoadMoreDone) {
                                     return Container();
                                   }
-                                  return BlockUserItemWidget(
-                                    profileImage: lists[index].profileImgUrl,
-                                    userName: lists[index].nick!,
-                                    content: lists[index].intro! == "" ? "소개글이 없습니다." : lists[index].intro!,
-                                    isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
-                                    memberIdx: lists[index].memberIdx!,
-                                  );
-                                },
-                              ),
-                      ),
-                    ],
-                  ),
+                                  return Container();
+                                }
+                                return BlockUserItemWidget(
+                                  profileImage: lists[index].profileImgUrl,
+                                  userName: lists[index].nick!,
+                                  content: lists[index].intro! == "" ? "소개글이 없습니다." : lists[index].intro!,
+                                  isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
+                                  memberIdx: lists[index].memberIdx!,
+                                );
+                              },
+                            ),
+                    ),
+                  ],
                 ),
-              ],
-            );
-          }),
-        ),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }

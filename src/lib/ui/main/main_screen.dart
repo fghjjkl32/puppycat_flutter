@@ -85,6 +85,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     return tabs;
   }
 
+  void _handleStatusBarTap() {
+    scrollController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.linearToEaseOut,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -143,128 +151,142 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         bool backResult = onBackPressed();
         return await Future.value(backResult);
       },
-      child: Scaffold(
-        appBar: isBigDevice
-            ? null
-            : PreferredSize(
-                preferredSize: Size.fromHeight(30.0),
-                child: AppBar(
-                  automaticallyImplyLeading: false,
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "PUPPYCAT",
-                        style: kTitle18BoldStyle,
-                      ),
-                      _buttonWidget(),
-                    ],
-                  ),
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                ),
-              ),
-        body: SafeArea(
-          child: Consumer(builder: (context, ref, _) {
-            return DefaultTabController(
-              length: loginState == LoginStatus.success ? 4 : 2,
-              child: NestedScrollView(
-                controller: scrollController,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    isBigDevice
-                        ? SliverAppBar(
-                            pinned: true,
-                            snap: false,
-                            floating: true,
-                            expandedHeight: 220.0,
-                            centerTitle: false,
-                            leading: null,
-                            titleSpacing: 0,
-                            backgroundColor: kNeutralColor100,
-                            automaticallyImplyLeading: false,
-                            title: Row(
-                              children: [
-                                const Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4.0),
-                                  child: _buttonWidget(),
-                                ),
-                              ],
-                            ),
-                            flexibleSpace: FlexibleSpaceBar(
-                              titlePadding: EdgeInsets.zero,
-                              expandedTitleScale: 1.0,
-                              centerTitle: false,
-                              collapseMode: CollapseMode.pin,
-                              title: _buildTabbar(innerBoxIsScrolled),
-                              background: Container(
-                                color: kNeutralColor100,
-                                child: Stack(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        top: 16.0.h,
-                                        left: 10.w,
-                                      ),
-                                      child: Text(
-                                        "PUPPYCAT",
-                                        style: kTitle18BoldStyle,
-                                      ),
-                                    ),
-                                    _buildBackGround(),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
-                        : SliverAppBar(
-                            pinned: true,
-                            snap: false,
-                            floating: true,
-                            expandedHeight: 180.0,
-                            centerTitle: false,
-                            leading: null,
-                            titleSpacing: 0,
-                            backgroundColor: kNeutralColor100,
-                            automaticallyImplyLeading: false,
-                            flexibleSpace: FlexibleSpaceBar(
-                              titlePadding: EdgeInsets.zero,
-                              expandedTitleScale: 1.0,
-                              centerTitle: false,
-                              collapseMode: CollapseMode.pin,
-                              title: _buildTabbar(innerBoxIsScrolled),
-                              background: Container(
-                                color: kNeutralColor100,
-                                child: Stack(
-                                  children: [
-                                    _buildBackGround(),
-                                  ],
-                                ),
-                              ),
-                            ),
+      child: Stack(
+        children: [
+          Scaffold(
+            appBar: isBigDevice
+                ? null
+                : PreferredSize(
+                    preferredSize: Size.fromHeight(30.0),
+                    child: AppBar(
+                      automaticallyImplyLeading: false,
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "PUPPYCAT",
+                            style: kTitle18BoldStyle,
                           ),
-                  ];
-                },
-                body: TabBarView(
-                  controller: tabController,
-                  children: [
-                    _firstTab(),
-                    Container(
-                      color: Colors.blue,
+                          _buttonWidget(),
+                        ],
+                      ),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
                     ),
-                    if (loginState == LoginStatus.success) ...[
-                      _thirdTab(),
-                    ],
-                    if (loginState == LoginStatus.success) ...[
-                      _fourthTab(),
-                    ],
-                  ],
-                ),
-              ),
-            );
-          }),
-        ),
+                  ),
+            body: SafeArea(
+              child: Consumer(builder: (context, ref, _) {
+                return DefaultTabController(
+                  length: loginState == LoginStatus.success ? 4 : 2,
+                  child: NestedScrollView(
+                    controller: scrollController,
+                    headerSliverBuilder: (context, innerBoxIsScrolled) {
+                      return [
+                        isBigDevice
+                            ? SliverAppBar(
+                                pinned: true,
+                                snap: false,
+                                floating: true,
+                                expandedHeight: 220.0,
+                                centerTitle: false,
+                                leading: null,
+                                titleSpacing: 0,
+                                backgroundColor: kNeutralColor100,
+                                automaticallyImplyLeading: false,
+                                title: Row(
+                                  children: [
+                                    const Spacer(),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4.0),
+                                      child: _buttonWidget(),
+                                    ),
+                                  ],
+                                ),
+                                flexibleSpace: FlexibleSpaceBar(
+                                  titlePadding: EdgeInsets.zero,
+                                  expandedTitleScale: 1.0,
+                                  centerTitle: false,
+                                  collapseMode: CollapseMode.pin,
+                                  title: _buildTabbar(innerBoxIsScrolled),
+                                  background: Container(
+                                    color: kNeutralColor100,
+                                    child: Stack(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            top: 16.0.h,
+                                            left: 10.w,
+                                          ),
+                                          child: Text(
+                                            "PUPPYCAT",
+                                            style: kTitle18BoldStyle,
+                                          ),
+                                        ),
+                                        _buildBackGround(),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : SliverAppBar(
+                                pinned: true,
+                                snap: false,
+                                floating: true,
+                                expandedHeight: 180.0,
+                                centerTitle: false,
+                                leading: null,
+                                titleSpacing: 0,
+                                backgroundColor: kNeutralColor100,
+                                automaticallyImplyLeading: false,
+                                flexibleSpace: FlexibleSpaceBar(
+                                  titlePadding: EdgeInsets.zero,
+                                  expandedTitleScale: 1.0,
+                                  centerTitle: false,
+                                  collapseMode: CollapseMode.pin,
+                                  title: _buildTabbar(innerBoxIsScrolled),
+                                  background: Container(
+                                    color: kNeutralColor100,
+                                    child: Stack(
+                                      children: [
+                                        _buildBackGround(),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                      ];
+                    },
+                    body: TabBarView(
+                      controller: tabController,
+                      children: [
+                        _firstTab(),
+                        Container(
+                          color: Colors.blue,
+                        ),
+                        if (loginState == LoginStatus.success) ...[
+                          _thirdTab(),
+                        ],
+                        if (loginState == LoginStatus.success) ...[
+                          _fourthTab(),
+                        ],
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: MediaQuery.of(context).padding.top,
+            child: GestureDetector(
+              excludeFromSemantics: true,
+              onTap: _handleStatusBarTap,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -368,6 +390,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           child: showLottieAnimation
               ? Lottie.asset(
                   'assets/lottie/icon_feed.json',
+                  repeat: false,
                 )
               : const Icon(
                   Puppycat_social.icon_feed,
@@ -660,8 +683,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   secondTitle: '게시물',
                   imageDomain: ref.read(popularWeekFeedStateProvider.notifier).imgDomain!,
                   index: index,
-                  // feedType: 'popular',
-                  feedType: 'follow',
+                  feedType: 'popular',
+                  // feedType: 'follow',
                 );
               },
             ),

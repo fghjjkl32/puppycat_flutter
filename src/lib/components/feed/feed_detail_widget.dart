@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 
 class FeedDetailWidget extends ConsumerWidget {
@@ -75,7 +76,7 @@ class FeedDetailWidget extends ConsumerWidget {
                   context,
                   kBody13RegularStyle.copyWith(color: kSecondaryColor),
                   ref,
-                  memberIdx!,
+                  ref.read(userModelProvider)!.idx,
                 ),
                 style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
               ),

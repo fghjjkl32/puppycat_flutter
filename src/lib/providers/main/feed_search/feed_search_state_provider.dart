@@ -5,8 +5,7 @@ import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository
 import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
-final feedSearchStateProvider =
-    StateNotifierProvider<FeedSearchStateNotifier, ContentDataListModel>((ref) {
+final feedSearchStateProvider = StateNotifierProvider<FeedSearchStateNotifier, ContentDataListModel>((ref) {
   return FeedSearchStateNotifier(ref);
 });
 
@@ -17,7 +16,6 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
   int currentPage = 1;
 
   final Ref ref;
-
 
   final Map<String, ContentDataListModel> searchStateMap = {};
 
@@ -33,13 +31,14 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
     currentPage = 1;
 
     final page = initPage ?? state.page;
-    final lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentList(
-        memberIdx: memberIdx, page: page, searchWord: searchWord);
+    final lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentList(memberIdx: memberIdx, page: page, searchWord: searchWord);
+
+    print("list : ${lists}");
+    print("list : ${lists}");
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
-    state = state.copyWith(
-        totalCount: lists.data.params!.pagination!.totalRecordCount!);
+    state = state.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!);
 
     if (lists == null) {
       state = state.copyWith(page: page, isLoading: false);
@@ -75,11 +74,9 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
       return;
     }
     bf.write(' success');
-    state = state.copyWith(
-        isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+    state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentList(
-        memberIdx: memberIdx, page: state.page + 1, searchWord: searchWord);
+    final lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentList(memberIdx: memberIdx, page: state.page + 1, searchWord: searchWord);
 
     if (lists == null) {
       state = state.copyWith(isLoadMoreError: true, isLoading: false);
@@ -87,10 +84,7 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
     }
 
     if (lists.data.list.isNotEmpty) {
-      state = state.copyWith(
-          page: state.page + 1,
-          isLoading: false,
-          list: [...state.list, ...lists.data.list]);
+      state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.data.list]);
       currentPage++;
     } else {
       state = state.copyWith(
