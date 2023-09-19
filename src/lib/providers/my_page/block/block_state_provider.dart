@@ -13,7 +13,7 @@ import 'package:rxdart/rxdart.dart';
 
 final blockStateProvider =
     StateNotifierProvider<BlockStateNotifier, SearchDataListModel>((ref) {
-  final loginMemberIdx = ref.watch(userModelProvider)!.idx;
+  final loginMemberIdx = ref.watch(userInfoProvider).userModel!.idx;
   return BlockStateNotifier(loginMemberIdx, ref);
 });
 

@@ -17,16 +17,14 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
           padding: const EdgeInsets.only(top: 32.0),
           child: Text(
             '가입 제한 안내',
-            style:
-                kBody16BoldStyle.copyWith(color: kTextTitleColor, height: 1.4),
+            style: kBody16BoldStyle.copyWith(color: kTextTitleColor, height: 1.4),
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 12.0, bottom: 32.0),
           child: Text(
             '퍼피캣 탈퇴 7일 이후 재가입 가능합니다.\n기존 활동 내역으로 이어서 이용하시겠습니까?',
-            style: kBody12RegularStyle400.copyWith(
-                color: kTextBodyColor, height: 1.3),
+            style: kBody12RegularStyle400.copyWith(color: kTextBodyColor, height: 1.3),
             textAlign: TextAlign.center,
           ),
         ),
@@ -35,21 +33,18 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
           height: 46,
           child: ElevatedButton(
             onPressed: () {
-              var userModel = ref.read(userModelProvider);
+              var userModel = ref.read(userInfoProvider).userModel;
 
               if (userModel == null) {
                 ///TODO
                 ///Error Proc
                 return;
               }
-              ref
-                  .read(userRestoreStateProvider.notifier)
-                  .restoreAccount(userModel.simpleId);
+              ref.read(userRestoreStateProvider.notifier).restoreAccount(userModel.simpleId);
             },
             style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
               ),
               backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor),
             ),

@@ -53,7 +53,7 @@ class FeedTitleWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
-        ref.read(userModelProvider)?.idx == memberIdx
+        ref.read(userInfoProvider).userModel?.idx == memberIdx
             ? Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -126,7 +126,7 @@ class FeedTitleWidget extends ConsumerWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  memberIdx == ref.read(userModelProvider)?.idx
+                  memberIdx == ref.read(userInfoProvider).userModel?.idx
                       ? showCustomModalBottomSheet(
                           context: context,
                           widget: Column(
@@ -142,7 +142,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                         context.pop();
 
                                         final result = await ref.watch(feedListStateProvider.notifier).deleteOneKeepContents(
-                                              loginMemberIdx: ref.read(userModelProvider)!.idx,
+                                              loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                               contentType: contentType,
                                               contentIdx: contentIdx,
                                             );
@@ -166,7 +166,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                         context.pop();
 
                                         final result = await ref.watch(feedListStateProvider.notifier).postKeepContents(
-                                              loginMemberIdx: ref.read(userModelProvider)!.idx,
+                                              loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                               contentIdxList: [contentIdx],
                                               contentType: contentType,
                                             );
@@ -208,7 +208,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                   context.pop();
 
                                   final result = await ref.watch(feedListStateProvider.notifier).deleteOneContents(
-                                        loginMemberIdx: ref.read(userModelProvider)!.idx,
+                                        loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                         contentType: contentType,
                                         contentIdx: contentIdx,
                                       );
@@ -236,13 +236,13 @@ class FeedTitleWidget extends ConsumerWidget {
                                 title: '숨기기',
                                 titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                 onTap: () async {
-                                  if (ref.read(userModelProvider) == null) {
+                                  if (ref.read(userInfoProvider).userModel == null) {
                                     context.pushReplacement("/loginScreen");
                                   } else {
                                     context.pop();
 
                                     final result = await ref.watch(feedListStateProvider.notifier).postHide(
-                                          loginMemberIdx: ref.read(userModelProvider)!.idx,
+                                          loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                           contentType: contentType,
                                           contentIdx: contentIdx,
                                           memberIdx: memberIdx,
@@ -256,7 +256,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                         buttonText: "숨기기 취소",
                                         buttonOnTap: () async {
                                           final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
-                                                loginMemberIdx: ref.read(userModelProvider)!.idx,
+                                                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                 contentType: contentType,
                                                 contentIdx: contentIdx,
                                                 memberIdx: memberIdx,
@@ -286,7 +286,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                         context.pop();
 
                                         ref.watch(feedListStateProvider.notifier).deleteFollow(
-                                              memberIdx: ref.read(userModelProvider)!.idx,
+                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                               followIdx: feedData.memberIdx,
                                               contentsIdx: feedData.idx,
                                               contentType: contentType,
@@ -301,7 +301,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                 title: '차단하기',
                                 titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                 onTap: () async {
-                                  if (ref.read(userModelProvider) == null) {
+                                  if (ref.read(userInfoProvider).userModel == null) {
                                     context.pushReplacement("/loginScreen");
                                   } else {
                                     context.pop();
@@ -342,7 +342,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                               context.pop();
 
                                               final result = await ref.read(feedListStateProvider.notifier).postBlock(
-                                                    memberIdx: ref.watch(userModelProvider)!.idx,
+                                                    memberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                                     blockIdx: memberIdx,
                                                     contentType: contentType,
                                                     contentIdx: contentIdx,
@@ -378,7 +378,7 @@ class FeedTitleWidget extends ConsumerWidget {
                                 title: '신고하기',
                                 titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                 onTap: () {
-                                  if (ref.read(userModelProvider) == null) {
+                                  if (ref.read(userInfoProvider).userModel == null) {
                                     context.pushReplacement("/loginScreen");
                                   } else {
                                     context.pop();

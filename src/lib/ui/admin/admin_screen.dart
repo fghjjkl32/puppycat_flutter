@@ -343,12 +343,12 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                         setThumborKey();
                         setThumborDomain();
 
-                        if (ref.read(userModelProvider) == null) {
+                        if (ref.read(userInfoProvider).userModel == null) {
                           context.pushReplacementNamed("loginScreen");
                         } else {
                           ref.read(loginStateProvider.notifier).logout(
-                                ref.read(userModelProvider)!.simpleType,
-                                ref.read(userModelProvider)!.appKey,
+                                ref.read(userInfoProvider).userModel!.simpleType,
+                                ref.read(userInfoProvider).userModel!.appKey,
                               );
                         }
                       }

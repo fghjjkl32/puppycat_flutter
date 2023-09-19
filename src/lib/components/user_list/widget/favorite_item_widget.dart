@@ -52,7 +52,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        ref.read(userModelProvider)!.idx == widget.followerIdx
+        ref.read(userInfoProvider).userModel!.idx == widget.followerIdx
             ? context.push("/home/myPage")
             : context.push("/home/myPage/followList/${widget.followerIdx}/userPage/${widget.userName}/${widget.followerIdx}/${widget.oldMemberIdx}");
       },
@@ -105,12 +105,12 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                 ),
               ],
             ),
-            ref.read(userModelProvider)?.idx == widget.followerIdx
+            ref.read(userInfoProvider).userModel?.idx == widget.followerIdx
                 ? Container()
                 : !isFollowing
                     ? GestureDetector(
                         onTap: () async {
-                          if (ref.read(userModelProvider) == null) {
+                          if (ref.read(userInfoProvider).userModel == null) {
                             context.pushReplacement("/loginScreen");
                           } else {
                             setState(() {
@@ -118,13 +118,13 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             });
                             if (widget.contentType == null) {
                               await ref.watch(contentLikeUserListStateProvider.notifier).postFollow(
-                                    memberIdx: ref.read(userModelProvider)!.idx,
+                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                     followIdx: widget.followerIdx,
                                     contentsIdx: widget.contentsIdx,
                                   );
                             } else {
                               ref.watch(feedListStateProvider.notifier).postFollow(
-                                    memberIdx: ref.read(userModelProvider)!.idx,
+                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                     followIdx: widget.followerIdx,
                                     contentsIdx: widget.contentsIdx,
                                     contentType: widget.contentType,
@@ -157,13 +157,13 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
 
                           if (widget.contentType == null) {
                             await ref.watch(contentLikeUserListStateProvider.notifier).deleteFollow(
-                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                   followIdx: widget.followerIdx,
                                   contentsIdx: widget.contentsIdx,
                                 );
                           } else {
                             ref.watch(feedListStateProvider.notifier).deleteFollow(
-                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                   followIdx: widget.followerIdx,
                                   contentsIdx: widget.contentsIdx,
                                   contentType: widget.contentType,

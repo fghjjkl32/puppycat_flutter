@@ -97,7 +97,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   void initState() {
     super.initState();
 
-    ref.read(recentFeedStateProvider.notifier).loginMemberIdx = ref.read(userModelProvider)?.idx;
+    ref.read(recentFeedStateProvider.notifier).loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
 
     tabController = TabController(vsync: this, length: getTabs().length);
     Future(() {
@@ -106,11 +106,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       _recentFeedListPagingController.refresh();
 
       ref.read(popularUserListStateProvider.notifier).getInitUserList(
-            ref.read(userModelProvider)?.idx,
+            ref.read(userInfoProvider).userModel?.idx,
           );
 
       ref.read(popularHourFeedStateProvider.notifier).initPosts(
-            loginMemberIdx: ref.read(userModelProvider)?.idx,
+            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
           );
 
       scrollController.addListener(_myPostScrollListener);
@@ -122,14 +122,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
         _followFeedListPagingController.refresh();
 
-        ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userModelProvider)!.idx);
+        ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
       }
     });
   }
 
   void _myPostScrollListener() {
     setState(() {
-      ref.read(userModelProvider) == null ? _showIcon = false : _showIcon = scrollController.offset > 100.h;
+      ref.read(userInfoProvider).userModel == null ? _showIcon = false : _showIcon = scrollController.offset > 100.h;
     });
   }
 
@@ -298,10 +298,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       children: [
         GestureDetector(
           onTap: () async {
-            await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userModelProvider)!.idx);
+            if (ref.read(userInfoProvider).userModel != null) {
+              await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
+            }
 
-            if (ref.read(userModelProvider) == null) {
-              context.pushReplacement("/loginScreen");
+            if (ref.read(userInfoProvider).userModel == null) {
+              if (mounted) {
+                context.pushReplacement("/loginScreen");
+              }
             } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
               final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
 
@@ -358,30 +362,33 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         ),
         GestureDetector(
           onTap: () async {
-            await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userModelProvider)!.idx);
-
-            ref.read(userModelProvider) == null
-                ? context.pushReplacement("/loginScreen")
-                : ref.watch(restrainWriteStateProvider).restrain.state == null
-                    ? feedWriteShowBottomSheet(
-                        context: context,
-                        onClose: () {
-                          setState(() {
-                            showLottieAnimation = false;
-                          });
-                        },
-                      )
-                    : showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (context) => RestrictionDialog(
-                          isForever: false,
-                          date: ref.watch(restrainWriteStateProvider).restrain.date,
-                          restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-                          startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-                          endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-                        ),
-                      );
+            if (ref.read(userInfoProvider).userModel != null) {
+              await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
+            }
+            if (mounted) {
+              ref.read(userInfoProvider).userModel == null
+                  ? context.pushReplacement("/loginScreen")
+                  : ref.watch(restrainWriteStateProvider).restrain.state == null
+                      ? feedWriteShowBottomSheet(
+                          context: context,
+                          onClose: () {
+                            setState(() {
+                              showLottieAnimation = false;
+                            });
+                          },
+                        )
+                      : showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) => RestrictionDialog(
+                            isForever: false,
+                            date: ref.watch(restrainWriteStateProvider).restrain.date,
+                            restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
+                            startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
+                            endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
+                          ),
+                        );
+            }
 
             setState(() {
               showLottieAnimation = true;
@@ -455,11 +462,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           _recentFeedListPagingController.refresh();
 
           ref.read(popularUserListStateProvider.notifier).getInitUserList(
-                ref.read(userModelProvider)?.idx,
+                ref.read(userInfoProvider).userModel?.idx,
               );
 
           ref.read(popularHourFeedStateProvider.notifier).initPosts(
-                loginMemberIdx: ref.read(userModelProvider)?.idx,
+                loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
               );
 
           scrollController.addListener(_myPostScrollListener);
@@ -471,7 +478,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             _followFeedListPagingController.refresh();
 
-            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userModelProvider)!.idx);
+            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
           }
         });
       },
@@ -539,7 +546,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: item.memberInfoList![0].nick!,
                   profileImage: item.memberInfoList?[0].profileImgUrl! ?? "",
-                  memberIdx: ref.read(userModelProvider)?.idx,
+                  memberIdx: ref.read(userInfoProvider).userModel?.idx,
                   firstTitle: item.memberInfoList![0].nick!,
                   secondTitle: '게시물',
                   imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
@@ -563,11 +570,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           _recentFeedListPagingController.refresh();
 
           ref.read(popularUserListStateProvider.notifier).getInitUserList(
-                ref.read(userModelProvider)?.idx,
+                ref.read(userInfoProvider).userModel?.idx,
               );
 
           ref.read(popularHourFeedStateProvider.notifier).initPosts(
-                loginMemberIdx: ref.read(userModelProvider)?.idx,
+                loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
               );
 
           scrollController.addListener(_myPostScrollListener);
@@ -579,7 +586,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             _followFeedListPagingController.refresh();
 
-            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userModelProvider)!.idx);
+            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
           }
         });
       },
@@ -613,7 +620,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   profileImage: ref.read(followFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? item.memberInfoList![0].profileImgUrl! ?? "",
-                  memberIdx: ref.read(userModelProvider)!.idx,
+                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
                   firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   secondTitle: '게시물',
                   imageDomain: ref.read(followFeedStateProvider.notifier).imgDomain!,
@@ -676,7 +683,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: item.memberInfoList![0].nick!,
                   profileImage: item.memberInfoList![0].profileImgUrl! ?? "",
-                  memberIdx: ref.read(userModelProvider)?.idx,
+                  memberIdx: ref.read(userInfoProvider).userModel?.idx,
                   // firstTitle: "null",
                   firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   // secondTitle: '인기 급상승',
@@ -703,11 +710,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           _recentFeedListPagingController.refresh();
 
           ref.read(popularUserListStateProvider.notifier).getInitUserList(
-                ref.read(userModelProvider)?.idx,
+                ref.read(userInfoProvider).userModel?.idx,
               );
 
           ref.read(popularHourFeedStateProvider.notifier).initPosts(
-                loginMemberIdx: ref.read(userModelProvider)?.idx,
+                loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
               );
 
           scrollController.addListener(_myPostScrollListener);
@@ -719,7 +726,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             _followFeedListPagingController.refresh();
 
-            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userModelProvider)!.idx);
+            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
           }
         });
       },
@@ -766,7 +773,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                           height: 48,
                           child: ElevatedButton(
                             onPressed: () {
-                              ref.read(userModelProvider) == null
+                              ref.read(userInfoProvider).userModel == null
                                   ? context.pushReplacement("/loginScreen")
                                   : ref.watch(restrainWriteStateProvider).restrain.state == null
                                       ? feedWriteShowBottomSheet(
@@ -836,7 +843,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'myContent',
                   userName: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
                   profileImage: ref.read(myFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
-                  memberIdx: ref.read(userModelProvider)!.idx,
+                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
                   firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
                   secondTitle: '게시물',
                   imageDomain: ref.read(myFeedStateProvider.notifier).imgDomain!,
@@ -894,7 +901,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              ref.read(userModelProvider)?.idx == userListLists[index].memberIdx
+                              ref.read(userInfoProvider).userModel?.idx == userListLists[index].memberIdx
                                   ? context.push("/home/myPage")
                                   : context.push("/home/myPage/followList/${userListLists[index].memberIdx}/userPage/${userListLists[index].nick}/${userListLists[index].memberIdx}/0");
                             },

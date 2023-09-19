@@ -141,7 +141,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
         spans.add(WidgetSpan(
           child: GestureDetector(
             onTap: () {
-              ref.read(userModelProvider)?.idx == mention.memberIdx
+              ref.read(userInfoProvider).userModel?.idx == mention.memberIdx
                   ? Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -264,4 +264,38 @@ bool onBackPressed() {
     return false;
   }
   return true;
+}
+
+enum PetGender {
+  boy(1, "남아", ""),
+  boyNeutering(2, "남중성화", ""),
+  girl(3, "여아", ""),
+  girlNeutering(4, "여중성화", "");
+
+  const PetGender(this.value, this.name, this.icon);
+  final int value;
+  final String name;
+  final String icon;
+}
+
+enum PetSize {
+  small(1, "작음", ""),
+  middle(2, "중간", ""),
+  big(3, "큼", "");
+
+  const PetSize(this.value, this.name, this.icon);
+  final int value;
+  final String name;
+  final String icon;
+}
+
+enum PetAge {
+  puppy(1, "퍼피", ""),
+  adult(2, "어덜트", ""),
+  senior(3, "시니어", "");
+
+  const PetAge(this.value, this.name, this.icon);
+  final int value;
+  final String name;
+  final String icon;
 }

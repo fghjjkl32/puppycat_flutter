@@ -41,8 +41,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
       vsync: this,
     );
 
-    ref.read(myPostStateProvider.notifier).initMyPosts(ref.read(userModelProvider)!.idx, 1);
-    ref.read(myPostStateProvider.notifier).initMyKeeps(ref.read(userModelProvider)!.idx, 1);
+    ref.read(myPostStateProvider.notifier).initMyPosts(ref.read(userInfoProvider).userModel!.idx, 1);
+    ref.read(myPostStateProvider.notifier).initMyKeeps(ref.read(userInfoProvider).userModel!.idx, 1);
 
     Future(() {
       ref.watch(myPostStateProvider.notifier).resetMyPostSelection();
@@ -55,7 +55,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
   void _myPostContentsScrollListener() {
     if (myPostContentController.position.pixels > myPostContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (myPostOldLength == ref.read(myPostStateProvider).myPostState.list.length) {
-        ref.read(myPostStateProvider.notifier).loadMoreMyPost(ref.read(userModelProvider)!.idx);
+        ref.read(myPostStateProvider.notifier).loadMoreMyPost(ref.read(userInfoProvider).userModel!.idx);
       }
     }
   }
@@ -63,7 +63,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
   void _myKeepContentsScrollListener() {
     if (myKeepContentController.position.pixels > myKeepContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (myKeepOldLength == ref.read(myPostStateProvider).myKeepState.list.length) {
-        ref.read(myPostStateProvider.notifier).loadMoreMyKeeps(ref.read(userModelProvider)!.idx);
+        ref.read(myPostStateProvider.notifier).loadMoreMyKeeps(ref.read(userInfoProvider).userModel!.idx);
       }
     }
   }
@@ -233,7 +233,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
 
                         return GestureDetector(
                           onTap: () {
-                            context.push("/home/myPage/detail/null/일상글 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myDetailContent");
+                            context.push("/home/myPage/detail/null/일상글 게시물/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myDetailContent");
                           },
                           child: Stack(
                             children: [
@@ -425,7 +425,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                                     context.pop();
 
                                                     final result = await myPageMyPostController.postKeepContents(
-                                                      memberIdx: ref.read(userModelProvider)!.idx,
+                                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                       idxList: myPageMyPostController.getSelectedMyPostImageIdx(),
                                                     );
 
@@ -543,7 +543,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                                     context.pop();
 
                                                     final result = await myPageMyPostController.deleteContents(
-                                                      memberIdx: ref.read(userModelProvider)!.idx,
+                                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                       idx: myPageMyPostController.getSelectedImageIndices(isKeepSelect: false),
                                                     );
 
@@ -692,7 +692,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                         }
                         return GestureDetector(
                           onTap: () {
-                            context.push("/home/myPage/detail/null/보관한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myKeepContent");
+                            context.push("/home/myPage/detail/null/보관한 게시물/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myKeepContent");
                           },
                           child: Stack(
                             children: [
@@ -827,7 +827,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                               ),
                               onTap: () async {
                                 final result = await myKeepController.deleteKeepContents(
-                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                   idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
                                 );
 
@@ -921,7 +921,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                                     context.pop();
 
                                                     final result = await myKeepController.deleteContents(
-                                                      memberIdx: ref.read(userModelProvider)!.idx,
+                                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                       idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
                                                     );
 

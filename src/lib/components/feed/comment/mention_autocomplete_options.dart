@@ -38,7 +38,7 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
   void _commentScrollListener() {
     if (mentionController.position.pixels > mentionController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (mentionOldLength == ref.read(searchStateProvider).list.length) {
-        ref.read(searchStateProvider.notifier).loadMoreMentionSearchList(ref.read(userModelProvider)!.idx);
+        ref.read(searchStateProvider.notifier).loadMoreMentionSearchList(ref.read(userInfoProvider).userModel!.idx);
       }
     }
   }

@@ -38,14 +38,10 @@ class FollowerItemWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        ref.read(userModelProvider)!.idx == followerIdx
-            ? context.push("/home/myPage")
-            : context.push(
-                "/home/myPage/followList/$followerIdx/userPage/$userName/$followerIdx/$oldMemberIdx");
+        ref.read(userInfoProvider).userModel!.idx == followerIdx ? context.push("/home/myPage") : context.push("/home/myPage/followList/$followerIdx/userPage/$userName/$followerIdx/$oldMemberIdx");
       },
       child: Padding(
-        padding:
-            EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,8 +74,7 @@ class FollowerItemWidget extends ConsumerWidget {
                             : Container(),
                         Text(
                           userName,
-                          style:
-                              kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                         ),
                       ],
                     ),
@@ -88,25 +83,21 @@ class FollowerItemWidget extends ConsumerWidget {
                     ),
                     Text(
                       content,
-                      style:
-                          kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                     ),
                   ],
                 ),
               ],
             ),
-            ref.read(userModelProvider)!.idx == followerIdx
+            ref.read(userInfoProvider).userModel!.idx == followerIdx
                 ? Container()
                 : Row(
                     children: [
                       isFollow
                           ? GestureDetector(
                               onTap: () async {
-                                await ref
-                                    .watch(followStateProvider.notifier)
-                                    .postFollow(
-                                      memberIdx:
-                                          ref.read(userModelProvider)!.idx,
+                                await ref.watch(followStateProvider.notifier).postFollow(
+                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                       followIdx: followerIdx,
                                     );
                               },
@@ -122,19 +113,15 @@ class FollowerItemWidget extends ConsumerWidget {
                                 child: Center(
                                   child: Text(
                                     "팔로우",
-                                    style: kButton12BoldStyle.copyWith(
-                                        color: kNeutralColor100),
+                                    style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
                                   ),
                                 ),
                               ),
                             )
                           : GestureDetector(
                               onTap: () async {
-                                await ref
-                                    .watch(followStateProvider.notifier)
-                                    .deleteFollow(
-                                      memberIdx:
-                                          ref.read(userModelProvider)!.idx,
+                                await ref.watch(followStateProvider.notifier).deleteFollow(
+                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                       followIdx: followerIdx,
                                     );
                               },
@@ -150,8 +137,7 @@ class FollowerItemWidget extends ConsumerWidget {
                                 child: Center(
                                   child: Text(
                                     "팔로잉",
-                                    style: kButton12BoldStyle.copyWith(
-                                        color: kTextBodyColor),
+                                    style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
                                   ),
                                 ),
                               ),
@@ -159,7 +145,7 @@ class FollowerItemWidget extends ConsumerWidget {
                       SizedBox(
                         width: 10.w,
                       ),
-                      memberIdx != ref.read(userModelProvider)!.idx
+                      memberIdx != ref.read(userInfoProvider).userModel!.idx
                           ? Container()
                           : GestureDetector(
                               onTap: () {
@@ -168,39 +154,32 @@ class FollowerItemWidget extends ConsumerWidget {
                                   widget: Column(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 20.h, bottom: 10.h),
+                                        padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
                                               userName,
-                                              style: kBody16BoldStyle.copyWith(
-                                                  color: kPrimaryColor),
+                                              style: kBody16BoldStyle.copyWith(color: kPrimaryColor),
                                             ),
                                             Text(
                                               " 님을 삭제하시겠어요?",
-                                              style: kBody16BoldStyle.copyWith(
-                                                  color: kTextTitleColor),
+                                              style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                                             ),
                                           ],
                                         ),
                                       ),
                                       Text(
                                         "$userName 님은 팔로워 리스트에서 삭제되며",
-                                        style: kBody12RegularStyle.copyWith(
-                                            color: kTextBodyColor),
+                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                       ),
                                       Text(
                                         "나중에 $userName 님을 다시 팔로우 할 수 있습니다.",
-                                        style: kBody12RegularStyle.copyWith(
-                                            color: kTextBodyColor),
+                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                       ),
                                       SizedBox(height: 20.h),
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           GestureDetector(
                                             onTap: () {
@@ -218,9 +197,7 @@ class FollowerItemWidget extends ConsumerWidget {
                                               child: Center(
                                                 child: Text(
                                                   "취소",
-                                                  style: kButton14BoldStyle
-                                                      .copyWith(
-                                                          color: kPrimaryColor),
+                                                  style: kButton14BoldStyle.copyWith(color: kPrimaryColor),
                                                 ),
                                               ),
                                             ),
@@ -231,14 +208,8 @@ class FollowerItemWidget extends ConsumerWidget {
                                           GestureDetector(
                                             onTap: () async {
                                               context.pop();
-                                              await ref
-                                                  .watch(followStateProvider
-                                                      .notifier)
-                                                  .deleteFollower(
-                                                    memberIdx: ref
-                                                        .read(
-                                                            userModelProvider)!
-                                                        .idx,
+                                              await ref.watch(followStateProvider.notifier).deleteFollower(
+                                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                     followIdx: followerIdx,
                                                   );
                                             },
@@ -254,10 +225,7 @@ class FollowerItemWidget extends ConsumerWidget {
                                               child: Center(
                                                 child: Text(
                                                   "삭제",
-                                                  style: kButton14BoldStyle
-                                                      .copyWith(
-                                                          color:
-                                                              kNeutralColor100),
+                                                  style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
                                                 ),
                                               ),
                                             ),

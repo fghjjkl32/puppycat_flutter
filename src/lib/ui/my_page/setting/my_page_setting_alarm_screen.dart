@@ -22,7 +22,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
   @override
   void initState() {
     Future(() {
-      ref.read(settingStateProvider.notifier).initSetting(ref.watch(userModelProvider)!.idx);
+      ref.read(settingStateProvider.notifier).initSetting(ref.watch(userInfoProvider).userModel!.idx);
     });
     super.initState();
   }
@@ -37,7 +37,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
       ref.read(settingStateProvider.notifier).updateSwitchState(key, newValue);
 
       Map<String, dynamic> data = {
-        "memberIdx": "${ref.read(userModelProvider)!.idx}",
+        "memberIdx": "${ref.read(userInfoProvider).userModel!.idx}",
       };
 
       Map<String, int> newSwitchState = Map.from(ref.watch(settingStateProvider).switchState);
@@ -45,7 +45,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
       data.addAll(newSwitchState);
 
       await ref.read(settingStateProvider.notifier).putSetting(
-            memberIdx: ref.read(userModelProvider)!.idx,
+            memberIdx: ref.read(userInfoProvider).userModel!.idx,
             body: data,
           );
     }

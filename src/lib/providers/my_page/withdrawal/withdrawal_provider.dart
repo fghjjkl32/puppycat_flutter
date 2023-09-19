@@ -52,7 +52,6 @@ class WithdrawalStateNotifier extends StateNotifier<SelectButtonListModel> {
 
     if (result == WithdrawalStatus.success) {
       // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
-      ref.read(userModelProvider.notifier).state = null;
       ref.read(userInfoProvider.notifier).state = UserInfoModel(
         userModel: null,
         chatUserModel: null,

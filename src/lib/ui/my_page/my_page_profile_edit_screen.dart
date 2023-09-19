@@ -236,7 +236,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         context.pop();
 
                         if (result.result) {
-                          await ref.read(myInformationStateProvider.notifier).getInitUserInformation(ref.read(userModelProvider)!.idx);
+                          await ref.read(myInformationStateProvider.notifier).getInitUserInformation(ref.read(userInfoProvider).userModel!.idx);
                           final userInformationState = ref.watch(myInformationStateProvider);
                           final lists = userInformationState.list;
 
@@ -249,14 +249,6 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                   di: editUserModel.di,
                                   profileImgUrl: lists[0].profileImgUrl,
                                 ),
-                              );
-                          ref.read(userModelProvider.notifier).state = ref.read(userModelProvider.notifier).state!.copyWith(
-                                nick: editUserModel.nick,
-                                introText: editUserModel.introText,
-                                phone: editUserModel.phone,
-                                ci: editUserModel.ci,
-                                di: editUserModel.di,
-                                profileImgUrl: lists[0].profileImgUrl,
                               );
 
                           var chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${ref.read(userInfoProvider).userModel!.idx}'))).controller;

@@ -63,7 +63,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
               title: '알림',
               onPressed: () {
-                ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingAlarm");
+                ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingAlarm");
               },
             ),
             Padding(
@@ -77,7 +77,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
               title: '차단 유저 관리',
               onPressed: () {
-                ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.go("/home/myPage/setting/settingBlockedUser");
+                ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.go("/home/myPage/setting/settingBlockedUser");
               },
             ),
             Padding(
@@ -571,13 +571,13 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 ),
               ),
             ),
-            ref.read(userModelProvider) == null
+            ref.read(userInfoProvider).userModel == null
                 ? Container()
                 : GestureDetector(
                     onTap: () {
                       ref.read(loginStateProvider.notifier).logout(
-                            ref.read(userModelProvider)!.simpleType,
-                            ref.read(userModelProvider)!.appKey,
+                             ref.read(userInfoProvider).userModel!.simpleType,
+                             ref.read(userInfoProvider).userModel!.appKey,
                           );
                     },
                     child: Padding(

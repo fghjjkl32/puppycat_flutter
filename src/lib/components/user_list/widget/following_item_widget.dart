@@ -38,14 +38,10 @@ class FollowingItemWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: () {
-        ref.read(userModelProvider)!.idx == followIdx
-            ? context.push("/home/myPage")
-            : context.push(
-                "/home/myPage/followList/$followIdx/userPage/$userName/$followIdx/$oldMemberIdx");
+        ref.read(userInfoProvider).userModel!.idx == followIdx ? context.push("/home/myPage") : context.push("/home/myPage/followList/$followIdx/userPage/$userName/$followIdx/$oldMemberIdx");
       },
       child: Padding(
-        padding:
-            EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,8 +74,7 @@ class FollowingItemWidget extends ConsumerWidget {
                             : Container(),
                         Text(
                           userName,
-                          style:
-                              kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                         ),
                         SizedBox(
                           width: 4.w,
@@ -95,8 +90,7 @@ class FollowingItemWidget extends ConsumerWidget {
                                     padding: const EdgeInsets.all(1.0),
                                     child: Text(
                                       "NEW",
-                                      style: kBadge9RegularStyle.copyWith(
-                                          color: kBadgeColor),
+                                      style: kBadge9RegularStyle.copyWith(color: kBadgeColor),
                                     ),
                                   ),
                                 ),
@@ -109,8 +103,7 @@ class FollowingItemWidget extends ConsumerWidget {
                     ),
                     Text(
                       content,
-                      style:
-                          kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                     ),
                   ],
                 ),
@@ -120,7 +113,7 @@ class FollowingItemWidget extends ConsumerWidget {
                 ? GestureDetector(
                     onTap: () async {
                       await ref.watch(followStateProvider.notifier).postFollow(
-                            memberIdx: ref.read(userModelProvider)!.idx,
+                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
                             followIdx: followIdx,
                           );
                     },
@@ -136,18 +129,15 @@ class FollowingItemWidget extends ConsumerWidget {
                       child: Center(
                         child: Text(
                           "팔로우",
-                          style: kButton12BoldStyle.copyWith(
-                              color: kNeutralColor100),
+                          style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
                         ),
                       ),
                     ),
                   )
                 : GestureDetector(
                     onTap: () async {
-                      await ref
-                          .watch(followStateProvider.notifier)
-                          .deleteFollow(
-                            memberIdx: ref.read(userModelProvider)!.idx,
+                      await ref.watch(followStateProvider.notifier).deleteFollow(
+                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
                             followIdx: followIdx,
                           );
                     },
@@ -163,8 +153,7 @@ class FollowingItemWidget extends ConsumerWidget {
                       child: Center(
                         child: Text(
                           "팔로잉",
-                          style: kButton12BoldStyle.copyWith(
-                              color: kTextBodyColor),
+                          style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
                         ),
                       ),
                     ),

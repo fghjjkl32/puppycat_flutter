@@ -83,7 +83,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
             widget.isLike
                 ? null
                 : ref.watch(feedListStateProvider.notifier).postLike(
-                      loginMemberIdx: ref.read(userModelProvider)!.idx,
+                      loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                       memberIdx: widget.memberIdx,
                       contentIdx: widget.contentIdx,
                       contentType: widget.contentType,
@@ -149,7 +149,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                             return isTagVisible
                                 ? GestureDetector(
                                     onTap: () {
-                                      ref.read(userModelProvider)!.idx == tag.memberIdx
+                                      ref.read(userInfoProvider).userModel!.idx == tag.memberIdx
                                           ? context.push("/home/myPage")
                                           : context.push("/home/myPage/followList/${tag.memberIdx}/userPage/${tag.nick!}/${tag.memberIdx}/${tag.memberIdx}");
                                     },

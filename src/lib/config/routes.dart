@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -35,6 +36,9 @@ import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_post_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_breed_search_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_list_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_registration_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_alarm_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_blocked_user_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_faq_screen.dart';
@@ -85,9 +89,7 @@ class AppRouter {
     //router 정보 콘솔에 출력
     // errorBuilder: (BuildContext context, GoRouterState state) =>
     // const ErrorPage(),
-    observers: [
-      GoRouterObserver(ref: ref),
-    ],
+    observers: [GoRouterObserver(ref: ref), FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)],
     routes: <GoRoute>[
       GoRoute(
           path: '/home',
@@ -159,6 +161,31 @@ class AppRouter {
                 );
               },
               routes: [
+                GoRoute(
+                  path: 'myPetList',
+                  name: 'myPetList',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const MyPetListScreen();
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'myPetRegistration',
+                      name: 'myPetRegistration',
+                      builder: (BuildContext context, GoRouterState state) {
+                        return const MyPetRegistrationScreen();
+                      },
+                      routes: [
+                        GoRoute(
+                          path: 'myPetBreedSearch',
+                          name: 'myPetBreedSearch',
+                          builder: (BuildContext context, GoRouterState state) {
+                            return const MyPetBreedSearchScreen();
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
                 GoRoute(
                   path: 'userUnknown',
                   name: 'userUnknown',

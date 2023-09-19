@@ -59,7 +59,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     loadTimelineFuture = _getTimeline(eventContextId: readMarkerEventId);
 
     // Future(() {
-    //   ref.watch(userInformationStateProvider.notifier).getInitUserInformation(ref.watch(userModelProvider)?.idx, widget.memberIdx);
+    //   ref.watch(userInformationStateProvider.notifier).getInitUserInformation(ref.watch(userInfoProvider).userModel?.idx, widget.memberIdx);
     // });
   }
 

@@ -27,7 +27,7 @@
 //
 //     ref
 //         .read(commentStateProvider.notifier)
-//         .getInitComment(widget.contentIdx, ref.read(userModelProvider)!.idx, 1);
+//         .getInitComment(widget.contentIdx, ref.read(userInfoProvider).userModel!.idx, 1);
 //
 //     super.initState();
 //   }
@@ -39,7 +39,7 @@
 //       if (commentOldLength == ref.read(commentStateProvider).list.length) {
 //         ref.read(commentStateProvider.notifier).loadMoreComment(
 //             ref.watch(commentStateProvider).list[0].contentsIdx,
-//             ref.read(userModelProvider)!.idx);
+//             ref.read(userInfoProvider).userModel!.idx);
 //       }
 //     }
 //   }

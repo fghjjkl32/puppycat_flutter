@@ -45,14 +45,14 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
 
     searchContentController.addListener(_searchScrollListener);
 
-    ref.read(feedSearchStateProvider.notifier).initPosts(ref.read(userModelProvider)?.idx, 1, widget.searchWord);
+    ref.read(feedSearchStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel?.idx, 1, widget.searchWord);
     super.initState();
   }
 
   void _searchScrollListener() {
     if (searchContentController.position.pixels > searchContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (searchOldLength == ref.read(feedSearchStateProvider).list.length) {
-        ref.read(feedSearchStateProvider.notifier).loadMorePost(ref.read(userModelProvider)!.idx, widget.searchWord);
+        ref.read(feedSearchStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx, widget.searchWord);
       }
     }
   }
@@ -147,7 +147,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                     padding: const EdgeInsets.all(12.0),
                     child: RefreshIndicator(
                       onRefresh: () {
-                        return ref.read(feedSearchStateProvider.notifier).refresh(ref.read(userModelProvider)!.idx, widget.searchWord);
+                        return ref.read(feedSearchStateProvider.notifier).refresh(ref.read(userInfoProvider).userModel!.idx, widget.searchWord);
                       },
                       child: GridView.builder(
                         controller: searchContentController,
@@ -187,7 +187,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
 
                           return GestureDetector(
                             onTap: () {
-                              context.push("/home/myPage/detail/null/${widget.searchWord}/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/searchContent");
+                              context.push("/home/myPage/detail/null/${widget.searchWord}/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/searchContent");
                             },
                             child: Stack(
                               children: [

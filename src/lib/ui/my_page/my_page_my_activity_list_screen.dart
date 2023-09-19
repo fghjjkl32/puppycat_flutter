@@ -38,15 +38,15 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
       length: 2,
       vsync: this,
     );
-    ref.read(myLikeStateProvider.notifier).initPosts(ref.read(userModelProvider)!.idx, 1);
-    ref.read(mySaveStateProvider.notifier).initPosts(ref.read(userModelProvider)!.idx, 1);
+    ref.read(myLikeStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel!.idx, 1);
+    ref.read(mySaveStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel!.idx, 1);
     super.initState();
   }
 
   void _myLikeContentsScrollListener() {
     if (myLikeContentController.position.pixels > myLikeContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (myLikeOldLength == ref.read(myLikeStateProvider).list.length) {
-        ref.read(myLikeStateProvider.notifier).loadMorePost(ref.read(userModelProvider)!.idx);
+        ref.read(myLikeStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx);
       }
     }
   }
@@ -54,7 +54,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
   void _mySaveContentsScrollListener() {
     if (mySaveContentController.position.pixels > mySaveContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (mySaveOldLength == ref.read(mySaveStateProvider).list.length) {
-        ref.read(mySaveStateProvider.notifier).loadMorePost(ref.read(userModelProvider)!.idx);
+        ref.read(mySaveStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx);
       }
     }
   }
@@ -208,7 +208,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
             : RefreshIndicator(
                 onRefresh: () {
                   return ref.read(myLikeStateProvider.notifier).refresh(
-                        ref.read(userModelProvider)!.idx,
+                        ref.read(userInfoProvider).userModel!.idx,
                       );
                 },
                 child: Padding(
@@ -253,7 +253,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
                       return GestureDetector(
                         onTap: () {
-                          context.push("/home/myPage/detail/null/좋아요한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myLikeContent");
+                          context.push("/home/myPage/detail/null/좋아요한 게시물/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myLikeContent");
                         },
                         child: Stack(
                           children: [
@@ -344,7 +344,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
             : RefreshIndicator(
                 onRefresh: () {
                   return ref.read(mySaveStateProvider.notifier).refresh(
-                        ref.read(userModelProvider)!.idx,
+                        ref.read(userInfoProvider).userModel!.idx,
                       );
                 },
                 child: Padding(
@@ -387,7 +387,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
                       return GestureDetector(
                         onTap: () {
-                          context.push("/home/myPage/detail/null/저장한 게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/mySaveContent");
+                          context.push("/home/myPage/detail/null/저장한 게시물/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/mySaveContent");
                         },
                         child: Stack(
                           children: [

@@ -79,7 +79,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
   void _tagScrollListener() {
     if (tagScrollController.position.pixels > tagScrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (tagOldLength == ref.read(tagSearchStateProvider).list.length) {
-        ref.read(tagSearchStateProvider.notifier).loadMoreTagSearchList(ref.read(userModelProvider)!.idx);
+        ref.read(tagSearchStateProvider.notifier).loadMoreTagSearchList(ref.read(userInfoProvider).userModel!.idx);
       }
     }
   }
@@ -87,7 +87,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
   void _profileScrollListener() {
     if (profileScrollController.position.pixels > profileScrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (profileOldLength == ref.read(profileSearchStateProvider).list.length) {
-        ref.read(profileSearchStateProvider.notifier).loadMoreNickSearchList(ref.read(userModelProvider)!.idx);
+        ref.read(profileSearchStateProvider.notifier).loadMoreNickSearchList(ref.read(userInfoProvider).userModel!.idx);
       }
     }
   }

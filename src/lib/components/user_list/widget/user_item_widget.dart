@@ -58,7 +58,7 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
 
         ref.refresh(searchProvider);
 
-        ref.read(userModelProvider)?.idx == widget.memberIdx
+        ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
             ? context.push("/home/myPage")
             : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
       },
