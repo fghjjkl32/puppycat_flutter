@@ -2,7 +2,7 @@ name: pet_mobile_social_flutter
 description: pet_mobile_social_flutter
 publish_to: 'none'
 
-version: 0.0.4+4
+version: 0.0.5+5
 scripts:
   codegen: flutter pub run build_runner build
 
@@ -77,8 +77,10 @@ dependencies:
   url_launcher: ^6.1.10
 
   #Firebase
-  firebase_core: ^2.14.0
+  firebase_core: ^2.15.1
   firebase_messaging: ^14.6.4
+  firebase_crashlytics: ^3.3.5
+  firebase_analytics: ^10.4.5
 
   #notification(push)
   flutter_local_notifications: ^14.1.1

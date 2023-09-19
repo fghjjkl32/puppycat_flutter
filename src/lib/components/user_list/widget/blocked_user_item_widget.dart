@@ -62,8 +62,7 @@ class BlockUserItemWidget extends ConsumerWidget {
                           : Container(),
                       Text(
                         userName,
-                        style:
-                            kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                        style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                       ),
                     ],
                   ),
@@ -80,11 +79,10 @@ class BlockUserItemWidget extends ConsumerWidget {
           ),
           GestureDetector(
             onTap: () async {
-              final result =
-                  await ref.read(blockStateProvider.notifier).deleteBlock(
-                        memberIdx: ref.watch(userModelProvider)!.idx,
-                        blockIdx: memberIdx,
-                      );
+              final result = await ref.read(blockStateProvider.notifier).deleteBlock(
+                    memberIdx: ref.watch(userInfoProvider).userModel!.idx,
+                    blockIdx: memberIdx,
+                  );
 
               if (result.result) {
                 toast(

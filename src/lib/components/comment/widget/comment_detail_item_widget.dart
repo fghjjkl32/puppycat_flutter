@@ -91,7 +91,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                   : Container(),
               GestureDetector(
                 onTap: () {
-                  ref.read(userModelProvider)!.idx == memberIdx
+                  ref.read(userInfoProvider).userModel!.idx == memberIdx
                       ? Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -100,8 +100,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                             ),
                           ),
                         )
-                      : context.push(
-                          "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
+                      : context.push("/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
                 },
                 child: getProfileAvatar(profileImage!, 30.w, 30.h),
               ),
@@ -132,7 +131,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                             ? null
                             : ref.watch(commentStateProvider.notifier).postCommentLike(
                                   commentIdx: commentIdx,
-                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                   contentsIdx: contentIdx,
                                 );
                       },
@@ -153,19 +152,16 @@ class CommentDetailItemWidget extends ConsumerWidget {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    ref.read(userModelProvider)!.idx ==
-                                            memberIdx
+                                    ref.read(userInfoProvider).userModel!.idx == memberIdx
                                         ? Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MyPageMainScreen(
+                                              builder: (context) => MyPageMainScreen(
                                                 oldMemberIdx: oldMemberIdx,
                                               ),
                                             ),
                                           )
-                                        : context.push(
-                                            "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
+                                        : context.push("/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
                                   },
                                   child: Row(
                                     children: [
@@ -197,15 +193,14 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        memberIdx == ref.read(userModelProvider)!.idx
+                                        memberIdx == ref.read(userInfoProvider).userModel!.idx
                                             ? showCustomModalBottomSheet(
                                                 context: context,
                                                 widget: Column(
                                                   children: [
                                                     BottomSheetButtonItem(
                                                       icon: const Icon(
-                                                        Puppycat_social
-                                                            .icon_modify,
+                                                        Puppycat_social.icon_modify,
                                                       ),
                                                       title: '수정하기',
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
@@ -224,15 +219,14 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                     ),
                                                     BottomSheetButtonItem(
                                                       icon: const Icon(
-                                                        Puppycat_social
-                                                            .icon_delete_small,
+                                                        Puppycat_social.icon_delete_small,
                                                         color: kBadgeColor,
                                                       ),
                                                       title: '삭제하기',
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () async {
                                                         final result = await ref.watch(commentStateProvider.notifier).deleteContents(
-                                                              memberIdx: ref.read(userModelProvider)!.idx,
+                                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                               contentsIdx: contentIdx,
                                                               commentIdx: commentIdx,
                                                               parentIdx: parentIdx,
@@ -252,8 +246,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                   children: [
                                                     BottomSheetButtonItem(
                                                       icon: const Icon(
-                                                        Puppycat_social
-                                                            .icon_user_block_ac,
+                                                        Puppycat_social.icon_user_block_ac,
                                                       ),
                                                       title: '차단하기',
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
@@ -296,7 +289,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                                   context.pop();
 
                                                                   final result = await ref.read(commentStateProvider.notifier).postBlock(
-                                                                        memberIdx: ref.watch(userModelProvider)!.idx,
+                                                                        memberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                                                         blockIdx: memberIdx,
                                                                         contentsIdx: contentIdx,
                                                                       );
@@ -324,8 +317,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                     ),
                                                     BottomSheetButtonItem(
                                                       icon: const Icon(
-                                                        Puppycat_social
-                                                            .icon_report1,
+                                                        Puppycat_social.icon_report1,
                                                         color: kBadgeColor,
                                                       ),
                                                       title: '신고하기',
@@ -380,7 +372,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                   onTap: () {
                                     ref.watch(commentStateProvider.notifier).deleteCommentLike(
                                           commentIdx: commentIdx,
-                                          memberIdx: ref.read(userModelProvider)!.idx,
+                                          memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                           contentsIdx: contentIdx,
                                         );
                                   },
@@ -393,7 +385,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                   onTap: () {
                                     ref.watch(commentStateProvider.notifier).postCommentLike(
                                           commentIdx: commentIdx,
-                                          memberIdx: ref.read(userModelProvider)!.idx,
+                                          memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                           contentsIdx: contentIdx,
                                         );
                                   },
@@ -419,8 +411,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                           child: Row(
                             children: [
                               Padding(
-                                padding:
-                                    EdgeInsets.only(left: 12.0.w, right: 2.w),
+                                padding: EdgeInsets.only(left: 12.0.w, right: 2.w),
                                 child: const Icon(
                                   Puppycat_social.icon_comment_comment,
                                   color: kTextBodyColor,

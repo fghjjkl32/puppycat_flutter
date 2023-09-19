@@ -73,7 +73,7 @@
 //                   : Container(),
 //               GestureDetector(
 //                 onTap: () {
-//                   ref.read(userModelProvider)!.idx == memberIdx
+//                   ref.read(userInfoProvider).userModel!.idx == memberIdx
 //                       ? context.push("/home/myPage")
 //                       : context.push(
 //                           "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx");
@@ -95,7 +95,7 @@
 //                                 .watch(commentStateProvider.notifier)
 //                                 .postCommentLike(
 //                                   commentIdx: commentIdx,
-//                                   memberIdx: ref.read(userModelProvider)!.idx,
+//                                   memberIdx: ref.read(userInfoProvider).userModel!.idx,
 //                                   contentsIdx: contentIdx,
 //                                 );
 //                       },
@@ -117,7 +117,7 @@
 //                               children: [
 //                                 GestureDetector(
 //                                   onTap: () {
-//                                     ref.read(userModelProvider)!.idx ==
+//                                     ref.read(userInfoProvider).userModel!.idx ==
 //                                             memberIdx
 //                                         ? context.push("/home/myPage")
 //                                         : context.push(
@@ -156,7 +156,7 @@
 //                                     GestureDetector(
 //                                       onTap: () {
 //                                         memberIdx ==
-//                                                 ref.read(userModelProvider)!.idx
+//                                                 ref.read(userInfoProvider).userModel!.idx
 //                                             ? showCustomModalBottomSheet(
 //                                                 context: context,
 //                                                 widget: Column(
@@ -404,7 +404,7 @@
 //                                         .deleteCommentLike(
 //                                           commentIdx: commentIdx,
 //                                           memberIdx:
-//                                               ref.read(userModelProvider)!.idx,
+//                                               ref.read(userInfoProvider).userModel!.idx,
 //                                           contentsIdx: contentIdx,
 //                                         );
 //                                   },
@@ -420,7 +420,7 @@
 //                                         .postCommentLike(
 //                                           commentIdx: commentIdx,
 //                                           memberIdx:
-//                                               ref.read(userModelProvider)!.idx,
+//                                               ref.read(userInfoProvider).userModel!.idx,
 //                                           contentsIdx: contentIdx,
 //                                         );
 //                                   },

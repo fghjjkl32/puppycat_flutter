@@ -515,7 +515,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   child: ElevatedButton(
                     onPressed: essentialAgreeProvider && isValidNickName && ref.watch(authStateProvider)
                         ? () {
-                            var userModel = ref.read(userModelProvider.notifier).state;
+                            var userModel = ref.read(userInfoProvider).userModel;
                             if (userModel == null) {
                               throw 'usermodel is null';
                             }

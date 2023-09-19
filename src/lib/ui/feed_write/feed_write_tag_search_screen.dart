@@ -38,8 +38,8 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
     super.initState();
 
     Future(() {
-      ref.watch(feedWriteImageTagSearchProvider.notifier).userMemberIdx = ref.watch(userModelProvider)!.idx;
-      ref.read(feedWriteImageTagSearchProvider.notifier).initImageTagUserList(ref.watch(userModelProvider)!.idx, 1);
+      ref.watch(feedWriteImageTagSearchProvider.notifier).userMemberIdx = ref.watch(userInfoProvider).userModel!.idx;
+      ref.read(feedWriteImageTagSearchProvider.notifier).initImageTagUserList(ref.watch(userInfoProvider).userModel!.idx, 1);
     });
 
     userScrollController.addListener(_blockScrollListener);
@@ -51,7 +51,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
   void _blockScrollListener() {
     if (userScrollController.position.pixels > userScrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (userOldLength == ref.read(feedWriteImageTagSearchProvider).list.length) {
-        ref.read(feedWriteImageTagSearchProvider.notifier).loadMoreUserList(ref.watch(userModelProvider)!.idx);
+        ref.read(feedWriteImageTagSearchProvider.notifier).loadMoreUserList(ref.watch(userInfoProvider).userModel!.idx);
       }
     }
   }

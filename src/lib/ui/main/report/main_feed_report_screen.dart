@@ -130,14 +130,14 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                         : () async {
                             final result = widget.isComment
                                 ? await ref.watch(commentStateProvider.notifier).postCommentReport(
-                                      loginMemberIdx: ref.watch(userModelProvider)!.idx,
+                                      loginMemberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                       contentIdx: widget.contentIdx,
                                       reportCode: code,
                                       reason: directInputText,
                                       reportType: "comment",
                                     )
                                 : await ref.watch(feedListStateProvider.notifier).postContentReport(
-                                      loginMemberIdx: ref.watch(userModelProvider)!.idx,
+                                      loginMemberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                       contentIdx: widget.contentIdx,
                                       reportCode: code,
                                       reason: directInputText,
@@ -154,12 +154,12 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                                 buttonOnTap: () async {
                                   final result = widget.isComment
                                       ? await ref.watch(commentStateProvider.notifier).deleteCommentReport(
-                                            loginMemberIdx: ref.watch(userModelProvider)!.idx,
+                                            loginMemberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                             contentIdx: widget.contentIdx,
                                             reportType: widget.isComment ? "comment" : "contents",
                                           )
                                       : await ref.watch(feedListStateProvider.notifier).deleteContentReport(
-                                            loginMemberIdx: ref.watch(userModelProvider)!.idx,
+                                            loginMemberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                             contentIdx: widget.contentIdx,
                                             reportType: widget.isComment ? "comment" : "contents",
                                           );

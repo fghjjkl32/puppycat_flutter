@@ -28,8 +28,8 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
     super.initState();
 
     Future(() {
-      ref.watch(blockStateProvider.notifier).userMemberIdx = ref.watch(userModelProvider)!.idx;
-      ref.read(blockStateProvider.notifier).initBlockList(ref.watch(userModelProvider)!.idx, 1);
+      ref.watch(blockStateProvider.notifier).userMemberIdx = ref.watch(userInfoProvider).userModel!.idx;
+      ref.read(blockStateProvider.notifier).initBlockList(ref.watch(userInfoProvider).userModel!.idx, 1);
     });
 
     blockController.addListener(_blockScrollListener);
@@ -41,7 +41,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
   void _blockScrollListener() {
     if (blockController.position.pixels > blockController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (blockOldLength == ref.read(blockStateProvider).list.length) {
-        ref.read(blockStateProvider.notifier).loadMoreBlockList(ref.watch(userModelProvider)!.idx);
+        ref.read(blockStateProvider.notifier).loadMoreBlockList(ref.watch(userInfoProvider).userModel!.idx);
       }
     }
   }

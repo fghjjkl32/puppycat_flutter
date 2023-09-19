@@ -8,7 +8,7 @@ import 'package:pet_mobile_social_flutter/repositories/search/search_repository.
 import 'package:rxdart/rxdart.dart';
 
 final tagSearchStateProvider = StateNotifierProvider<TagSearchStateNotifier, SearchDataListModel>((ref) {
-  final loginMemberIdx = ref.watch(userModelProvider)?.idx;
+  final loginMemberIdx = ref.watch(userInfoProvider).userModel?.idx;
   return TagSearchStateNotifier(loginMemberIdx, ref);
 });
 

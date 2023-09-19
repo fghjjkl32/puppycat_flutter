@@ -70,12 +70,12 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
       vsync: this,
     );
 
-    ref.read(myInformationStateProvider.notifier).getInitUserInformation(ref.read(userModelProvider)!.idx);
+    ref.read(myInformationStateProvider.notifier).getInitUserInformation(ref.read(userInfoProvider).userModel!.idx);
     ref.read(myContentStateProvider.notifier).initPosts(
-          loginMemberIdx: ref.read(userModelProvider)!.idx,
+          loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
           initPage: 1,
         );
-    ref.read(myTagContentStateProvider.notifier).initPosts(ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx, 1);
+    ref.read(myTagContentStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel!.idx, ref.read(userInfoProvider).userModel!.idx, 1);
     super.initState();
   }
 
@@ -92,15 +92,15 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
 
     if (scrollController.position.pixels > scrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (tagOldLength == ref.read(myTagContentStateProvider).list.length) {
-        ref.read(myTagContentStateProvider.notifier).loadMorePost(ref.read(userModelProvider)!.idx, ref.read(userModelProvider)!.idx);
+        ref.read(myTagContentStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx, ref.read(userInfoProvider).userModel!.idx);
       }
     }
 
     if (scrollController.position.pixels > scrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (userOldLength == ref.read(myContentStateProvider).list.length) {
         ref.read(myContentStateProvider.notifier).loadMorePost(
-              loginMemberIdx: ref.read(userModelProvider)!.idx,
-              memberIdx: ref.read(userModelProvider)!.idx,
+              loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+              memberIdx: ref.read(userInfoProvider).userModel!.idx,
             );
       }
     }
@@ -109,7 +109,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   void _commentScrollListener() {
     if (commentController.position.extentAfter < 200) {
       if (commentOldLength == ref.read(commentStateProvider).list.length) {
-        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userModelProvider)!.idx);
+        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userInfoProvider).userModel!.idx);
       }
     }
   }
@@ -254,7 +254,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         },
                       ),
                     ],
-                    expandedHeight: 130.h,
+                    expandedHeight: 160.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
                       final userInformationState = ref.watch(myInformationStateProvider);
                       final lists = userInformationState.list;
@@ -293,8 +293,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
         return RefreshIndicator(
           onRefresh: () {
             return ref.read(myContentStateProvider.notifier).refresh(
-                  ref.read(userModelProvider)!.idx,
-                  ref.read(userModelProvider)!.idx,
+                  ref.read(userInfoProvider).userModel!.idx,
+                  ref.read(userInfoProvider).userModel!.idx,
                 );
           },
           child: lists.isEmpty
@@ -348,7 +348,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                               margin: const EdgeInsets.all(10.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myContent");
+                                  context
+                                      .push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myContent");
                                 },
                                 child: Center(
                                   child: Stack(
@@ -396,7 +397,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                 onTap: () async {
                                                   await ref.read(contentLikeUserListStateProvider.notifier).initContentLikeUserList(
                                                         lists[index].idx,
-                                                        ref.read(userModelProvider)!.idx,
+                                                        ref.read(userInfoProvider).userModel!.idx,
                                                         1,
                                                       );
 
@@ -499,7 +500,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                               child: Builder(builder: (context) {
                                                 return InkWell(
                                                   onTap: () async {
-                                                    await ref.read(commentStateProvider.notifier).getInitComment(lists[index].idx, ref.read(userModelProvider)!.idx, 1);
+                                                    await ref.read(commentStateProvider.notifier).getInitComment(lists[index].idx, ref.read(userInfoProvider).userModel!.idx, 1);
 
                                                     // ignore: use_build_context_synchronously
                                                     showCustomModalBottomSheet(
@@ -635,8 +636,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
         return RefreshIndicator(
           onRefresh: () {
             return ref.read(myTagContentStateProvider.notifier).refresh(
-                  ref.read(userModelProvider)!.idx,
-                  ref.read(userModelProvider)!.idx,
+                  ref.read(userInfoProvider).userModel!.idx,
+                  ref.read(userInfoProvider).userModel!.idx,
                 );
           },
           child: lists.isEmpty
@@ -690,7 +691,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                               margin: const EdgeInsets.all(10.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userModelProvider)!.idx}/${lists[index].idx}/myTagContent");
+                                  context.push(
+                                      "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myTagContent");
                                 },
                                 child: Center(
                                   child: Stack(
@@ -748,97 +750,141 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
       expandedTitleScale: 1.0,
       background: Padding(
         padding: const EdgeInsets.only(top: kToolbarHeight),
-        child: Row(
+        child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-              child: getProfileAvatar(data.profileImgUrl! ?? "", 48.w, 48.h),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
               children: [
-                Row(
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  child: getProfileAvatar(data.profileImgUrl! ?? "", 48.w, 48.h),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    data.isBadge == 1
-                        ? Row(
-                            children: [
-                              Image.asset(
-                                'assets/image/feed/icon/small_size/icon_special.png',
-                                height: 13.h,
-                              ),
-                              SizedBox(
-                                width: 4.w,
-                              ),
-                            ],
-                          )
-                        : Container(),
-                    Text(
-                      "${data.nick}",
-                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                    Row(
+                      children: [
+                        data.isBadge == 1
+                            ? Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/image/feed/icon/small_size/icon_special.png',
+                                    height: 13.h,
+                                  ),
+                                  SizedBox(
+                                    width: 4.w,
+                                  ),
+                                ],
+                              )
+                            : Container(),
+                        Text(
+                          "${data.nick}",
+                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            context.go("/home/myPage/profileEdit");
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: const Icon(
+                              Puppycat_social.icon_modify_small,
+                              color: kNeutralColor500,
+                              size: 22,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Visibility(
+                      visible: data.intro != "",
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 3,
+                          ),
+                          Text(
+                            "${data.intro}",
+                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                          ),
+                        ],
+                      ),
                     ),
                     GestureDetector(
                       onTap: () {
-                        context.go("/home/myPage/profileEdit");
+                        context.go("/home/myPage/followList/${ref.read(userInfoProvider).userModel!.idx}");
                       },
-                      child: const Padding(
-                        padding: EdgeInsets.all(5.0),
-                        child: const Icon(
-                          Puppycat_social.icon_modify_small,
-                          color: kNeutralColor500,
-                          size: 22,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 8.0.h),
+                        child: Row(
+                          children: [
+                            Text(
+                              "팔로워 ",
+                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                            ),
+                            Text(
+                              "${data.followerCnt}",
+                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                            ),
+                            Text(
+                              "  ·  ",
+                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                            ),
+                            Text(
+                              "팔로잉 ",
+                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                            ),
+                            Text(
+                              "${data.followCnt}",
+                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ],
                 ),
-                Visibility(
-                  visible: data.intro != "",
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 3,
-                      ),
-                      Text(
-                        "${data.intro}",
-                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    context.go("/home/myPage/followList/${ref.read(userModelProvider)!.idx}");
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 8.0.h),
-                    child: Row(
-                      children: [
-                        Text(
-                          "팔로워 ",
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                        ),
-                        Text(
-                          "${data.followerCnt}",
-                          style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
-                        ),
-                        Text(
-                          "  ·  ",
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                        ),
-                        Text(
-                          "팔로잉 ",
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                        ),
-                        Text(
-                          "${data.followCnt}",
-                          style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
               ],
+            ),
+            InkWell(
+              onTap: () {
+                context.push("/home/myPage/myPetList");
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "우리집 아이들",
+                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {},
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "산책 일지",
+                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

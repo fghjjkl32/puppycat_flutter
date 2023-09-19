@@ -20,7 +20,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part 'login_state_provider.g.dart';
 
-final userModelProvider = StateProvider<UserModel?>((ref) => null);
 final userInfoProvider = StateProvider<UserInfoModel>((ref) => UserInfoModel());
 // final cookieProvider = StateProvider<CookieJar?>((ref) => null);
 
@@ -65,7 +64,7 @@ class LoginState extends _$LoginState {
     print('loginResult.loginStatus ${userModel.loginStatus}');
     state = userModel.loginStatus;
 
-    ref.read(userModelProvider.notifier).state = userModel;
+    // ref.read(userModelProvider.notifier).state = userModel;
 
     ///Login Route State 관련
     switch (userModel.loginStatus) {
@@ -138,7 +137,6 @@ class LoginState extends _$LoginState {
       var chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${userInfoModel.userModel!.idx}')));
       chatController.controller.logout();
       ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
-      ref.read(userModelProvider.notifier).state = null;
       ref.read(userInfoProvider.notifier).state = UserInfoModel();
       saveUserModel(null);
       state = LoginStatus.none;

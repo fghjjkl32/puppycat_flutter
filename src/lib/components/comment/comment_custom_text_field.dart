@@ -209,13 +209,13 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                                     print('ref.read(commentHeaderProvider) ${ref.read(commentHeaderProvider)}');
                                     final result = commentHeaderState.isEdit
                                         ? await ref.watch(commentStateProvider.notifier).editContents(
-                                              memberIdx: ref.read(userModelProvider)!.idx,
+                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                               contents: _controller.value.text,
                                               contentIdx: widget.contentIdx,
                                               commentIdx: ref.watch(commentHeaderProvider).commentIdx!,
                                             )
                                         : await ref.watch(commentStateProvider.notifier).postContents(
-                                              memberIdx: ref.read(userModelProvider)!.idx,
+                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                               contents: _controller.value.text,
                                               contentIdx: widget.contentIdx,
                                               parentIdx: ref.watch(commentHeaderProvider).isReply ? ref.watch(commentHeaderProvider).commentIdx : null,
@@ -225,8 +225,6 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                                     if (ref.read(commentHeaderProvider).commentIdx != null) {
                                       commentIdx = ref.read(commentHeaderProvider).commentIdx!;
                                     }
-
-
 
                                     print('ref.watch(commentHeaderProvider).isReply ${ref.watch(commentHeaderProvider).isReply}');
                                     if (ref.watch(commentHeaderProvider).isReply) {
@@ -238,10 +236,10 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
 
                                     // if (result.result) {
                                     //   FocusScope.of(context).unfocus();
-                                      ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
-                                      _controller.text = '';
-                                      hasInput = false;
-                                      initialized.value = false;
+                                    ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
+                                    _controller.text = '';
+                                    hasInput = false;
+                                    initialized.value = false;
                                     // }
                                   },
                                   icon: const Icon(

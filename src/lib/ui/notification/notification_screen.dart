@@ -41,7 +41,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
     _notiListPagingController = ref.read(notificationListStateProvider);
     _tapButtonController.selectIndex(0);
     Future(() {
-      ref.read(settingStateProvider.notifier).initSetting(ref.watch(userModelProvider)!.idx);
+      ref.read(settingStateProvider.notifier).initSetting(ref.watch(userInfoProvider).userModel!.idx);
     });
 
     super.initState();
@@ -55,7 +55,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
     ref.read(settingStateProvider.notifier).updateSwitchState(key, newValue);
 
     Map<String, dynamic> data = {
-      "memberIdx": "${ref.read(userModelProvider)!.idx}",
+      "memberIdx": "${ref.read(userInfoProvider).userModel!.idx}",
     };
 
     Map<String, int> newSwitchState = Map.from(ref.watch(settingStateProvider).switchState);
@@ -63,7 +63,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
     data.addAll(newSwitchState);
 
     await ref.read(settingStateProvider.notifier).putSetting(
-          memberIdx: ref.read(userModelProvider)!.idx,
+          memberIdx: ref.read(userInfoProvider).userModel!.idx,
           body: data,
         );
   }

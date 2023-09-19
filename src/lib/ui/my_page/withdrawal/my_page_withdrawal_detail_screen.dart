@@ -20,7 +20,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
   @override
   void initState() {
     super.initState();
-    ref.read(withdrawalDetailStateProvider.notifier).getWithdrawalDetailList(ref.read(userModelProvider)!.idx);
+    ref.read(withdrawalDetailStateProvider.notifier).getWithdrawalDetailList(ref.read(userInfoProvider).userModel!.idx);
   }
 
   void onTap() {
@@ -312,7 +312,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                     onPressed: isAgree
                         ? () async {
                             final result = await ref.read(withdrawalStateProvider.notifier).withdrawalUser(
-                                  idx: ref.read(userModelProvider)!.idx,
+                                  idx: ref.read(userInfoProvider).userModel!.idx,
                                   code: ref.read(withdrawalCodeProvider.notifier).state,
                                   reason: ref.read(withdrawalReasonProvider.notifier).state == "null" ? null : ref.read(withdrawalReasonProvider.notifier).state,
                                 );

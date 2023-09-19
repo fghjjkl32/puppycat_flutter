@@ -128,7 +128,7 @@ class FeedWriteScreen extends ConsumerWidget {
 
                 final result = await ref.watch(feedWriteProvider.notifier).postFeed(
                       files: ref.watch(feedWriteCroppedFilesProvider),
-                      memberIdx: ref.watch(userModelProvider)!.idx,
+                      memberIdx: ref.watch(userInfoProvider).userModel!.idx,
                       isView: ref.watch(feedWriteButtonSelectedProvider),
                       location: ref.watch(feedWriteLocationInformationProvider.notifier).state,
                       contents: ref.watch(feedWriteContentProvider.notifier).state.text,

@@ -54,8 +54,8 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
   @override
   void initState() {
     ref.read(firstFeedStateProvider.notifier).apiStatus = ListAPIStatus.idle;
-    ref.read(firstFeedStateProvider.notifier).loginMemberIdx = ref.read(userModelProvider)?.idx;
-    ref.read(feedListStateProvider.notifier).loginMemberIdx = ref.read(userModelProvider)?.idx;
+    ref.read(firstFeedStateProvider.notifier).loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
+    ref.read(feedListStateProvider.notifier).loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
 
     ref.read(firstFeedStateProvider.notifier).contentType = widget.contentType;
     ref.read(firstFeedStateProvider.notifier).contentIdx = widget.contentIdx;
@@ -139,14 +139,14 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
             return AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               actions: [
-                widget.contentType == "userContent" && ref.watch(firstFeedStateProvider).itemList![0].memberIdx != ref.read(userModelProvider)?.idx
+                widget.contentType == "userContent" && ref.watch(firstFeedStateProvider).itemList![0].memberIdx != ref.read(userInfoProvider).userModel?.idx
                     ? ref.watch(firstFeedStateProvider).itemList![0].followState == 1
                         ? InkWell(
                             onTap: () {
-                              ref.read(userModelProvider) == null
+                              ref.read(userInfoProvider).userModel == null
                                   ? context.pushReplacement("/loginScreen")
                                   : ref.watch(firstFeedStateProvider.notifier).deleteFollow(
-                                        memberIdx: ref.read(userModelProvider)!.idx,
+                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                         followIdx: ref.watch(firstFeedStateProvider).itemList![0].memberIdx!,
                                       );
                             },
@@ -160,10 +160,10 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                           )
                         : InkWell(
                             onTap: () {
-                              ref.read(userModelProvider) == null
+                              ref.read(userInfoProvider).userModel == null
                                   ? context.pushReplacement("/loginScreen")
                                   : ref.watch(firstFeedStateProvider.notifier).postFollow(
-                                        memberIdx: ref.read(userModelProvider)!.idx,
+                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                         followIdx: ref.watch(firstFeedStateProvider).itemList![0].memberIdx!,
                                       );
                             },

@@ -65,7 +65,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
           children: [
             InkWell(
               onTap: () {
-                ref.read(userModelProvider)?.idx == widget.memberIdx
+                ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
                     ? Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -116,11 +116,11 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           isFollow
                               ? InkWell(
                                   onTap: () async {
-                                    if (ref.read(userModelProvider) == null) {
+                                    if (ref.read(userInfoProvider).userModel == null) {
                                       context.pushReplacement("/loginScreen");
                                     } else {
                                       final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(
-                                        memberIdx: ref.read(userModelProvider)!.idx,
+                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                         followIdx: widget.memberIdx,
                                       );
 
@@ -138,11 +138,11 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                 )
                               : InkWell(
                                   onTap: () async {
-                                    if (ref.read(userModelProvider) == null) {
+                                    if (ref.read(userInfoProvider).userModel == null) {
                                       context.pushReplacement("/loginScreen");
                                     } else {
                                       final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(
-                                        memberIdx: ref.read(userModelProvider)!.idx,
+                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                         followIdx: widget.memberIdx,
                                       );
 

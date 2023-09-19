@@ -84,9 +84,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     );
 
     Future(() {
-      ref.watch(userInformationStateProvider.notifier).getInitUserInformation(ref.watch(userModelProvider)?.idx, widget.memberIdx);
-      ref.read(userContentStateProvider.notifier).initPosts(ref.read(userModelProvider)?.idx, widget.memberIdx, 1);
-      ref.read(tagContentStateProvider.notifier).initPosts(ref.read(userModelProvider)?.idx, widget.memberIdx, 1);
+      ref.watch(userInformationStateProvider.notifier).getInitUserInformation(ref.watch(userInfoProvider).userModel?.idx, widget.memberIdx);
+      ref.read(userContentStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel?.idx, widget.memberIdx, 1);
+      ref.read(tagContentStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel?.idx, widget.memberIdx, 1);
     });
 
     super.initState();
@@ -107,7 +107,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   void _userContentsScrollListener() {
     if (userContentController.position.pixels > userContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (userOldLength == ref.read(userContentStateProvider).list.length) {
-        ref.read(userContentStateProvider.notifier).loadMorePost(ref.read(userModelProvider)!.idx, widget.memberIdx);
+        ref.read(userContentStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx, widget.memberIdx);
       }
     }
   }
@@ -115,7 +115,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   void _tagContentsScrollListener() {
     if (tagContentController.position.pixels > tagContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (tagOldLength == ref.read(tagContentStateProvider).list.length) {
-        ref.read(tagContentStateProvider.notifier).loadMorePost(ref.read(userModelProvider)!.idx, widget.memberIdx);
+        ref.read(tagContentStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx, widget.memberIdx);
       }
     }
   }
@@ -123,7 +123,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   void _commentScrollListener() {
     if (commentController.position.extentAfter < 200) {
       if (commentOldLength == ref.read(commentStateProvider).list.length) {
-        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userModelProvider)!.idx);
+        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userInfoProvider).userModel!.idx);
       }
     }
   }
@@ -208,7 +208,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         showLottieAnimation = false;
                                       });
                                       if (id == 'block') {
-                                        if (ref.read(userModelProvider) == null) {
+                                        if (ref.read(userInfoProvider).userModel == null) {
                                           context.pushReplacement("/loginScreen");
                                         } else {
                                           showDialog(
@@ -251,7 +251,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                     type: ToastType.purple,
                                                   );
                                                   final result = await ref.read(userInformationStateProvider.notifier).postBlock(
-                                                        memberIdx: ref.watch(userModelProvider)!.idx,
+                                                        memberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                                         blockIdx: widget.memberIdx,
                                                       );
 
@@ -414,7 +414,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
             : RefreshIndicator(
                 onRefresh: () {
                   return ref.read(userContentStateProvider.notifier).refresh(
-                        ref.read(userModelProvider)?.idx,
+                        ref.read(userInfoProvider).userModel?.idx,
                         widget.memberIdx,
                       );
                 },
@@ -525,7 +525,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
         return RefreshIndicator(
           onRefresh: () {
             return ref.read(tagContentStateProvider.notifier).refresh(
-                  ref.read(userModelProvider)?.idx,
+                  ref.read(userInfoProvider).userModel?.idx,
                   widget.memberIdx,
                 );
           },
@@ -682,7 +682,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                     ),
                     GestureDetector(
                       onTap: () {
-                        ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/followList/${widget.memberIdx}");
+                        ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/followList/${widget.memberIdx}");
                       },
                       child: Padding(
                         padding: EdgeInsets.only(top: 8.0.h),
@@ -743,12 +743,12 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                             ? Expanded(
                                 child: GestureDetector(
                                   onTap: () async {
-                                    if (ref.read(userModelProvider) == null) {
+                                    if (ref.read(userInfoProvider).userModel == null) {
                                       context.pushReplacement("/loginScreen");
                                     } else {
-                                      ref.watch(userInformationStateProvider.notifier).updateUnBlockState(ref.watch(userModelProvider)!.idx, widget.memberIdx);
+                                      ref.watch(userInformationStateProvider.notifier).updateUnBlockState(ref.watch(userInfoProvider).userModel!.idx, widget.memberIdx);
                                       await ref.read(blockStateProvider.notifier).deleteBlock(
-                                            memberIdx: ref.watch(userModelProvider)!.idx,
+                                            memberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                             blockIdx: widget.memberIdx,
                                           );
                                     }
@@ -781,12 +781,12 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 child: data.followState == 1
                                     ? GestureDetector(
                                         onTap: () async {
-                                          if (ref.read(userModelProvider) == null) {
+                                          if (ref.read(userInfoProvider).userModel == null) {
                                             context.pushReplacement("/loginScreen");
                                           } else {
                                             ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
                                             await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                   followIdx: widget.memberIdx,
                                                 );
                                           }
@@ -816,12 +816,12 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                       )
                                     : GestureDetector(
                                         onTap: () async {
-                                          if (ref.read(userModelProvider) == null) {
+                                          if (ref.read(userInfoProvider).userModel == null) {
                                             context.pushReplacement("/loginScreen");
                                           } else {
                                             ref.watch(userInformationStateProvider.notifier).updateFollowState();
                                             await ref.watch(followStateProvider.notifier).postFollow(
-                                                  memberIdx: ref.read(userModelProvider)!.idx,
+                                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                   followIdx: widget.memberIdx,
                                                 );
                                           }
@@ -864,7 +864,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 Room? room = chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
 
                                 if (mounted) {
-                                  ref.read(userModelProvider) == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain/chatRoom', extra: room);
+                                  ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain/chatRoom', extra: room);
                                 }
                               }
                             },

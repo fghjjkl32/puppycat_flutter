@@ -131,7 +131,7 @@ class FeedEditScreen extends ConsumerWidget {
                 );
 
                 final result = await ref.watch(feedWriteProvider.notifier).putFeed(
-                      memberIdx: ref.watch(userModelProvider)!.idx,
+                      memberIdx: ref.watch(userInfoProvider).userModel!.idx,
                       isView: ref.watch(feedWriteButtonSelectedProvider),
                       location: ref.watch(feedWriteLocationInformationProvider.notifier).state,
                       contents: ref.watch(feedEditContentProvider.notifier).state.text,

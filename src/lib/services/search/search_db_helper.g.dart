@@ -67,15 +67,12 @@ class $SearchesTable extends Searches with TableInfo<$SearchesTable, Searche> {
   static const VerificationMeta _isBadgeMeta =
       const VerificationMeta('isBadge');
   @override
-  late final GeneratedColumn<bool> isBadge =
-      GeneratedColumn<bool>('is_badge', aliasedName, true,
-          type: DriftSqlType.bool,
-          requiredDuringInsert: false,
-          defaultConstraints: GeneratedColumn.constraintsDependsOnDialect({
-            SqlDialect.sqlite: 'CHECK ("is_badge" IN (0, 1))',
-            SqlDialect.mysql: '',
-            SqlDialect.postgres: '',
-          }));
+  late final GeneratedColumn<bool> isBadge = GeneratedColumn<bool>(
+      'is_badge', aliasedName, true,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_badge" IN (0, 1))'));
   static const VerificationMeta _createdMeta =
       const VerificationMeta('created');
   @override

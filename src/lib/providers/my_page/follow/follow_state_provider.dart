@@ -9,9 +9,8 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-final followStateProvider =
-    StateNotifierProvider<FollowStateNotifier, FollowState>((ref) {
-  final loginMemberIdx = ref.watch(userModelProvider)!.idx;
+final followStateProvider = StateNotifierProvider<FollowStateNotifier, FollowState>((ref) {
+  final loginMemberIdx = ref.watch(userInfoProvider).userModel!.idx;
   return FollowStateNotifier(loginMemberIdx, ref);
 });
 
@@ -24,14 +23,10 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
           followerListState: const FollowDataListModel(),
           followListState: const FollowDataListModel(),
         )) {
-    followerSearchQuery.stream
-        .debounceTime(const Duration(milliseconds: 500))
-        .listen((query) async {
+    followerSearchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
       await searchFollowerList(query);
     });
-    followSearchQuery.stream
-        .debounceTime(const Duration(milliseconds: 500))
-        .listen((query) async {
+    followSearchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
       await searchFollowList(query);
     });
   }
@@ -55,49 +50,37 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     followerCurrentPage = 1;
 
     final page = initPage ?? state.followerListState.page;
-    final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowerList(
-        memberIdx: memberIdx, page: page, loginMemberIdx: loginMemberIdx);
+    final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowerList(memberIdx: memberIdx, page: page, loginMemberIdx: loginMemberIdx);
 
     followerMaxPages = lists.data.params!.pagination!.endPage!;
 
-    state = state.copyWith(
-        followerListState: state.followerListState.copyWith(
-            totalCount: lists.data.params!.pagination!.totalRecordCount!));
+    state = state.copyWith(followerListState: state.followerListState.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!));
 
     if (lists == null) {
-      state = state.copyWith(
-          followerListState:
-              state.followerListState.copyWith(page: page, isLoading: false));
+      state = state.copyWith(followerListState: state.followerListState.copyWith(page: page, isLoading: false));
       return;
     }
 
-    state = state.copyWith(
-        followerListState: state.followerListState
-            .copyWith(page: page, isLoading: false, list: lists.data.list));
+    state = state.copyWith(followerListState: state.followerListState.copyWith(page: page, isLoading: false, list: lists.data.list));
   }
 
   loadMoreFollowerList(memberIdx) async {
     if (isFollowerSearching) {
       if (searchFollowerCurrentPage >= followerMaxPages) {
-        state = state.copyWith(
-            followerListState:
-                state.followerListState.copyWith(isLoadMoreDone: true));
+        state = state.copyWith(followerListState: state.followerListState.copyWith(isLoadMoreDone: true));
         return;
       }
 
       StringBuffer bf = StringBuffer();
 
-      bf.write(
-          'try to request loading ${state.followerListState.isLoading} at ${state.followerListState.page + 1}');
+      bf.write('try to request loading ${state.followerListState.isLoading} at ${state.followerListState.page + 1}');
       if (state.followerListState.isLoading) {
         bf.write(' fail');
         return;
       }
       bf.write(' success');
 
-      state = state.copyWith(
-          followerListState: state.followerListState.copyWith(
-              isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
+      state = state.copyWith(followerListState: state.followerListState.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
       final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowerSearchList(
         memberIdx: memberIdx,
@@ -107,9 +90,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
       );
 
       if (lists == null) {
-        state = state.copyWith(
-            followerListState: state.followerListState
-                .copyWith(isLoadMoreError: true, isLoading: false));
+        state = state.copyWith(followerListState: state.followerListState.copyWith(isLoadMoreError: true, isLoading: false));
         return;
       }
 
@@ -122,31 +103,24 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
         );
         searchFollowerCurrentPage++;
       } else {
-        state = state.copyWith(
-            followerListState:
-                state.followerListState.copyWith(isLoading: false));
+        state = state.copyWith(followerListState: state.followerListState.copyWith(isLoading: false));
       }
     } else {
       if (followerCurrentPage >= followerMaxPages) {
-        state = state.copyWith(
-            followerListState:
-                state.followerListState.copyWith(isLoadMoreDone: true));
+        state = state.copyWith(followerListState: state.followerListState.copyWith(isLoadMoreDone: true));
         return;
       }
 
       StringBuffer bf = StringBuffer();
 
-      bf.write(
-          'try to request loading ${state.followerListState.isLoading} at ${state.followerListState.page + 1}');
+      bf.write('try to request loading ${state.followerListState.isLoading} at ${state.followerListState.page + 1}');
       if (state.followerListState.isLoading) {
         bf.write(' fail');
         return;
       }
       bf.write(' success');
 
-      state = state.copyWith(
-          followerListState: state.followerListState.copyWith(
-              isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
+      state = state.copyWith(followerListState: state.followerListState.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
       final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowerList(
         memberIdx: memberIdx,
@@ -155,9 +129,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
       );
 
       if (lists == null) {
-        state = state.copyWith(
-            followerListState: state.followerListState
-                .copyWith(isLoadMoreError: true, isLoading: false));
+        state = state.copyWith(followerListState: state.followerListState.copyWith(isLoadMoreError: true, isLoading: false));
         return;
       }
 
@@ -171,9 +143,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
         );
         followerCurrentPage++;
       } else {
-        state = state.copyWith(
-            followerListState:
-                state.followerListState.copyWith(isLoading: false));
+        state = state.copyWith(followerListState: state.followerListState.copyWith(isLoading: false));
       }
     }
   }
@@ -195,44 +165,33 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
 
     followMaxPages = lists.data.params!.pagination!.endPage!;
 
-    state = state.copyWith(
-        followListState: state.followListState.copyWith(
-            totalCount: lists.data.params!.pagination!.totalRecordCount!));
+    state = state.copyWith(followListState: state.followListState.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!));
 
     if (lists == null) {
-      state = state.copyWith(
-          followListState:
-              state.followListState.copyWith(page: page, isLoading: false));
+      state = state.copyWith(followListState: state.followListState.copyWith(page: page, isLoading: false));
       return;
     }
 
-    state = state.copyWith(
-        followListState: state.followListState
-            .copyWith(page: page, isLoading: false, list: lists.data.list));
+    state = state.copyWith(followListState: state.followListState.copyWith(page: page, isLoading: false, list: lists.data.list));
   }
 
   loadMoreFollowList(memberIdx) async {
     if (isFollowSearching) {
       if (searchFollowCurrentPage >= followMaxPages) {
-        state = state.copyWith(
-            followListState:
-                state.followListState.copyWith(isLoadMoreDone: true));
+        state = state.copyWith(followListState: state.followListState.copyWith(isLoadMoreDone: true));
         return;
       }
 
       StringBuffer bf = StringBuffer();
 
-      bf.write(
-          'try to request loading ${state.followListState.isLoading} at ${state.followListState.page + 1}');
+      bf.write('try to request loading ${state.followListState.isLoading} at ${state.followListState.page + 1}');
       if (state.followListState.isLoading) {
         bf.write(' fail');
         return;
       }
       bf.write(' success');
 
-      state = state.copyWith(
-          followListState: state.followListState.copyWith(
-              isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
+      state = state.copyWith(followListState: state.followListState.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
       final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowSearchList(
         memberIdx: memberIdx,
@@ -242,9 +201,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
       );
 
       if (lists == null) {
-        state = state.copyWith(
-            followListState: state.followListState
-                .copyWith(isLoadMoreError: true, isLoading: false));
+        state = state.copyWith(followListState: state.followListState.copyWith(isLoadMoreError: true, isLoading: false));
         return;
       }
 
@@ -257,30 +214,24 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
         );
         searchFollowCurrentPage++;
       } else {
-        state = state.copyWith(
-            followListState: state.followListState.copyWith(isLoading: false));
+        state = state.copyWith(followListState: state.followListState.copyWith(isLoading: false));
       }
     } else {
       if (followCurrentPage >= followMaxPages) {
-        state = state.copyWith(
-            followListState:
-                state.followListState.copyWith(isLoadMoreDone: true));
+        state = state.copyWith(followListState: state.followListState.copyWith(isLoadMoreDone: true));
         return;
       }
 
       StringBuffer bf = StringBuffer();
 
-      bf.write(
-          'try to request loading ${state.followListState.isLoading} at ${state.followListState.page + 1}');
+      bf.write('try to request loading ${state.followListState.isLoading} at ${state.followListState.page + 1}');
       if (state.followListState.isLoading) {
         bf.write(' fail');
         return;
       }
       bf.write(' success');
 
-      state = state.copyWith(
-          followListState: state.followListState.copyWith(
-              isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
+      state = state.copyWith(followListState: state.followListState.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
       final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowList(
         memberIdx: memberIdx,
@@ -289,9 +240,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
       );
 
       if (lists == null) {
-        state = state.copyWith(
-            followListState: state.followListState
-                .copyWith(isLoadMoreError: true, isLoading: false));
+        state = state.copyWith(followListState: state.followListState.copyWith(isLoadMoreError: true, isLoading: false));
         return;
       }
 
@@ -305,8 +254,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
         );
         followCurrentPage++;
       } else {
-        state = state.copyWith(
-            followListState: state.followListState.copyWith(isLoading: false));
+        state = state.copyWith(followListState: state.followListState.copyWith(isLoading: false));
       }
     }
   }
@@ -332,15 +280,11 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     );
 
     if (lists == null) {
-      state = state.copyWith(
-          followerListState: state.followerListState
-              .copyWith(page: 1, isLoading: false, list: []));
+      state = state.copyWith(followerListState: state.followerListState.copyWith(page: 1, isLoading: false, list: []));
       return;
     }
 
-    state = state.copyWith(
-        followerListState: state.followerListState
-            .copyWith(page: 1, isLoading: false, list: lists.data.list));
+    state = state.copyWith(followerListState: state.followerListState.copyWith(page: 1, isLoading: false, list: lists.data.list));
   }
 
   Future<void> searchFollowList(String searchWord) async {
@@ -356,23 +300,18 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     );
 
     if (lists == null) {
-      state = state.copyWith(
-          followListState: state.followListState
-              .copyWith(page: 1, isLoading: false, list: []));
+      state = state.copyWith(followListState: state.followListState.copyWith(page: 1, isLoading: false, list: []));
       return;
     }
 
-    state = state.copyWith(
-        followListState: state.followListState
-            .copyWith(page: 1, isLoading: false, list: lists.data.list));
+    state = state.copyWith(followListState: state.followListState.copyWith(page: 1, isLoading: false, list: lists.data.list));
   }
 
   Future<ResponseModel> postFollow({
     required memberIdx,
     required followIdx,
   }) async {
-    final result = await FollowRepository(dio: ref.read(dioProvider))
-        .postFollow(memberIdx: memberIdx, followIdx: followIdx);
+    final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     await refreshFollowList(memberIdx);
     await refreshFollowerList(memberIdx);
@@ -384,8 +323,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required memberIdx,
     required followIdx,
   }) async {
-    final result = await FollowRepository(dio: ref.read(dioProvider))
-        .deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+    final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
 
     await refreshFollowList(memberIdx);
     await refreshFollowerList(memberIdx);
@@ -397,8 +335,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required memberIdx,
     required followIdx,
   }) async {
-    final result = await FollowRepository(dio: ref.read(dioProvider))
-        .deleteFollower(memberIdx: memberIdx, followIdx: followIdx);
+    final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollower(memberIdx: memberIdx, followIdx: followIdx);
 
     await refreshFollowList(memberIdx);
     await refreshFollowerList(memberIdx);

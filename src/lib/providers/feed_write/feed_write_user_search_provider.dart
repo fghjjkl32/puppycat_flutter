@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 final feedWriteImageTagSearchProvider =
     StateNotifierProvider<FeedWriteImageTagSearchNotifier, SearchDataListModel>(
         (ref) {
-  final loginMemberIdx = ref.watch(userModelProvider)!.idx;
+  final loginMemberIdx = ref.watch(userInfoProvider).userModel!.idx;
   return FeedWriteImageTagSearchNotifier(loginMemberIdx, ref);
 });
 

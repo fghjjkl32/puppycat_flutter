@@ -76,7 +76,7 @@ class FeedDetailWidget extends ConsumerWidget {
                   context,
                   kBody13RegularStyle.copyWith(color: kSecondaryColor),
                   ref,
-                  ref.read(userModelProvider)!.idx,
+                  ref.read(userInfoProvider).userModel!.idx,
                 ),
                 style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
               ),
