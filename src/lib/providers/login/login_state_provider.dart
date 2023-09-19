@@ -64,7 +64,7 @@ class LoginState extends _$LoginState {
     print('loginResult.loginStatus ${userModel.loginStatus}');
     state = userModel.loginStatus;
 
-    // ref.read(userModelProvider.notifier).state = userModel;
+    ref.read(userInfoProvider.notifier).state = UserInfoModel(userModel: userModel);
 
     ///Login Route State 관련
     switch (userModel.loginStatus) {

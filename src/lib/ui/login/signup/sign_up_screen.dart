@@ -14,6 +14,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
+import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
@@ -528,7 +529,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                               gender: signUpAuthModel?.gender ?? '',
                               birth: signUpAuthModel?.birth ?? '',
                             );
-                            // ref.read(userModelProvider.notifier).state = userModel;
+                            ref.read(userInfoProvider.notifier).state = UserInfoModel(userModel: userModel);
                             ref.read(signUpStateProvider.notifier).socialSignUp(userModel); // ㅇㅇㅇ
                             // chatClientController.changeDisplayName(userModel.id, userModel.nick);
                           }
