@@ -129,6 +129,7 @@ dependencies:
   app_install_date: ^0.1.2
   focus_detector: ^2.0.1
   cupertino_will_pop_scope: ^1.2.1
+  geocoding: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -169,6 +170,7 @@ flutter:
     - assets/image/chat/
     - assets/image/character/
     - assets/lottie/
+    - lib/common/web/kakao_postcode.html
 
 
 
