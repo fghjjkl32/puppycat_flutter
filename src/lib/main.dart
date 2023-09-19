@@ -9,6 +9,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
@@ -28,6 +29,8 @@ import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
+
+InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 9723);
 
 class ScrollBehaviorModified extends ScrollBehavior {
   const ScrollBehaviorModified();

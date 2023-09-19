@@ -17,6 +17,7 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_conten
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/cropped_images_list_view.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_location_search_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/kpostal_view.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/tag_screen.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_information_provider.dart';
@@ -81,8 +82,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                       width: 144.w,
                       height: 36.h,
                       decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(100)),
+                        borderRadius: const BorderRadius.all(Radius.circular(100)),
                         color: kNeutralColor100,
                         boxShadow: [
                           BoxShadow(
@@ -108,23 +108,19 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                                 ),
                                 Text(
                                   "사람 태그하기 ",
-                                  style: kBody12SemiBoldStyle.copyWith(
-                                      color: kTextSubTitleColor),
+                                  style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                                 ),
                                 Text(
                                   "(",
-                                  style: kBody12SemiBoldStyle.copyWith(
-                                      color: kTextBodyColor),
+                                  style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
                                 ),
                                 Text(
                                   "${ref.watch(feedWriteCurrentTagCountProvider)}",
-                                  style: kBody12SemiBoldStyle.copyWith(
-                                      color: kTextSubTitleColor),
+                                  style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                                 ),
                                 Text(
                                   "/10)",
-                                  style: kBody12SemiBoldStyle.copyWith(
-                                      color: kTextBodyColor),
+                                  style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
                                 ),
                               ],
                             ),
@@ -163,10 +159,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                     focusNode: focusNode,
                     controller: ref.watch(feedWriteContentProvider),
                     onChanged: (text) {
-                      int cursorPos = ref
-                          .watch(feedWriteContentProvider)
-                          .selection
-                          .baseOffset;
+                      int cursorPos = ref.watch(feedWriteContentProvider).selection.baseOffset;
                       if (cursorPos > 0) {
                         int from = text!.lastIndexOf('@', cursorPos);
                         if (from != -1) {
@@ -177,21 +170,15 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
 
                           int nextSpace = text.indexOf(' ', from);
                           if (nextSpace == -1 || nextSpace >= cursorPos) {
-                            String toSearch =
-                                text.substring(from + 1, cursorPos);
+                            String toSearch = text.substring(from + 1, cursorPos);
                             toSearch = toSearch.trim();
 
                             if (toSearch.isNotEmpty) {
                               if (toSearch.length >= 1) {
-                                ref
-                                    .watch(searchStateProvider.notifier)
-                                    .searchQuery
-                                    .add(toSearch);
+                                ref.watch(searchStateProvider.notifier).searchQuery.add(toSearch);
                               }
                             } else {
-                              ref
-                                  .watch(searchStateProvider.notifier)
-                                  .getMentionRecommendList(initPage: 1);
+                              ref.watch(searchStateProvider.notifier).getMentionRecommendList(initPage: 1);
                             }
                           }
                         }
@@ -204,14 +191,11 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                     maxLines: 6,
                     decoration: InputDecoration(
                         counterText: "",
-                        hintText:
-                            '내용을 입력해 주세요.\n\n작성한 글에 대한 책임은 본인에게 있습니다.\n운영 정책에 위반되는(폭력성, 선정성, 욕설 등) 게시물은 당사자의 동의 없이 삭제될 수 있습니다.',
-                        hintStyle: kBody12RegularStyle.copyWith(
-                            color: kNeutralColor500),
+                        hintText: '내용을 입력해 주세요.\n\n작성한 글에 대한 책임은 본인에게 있습니다.\n운영 정책에 위반되는(폭력성, 선정성, 욕설 등) 게시물은 당사자의 동의 없이 삭제될 수 있습니다.',
+                        hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
                         contentPadding: const EdgeInsets.all(16)),
                     name: 'content',
-                    style:
-                        kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                     keyboardType: TextInputType.multiline,
                     textAlignVertical: TextAlignVertical.center,
                   ),
@@ -230,14 +214,26 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
             padding: EdgeInsets.symmetric(horizontal: 12.0.w),
             child: GestureDetector(
               onTap: () async {
-                ref.watch(feedWriteLocationInformationProvider.notifier).state =
-                    await Navigator.of(context).push(
-                  PageRouteBuilder(
-                    opaque: false, // set to false
-                    pageBuilder: (_, __, ___) =>
-                        const FeedWriteLocationSearchScreen(),
-                  ),
-                );
+                // ref.watch(feedWriteLocationInformationProvider.notifier).state =
+                //     await Navigator.of(context).push(
+                //   PageRouteBuilder(
+                //     opaque: false, // set to false
+                //     pageBuilder: (_, __, ___) =>
+                //         const FeedWriteLocationSearchScreen(),
+                //   ),
+                // );
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => KpostalView(
+                        useLocalServer: true,
+                        localPort: 9723,
+                        kakaoKey: 'e70ed9e481a7927e0adc8647263bf6a5',
+                        callback: (Kpostal result) {
+                          ref.watch(feedWriteLocationInformationProvider.notifier).state = result.buildingName == "" ? result.roadAddress : result.buildingName;
+                        },
+                      ),
+                    ));
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -252,16 +248,14 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                             padding: EdgeInsets.only(left: 16.0.w),
                             child: Text(
                               "위치를 선택해주세요.",
-                              style: kBody12RegularStyle.copyWith(
-                                  color: kNeutralColor500),
+                              style: kBody12RegularStyle.copyWith(color: kNeutralColor500),
                             ),
                           )
                         : Padding(
                             padding: EdgeInsets.only(left: 16.0.w),
                             child: Text(
                               ref.watch(feedWriteLocationInformationProvider),
-                              style: kBody13RegularStyle.copyWith(
-                                  color: kTextSubTitleColor),
+                              style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                             ),
                           ),
                     IconButton(
@@ -291,9 +285,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      ref
-                          .watch(feedWriteButtonSelectedProvider.notifier)
-                          .state = 1;
+                      ref.watch(feedWriteButtonSelectedProvider.notifier).state = 1;
                     },
                     child: Container(
                       decoration: buttonSelected == 1
@@ -312,19 +304,14 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                           Icon(
                             Puppycat_social.icon_view_all,
                             size: 26,
-                            color: buttonSelected == 1
-                                ? kPrimaryColor
-                                : kTextBodyColor,
+                            color: buttonSelected == 1 ? kPrimaryColor : kTextBodyColor,
                           ),
                           SizedBox(
                             width: 9.w,
                           ),
                           Text(
                             "전체 공개",
-                            style: kButton14BoldStyle.copyWith(
-                                color: buttonSelected == 1
-                                    ? kPrimaryColor
-                                    : kTextBodyColor),
+                            style: kButton14BoldStyle.copyWith(color: buttonSelected == 1 ? kPrimaryColor : kTextBodyColor),
                           ),
                         ],
                       ),
@@ -337,9 +324,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      ref
-                          .watch(feedWriteButtonSelectedProvider.notifier)
-                          .state = 2;
+                      ref.watch(feedWriteButtonSelectedProvider.notifier).state = 2;
                     },
                     child: Container(
                       decoration: buttonSelected == 2
@@ -358,19 +343,14 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                           Icon(
                             Puppycat_social.icon_view_follow,
                             size: 26,
-                            color: buttonSelected == 2
-                                ? kPrimaryColor
-                                : kTextBodyColor,
+                            color: buttonSelected == 2 ? kPrimaryColor : kTextBodyColor,
                           ),
                           SizedBox(
                             width: 9.w,
                           ),
                           Text(
                             "팔로우 공개",
-                            style: kButton14BoldStyle.copyWith(
-                                color: buttonSelected == 2
-                                    ? kPrimaryColor
-                                    : kTextBodyColor),
+                            style: kButton14BoldStyle.copyWith(color: buttonSelected == 2 ? kPrimaryColor : kTextBodyColor),
                           ),
                         ],
                       ),
