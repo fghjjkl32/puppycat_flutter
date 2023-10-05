@@ -283,7 +283,6 @@ class _DatePickerState extends State<_DatePickerComponent> {
 
   @override
   Widget build(BuildContext context) {
-    picker_theme.DatePickerTheme theme = widget.route.theme;
     return GestureDetector(
       child: AnimatedBuilder(
         animation: widget.route.animation!,
@@ -293,7 +292,7 @@ class _DatePickerState extends State<_DatePickerComponent> {
             child: CustomSingleChildLayout(
               delegate: _BottomPickerLayout(
                 widget.route.animation!.value,
-                theme,
+                widget.route.theme,
                 showTitleActions: widget.route.showTitleActions!,
                 bottomPadding: bottomPadding,
               ),
@@ -305,7 +304,9 @@ class _DatePickerState extends State<_DatePickerComponent> {
                       top: Radius.circular(25.0),
                     ),
                   ),
-                  child: _renderPickerView(theme),
+                  child: _renderPickerView(
+                    widget.route.theme,
+                  ),
                 ),
               ),
             ),
@@ -337,24 +338,26 @@ class _DatePickerState extends State<_DatePickerComponent> {
                     theme.title,
                     style: kTitle18BoldStyle.copyWith(color: kNeutralColor600),
                   ),
-                  InkWell(
-                    onTap: () async {
-                      final DateTime? selected = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      );
-                      if (selected != null && mounted) {
-                        Navigator.pop(context, selected);
-                        widget.route.onConfirm!(selected);
-                      }
-                    },
-                    child: Text(
-                      "달력으로 보기",
-                      style: kTitle14BoldStyle.copyWith(color: kNeutralColor600),
-                    ),
-                  ),
+                  theme.isBirthDay
+                      ? InkWell(
+                          onTap: () async {
+                            final DateTime? selected = await showDatePicker(
+                              context: context,
+                              initialDate: widget.pickerModel.finalTime()!,
+                              firstDate: DateTime(1930),
+                              lastDate: DateTime.now(),
+                            );
+                            if (selected != null && mounted) {
+                              Navigator.pop(context, selected);
+                              widget.route.onConfirm!(selected);
+                            }
+                          },
+                          child: Text(
+                            "달력으로 보기",
+                            style: kTitle14BoldStyle.copyWith(color: kNeutralColor600),
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
             ),

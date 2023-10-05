@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55.08 220">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #d3a688;
+      }
+
+      .cls-2 {
+        letter-spacing: -.01em;
+      }
+
+      .cls-3 {
+        fill: none;
+        stroke: #000;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.1px;
+      }
+
+      .cls-4 {
+        fill: #fff;
+        font-family: NotoSansKR-Medium-KSCpc-EUC-H, 'Noto Sans KR';
+        font-size: 20.25px;
+        font-weight: 500;
+      }
+    </style>
+  </defs>
+  <g id="_리소스명" data-name="리소스명">
+    <text class="cls-4" transform="translate(-137.09 -21.81)"><tspan x="0" y="0">1 - 3조각내서 드리기 (뭉이 / 밧줄 / 벌린틈) -&gt; 확장자 S</tspan><tspan class="cls-2" x="459.44" y="0">V</tspan><tspan x="471.24" y="0">G</tspan></text>
+  </g>
+  <g id="_본작업" data-name="본작업">
+    <g>
+      <rect class="cls-1" y="108.03" width="55.08" height="2.98"/>
+      <g>
+        <line class="cls-3" x1="55.08" y1="108.03" y2="108.03"/>
+        <line class="cls-3" y1="111.01" x2="55.08" y2="111.01"/>
+      </g>
+    </g>
+  </g>
+</svg>

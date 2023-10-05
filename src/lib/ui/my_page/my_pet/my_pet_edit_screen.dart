@@ -31,6 +31,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/create_my_pet
 import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/create_my_pet/create_my_pet_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/create_my_pet/health_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/my_pet_common_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/my_pet_list/my_pet_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/my_pet_list/my_pet_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
@@ -42,14 +43,19 @@ import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/date_
 
 final _formKey = GlobalKey<FormState>();
 
-class MyPetRegistrationScreen extends ConsumerStatefulWidget {
-  const MyPetRegistrationScreen({super.key});
+class MyPetEditScreen extends ConsumerStatefulWidget {
+  const MyPetEditScreen({
+    super.key,
+    required this.idx,
+  });
+
+  final int idx;
 
   @override
-  MyPetRegistrationScreenState createState() => MyPetRegistrationScreenState();
+  MyPetEditScreenState createState() => MyPetEditScreenState();
 }
 
-class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen> with SingleTickerProviderStateMixin {
+class MyPetEditScreenState extends ConsumerState<MyPetEditScreen> with SingleTickerProviderStateMixin {
   late TabController tabController;
   TextEditingController nameController = TextEditingController();
   TextEditingController breedController = TextEditingController();
@@ -63,6 +69,7 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
   final ImagePicker _picker = ImagePicker();
   XFile? selectedImage;
   bool isProfileImageDelete = false;
+  String? initImage;
 
   final RegExp _letterRegExp = RegExp(r'[가-힣a-zA-Z0-9_]');
 
@@ -80,10 +87,67 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
   final List<int> _healthItems = [];
   final List<int> _allergyItems = [];
 
+  PetGender? getPetGenderByName(String name) {
+    for (var gender in PetGender.values) {
+      if (gender.name == name) {
+        return gender;
+      }
+    }
+    return null;
+  }
+
+  PetSize? getPetSizeByName(String name) {
+    for (var size in PetSize.values) {
+      if (size.name == name) {
+        return size;
+      }
+    }
+    return null;
+  }
+
+  PetAge? getPetAgeByName(String name) {
+    for (var age in PetAge.values) {
+      if (age.name == name) {
+        return age;
+      }
+    }
+    return null;
+  }
+
+  initValue() async {
+    await ref.read(myPetDetailStateProvider.notifier).getMyPetDetailList(widget.idx);
+
+    var result = ref.read(myPetDetailStateProvider).list[0];
+    setState(() {
+      initImage = result.url!;
+    });
+    nameController.text = result.name!;
+    ref.watch(myPetGenderProvider.notifier).state = getPetGenderByName(result.genderText!)!.value;
+    ref.watch(myPetSizeProvider.notifier).state = getPetSizeByName(result.sizeText!)!.value;
+    ref.watch(myPetAgeProvider.notifier).state = getPetAgeByName(result.ageText!)!.value;
+    breedValue = result.breedIdx;
+    if (result.breedIdx == 1 || result.breedIdx == 2) {
+      breedController.text = result.breedNameEtc!;
+    } else {
+      breedController.text = result.breedName!;
+    }
+    weightValue = result.weight!.toInt();
+    ageEditingController.text = DateFormat('yyyy-MM-dd').format(DateTime.parse(result.birth!));
+    if (result.personalityIdx == 7) {
+      personalityController.text = result.personalityEtc!;
+    } else {
+      personalityController.text = result.personality!;
+    }
+    _allergyItems.addAll(result.allergyList!.map((item) => item.idx!).toList());
+    _healthItems.addAll(result.healthList!.map((item) => item.idx!).toList());
+    personalityValue = result.personalityIdx!.toString();
+  }
+
   @override
   void initState() {
     ref.read(healthStateProvider.notifier).getHealthList();
     ref.read(allergyStateProvider.notifier).getAllergyList();
+    initValue();
 
     tabController = TabController(
       initialIndex: 0,
@@ -186,7 +250,7 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: const Text(
-              "우리 아이 등록",
+              "우리 아이 수정",
             ),
             leading: IconButton(
               onPressed: () {
@@ -267,7 +331,7 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
                             child: Column(
                               children: [
                                 Text(
-                                  "반려동물을 등록 하시겠습니까?",
+                                  "반려동물을 수정 하시겠습니까?",
                                   style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                                 ),
                               ],
@@ -304,6 +368,7 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
                             );
 
                             PetDetailItemModel petDetailItemModel = PetDetailItemModel(
+                              idx: widget.idx,
                               memberIdx: ref.read(userInfoProvider).userModel!.idx,
                               name: nameController.text,
                               gender: ref.watch(myPetGenderProvider.notifier).state,
@@ -315,11 +380,11 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
                               birth: ageEditingController.text,
                               personalityCode: personalityValue == null ? null : int.parse(personalityValue!),
                               personalityEtc: personalityController.text,
-                              resetState: 0,
+                              resetState: isProfileImageDelete ? 1 : 0,
                               healthIdxList: _healthItems,
                               allergyIdxList: _allergyItems,
                             );
-                            final result = await ref.watch(createMyPetStateProvider.notifier).postMyPet(
+                            final result = await ref.watch(createMyPetStateProvider.notifier).updateMyPet(
                                   petDetailItemModel: petDetailItemModel,
                                   file: selectedImage,
                                 );
@@ -346,7 +411,7 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
                   );
                 },
                 child: Text(
-                  '완료',
+                  '수정',
                   style: kButton12BoldStyle.copyWith(
                     color: kPrimaryColor,
                   ),
@@ -370,52 +435,39 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
                               blendMode: BlendMode.srcATop,
                               childSaveLayer: true,
                               mask: Center(
-                                child: selectedImage == null
-                                    ? const Icon(
-                                        Puppycat_social.icon_profile_large,
-                                        size: 92,
-                                        color: kNeutralColor500,
-                                      )
-                                    : Image.file(
-                                        File(selectedImage!.path),
-                                        width: 135,
-                                        height: 135,
-                                        fit: BoxFit.cover,
-                                      ),
+                                child: "$initImage" == "" || initImage == null
+                                    ? selectedImage == null
+                                        ? const Icon(
+                                            Puppycat_social.icon_profile_large,
+                                            size: 92,
+                                            color: kNeutralColor500,
+                                          )
+                                        : Image.file(
+                                            File(selectedImage!.path),
+                                            width: 135,
+                                            height: 135,
+                                            fit: BoxFit.cover,
+                                          )
+                                    : selectedImage == null
+                                        ? isProfileImageDelete
+                                            ? const Icon(
+                                                Puppycat_social.icon_profile_large,
+                                                size: 92,
+                                                color: kNeutralColor500,
+                                              )
+                                            : Image.network(
+                                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain$initImage").toUrl(),
+                                                width: 135,
+                                                height: 135,
+                                                fit: BoxFit.cover,
+                                              )
+                                        : Image.file(
+                                            File(selectedImage!.path),
+                                            width: 135,
+                                            height: 135,
+                                            fit: BoxFit.cover,
+                                          ),
                               ),
-                              // Center(
-                              //     child: "${ref.watch(editStateProvider).userInfoModel!.userModel!.profileImgUrl}" == ""
-                              //         ? selectedImage == null
-                              //         ? const Icon(
-                              //       Puppycat_social.icon_profile_large,
-                              //       size: 92,
-                              //       color: kNeutralColor500,
-                              //     )
-                              //         : Image.file(
-                              //       File(selectedImage!.path),
-                              //       width: 135,
-                              //       height: 135,
-                              //       fit: BoxFit.cover,
-                              //     )
-                              //         : selectedImage == null
-                              //         ? isProfileImageDelete
-                              //         ? const Icon(
-                              //       Puppycat_social.icon_profile_large,
-                              //       size: 92,
-                              //       color: kNeutralColor500,
-                              //     )
-                              //         : Image.network(
-                              //       Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${ref.read(userInfoProvider).userModel!.profileImgUrl}").toUrl(),
-                              //       width: 135,
-                              //       height: 135,
-                              //       fit: BoxFit.cover,
-                              //     )
-                              //         : Image.file(
-                              //       File(selectedImage!.path),
-                              //       width: 135,
-                              //       height: 135,
-                              //       fit: BoxFit.cover,
-                              //     )),
                               child: SvgPicture.asset(
                                 'assets/image/feed/image/squircle.svg',
                                 height: 84.h,
@@ -453,7 +505,7 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
                                         onTap: () {
                                           setState(() {
                                             selectedImage = null;
-                                            isProfileImageDelete = false;
+                                            isProfileImageDelete = true;
                                           });
                                           context.pop();
                                         },
@@ -882,6 +934,93 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
             style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
             maxLength: 40,
           ),
+        InkWell(
+            onTap: () {
+              final BuildContext currentContext = context;
+
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomDialog(
+                      content: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                        child: Column(
+                          children: [
+                            Text(
+                              "반려동물 정보를 삭제 하시겠습니까?",
+                              style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                            ),
+                            SizedBox(
+                              height: 4.h,
+                            ),
+                            Text(
+                              "해당 반려동물의 산책기록은 모두 삭제되며,\n 노출되지 않습니다.",
+                              style: kBody12RegularStyle.copyWith(color: kTextTitleColor),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                      confirmTap: () async {
+                        context.pop();
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return WillPopScope(
+                              onWillPop: () async => false,
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.6),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Lottie.asset(
+                                      'assets/lottie/icon_loading.json',
+                                      fit: BoxFit.fill,
+                                      width: 80,
+                                      height: 80,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+
+                        final result = await ref.watch(createMyPetStateProvider.notifier).deleteMyPet(
+                              idx: widget.idx,
+                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                            );
+
+                        if (mounted) {
+                          Navigator.of(currentContext).pop();
+                        }
+
+                        if (result.result) {
+                          if (mounted) {
+                            ref.read(myPetListStateProvider).refresh();
+                            Navigator.of(currentContext).pop();
+                          }
+                        }
+                      },
+                      cancelTap: () {
+                        context.pop();
+                      },
+                      confirmWidget: Text(
+                        "확인",
+                        style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                      ));
+                },
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("삭제하기"),
+            )),
       ],
     );
   }

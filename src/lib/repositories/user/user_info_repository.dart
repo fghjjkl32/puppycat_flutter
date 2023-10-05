@@ -62,21 +62,25 @@ class UserInfoRepository {
     return infoModel;
   }
 
-  Future<ResponseModel> updateMyInfo(UserModel userInfoModel, XFile? file, String beforeNick, bool isProfileImageDelete) async {
+  Future<ResponseModel> updateMyInfo(UserModel userInfoModel, XFile? file, String beforeNick, bool isProfileImageDelete, bool isPhoneNumberEdit) async {
     // 기본 파라미터 설정
     Map<String, dynamic> baseParams = {
       "intro": userInfoModel.introText,
       "memberIdx": userInfoModel.idx,
       "name": userInfoModel.name,
-      "phone": userInfoModel.phone,
-      "ci": userInfoModel.ci,
-      "di": userInfoModel.di,
       "resetState": isProfileImageDelete ? 1 : 0,
     };
 
     // nick 변경이 있는 경우에만 추가
     if (beforeNick != userInfoModel.nick) {
       baseParams["nick"] = userInfoModel.nick;
+    }
+
+    // 본인인증 한 경우에만 추가
+    if (isPhoneNumberEdit) {
+      baseParams["phone"] = userInfoModel.phone;
+      baseParams["ci"] = userInfoModel.ci;
+      baseParams["di"] = userInfoModel.di;
     }
 
     // 파일이 있는 경우에만 추가

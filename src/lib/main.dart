@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:appspector/appspector.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
@@ -20,6 +22,9 @@ import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 
 import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
+import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
@@ -214,6 +219,10 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> {
             theme: themeData(context),
             debugShowCheckedModeBanner: false,
             builder: (context, widget) {
+              ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+                return CustomError(errorDetails: errorDetails);
+              };
+
               return ScrollConfiguration(behavior: ScrollBehaviorModified(), child: widget!);
             },
           ),
@@ -238,4 +247,146 @@ Future runAppSpector() async {
       }
     },
   );
+}
+
+class CustomError extends StatelessWidget {
+  final FlutterErrorDetails errorDetails;
+
+  const CustomError({
+    super.key,
+    required this.errorDetails,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
+
+    double image1Width = 131 * 0.9; // 첫 번째 이미지 폭
+    double image2Width = 56 * 0.9; // 두 번째 이미지 폭
+    double image3Width = 141 * 0.9; // 세 번째 이미지 폭
+
+    // 첫 번째 이미지를 중앙에 두기 위해 양 옆에 남는 공간을 계산
+    double availableWidthPerSide = (deviceWidth - image1Width - image3Width) / 2;
+
+    // 사용 가능한 공간을 2번 이미지의 너비로 나누어 양 옆에 오는 이미지의 개수를 결정
+    int numberOfWidgetsPerSide = (availableWidthPerSide / image2Width).floor();
+
+    return Material(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text(
+            "",
+          ),
+          leading: IconButton(
+            onPressed: () {
+              context.pop();
+            },
+            icon: const Icon(
+              Puppycat_social.icon_back,
+              size: 40,
+            ),
+          ),
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRect(
+                  child: Align(
+                    alignment: Alignment.center,
+                    widthFactor: 0.9,
+                    child: Image.asset(
+                      'assets/image/character/character_02_page_error_1.png',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                for (var i = 0; i < numberOfWidgetsPerSide; i++)
+                  ClipRect(
+                    child: Align(
+                      alignment: Alignment.center,
+                      widthFactor: 0.9,
+                      child: Image.asset(
+                        'assets/image/character/character_02_page_error_2.png',
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+                ClipRect(
+                  child: Align(
+                    alignment: Alignment.center,
+                    widthFactor: 0.9,
+                    child: Image.asset(
+                      'assets/image/character/character_02_page_error_3.png',
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            Text(
+              "요청하신 페이지를 찾을 수 없습니다.",
+              style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Text(
+              "입력한 주소가 잘못되었거나\n페이지를 찾을 수 없습니다.",
+              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 20.0.w,
+                  right: 20.0.w,
+                  bottom: 20.0.h,
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryLightColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    onPressed: () {
+                      context.pushReplacement("/home");
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Text(
+                        '홈으로 이동',
+                        style: kBody14BoldStyle.copyWith(
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

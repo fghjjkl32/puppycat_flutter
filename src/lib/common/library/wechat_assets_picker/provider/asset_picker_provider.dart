@@ -112,8 +112,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
 
   /// The current page for assets list.
   /// 当前加载的资源列表分页数
-  int get currentAssetsListPage =>
-      (math.max(1, _currentAssets.length) / pageSize).ceil();
+  int get currentAssetsListPage => (math.max(1, _currentAssets.length) / pageSize).ceil();
 
   /// Total count for assets.
   /// 资源总数
@@ -214,7 +213,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     if (selectedAssets.length + 1 == maxAssets) {
       toast(
         context: context,
-        text: '사진은 최대 12장만 선택 가능합니다.',
+        text: '사진은 최대 $maxAssets장만 선택 가능합니다.',
         type: ToastType.red,
       );
     }
@@ -235,8 +234,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
   }
 }
 
-class DefaultAssetPickerProvider
-    extends AssetPickerProvider<AssetEntity, AssetPathEntity> {
+class DefaultAssetPickerProvider extends AssetPickerProvider<AssetEntity, AssetPathEntity> {
   DefaultAssetPickerProvider({
     super.selectedAssets,
     super.maxAssets,
@@ -339,9 +337,7 @@ class DefaultAssetPickerProvider
       filterOption: options,
     );
 
-    _paths = list
-        .map((AssetPathEntity p) => PathWrapper<AssetPathEntity>(path: p))
-        .toList();
+    _paths = list.map((AssetPathEntity p) => PathWrapper<AssetPathEntity>(path: p)).toList();
     // Sort path using sort path delegate.
     Singleton.sortPathDelegate.sort(_paths);
     // Use sync method to avoid unnecessary wait.
@@ -476,8 +472,7 @@ class DefaultAssetPickerProvider
       return;
     }
     final PathWrapper<AssetPathEntity> wrapper = _currentPath!;
-    final int assetCount =
-        wrapper.assetCount ?? await wrapper.path.assetCountAsync;
+    final int assetCount = wrapper.assetCount ?? await wrapper.path.assetCountAsync;
     totalAssetsCount = assetCount;
     isAssetsEmpty = assetCount == 0;
     if (wrapper.assetCount == null) {

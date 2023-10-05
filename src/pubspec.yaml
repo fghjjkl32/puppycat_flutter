@@ -130,6 +130,11 @@ dependencies:
   focus_detector: ^2.0.1
   cupertino_will_pop_scope: ^1.2.1
   geocoding: ^2.1.0
+  just_the_tooltip: ^0.0.12
+  table_calendar: ^3.0.9
+  screenshot: ^2.1.0
+  dropdown_button2: ^2.3.9
+
 
 dev_dependencies:
   flutter_test:
