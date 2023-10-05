@@ -10,6 +10,7 @@ class DatePickerTheme with DiagnosticableTreeMixin {
   final Color backgroundColor;
   final Color? headerColor;
   final String title;
+  final bool isBirthDay;
 
   final double containerHeight;
   final double titleHeight;
@@ -25,5 +26,6 @@ class DatePickerTheme with DiagnosticableTreeMixin {
     this.titleHeight = 66.0,
     this.itemHeight = 36.0,
     this.title = "title",
+    this.isBirthDay = true,
   });
 }

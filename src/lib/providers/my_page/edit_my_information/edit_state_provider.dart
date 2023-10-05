@@ -49,8 +49,9 @@ class EditState extends _$EditState {
     required XFile? file,
     required String beforeNick,
     required bool isProfileImageDelete,
+    required bool isPhoneNumberEdit,
   }) async {
-    final result = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).updateMyInfo(userInfoModel, file, beforeNick, isProfileImageDelete);
+    final result = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).updateMyInfo(userInfoModel, file, beforeNick, isProfileImageDelete, isPhoneNumberEdit);
 
     return result;
   }

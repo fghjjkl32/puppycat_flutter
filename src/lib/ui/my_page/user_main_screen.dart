@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
 import 'package:matrix/matrix.dart' hide Visibility;
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -21,6 +22,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/chat_controller.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -30,9 +32,11 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/my_pet_list/my_pet_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/user_pet_detail_screen.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -52,6 +56,8 @@ class UserMainScreen extends ConsumerStatefulWidget {
 }
 
 class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTickerProviderStateMixin {
+  late final PagingController<int, MyPetItemModel> _myPetListPagingController = ref.read(myPetListStateProvider);
+
   ScrollController scrollController = ScrollController();
   ScrollController userContentController = ScrollController();
   ScrollController tagContentController = ScrollController();
@@ -67,6 +73,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
   @override
   void initState() {
+    ref.read(myPetListStateProvider.notifier).memberIdx = widget.memberIdx;
+    _myPetListPagingController.refresh();
+
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
 
@@ -302,7 +311,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   );
                       }),
                     ],
-                    expandedHeight: 146.h,
+                    expandedHeight: 200.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
                       final userInformationState = ref.watch(userInformationStateProvider);
                       final lists = userInformationState.list;
@@ -717,7 +726,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
               ],
             ),
             Padding(
-              padding: EdgeInsets.only(left: 12.w, right: 12.w, top: 10.h),
+              padding: EdgeInsets.only(left: 12.w, right: 12.w, top: 10.h, bottom: 10.h),
               child: data.blockedMeState == 1
                   ? Expanded(
                       child: Container(
@@ -887,7 +896,95 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         ),
                       ],
                     ),
-            )
+            ),
+            Expanded(
+              child: PagedListView<int, MyPetItemModel>(
+                scrollDirection: Axis.horizontal,
+                pagingController: _myPetListPagingController,
+                builderDelegate: PagedChildBuilderDelegate<MyPetItemModel>(
+                  noItemsFoundIndicatorBuilder: (context) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "등록된 아이들이\n존재하지 않아요!",
+                            style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                  noMoreItemsIndicatorBuilder: (context) {
+                    return const SizedBox.shrink();
+                  },
+                  newPageProgressIndicatorBuilder: (context) {
+                    return Column(
+                      children: [
+                        Lottie.asset(
+                          'assets/lottie/icon_loading.json',
+                          fit: BoxFit.fill,
+                          width: 80,
+                          height: 80,
+                        ),
+                      ],
+                    );
+                  },
+                  firstPageProgressIndicatorBuilder: (context) {
+                    return Container();
+                  },
+                  itemBuilder: (context, item, index) {
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => UserPetDetailScreen(
+                              itemModel: item,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0.w),
+                            child: WidgetMask(
+                              blendMode: BlendMode.srcATop,
+                              childSaveLayer: true,
+                              mask: Center(
+                                child: item.url == null || item.url == ""
+                                    ? Center(
+                                        child: const Icon(
+                                          Puppycat_social.icon_profile_large,
+                                          size: 55,
+                                          color: kNeutralColor500,
+                                        ),
+                                      )
+                                    : Image.network(
+                                        Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.url}").toUrl(),
+                                        width: 110,
+                                        height: 110,
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
+                              child: SvgPicture.asset(
+                                'assets/image/feed/image/squircle.svg',
+                                height: 40.h,
+                              ),
+                            ),
+                          ),
+                          Text("${item.name}"),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),

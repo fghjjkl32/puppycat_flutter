@@ -37,6 +37,7 @@ import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_sc
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_post_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_breed_search_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_edit_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_registration_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_alarm_screen.dart';
@@ -53,6 +54,7 @@ import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdraw
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_select_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/work_log/work_log_calendar_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/notification/notification_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
@@ -176,15 +178,32 @@ class AppRouter {
                       },
                       routes: [
                         GoRoute(
-                          path: 'myPetBreedSearch',
-                          name: 'myPetBreedSearch',
+                          path: 'myPetEdit/:idx',
+                          name: 'myPetEdit/:idx',
                           builder: (BuildContext context, GoRouterState state) {
-                            return const MyPetBreedSearchScreen();
+                            final idx = state.pathParameters['idx']!;
+                            return MyPetEditScreen(idx: int.parse(idx));
                           },
                         ),
                       ],
                     ),
                   ],
+                ),
+                GoRoute(
+                  path: 'workLogCalendar',
+                  name: 'workLogCalendar',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const WorkLogCalendarScreen();
+                  },
+                  // routes: [
+                  //   GoRoute(
+                  //     path: 'myPetRegistration',
+                  //     name: 'myPetRegistration',
+                  //     builder: (BuildContext context, GoRouterState state) {
+                  //       return const MyPetRegistrationScreen();
+                  //     },
+                  //   ),
+                  // ],
                 ),
                 GoRoute(
                   path: 'userUnknown',

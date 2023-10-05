@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
@@ -28,6 +30,8 @@ import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_con
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/work_log/write_work_log_screen.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -53,6 +57,12 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   int tagOldLength = 0;
   int commentOldLength = 0;
   bool showLottieAnimation = false;
+
+  int _counter = 0;
+  Uint8List? _imageFile;
+
+  //Create an instance of ScreenshotController
+  ScreenshotController screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -254,7 +264,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         },
                       ),
                     ],
-                    expandedHeight: 160.h,
+                    expandedHeight: 200.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
                       final userInformationState = ref.watch(myInformationStateProvider);
                       final lists = userInformationState.list;
@@ -868,7 +878,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                context.push("/home/myPage/workLogCalendar");
+              },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                 child: Row(
@@ -876,6 +888,78 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                   children: [
                     Text(
                       "산책 일지",
+                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () async {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return WillPopScope(
+                      onWillPop: () async => false,
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Lottie.asset(
+                              'assets/lottie/icon_loading.json',
+                              fit: BoxFit.fill,
+                              width: 80,
+                              height: 80,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+
+                final screenShotImage = await screenshotController.captureFromWidget(
+                  Container(
+                    padding: const EdgeInsets.all(30.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.blueAccent, width: 5.0),
+                      color: Colors.redAccent,
+                    ),
+                    child: Text("This is an invisible widget"),
+                  ),
+                );
+
+                if (mounted) {
+                  context.pop();
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WriteWorkLogScreen(
+                        screenShotImage: screenShotImage,
+                        tabs: ["여름이", "이봄", "안녕", "여름이", "이봄", "안녕", "여름이", "이봄", "안녕", "여름이", "이봄", "안녕"],
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "산책 일지 생성",
                       style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                     ),
                     Icon(

@@ -175,7 +175,43 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
             ),
             leading: IconButton(
               onPressed: () {
-                context.pop();
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return CustomDialog(
+                        content: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                          child: Column(
+                            children: [
+                              Text(
+                                "이전으로 돌아가시겠어요?",
+                                style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                              ),
+                              SizedBox(
+                                height: 4.h,
+                              ),
+                              Text(
+                                "지금 돌아가시면 수정사항은\n저장되지 않습니다.",
+                                style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                        confirmTap: () {
+                          context.pop();
+                          context.pop();
+                          ref.watch(editStateProvider.notifier).resetState();
+                        },
+                        cancelTap: () {
+                          context.pop();
+                        },
+                        confirmWidget: Text(
+                          "확인",
+                          style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                        ));
+                  },
+                );
               },
               icon: const Icon(
                 Puppycat_social.icon_back,
@@ -223,7 +259,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                           introText: introController.text == "" ? ref.watch(editStateProvider).userInfoModel!.userModel!.introText : introController.text,
                           phone: ref.watch(editStateProvider).authModel == null ? ref.watch(editStateProvider).userInfoModel!.userModel!.phone : ref.watch(editStateProvider).authModel?.phone,
                           ci: ref.watch(editStateProvider).authModel == null ? ref.watch(editStateProvider).userInfoModel!.userModel!.ci : ref.watch(editStateProvider).authModel?.ci,
-                          di: ref.watch(editStateProvider).authModel == null ? ref.watch(editStateProvider).userInfoModel!.userModel!.ci : ref.watch(editStateProvider).authModel?.di,
+                          di: ref.watch(editStateProvider).authModel == null ? ref.watch(editStateProvider).userInfoModel!.userModel!.di : ref.watch(editStateProvider).authModel?.di,
                         );
 
                         final result = await ref.watch(editStateProvider.notifier).putMyInfo(
@@ -231,6 +267,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               file: selectedImage,
                               beforeNick: ref.read(userInfoProvider).userModel!.nick,
                               isProfileImageDelete: isProfileImageDelete,
+                              isPhoneNumberEdit: isPhoneNumberEdit,
                             );
 
                         context.pop();
