@@ -591,7 +591,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           //
                           // print(sessionKey);
 
-                          final txId = await ref.read(authStateProvider.notifier).getTossAuthUrl();
+                          // final txId = await ref.read(authStateProvider.notifier).getTossAuthUrl();
 
                           //------------------------------------------------------------
                           // String sessionId = generateSessionId();
@@ -616,19 +616,19 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
 
                           // await launch("puppycat://ss");
                           //
-                          // final appScheme = ConvertUrl(
-                          //     "intent://toss-cert/v2/sign/user/auth?txId=112949ac-7a8e-4ef3-aff7-f1a21e6d1022&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end"); // Intent URL을 앱 스킴 URL로 변환
-                          //
-                          // print(appScheme);
-                          //
-                          // print(appScheme.appScheme);
-                          // print(appScheme.url);
-                          //
-                          // if (appScheme.isAppLink()) {
-                          //   print(appScheme.appLink);
-                          //
-                          //   await appScheme.launchApp();
-                          // }
+                          final appScheme = ConvertUrl(
+                              "intent://toss-cert/v2/sign/user/auth?txId=ece40dc7-434a-4729-840a-f5468a50066a&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end"); // Intent URL을 앱 스킴 URL로 변환
+
+                          print(appScheme);
+
+                          print(appScheme.appScheme);
+                          print(appScheme.url);
+
+                          if (appScheme.isAppLink()) {
+                            print(appScheme.appLink);
+
+                            await appScheme.launchApp();
+                          }
 
                           // print("-----------------------------------------------");
                           // print("-----------------------------------------------");
@@ -643,24 +643,24 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           // print("-----------------------------------------------");
                           // print("-----------------------------------------------");
 
-                          Navigator.of(context).push(
-                            PageRouteBuilder(
-                              opaque: false, // set to false
-                              pageBuilder: (_, __, ___) => WebViewWidget(
-                                url: 'https://auth.cert.toss.im/start?serviceType=SIGN_USER_AUTH',
-                                initialUrlRequest: URLRequest(
-                                  url: WebUri("https://auth.cert.toss.im/start?serviceType=SIGN_USER_AUTH"),
-                                  method: 'POST',
-                                  headers: {
-                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                  },
-                                  body: Uint8List.fromList(
-                                    utf8.encode('txId=$txId'),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
+                          // Navigator.of(context).push(
+                          //   PageRouteBuilder(
+                          //     opaque: false, // set to false
+                          //     pageBuilder: (_, __, ___) => WebViewWidget(
+                          //       url: 'https://auth.cert.toss.im/start?serviceType=SIGN_USER_AUTH',
+                          //       initialUrlRequest: URLRequest(
+                          //         url: WebUri("https://auth.cert.toss.im/start?serviceType=SIGN_USER_AUTH"),
+                          //         method: 'POST',
+                          //         headers: {
+                          //           'Content-Type': 'application/x-www-form-urlencoded',
+                          //         },
+                          //         body: Uint8List.fromList(
+                          //           utf8.encode('txId=$txId'),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // );
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
