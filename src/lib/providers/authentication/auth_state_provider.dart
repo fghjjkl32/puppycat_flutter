@@ -87,7 +87,9 @@ class AuthState extends _$AuthState {
     try {
       String txId = await authRepository.getTossAuthUrl();
 
-      return txId;
+      String url = await authRepository.getTossTransactionsUrl(txId);
+
+      return url;
     } catch (e) {
       print(e);
       return "";

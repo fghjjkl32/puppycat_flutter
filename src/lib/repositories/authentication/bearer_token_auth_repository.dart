@@ -46,6 +46,7 @@ class BearerTokenAuthRepository {
   Future<String> getTossAuthUrl() async {
     final Map<String, dynamic> body = {
       "requestType": "USER_NONE",
+      "successCallbackUrl": "puppycat://ss",
     };
     String? accessToken = await getTossToken();
     String? responseModel = await _authService.getTossAuthUrl(body, "Bearer $accessToken").catchError((obj) => throw 'some error.');
@@ -59,5 +60,19 @@ class BearerTokenAuthRepository {
     String txId = decodedResponse["success"]["txId"];
 
     return txId;
+  }
+
+  Future<String> getTossTransactionsUrl(txId) async {
+    String? responseModel = await _authService.getTossTransactionsUrl(txId).catchError((obj) => throw 'some error.');
+
+    if (responseModel == null) {
+      throw Exception('Failed to load access token');
+    }
+
+    Map<String, dynamic> decodedResponse = jsonDecode(responseModel);
+
+    String url = decodedResponse["success"]["appUri"]["android"];
+
+    return url;
   }
 }
