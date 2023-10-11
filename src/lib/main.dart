@@ -34,6 +34,7 @@ import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
+import 'package:uni_links/uni_links.dart';
 
 InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 9723);
 
@@ -133,12 +134,55 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> {
   void initLocalNotification() {
     NotificationController notificationController = NotificationController();
     notificationController.initNotification(navigatorHandler);
+
+    getInitialLink().then((link) {
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+
+      if (link == "puppycat://ss") {
+        final router = ref.watch(routerProvider);
+        router.push("/home/myPage/setting/settingAlarm");
+      }
+    });
+
+    linkStream.listen((String? link) {
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+      print(link);
+
+      if (link != null && link == "puppycat://ss") {
+        final router = ref.watch(routerProvider);
+        router.push("/home/myPage/setting/settingAlarm");
+      }
+    }, onError: (err) {
+      // Handle the error here
+    });
   }
 
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
     // context.push('/home/notification');
     final router = ref.watch(routerProvider);
     // router.go('/home/notification');
+
+    if (payload.type == "puppycat://ss") {
+      final router = ref.watch(routerProvider);
+      router.push("/home/myPage/setting/settingAlarm");
+      return;
+    }
+
     PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
 
     switch (pushType) {

@@ -5,6 +5,7 @@ import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/edit_my_information/edit_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/authentication/auth_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/authentication/bearer_token_auth_repository.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -79,5 +80,17 @@ class AuthState extends _$AuthState {
     });
 
     return signUpAuthModel;
+  }
+
+  Future<String> getTossAuthUrl() async {
+    final authRepository = BearerTokenAuthRepository(dio: ref.read(dioProvider));
+    try {
+      String txId = await authRepository.getTossAuthUrl();
+
+      return txId;
+    } catch (e) {
+      print(e);
+      return "";
+    }
   }
 }

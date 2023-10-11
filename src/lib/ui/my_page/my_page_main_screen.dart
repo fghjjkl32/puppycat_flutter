@@ -33,6 +33,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/user_information/use
 import 'package:pet_mobile_social_flutter/ui/my_page/work_log/write_work_log_screen.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:thumbor/thumbor.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class MyPageMainScreen extends ConsumerStatefulWidget {
@@ -878,8 +879,30 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
               ),
             ),
             InkWell(
-              onTap: () {
-                context.push("/home/myPage/workLogCalendar");
+              onTap: () async {
+                // context.push("/home/myPage/workLogCalendar");
+                // if (await canLaunch(
+                //     "intent://toss-cert/v2/sign/user/auth?txId=3f458ae9-38a8-4b24-8a5d-f35edc13a546&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end")) {
+                //   await launch(
+                //       "intent://toss-cert/v2/sign/user/auth?txId=3f458ae9-38a8-4b24-8a5d-f35edc13a546&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end");
+                // } else {
+                //   print(
+                //       'Could not launch ${"intent://toss-cert/v2/sign/user/auth?txId=3f458ae9-38a8-4b24-8a5d-f35edc13a546&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end"}');
+                // }
+                await launch(
+                    "intent://toss-cert/v2/sign/user/auth?txId=a3dfed48-301f-42a4-953b-b35ebfcf7491&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end");
+
+                // if (!await launchUrl(Uri.parse(
+                //     "intent://toss-cert/v2/sign/user/auth?txId=3f458ae9-38a8-4b24-8a5d-f35edc13a546&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end"))) {
+                //   throw Exception('Could not launch ');
+                // }
+                // AndroidIntent intent = AndroidIntent(
+                //   action: 'action_view',
+                //   data: 'intent://toss-cert/v2/sign/user/auth?txId=3f458ae9-38a8-4b24-8a5d-f35edc13a546&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end',
+                //   package: 'viva.republica.toss',
+                // );
+                //
+                // await intent.launch();
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),

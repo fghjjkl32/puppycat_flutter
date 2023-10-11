@@ -15,10 +15,12 @@ import 'package:pet_mobile_social_flutter/ui/web_view/web_view.dart';
 
 class WebViewWidget extends ConsumerStatefulWidget {
   final String url;
+  final URLRequest? initialUrlRequest;
 
   const WebViewWidget({
     Key? key,
     required this.url,
+    this.initialUrlRequest,
   }) : super(key: key);
 
   @override
@@ -45,6 +47,7 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
       onCreateWindow: webViewOnCreateWindow,
       onWebViewCreated: webViewOnWebViewCreated,
       onCloseWindow: webViewOnCloseWindow,
+      initialUrlRequest: widget.initialUrlRequest,
     ));
   }
 
@@ -84,6 +87,7 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
       onCloseWindow: webViewOnCloseWindow,
       windowId: createWindowAction.windowId,
       url: createWindowAction.request.url.toString(),
+      initialUrlRequest: widget.initialUrlRequest,
     );
 
     setState(() {

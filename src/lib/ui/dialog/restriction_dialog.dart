@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/ui/web_view/channel_talk_webview_screen.dart';
 
 class RestrictionDialog extends StatelessWidget {
   final bool isForever;
@@ -174,7 +175,14 @@ class RestrictionDialog extends StatelessWidget {
                   Expanded(
                     child: InkWell(
                       borderRadius: const BorderRadius.only(bottomRight: Radius.circular(20)),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(
+                          PageRouteBuilder(
+                            opaque: false, // set to false
+                            pageBuilder: (_, __, ___) => const ChannelTalkWebViewScreen(),
+                          ),
+                        );
+                      },
                       child: Center(
                         child: Text(
                           "1:1 채널톡",

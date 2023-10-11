@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/ui/web_view/channel_talk_webview_screen.dart';
 
 class MaintenanceScreen extends ConsumerStatefulWidget {
   const MaintenanceScreen({super.key});
@@ -154,7 +155,14 @@ class MaintenanceScreenState extends ConsumerState<MaintenanceScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
-                        onPressed: () async {},
+                        onPressed: () async {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              opaque: false, // set to false
+                              pageBuilder: (_, __, ___) => const ChannelTalkWebViewScreen(),
+                            ),
+                          );
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Text(
