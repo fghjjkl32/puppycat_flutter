@@ -32,7 +32,9 @@ class MyPetListRepository {
     required int page,
     int limit = 20,
   }) async {
-    MyPetListResponseModel? responseModel = await _myPetService.getMyPetList(memberIdx, loginMemberIdx, limit, page).catchError((Object obj) async {});
+    MyPetListResponseModel? responseModel = await _myPetService.getMyPetList(memberIdx, loginMemberIdx, limit, page).catchError((Object obj) async {
+      print('obj : $obj');
+    });
 
     if (responseModel == null) {
       return MyPetListResponseModel(

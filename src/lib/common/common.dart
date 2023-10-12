@@ -25,9 +25,7 @@ Widget getProfileAvatar(
     childSaveLayer: true,
     mask: Center(
       child: Image.network(
-        Thumbor(host: thumborHostUrl, key: thumborKey)
-            .buildImage("$imgDomain$avatarUrl")
-            .toUrl(),
+        Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain$avatarUrl").toUrl(),
         width: double.infinity,
         height: height,
         fit: BoxFit.cover,
@@ -47,29 +45,51 @@ Widget getProfileAvatar(
       fit: BoxFit.fill,
     ),
   );
+}
 
-  // return WidgetMask(
-  //   blendMode: BlendMode.srcATop,
-  //   childSaveLayer: true,
-  //   mask: Center(
-  //     child: isAsset ? Image.asset(
-  //       // avatarUrl,
-  //       avatarUrl  == '' ? 'assets/image/common/icon_profile_medium.png' : avatarUrl,
-  //       width: width,
-  //       height: height,
-  //       fit: BoxFit.fill,
-  //     ) : Image.network(
-  //       avatarUrl,
-  //       width: width,
-  //       height: height,
-  //       fit: BoxFit.fill,
-  //     ),
-  //   ),
-  //   child: SvgPicture.asset(
-  //     'assets/image/feed/image/squircle.svg',
-  //     width: width,
-  //     height: height,
-  //     fit: BoxFit.fill,
-  //   ),
-  // );
+Widget getSquircleImage(
+  String avatarUrl, [
+  double width = 48,
+  double height = 48,
+  Color colorFilter = Colors.transparent,
+]) {
+  return WidgetMask(
+    blendMode: BlendMode.srcATop,
+    childSaveLayer: true,
+    mask: Center(
+      child: Stack(
+        children: [
+          Image.network(
+            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain$avatarUrl").toUrl(),
+            width: double.infinity,
+            height: height,
+            fit: BoxFit.cover,
+            errorBuilder: (context, exception, stackTrace) {
+              return Icon(
+                Puppycat_social.icon_profile_small,
+                size: 30,
+                color: colorFilter == kPrimaryColor ? colorFilter : kNeutralColor400,
+              );
+            },
+          ),
+          Visibility(
+            visible: colorFilter == kPrimaryColor,
+            child: const Positioned.fill(
+              child: Align(
+                alignment: Alignment.center,
+                child: Icon(Icons.check, color: kNeutralColor100,),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+    child: SvgPicture.asset(
+      'assets/image/feed/image/squircle.svg',
+      width: width,
+      height: height,
+      fit: BoxFit.fill,
+      colorFilter: colorFilter == kPrimaryColor ? ColorFilter.mode(colorFilter.withAlpha(50), BlendMode.srcATop) : null,
+    ),
+  );
 }

@@ -26,8 +26,10 @@ class MyPetItemModel with _$MyPetItemModel {
     String? breedNameEtc,
     String? name,
     int? breedIdx,
+    String? uuid,
     List<ItemModel>? healthList,
     List<ItemModel>? allergyList,
+    @Default(false) bool selected,
   }) = _MyPetItemModel;
 
   factory MyPetItemModel.fromJson(Map<String, dynamic> json) => _$MyPetItemModelFromJson(json);
