@@ -50,7 +50,6 @@ class SelectPetSheetItemState extends ConsumerState<SelectPetSheetItem> {
                 },
                 builderDelegate: PagedChildBuilderDelegate<MyPetItemModel>(
                   noMoreItemsIndicatorBuilder: (context) {
-                    print('noItemsFoundIndicatorBuilder');
                     return GestureDetector(
                       onTap: () {
                         context.pop();
@@ -67,7 +66,6 @@ class SelectPetSheetItemState extends ConsumerState<SelectPetSheetItem> {
                     );
                   },
                   itemBuilder: (context, item, index) {
-                    print('itemBuilder');
                     bool selected = item.selected;
                     return GestureDetector(
                       onTap: () {

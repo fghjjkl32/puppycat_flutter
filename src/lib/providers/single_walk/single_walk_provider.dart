@@ -9,6 +9,11 @@ import 'dart:async';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:location/location.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
+import 'package:pet_mobile_social_flutter/repositories/walk/walk_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:pet_mobile_social_flutter/common/util/walk_util.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
@@ -18,10 +23,6 @@ part 'single_walk_provider.g.dart';
 final naverMapControllerStateProvider = StateProvider<NaverMapController?>((ref) => null);
 
 
-enum WalkStatus {
-  idle,
-  walking,
-}
 
 final singleWalkStatusStateProvider = StateProvider<WalkStatus>((ref) => WalkStatus.idle);
 
@@ -37,6 +38,10 @@ class SingleWalkState extends _$SingleWalkState {
   void startLocationCollection(LocationData initLocationData, double petWeight) {
     stopLocationCollection();
 
+    final selectedPetList = ref.read(walkSelectedPetStateProvider);
+    final firstPet = ref.read(walkSelectedPetStateProvider.notifier).getFirstRegPet();
+    print('firstPet $firstPet');
+
     _locationDataCollectionStream = Location().onLocationChanged.listen((LocationData currentLocation) {
       final WalkStateModel previousWalkStateModel;
       if (state.isEmpty) {
@@ -47,14 +52,13 @@ class SingleWalkState extends _$SingleWalkState {
           distance: 0,
           walkTime: 0,
           walkCount: 0,
-          calorie: 0,
+          calorie: {},
         );
       } else {
         previousWalkStateModel = state.last;
       }
 
-      final walkStateModel = WalkUtil.calcWalkStateValue(previousWalkStateModel, currentLocation, petWeight);
-      print('walkState : $walkStateModel');
+      final walkStateModel = WalkUtil.calcWalkStateValue(previousWalkStateModel, currentLocation, selectedPetList);
       state = [...state, walkStateModel];
     });
 
@@ -69,4 +73,6 @@ class SingleWalkState extends _$SingleWalkState {
     state.clear();
     ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.idle;
   }
+
+
 }

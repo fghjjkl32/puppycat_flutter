@@ -1,5 +1,6 @@
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:location/location.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 
 ///TODO
@@ -16,7 +17,7 @@ import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 ///     required double calorie,
 
 class WalkUtil {
-  static WalkStateModel calcWalkStateValue(WalkStateModel previousWalkStateModel, LocationData currentLocationData, double petWeight) {
+  static WalkStateModel calcWalkStateValue(WalkStateModel previousWalkStateModel, LocationData currentLocationData, List<MyPetItemModel> petList) {
     LocationData previousLocationData = LocationData.fromMap({
       'latitude': previousWalkStateModel.latitude,
       'longitude': previousWalkStateModel.longitude,
@@ -35,7 +36,7 @@ class WalkUtil {
       distance: previousWalkStateModel.distance + distance,
       walkTime: previousWalkStateModel.walkTime + walkTime,
       walkCount: walkCount,
-      calorie: calcCalorie(petWeight, previousWalkStateModel.walkTime + walkTime),
+      calorie: calcALlCalorie(petList, previousWalkStateModel.walkTime + walkTime),
     );
   }
 
@@ -58,6 +59,23 @@ class WalkUtil {
   static double calcCalorie(double petWeight, int walkTime) {
     final cal = 1.766 * petWeight.toDouble() * (walkTime / 3600000);
     return cal;
+  }
+
+  static Map<String, dynamic> calcALlCalorie(List<MyPetItemModel> petList, int walkTime) {
+    final walkTimeH = (walkTime / 3600000);
+    final Map<String, dynamic> resultMap = {};
+
+    for (var element in petList) {
+      print('element.uuid ${element.uuid}');
+      final weight = element.weight ?? 1.0;
+      final cal = 1.766 * weight * walkTimeH;
+      Map<String, double> calorieMap = {
+        'calorie' : cal,
+      };
+      resultMap[element.uuid ?? element.idx!.toString()] = calorieMap;
+    }
+
+    return resultMap;
   }
 
   static int calcWalkTime(DateTime previousWalkDateTime) {

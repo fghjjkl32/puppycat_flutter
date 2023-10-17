@@ -95,6 +95,7 @@ class LoginState extends _$LoginState {
             profileImgUrl: next.profileImgUrl,
             isBadge: next.isBadge ?? 0,
             // password: '2809229088121356223',
+            uuid: next.uuid,
           ));
 
           if (ref.read(myInfoStateProvider.notifier).checkChatInfo(next)) {

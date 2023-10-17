@@ -3,6 +3,8 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 
 class WalkInfoWidget extends ConsumerStatefulWidget {
   const WalkInfoWidget({
@@ -73,7 +75,7 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
                 ),
                 WalkInfoItemWidget(
                   title: 'kacal',
-                  value: walkStateModel?.calorie.toStringAsFixed(2) ??'0.00',
+                  value: walkStateModel?.getPetCalorie(ref.read(walkSelectedPetStateProvider.notifier).getFirstRegPet().uuid ?? '').toStringAsFixed(2) ??'0.00',
                 ),
               ],
             ),
@@ -83,8 +85,11 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
             children: [
               IconButton(onPressed: () {}, icon: Icon(Icons.camera)),
               IconButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    // final lastWalkState = ref.read(singleWalkStateProvider).last;
+                    await ref.read(walkStateProvider.notifier).stopWalk();
                     ref.read(singleWalkStateProvider.notifier).stopLocationCollection();
+
                     final mapController = ref.read(naverMapControllerStateProvider);
                     if (mapController != null) {
                       mapController.clearOverlays(type: NOverlayType.pathOverlay);

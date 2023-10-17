@@ -52,6 +52,8 @@ String thumborKey = "Tjaqhvpt";
 String imgDomain = "https://imgs.pcstg.co.kr";
 String firstInstallTime = "";
 String lastestBuildVersion = "";
+String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
+// String walkBaseUrl = 'https://walk-api.pcstg.co.kr';
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;

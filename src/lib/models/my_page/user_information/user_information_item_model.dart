@@ -28,6 +28,8 @@ class UserInformationItemModel with _$UserInformationItemModel {
 
     //img host
     String? imgDomain,
+
+    String? uuid,
   }) = _UserInformationItemModel;
 
   factory UserInformationItemModel.fromJson(Map<String, dynamic> json) =>

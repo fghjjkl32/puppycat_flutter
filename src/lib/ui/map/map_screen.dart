@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:location/location.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/map/bottom_drawer.dart';
 import 'package:pet_mobile_social_flutter/ui/map/walk_info_widget.dart';
 
@@ -22,6 +23,7 @@ class MapScreen extends ConsumerStatefulWidget {
 class MapScreenState extends ConsumerState<MapScreen> {
   double drawerHeight = 0;
   late NaverMapController mapController;
+  int _walkCount = 0;
 
   late final drawerTool = ExampleAppBottomDrawer(
     context: context,
@@ -47,6 +49,11 @@ class MapScreenState extends ConsumerState<MapScreen> {
   @override
   void initState() {
     super.initState();
+    ref.read(walkStateProvider.notifier).getTodayWalkCount().then((value) {
+      setState(() {
+        _walkCount = value;
+      });
+    });
   }
 
   @override
@@ -102,7 +109,10 @@ class MapScreenState extends ConsumerState<MapScreen> {
               NaverMap(
                 options: const NaverMapViewOptions().copyWith(
                   locationButtonEnable: true,
-                  contentPadding: EdgeInsets.only(bottom: (drawerHeight + 34) - MediaQuery.of(context).padding.bottom),
+                  contentPadding: EdgeInsets.only(bottom: (drawerHeight + 34) - MediaQuery
+                      .of(context)
+                      .padding
+                      .bottom),
                   //TODO
                   logoAlign: NLogoAlign.leftTop,
                   scaleBarEnable: false,
@@ -126,7 +136,9 @@ class MapScreenState extends ConsumerState<MapScreen> {
                     zoom: updatePosition.zoom,
                   ));
                   mapController = controller;
-                  ref.read(naverMapControllerStateProvider.notifier).state = controller;
+                  ref
+                      .read(naverMapControllerStateProvider.notifier)
+                      .state = controller;
                 },
               ),
               Visibility(
@@ -156,6 +168,7 @@ class MapScreenState extends ConsumerState<MapScreen> {
                             final currentLocationData = await Location().getLocation();
                             final petWeight = 20.0; //TODO
                             ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData, petWeight);
+                            await ref.read(walkStateProvider.notifier).startWalk();
                             // ref.read(walkStateProvider.notifier).testLocation();
                           },
                           child: const Text('산책하기'),
@@ -164,6 +177,64 @@ class MapScreenState extends ConsumerState<MapScreen> {
                     ),
                   ),
                 ),
+              ),
+              Visibility(
+                visible: !isWalking && _walkCount > 0,
+                child: Positioned.fill(
+                  bottom: drawerHeight + 57,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(20.0), // 모든 모서리를 둥글게 만듭니다.
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20.0, 12, 20, 12),
+                          child: Text('오늘 아이들과 $_walkCount번째 산책을 다녀왔어요!'),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // FutureBuilder(
+                //   future: ref.read(singleWalkStateProvider.notifier).getTodayWalkCount(),
+                //   builder: (context, AsyncSnapshot<int> snapshot) {
+                //     if(snapshot.hasError) {
+                //       return const SizedBox.shrink();
+                //     }
+                //
+                //     if(!snapshot.hasData) {
+                //       return const SizedBox.shrink();
+                //     }
+                //
+                //     if(snapshot.data == 0) {
+                //       return const SizedBox.shrink();
+                //     }
+                //
+                //     return Positioned.fill(
+                //       bottom: drawerHeight + 57,
+                //       child: Align(
+                //         alignment: Alignment.bottomCenter,
+                //         child: Padding(
+                //           padding: const EdgeInsets.all(12.0),
+                //           child: Container(
+                //             decoration: BoxDecoration(
+                //               color: Colors.blue,
+                //               borderRadius: BorderRadius.circular(20.0), // 모든 모서리를 둥글게 만듭니다.
+                //             ),
+                //             child: Padding(
+                //               padding: const EdgeInsets.fromLTRB(20.0, 12, 20, 12),
+                //               child: Text('오늘 아이들과 ${snapshot.data}번째 산책을 다녀왔어요!'),
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     );
+                //   },
+                // ),
               ),
               Visibility(
                 visible: !isWalking,
@@ -177,17 +248,10 @@ class MapScreenState extends ConsumerState<MapScreen> {
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 24.0),
-                      child: WalkInfoWidget(walkStateModel : walkStateModelList.isEmpty ? null : walkStateModelList.last),
+                      child: WalkInfoWidget(walkStateModel: walkStateModelList.isEmpty ? null : walkStateModelList.last),
                     ),
                   ),
                 ),
-                // ElevatedButton(
-                //   onPressed: () {
-                //     ref.read(singleWalkStateProvider.notifier).stopLocationCollection();
-                //     mapController.clearOverlays(type: NOverlayType.pathOverlay);
-                //   },
-                //   child: const Text('stop'),
-                // ),
               ),
             ],
           );
