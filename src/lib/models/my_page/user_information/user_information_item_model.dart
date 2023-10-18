@@ -14,6 +14,7 @@ class UserInformationItemModel with _$UserInformationItemModel {
     String? intro,
     String? profileImgUrl,
     String? email,
+    String? uuid,
     int? followerCnt,
     int? followCnt,
     int? blockedState,
@@ -30,6 +31,5 @@ class UserInformationItemModel with _$UserInformationItemModel {
     String? imgDomain,
   }) = _UserInformationItemModel;
 
-  factory UserInformationItemModel.fromJson(Map<String, dynamic> json) =>
-      _$UserInformationItemModelFromJson(json);
+  factory UserInformationItemModel.fromJson(Map<String, dynamic> json) => _$UserInformationItemModelFromJson(json);
 }

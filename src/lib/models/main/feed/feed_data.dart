@@ -18,6 +18,8 @@ class FeedData with _$FeedData {
     int? likeState,
     int? imageCnt,
     String? uuid,
+    String? memberUuid,
+    String? workUuid,
     int? likeCnt,
     String? contents,
     String? location,
@@ -28,6 +30,7 @@ class FeedData with _$FeedData {
     List<FeedHashTagListData>? hashTagList,
     List<MemberInfoListData>? memberInfoList,
     List<FeedImgListData>? imgList,
+    List<WalkResultListData>? walkResultList,
   }) = _FeedData;
 
   factory FeedData.fromJson(Map<String, dynamic> json) => _$FeedDataFromJson(json);
@@ -119,4 +122,22 @@ class MemberInfoListData with _$MemberInfoListData {
   }) = _MemberInfoListData;
 
   factory MemberInfoListData.fromJson(Map<String, dynamic> json) => _$MemberInfoListDataFromJson(json);
+}
+
+@freezed
+class WalkResultListData with _$WalkResultListData {
+  factory WalkResultListData({
+    double? distance,
+    String? memberUuid,
+    String? endDate,
+    double? calorie,
+    String? walkTime,
+    int? step,
+    String? walkUuid,
+    String? startDate,
+    int? together,
+    List<MemberInfoListData>? walkMemberList,
+  }) = _WalkResultListData;
+
+  factory WalkResultListData.fromJson(Map<String, dynamic> json) => _$WalkResultListDataFromJson(json);
 }

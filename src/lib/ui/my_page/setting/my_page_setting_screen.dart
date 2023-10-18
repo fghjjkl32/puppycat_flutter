@@ -563,12 +563,12 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          // Navigator.of(context).push(
-                          //   PageRouteBuilder(
-                          //     opaque: false, // set to false
-                          //     pageBuilder: (_, __, ___) => const ChannelTalkWebViewScreen(),
-                          //   ),
-                          // );
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              opaque: false, // set to false
+                              pageBuilder: (_, __, ___) => const ChannelTalkWebViewScreen(),
+                            ),
+                          );
 
                           // TODO: 채널톡 유료 버전 결제되면 SDK를 이용하여 변경 예정.
                           // await ChannelTalk.boot(
@@ -590,8 +590,6 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           // final sessionKey = tossCertSession.getSessionKey();
                           //
                           // print(sessionKey);
-
-                          final url = await ref.read(authStateProvider.notifier).getTossAuthUrl();
 
                           //------------------------------------------------------------
                           // String sessionId = generateSessionId();
@@ -616,18 +614,6 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
 
                           // await launch("puppycat://ss");
                           //
-                          final appScheme = ConvertUrl(url); // Intent URL을 앱 스킴 URL로 변환
-
-                          print(appScheme);
-
-                          print(appScheme.appScheme);
-                          print(appScheme.url);
-
-                          if (appScheme.isAppLink()) {
-                            print(appScheme.appLink);
-
-                            await appScheme.launchApp();
-                          }
 
                           // print("-----------------------------------------------");
                           // print("-----------------------------------------------");

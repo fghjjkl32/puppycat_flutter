@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_header_state.dart';
 
-final commentHeaderProvider =
-    StateNotifierProvider<CommentHeaderNotifier, CommentHeaderState>((ref) {
+final commentValueProvider = StateProvider<TextEditingController>((ref) => TextEditingController());
+
+final commentHeaderProvider = StateNotifierProvider<CommentHeaderNotifier, CommentHeaderState>((ref) {
   return CommentHeaderNotifier();
 });
 
@@ -11,13 +13,18 @@ class CommentHeaderNotifier extends StateNotifier<CommentHeaderState> {
 
   void addReplyCommentHeader(name, commentIdx) {
     print('commentIdx $commentIdx');
-    state = state.copyWith(
-        name: name, isReply: true, isEdit: false, commentIdx: commentIdx);
+    state = state.copyWith(name: name, isReply: true, isEdit: false, commentIdx: commentIdx);
   }
 
   void resetReplyCommentHeader() {
     state = state.copyWith(
-        name: "", isReply: false, isEdit: false, commentIdx: null);
+      name: "",
+      isReply: false,
+      isEdit: false,
+      commentIdx: null,
+      controllerValue: '',
+      hasInput: false,
+    );
   }
 
   void addEditCommentHeader(name, commentIdx) {

@@ -13,6 +13,8 @@ part 'auth_state_provider.g.dart';
 
 final passUrlProvider = StateProvider<String>((ref) => 'about:blank');
 final authModelProvider = StateProvider<SignUpAuthModel?>((ref) => null);
+final tossTxIdProvider = StateProvider<String>((ref) => "");
+final tossAccessTokenProvider = StateProvider<String>((ref) => "");
 
 @Riverpod(keepAlive: true)
 class AuthState extends _$AuthState {
@@ -87,7 +89,29 @@ class AuthState extends _$AuthState {
     try {
       String txId = await authRepository.getTossAuthUrl();
 
+      ref.read(tossAccessTokenProvider.notifier).state = txId;
+
+      ref.read(tossTxIdProvider.notifier).state = txId;
+
       String url = await authRepository.getTossTransactionsUrl(txId);
+
+      return url;
+    } catch (e) {
+      print(e);
+      return "";
+    }
+  }
+
+  Future<String> getTossUserResult(sessionKey) async {
+    final authRepository = BearerTokenAuthRepository(dio: ref.read(dioProvider));
+    try {
+      String txId = await authRepository.getTossAuthUrl();
+
+      ref.read(tossAccessTokenProvider.notifier).state = txId;
+
+      ref.read(tossTxIdProvider.notifier).state = txId;
+
+      String url = await authRepository.getTossUserResult(sessionKey: '', accessToken: ref.read(tossAccessTokenProvider.notifier).state, txId: ref.read(tossAccessTokenProvider.notifier).state);
 
       return url;
     } catch (e) {

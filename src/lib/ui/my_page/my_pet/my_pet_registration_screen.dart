@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:lottie/lottie.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/date_time_spinner.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/i18n_model.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
@@ -57,8 +58,8 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
   TextEditingController personalityController = TextEditingController();
 
   FocusNode breedFocusNode = FocusNode();
-  int weightValue = 1;
   bool isReadOnly = true;
+  double weightValue = 1.0;
 
   final ImagePicker _picker = ImagePicker();
   XFile? selectedImage;
@@ -731,7 +732,13 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
         Text(
           "무게 ${weightValue} kg",
         ),
-        buildSliderTopLabel(),
+        DecimalNumberPicker(
+          minValue: 1,
+          maxValue: 50,
+          value: weightValue,
+          onChanged: (value) => setState(() => weightValue = value),
+          decimalPlaces: 2,
+        ),
         Row(
           children: [
             Text("연령이 어떻게 되나요?"),
@@ -1009,76 +1016,4 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
       ],
     );
   }
-
-  Widget buildSliderTopLabel() {
-    final labels = ['1kg', '25kg', '50kg'];
-    final double min = 1;
-    final double max = 50;
-    final divisions = 49;
-
-    return Column(
-      children: [
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: Utils.modelBuilder(
-              labels,
-              (index, label) {
-                const selectedColor = Colors.black;
-                final unselectedColor = Colors.black.withOpacity(0.3);
-                final isSelected = index <= weightValue;
-                final color = isSelected ? selectedColor : unselectedColor;
-                return buildLabel(label: label.toString(), color: color, width: 55);
-              },
-            ),
-          ),
-        ),
-        SliderTheme(
-          data: const SliderThemeData(
-            trackHeight: 16,
-            activeTickMarkColor: Colors.transparent,
-            inactiveTickMarkColor: Colors.transparent,
-            inactiveTrackColor: kNeutralColor400,
-            thumbColor: kPrimaryColor,
-            activeTrackColor: kPrimaryColor,
-          ),
-          child: Slider(
-            value: weightValue!.toDouble(),
-            min: min,
-            max: max,
-            divisions: divisions,
-            onChanged: (value) => setState(() => weightValue = value.toInt()),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget buildLabel({
-    required String label,
-    required double width,
-    required Color color,
-  }) =>
-      Container(
-        width: width,
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: kBody12RegularStyle.copyWith(color: kNeutralColor600),
-        ),
-      );
-}
-
-class Utils {
-  static List<Widget> modelBuilder<M>(List<M> models, Widget Function(int index, M model) builder) => models
-      .asMap()
-      .map<int, Widget>(
-        (index, model) => MapEntry(
-          index,
-          builder(index, model),
-        ),
-      )
-      .values
-      .toList();
 }

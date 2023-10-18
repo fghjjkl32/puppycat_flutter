@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/controller/channel/channel_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -18,13 +16,11 @@ class WebViewView extends StatefulWidget {
   final void Function(InAppWebViewController controller)? onWebViewCreated;
   final PullToRefreshController? pullToRefreshController;
   final InAppWebViewSettings? settings;
-  final URLRequest? initialUrlRequest;
 
   const WebViewView({
     Key? key,
     this.url = 'about:blank',
     this.windowId,
-    this.initialUrlRequest,
     this.onCreateWindow,
     this.onWebViewCreated,
     this.onCloseWindow,
@@ -152,119 +148,111 @@ class _WebViewViewState extends State<WebViewView> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Stack(
-        children: [
-          InAppWebView(
-            // key: GlobalKey(), //widget.windowId == null ? webViewKey : null,
-            windowId: widget.windowId,
-            initialUrlRequest: widget.initialUrlRequest ?? URLRequest(url: WebUri(widget.url ?? '')),
-            initialSettings: settings,
-            pullToRefreshController: pullToRefreshController,
-            shouldInterceptRequest: (controller, request) async {
-              var uri = request.url!;
-              String finalUrl = uri.toString();
+    return Stack(
+      children: [
+        InAppWebView(
+          // key: GlobalKey(), //widget.windowId == null ? webViewKey : null,
+          windowId: widget.windowId,
+          initialUrlRequest: URLRequest(url: WebUri(widget.url ?? '')),
+          initialSettings: settings,
+          pullToRefreshController: pullToRefreshController,
+          shouldInterceptRequest: (controller, request) async {
+            var uri = request.url!;
+            String finalUrl = uri.toString();
 
-              if (!["http", "https", "file", "chrome", "data", "javascript", "about"].contains(uri.scheme)) {
-                await controller.stopLoading();
+            if (!["http", "https", "file", "chrome", "data", "javascript", "about"].contains(uri.scheme)) {
+              await controller.stopLoading();
 
-                if (Platform.isAndroid) {
-                  // Android는 Native(Kotlin)로 URL을 전달해 Intent 처리 후 리턴
-                  await ChannelController.getAppUrl(uri.toString()).then((value) async {
-                    finalUrl = value; // 앱이 설치되었을 경우
-                  });
+              if (Platform.isAndroid) {
+                // Android는 Native(Kotlin)로 URL을 전달해 Intent 처리 후 리턴
+                await ChannelController.getAppUrl(uri.toString()).then((value) async {
+                  finalUrl = value; // 앱이 설치되었을 경우
+                });
 
-                  try {
-                    await launchUrlString(finalUrl);
-                  } catch (e) {
-                    // URL 실행 불가 시, 앱 미설치로 판단하여 마켓 URL 실행
-                    finalUrl = await ChannelController.getMarketUrl(uri.toString());
-                    launchUrlString(finalUrl);
-                  }
-                } else if (Platform.isIOS) {
+                try {
+                  await launchUrlString(finalUrl);
+                } catch (e) {
+                  // URL 실행 불가 시, 앱 미설치로 판단하여 마켓 URL 실행
+                  finalUrl = await ChannelController.getMarketUrl(uri.toString());
                   launchUrlString(finalUrl);
                 }
-
-                return null;
-              }
-            },
-            onLoadResourceWithCustomScheme: (controller, request) async {
-              await controller.stopLoading();
-            },
-            onWebViewCreated: (controller) {
-              if (widget.onWebViewCreated != null) {
-                widget.onWebViewCreated!(controller);
-              }
-              webViewController = controller;
-            },
-            onLoadStart: (controller, url) async {
-              // await checkNetwork();
-            },
-            onLoadStop: (controller, url) async {
-              pullToRefreshController?.endRefreshing();
-            },
-            onPageCommitVisible: (controller, url) {
-              setState(() {
-                if (isErrorState) {
-                  isErrorVisible = true;
-                } else {
-                  isErrorVisible = false;
-                }
-              });
-            },
-            onReceivedError: (controller, request, error) async {
-              pullToRefreshController?.endRefreshing();
-
-              var isForMainFrame = request.isForMainFrame ?? false;
-
-              if (!isForMainFrame || (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS && error.type == WebResourceErrorType.CANCELLED)) {
-                return;
+              } else if (Platform.isIOS) {
+                launchUrlString(finalUrl);
               }
 
-              isErrorState = true;
-            },
-            onProgressChanged: (controller, progress) async {
-              if (progress == 100) {
-                pullToRefreshController?.endRefreshing();
-              }
-            },
-            onUpdateVisitedHistory: (controller, url, androidIsReload) {
-              print(url);
-              if (url.toString() == "https://auth.cert.toss.im/start-onetouch") {
-                controller.goBack();
-              }
-            },
-            onConsoleMessage: (controller, consoleMessage) {
-              debugPrint("consoleMessage : $consoleMessage");
-            },
-            onCreateWindow: (controller, createWindowRequest) async {
-              if (widget.onCreateWindow != null) {
-                widget.onCreateWindow!(controller, createWindowRequest);
-              }
-              // webviewOnCreateWindow(controller, createWindowRequest);
-              return true;
-            },
-            onCloseWindow: (controller) {
-              print(controller);
-              if (widget.onCloseWindow != null) {
+              return null;
+            }
+          },
+          onLoadResourceWithCustomScheme: (controller, request) async {
+            await controller.stopLoading();
+          },
+          onWebViewCreated: (controller) {
+            if (widget.onWebViewCreated != null) {
+              widget.onWebViewCreated!(controller);
+            }
+            webViewController = controller;
+          },
+          onLoadStart: (controller, url) async {
+            // await checkNetwork();
+          },
+          onLoadStop: (controller, url) async {
+            pullToRefreshController?.endRefreshing();
+          },
+          onPageCommitVisible: (controller, url) {
+            setState(() {
+              if (isErrorState) {
+                isErrorVisible = true;
+              } else {
                 isErrorVisible = false;
-                widget.onCloseWindow!(controller);
               }
-            },
-          ),
-          Visibility(
-            visible: isErrorVisible,
-            child: Positioned.fill(
-              child: Container(
-                color: Colors.white,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
+            });
+          },
+          onReceivedError: (controller, request, error) async {
+            pullToRefreshController?.endRefreshing();
+
+            var isForMainFrame = request.isForMainFrame ?? false;
+
+            if (!isForMainFrame || (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS && error.type == WebResourceErrorType.CANCELLED)) {
+              return;
+            }
+
+            isErrorState = true;
+          },
+          onProgressChanged: (controller, progress) async {
+            if (progress == 100) {
+              pullToRefreshController?.endRefreshing();
+            }
+          },
+          onUpdateVisitedHistory: (controller, url, androidIsReload) {},
+          onConsoleMessage: (controller, consoleMessage) {
+            debugPrint("consoleMessage : $consoleMessage");
+          },
+          onCreateWindow: (controller, createWindowRequest) async {
+            if (widget.onCreateWindow != null) {
+              widget.onCreateWindow!(controller, createWindowRequest);
+            }
+            // webviewOnCreateWindow(controller, createWindowRequest);
+            return true;
+          },
+          onCloseWindow: (controller) {
+            if (widget.onCloseWindow != null) {
+              isErrorVisible = false;
+              widget.onCloseWindow!(controller);
+            }
+          },
+        ),
+        Visibility(
+          visible: isErrorVisible,
+          child: Positioned.fill(
+            child: Container(
+              color: Colors.white,
+              child: const Center(
+                child: CircularProgressIndicator(),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

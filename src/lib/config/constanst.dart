@@ -52,6 +52,7 @@ String thumborKey = "Tjaqhvpt";
 String imgDomain = "https://imgs.pcstg.co.kr";
 String firstInstallTime = "";
 String lastestBuildVersion = "";
+bool isAppLinkHandled = false;
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
@@ -118,7 +119,7 @@ final FeedResponseModel feedNullResponseModel = FeedResponseModel(
   ),
   message: "",
 );
-List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int oldMemberIdx) {
+List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int? oldMemberIdx) {
   List<InlineSpan> spans = [];
 
   // Combining both mention and hashtag patterns
@@ -146,7 +147,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
                       context,
                       MaterialPageRoute(
                         builder: (context) => MyPageMainScreen(
-                          oldMemberIdx: oldMemberIdx,
+                          oldMemberIdx: oldMemberIdx!,
                         ),
                       ),
                     )

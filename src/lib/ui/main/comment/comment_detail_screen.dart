@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class CommentDetailScreen extends ConsumerStatefulWidget {
@@ -35,6 +36,12 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
 
   @override
   void initState() {
+    Future(() {
+      ref.read(commentHeaderProvider.notifier).resetReplyCommentHeader();
+      ref.read(commentHeaderProvider.notifier).setHasInput(false);
+      ref.read(commentHeaderProvider.notifier).setControllerValue("");
+    });
+
     _contentsIdx = widget.contentsIdx;
     _commentFocusIndex = widget.commentFocusIndex;
 
@@ -60,7 +67,7 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
       // });
 
       _commentPagingController.addListener(() async {
-         print('not run? ');
+        print('not run? ');
         if (_commentPagingController.itemList != null) {
           int refreshFocusIdx = ref.read(commentListRefreshFocusProvider);
           if (_commentFocusIndex != null) {

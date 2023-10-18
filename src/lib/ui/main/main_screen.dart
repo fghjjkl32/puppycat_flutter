@@ -37,7 +37,9 @@ import 'package:widget_mask/widget_mask.dart';
 import 'package:thumbor/thumbor.dart';
 
 class PuppyCatMain extends ConsumerStatefulWidget {
-  const PuppyCatMain({Key? key}) : super(key: key);
+  final int initialTabIndex;
+
+  const PuppyCatMain({Key? key, this.initialTabIndex = 0}) : super(key: key);
 
   @override
   PuppyCatMainState createState() => PuppyCatMainState();
@@ -100,6 +102,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     ref.read(recentFeedStateProvider.notifier).loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
 
     tabController = TabController(vsync: this, length: getTabs().length);
+    tabController.index = widget.initialTabIndex;
+
     Future(() {
       final loginState = ref.watch(loginStateProvider);
 
@@ -875,6 +879,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
               return Row(
                 children: [
                   Padding(
+                    key: ValueKey(ref.watch(userInfoProvider).userModel?.profileImgUrl),
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: () {

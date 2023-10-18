@@ -135,37 +135,25 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> {
     NotificationController notificationController = NotificationController();
     notificationController.initNotification(navigatorHandler);
 
-    getInitialLink().then((link) {
-      print(link);
-      print(link);
-      print(link);
-      print(link);
-      print(link);
-      print(link);
-      print(link);
-      print(link);
-      print(link);
+    print(isAppLinkHandled);
+    print(isAppLinkHandled);
+    print(isAppLinkHandled);
+    print(isAppLinkHandled);
+    print(isAppLinkHandled);
 
-      if (link == "puppycat://ss") {
-        final router = ref.watch(routerProvider);
-        router.push("/home/myPage/setting/settingAlarm");
-      }
+    getInitialLink().then((link) {
+      // if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
+      //   isAppLinkHandled = true;
+      //   final router = ref.watch(routerProvider);
+      //   router.push("/loginScreen/signupScreen/toss");
+      // }
     });
 
     linkStream.listen((String? link) {
-      print(link);
-      print(link);
-      print(link);
-      print(link);
-      print(link);
-      print(link);
-      print(link);
-      print(link);
-      print(link);
-
-      if (link != null && link == "puppycat://ss") {
+      if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
+        isAppLinkHandled = true;
         final router = ref.watch(routerProvider);
-        router.push("/home/myPage/setting/settingAlarm");
+        router.push("/loginScreen/signupScreen/toss");
       }
     }, onError: (err) {
       // Handle the error here
@@ -176,12 +164,6 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> {
     // context.push('/home/notification');
     final router = ref.watch(routerProvider);
     // router.go('/home/notification');
-
-    if (payload.type == "puppycat://ss") {
-      final router = ref.watch(routerProvider);
-      router.push("/home/myPage/setting/settingAlarm");
-      return;
-    }
 
     PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
 

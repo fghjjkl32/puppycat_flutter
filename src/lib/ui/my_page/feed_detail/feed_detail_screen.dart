@@ -21,6 +21,7 @@ import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
 
 class FeedDetailScreen extends ConsumerStatefulWidget {
   final String firstTitle;
@@ -299,7 +300,14 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                   color: kNeutralColor100,
                                   child: GestureDetector(
                                     onTap: () {
-                                      context.pushReplacement("/home");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => PuppyCatMain(
+                                            initialTabIndex: ref.read(userInfoProvider).userModel == null ? 0 : 2,
+                                          ),
+                                        ),
+                                      );
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(20.0),

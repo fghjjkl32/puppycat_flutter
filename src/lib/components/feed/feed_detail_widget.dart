@@ -7,6 +7,7 @@ import 'package:pet_mobile_social_flutter/components/feed/widget/feed_bottom_ico
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_comment_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_image_detail_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_title_widget.dart';
+import 'package:pet_mobile_social_flutter/components/feed/widget/feed_walk_info_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -61,6 +62,9 @@ class FeedDetailWidget extends ConsumerWidget {
           isLike: feedData.likeState == 1,
           imgDomain: imgDomain,
         ),
+        FeedWalkInfoWidget(
+          walkData: feedData.walkResultList,
+        ),
         const SizedBox(
           height: 10,
         ),
@@ -76,7 +80,7 @@ class FeedDetailWidget extends ConsumerWidget {
                   context,
                   kBody13RegularStyle.copyWith(color: kSecondaryColor),
                   ref,
-                  ref.read(userInfoProvider).userModel!.idx,
+                  memberIdx,
                 ),
                 style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
               ),

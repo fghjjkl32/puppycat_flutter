@@ -189,7 +189,6 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     } else if (selected && asset == _cropController.previewAsset.value && selectedAssets.isNotEmpty) {
       _cropController.previewAsset.value = selectedAssets.last;
     }
-
     _expandCropView(thumbnailPosition);
   }
 
@@ -314,12 +313,16 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
             ),
             onPressed: isLoaded && p.isSelectedNotEmpty ? () => onConfirm(context) : null,
             child: isLoaded
-                ? Text(p.isSelectedNotEmpty && !isSingleAssetMode
-                    ? '다음'
-                    // ? '${textDelegate.confirm}'
-                    // ' (${p.selectedAssets.length}/${p.maxAssets})'
-                    // : textDelegate.confirm,
-                    : "")
+                ? Text(
+                    "다음",
+                    style: kBody14BoldStyle.copyWith(color: p.isSelectedNotEmpty && !isSingleAssetMode ? kPrimaryColor : kNeutralColor500),
+                  )
+                // Text(p.isSelectedNotEmpty && !isSingleAssetMode
+                //         ? '다음'
+                //         // ? '${textDelegate.confirm}'
+                //         // ' (${p.selectedAssets.length}/${p.maxAssets})'
+                //         // : textDelegate.confirm,
+                //         : "다음")
                 : _buildLoader(context, 10),
           );
         },
@@ -343,6 +346,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
           valueListenable: _cropViewPosition,
           builder: (context, position, child) {
             // the top position when the crop view is reduced
+
             final topReducedPosition = -(cropViewHeight(context) - _kReducedCropViewHeight + kToolbarHeight);
             position = position.clamp(topReducedPosition, _kExtendedCropViewPosition);
             // the height of the crop view visible on screen
@@ -364,168 +368,221 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
 
             return Stack(
               children: [
-                AnimatedPadding(
-                  padding: EdgeInsets.only(top: topPadding),
-                  duration: animationDuration,
-                  child: SizedBox(
-                    height: gridHeight,
-                    width: MediaQuery.of(context).size.width,
-                    child: NotificationListener<ScrollNotification>(
-                      onNotification: (notification) => _handleScroll(
-                        context,
-                        notification,
-                        position,
-                        topReducedPosition,
-                      ),
-                      child: _buildGrid(context),
-                    ),
-                  ),
-                ),
-                AnimatedPositioned(
-                  top: position,
-                  duration: animationDuration,
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: topWidgetHeight,
-                    child: AssetPickerAppBarWrapper(
-                      appBar: AssetPickerAppBar(
-                        backgroundColor: theme.appBarTheme.backgroundColor,
-                        title: pathEntitySelector(context),
-                        leading: backButton(context),
-                        actions: <Widget>[confirmButton(context)],
-                      ),
-                      body: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: pickerTheme?.canvasColor,
-                        ),
-                        child: Column(
-                          children: [
-                            Listener(
-                              onPointerDown: (_) {
-                                _expandCropView();
-                                // stop scroll event
-                                if (gridScrollController.hasClients) {
-                                  gridScrollController.jumpTo(gridScrollController.offset);
-                                }
-                              },
-                              child: CropViewer(
-                                key: _cropViewerKey,
-                                controller: _cropController,
-                                textDelegate: textDelegate,
-                                provider: provider,
-                                opacity: opacity,
-                                height: 250.h,
-                                loaderWidget: Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: SizedBox(
-                                    height: cropViewVisibleHeight,
-                                    child: Center(
-                                      child: _buildLoader(context, 16),
-                                    ),
-                                  ),
-                                ),
-                                theme: pickerTheme,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Container(
-                                height: _kPathSelectorRowHeight,
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: 2,
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/image/feed/icon/small_size/icon_frame.png',
-                                            height: 30.w,
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text(
-                                            "프레임 비율을 선택해 주세요!",
-                                            style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              if (_cropController.isCropViewReady.value) {
-                                                _cropController.nextCropRatio(0);
-                                              }
-                                            },
-                                            child: Lottie.asset(
-                                              'assets/lottie/icon_frame_3-4.json',
-                                              repeat: false,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              if (_cropController.isCropViewReady.value) {
-                                                _cropController.nextCropRatio(1);
-                                              }
-                                            },
-                                            child: Lottie.asset(
-                                              'assets/lottie/icon_frame_1-1.json',
-                                              repeat: false,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              if (_cropController.isCropViewReady.value) {
-                                                _cropController.nextCropRatio(2);
-                                              }
-                                            },
-                                            child: Lottie.asset(
-                                              'assets/lottie/icon_frame_4-3.json',
-                                              repeat: false,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                Consumer<DefaultAssetPickerProvider>(
+                  builder: (BuildContext context, DefaultAssetPickerProvider provider, __) {
+                    final double topPaddings = (provider.selectedAssets.length > 1) ? topPadding - 50 : topPadding;
 
-                                      // CircleIconButton(
-                                      //   onTap: unSelectAll,
-                                      //   theme: pickerTheme,
-                                      //   icon: const Icon(
-                                      //     Icons.layers_clear_sharp,
-                                      //     size: 18,
-                                      //   ),
-                                      // ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                    return AnimatedPadding(
+                      padding: EdgeInsets.only(top: topPaddings),
+                      duration: animationDuration,
+                      child: SizedBox(
+                        height: gridHeight,
+                        width: MediaQuery.of(context).size.width,
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: (notification) => _handleScroll(
+                            context,
+                            notification,
+                            position,
+                            topReducedPosition,
+                          ),
+                          child: _buildGrid(context),
                         ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
+                ),
+                Consumer<DefaultAssetPickerProvider>(
+                  builder: (BuildContext context, DefaultAssetPickerProvider provider, __) {
+                    final double finalTopWidgetHeights = (provider.selectedAssets.length > 1) ? topWidgetHeight - 50 : topWidgetHeight;
+                    final double finalPathSelectorRowHeight = (provider.selectedAssets.length > 1) ? 0 : _kPathSelectorRowHeight;
+
+                    return AnimatedPositioned(
+                      top: position,
+                      duration: animationDuration,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: finalTopWidgetHeights,
+                        child: AssetPickerAppBarWrapper(
+                          appBar: AssetPickerAppBar(
+                            backgroundColor: theme.appBarTheme.backgroundColor,
+                            title: pathEntitySelector(context),
+                            leading: backButton(context),
+                            actions: <Widget>[confirmButton(context)],
+                          ),
+                          body: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: pickerTheme?.canvasColor,
+                            ),
+                            child: Column(
+                              children: [
+                                Listener(
+                                  onPointerDown: (_) {
+                                    _expandCropView();
+                                    // stop scroll event
+                                    if (gridScrollController.hasClients) {
+                                      gridScrollController.jumpTo(gridScrollController.offset);
+                                    }
+                                  },
+                                  child: CropViewer(
+                                    key: _cropViewerKey,
+                                    controller: _cropController,
+                                    textDelegate: textDelegate,
+                                    provider: provider,
+                                    opacity: opacity,
+                                    height: 250.h,
+                                    loaderWidget: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: SizedBox(
+                                        height: cropViewVisibleHeight,
+                                        child: Center(
+                                          child: _buildLoader(context, 16),
+                                        ),
+                                      ),
+                                    ),
+                                    theme: pickerTheme,
+                                  ),
+                                ),
+                                Consumer<DefaultAssetPickerProvider>(
+                                  builder: (BuildContext context, DefaultAssetPickerProvider provider, __) {
+                                    final double opacity = (provider.selectedAssets.length > 1) ? 0.0 : 1.0;
+
+                                    return AnimatedOpacity(
+                                      opacity: opacity,
+                                      duration: Duration(milliseconds: 1000),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Container(
+                                          height: finalPathSelectorRowHeight,
+                                          decoration: BoxDecoration(
+                                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.withOpacity(0.5),
+                                                spreadRadius: 2,
+                                                blurRadius: 10,
+                                                offset: const Offset(0, 3),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Image.asset(
+                                                      'assets/image/feed/icon/small_size/icon_frame.png',
+                                                      height: 30.w,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Text(
+                                                      "프레임 비율을 선택해 주세요!",
+                                                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        if (_cropController.isCropViewReady.value) {
+                                                          _cropController.nextCropRatio(0, provider.selectedAssets);
+                                                        }
+                                                      },
+                                                      child: ValueListenableBuilder<int>(
+                                                        valueListenable: _cropController.cropRatioIndex,
+                                                        builder: (context, value, child) {
+                                                          if (value == 0) {
+                                                            return Lottie.asset('assets/lottie/icon_frame_3-4.json', repeat: false);
+                                                          } else {
+                                                            return Image.asset(
+                                                              'assets/image/feed/icon/small_size/icon_3_4.png',
+                                                              width: 24,
+                                                              height: 24,
+                                                            );
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        if (_cropController.isCropViewReady.value) {
+                                                          _cropController.nextCropRatio(1, provider.selectedAssets);
+                                                        }
+                                                      },
+                                                      child: ValueListenableBuilder<int>(
+                                                        valueListenable: _cropController.cropRatioIndex,
+                                                        builder: (context, value, child) {
+                                                          if (value == 1) {
+                                                            return Lottie.asset('assets/lottie/icon_frame_1-1.json', repeat: false);
+                                                          } else {
+                                                            return Image.asset(
+                                                              'assets/image/feed/icon/small_size/icon_1_1.png',
+                                                              width: 24,
+                                                              height: 24,
+                                                            );
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        if (_cropController.isCropViewReady.value) {
+                                                          _cropController.nextCropRatio(2, provider.selectedAssets);
+                                                        }
+                                                      },
+                                                      child: ValueListenableBuilder<int>(
+                                                        valueListenable: _cropController.cropRatioIndex,
+                                                        builder: (context, value, child) {
+                                                          if (value == 2) {
+                                                            return Lottie.asset('assets/lottie/icon_frame_4-3.json', repeat: false);
+                                                          } else {
+                                                            return Image.asset(
+                                                              'assets/image/feed/icon/small_size/icon_4_3.png',
+                                                              width: 24,
+                                                              height: 24,
+                                                            );
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+
+                                                // CircleIconButton(
+                                                //   onTap: unSelectAll,
+                                                //   theme: pickerTheme,
+                                                //   icon: const Icon(
+                                                //     Icons.layers_clear_sharp,
+                                                //     size: 18,
+                                                //   ),
+                                                // ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 pathEntityListBackdrop(context),
                 _buildListAlbums(context),

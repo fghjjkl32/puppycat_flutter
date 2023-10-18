@@ -15,6 +15,5 @@ class CommentHeaderState with _$CommentHeaderState {
     @Default(false) bool hasSetControllerValue,
   }) = _CommentHeaderState;
 
-  factory CommentHeaderState.fromJson(Map<String, dynamic> json) =>
-      _$CommentHeaderStateFromJson(json);
+  factory CommentHeaderState.fromJson(Map<String, dynamic> json) => _$CommentHeaderStateFromJson(json);
 }

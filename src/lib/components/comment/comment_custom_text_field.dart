@@ -28,9 +28,8 @@ class CommentCustomTextField extends ConsumerStatefulWidget {
 }
 
 class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> {
-  TextEditingController _controller = TextEditingController();
+  // TextEditingController _controller = TextEditingController();
   int lineCount = 0;
-  bool hasInput = false;
   final initialized = ValueNotifier<bool>(false);
 
   @override
@@ -45,20 +44,19 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
         child: Consumer(builder: (context, ref, child) {
           final commentHeaderState = ref.watch(commentHeaderProvider);
 
-          if (commentHeaderState.hasSetControllerValue && commentHeaderState.controllerValue != _controller.text) {
+          if (commentHeaderState.hasSetControllerValue && commentHeaderState.controllerValue != ref.watch(commentValueProvider).text) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted) {
-                hasInput = commentHeaderState.hasInput;
-                _controller.text = commentHeaderState.controllerValue;
+                ref.watch(commentValueProvider).text = commentHeaderState.controllerValue;
                 ref.read(commentHeaderProvider.notifier).resetHasSetControllerValue();
               }
             });
           }
 
-          if (_controller.text != '@${commentHeaderState.name} ' && commentHeaderState.isReply && !initialized.value) {
+          if (ref.watch(commentValueProvider).text != '@${commentHeaderState.name} ' && commentHeaderState.isReply && !initialized.value) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted) {
-                _controller.value = TextEditingValue(
+                ref.watch(commentValueProvider).value = TextEditingValue(
                   text: '@${commentHeaderState.name} ',
                   selection: TextSelection.collapsed(
                     offset: '@${commentHeaderState.name} '.length,
@@ -87,8 +85,8 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                           IconButton(
                             onPressed: () {
                               ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
-                              _controller.text = '';
-                              hasInput = false;
+                              ref.watch(commentValueProvider).text = '';
+                              ref.read(commentHeaderProvider.notifier).setHasInput(false);
                               initialized.value = false;
                             },
                             icon: const Icon(
@@ -118,8 +116,9 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                           IconButton(
                             onPressed: () {
                               ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
-                              _controller.text = '';
-                              hasInput = false;
+                              ref.watch(commentValueProvider).text = '';
+                              ref.read(commentHeaderProvider.notifier).setHasInput(false);
+
                               initialized.value = false;
                             },
                             icon: const Icon(
@@ -149,7 +148,9 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                   ),
                 ],
                 fieldViewBuilder: (context, controller, focusNode) {
-                  _controller = controller;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ref.watch(commentValueProvider.notifier).state = controller;
+                  });
 
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -160,14 +161,15 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                       ),
                       child: TextField(
                         focusNode: focusNode,
-                        controller: _controller,
+                        controller: ref.watch(commentValueProvider),
                         onChanged: (text) {
                           setState(() {
                             lineCount = text.split('\n').length;
-                            hasInput = text.isNotEmpty;
+
+                            ref.read(commentHeaderProvider.notifier).setHasInput(text.isNotEmpty);
                           });
 
-                          int cursorPos = _controller.selection.baseOffset;
+                          int cursorPos = ref.watch(commentValueProvider).selection.baseOffset;
                           if (cursorPos > 0) {
                             int from = text.lastIndexOf('@', cursorPos);
                             if (from != -1) {
@@ -203,20 +205,20 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                           hintText: '댓글을 입력해주세요.',
                           hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
                           contentPadding: const EdgeInsets.all(16),
-                          suffixIcon: hasInput
+                          suffixIcon: ref.read(commentHeaderProvider).hasInput
                               ? IconButton(
                                   onPressed: () async {
                                     print('ref.read(commentHeaderProvider) ${ref.read(commentHeaderProvider)}');
                                     final result = commentHeaderState.isEdit
                                         ? await ref.watch(commentStateProvider.notifier).editContents(
                                               memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                              contents: _controller.value.text,
+                                              contents: ref.watch(commentValueProvider).value.text,
                                               contentIdx: widget.contentIdx,
                                               commentIdx: ref.watch(commentHeaderProvider).commentIdx!,
                                             )
                                         : await ref.watch(commentStateProvider.notifier).postContents(
                                               memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                              contents: _controller.value.text,
+                                              contents: ref.watch(commentValueProvider).value.text,
                                               contentIdx: widget.contentIdx,
                                               parentIdx: ref.watch(commentHeaderProvider).isReply ? ref.watch(commentHeaderProvider).commentIdx : null,
                                             );
@@ -237,8 +239,8 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                                     // if (result.result) {
                                     //   FocusScope.of(context).unfocus();
                                     ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
-                                    _controller.text = '';
-                                    hasInput = false;
+                                    ref.watch(commentValueProvider).text = '';
+                                    ref.read(commentHeaderProvider.notifier).setHasInput(false);
                                     initialized.value = false;
                                     // }
                                   },

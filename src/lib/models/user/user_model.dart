@@ -30,6 +30,7 @@ class UserModel with _$UserModel {
     required String password,
     required String passwordConfirm,
     required int isBadge,
+    required String uuid,
     @Default('') String? partner,
     String? ci,
     String? di,

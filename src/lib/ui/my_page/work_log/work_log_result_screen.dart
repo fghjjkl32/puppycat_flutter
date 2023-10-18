@@ -65,76 +65,76 @@ class WorkLogResultScreenState extends ConsumerState<WorkLogResultScreen> {
               Text(widget.events[index].title),
               Text(widget.events[currentIndex].title),
               Text("${DateFormat('yyyy-MM-dd').format(widget.events[currentIndex].date)}"),
-              MultiTriggerAutocomplete(
-                optionsAlignment: OptionsAlignment.topStart,
-                autocompleteTriggers: [
-                  AutocompleteTrigger(
-                    trigger: '@',
-                    optionsViewBuilder: (context, autocompleteQuery, controller) {
-                      return MentionAutocompleteOptions(
-                        query: autocompleteQuery.query,
-                        onMentionUserTap: (user) {
-                          final autocomplete = MultiTriggerAutocomplete.of(context);
-                          return autocomplete.acceptAutocompleteOption(user.nick!);
-                        },
-                      );
-                    },
-                  ),
-                ],
-                fieldViewBuilder: (context, controller, focusNode) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    ref.watch(workLogContentProvider.notifier).state = controller;
-                  });
-
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      child: FormBuilderTextField(
-                        focusNode: focusNode,
-                        controller: ref.watch(workLogContentProvider),
-                        onChanged: (text) {
-                          int cursorPos = ref.watch(workLogContentProvider).selection.baseOffset;
-                          if (cursorPos > 0) {
-                            int from = text!.lastIndexOf('@', cursorPos);
-                            if (from != -1) {
-                              int prevCharPos = from - 1;
-                              if (prevCharPos >= 0 && text[prevCharPos] != ' ') {
-                                return;
-                              }
-
-                              int nextSpace = text.indexOf(' ', from);
-                              if (nextSpace == -1 || nextSpace >= cursorPos) {
-                                String toSearch = text.substring(from + 1, cursorPos);
-                                toSearch = toSearch.trim();
-
-                                if (toSearch.isNotEmpty) {
-                                  if (toSearch.length >= 1) {
-                                    ref.watch(searchStateProvider.notifier).searchQuery.add(toSearch);
-                                  }
-                                } else {
-                                  ref.watch(searchStateProvider.notifier).getMentionRecommendList(initPage: 1);
-                                }
-                              }
-                            }
-                          }
-                        },
-                        scrollPhysics: const ClampingScrollPhysics(),
-                        maxLength: 500,
-                        maxLines: 6,
-                        decoration: InputDecoration(
-                            counterText: "",
-                            hintText: '산책 중 일어난 일을 메모해 보세요 . (최대 500자)\n작성한 메모는 마이페이지 산책일지에서 나만 볼 수 있습니다.',
-                            hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
-                            contentPadding: const EdgeInsets.all(16)),
-                        name: 'content',
-                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-                        keyboardType: TextInputType.multiline,
-                        textAlignVertical: TextAlignVertical.center,
-                      ),
-                    ),
-                  );
-                },
-              ),
+              // MultiTriggerAutocomplete(
+              //   optionsAlignment: OptionsAlignment.topStart,
+              //   autocompleteTriggers: [
+              //     AutocompleteTrigger(
+              //       trigger: '@',
+              //       optionsViewBuilder: (context, autocompleteQuery, controller) {
+              //         return MentionAutocompleteOptions(
+              //           query: autocompleteQuery.query,
+              //           onMentionUserTap: (user) {
+              //             final autocomplete = MultiTriggerAutocomplete.of(context);
+              //             return autocomplete.acceptAutocompleteOption(user.nick!);
+              //           },
+              //         );
+              //       },
+              //     ),
+              //   ],
+              //   fieldViewBuilder: (context, controller, focusNode) {
+              //     WidgetsBinding.instance.addPostFrameCallback((_) {
+              //       ref.watch(workLogContentProvider.notifier).state = controller;
+              //     });
+              //
+              //     return Padding(
+              //       padding: const EdgeInsets.all(8.0),
+              //       child: Container(
+              //         child: FormBuilderTextField(
+              //           focusNode: focusNode,
+              //           controller: ref.watch(workLogContentProvider),
+              //           onChanged: (text) {
+              //             int cursorPos = ref.watch(workLogContentProvider).selection.baseOffset;
+              //             if (cursorPos > 0) {
+              //               int from = text!.lastIndexOf('@', cursorPos);
+              //               if (from != -1) {
+              //                 int prevCharPos = from - 1;
+              //                 if (prevCharPos >= 0 && text[prevCharPos] != ' ') {
+              //                   return;
+              //                 }
+              //
+              //                 int nextSpace = text.indexOf(' ', from);
+              //                 if (nextSpace == -1 || nextSpace >= cursorPos) {
+              //                   String toSearch = text.substring(from + 1, cursorPos);
+              //                   toSearch = toSearch.trim();
+              //
+              //                   if (toSearch.isNotEmpty) {
+              //                     if (toSearch.length >= 1) {
+              //                       ref.watch(searchStateProvider.notifier).searchQuery.add(toSearch);
+              //                     }
+              //                   } else {
+              //                     ref.watch(searchStateProvider.notifier).getMentionRecommendList(initPage: 1);
+              //                   }
+              //                 }
+              //               }
+              //             }
+              //           },
+              //           scrollPhysics: const ClampingScrollPhysics(),
+              //           maxLength: 500,
+              //           maxLines: 6,
+              //           decoration: InputDecoration(
+              //               counterText: "",
+              //               hintText: '산책 중 일어난 일을 메모해 보세요 . (최대 500자)\n작성한 메모는 마이페이지 산책일지에서 나만 볼 수 있습니다.',
+              //               hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+              //               contentPadding: const EdgeInsets.all(16)),
+              //           name: 'content',
+              //           style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+              //           keyboardType: TextInputType.multiline,
+              //           textAlignVertical: TextAlignVertical.center,
+              //         ),
+              //       ),
+              //     );
+              //   },
+              // ),
             ],
           ); // Replace with your actual event display widget
         },

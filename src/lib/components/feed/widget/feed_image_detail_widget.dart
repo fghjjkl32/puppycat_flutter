@@ -46,6 +46,9 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
 
   late AnimationController _fadeController;
 
+  double width = 0.0;
+  double height = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +61,17 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
         }
       }
     });
+
+    if (widget.imageList[0].imgWidth! > widget.imageList[0].imgHeight!) {
+      width = 336.0;
+      height = 251.7;
+    } else if (widget.imageList[0].imgWidth! < widget.imageList[0].imgHeight!) {
+      width = 273.2;
+      height = 364.0;
+    } else {
+      width = 336.0;
+      height = 336.0;
+    }
   }
 
   @override
@@ -91,7 +105,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
           },
           child: CarouselSlider(
             options: CarouselOptions(
-              height: 266.0.h,
+              height: height,
               enableInfiniteScroll: false,
               viewportFraction: 1.0,
               onPageChanged: (index, reason) {
@@ -111,8 +125,8 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                         ),
                         imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${i.url}").toUrl(),
                         fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
+                        width: width,
+                        height: height,
                       ),
                       // ZoomOverlay(
                       //   modalBarrierColor: Colors.black12, // Optional

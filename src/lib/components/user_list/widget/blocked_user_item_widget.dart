@@ -10,7 +10,7 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class BlockUserItemWidget extends ConsumerWidget {
+class BlockUserItemWidget extends ConsumerStatefulWidget {
   const BlockUserItemWidget({
     required this.profileImage,
     required this.userName,
@@ -27,7 +27,12 @@ class BlockUserItemWidget extends ConsumerWidget {
   final int memberIdx;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  BlockUserItemWidgetState createState() => BlockUserItemWidgetState();
+}
+
+class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 16.h),
       child: Row(
@@ -40,14 +45,14 @@ class BlockUserItemWidget extends ConsumerWidget {
                 padding: EdgeInsets.only(
                   right: 10.w,
                 ),
-                child: getProfileAvatar(profileImage ?? "", 32.w, 32.h),
+                child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      isSpecialUser
+                      widget.isSpecialUser
                           ? Row(
                               children: [
                                 Image.asset(
@@ -61,7 +66,7 @@ class BlockUserItemWidget extends ConsumerWidget {
                             )
                           : Container(),
                       Text(
-                        userName,
+                        widget.userName,
                         style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                       ),
                     ],
@@ -70,7 +75,7 @@ class BlockUserItemWidget extends ConsumerWidget {
                     height: 4.h,
                   ),
                   Text(
-                    content,
+                    widget.content,
                     style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                   ),
                 ],
@@ -81,15 +86,17 @@ class BlockUserItemWidget extends ConsumerWidget {
             onTap: () async {
               final result = await ref.read(blockStateProvider.notifier).deleteBlock(
                     memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                    blockIdx: memberIdx,
+                    blockIdx: widget.memberIdx,
                   );
 
               if (result.result) {
-                toast(
-                  context: context,
-                  text: "‘${userName}’님을 차단해제하였습니다.",
-                  type: ToastType.grey,
-                );
+                if (mounted) {
+                  toast(
+                    context: context,
+                    text: "‘${widget.userName}’님을 차단해제하였습니다.",
+                    type: ToastType.grey,
+                  );
+                }
               }
             },
             child: Container(
@@ -103,7 +110,7 @@ class BlockUserItemWidget extends ConsumerWidget {
               ),
               child: Center(
                 child: Text(
-                  "차단해제",
+                  "차단 해제",
                   style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
                 ),
               ),

@@ -62,25 +62,17 @@ class TagScreen extends ConsumerWidget {
                   ),
                   onPressed: () {
                     ref.read(feedWriteProvider.notifier).saveTag();
-                    ref
-                        .watch(feedWriteCarouselControllerProvider.notifier)
-                        .jumpToPage(ref
-                            .watch(feedWriteCurrentViewCountProvider.notifier)
-                            .state);
+                    ref.watch(feedWriteCarouselControllerProvider.notifier).jumpToPage(ref.watch(feedWriteCurrentViewCountProvider.notifier).state);
 
-                    int currentIndex = ref
-                        .watch(feedWriteCurrentViewCountProvider.notifier)
-                        .state;
-                    List<TagImages> tagImages =
-                        ref.watch(feedWriteProvider).tagImage;
+                    int currentIndex = ref.watch(feedWriteCurrentViewCountProvider.notifier).state;
+                    List<TagImages> tagImages = ref.watch(feedWriteProvider).tagImage;
 
                     TagImages? currentTagImage = tagImages.firstWhere(
                       (tagImage) => tagImage.index == currentIndex,
                       orElse: () => TagImages(index: 0, tag: []),
                     );
 
-                    ref.watch(feedWriteCurrentTagCountProvider.notifier).state =
-                        currentTagImage.tag.length;
+                    ref.watch(feedWriteCurrentTagCountProvider.notifier).state = currentTagImage.tag.length;
 
                     Navigator.of(context).pop();
                   },
@@ -103,11 +95,9 @@ class TagScreen extends ConsumerWidget {
                 padEnds: false,
                 onPageChanged: (index) {
                   _counter.value = index;
-                  ref.watch(feedWriteCurrentViewCountProvider.notifier).state =
-                      index;
+                  ref.watch(feedWriteCurrentViewCountProvider.notifier).state = index;
                 },
-                controller: PageController(
-                    initialPage: ref.watch(feedWriteCurrentViewCountProvider)),
+                controller: PageController(initialPage: ref.watch(feedWriteCurrentViewCountProvider)),
                 scrollDirection: Axis.horizontal,
                 children: croppedFiles.asMap().entries.map((entry) {
                   var imageIndex = entry.key;
@@ -126,9 +116,7 @@ class TagScreen extends ConsumerWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0.h),
               child: DotIndicator(
-                counter: ValueNotifier<int>(ref
-                    .watch(feedWriteCurrentViewCountProvider.notifier)
-                    .state),
+                counter: ValueNotifier<int>(ref.watch(feedWriteCurrentViewCountProvider.notifier).state),
                 imageListLength: croppedFiles.length,
               ),
             ),
@@ -156,8 +144,7 @@ class TaggableImage extends ConsumerStatefulWidget {
   _TaggableImageState createState() => _TaggableImageState();
 }
 
-class _TaggableImageState extends ConsumerState<TaggableImage>
-    with AutomaticKeepAliveClientMixin {
+class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKeepAliveClientMixin {
   Tag? draggingTag;
 
   @override
@@ -165,9 +152,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
     super.build(context);
     PostFeedState state = ref.watch(feedWriteProvider);
     List<TagImages> taggedImages = state.tagImage;
-    TagImages tagImages = taggedImages.firstWhere(
-        (tagImage) => tagImage.index == widget.imagePositionIndex,
-        orElse: () => TagImages(index: widget.imagePositionIndex, tag: []));
+    TagImages tagImages = taggedImages.firstWhere((tagImage) => tagImage.index == widget.imagePositionIndex, orElse: () => TagImages(index: widget.imagePositionIndex, tag: []));
 
     List<Tag> tags = tagImages.tag;
 
@@ -250,8 +235,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
       },
       onDragEnd: (dragDetails) {
         RenderBox box = context.findRenderObject() as RenderBox;
-        RenderBox imageBox =
-            widget.imageKey.currentContext!.findRenderObject() as RenderBox;
+        RenderBox imageBox = widget.imageKey.currentContext!.findRenderObject() as RenderBox;
 
         double imageHeight = imageBox.size.height - 40;
         double imageWidth = imageBox.size.width - 50;
@@ -268,9 +252,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage>
 
         final newTag = tag.copyWith(position: Offset(xPos, yPos));
 
-        ref
-            .read(feedWriteProvider.notifier)
-            .updateTag(tag, newTag, widget.imagePositionIndex);
+        ref.read(feedWriteProvider.notifier).updateTag(tag, newTag, widget.imagePositionIndex);
 
         setState(() {
           draggingTag = null;

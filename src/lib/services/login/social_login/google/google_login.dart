@@ -36,6 +36,7 @@ class GoogleLoginService implements SocialLoginService {
       accessToken: _authentication!.accessToken ?? '',
       password: _accountResult!.id,
       passwordConfirm: _accountResult!.id, isBadge: 0,
+      uuid: "",
     );
 
     return userModel;

@@ -65,10 +65,16 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   //Create an instance of ScreenshotController
   ScreenshotController screenshotController = ScreenshotController();
 
+  late final feedListStateNotifier;
+  late final firstFeedStateNotifier;
+
   @override
   void initState() {
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
+
+    feedListStateNotifier = ref.read(feedListStateProvider.notifier);
+    firstFeedStateNotifier = ref.read(firstFeedStateProvider.notifier);
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
     ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
@@ -134,13 +140,15 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
     super.dispose();
   }
 
+  void handleFocusLost() {
+    feedListStateNotifier.getStateForUser(widget.oldMemberIdx ?? 0);
+    firstFeedStateNotifier.getStateForUser(widget.oldMemberIdx ?? 0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FocusDetector(
-      onFocusLost: () async {
-        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-      },
+      onFocusLost: handleFocusLost,
       child: Material(
         child: SafeArea(
             child: DefaultTabController(
@@ -880,29 +888,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
             ),
             InkWell(
               onTap: () async {
-                // context.push("/home/myPage/workLogCalendar");
-                // if (await canLaunch(
-                //     "intent://toss-cert/v2/sign/user/auth?txId=3f458ae9-38a8-4b24-8a5d-f35edc13a546&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end")) {
-                //   await launch(
-                //       "intent://toss-cert/v2/sign/user/auth?txId=3f458ae9-38a8-4b24-8a5d-f35edc13a546&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end");
-                // } else {
-                //   print(
-                //       'Could not launch ${"intent://toss-cert/v2/sign/user/auth?txId=3f458ae9-38a8-4b24-8a5d-f35edc13a546&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end"}');
-                // }
-                await launch(
-                    "intent://toss-cert/v2/sign/user/auth?txId=a3dfed48-301f-42a4-953b-b35ebfcf7491&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end");
-
-                // if (!await launchUrl(Uri.parse(
-                //     "intent://toss-cert/v2/sign/user/auth?txId=3f458ae9-38a8-4b24-8a5d-f35edc13a546&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end"))) {
-                //   throw Exception('Could not launch ');
-                // }
-                // AndroidIntent intent = AndroidIntent(
-                //   action: 'action_view',
-                //   data: 'intent://toss-cert/v2/sign/user/auth?txId=3f458ae9-38a8-4b24-8a5d-f35edc13a546&_minVerAos=5.36.0&_minVerIos=5.10.0#Intent;scheme=supertoss;package=viva.republica.toss;end',
-                //   package: 'viva.republica.toss',
-                // );
-                //
-                // await intent.launch();
+                context.push("/home/myPage/workLogCalendar");
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),

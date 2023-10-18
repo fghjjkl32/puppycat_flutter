@@ -23,4 +23,7 @@ abstract class BearerTokenAuthService {
 
   @GET("https://cert.toss.im/api-client/v1/transactions/{txId}")
   Future<String> getTossTransactionsUrl(@Path("txId") String txId);
+
+  @POST("https://cert.toss.im/api/v2/sign/user/auth/result")
+  Future<String> getTossUserResult(@Body() Map<String, dynamic> body, @Header('Authorization') String token);
 }
