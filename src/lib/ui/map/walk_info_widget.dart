@@ -24,7 +24,6 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
@@ -32,11 +31,10 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
     walkStateModel = widget.walkStateModel;
 
     String walkTime = '00:00';
-    if(walkStateModel != null) {
+    if (walkStateModel != null) {
       double walkMinutes = (walkStateModel!.walkTime / 60000);
       walkTime = '${(walkMinutes / 60).floor().toString().padLeft(2, '0')}:${(walkMinutes % 60).floor().toString().padLeft(2, '0')}';
     }
-
 
     return Container(
       height: 145,
@@ -75,7 +73,7 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
                 ),
                 WalkInfoItemWidget(
                   title: 'kacal',
-                  value: walkStateModel?.getPetCalorie(ref.read(walkSelectedPetStateProvider.notifier).getFirstRegPet().uuid ?? '').toStringAsFixed(2) ??'0.00',
+                  value: walkStateModel?.getPetCalorie(ref.read(walkSelectedPetStateProvider.notifier).getFirstRegPet().uuid ?? '').toStringAsFixed(2) ?? '0.00',
                 ),
               ],
             ),
@@ -87,8 +85,8 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
               IconButton(
                   onPressed: () async {
                     // final lastWalkState = ref.read(singleWalkStateProvider).last;
-                    await ref.read(walkStateProvider.notifier).stopWalk();
                     ref.read(singleWalkStateProvider.notifier).stopLocationCollection();
+                    ref.read(walkStateProvider.notifier).stopWalk();
 
                     final mapController = ref.read(naverMapControllerStateProvider);
                     if (mapController != null) {

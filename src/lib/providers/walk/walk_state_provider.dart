@@ -1,5 +1,6 @@
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
+import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
@@ -17,6 +18,7 @@ enum WalkStatus {
 class WalkState extends _$WalkState {
   String _walkUuid = '';
   String _walkStartDate = '';
+  List<WalkStateModel> _walkInfoList = [];
   @override
   WalkStatus build() {
     return WalkStatus.idle;
@@ -33,14 +35,14 @@ class WalkState extends _$WalkState {
           .uuid!;
       var result = await walkRepository.getTodayWalkCount(memberUuid, false);
       print('walkCount $result');
-      return result + 1;
+      return result;
     } catch(e) {
       print('getTodayWalkCount error $e');
       return 0;
     }
   }
 
-  Future startWalk() async {
+  Future<bool> startWalk() async {
     final walkRepository = WalkRepository(dio: ref.read(dioProvider));
     try {
       final userInfo = ref.read(userInfoProvider).userModel;
@@ -58,8 +60,18 @@ class WalkState extends _$WalkState {
       _walkUuid = result.$1;
       _walkStartDate = result.$2;
 
+      if(_walkUuid.isEmpty) {
+        return false;
+      }
+
+      if(_walkStartDate.isEmpty) {
+        _walkStartDate = DateTime.now().toString();
+      }
+
+      return true;
     } catch(e) {
       print('startWalk error $e');
+      return false;
     }
   }
 
@@ -79,9 +91,37 @@ class WalkState extends _$WalkState {
       print('lastWalkState $lastWalkState');
       ///String memberUuid, String walkUuid, int steps, String startDate, double distance, Map<String, dynamic> petWalkInfo,
 
+      if(_walkInfoList.isNotEmpty) {
+        sendWalkInfo(lastWalkState, true);
+      }
       var result = await walkRepository.stopWalk(memberUuid, _walkUuid, lastWalkState.walkCount, _walkStartDate, lastWalkState.distance, lastWalkState.calorie);
+
+      ref.read(singleWalkStateProvider.notifier).state.clear();
+      ref.read(walkSelectedPetStateProvider.notifier).state.clear();
     } catch(e) {
       print('stopWalk error $e');
+    }
+  }
+  Future sendWalkInfo(WalkStateModel walkInfo, [bool isFinished = false]) async {
+    final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: 'https://pet-walk-dev-gps.devlabs.co.kr');
+
+    try {
+      if(!_walkInfoList.contains(walkInfo)) {
+        _walkInfoList.add(walkInfo);
+      }
+
+      if(_walkInfoList.length < 5 && !isFinished) {
+        print('_walkInfoList.length ${_walkInfoList.length}');
+        return;
+      }
+
+      final userInfo = ref.read(userInfoProvider).userModel;
+      print('userModel $userInfo');
+      final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
+
+      await walkRepository.sendWalkInfo(memberUuid, _walkUuid, _walkInfoList, isFinished).then((value) => _walkInfoList.clear());
+    } catch(e) {
+      print('sendWalkInfo error $e');
     }
   }
 }

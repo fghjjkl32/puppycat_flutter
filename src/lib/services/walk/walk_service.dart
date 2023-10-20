@@ -27,5 +27,10 @@ abstract class WalkService {
   })
   Future<ResponseModel> stopWalk(@Body() Map<String, dynamic> body);
 
+  @POST('/v1/gps/info')
+  @Headers(<String, dynamic>{
+    "Content-Type": "application/json",
+  })
+  Future<ResponseModel> sendWalkInfo(@Body() Map<String, dynamic> body);
 
 }

@@ -85,6 +85,7 @@ class MyPetListState extends _$MyPetListState {
       petList.first = petList.first.copyWith(selected: true);
       ref.read(walkSelectedPetStateProvider.notifier).state.add(petList.first);
 
+
       try {
         _lastPage = result.data.params!.pagination!.totalPageCount!;
       } catch (_) {

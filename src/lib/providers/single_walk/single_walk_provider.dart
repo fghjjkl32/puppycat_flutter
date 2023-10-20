@@ -22,8 +22,6 @@ part 'single_walk_provider.g.dart';
 
 final naverMapControllerStateProvider = StateProvider<NaverMapController?>((ref) => null);
 
-
-
 final singleWalkStatusStateProvider = StateProvider<WalkStatus>((ref) => WalkStatus.idle);
 
 @Riverpod(keepAlive: true)
@@ -35,14 +33,14 @@ class SingleWalkState extends _$SingleWalkState {
     return [];
   }
 
-  void startLocationCollection(LocationData initLocationData, double petWeight) {
+  void startLocationCollection(LocationData initLocationData) async {
     stopLocationCollection();
 
     final selectedPetList = ref.read(walkSelectedPetStateProvider);
-    final firstPet = ref.read(walkSelectedPetStateProvider.notifier).getFirstRegPet();
-    print('firstPet $firstPet');
+    // final firstPet = ref.read(walkSelectedPetStateProvider.notifier).getFirstRegPet();
+    // print('firstPet $firstPet');
 
-    _locationDataCollectionStream = Location().onLocationChanged.listen((LocationData currentLocation) {
+    _locationDataCollectionStream = Location().onLocationChanged.listen((LocationData currentLocation) async {
       final WalkStateModel previousWalkStateModel;
       if (state.isEmpty) {
         previousWalkStateModel = WalkStateModel(
@@ -58,21 +56,34 @@ class SingleWalkState extends _$SingleWalkState {
         previousWalkStateModel = state.last;
       }
 
+      if(ref.read(singleWalkStatusStateProvider) == WalkStatus.idle) {
+        return;
+      }
+
       final walkStateModel = WalkUtil.calcWalkStateValue(previousWalkStateModel, currentLocation, selectedPetList);
       state = [...state, walkStateModel];
+      if (state.isNotEmpty) {
+        await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last);
+      }
     });
+
+
 
     ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.walking;
   }
 
-  void stopLocationCollection() {
+  Future stopLocationCollection() async {
+    ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.idle;
+
     if (_locationDataCollectionStream != null) {
       _locationDataCollectionStream!.cancel();
     }
 
-    state.clear();
-    ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.idle;
+    if (state.isNotEmpty) {
+      await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last, true);
+    }
+
+    // state.clear();
+    // ref.read(walkSelectedPetStateProvider.notifier).state.clear();
   }
-
-
 }

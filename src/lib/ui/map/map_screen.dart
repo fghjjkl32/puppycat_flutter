@@ -109,10 +109,7 @@ class MapScreenState extends ConsumerState<MapScreen> {
               NaverMap(
                 options: const NaverMapViewOptions().copyWith(
                   locationButtonEnable: true,
-                  contentPadding: EdgeInsets.only(bottom: (drawerHeight + 34) - MediaQuery
-                      .of(context)
-                      .padding
-                      .bottom),
+                  contentPadding: EdgeInsets.only(bottom: (drawerHeight + 34) - MediaQuery.of(context).padding.bottom),
                   //TODO
                   logoAlign: NLogoAlign.leftTop,
                   scaleBarEnable: false,
@@ -136,9 +133,7 @@ class MapScreenState extends ConsumerState<MapScreen> {
                     zoom: updatePosition.zoom,
                   ));
                   mapController = controller;
-                  ref
-                      .read(naverMapControllerStateProvider.notifier)
-                      .state = controller;
+                  ref.read(naverMapControllerStateProvider.notifier).state = controller;
                 },
               ),
               Visibility(
@@ -165,11 +160,16 @@ class MapScreenState extends ConsumerState<MapScreen> {
                         height: 46,
                         child: ElevatedButton(
                           onPressed: () async {
-                            final currentLocationData = await Location().getLocation();
-                            final petWeight = 20.0; //TODO
-                            ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData, petWeight);
-                            await ref.read(walkStateProvider.notifier).startWalk();
-                            // ref.read(walkStateProvider.notifier).testLocation();
+                            // final currentLocationData = await Location().getLocation();
+                            // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
+                            await ref.read(walkStateProvider.notifier).startWalk().then((value) async {
+                              if (value) {
+                                final currentLocationData = await Location().getLocation();
+                                ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
+                              } else {
+                                print('Error Start Walk');
+                              }
+                            });
                           },
                           child: const Text('산책하기'),
                         ),
@@ -199,42 +199,6 @@ class MapScreenState extends ConsumerState<MapScreen> {
                     ),
                   ),
                 ),
-                // FutureBuilder(
-                //   future: ref.read(singleWalkStateProvider.notifier).getTodayWalkCount(),
-                //   builder: (context, AsyncSnapshot<int> snapshot) {
-                //     if(snapshot.hasError) {
-                //       return const SizedBox.shrink();
-                //     }
-                //
-                //     if(!snapshot.hasData) {
-                //       return const SizedBox.shrink();
-                //     }
-                //
-                //     if(snapshot.data == 0) {
-                //       return const SizedBox.shrink();
-                //     }
-                //
-                //     return Positioned.fill(
-                //       bottom: drawerHeight + 57,
-                //       child: Align(
-                //         alignment: Alignment.bottomCenter,
-                //         child: Padding(
-                //           padding: const EdgeInsets.all(12.0),
-                //           child: Container(
-                //             decoration: BoxDecoration(
-                //               color: Colors.blue,
-                //               borderRadius: BorderRadius.circular(20.0), // 모든 모서리를 둥글게 만듭니다.
-                //             ),
-                //             child: Padding(
-                //               padding: const EdgeInsets.fromLTRB(20.0, 12, 20, 12),
-                //               child: Text('오늘 아이들과 ${snapshot.data}번째 산책을 다녀왔어요!'),
-                //             ),
-                //           ),
-                //         ),
-                //       ),
-                //     );
-                //   },
-                // ),
               ),
               Visibility(
                 visible: !isWalking,
