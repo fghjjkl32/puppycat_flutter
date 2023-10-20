@@ -30,6 +30,7 @@ import 'package:pet_mobile_social_flutter/ui/main/comment/main_comment_detail_sc
 import 'package:pet_mobile_social_flutter/ui/main/feed_search/feed_search_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/maintenance/maintenance_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/map/map_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
@@ -450,6 +451,19 @@ class AppRouter {
         name: 'maintenance',
         builder: (BuildContext context, GoRouterState state) {
           return const MaintenanceScreen();
+        },
+      ),
+      GoRoute(
+        path: '/map',
+        name: 'map',
+        builder: (BuildContext context, GoRouterState state) {
+          String title = '지도';
+          if(state.extra is String) {
+            title = state.extra.toString();
+          }
+          return MapScreen(
+            appBarTitle: title,
+          );
         },
       ),
     ],

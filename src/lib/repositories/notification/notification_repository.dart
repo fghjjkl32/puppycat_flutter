@@ -75,11 +75,9 @@ class NotificationRepository {
     if(result == null) {
       ///TODO
       ///errorHandling해서 진짜 오류가 아니면  true
-      print('asdasdasd');
       return false;
     }
 
-    print('result!.result ${result!.result}');
     if(result!.result) {
       return true;
     } else {

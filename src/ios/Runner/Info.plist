@@ -142,5 +142,7 @@
 	<string>퍼피캣</string>
 	<key>naverServiceAppUrlScheme</key>
 	<string>petnaverlogin</string>
+	<key>NMFClientId</key>
+    <string>omfrw8eeol</string>
 </dict>
 </plist>

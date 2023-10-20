@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:label="pet_mobile_social_flutter"
@@ -89,6 +90,9 @@
         <meta-data
             android:name="com.naver.sdk.clientName"
             android:value="@string/client_name" />
+        <meta-data
+                android:name="com.naver.maps.map.omfrw8eeol"
+                android:value="omfrw8eeol" />
     </application>
 
     <queries>

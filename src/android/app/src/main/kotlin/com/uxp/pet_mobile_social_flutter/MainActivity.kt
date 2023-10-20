@@ -18,6 +18,10 @@ class MainActivity: FlutterFragmentActivity() {
     private val CHANNEL = "puppycat-ch"
     var methodChannelResult: MethodChannel.Result? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        intent.putExtra("background_mode", "transparent")
+        super.onCreate(savedInstanceState)
+    }
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
 //        window.addFlags(LayoutParams.FLAG_SECURE)
         super.configureFlutterEngine(flutterEngine)
