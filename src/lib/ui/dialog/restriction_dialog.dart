@@ -1,11 +1,15 @@
+import 'package:channel_talk_flutter/channel_talk_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/web_view/channel_talk_webview_screen.dart';
 
-class RestrictionDialog extends StatelessWidget {
+class RestrictionDialog extends ConsumerWidget {
   final bool isForever;
   final String foreverRestrictionTitle = "활동이 영구 정지되었습니다.";
   final String restrictionTitle = "활동이 일시적으로 제한된 계정입니다.";
@@ -27,7 +31,7 @@ class RestrictionDialog extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
       insetPadding: const EdgeInsets.symmetric(
@@ -174,7 +178,21 @@ class RestrictionDialog extends StatelessWidget {
                   Expanded(
                     child: InkWell(
                       borderRadius: const BorderRadius.only(bottomRight: Radius.circular(20)),
-                      onTap: () {},
+                      onTap: () async {
+                        ref.read(userInfoProvider).userModel == null
+                            ? await ChannelTalk.boot(
+                                pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
+                              )
+                            : await ChannelTalk.boot(
+                                pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
+                                memberId: ref.read(userInfoProvider).userModel!.uuid,
+                                email: ref.read(userInfoProvider).userModel!.id,
+                                name: '${ref.read(userInfoProvider).userModel!.name}',
+                                memberHash: ref.read(userInfoProvider).userModel!.channelTalkHash,
+                                mobileNumber: '${ref.read(userInfoProvider).userModel!.phone}',
+                              );
+                        await ChannelTalk.showMessenger();
+                      },
                       child: Center(
                         child: Text(
                           "1:1 채널톡",

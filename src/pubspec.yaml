@@ -134,6 +134,14 @@ dependencies:
   table_calendar: ^3.0.9
   screenshot: ^2.1.0
   dropdown_button2: ^2.3.9
+  pointycastle: ^3.7.3
+  uuid: ^3.0.6
+  channel_talk_flutter: ^2.4.0
+  crypto: ^3.0.3
+  asn1lib: ^1.5.0
+  tosspayments_sdk_flutter: ^0.1.11
+  uni_links: ^0.5.1
+  numberpicker: ^2.1.2
 
   #네이버 지도
   flutter_naver_map: ^1.0.2

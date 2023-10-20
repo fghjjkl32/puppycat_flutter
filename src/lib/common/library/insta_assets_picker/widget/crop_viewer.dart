@@ -51,7 +51,7 @@ class CropViewerState extends State<CropViewer> {
   /// Save the crop parameters state in [InstaAssetsCropController]
   /// to retrieve it if the asset is opened again
   /// and apply them at the exportation
-  void saveCurrentCropChanges() {
+  Future<void> saveCurrentCropChanges() async {
     widget.controller.onChange(
       _previousAsset,
       _cropKey.currentState,
@@ -60,61 +60,57 @@ class CropViewerState extends State<CropViewer> {
   }
 
   /// Returns the [Crop] widget
-  Widget _buildCropView(AssetEntity asset, CropInternal? cropParam) => Opacity(
-        opacity: widget.controller.isCropViewReady.value ? widget.opacity : 1.0,
-        child: Crop(
-          key: _cropKey,
-          image: AssetEntityImageProvider(asset, isOriginal: true),
-          placeholderWidget: ValueListenableBuilder<bool>(
-            valueListenable: _isLoadingError,
-            builder: (context, isLoadingError, child) => Stack(
-              alignment: Alignment.center,
-              children: [
-                Opacity(
-                  opacity: widget.opacity,
-                  child: ExtendedImage(
-                    // to match crop alignment
-                    alignment: widget.controller.aspectRatio == 1.0
-                        ? Alignment.center
-                        : Alignment.bottomCenter,
-                    height: widget.height,
-                    width: widget.height * widget.controller.aspectRatio,
-                    image: AssetEntityImageProvider(asset, isOriginal: false),
-                    enableMemoryCache: false,
-                    fit: BoxFit.cover,
-                  ),
+  Widget _buildCropView(AssetEntity asset, CropInternal? cropParam) {
+    return Opacity(
+      opacity: widget.controller.isCropViewReady.value ? widget.opacity : 1.0,
+      child: Crop(
+        key: _cropKey,
+        image: AssetEntityImageProvider(asset, isOriginal: true),
+        placeholderWidget: ValueListenableBuilder<bool>(
+          valueListenable: _isLoadingError,
+          builder: (context, isLoadingError, child) => Stack(
+            alignment: Alignment.center,
+            children: [
+              Opacity(
+                opacity: widget.opacity,
+                child: ExtendedImage(
+                  // to match crop alignment
+                  alignment: widget.controller.aspectRatio == 1.0 ? Alignment.center : Alignment.bottomCenter,
+                  height: widget.height,
+                  width: widget.height * widget.controller.aspectRatio,
+                  image: AssetEntityImageProvider(asset, isOriginal: false),
+                  enableMemoryCache: false,
+                  fit: BoxFit.cover,
                 ),
-                // show backdrop when image is loading or if an error occured
-                Positioned.fill(
-                    child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      color: widget.theme?.cardColor.withOpacity(0.4)),
-                )),
-                isLoadingError
-                    ? Text(widget.textDelegate.loadFailed)
-                    : widget.loaderWidget,
-              ],
-            ),
+              ),
+              // show backdrop when image is loading or if an error occured
+              Positioned.fill(
+                  child: DecoratedBox(
+                decoration: BoxDecoration(color: widget.theme?.cardColor.withOpacity(0.4)),
+              )),
+              isLoadingError ? Text(widget.textDelegate.loadFailed) : widget.loaderWidget,
+            ],
           ),
-          // if the image could not be loaded (i.e unsupported format like RAW)
-          // unselect it and clear cache, also show the error widget
-          onImageError: (exception, stackTrace) {
-            widget.provider.unSelectAsset(asset);
-            AssetEntityImageProvider(asset).evict();
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _isLoadingError.value = true;
-              widget.controller.isCropViewReady.value = true;
-            });
-          },
-          onLoading: (isReady) => WidgetsBinding.instance.addPostFrameCallback(
-              (_) => widget.controller.isCropViewReady.value = isReady),
-          maximumScale: 10,
-          aspectRatio: widget.controller.aspectRatio,
-          disableResize: true,
-          backgroundColor: widget.theme!.canvasColor,
-          initialParam: cropParam,
         ),
-      );
+        // if the image could not be loaded (i.e unsupported format like RAW)
+        // unselect it and clear cache, also show the error widget
+        onImageError: (exception, stackTrace) {
+          widget.provider.unSelectAsset(asset);
+          AssetEntityImageProvider(asset).evict();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _isLoadingError.value = true;
+            widget.controller.isCropViewReady.value = true;
+          });
+        },
+        onLoading: (isReady) => WidgetsBinding.instance.addPostFrameCallback((_) => widget.controller.isCropViewReady.value = isReady),
+        maximumScale: 10,
+        aspectRatio: widget.controller.aspectRatio,
+        disableResize: true,
+        backgroundColor: widget.theme!.canvasColor,
+        // initialParam: cropParam,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,41 +119,38 @@ class CropViewerState extends State<CropViewer> {
       width: MediaQuery.of(context).size.width,
       child: ValueListenableBuilder<AssetEntity?>(
         valueListenable: widget.controller.previewAsset,
-        builder: (_, previewAsset, __) =>
-            Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
-                selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
-                builder: (_, List<AssetEntity> selected, __) {
-                  _isLoadingError.value = false;
-                  final int effectiveIndex =
-                      selected.isEmpty ? 0 : selected.indexOf(selected.last);
+        builder: (_, previewAsset, __) => Selector<DefaultAssetPickerProvider, List<AssetEntity>>(
+            selector: (_, DefaultAssetPickerProvider p) => p.selectedAssets,
+            builder: (_, List<AssetEntity> selected, __) {
+              _isLoadingError.value = false;
+              final int effectiveIndex = selected.isEmpty ? 0 : selected.indexOf(selected.last);
 
-                  // if no asset is selected yet, returns the loader
-                  if (previewAsset == null && selected.isEmpty) {
-                    return widget.loaderWidget;
-                  }
+              // if no asset is selected yet, returns the loader
+              if (previewAsset == null && selected.isEmpty) {
+                return widget.loaderWidget;
+              }
 
-                  final asset = previewAsset ?? selected[effectiveIndex];
-                  final savedCropParam =
-                      widget.controller.get(asset)?.cropParam;
+              final asset = previewAsset ?? selected[effectiveIndex];
+              final savedCropParam = widget.controller.get(asset)?.cropParam;
 
-                  // if the selected asset changed, save the previous crop parameters state
-                  if (asset != _previousAsset && _previousAsset != null) {
-                    saveCurrentCropChanges();
-                  }
+              // if the selected asset changed, save the previous crop parameters state
+              if (asset != _previousAsset && _previousAsset != null) {
+                saveCurrentCropChanges();
+              }
 
-                  _previousAsset = asset;
+              _previousAsset = asset;
 
-                  return ValueListenableBuilder<int>(
-                    valueListenable: widget.controller.cropRatioIndex,
-                    builder: (context, index, child) => Stack(
-                      children: [
-                        Positioned.fill(
-                          child: _buildCropView(asset, savedCropParam),
-                        ),
-                      ],
+              return ValueListenableBuilder<int>(
+                valueListenable: widget.controller.cropRatioIndex,
+                builder: (context, index, child) => Stack(
+                  children: [
+                    Positioned.fill(
+                      child: _buildCropView(asset, savedCropParam),
                     ),
-                  );
-                }),
+                  ],
+                ),
+              );
+            }),
       ),
     );
   }

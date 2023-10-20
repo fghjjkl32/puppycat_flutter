@@ -68,8 +68,7 @@ class InstaAssetsCropData {
 
 /// The controller that handles the exportation and save the state of the selected assets crop parameters
 class InstaAssetsCropController {
-  InstaAssetsCropController(this.keepMemory, this.cropDelegate)
-      : cropRatioIndex = ValueNotifier<int>(1);
+  InstaAssetsCropController(this.keepMemory, this.cropDelegate) : cropRatioIndex = ValueNotifier<int>(1);
 
   /// The index of the selected aspectRatio among the possibilities
   final ValueNotifier<int> cropRatioIndex;
@@ -78,8 +77,7 @@ class InstaAssetsCropController {
   final ValueNotifier<bool> isCropViewReady = ValueNotifier<bool>(false);
 
   /// The asset [AssetEntity] currently displayed in the crop view
-  final ValueNotifier<AssetEntity?> previewAsset =
-      ValueNotifier<AssetEntity?>(null);
+  final ValueNotifier<AssetEntity?> previewAsset = ValueNotifier<AssetEntity?>(null);
 
   /// Options related to crop
   final InstaAssetCropDelegate cropDelegate;
@@ -99,8 +97,7 @@ class InstaAssetsCropController {
   }
 
   double get aspectRatio {
-    assert(cropDelegate.cropRatios.isNotEmpty,
-        'The list of supported crop ratios cannot be empty.');
+    assert(cropDelegate.cropRatios.isNotEmpty, 'The list of supported crop ratios cannot be empty.');
     return cropDelegate.cropRatios[cropRatioIndex.value];
   }
 
@@ -111,13 +108,12 @@ class InstaAssetsCropController {
   }
 
   /// Set the next available index as the selected crop ratio
-  void nextCropRatio(int index) {
+  void nextCropRatio(int index, List<AssetEntity> selectedAssets) {
     cropRatioIndex.value = index;
   }
 
   /// Use [_cropParameters] when [keepMemory] is `false`, otherwise use [InstaAssetsCropSingleton.cropParameters]
-  List<InstaAssetsCropData> get cropParameters =>
-      keepMemory ? InstaAssetsCropSingleton.cropParameters : _cropParameters;
+  List<InstaAssetsCropData> get cropParameters => keepMemory ? InstaAssetsCropSingleton.cropParameters : _cropParameters;
 
   /// Save the list of crop parameters
   /// if [keepMemory] save list memory or simply in the controller
@@ -157,8 +153,7 @@ class InstaAssetsCropController {
         // if it is not the asset to save and no crop parameter exists
       } else if (savedCropAsset == null) {
         // set empty crop parameters
-        newList
-            .add(InstaAssetsCropData.fromState(asset: asset, cropState: null));
+        newList.add(InstaAssetsCropData.fromState(asset: asset, cropState: null));
       } else {
         // keep existing crop parameters
         newList.add(savedCropAsset);
@@ -218,8 +213,7 @@ class InstaAssetsCropController {
         croppedFiles.add(sampledFile);
       } else {
         // crop the file with the area selected
-        final croppedFile =
-            await InstaAssetsCrop.cropImage(file: sampledFile, area: area);
+        final croppedFile = await InstaAssetsCrop.cropImage(file: sampledFile, area: area);
         // delete the not needed sample file
         sampledFile.delete();
 

@@ -33,6 +33,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/user_information/use
 import 'package:pet_mobile_social_flutter/ui/my_page/work_log/write_work_log_screen.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:thumbor/thumbor.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class MyPageMainScreen extends ConsumerStatefulWidget {
@@ -64,10 +65,16 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   //Create an instance of ScreenshotController
   ScreenshotController screenshotController = ScreenshotController();
 
+  late final feedListStateNotifier;
+  late final firstFeedStateNotifier;
+
   @override
   void initState() {
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
+
+    feedListStateNotifier = ref.read(feedListStateProvider.notifier);
+    firstFeedStateNotifier = ref.read(firstFeedStateProvider.notifier);
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
     ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
@@ -133,13 +140,15 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
     super.dispose();
   }
 
+  void handleFocusLost() {
+    feedListStateNotifier.getStateForUser(widget.oldMemberIdx ?? 0);
+    firstFeedStateNotifier.getStateForUser(widget.oldMemberIdx ?? 0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FocusDetector(
-      onFocusLost: () async {
-        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-      },
+      onFocusLost: handleFocusLost,
       child: Material(
         child: SafeArea(
             child: DefaultTabController(
@@ -878,7 +887,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
               ),
             ),
             InkWell(
-              onTap: () {
+              onTap: () async {
                 context.push("/home/myPage/workLogCalendar");
               },
               child: Padding(

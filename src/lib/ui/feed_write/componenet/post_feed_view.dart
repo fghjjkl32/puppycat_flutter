@@ -79,7 +79,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                   Padding(
                     padding: EdgeInsets.only(bottom: 12.0.h),
                     child: Container(
-                      width: 144.w,
+                      width: 150,
                       height: 36.h,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(Radius.circular(100)),
@@ -150,7 +150,9 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
               ),
             ],
             fieldViewBuilder: (context, controller, focusNode) {
-              ref.watch(feedWriteContentProvider.notifier).state = controller;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                ref.watch(feedEditContentProvider.notifier).state = controller;
+              });
 
               return Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -258,14 +260,25 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                               style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                             ),
                           ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Puppycat_social.icon_next_small,
-                        size: 22,
-                        color: kNeutralColor500,
-                      ),
-                    ),
+                    ref.watch(feedWriteLocationInformationProvider) == ""
+                        ? IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Puppycat_social.icon_next_small,
+                              size: 22,
+                              color: kNeutralColor500,
+                            ),
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+                            },
+                            icon: const Icon(
+                              Icons.close, // X 아이콘
+                              size: 22,
+                              color: kNeutralColor500,
+                            ),
+                          ),
                   ],
                 ),
               ),

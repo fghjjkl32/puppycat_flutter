@@ -30,6 +30,8 @@ class UserModel with _$UserModel {
     required String password,
     required String passwordConfirm,
     required int isBadge,
+    required String uuid,
+    required String channelTalkHash,
     @Default('') String? partner,
     String? ci,
     String? di,
@@ -39,7 +41,6 @@ class UserModel with _$UserModel {
     String? gender,
     String? profileImgUrl,
     String? introText,
-    String? uuid,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);

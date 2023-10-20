@@ -52,6 +52,7 @@ String thumborKey = "Tjaqhvpt";
 String imgDomain = "https://imgs.pcstg.co.kr";
 String firstInstallTime = "";
 String lastestBuildVersion = "";
+bool isAppLinkHandled = false;
 String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
 // String walkBaseUrl = 'https://walk-api.pcstg.co.kr';
 
@@ -120,7 +121,7 @@ final FeedResponseModel feedNullResponseModel = FeedResponseModel(
   ),
   message: "",
 );
-List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int oldMemberIdx) {
+List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int? oldMemberIdx) {
   List<InlineSpan> spans = [];
 
   // Combining both mention and hashtag patterns
@@ -148,7 +149,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
                       context,
                       MaterialPageRoute(
                         builder: (context) => MyPageMainScreen(
-                          oldMemberIdx: oldMemberIdx,
+                          oldMemberIdx: oldMemberIdx!,
                         ),
                       ),
                     )

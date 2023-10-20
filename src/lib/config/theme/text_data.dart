@@ -34,6 +34,12 @@ TextStyle kTitle14BoldStyle = const TextStyle(
   fontWeight: FontWeight.w700,
 );
 
+TextStyle kSubTitle13BoldStyle = const TextStyle(
+  fontFamily: pretendard,
+  fontSize: 13,
+  fontWeight: FontWeight.w700,
+);
+
 //Body Style
 TextStyle kBody16BoldStyle = const TextStyle(
   fontFamily: pretendard,

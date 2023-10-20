@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -23,13 +24,19 @@ import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/policy_checkbox_widget.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:tosspayments_sdk_flutter/model/tosspayments_url.dart';
 
 final _formKey = GlobalKey<FormState>();
 
 final checkButtonProvider = StateProvider((ref) => false);
 
 class SignUpScreen extends ConsumerStatefulWidget {
-  const SignUpScreen({super.key});
+  final String? authType;
+
+  const SignUpScreen({
+    Key? key,
+    required this.authType,
+  }) : super(key: key);
 
   @override
   SignUpScreenState createState() => SignUpScreenState();
@@ -47,6 +54,30 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     super.initState();
 
     ref.read(policyStateProvider.notifier).getPolicies();
+    dd();
+  }
+
+  void dd() {
+    if (widget.authType == "toss") {
+      String sessionId = generateSessionId();
+      String secretKey = generateRandomBytes(16);
+      String iv = generateRandomBytes(12);
+      String base64PublicKey =
+          'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAoVdxG0Qi9pip46Jw9ImSlPVD8+L2mM47ey6EZna7D7utgNdh8Tzkjrm1Yl4h6kPJrhdWvMIJGS51+6dh041IXcJEoUquNblUEqAUXBYwQM8PdfnS12SjlvZrP4q6whBE7IV1SEIBJP0gSK5/8Iu+uld2ctJiU4p8uswL2bCPGWdvVPltxAg6hfAG/ImRUKPRewQsFhkFvqIDCpO6aeaR10q6wwENZltlJeeRnl02VWSneRmPqqypqCxz0Y+yWCYtsA+ngfZmwRMaFkXcWjaWnvSqqV33OAsrQkvuBHWoEEkvQ0P08+h9Fy2+FhY9TeuukQ2CVFz5YyOhp25QtWyQI+IaDKk+hLxJ1APR0c3tmV0ANEIjO6HhJIdu2KQKtgFppvqSrZp2OKtI8EZgVbWuho50xvlaPGzWoMi9HSCb+8ARamlOpesxHH3O0cTRUnft2Zk1FHQb2Pidb2z5onMEnzP2xpTqAIVQyb6nMac9tof5NFxwR/c4pmci+1n8GFJIFN18j2XGad1mNyio/R8LabqnzNwJC6VPnZJz5/pDUIk9yKNOY0KJe64SRiL0a4SNMohtyj6QlA/3SGxaEXb8UHpophv4G9wN1CgfyUamsRqp8zo5qDxBvlaIlfkqJvYPkltj7/23FHDjPi8q8UkSiAeu7IV5FTfB5KsiN8+sGSMCAwEAAQ=='; // 여기에 실제 Base64 인코딩된 공개키를 추가하세요
+      String dataToEncrypt = 'Hello, Flutter!';
+
+      String sessionKey = generateSessionKey(sessionId, secretKey, iv, base64PublicKey);
+      String encryptedData = encryptData(sessionId, secretKey, iv, dataToEncrypt);
+
+      print('Session ID: $sessionId');
+      print('Secret Key: $secretKey');
+      print('IV: $iv');
+      print('Session Key: $sessionKey');
+      print('Encrypted Data: $encryptedData');
+
+      String decryptedData = decryptData(secretKey, iv, encryptedData);
+      print('Decrypted Data: $decryptedData');
+    }
   }
 
   @override
@@ -136,7 +167,22 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                         backgroundColor: MaterialStateProperty.all<Color>(kNaverLoginColor),
                         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        final url = await ref.read(authStateProvider.notifier).getTossAuthUrl();
+                        //
+                        final appScheme = ConvertUrl(url); // Intent URL을 앱 스킴 URL로 변환
+                        //
+                        print(appScheme);
+
+                        print(appScheme.appScheme);
+                        print(appScheme.url);
+
+                        if (appScheme.isAppLink()) {
+                          print(appScheme.appLink);
+
+                          await appScheme.launchApp();
+                        }
+                      },
                       label: Text(
                         '회원가입.네이버 인증'.tr(),
                         style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),

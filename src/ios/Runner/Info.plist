@@ -102,6 +102,10 @@
 	<string>게시물 등록을 위해 사진 접근을 허용해 주세요.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>맞춤광고를 위해 사용자의 개인정보에 접근합니다.</string>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>음성 녹음을 위해 마이크에 접근합니다.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>사진 저장을 위해 사진 라이브러리에 접근합니다.</string>
 	<key>PermissionGroupNotification</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

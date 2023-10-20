@@ -1,9 +1,12 @@
+import 'package:channel_talk_flutter/channel_talk_flutter.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/web_view/channel_talk_webview_screen.dart';
 
 class MaintenanceScreen extends ConsumerStatefulWidget {
   const MaintenanceScreen({super.key});
@@ -154,7 +157,21 @@ class MaintenanceScreenState extends ConsumerState<MaintenanceScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
-                        onPressed: () async {},
+                        onPressed: () async {
+                          ref.read(userInfoProvider).userModel == null
+                              ? await ChannelTalk.boot(
+                                  pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
+                                )
+                              : await ChannelTalk.boot(
+                                  pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
+                                  memberId: ref.read(userInfoProvider).userModel!.uuid,
+                                  email: ref.read(userInfoProvider).userModel!.id,
+                                  name: '${ref.read(userInfoProvider).userModel!.name}',
+                                  memberHash: ref.read(userInfoProvider).userModel!.channelTalkHash,
+                                  mobileNumber: '${ref.read(userInfoProvider).userModel!.phone}',
+                                );
+                          await ChannelTalk.showMessenger();
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Text(

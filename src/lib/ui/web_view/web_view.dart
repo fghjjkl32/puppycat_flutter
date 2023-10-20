@@ -157,31 +157,31 @@ class _WebViewViewState extends State<WebViewView> {
           initialSettings: settings,
           pullToRefreshController: pullToRefreshController,
           shouldInterceptRequest: (controller, request) async {
-              var uri = request.url!;
-              String finalUrl = uri.toString();
+            var uri = request.url!;
+            String finalUrl = uri.toString();
 
-              if (!["http", "https", "file", "chrome", "data", "javascript", "about"].contains(uri.scheme)) {
-                await controller.stopLoading();
+            if (!["http", "https", "file", "chrome", "data", "javascript", "about"].contains(uri.scheme)) {
+              await controller.stopLoading();
 
-                if (Platform.isAndroid) {
-                  // Android는 Native(Kotlin)로 URL을 전달해 Intent 처리 후 리턴
-                  await ChannelController.getAppUrl(uri.toString()).then((value) async {
-                    finalUrl = value; // 앱이 설치되었을 경우
-                  });
+              if (Platform.isAndroid) {
+                // Android는 Native(Kotlin)로 URL을 전달해 Intent 처리 후 리턴
+                await ChannelController.getAppUrl(uri.toString()).then((value) async {
+                  finalUrl = value; // 앱이 설치되었을 경우
+                });
 
-                  try {
-                    await launchUrlString(finalUrl);
-                  } catch (e) {
-                    // URL 실행 불가 시, 앱 미설치로 판단하여 마켓 URL 실행
-                    finalUrl = await ChannelController.getMarketUrl(uri.toString());
-                    launchUrlString(finalUrl);
-                  }
-                } else if (Platform.isIOS) {
+                try {
+                  await launchUrlString(finalUrl);
+                } catch (e) {
+                  // URL 실행 불가 시, 앱 미설치로 판단하여 마켓 URL 실행
+                  finalUrl = await ChannelController.getMarketUrl(uri.toString());
                   launchUrlString(finalUrl);
                 }
-
-                return null;
+              } else if (Platform.isIOS) {
+                launchUrlString(finalUrl);
               }
+
+              return null;
+            }
           },
           onLoadResourceWithCustomScheme: (controller, request) async {
             await controller.stopLoading();

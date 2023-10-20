@@ -37,6 +37,7 @@ import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
+import 'package:uni_links/uni_links.dart';
 
 InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 9723);
 
@@ -141,12 +142,37 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> {
   void initLocalNotification() {
     NotificationController notificationController = NotificationController();
     notificationController.initNotification(navigatorHandler);
+
+    print(isAppLinkHandled);
+    print(isAppLinkHandled);
+    print(isAppLinkHandled);
+    print(isAppLinkHandled);
+    print(isAppLinkHandled);
+
+    getInitialLink().then((link) {
+      // if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
+      //   isAppLinkHandled = true;
+      //   final router = ref.watch(routerProvider);
+      //   router.push("/loginScreen/signupScreen/toss");
+      // }
+    });
+
+    linkStream.listen((String? link) {
+      if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
+        isAppLinkHandled = true;
+        final router = ref.watch(routerProvider);
+        router.push("/loginScreen/signupScreen/toss");
+      }
+    }, onError: (err) {
+      // Handle the error here
+    });
   }
 
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
     // context.push('/home/notification');
     final router = ref.watch(routerProvider);
     // router.go('/home/notification');
+
     PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
 
     switch (pushType) {

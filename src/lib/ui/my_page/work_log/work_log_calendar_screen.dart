@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/base_picker_model.dart';
@@ -10,6 +11,8 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/date_picker_theme.dart' as picker_theme;
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_result_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/walk_result/walk_result_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/work_log/work_log_result_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -43,24 +46,6 @@ class Event {
   int get hashCode => title.hashCode ^ date.hashCode;
 }
 
-final kEvents = LinkedHashMap<DateTime, List<Event>>(
-  equals: isSameDay,
-  hashCode: getHashCode,
-)..addAll(_kEventSource);
-
-final _kEventSource = Map.fromIterable(List.generate(50, (index) => index),
-    key: (item) => DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5),
-    value: (item) {
-      final date = DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5);
-      return List.generate(item % 4 + 1, (index) => Event('Event $item | ${index + 1}', date));
-    })
-  ..addAll({
-    kToday: [
-      Event('Event Today | 1', kToday),
-      Event('Event Today | 2', kToday),
-    ],
-  });
-
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
 }
@@ -75,18 +60,19 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 }
 
 final kToday = DateTime.now();
-final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
-final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
+final kFirstDay = DateTime(2020, 12, 20);
+final kLastDay = DateTime.now();
 
-class WorkLogCalendarScreen extends StatefulWidget {
+class WorkLogCalendarScreen extends ConsumerStatefulWidget {
   const WorkLogCalendarScreen({Key? key}) : super(key: key);
 
   @override
-  State<WorkLogCalendarScreen> createState() => _WorkLogCalendarScreenState();
+  WorkLogCalendarScreenState createState() => WorkLogCalendarScreenState();
 }
 
-class _WorkLogCalendarScreenState extends State<WorkLogCalendarScreen> {
-  late final ValueNotifier<List<Event>> _selectedEvents;
+class WorkLogCalendarScreenState extends ConsumerState<WorkLogCalendarScreen> {
+  ValueNotifier<List<WalkResultItemModel>> _selectedEvents = ValueNotifier<List<WalkResultItemModel>>([]);
+
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
@@ -94,12 +80,52 @@ class _WorkLogCalendarScreenState extends State<WorkLogCalendarScreen> {
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
 
+  LinkedHashMap<DateTime, List<WalkResultItemModel>> kEvents = LinkedHashMap<DateTime, List<WalkResultItemModel>>(
+    equals: isSameDay,
+    hashCode: getHashCode,
+  );
+
   @override
   void initState() {
     super.initState();
 
-    _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    init();
+  }
+
+  init() async {
+    await ref.read(walkResultStateProvider.notifier).getWalkResult(
+          searchStartDate: DateFormat('yyyy-MM-dd').format(DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            1,
+          )),
+          searchEndDate: DateFormat('yyyy-MM-dd').format(DateTime(
+            DateTime.now().year,
+            DateTime.now().month + 1,
+            0,
+          )),
+        );
+
+    _populateEvents(ref.read(walkResultStateProvider).list);
+  }
+
+  void _populateEvents(List<WalkResultItemModel> results) {
+    setState(() {
+      for (var result in results) {
+        final date = DateTime.parse(result.regDate!);
+
+        if (kEvents[date] != null) {
+          kEvents[date]?.add(result);
+        } else {
+          kEvents[date] = [result];
+        }
+      }
+
+      getAllEvents();
+
+      _selectedDay = _focusedDay;
+      _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    });
   }
 
   @override
@@ -108,15 +134,15 @@ class _WorkLogCalendarScreenState extends State<WorkLogCalendarScreen> {
     super.dispose();
   }
 
-  List<Event> _getEventsForDay(DateTime day) {
-    return kEvents[day]?.map((e) => Event(e.title, day)).toList() ?? [];
+  List<WalkResultItemModel> _getEventsForDay(DateTime day) {
+    return kEvents[day] ?? [];
   }
 
-  List<Event> getAllEvents() {
-    List<Event> allEvents = [];
+  List<WalkResultItemModel> getAllEvents() {
+    List<WalkResultItemModel> allEvents = [];
     kEvents.forEach((date, events) {
       events.forEach((event) {
-        allEvents.add(Event(event.title, date));
+        allEvents.add(event);
       });
     });
     return allEvents;
@@ -199,7 +225,7 @@ class _WorkLogCalendarScreenState extends State<WorkLogCalendarScreen> {
               ),
             ),
           ),
-          TableCalendar<Event>(
+          TableCalendar<WalkResultItemModel>(
             firstDay: kFirstDay,
             lastDay: kLastDay,
             focusedDay: _focusedDay,
@@ -232,7 +258,7 @@ class _WorkLogCalendarScreenState extends State<WorkLogCalendarScreen> {
           ),
           const SizedBox(height: 8.0),
           Expanded(
-            child: ValueListenableBuilder<List<Event>>(
+            child: ValueListenableBuilder<List<WalkResultItemModel>>(
               valueListenable: _selectedEvents,
               builder: (context, value, _) {
                 return ListView.builder(
@@ -240,7 +266,7 @@ class _WorkLogCalendarScreenState extends State<WorkLogCalendarScreen> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        List<Event> allEvents = getAllEvents();
+                        List<WalkResultItemModel> allEvents = getAllEvents();
 
                         int initialIndex = allEvents.indexOf(value[index]);
                         if (initialIndex == -1) {

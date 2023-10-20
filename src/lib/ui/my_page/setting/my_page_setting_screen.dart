@@ -1,4 +1,10 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:channel_talk_flutter/channel_talk_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
@@ -6,15 +12,22 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
+import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/my_page_setting_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/Admin/password_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/web_view/channel_talk_webview_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/web_view/webview_widget.dart';
+import 'package:tosspayments_sdk_flutter/model/tosspayments_url.dart';
+import 'package:uni_links/uni_links.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyPageSettingScreen extends ConsumerStatefulWidget {
   const MyPageSettingScreen({super.key});
@@ -30,10 +43,29 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
     Future(() {
       ref.watch(myPageSettingProvider.notifier).getCacheSizeInMB();
     });
+    initUniLinks();
   }
 
   int adminCount = 0;
   int lastTap = DateTime.now().millisecondsSinceEpoch;
+
+  initUniLinks() async {
+    try {
+      String? initialLink = await getInitialLink();
+      if (initialLink != null && initialLink == "puppycat://ss") {
+        print("안녕");
+      }
+      linkStream.listen((String? link) {
+        if (link != null && link == "puppycat://ss") {
+          print("안녕");
+        }
+      }, onError: (err) {
+        // Handle the error here
+      });
+    } on Exception {
+      // Handle the error here
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -529,21 +561,38 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           ],
                         ),
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Puppycat_social.icon_canneltalk,
-                            size: 40,
-                          ),
-                          SizedBox(
-                            height: 4.h,
-                          ),
-                          Text(
-                            "1:1 채널톡",
-                            style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
-                          ),
-                        ],
+                      GestureDetector(
+                        onTap: () async {
+                          ref.read(userInfoProvider).userModel == null
+                              ? await ChannelTalk.boot(
+                                  pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
+                                )
+                              : await ChannelTalk.boot(
+                                  pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
+                                  memberId: ref.read(userInfoProvider).userModel!.uuid,
+                                  email: ref.read(userInfoProvider).userModel!.id,
+                                  name: '${ref.read(userInfoProvider).userModel!.name}',
+                                  memberHash: ref.read(userInfoProvider).userModel!.channelTalkHash,
+                                  mobileNumber: '${ref.read(userInfoProvider).userModel!.phone}',
+                                );
+                          await ChannelTalk.showMessenger();
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Puppycat_social.icon_canneltalk,
+                              size: 40,
+                            ),
+                            SizedBox(
+                              height: 4.h,
+                            ),
+                            Text(
+                              "1:1 채널톡",
+                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                            ),
+                          ],
+                        ),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -576,8 +625,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 : GestureDetector(
                     onTap: () {
                       ref.read(loginStateProvider.notifier).logout(
-                             ref.read(userInfoProvider).userModel!.simpleType,
-                             ref.read(userInfoProvider).userModel!.appKey,
+                            ref.read(userInfoProvider).userModel!.simpleType,
+                            ref.read(userInfoProvider).userModel!.appKey,
                           );
                     },
                     child: Padding(

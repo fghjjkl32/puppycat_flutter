@@ -387,10 +387,11 @@ class AppRouter {
           ]),
       GoRoute(path: '/loginScreen', name: 'loginScreen', builder: (_, state) => LoginScreen(), routes: [
         GoRoute(
-          path: 'signupScreen',
-          name: 'signupScreen',
+          path: 'signupScreen/:authType',
+          name: 'signupScreen/:authType',
           builder: (_, state) {
-            return SignUpScreen();
+            final authType = state.pathParameters['authType'];
+            return SignUpScreen(authType: authType);
           },
           routes: <GoRoute>[
             GoRoute(
@@ -471,7 +472,7 @@ class AppRouter {
       const homeLocation = '/home';
       const loginLocation = '/loginScreen';
       const splashLocation = '/splash';
-      const signUpLocation = '$loginLocation/signupScreen';
+      const signUpLocation = '$loginLocation/signupScreen/:authType';
       const signUpCompleteLocation = '$signUpLocation/signupCompleteScreen';
       const chatMainLocation = '/chatMain';
       const maintenanceLocation = '/maintenance';

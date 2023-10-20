@@ -40,7 +40,8 @@ class AppleLoginService implements SocialLoginService {
       accessToken: _accountResult.authorizationCode,
       password: simpleId!,
       passwordConfirm: simpleId!,
-      isBadge: 0,
+      isBadge: 0, uuid: "",
+      channelTalkHash: '',
     );
 
     return userModel;

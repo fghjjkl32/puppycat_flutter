@@ -756,10 +756,21 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                       context.pushReplacement("/loginScreen");
                                     } else {
                                       ref.watch(userInformationStateProvider.notifier).updateUnBlockState(ref.watch(userInfoProvider).userModel!.idx, widget.memberIdx);
-                                      await ref.read(blockStateProvider.notifier).deleteBlock(
+
+                                      final result = await ref.read(blockStateProvider.notifier).deleteBlock(
                                             memberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                             blockIdx: widget.memberIdx,
                                           );
+
+                                      if (result.result) {
+                                        if (mounted) {
+                                          toast(
+                                            context: context,
+                                            text: "‘${data.nick}’님을 차단해제하였습니다.",
+                                            type: ToastType.grey,
+                                          );
+                                        }
+                                      }
                                     }
 
                                     // if (result.result) {
