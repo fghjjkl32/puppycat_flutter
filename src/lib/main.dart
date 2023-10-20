@@ -11,14 +11,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:location/location.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
+import 'package:pet_mobile_social_flutter/common/util/location_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 
 import 'package:pet_mobile_social_flutter/config/routes.dart';
@@ -83,6 +86,11 @@ void main() async {
     systemNavigationBarColor: Colors.white,
     systemNavigationBarIconBrightness: Brightness.dark,
   ));
+
+  await LocationUtil.checkLocationPermission();
+  Location().changeSettings(interval: 500);
+
+  await NaverMapSdk.instance.initialize(clientId: "omfrw8eeol");
 
   /// Get It
   /// SingleTon

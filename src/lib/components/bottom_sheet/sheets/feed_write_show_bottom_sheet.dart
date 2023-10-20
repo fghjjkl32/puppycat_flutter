@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/select_pet_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -94,7 +95,11 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                 Expanded(
                   child: InkWell(
                     borderRadius: const BorderRadius.only(bottomRight: Radius.circular(20)),
-                    onTap: () {},
+                    onTap: () {
+                      // context.push('/map');
+                      Navigator.pop(context);
+                      showCustomModalBottomSheet(context: context, widget: const SelectPetSheetItem());
+                    },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -104,7 +109,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                           fit: BoxFit.fill,
                         ),
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0.h),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
                             "산책하기",
                             style: kButton14BoldStyle.copyWith(color: kTextTitleColor),

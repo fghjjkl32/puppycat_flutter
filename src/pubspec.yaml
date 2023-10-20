@@ -135,6 +135,11 @@ dependencies:
   screenshot: ^2.1.0
   dropdown_button2: ^2.3.9
 
+  #네이버 지도
+  flutter_naver_map: ^1.0.2
+  flutter_bottom_drawer: ^0.0.7
+  location: ^5.0.3
+
 
 dev_dependencies:
   flutter_test:
