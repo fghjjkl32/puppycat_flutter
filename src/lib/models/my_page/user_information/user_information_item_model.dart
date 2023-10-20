@@ -15,6 +15,7 @@ class UserInformationItemModel with _$UserInformationItemModel {
     String? profileImgUrl,
     String? email,
     String? uuid,
+    String? channelTalkHash,
     int? followerCnt,
     int? followCnt,
     int? blockedState,

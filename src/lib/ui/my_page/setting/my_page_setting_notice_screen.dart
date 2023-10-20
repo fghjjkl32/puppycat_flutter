@@ -1,3 +1,4 @@
+import 'package:channel_talk_flutter/channel_talk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/customer_support/customer_support_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/web_view/channel_talk_webview_screen.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -82,13 +84,20 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
           ),
           actions: [
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(
-                  PageRouteBuilder(
-                    opaque: false, // set to false
-                    pageBuilder: (_, __, ___) => const ChannelTalkWebViewScreen(),
-                  ),
-                );
+              onTap: () async {
+                ref.read(userInfoProvider).userModel == null
+                    ? await ChannelTalk.boot(
+                        pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
+                      )
+                    : await ChannelTalk.boot(
+                        pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
+                        memberId: ref.read(userInfoProvider).userModel!.uuid,
+                        email: ref.read(userInfoProvider).userModel!.id,
+                        name: '${ref.read(userInfoProvider).userModel!.name}',
+                        memberHash: ref.read(userInfoProvider).userModel!.channelTalkHash,
+                        mobileNumber: '${ref.read(userInfoProvider).userModel!.phone}',
+                      );
+                await ChannelTalk.showMessenger();
               },
               child: Align(
                 alignment: Alignment.center,

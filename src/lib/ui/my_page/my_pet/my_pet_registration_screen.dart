@@ -737,7 +737,7 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
           maxValue: 50,
           value: weightValue,
           onChanged: (value) => setState(() => weightValue = value),
-          decimalPlaces: 2,
+          decimalPlaces: 1,
         ),
         Row(
           children: [

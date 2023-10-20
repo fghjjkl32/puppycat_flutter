@@ -563,89 +563,19 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          Navigator.of(context).push(
-                            PageRouteBuilder(
-                              opaque: false, // set to false
-                              pageBuilder: (_, __, ___) => const ChannelTalkWebViewScreen(),
-                            ),
-                          );
-
-                          // TODO: 채널톡 유료 버전 결제되면 SDK를 이용하여 변경 예정.
-                          // await ChannelTalk.boot(
-                          //   pluginKey: '245ceed2-c934-4622-a9e3-893158f5555c',
-                          //   memberId: '2',
-                          //   email: 'fghjjkl2700@naver.com',
-                          //   name: '전건우',
-                          //   memberHash: '798c5e01e2eefd109eb297ba94473c9630e7a4f3b559f52a132c754358165e59',
-                          //   mobileNumber: '+821084287578',
-                          //   // trackDefaultEvent: false,
-                          //   // hidePopup: false,
-                          //   // language: 'english',
-                          // );
-                          //
-                          // await ChannelTalk.showMessenger();
-
-                          // final tossCertSessionGenerator = TossCertSessionGenerator();
-                          // final tossCertSession = tossCertSessionGenerator.generate();
-                          // final sessionKey = tossCertSession.getSessionKey();
-                          //
-                          // print(sessionKey);
-
-                          //------------------------------------------------------------
-                          // String sessionId = generateSessionId();
-                          // String secretKey = generateRandomBytes(16);
-                          // String iv = generateRandomBytes(12);
-                          // String base64PublicKey =
-                          //     'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAoVdxG0Qi9pip46Jw9ImSlPVD8+L2mM47ey6EZna7D7utgNdh8Tzkjrm1Yl4h6kPJrhdWvMIJGS51+6dh041IXcJEoUquNblUEqAUXBYwQM8PdfnS12SjlvZrP4q6whBE7IV1SEIBJP0gSK5/8Iu+uld2ctJiU4p8uswL2bCPGWdvVPltxAg6hfAG/ImRUKPRewQsFhkFvqIDCpO6aeaR10q6wwENZltlJeeRnl02VWSneRmPqqypqCxz0Y+yWCYtsA+ngfZmwRMaFkXcWjaWnvSqqV33OAsrQkvuBHWoEEkvQ0P08+h9Fy2+FhY9TeuukQ2CVFz5YyOhp25QtWyQI+IaDKk+hLxJ1APR0c3tmV0ANEIjO6HhJIdu2KQKtgFppvqSrZp2OKtI8EZgVbWuho50xvlaPGzWoMi9HSCb+8ARamlOpesxHH3O0cTRUnft2Zk1FHQb2Pidb2z5onMEnzP2xpTqAIVQyb6nMac9tof5NFxwR/c4pmci+1n8GFJIFN18j2XGad1mNyio/R8LabqnzNwJC6VPnZJz5/pDUIk9yKNOY0KJe64SRiL0a4SNMohtyj6QlA/3SGxaEXb8UHpophv4G9wN1CgfyUamsRqp8zo5qDxBvlaIlfkqJvYPkltj7/23FHDjPi8q8UkSiAeu7IV5FTfB5KsiN8+sGSMCAwEAAQ=='; // 여기에 실제 Base64 인코딩된 공개키를 추가하세요
-                          // String dataToEncrypt = 'Hello, Flutter!';
-                          //
-                          // String sessionKey = generateSessionKey(sessionId, secretKey, iv, base64PublicKey);
-                          // String encryptedData = encryptData(sessionId, secretKey, iv, dataToEncrypt);
-                          //
-                          // print('Session ID: $sessionId');
-                          // print('Secret Key: $secretKey');
-                          // print('IV: $iv');
-                          // print('Session Key: $sessionKey');
-                          // print('Encrypted Data: $encryptedData');
-                          //
-                          // String decryptedData = decryptData(secretKey, iv, encryptedData);
-                          // print('Decrypted Data: $decryptedData');
-                          //------------------------------------------------------------
-
-                          // await launch("puppycat://ss");
-                          //
-
-                          // print("-----------------------------------------------");
-                          // print("-----------------------------------------------");
-                          // print("-----------------------------------------------");
-                          // print("-----------------------------------------------");
-                          // print("-----------------------------------------------");
-                          // print("-----------------------------------------------");
-                          // print(appScheme);
-                          // print("-----------------------------------------------");
-                          // print("-----------------------------------------------");
-                          // print("-----------------------------------------------");
-                          // print("-----------------------------------------------");
-                          // print("-----------------------------------------------");
-
-                          // Navigator.of(context).push(
-                          //   PageRouteBuilder(
-                          //     opaque: false, // set to false
-                          //     pageBuilder: (_, __, ___) => WebViewWidget(
-                          //       url: 'https://auth.cert.toss.im/start?serviceType=SIGN_USER_AUTH',
-                          //       initialUrlRequest: URLRequest(
-                          //         url: WebUri("https://auth.cert.toss.im/start?serviceType=SIGN_USER_AUTH"),
-                          //         method: 'POST',
-                          //         headers: {
-                          //           'Content-Type': 'application/x-www-form-urlencoded',
-                          //         },
-                          //         body: Uint8List.fromList(
-                          //           utf8.encode('txId=$txId'),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // );
+                          ref.read(userInfoProvider).userModel == null
+                              ? await ChannelTalk.boot(
+                                  pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
+                                )
+                              : await ChannelTalk.boot(
+                                  pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
+                                  memberId: ref.read(userInfoProvider).userModel!.uuid,
+                                  email: ref.read(userInfoProvider).userModel!.id,
+                                  name: '${ref.read(userInfoProvider).userModel!.name}',
+                                  memberHash: ref.read(userInfoProvider).userModel!.channelTalkHash,
+                                  mobileNumber: '${ref.read(userInfoProvider).userModel!.phone}',
+                                );
+                          await ChannelTalk.showMessenger();
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,

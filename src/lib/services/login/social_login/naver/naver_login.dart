@@ -26,6 +26,7 @@ class NaverLoginService implements SocialLoginService {
       accessToken: _accessToken.accessToken,
       password: _accountResult.id,
       passwordConfirm: _accountResult.id, isBadge: 0, uuid: "",
+      channelTalkHash: '',
     );
 
     return userModel;

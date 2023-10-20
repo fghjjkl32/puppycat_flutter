@@ -95,6 +95,7 @@ class LoginState extends _$LoginState {
             profileImgUrl: next.profileImgUrl,
             isBadge: next.isBadge ?? 0,
             uuid: next.uuid ?? userModel.uuid,
+            channelTalkHash: next.channelTalkHash ?? userModel.channelTalkHash,
             // password: '2809229088121356223',
           ));
 

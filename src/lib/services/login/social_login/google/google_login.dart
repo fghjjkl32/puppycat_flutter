@@ -37,6 +37,7 @@ class GoogleLoginService implements SocialLoginService {
       password: _accountResult!.id,
       passwordConfirm: _accountResult!.id, isBadge: 0,
       uuid: "",
+      channelTalkHash: '',
     );
 
     return userModel;

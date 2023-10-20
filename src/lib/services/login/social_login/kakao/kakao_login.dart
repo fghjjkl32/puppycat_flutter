@@ -84,7 +84,7 @@ class KakaoLoginService implements SocialLoginService {
       password: userInfo.id.toString(),
       passwordConfirm: userInfo.id.toString(),
       isBadge: 0,
-      uuid: "",
+      uuid: "", channelTalkHash: '',
     );
 
     return userModel;

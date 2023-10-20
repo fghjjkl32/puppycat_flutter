@@ -8,13 +8,14 @@ import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autoco
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_result_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/work_log/work_log_calendar_screen.dart';
 
 final workLogContentProvider = StateProvider<TextEditingController>((ref) => TextEditingController());
 
 class WorkLogResultScreen extends ConsumerStatefulWidget {
-  final List<Event> events;
+  final List<WalkResultItemModel> events;
   final int initialIndex;
 
   const WorkLogResultScreen({
@@ -62,9 +63,9 @@ class WorkLogResultScreenState extends ConsumerState<WorkLogResultScreen> {
         itemBuilder: (context, index) {
           return Column(
             children: [
-              Text(widget.events[index].title),
-              Text(widget.events[currentIndex].title),
-              Text("${DateFormat('yyyy-MM-dd').format(widget.events[currentIndex].date)}"),
+              // Text(widget.events[index].title),
+              // Text(widget.events[currentIndex].title),
+              // Text("${DateFormat('yyyy-MM-dd').format(widget.events[currentIndex].date)}"),
               // MultiTriggerAutocomplete(
               //   optionsAlignment: OptionsAlignment.topStart,
               //   autocompleteTriggers: [

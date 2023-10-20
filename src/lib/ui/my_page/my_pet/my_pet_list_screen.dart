@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -96,47 +97,82 @@ class MyPetListScreenState extends ConsumerState<MyPetListScreen> {
               },
               itemBuilder: (context, item, index) {
                 return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                      child: WidgetMask(
-                        blendMode: BlendMode.srcATop,
-                        childSaveLayer: true,
-                        mask: Center(
-                          child: item.url == null || item.url == ""
-                              ? const Icon(
-                                  Puppycat_social.icon_profile_large,
-                                  size: 92,
-                                  color: kNeutralColor500,
-                                )
-                              : Image.network(
-                                  Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.url}").toUrl(),
-                                  width: 135,
-                                  height: 135,
-                                  fit: BoxFit.cover,
-                                ),
-                        ),
-                        child: SvgPicture.asset(
-                          'assets/image/feed/image/squircle.svg',
-                          height: 84.h,
-                        ),
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        Text("${item.name}"),
-                        Row(
-                          children: [
-                            Text("${item.breedIdx == 1 || item.breedIdx == 2 ? item.breedNameEtc : item.breedName} | "),
-                            Text("${item.genderText}"),
-                          ],
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 7.0),
+                          child: WidgetMask(
+                            blendMode: BlendMode.srcATop,
+                            childSaveLayer: true,
+                            mask: Center(
+                              child: item.url == null || item.url == ""
+                                  ? const Icon(
+                                      Puppycat_social.icon_profile_large,
+                                      size: 58,
+                                      color: kNeutralColor500,
+                                    )
+                                  : Image.network(
+                                      Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.url}").toUrl(),
+                                      width: 54,
+                                      height: 54,
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/image/feed/image/squircle.svg',
+                              height: 54,
+                            ),
+                          ),
                         ),
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("${item.sizeText} | "),
-                            Text("${item.weight}kg | "),
-                            Text("${item.ageText}"),
+                            Text(
+                              "${item.name}",
+                              style: kSubTitle13BoldStyle.copyWith(color: kTextSubTitleColor),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "${item.breedIdx == 1 || item.breedIdx == 2 ? item.breedNameEtc : item.breedName}",
+                                  style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                ),
+                                Text(
+                                  " · ",
+                                  style: kButton14MediumStyle.copyWith(color: kNeutralColor400),
+                                ),
+                                Text(
+                                  "${item.genderText}",
+                                  style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "${item.sizeText}",
+                                  style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                ),
+                                Text(
+                                  " · ",
+                                  style: kButton14MediumStyle.copyWith(color: kNeutralColor400),
+                                ),
+                                Text(
+                                  "${NumberFormat("#,##0.##", "en_US").format(item.weight)}kg",
+                                  style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                ),
+                                Text(
+                                  " · ",
+                                  style: kButton14MediumStyle.copyWith(color: kNeutralColor400),
+                                ),
+                                Text(
+                                  "${item.ageText}",
+                                  style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ],
@@ -145,7 +181,10 @@ class MyPetListScreenState extends ConsumerState<MyPetListScreen> {
                       onPressed: () {
                         context.push("/home/myPage/myPetList/myPetRegistration/myPetEdit/${item.idx}");
                       },
-                      icon: Icon(Icons.edit),
+                      icon: Icon(
+                        Puppycat_social.icon_modify_medium,
+                        color: kNeutralColor600,
+                      ),
                     ),
                   ],
                 );

@@ -41,6 +41,7 @@ class AppleLoginService implements SocialLoginService {
       password: simpleId!,
       passwordConfirm: simpleId!,
       isBadge: 0, uuid: "",
+      channelTalkHash: '',
     );
 
     return userModel;

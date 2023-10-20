@@ -31,6 +31,7 @@ class UserModel with _$UserModel {
     required String passwordConfirm,
     required int isBadge,
     required String uuid,
+    required String channelTalkHash,
     @Default('') String? partner,
     String? ci,
     String? di,
