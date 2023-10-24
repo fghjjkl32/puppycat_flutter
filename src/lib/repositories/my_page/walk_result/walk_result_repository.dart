@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_list_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_result_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_result_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result_detail/walk_result_detail_list_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result_detail/walk_result_detail_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/walk_result/walk_result_service.dart';
 
 class WalkResultRepository {
@@ -38,5 +41,39 @@ class WalkResultRepository {
     }
 
     return responseModel;
+  }
+
+  Future<WalkResultDetailResponseModel> getWalkResultDetail({
+    required String memberUuid,
+    required String walkUuid,
+  }) async {
+    WalkResultDetailResponseModel? responseModel = await _walkResultService.getWalkResultDetail(memberUuid, walkUuid).catchError((Object obj) async {});
+
+    if (responseModel == null) {
+      return WalkResultDetailResponseModel(
+        result: false,
+        code: "",
+        data: WalkResultDetailListModel(
+          data: [],
+        ),
+        message: "",
+      );
+    }
+
+    return responseModel;
+  }
+
+  Future<ResponseModel> putWalkResult({
+    required Map<String, dynamic> formDataMap,
+  }) async {
+    final formData = FormData.fromMap(formDataMap);
+
+    ResponseModel? feedResponseModel = await _walkResultService.putWalkResult(formData);
+
+    if (feedResponseModel == null) {
+      throw "error posting feed";
+    }
+
+    return feedResponseModel;
   }
 }

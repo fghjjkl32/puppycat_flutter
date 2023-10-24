@@ -316,3 +316,9 @@ enum PetCharacter {
   final int value;
   final String name;
 }
+
+List<String> peeColorList = ["밝은노랑", "어두운노랑", "갈색", "붉은색"];
+List<String> peeAmountList = ["적음", "중간", "많음", "잘모르겠음"];
+List<String> poopColorList = ["갈색", "흑색", "혈액", "흰색", "회색", "노랑"];
+List<String> poopAmountList = ["적음", "중간", "많음", "잘모르겠음"];
+List<String> poopFormList = ["정상", "연변", "설사", "단단", "토끼똥"];
