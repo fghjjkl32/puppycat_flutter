@@ -13,7 +13,7 @@ import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/date_
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_result_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/walk_result/walk_result_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/work_log/work_log_result_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_result_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class YearMonthModel extends DatePickerModel {
@@ -63,14 +63,14 @@ final kToday = DateTime.now();
 final kFirstDay = DateTime(2020, 12, 20);
 final kLastDay = DateTime.now();
 
-class WorkLogCalendarScreen extends ConsumerStatefulWidget {
-  const WorkLogCalendarScreen({Key? key}) : super(key: key);
+class WalkLogCalendarScreen extends ConsumerStatefulWidget {
+  const WalkLogCalendarScreen({Key? key}) : super(key: key);
 
   @override
-  WorkLogCalendarScreenState createState() => WorkLogCalendarScreenState();
+  WalkLogCalendarScreenState createState() => WalkLogCalendarScreenState();
 }
 
-class WorkLogCalendarScreenState extends ConsumerState<WorkLogCalendarScreen> {
+class WalkLogCalendarScreenState extends ConsumerState<WalkLogCalendarScreen> {
   ValueNotifier<List<WalkResultItemModel>> _selectedEvents = ValueNotifier<List<WalkResultItemModel>>([]);
 
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -89,21 +89,28 @@ class WorkLogCalendarScreenState extends ConsumerState<WorkLogCalendarScreen> {
   void initState() {
     super.initState();
 
-    init();
+    init(
+      DateFormat('yyyy-MM-dd').format(
+        DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          1,
+        ),
+      ),
+      DateFormat('yyyy-MM-dd').format(
+        DateTime(
+          DateTime.now().year,
+          DateTime.now().month + 1,
+          0,
+        ),
+      ),
+    );
   }
 
-  init() async {
+  init(String searchStartDate, String searchEndDate) async {
     await ref.read(walkResultStateProvider.notifier).getWalkResult(
-          searchStartDate: DateFormat('yyyy-MM-dd').format(DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            1,
-          )),
-          searchEndDate: DateFormat('yyyy-MM-dd').format(DateTime(
-            DateTime.now().year,
-            DateTime.now().month + 1,
-            0,
-          )),
+          searchStartDate: searchStartDate,
+          searchEndDate: searchEndDate,
         );
 
     _populateEvents(ref.read(walkResultStateProvider).list);
@@ -111,8 +118,13 @@ class WorkLogCalendarScreenState extends ConsumerState<WorkLogCalendarScreen> {
 
   void _populateEvents(List<WalkResultItemModel> results) {
     setState(() {
+      kEvents = LinkedHashMap<DateTime, List<WalkResultItemModel>>(
+        equals: isSameDay,
+        hashCode: getHashCode,
+      );
+
       for (var result in results) {
-        final date = DateTime.parse(result.regDate!);
+        final date = DateTime.parse(result.startDate!);
 
         if (kEvents[date] != null) {
           kEvents[date]?.add(result);
@@ -243,17 +255,29 @@ class WorkLogCalendarScreenState extends ConsumerState<WorkLogCalendarScreen> {
               outsideDaysVisible: false,
             ),
             onDaySelected: _onDaySelected,
-            onFormatChanged: (format) {
-              if (_calendarFormat != format) {
-                setState(() {
-                  _calendarFormat = format;
-                });
-              }
-            },
             onPageChanged: (focusedDay) {
               setState(() {
                 _focusedDay = focusedDay;
               });
+
+              print(_focusedDay);
+
+              init(
+                DateFormat('yyyy-MM-dd').format(
+                  DateTime(
+                    _focusedDay.year,
+                    _focusedDay.month,
+                    1,
+                  ),
+                ),
+                DateFormat('yyyy-MM-dd').format(
+                  DateTime(
+                    _focusedDay.year,
+                    _focusedDay.month + 1,
+                    0,
+                  ),
+                ),
+              );
             },
           ),
           const SizedBox(height: 8.0),
@@ -275,7 +299,7 @@ class WorkLogCalendarScreenState extends ConsumerState<WorkLogCalendarScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => WorkLogResultScreen(
+                            builder: (context) => WalkLogResultScreen(
                               events: allEvents,
                               initialIndex: initialIndex,
                             ),

@@ -51,11 +51,11 @@ import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_scr
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_terms_of_service_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_unknown_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_calendar_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_select_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/work_log/work_log_calendar_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/notification/notification_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
@@ -191,10 +191,10 @@ class AppRouter {
                   ],
                 ),
                 GoRoute(
-                  path: 'workLogCalendar',
-                  name: 'workLogCalendar',
+                  path: 'walkLogCalendar',
+                  name: 'walkLogCalendar',
                   builder: (BuildContext context, GoRouterState state) {
-                    return const WorkLogCalendarScreen();
+                    return const WalkLogCalendarScreen();
                   },
                   // routes: [
                   //   GoRoute(
@@ -458,7 +458,7 @@ class AppRouter {
         name: 'map',
         builder: (BuildContext context, GoRouterState state) {
           String title = '지도';
-          if(state.extra is String) {
+          if (state.extra is String) {
             title = state.extra.toString();
           }
           return MapScreen(
