@@ -21,21 +21,21 @@ import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier
 import 'package:pet_mobile_social_flutter/ui/my_page/work_log/work_log_calendar_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/work_log/work_log_result_screen.dart';
 
-class WriteWorkLogScreen extends ConsumerStatefulWidget {
+class WriteWalkLogScreen extends ConsumerStatefulWidget {
   final Uint8List screenShotImage;
   final List<String> tabs;
 
-  const WriteWorkLogScreen({
+  const WriteWalkLogScreen({
     Key? key,
     required this.screenShotImage,
     required this.tabs,
   }) : super(key: key);
 
   @override
-  WriteWorkLogScreenState createState() => WriteWorkLogScreenState();
+  WriteWalkLogScreenState createState() => WriteWalkLogScreenState();
 }
 
-class WriteWorkLogScreenState extends ConsumerState<WriteWorkLogScreen> with TickerProviderStateMixin {
+class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with TickerProviderStateMixin {
   List<File> additionalCroppedFiles = [];
   late TabController tabController;
   late TabController tabController2;

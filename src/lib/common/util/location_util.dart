@@ -20,6 +20,8 @@ class LocationUtil {
         return;
       }
     }
+
+    Location().enableBackgroundMode(enable: true);
   }
 
   static Future<LocationData> getCurrentLocation() async {

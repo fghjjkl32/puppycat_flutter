@@ -85,11 +85,21 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
               IconButton(
                   onPressed: () async {
                     // final lastWalkState = ref.read(singleWalkStateProvider).last;
+                    final walkStateList = ref.read(singleWalkStateProvider);
                     ref.read(singleWalkStateProvider.notifier).stopLocationCollection();
                     ref.read(walkStateProvider.notifier).stopWalk();
 
                     final mapController = ref.read(naverMapControllerStateProvider);
                     if (mapController != null) {
+
+                      List<NLatLng> routeList = walkStateList.map((e) => NLatLng(e.latitude, e.longitude)).toList();
+                      final bounds = NLatLngBounds.from(routeList);
+                      // final cameraUpdate = NCameraUpdate.fitBounds(bounds);
+                      final cameraUpdateWithPadding = NCameraUpdate.fitBounds(bounds, padding: EdgeInsets.all(50));
+                      mapController.updateCamera(cameraUpdateWithPadding);
+
+                      final screenShot = await mapController.takeSnapshot();
+
                       mapController.clearOverlays(type: NOverlayType.pathOverlay);
                     }
                   },
