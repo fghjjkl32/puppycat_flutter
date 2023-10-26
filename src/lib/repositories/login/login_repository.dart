@@ -232,33 +232,45 @@ class LoginRepository {
   }
 
   Future<(ResponseModel?, LoginStatus)> errorHandler(Object obj) async {
-    ResponseModel? responseModel;
-    switch (obj.runtimeType) {
-      case DioException:
-        final res = (obj as DioException).response;
-
-        if (res?.data == null) {
-          ///TODO
-          ///Error Proc
-          return (responseModel, LoginStatus.failure);
-        } else if (res?.data is Map) {
-          print('res data : ${res?.data}');
-          responseModel = ResponseModel.fromJson(res?.data);
-        } else if (res?.data is String) {
-          Map<String, dynamic> valueMap = jsonDecode(res?.data);
-          responseModel = ResponseModel.fromJson(valueMap);
-        }
-
-        if (res?.statusCode == 302) {
-          return (responseModel, LoginStatus.needSignUp);
-        }
-
-        // print('responseModel $responseModel');
-        break;
-      default:
-        break;
+    if (obj is! DioException) {
+      return (null, LoginStatus.failure);
     }
+
+    final res = obj.response;
+    print('Status Code: ${res?.statusCode}');
+
+    if (res?.statusCode == 301) {
+      String? newUrl = res!.headers.value('location');
+      if (newUrl != null) {
+        ResponseModel? responseModel = await _fetchRedirectedUrl(newUrl);
+        if (responseModel != null && !responseModel.result) {
+          return (responseModel, LoginStatus.needSignUp);
+        } else {
+          return (responseModel, LoginStatus.success);
+        }
+      }
+    } else if (res?.statusCode == 302) {
+      ResponseModel? responseModel = _parseResponseData(res?.data);
+      return (responseModel, LoginStatus.needSignUp);
+    }
+
+    ResponseModel? responseModel = _parseResponseData(res?.data);
     return (responseModel, LoginStatus.failure);
+  }
+
+  ResponseModel? _parseResponseData(dynamic data) {
+    if (data is Map) {
+      return ResponseModel.fromJson(data as Map<String, dynamic>);
+    } else if (data is String) {
+      Map<String, dynamic> valueMap = jsonDecode(data);
+      return ResponseModel.fromJson(valueMap);
+    }
+    return null;
+  }
+
+  Future<ResponseModel?> _fetchRedirectedUrl(String newUrl) async {
+    var newResponse = await dio.get(newUrl);
+    return _parseResponseData(newResponse.data);
   }
 
   Future<bool> _socialLogin() async {

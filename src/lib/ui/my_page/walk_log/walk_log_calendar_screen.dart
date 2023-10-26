@@ -174,6 +174,46 @@ class WalkLogCalendarScreenState extends ConsumerState<WalkLogCalendarScreen> {
     }
   }
 
+  bool isToday(DateTime date) {
+    DateTime now = DateTime.now();
+    if (DateFormat('yyyy-MM-dd').format(now) == DateFormat('yyyy-MM-dd').format(date)) {
+      return true;
+    }
+    return false;
+  }
+
+  DateTime addOneMonth(DateTime dt) {
+    int newMonth = dt.month + 1;
+    int newYear = dt.year;
+
+    if (newMonth == 13) {
+      newMonth = 1;
+      newYear += 1;
+    }
+
+    // 월의 마지막 날짜보다 큰 날짜가 주어지면 월의 마지막 날짜로 변경
+    int lastDayOfMonth = DateTime(newYear, newMonth + 1, 0).day;
+    int newDay = dt.day <= lastDayOfMonth ? dt.day : lastDayOfMonth;
+
+    return DateTime(newYear, newMonth, newDay);
+  }
+
+  DateTime subtractOneMonth(DateTime dt) {
+    int newMonth = dt.month - 1;
+    int newYear = dt.year;
+
+    if (newMonth == 0) {
+      newMonth = 12;
+      newYear -= 1;
+    }
+
+    // 월의 마지막 날짜보다 큰 날짜가 주어지면 월의 마지막 날짜로 변경
+    int lastDayOfMonth = DateTime(newYear, newMonth + 1, 0).day;
+    int newDay = dt.day <= lastDayOfMonth ? dt.day : lastDayOfMonth;
+
+    return DateTime(newYear, newMonth, newDay);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -192,139 +232,427 @@ class WalkLogCalendarScreenState extends ConsumerState<WalkLogCalendarScreen> {
           ),
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          InkWell(
-            onTap: () {
-              DatePicker.showPicker(
-                context,
-                pickerModel: YearMonthModel(
-                  currentTime: _focusedDay,
-                  maxTime: kLastDay,
-                  minTime: kFirstDay,
-                  locale: LocaleType.ko,
-                ),
-                showTitleActions: true,
-                onConfirm: (date) {
-                  setState(() {
-                    _focusedDay = date;
-                  });
-                },
-                locale: LocaleType.ko,
-                theme: picker_theme.DatePickerTheme(
-                  itemStyle: kButton14MediumStyle.copyWith(color: kNeutralColor600),
-                  backgroundColor: kNeutralColor100,
-                  title: "다른 날짜 보기",
-                  isBirthDay: false,
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
+          Column(
+            children: [
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    DateFormat('yyyy년 M월').format(_focusedDay),
-                    style: kTitle18BoldStyle.copyWith(color: kNeutralColor600),
-                  ),
-                  SizedBox(
-                    width: 4,
-                  ),
-                  Icon(Icons.arrow_drop_down)
-                ],
-              ),
-            ),
-          ),
-          TableCalendar<WalkResultItemModel>(
-            firstDay: kFirstDay,
-            lastDay: kLastDay,
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            rangeStartDay: _rangeStart,
-            rangeEndDay: _rangeEnd,
-            calendarFormat: _calendarFormat,
-            weekendDays: const [DateTime.sunday, 6],
-            startingDayOfWeek: StartingDayOfWeek.sunday,
-            rangeSelectionMode: _rangeSelectionMode,
-            headerVisible: false,
-            eventLoader: _getEventsForDay,
-            calendarStyle: CalendarStyle(
-              isTodayHighlighted: true,
-              outsideDaysVisible: false,
-            ),
-            onDaySelected: _onDaySelected,
-            onPageChanged: (focusedDay) {
-              setState(() {
-                _focusedDay = focusedDay;
-              });
-
-              print(_focusedDay);
-
-              init(
-                DateFormat('yyyy-MM-dd').format(
-                  DateTime(
-                    _focusedDay.year,
-                    _focusedDay.month,
-                    1,
-                  ),
-                ),
-                DateFormat('yyyy-MM-dd').format(
-                  DateTime(
-                    _focusedDay.year,
-                    _focusedDay.month + 1,
-                    0,
-                  ),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 8.0),
-          Expanded(
-            child: ValueListenableBuilder<List<WalkResultItemModel>>(
-              valueListenable: _selectedEvents,
-              builder: (context, value, _) {
-                return ListView.builder(
-                  itemCount: value.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        List<WalkResultItemModel> allEvents = getAllEvents();
-
-                        int initialIndex = allEvents.indexOf(value[index]);
-                        if (initialIndex == -1) {
-                          initialIndex = 0;
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => WalkLogResultScreen(
-                              events: allEvents,
-                              initialIndex: initialIndex,
+                  _focusedDay.year > kFirstDay.year || (_focusedDay.year == kFirstDay.year && _focusedDay.month > kFirstDay.month)
+                      ? InkWell(
+                          onTap: () {
+                            if (_focusedDay.year > kFirstDay.year || (_focusedDay.year == kFirstDay.year && _focusedDay.month > kFirstDay.month)) {
+                              setState(() {
+                                _focusedDay = subtractOneMonth(_focusedDay);
+                              });
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: kNeutralColor200,
+                              shape: BoxShape.circle,
                             ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Icon(
+                                Icons.chevron_left,
+                                color: kTextBodyColor,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            color: kNeutralColor100,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Icon(
+                              Icons.chevron_left,
+                              color: kNeutralColor100,
+                            ),
+                          ),
+                        ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: InkWell(
+                      onTap: () {
+                        DatePicker.showPicker(
+                          context,
+                          pickerModel: YearMonthModel(
+                            currentTime: _focusedDay,
+                            maxTime: kLastDay,
+                            minTime: kFirstDay,
+                            locale: LocaleType.ko,
+                          ),
+                          showTitleActions: true,
+                          onConfirm: (date) {
+                            setState(() {
+                              _focusedDay = date;
+                            });
+                          },
+                          locale: LocaleType.ko,
+                          theme: picker_theme.DatePickerTheme(
+                            itemStyle: kButton14MediumStyle.copyWith(color: kNeutralColor600),
+                            backgroundColor: kNeutralColor100,
+                            title: "다른 날짜 보기",
+                            isBirthDay: false,
                           ),
                         );
                       },
-                      child: Container(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 12.0,
-                            vertical: 4.0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          DateFormat('yyyy. M').format(_focusedDay),
+                          style: kTitle18BoldStyle.copyWith(color: kTextTitleColor),
+                        ),
+                      ),
+                    ),
+                  ),
+                  _focusedDay.year < kToday.year || (_focusedDay.year == kToday.year && _focusedDay.month < kToday.month)
+                      ? InkWell(
+                          onTap: () {
+                            if (_focusedDay.year < kToday.year || (_focusedDay.year == kToday.year && _focusedDay.month < kToday.month)) {
+                              setState(() {
+                                _focusedDay = addOneMonth(_focusedDay);
+                              });
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: kNeutralColor200,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Icon(
+                                Icons.chevron_right,
+                                color: kTextBodyColor,
+                              ),
+                            ),
                           ),
+                        )
+                      : Container(
                           decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(12.0),
+                            color: kNeutralColor100,
+                            shape: BoxShape.circle,
                           ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Icon(
+                              Icons.chevron_right,
+                              color: kNeutralColor100,
+                            ),
+                          ),
+                        ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                          color: kNeutralColor100,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: Column(
                             children: [
-                              Text('혼자 산책'),
-                              Text('${value[index]}'),
+                              Text(
+                                "총 거리",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Text(
+                                "${ref.read(walkResultStateProvider).totalDistance}km",
+                                style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              ),
                             ],
-                          )),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                          color: kNeutralColor100,
+                        ),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "총 시간",
+                                  style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                ),
+                                Text(
+                                  "${ref.read(walkResultStateProvider).totalWalkTime}",
+                                  style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                          color: kNeutralColor100,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                "총 칼로리",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Text(
+                                "${ref.read(walkResultStateProvider).totalCalorie}kcal",
+                                style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              TableCalendar<WalkResultItemModel>(
+                firstDay: kFirstDay,
+                lastDay: kLastDay,
+                focusedDay: _focusedDay,
+                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                rangeStartDay: _rangeStart,
+                rangeEndDay: _rangeEnd,
+                calendarFormat: _calendarFormat,
+                weekendDays: const [DateTime.sunday, 6],
+                startingDayOfWeek: StartingDayOfWeek.sunday,
+                rangeSelectionMode: _rangeSelectionMode,
+                headerVisible: false,
+                eventLoader: _getEventsForDay,
+                calendarStyle: CalendarStyle(
+                  cellPadding: EdgeInsets.only(top: 10),
+                  cellAlignment: Alignment.bottomCenter,
+                  isTodayHighlighted: true,
+                  outsideDaysVisible: false,
+                ),
+                onDaySelected: _onDaySelected,
+                onPageChanged: (focusedDay) {
+                  setState(() {
+                    _focusedDay = focusedDay;
+                  });
+
+                  print(_focusedDay);
+
+                  init(
+                    DateFormat('yyyy-MM-dd').format(
+                      DateTime(
+                        _focusedDay.year,
+                        _focusedDay.month,
+                        1,
+                      ),
+                    ),
+                    DateFormat('yyyy-MM-dd').format(
+                      DateTime(
+                        _focusedDay.year,
+                        _focusedDay.month + 1,
+                        0,
+                      ),
+                    ),
+                  );
+                },
+                calendarBuilders: CalendarBuilders(
+                  dowBuilder: (context, day) {
+                    return Text(
+                      DateFormat.E('ko-KR').format(day),
+                      textAlign: TextAlign.center,
+                      style: kBody14BoldStyle.copyWith(color: kTextBodyColor),
                     );
                   },
-                );
-              },
+                  markerBuilder: (context, day, events) {
+                    return InkWell(
+                      onTap: () {
+                        _onDaySelected(day, _focusedDay);
+                      },
+                      child: Center(
+                        child: events.isEmpty && isToday(day)
+                            ? Padding(
+                                padding: EdgeInsets.only(top: 2),
+                                child: Image.asset(
+                                  'assets/image/character/character_06_mypage_walk_dailylog_default 1.png',
+                                  width: 40,
+                                ),
+                              )
+                            : isToday(day)
+                                ? Padding(
+                                    padding: EdgeInsets.only(top: 2),
+                                    child: Image.asset(
+                                      'assets/image/character/character_06_mypage_walk_dailylog_Great 1.png',
+                                      width: 40,
+                                    ),
+                                  )
+                                : events.isNotEmpty
+                                    ? Padding(
+                                        padding: EdgeInsets.only(top: 2),
+                                        child: Image.asset(
+                                          'assets/image/character/character_06_mypage_walk_dailylog_Great 1.png',
+                                          width: 30,
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: EdgeInsets.only(top: 2),
+                                        child: Image.asset(
+                                          'assets/image/character/character_06_mypage_walk_dailylog_default 1.png',
+                                          width: 30,
+                                        ),
+                                      ),
+                      ),
+                    );
+                  },
+
+                  // prioritizedBuilder: (context, day, events) {
+                  //   return isToday(day)
+                  //       ? Padding(
+                  //           padding: const EdgeInsets.only(
+                  //             bottom: 14,
+                  //           ),
+                  //           child: Container(
+                  //             width: 25.w,
+                  //             height: 16.h,
+                  //             decoration: BoxDecoration(
+                  //               borderRadius: BorderRadius.circular(10.0),
+                  //               color: kOrange300Color,
+                  //             ),
+                  //             child: Center(
+                  //               child: Text(
+                  //                 DateFormat('d').format(day),
+                  //                 style: kCaption1Style.copyWith(color: kWhiteColor),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         )
+                  //       : DateTime.now().isAfter(day)
+                  //           ? Padding(
+                  //               padding: EdgeInsets.all(16.0.w),
+                  //               child: Text(
+                  //                 DateFormat('d').format(day),
+                  //                 style: kCaption1Style.copyWith(color: Theme.of(context).colorScheme.iconSubColor),
+                  //               ),
+                  //             )
+                  //           : Container();
+                  // },
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              Expanded(
+                child: ValueListenableBuilder<List<WalkResultItemModel>>(
+                  valueListenable: _selectedEvents,
+                  builder: (context, value, _) {
+                    return ListView.builder(
+                      itemCount: value.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            List<WalkResultItemModel> allEvents = getAllEvents();
+
+                            int initialIndex = allEvents.indexOf(value[index]);
+                            if (initialIndex == -1) {
+                              initialIndex = 0;
+                            }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => WalkLogResultScreen(
+                                  events: allEvents,
+                                  initialIndex: initialIndex,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                                vertical: 4.0,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text('혼자 산책'),
+                                  Text('${value[index]}'),
+                                ],
+                              )),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            top: 42,
+            left: 0,
+            right: 0,
+            child: Column(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    color: kTextSubTitleColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(100.0),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                    child: Text(
+                      "${DateFormat('M').format(_focusedDay)} 분석",
+                      style: kBody11SemiBoldStyle.copyWith(color: kNeutralColor100),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

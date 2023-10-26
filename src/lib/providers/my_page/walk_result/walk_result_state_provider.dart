@@ -29,7 +29,7 @@ class WalkResultStateNotifier extends StateNotifier<WalkResultListModel> {
     required String searchEndDate,
   }) async {
     WalkResultResponseModel lists = await WalkResultRepository(dio: ref.read(dioProvider)).getWalkResult(
-      memberUuid: 'ko31f6871103e0443f9d80e9af892539c81695172576',
+      memberUuid: ref.read(userInfoProvider).userModel!.uuid,
       together: 0,
       searchStartDate: searchStartDate,
       searchEndDate: searchEndDate,
@@ -45,6 +45,7 @@ class WalkResultStateNotifier extends StateNotifier<WalkResultListModel> {
       list: lists.data.list,
       totalCalorie: lists.data.totalCalorie,
       totalWalkTime: lists.data.totalWalkTime,
+      totalDistance: lists.data.totalDistance,
     );
   }
 }

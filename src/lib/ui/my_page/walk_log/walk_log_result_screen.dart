@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_result_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/walk_result/walk_result_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
 import 'package:thumbor/thumbor.dart';
@@ -144,7 +145,7 @@ class WalkLogResultScreenState extends ConsumerState<WalkLogResultScreen> with T
 
               Map<String, dynamic> baseParams = {
                 "walkUuid": ref.watch(walkResultDetailStateProvider).data[0].walkUuid,
-                "memberUuid": 'ko31f6871103e0443f9d80e9af892539c81695172576',
+                "memberUuid": ref.read(userInfoProvider).userModel!.uuid,
                 "contents": ref.watch(walkLogContentProvider.notifier).state.text ?? "",
               };
 
