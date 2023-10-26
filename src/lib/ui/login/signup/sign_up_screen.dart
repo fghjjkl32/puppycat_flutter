@@ -168,7 +168,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
                       ),
                       onPressed: () async {
-                        final url = await ref.read(authStateProvider.notifier).getTossAuthUrl();
+                        final url = await ref.read(authStateProvider.notifier).getTossAuthUrl("2ecf4e89-e1bc-48e0-93c6-d2de8fe4a2d0");
                         //
                         final appScheme = ConvertUrl(url); // Intent URL을 앱 스킴 URL로 변환
                         //

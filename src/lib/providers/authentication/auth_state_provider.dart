@@ -84,14 +84,14 @@ class AuthState extends _$AuthState {
     return signUpAuthModel;
   }
 
-  Future<String> getTossAuthUrl() async {
+  Future<String> getTossAuthUrl(String txId) async {
     final authRepository = BearerTokenAuthRepository(dio: ref.read(dioProvider));
     try {
-      String txId = await authRepository.getTossAuthUrl();
+      // String txId = await authRepository.getTossAuthUrl();
 
-      ref.read(tossAccessTokenProvider.notifier).state = txId;
+      // ref.read(tossAccessTokenProvider.notifier).state = txId;
 
-      ref.read(tossTxIdProvider.notifier).state = txId;
+      // ref.read(tossTxIdProvider.notifier).state = txId;
 
       String url = await authRepository.getTossTransactionsUrl(txId);
 

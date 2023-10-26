@@ -31,7 +31,7 @@ class WalkResultDetailStateNotifier extends StateNotifier<WalkResultDetailListMo
     required String walkUuid,
   }) async {
     WalkResultDetailResponseModel lists = await WalkResultRepository(dio: ref.read(dioProvider)).getWalkResultDetail(
-      memberUuid: 'ko31f6871103e0443f9d80e9af892539c81695172576',
+      memberUuid: ref.read(userInfoProvider).userModel!.uuid,
       walkUuid: walkUuid,
     );
 
