@@ -15,6 +15,7 @@ class WalkResultListModel with _$WalkResultListModel {
     ParamsModel? params,
     int? totalCalorie,
     String? totalWalkTime,
+    int? totalDistance,
   }) = _WalkResultListModel;
 
   factory WalkResultListModel.fromJson(Map<String, dynamic> json) => _$WalkResultListModelFromJson(json);

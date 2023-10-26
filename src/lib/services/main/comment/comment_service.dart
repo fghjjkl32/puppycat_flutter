@@ -17,8 +17,7 @@ abstract class CommentService {
     @Path("page") int page,
   );
 
-  @GET(
-      '/contents/{contentsIdx}/comment/{commentIdx}/child?memberIdx={memberIdx}&page={page}&limit=10')
+  @GET('/contents/{contentsIdx}/comment/{commentIdx}/child?memberIdx={memberIdx}&page={page}&limit=10')
   Future<CommentResponseModel?> getReplyComment(
     @Path("contentsIdx") int contentsIdx,
     @Path("commentIdx") int commentIdx,

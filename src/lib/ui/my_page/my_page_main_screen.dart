@@ -30,7 +30,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_con
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/work_log/write_walk_log_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/write_walk_log_screen.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:url_launcher/url_launcher.dart';
