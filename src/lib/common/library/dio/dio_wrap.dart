@@ -26,8 +26,34 @@ class DioWrap {
 
   static Dio getDioWithCookie() {
     // final dio = Dio();
-    CookieJar cookieJar = GetIt.I<CookieJar>();
+
     if (dio.interceptors.whereType<CookieManager>().isEmpty) {
+      CookieJar cookieJar = GetIt.I<CookieJar>();
+      dio.interceptors.add(CookieManager(cookieJar));
+      dio.interceptors.add(QueuedInterceptorsWrapper());
+    }
+
+    ///TODO
+    /// 좀 더 고도화 필요
+    dio.interceptors.add(RetryInterceptor(
+      dio: dio,
+      logPrint: print,
+      retries: 3,
+      retryDelays: const [
+        // set delays between retries (optional)
+        Duration(seconds: 1), // wait 1 sec before first retry
+        Duration(seconds: 2), // wait 2 sec before second retry
+        Duration(seconds: 3), // wait 3 sec before third retry
+      ],
+    ));
+
+    return dio;
+  }
+  static Dio getDioWithCookieForBackground(CookieJar cookieJar) {
+    // final dio = Dio();
+
+    if (dio.interceptors.whereType<CookieManager>().isEmpty) {
+      // CookieJar cookieJar = GetIt.I<CookieJar>();
       dio.interceptors.add(CookieManager(cookieJar));
       dio.interceptors.add(QueuedInterceptorsWrapper());
     }
@@ -51,8 +77,8 @@ class DioWrap {
 
   static Dio getDioWithCookie2(Ref ref) {
     // final dio = Dio();
-    CookieJar cookieJar = GetIt.I<CookieJar>();
     if (dio.interceptors.whereType<CookieManager>().isEmpty) {
+      CookieJar cookieJar = GetIt.I<CookieJar>();
       dio.interceptors.add(CookieManager(cookieJar));
       dio.interceptors.add(QueuedInterceptorsWrapper());
     }

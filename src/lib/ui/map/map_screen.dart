@@ -1,12 +1,18 @@
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 import 'package:location/location.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/map/bottom_drawer.dart';
 import 'package:pet_mobile_social_flutter/ui/map/walk_info_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({
@@ -162,10 +168,45 @@ class MapScreenState extends ConsumerState<MapScreen> {
                           onPressed: () async {
                             // final currentLocationData = await Location().getLocation();
                             // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
-                            await ref.read(walkStateProvider.notifier).startWalk().then((value) async {
-                              if (value) {
+                            await ref.read(walkStateProvider.notifier).startWalk().then((walkUuid) async {
+                              if (walkUuid.isNotEmpty) {
                                 final currentLocationData = await Location().getLocation();
-                                ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
+                                // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
+                                ref.read(singleWalkStateProvider.notifier).startBackgroundLocation(currentLocationData);
+
+                                // FlutterBackgroundService().invoke("setAsForeground");
+                                // FlutterBackgroundService().startService();
+                                // var isRunning = await FlutterBackgroundService().isRunning();
+                                // print('service running? $isRunning');
+                                final userInfo = ref.read(userInfoProvider).userModel;
+                                print('start userModel $userInfo');
+                                final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
+                                // FlutterBackgroundService().invoke("setAsForeground");
+                                // FlutterBackgroundService().startService();
+                                // FlutterBackgroundService().invoke('startService', {
+                                //   'memberUuid' : memberUuid,
+                                //   'walkUuid' : value,
+                                //   // 'dio' : ref.read(dioProvider),
+                                // });
+
+                                FlutterBackgroundService().startService().then((isBackStarted) async {
+                                  if(isBackStarted) {
+                                    print('background start!!');
+                                    FlutterBackgroundService().invoke("setAsForeground");
+                                    CookieJar cookieJar = GetIt.I<CookieJar>();
+                                    var cookies = await cookieJar.loadForRequest(Uri.parse(baseUrl));
+                                    Map<String, dynamic> cookieMap = {};
+                                    for (var cookie in cookies) {
+                                      cookieMap[cookie.name] = cookie.value;
+                                    }
+                                    FlutterBackgroundService().invoke('setData', {
+                                      'memberUuid' : memberUuid,
+                                      'walkUuid' : walkUuid,
+                                      'cookieMap' : cookieMap,
+                                    });
+                                  }
+                                });
+
                               } else {
                                 print('Error Start Walk');
                               }

@@ -21,7 +21,8 @@ import 'package:location/location.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
-import 'package:pet_mobile_social_flutter/common/util/location_util.dart';
+import 'package:pet_mobile_social_flutter/common/util/location/geolocator_util.dart';
+import 'package:pet_mobile_social_flutter/common/util/location/location_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 
 import 'package:pet_mobile_social_flutter/config/routes.dart';
@@ -29,6 +30,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
+import 'package:pet_mobile_social_flutter/controller/background_service/background_service_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.dart';
@@ -88,10 +90,14 @@ void main() async {
     systemNavigationBarIconBrightness: Brightness.dark,
   ));
 
-  await LocationUtil.checkLocationPermission();
-  Location().changeSettings(interval: 500);
+  // await LocationUtil.checkLocationPermission();
+  // Location().changeSettings(interval: 500);
+  await GeolocatorUtil.checkLocationPermission();
 
   await NaverMapSdk.instance.initialize(clientId: "omfrw8eeol");
+
+
+  await initializeBackgroundService();
 
   /// Get It
   /// SingleTon
@@ -133,10 +139,25 @@ class PuppycatApp extends ConsumerStatefulWidget {
   PuppycatAppState createState() => PuppycatAppState();
 }
 
-class PuppycatAppState extends ConsumerState<PuppycatApp> {
+class PuppycatAppState extends ConsumerState<PuppycatApp>  with WidgetsBindingObserver {
   @override
   void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
     initLocalNotification();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // 앱이 포그라운드에 있음
+      print('Foreground!!!!!!!!!!!');
+    } else if (state == AppLifecycleState.paused) {
+      // 앱이 백그라운드에 있음
+      // 앱이 백그라운드로 전환될 때 특정 함수를 호출하려면 여기에서 호출하면 됩니다.
+      // 예를 들어:
+      print('Background!!!!!!!!!!!');
+    }
   }
 
   void initLocalNotification() {

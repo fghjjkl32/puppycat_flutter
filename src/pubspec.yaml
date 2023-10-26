@@ -147,6 +147,8 @@ dependencies:
   flutter_naver_map: ^1.0.2
   flutter_bottom_drawer: ^0.0.7
   location: ^5.0.3
+  flutter_background_service: ^5.0.2
+  geolocator: ^10.1.0
 
 
 dev_dependencies:

@@ -6,6 +6,7 @@
 
 import 'dart:async';
 
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:location/location.dart';
@@ -17,6 +18,7 @@ import 'package:pet_mobile_social_flutter/repositories/walk/walk_repository.dart
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:pet_mobile_social_flutter/common/util/walk_util.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'single_walk_provider.g.dart';
 
@@ -26,21 +28,23 @@ final singleWalkStatusStateProvider = StateProvider<WalkStatus>((ref) => WalkSta
 
 @Riverpod(keepAlive: true)
 class SingleWalkState extends _$SingleWalkState {
-  StreamSubscription<LocationData>? _locationDataCollectionStream;
+  // StreamSubscription<LocationData>? _locationDataCollectionStream;
+  StreamSubscription<Map<String, dynamic>?>? _backgroundLocationDataStream;
 
   @override
   List<WalkStateModel> build() {
     return [];
   }
 
-  void startLocationCollection(LocationData initLocationData) async {
-    stopLocationCollection();
-
+  void startBackgroundLocation(LocationData initLocationData) async {
     final selectedPetList = ref.read(walkSelectedPetStateProvider);
-    // final firstPet = ref.read(walkSelectedPetStateProvider.notifier).getFirstRegPet();
-    // print('firstPet $firstPet');
 
-    _locationDataCollectionStream = Location().onLocationChanged.listen((LocationData currentLocation) async {
+
+    _backgroundLocationDataStream = FlutterBackgroundService().on('location_update').listen((event) async {
+      if(event == null) {
+        return;
+      }
+
       final WalkStateModel previousWalkStateModel;
       if (state.isEmpty) {
         previousWalkStateModel = WalkStateModel(
@@ -60,30 +64,83 @@ class SingleWalkState extends _$SingleWalkState {
         return;
       }
 
-      final walkStateModel = WalkUtil.calcWalkStateValue(previousWalkStateModel, currentLocation, selectedPetList);
+      print('event : $event');
+      LocationData currentLocationData = LocationData.fromMap({
+        'latitude': event['latitude'],
+        'longitude': event['longitude'],
+      });
+
+      final walkStateModel = WalkUtil.calcWalkStateValue(previousWalkStateModel, currentLocationData, selectedPetList);
       state = [...state, walkStateModel];
       if (state.isNotEmpty) {
         await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last);
       }
     });
 
-
-
     ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.walking;
   }
 
-  Future stopLocationCollection() async {
+  Future stopBackgroundLocation() async {
     ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.idle;
 
-    if (_locationDataCollectionStream != null) {
-      _locationDataCollectionStream!.cancel();
+    if (_backgroundLocationDataStream != null) {
+      _backgroundLocationDataStream!.cancel();
     }
 
     if (state.isNotEmpty) {
       await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last, true);
     }
-
-    // state.clear();
-    // ref.read(walkSelectedPetStateProvider.notifier).state.clear();
   }
+
+  // void startLocationCollection(LocationData initLocationData) async {
+  //   stopLocationCollection();
+  //
+  //   final selectedPetList = ref.read(walkSelectedPetStateProvider);
+  //
+  //   _locationDataCollectionStream = Location().onLocationChanged.listen((LocationData currentLocation) async {
+  //     final WalkStateModel previousWalkStateModel;
+  //     if (state.isEmpty) {
+  //       previousWalkStateModel = WalkStateModel(
+  //         dateTime: DateTime.now(),
+  //         latitude: initLocationData.latitude!,
+  //         longitude: initLocationData.longitude!,
+  //         distance: 0,
+  //         walkTime: 0,
+  //         walkCount: 0,
+  //         calorie: {},
+  //       );
+  //     } else {
+  //       previousWalkStateModel = state.last;
+  //     }
+  //
+  //     if(ref.read(singleWalkStatusStateProvider) == WalkStatus.idle) {
+  //       return;
+  //     }
+  //
+  //     final walkStateModel = WalkUtil.calcWalkStateValue(previousWalkStateModel, currentLocation, selectedPetList);
+  //     state = [...state, walkStateModel];
+  //     if (state.isNotEmpty) {
+  //       await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last);
+  //     }
+  //   });
+  //
+  //
+  //
+  //   ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.walking;
+  // }
+  //
+  // Future stopLocationCollection() async {
+  //   ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.idle;
+  //
+  //   if (_locationDataCollectionStream != null) {
+  //     _locationDataCollectionStream!.cancel();
+  //   }
+  //
+  //   if (state.isNotEmpty) {
+  //     await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last, true);
+  //   }
+  //
+  //   // state.clear();
+  //   // ref.read(walkSelectedPetStateProvider.notifier).state.clear();
+  // }
 }

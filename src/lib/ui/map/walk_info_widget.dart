@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
@@ -86,11 +87,18 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
                   onPressed: () async {
                     // final lastWalkState = ref.read(singleWalkStateProvider).last;
                     final walkStateList = ref.read(singleWalkStateProvider);
-                    ref.read(singleWalkStateProvider.notifier).stopLocationCollection();
+                    // ref.read(singleWalkStateProvider.notifier).stopLocationCollection();
+                    var isRunning = await FlutterBackgroundService().isRunning();
+                    print('service running? $isRunning');
+                    FlutterBackgroundService().invoke("stopService");
+                    ref.read(singleWalkStateProvider.notifier).stopBackgroundLocation();
                     ref.read(walkStateProvider.notifier).stopWalk();
 
                     final mapController = ref.read(naverMapControllerStateProvider);
                     if (mapController != null) {
+                      if(walkStateList.isEmpty) {
+                        return;
+                      }
 
                       List<NLatLng> routeList = walkStateList.map((e) => NLatLng(e.latitude, e.longitude)).toList();
                       final bounds = NLatLngBounds.from(routeList);
@@ -102,6 +110,9 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
 
                       mapController.clearOverlays(type: NOverlayType.pathOverlay);
                     }
+
+                    var isRunning2 = await FlutterBackgroundService().isRunning();
+                    print('22 service running? $isRunning2');
                   },
                   icon: Icon(Icons.stop)),
               IconButton(onPressed: () {}, icon: Icon(Icons.view_compact_alt_outlined)),
