@@ -102,8 +102,12 @@ class DioWrap {
         onRequest: (options, handler) async {
           // This is where you call your specific API
           try {
-            if (ref.read(userInfoProvider).userModel != null) {
-              ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
+            print('ref.read(userInfoProvider).userModel ${ref.read(userInfoProvider).userModel}');
+            final userModel = ref.read(userInfoProvider).userModel;
+            if (userModel != null) {
+              if(userModel.idx != 0) {
+                ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
+              }
             }
 
             //Add user agent

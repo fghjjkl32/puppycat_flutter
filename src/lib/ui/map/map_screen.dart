@@ -5,6 +5,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:location/location.dart';
+import 'package:pet_mobile_social_flutter/common/util/location/geolocator_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -139,7 +140,7 @@ class MapScreenState extends ConsumerState<MapScreen> {
       await mapController.addOverlay(NPathOverlay(id: '2', coords: routeList, color: Colors.deepPurpleAccent));
     });
 
-    final bool isWalking = ref.watch(singleWalkStatusStateProvider) == WalkStatus.walking;
+    final bool isWalking = ref.watch(walkStatusStateProvider) == WalkStatus.walking;
     // print('isWalking $isWalking');
 
     final walkStateModelList = ref.watch(singleWalkStateProvider);
@@ -232,10 +233,9 @@ class MapScreenState extends ConsumerState<MapScreen> {
                             // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
                             await ref.read(walkStateProvider.notifier).startWalk().then((walkUuid) async {
                               if (walkUuid.isNotEmpty) {
-                                final currentLocationData = await Location().getLocation();
+                                final currentLocationData = await GeolocatorUtil.getCurrentLocation();
                                 // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
                                 ref.read(singleWalkStateProvider.notifier).startBackgroundLocation(currentLocationData);
-
                                 final userInfo = ref.read(userInfoProvider).userModel;
                                 print('start userModel $userInfo');
                                 final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;

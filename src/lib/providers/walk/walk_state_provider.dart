@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -17,13 +20,21 @@ part 'walk_state_provider.g.dart';
 enum WalkStatus {
   idle,
   walking,
+  finished,
 }
+
+
+final walkStatusStateProvider = StateProvider<WalkStatus>((ref) => WalkStatus.idle);
+final walkPathImgStateProvider = StateProvider<File?>((ref) => null);
+
 
 @Riverpod(keepAlive: true)
 class WalkState extends _$WalkState {
   String _walkUuid = '';
   String _walkStartDate = '';
   List<WalkStateModel> _walkInfoList = [];
+
+  String get walkUuid => _walkUuid;
   @override
   WalkStatus build() {
     return WalkStatus.idle;
@@ -88,7 +99,8 @@ class WalkState extends _$WalkState {
       // });
       // FlutterBackgroundService().startService();
 
-
+      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walking;
+      print('ref.read(walkStatusStateProvider ${ref.read(walkStatusStateProvider)}');
       return _walkUuid;
     } catch(e) {
       print('startWalk error $e');
@@ -96,7 +108,7 @@ class WalkState extends _$WalkState {
     }
   }
 
-  Future stopWalk() async {
+  Future<String> stopWalk() async {
     final walkRepository = WalkRepository(dio: ref.read(dioProvider));
     try {
       final userInfo = ref.read(userInfoProvider).userModel;
@@ -112,20 +124,20 @@ class WalkState extends _$WalkState {
       print('lastWalkState $lastWalkState');
       ///String memberUuid, String walkUuid, int steps, String startDate, double distance, Map<String, dynamic> petWalkInfo,
 
-      if(_walkInfoList.isNotEmpty) {
-        sendWalkInfo(lastWalkState, true);
-      }
+      // if(_walkInfoList.isNotEmpty) {
+      //   sendWalkInfo(lastWalkState, true);
+      // }
       var result = await walkRepository.stopWalk(memberUuid, _walkUuid, lastWalkState.walkCount, _walkStartDate, lastWalkState.distance, lastWalkState.calorie);
-
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      await preferences.reload();
-      await preferences.setString('memberUuid', '');
-      await preferences.setString('walkUuid', '');
 
       ref.read(singleWalkStateProvider.notifier).state.clear();
       ref.read(walkSelectedPetStateProvider.notifier).state.clear();
+
+      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.finished;
+      print('stop walk uuid : $_walkUuid');
+      return _walkUuid;
     } catch(e) {
       print('stopWalk error $e');
+      return '';
     }
   }
   Future sendWalkInfo(WalkStateModel walkInfo, [bool isFinished = false]) async {

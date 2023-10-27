@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -24,7 +25,7 @@ part 'single_walk_provider.g.dart';
 
 final naverMapControllerStateProvider = StateProvider<NaverMapController?>((ref) => null);
 
-final singleWalkStatusStateProvider = StateProvider<WalkStatus>((ref) => WalkStatus.idle);
+// final singleWalkStatusStateProvider = StateProvider<WalkStatus>((ref) => WalkStatus.idle);
 
 @Riverpod(keepAlive: true)
 class SingleWalkState extends _$SingleWalkState {
@@ -36,9 +37,8 @@ class SingleWalkState extends _$SingleWalkState {
     return [];
   }
 
-  void startBackgroundLocation(LocationData initLocationData) async {
+  void startBackgroundLocation(Position initLocationData) async {
     final selectedPetList = ref.read(walkSelectedPetStateProvider);
-
 
     _backgroundLocationDataStream = FlutterBackgroundService().on('location_update').listen((event) async {
       if(event == null) {
@@ -49,8 +49,8 @@ class SingleWalkState extends _$SingleWalkState {
       if (state.isEmpty) {
         previousWalkStateModel = WalkStateModel(
           dateTime: DateTime.now(),
-          latitude: initLocationData.latitude!,
-          longitude: initLocationData.longitude!,
+          latitude: initLocationData.latitude,
+          longitude: initLocationData.longitude,
           distance: 0,
           walkTime: 0,
           walkCount: 0,
@@ -60,7 +60,7 @@ class SingleWalkState extends _$SingleWalkState {
         previousWalkStateModel = state.last;
       }
 
-      if(ref.read(singleWalkStatusStateProvider) == WalkStatus.idle) {
+      if(ref.read(walkStatusStateProvider) != WalkStatus.walking) {
         return;
       }
 
@@ -72,24 +72,24 @@ class SingleWalkState extends _$SingleWalkState {
 
       final walkStateModel = WalkUtil.calcWalkStateValue(previousWalkStateModel, currentLocationData, selectedPetList);
       state = [...state, walkStateModel];
-      if (state.isNotEmpty) {
-        await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last);
-      }
+      // if (state.isNotEmpty) {
+      //   await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last);
+      // }
     });
 
-    ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.walking;
+    // ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.walking;
   }
 
   Future stopBackgroundLocation() async {
-    ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.idle;
+    // ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.idle;
 
     if (_backgroundLocationDataStream != null) {
       _backgroundLocationDataStream!.cancel();
     }
 
-    if (state.isNotEmpty) {
-      await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last, true);
-    }
+    // if (state.isNotEmpty) {
+    //   await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last, true);
+    // }
   }
 
   // void startLocationCollection(LocationData initLocationData) async {
