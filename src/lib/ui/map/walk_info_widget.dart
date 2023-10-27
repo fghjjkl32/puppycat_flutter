@@ -85,11 +85,7 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
               IconButton(onPressed: () {}, icon: Icon(Icons.camera)),
               IconButton(
                   onPressed: () async {
-                    // final lastWalkState = ref.read(singleWalkStateProvider).last;
                     final walkStateList = ref.read(singleWalkStateProvider);
-                    // ref.read(singleWalkStateProvider.notifier).stopLocationCollection();
-                    var isRunning = await FlutterBackgroundService().isRunning();
-                    print('service running? $isRunning');
                     FlutterBackgroundService().invoke("stopService");
                     ref.read(singleWalkStateProvider.notifier).stopBackgroundLocation();
                     ref.read(walkStateProvider.notifier).stopWalk();
@@ -103,16 +99,15 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
                       List<NLatLng> routeList = walkStateList.map((e) => NLatLng(e.latitude, e.longitude)).toList();
                       final bounds = NLatLngBounds.from(routeList);
                       // final cameraUpdate = NCameraUpdate.fitBounds(bounds);
-                      final cameraUpdateWithPadding = NCameraUpdate.fitBounds(bounds, padding: EdgeInsets.all(50));
-                      mapController.updateCamera(cameraUpdateWithPadding);
+                      final cameraUpdateWithPadding = NCameraUpdate.fitBounds(bounds, padding: const EdgeInsets.all(50));
+                      await mapController.updateCamera(cameraUpdateWithPadding).then((value) async {
+                        await mapController.takeSnapshot(showControls: false);
+                      });
 
-                      final screenShot = await mapController.takeSnapshot();
+                      // final screenShot = await mapController.takeSnapshot(showControls: false);
 
                       mapController.clearOverlays(type: NOverlayType.pathOverlay);
                     }
-
-                    var isRunning2 = await FlutterBackgroundService().isRunning();
-                    print('22 service running? $isRunning2');
                   },
                   icon: Icon(Icons.stop)),
               IconButton(onPressed: () {}, icon: Icon(Icons.view_compact_alt_outlined)),

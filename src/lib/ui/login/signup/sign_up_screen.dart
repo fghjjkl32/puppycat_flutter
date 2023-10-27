@@ -482,7 +482,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     ref.listen(passUrlProvider, (previous, next) {
       final url = Uri.encodeComponent(next);
       // context.go('/webview/$url');
-      context.goNamed('webview', pathParameters: {"url": url});
+      context.goNamed('webview', pathParameters: {"url": url, "authType" : 'pass'});
     });
 
     ref.listen(signUpStateProvider, (previous, next) {

@@ -86,10 +86,9 @@ class $SearchesTable extends Searches with TableInfo<$SearchesTable, Searche> {
   List<GeneratedColumn> get $columns =>
       [id, contentId, name, date, content, intro, image, isBadge, created];
   @override
-  String get aliasedName => _alias ?? actualTableName;
+  String get aliasedName => _alias ?? 'searches';
   @override
-  String get actualTableName => $name;
-  static const String $name = 'searches';
+  String get actualTableName => 'searches';
   @override
   VerificationContext validateIntegrity(Insertable<Searche> instance,
       {bool isInserting = false}) {

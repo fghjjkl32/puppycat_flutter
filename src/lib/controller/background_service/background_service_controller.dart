@@ -19,9 +19,9 @@ Future<void> initializeBackgroundService() async {
 
   /// OPTIONAL, using custom notification channel id
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'my_foreground', // id
-    'MY FOREGROUND SERVICE', // title
-    description: 'This channel is used for important notifications.', // description
+    'puppycat_walk', // id
+    '산책 현황', // title
+    description: '', // description
     importance: Importance.low, // importance must be at low or higher level
   );
 
@@ -47,10 +47,12 @@ Future<void> initializeBackgroundService() async {
       autoStart: false,
       isForegroundMode: true,
 
-      notificationChannelId: 'my_foreground',
-      initialNotificationTitle: 'AWESOME SERVICE',
-      initialNotificationContent: 'Initializing',
-      foregroundServiceNotificationId: 888,
+      notificationChannelId: 'puppycat_walk',
+      initialNotificationTitle: '퍼피캣',
+      initialNotificationContent: '우리 아이와 행복한 산책 중!',
+      foregroundServiceNotificationId: 3333,
+
+      ///TODO 다른 알림이랑 안겹치는 숫자 찾아서 수정
     ),
     iosConfiguration: IosConfiguration(
       // auto start service
@@ -91,7 +93,6 @@ void onBackgroundStart(ServiceInstance service) async {
   String walkUuid = '';
   CookieJar cookieJar = CookieJar();
 
-
   /// OPTIONAL when use custom notification
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -128,48 +129,68 @@ void onBackgroundStart(ServiceInstance service) async {
     // cookieJar.saveFromResponse(Uri.parse(baseUrl), cookies);
   });
 
+  if (service is AndroidServiceInstance) {
+    if (await service.isForegroundService()) {
+      flutterLocalNotificationsPlugin.show(
+        3333,
+        '퍼피캣',
+        '우리 아이와 행복한 산책 중!',
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'puppycat_walk',
+            '산책 현황',
+            icon: 'ic_bg_service_small',
+            ongoing: true,
+            // importance: Importance.high,
+          ),
+        ),
+      );
+    }
+  }
   // bring to foreground
   Timer.periodic(const Duration(seconds: 1), (timer) async {
-    if (service is AndroidServiceInstance) {
-      if (await service.isForegroundService()) {
-        /// OPTIONAL for use custom notification
-        /// the notification id must be equals with AndroidConfiguration when you call configure() method.
-        flutterLocalNotificationsPlugin.show(
-          888,
-          'COOL SERVICE',
-          'Awesome ${DateTime.now()}',
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-              'my_foreground',
-              'MY FOREGROUND SERVICE',
-              icon: 'ic_bg_service_small',
-              ongoing: true,
-            ),
-          ),
-        );
-
-        // if you don't using custom notification, uncomment this
-        // service.setForegroundNotificationInfo(
-        //   title: "My App Service",
-        //   content: "Updated at ${DateTime.now()}",
-        // );
-      }
-    }
+    // if (service is AndroidServiceInstance) {
+    //   if (await service.isForegroundService()) {
+    //     /// OPTIONAL for use custom notification
+    //     /// the notification id must be equals with AndroidConfiguration when you call configure() method.
+    //     flutterLocalNotificationsPlugin.show(
+    //       3333,
+    //       '퍼피캣',
+    //       '우리 아이와 행복한 산책 중!',
+    //       const NotificationDetails(
+    //         android: AndroidNotificationDetails(
+    //           'puppycat_walk',
+    //           '산책 현황',
+    //           icon: 'ic_bg_service_small',
+    //           ongoing: true,
+    //           // importance: Importance.high,
+    //         ),
+    //       ),
+    //     );
+    //
+    //     // if you don't using custom notification, uncomment this
+    //     // service.setForegroundNotificationInfo(
+    //     //   title: "My App Service",
+    //     //   content: "Updated at ${DateTime.now()}",
+    //     // );
+    //   }
+    // }
 
     // final cnt = await ref.read(walkStateProvider.notifier).getTodayWalkCount();
 
-    try {
-      final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookieForBackground(cookieJar));
-      print('memberUuid $memberUuid / walkUuid $walkUuid');
-
-      var result = await walkRepository.getTodayWalkCount(memberUuid, false);
-      print('walkCount $result');
-    } catch (e) {
-      print('getTodayWalkCount error $e');
-    }
+    // try {
+    //   final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookieForBackground(cookieJar));
+    //   print('memberUuid $memberUuid / walkUuid $walkUuid');
+    //
+    //   var result = await walkRepository.getTodayWalkCount(memberUuid, false);
+    //   print('walkCount $result');
+    // } catch (e) {
+    //   print('getTodayWalkCount error $e');
+    // }
 
     /// you can see this log in logcat
     print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
+    print('memberUuid $memberUuid / walkUuid $walkUuid');
 
     final location = await GeolocatorUtil.getCurrentLocation();
     print('location $location');

@@ -115,7 +115,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
   Widget build(BuildContext context) {
     ref.listen(passUrlProvider, (previous, next) {
       final url = Uri.encodeComponent(next);
-      context.pushNamed('webview', pathParameters: {"url": url});
+      context.pushNamed('webview', pathParameters: {"url": url, "authType" : 'pass'});
     });
 
     final nickProvider = ref.watch(nickNameProvider);

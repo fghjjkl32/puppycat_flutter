@@ -174,20 +174,9 @@ class MapScreenState extends ConsumerState<MapScreen> {
                                 // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
                                 ref.read(singleWalkStateProvider.notifier).startBackgroundLocation(currentLocationData);
 
-                                // FlutterBackgroundService().invoke("setAsForeground");
-                                // FlutterBackgroundService().startService();
-                                // var isRunning = await FlutterBackgroundService().isRunning();
-                                // print('service running? $isRunning');
                                 final userInfo = ref.read(userInfoProvider).userModel;
                                 print('start userModel $userInfo');
                                 final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
-                                // FlutterBackgroundService().invoke("setAsForeground");
-                                // FlutterBackgroundService().startService();
-                                // FlutterBackgroundService().invoke('startService', {
-                                //   'memberUuid' : memberUuid,
-                                //   'walkUuid' : value,
-                                //   // 'dio' : ref.read(dioProvider),
-                                // });
 
                                 FlutterBackgroundService().startService().then((isBackStarted) async {
                                   if(isBackStarted) {
@@ -206,7 +195,6 @@ class MapScreenState extends ConsumerState<MapScreen> {
                                     });
                                   }
                                 });
-
                               } else {
                                 print('Error Start Walk');
                               }

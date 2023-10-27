@@ -55,7 +55,7 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
         handlerName: 'setPassAuthToken',
         callback: (args) {
           String? data = args.first;
-
+          print('pass data : $data');
           if (data != null) {
             ref.read(authStateProvider.notifier).setPassAuthData(data);
             context.pop();
