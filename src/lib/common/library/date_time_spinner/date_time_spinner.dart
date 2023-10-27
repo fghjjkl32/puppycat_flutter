@@ -338,26 +338,26 @@ class _DatePickerState extends State<_DatePickerComponent> {
                     theme.title,
                     style: kTitle18BoldStyle.copyWith(color: kNeutralColor600),
                   ),
-                  theme.isBirthDay
-                      ? InkWell(
-                          onTap: () async {
-                            final DateTime? selected = await showDatePicker(
-                              context: context,
-                              initialDate: widget.pickerModel.finalTime()!,
-                              firstDate: DateTime(1930),
-                              lastDate: DateTime.now(),
-                            );
-                            if (selected != null && mounted) {
-                              Navigator.pop(context, selected);
-                              widget.route.onConfirm!(selected);
-                            }
-                          },
-                          child: Text(
-                            "달력으로 보기",
-                            style: kTitle14BoldStyle.copyWith(color: kNeutralColor600),
-                          ),
-                        )
-                      : Container(),
+                  // theme.isBirthDay
+                  //     ? InkWell(
+                  //         onTap: () async {
+                  //           final DateTime? selected = await showDatePicker(
+                  //             context: context,
+                  //             initialDate: widget.pickerModel.finalTime()!,
+                  //             firstDate: DateTime(1930),
+                  //             lastDate: DateTime.now(),
+                  //           );
+                  //           if (selected != null && mounted) {
+                  //             Navigator.pop(context, selected);
+                  //             widget.route.onConfirm!(selected);
+                  //           }
+                  //         },
+                  //         child: Text(
+                  //           "달력으로 보기",
+                  //           style: kTitle14BoldStyle.copyWith(color: kNeutralColor600),
+                  //         ),
+                  //       )
+                  //     : Container(),
                 ],
               ),
             ),
@@ -596,14 +596,33 @@ class _DatePickerState extends State<_DatePickerComponent> {
 
   // Title View
   Widget _renderBottomActionsView() {
-    return InkWell(
-      onTap: () async {
-        Navigator.pop(context, widget.pickerModel.finalTime());
-        if (widget.route.onConfirm != null) {
-          widget.route.onConfirm!(widget.pickerModel.finalTime()!);
-        }
-      },
-      child: Text("확인"),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Container(
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            disabledBackgroundColor: kNeutralColor400,
+            backgroundColor: kPrimaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+          ),
+          onPressed: () async {
+            Navigator.pop(context, widget.pickerModel.finalTime());
+            if (widget.route.onConfirm != null) {
+              widget.route.onConfirm!(widget.pickerModel.finalTime()!);
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Text(
+              '확인',
+              style: kBody14BoldStyle.copyWith(color: kNeutralColor100),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

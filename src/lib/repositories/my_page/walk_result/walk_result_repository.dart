@@ -7,6 +7,8 @@ import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_r
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_result_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result_detail/walk_result_detail_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result_detail/walk_result_detail_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_write_result_detail/walk_write_result_detail_list_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_write_result_detail/walk_write_result_detail_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/walk_result/walk_result_service.dart';
 
 class WalkResultRepository {
@@ -17,7 +19,7 @@ class WalkResultRepository {
   WalkResultRepository({
     required this.dio,
   }) {
-    _walkResultService = WalkResultService(dio, baseUrl: baseUrl);
+    _walkResultService = WalkResultService(dio, baseUrl: walkBaseUrl);
   }
 
   Future<WalkResultResponseModel> getWalkResult({
@@ -28,6 +30,27 @@ class WalkResultRepository {
     required String searchEndDate,
   }) async {
     WalkResultResponseModel? responseModel = await _walkResultService.getWalkResult(memberUuid, together, limit, searchStartDate, searchEndDate).catchError((Object obj) async {});
+
+    if (responseModel == null) {
+      return WalkResultResponseModel(
+        result: false,
+        code: "",
+        data: WalkResultListModel(
+          list: [],
+        ),
+        message: "",
+      );
+    }
+
+    return responseModel;
+  }
+
+  Future<WalkResultResponseModel> getWalkResultForMap({
+    required String memberUuid,
+    required int together,
+    int limit = 10,
+  }) async {
+    WalkResultResponseModel? responseModel = await _walkResultService.getWalkResultForMap(memberUuid, together, limit).catchError((Object obj) async {});
 
     if (responseModel == null) {
       return WalkResultResponseModel(
@@ -63,12 +86,46 @@ class WalkResultRepository {
     return responseModel;
   }
 
+  Future<WalkWriteResultDetailResponseModel> getWalkWriteResultDetail({
+    required String memberUuid,
+    required String walkUuid,
+  }) async {
+    WalkWriteResultDetailResponseModel? responseModel = await _walkResultService.getWalkWriteResultDetail(memberUuid, walkUuid).catchError((Object obj) async {});
+
+    if (responseModel == null) {
+      return WalkWriteResultDetailResponseModel(
+        result: false,
+        code: "",
+        data: WalkWriteResultDetailListModel(
+          list: [],
+        ),
+        message: "",
+      );
+    }
+
+    return responseModel;
+  }
+
   Future<ResponseModel> putWalkResult({
     required Map<String, dynamic> formDataMap,
   }) async {
     final formData = FormData.fromMap(formDataMap);
 
     ResponseModel? feedResponseModel = await _walkResultService.putWalkResult(formData);
+
+    if (feedResponseModel == null) {
+      throw "error posting feed";
+    }
+
+    return feedResponseModel;
+  }
+
+  Future<ResponseModel> postWalkResult({
+    required Map<String, dynamic> formDataMap,
+  }) async {
+    final formData = FormData.fromMap(formDataMap);
+
+    ResponseModel? feedResponseModel = await _walkResultService.postWalkResult(formData);
 
     if (feedResponseModel == null) {
       throw "error posting feed";

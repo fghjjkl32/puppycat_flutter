@@ -53,8 +53,8 @@ String imgDomain = "https://imgs.pcstg.co.kr";
 String firstInstallTime = "";
 String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
-String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
-// String walkBaseUrl = 'https://walk-api.pcstg.co.kr';
+// String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
+String walkBaseUrl = 'https://walk-api.pcstg.co.kr';
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
@@ -315,6 +315,17 @@ enum PetCharacter {
   const PetCharacter(this.value, this.name);
   final int value;
   final String name;
+}
+
+String formatDuration(Duration d) {
+  String twoDigits(int n) {
+    if (n >= 10) return "$n";
+    return "0$n";
+  }
+
+  String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
+  return "${twoDigits(d.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
 }
 
 List<String> peeColorList = ["밝은노랑", "어두운노랑", "갈색", "붉은색"];

@@ -18,21 +18,21 @@ import 'package:thumbor/thumbor.dart';
 
 final walkLogContentProvider = StateProvider<TextEditingController>((ref) => TextEditingController());
 
-class WalkLogResultScreen extends ConsumerStatefulWidget {
+class WalkLogResultEditScreen extends ConsumerStatefulWidget {
   final List<WalkResultItemModel> events;
   final int initialIndex;
 
-  const WalkLogResultScreen({
+  const WalkLogResultEditScreen({
     Key? key,
     required this.events,
     required this.initialIndex,
   }) : super(key: key);
 
   @override
-  WalkLogResultScreenState createState() => WalkLogResultScreenState();
+  WalkLogResultEditScreenState createState() => WalkLogResultEditScreenState();
 }
 
-class WalkLogResultScreenState extends ConsumerState<WalkLogResultScreen> with TickerProviderStateMixin {
+class WalkLogResultEditScreenState extends ConsumerState<WalkLogResultEditScreen> with TickerProviderStateMixin {
   late int currentIndex;
   late TabController tabController = TabController(
     initialIndex: 0,
@@ -82,17 +82,6 @@ class WalkLogResultScreenState extends ConsumerState<WalkLogResultScreen> with T
         ));
       }
     });
-  }
-
-  String formatDuration(Duration d) {
-    String twoDigits(int n) {
-      if (n >= 10) return "$n";
-      return "0$n";
-    }
-
-    String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
-    return "${twoDigits(d.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 
   @override

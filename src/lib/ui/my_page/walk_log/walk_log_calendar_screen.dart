@@ -2,19 +2,23 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/base_picker_model.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/date_time_spinner.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/i18n_model.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/date_picker_theme.dart' as picker_theme;
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_result_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/walk_result/walk_result_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_result_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_result_edit_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:thumbor/thumbor.dart';
+import 'package:widget_mask/widget_mask.dart';
 
 class YearMonthModel extends DatePickerModel {
   YearMonthModel({required DateTime currentTime, required DateTime maxTime, required DateTime minTime, required LocaleType locale})
@@ -60,7 +64,7 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 }
 
 final kToday = DateTime.now();
-final kFirstDay = DateTime(2020, 12, 20);
+final kFirstDay = DateTime(2023, 08, 01);
 final kLastDay = DateTime.now();
 
 class WalkLogCalendarScreen extends ConsumerStatefulWidget {
@@ -236,117 +240,141 @@ class WalkLogCalendarScreenState extends ConsumerState<WalkLogCalendarScreen> {
         children: [
           Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Stack(
                 children: [
-                  _focusedDay.year > kFirstDay.year || (_focusedDay.year == kFirstDay.year && _focusedDay.month > kFirstDay.month)
-                      ? InkWell(
-                          onTap: () {
-                            if (_focusedDay.year > kFirstDay.year || (_focusedDay.year == kFirstDay.year && _focusedDay.month > kFirstDay.month)) {
-                              setState(() {
-                                _focusedDay = subtractOneMonth(_focusedDay);
-                              });
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: kNeutralColor200,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Icon(
-                                Icons.chevron_left,
-                                color: kTextBodyColor,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _focusedDay.year > kFirstDay.year || (_focusedDay.year == kFirstDay.year && _focusedDay.month > kFirstDay.month)
+                          ? InkWell(
+                              onTap: () {
+                                if (_focusedDay.year > kFirstDay.year || (_focusedDay.year == kFirstDay.year && _focusedDay.month > kFirstDay.month)) {
+                                  setState(() {
+                                    _focusedDay = subtractOneMonth(_focusedDay);
+                                  });
+                                }
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: kNeutralColor200,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Icon(
+                                    Icons.chevron_left,
+                                    color: kTextBodyColor,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                color: kNeutralColor100,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Icon(
+                                  Icons.chevron_left,
+                                  color: kNeutralColor100,
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                            color: kNeutralColor100,
-                            shape: BoxShape.circle,
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: InkWell(
+                          onTap: () {
+                            DatePicker.showPicker(
+                              context,
+                              pickerModel: YearMonthModel(
+                                currentTime: _focusedDay,
+                                maxTime: kLastDay,
+                                minTime: kFirstDay,
+                                locale: LocaleType.ko,
+                              ),
+                              showTitleActions: true,
+                              onConfirm: (date) {
+                                setState(() {
+                                  _focusedDay = date;
+                                });
+                              },
+                              locale: LocaleType.ko,
+                              theme: picker_theme.DatePickerTheme(
+                                containerHeight: 100,
+                                itemStyle: kButton14MediumStyle.copyWith(color: kNeutralColor600),
+                                backgroundColor: kNeutralColor100,
+                                title: "",
+                              ),
+                            );
+                          },
                           child: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Icon(
-                              Icons.chevron_left,
-                              color: kNeutralColor100,
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              DateFormat('yyyy. M').format(_focusedDay),
+                              style: kTitle18BoldStyle.copyWith(color: kTextTitleColor),
                             ),
                           ),
                         ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: InkWell(
-                      onTap: () {
-                        DatePicker.showPicker(
-                          context,
-                          pickerModel: YearMonthModel(
-                            currentTime: _focusedDay,
-                            maxTime: kLastDay,
-                            minTime: kFirstDay,
-                            locale: LocaleType.ko,
-                          ),
-                          showTitleActions: true,
-                          onConfirm: (date) {
-                            setState(() {
-                              _focusedDay = date;
-                            });
-                          },
-                          locale: LocaleType.ko,
-                          theme: picker_theme.DatePickerTheme(
-                            itemStyle: kButton14MediumStyle.copyWith(color: kNeutralColor600),
-                            backgroundColor: kNeutralColor100,
-                            title: "다른 날짜 보기",
-                            isBirthDay: false,
-                          ),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      ),
+                      _focusedDay.year < kToday.year || (_focusedDay.year == kToday.year && _focusedDay.month < kToday.month)
+                          ? InkWell(
+                              onTap: () {
+                                if (_focusedDay.year < kToday.year || (_focusedDay.year == kToday.year && _focusedDay.month < kToday.month)) {
+                                  setState(() {
+                                    _focusedDay = addOneMonth(_focusedDay);
+                                  });
+                                }
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: kNeutralColor200,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Icon(
+                                    Icons.chevron_right,
+                                    color: kTextBodyColor,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                color: kNeutralColor100,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Icon(
+                                  Icons.chevron_right,
+                                  color: kNeutralColor100,
+                                ),
+                              ),
+                            ),
+                    ],
+                  ),
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    top: 0,
+                    child: Center(
+                      child: TextButton(
+                        onPressed: () async {
+                          setState(() {
+                            _focusedDay = DateTime.now();
+                          });
+                        },
                         child: Text(
-                          DateFormat('yyyy. M').format(_focusedDay),
-                          style: kTitle18BoldStyle.copyWith(color: kTextTitleColor),
+                          '오늘',
+                          style: kBody12SemiBoldStyle.copyWith(
+                            color: kPrimaryColor,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  _focusedDay.year < kToday.year || (_focusedDay.year == kToday.year && _focusedDay.month < kToday.month)
-                      ? InkWell(
-                          onTap: () {
-                            if (_focusedDay.year < kToday.year || (_focusedDay.year == kToday.year && _focusedDay.month < kToday.month)) {
-                              setState(() {
-                                _focusedDay = addOneMonth(_focusedDay);
-                              });
-                            }
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: kNeutralColor200,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Icon(
-                                Icons.chevron_right,
-                                color: kTextBodyColor,
-                              ),
-                            ),
-                          ),
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                            color: kNeutralColor100,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(2.0),
-                            child: Icon(
-                              Icons.chevron_right,
-                              color: kNeutralColor100,
-                            ),
-                          ),
-                        ),
                 ],
               ),
               Padding(
@@ -598,10 +626,12 @@ class WalkLogCalendarScreenState extends ConsumerState<WalkLogCalendarScreen> {
                             if (initialIndex == -1) {
                               initialIndex = 0;
                             }
+
+                            print(value[index].walkUuid);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => WalkLogResultScreen(
+                                builder: (context) => WalkLogResultEditScreen(
                                   events: allEvents,
                                   initialIndex: initialIndex,
                                 ),
@@ -609,20 +639,249 @@ class WalkLogCalendarScreenState extends ConsumerState<WalkLogCalendarScreen> {
                             );
                           },
                           child: Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 12.0,
-                                vertical: 4.0,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              child: Column(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 12.0,
+                              vertical: 4.0,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(top: BorderSide(color: kNeutralColor300, width: 1)),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Stack(
                                 children: [
-                                  Text('혼자 산책'),
-                                  Text('${value[index]}'),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        flex: 3,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom: 8.0),
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    decoration: const BoxDecoration(
+                                                      color: kPrimaryLightColor,
+                                                      borderRadius: BorderRadius.all(
+                                                        Radius.circular(100.0),
+                                                      ),
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                                                      child: Text(
+                                                        "산책일지",
+                                                        style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  Text(
+                                                    "${DateFormat('MM-dd EEE', 'ko_KR').format(DateTime.parse(value[index].startDate!))}",
+                                                    style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                              color: kNeutralColor200,
+                                                              shape: BoxShape.circle,
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(2.0),
+                                                              child: Icon(
+                                                                Puppycat_social.icon_comment,
+                                                                size: 16,
+                                                                color: kTextBodyColor,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 4,
+                                                          ),
+                                                          Text(
+                                                            formatDuration(
+                                                              DateTime.parse(value[index].endDate!).difference(
+                                                                DateTime.parse(value[index].startDate!),
+                                                              ),
+                                                            ),
+                                                            style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                              color: kNeutralColor200,
+                                                              shape: BoxShape.circle,
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(2.0),
+                                                              child: Icon(
+                                                                Puppycat_social.icon_comment,
+                                                                size: 16,
+                                                                color: kTextBodyColor,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 4,
+                                                          ),
+                                                          Text(
+                                                            "${value[index].stepText}",
+                                                            style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  width: 20,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                              color: kNeutralColor200,
+                                                              shape: BoxShape.circle,
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(2.0),
+                                                              child: Icon(
+                                                                Puppycat_social.icon_comment,
+                                                                size: 16,
+                                                                color: kTextBodyColor,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 4,
+                                                          ),
+                                                          Text(
+                                                            '${value[index].distanceText}',
+                                                            style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                              color: kNeutralColor200,
+                                                              shape: BoxShape.circle,
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(2.0),
+                                                              child: Icon(
+                                                                Puppycat_social.icon_comment,
+                                                                size: 16,
+                                                                color: kTextBodyColor,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 4,
+                                                          ),
+                                                          Text(
+                                                            '${value[index].calorieText}',
+                                                            style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Flexible(
+                                        flex: 1,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            WidgetMask(
+                                              blendMode: BlendMode.srcATop,
+                                              childSaveLayer: true,
+                                              mask: Center(
+                                                child: Image.network(
+                                                  Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${value[index].walkPetList![0].petProfileUrl}").toUrl(),
+                                                  width: 40,
+                                                  height: 40,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              child: SvgPicture.asset(
+                                                'assets/image/feed/image/squircle.svg',
+                                                height: 40,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Icon(
+                                              Icons.chevron_right,
+                                              color: kTextBodyColor,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  value[index].walkPetList!.length > 1
+                                      ? Positioned(
+                                          right: 26,
+                                          top: 14,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: kTextSubTitleColor,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(5.0),
+                                              child: Center(
+                                                child: Text(
+                                                  "+${value[index].walkPetList!.length - 1}",
+                                                  style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
                                 ],
-                              )),
+                              ),
+                            ),
+                          ),
                         );
                       },
                     );
