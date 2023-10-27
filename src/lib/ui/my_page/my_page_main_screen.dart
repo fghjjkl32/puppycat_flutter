@@ -888,7 +888,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
             ),
             InkWell(
               onTap: () async {
-                context.push("/home/myPage/walkLogCalendar");
+                context.push("/home/myPage/workLogCalendar");
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),

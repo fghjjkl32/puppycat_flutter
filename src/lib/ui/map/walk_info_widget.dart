@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
@@ -84,12 +85,27 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
               IconButton(onPressed: () {}, icon: Icon(Icons.camera)),
               IconButton(
                   onPressed: () async {
-                    // final lastWalkState = ref.read(singleWalkStateProvider).last;
-                    ref.read(singleWalkStateProvider.notifier).stopLocationCollection();
+                    final walkStateList = ref.read(singleWalkStateProvider);
+                    FlutterBackgroundService().invoke("stopService");
+                    ref.read(singleWalkStateProvider.notifier).stopBackgroundLocation();
                     ref.read(walkStateProvider.notifier).stopWalk();
 
                     final mapController = ref.read(naverMapControllerStateProvider);
                     if (mapController != null) {
+                      if(walkStateList.isEmpty) {
+                        return;
+                      }
+
+                      List<NLatLng> routeList = walkStateList.map((e) => NLatLng(e.latitude, e.longitude)).toList();
+                      final bounds = NLatLngBounds.from(routeList);
+                      // final cameraUpdate = NCameraUpdate.fitBounds(bounds);
+                      final cameraUpdateWithPadding = NCameraUpdate.fitBounds(bounds, padding: const EdgeInsets.all(50));
+                      await mapController.updateCamera(cameraUpdateWithPadding).then((value) async {
+                        await mapController.takeSnapshot(showControls: false);
+                      });
+
+                      // final screenShot = await mapController.takeSnapshot(showControls: false);
+
                       mapController.clearOverlays(type: NOverlayType.pathOverlay);
                     }
                   },

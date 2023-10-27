@@ -1,4 +1,8 @@
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -6,6 +10,7 @@ import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_prov
 import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/walk/walk_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'walk_state_provider.g.dart';
 
@@ -42,7 +47,7 @@ class WalkState extends _$WalkState {
     }
   }
 
-  Future<bool> startWalk() async {
+  Future<String> startWalk() async {
     final walkRepository = WalkRepository(dio: ref.read(dioProvider));
     try {
       final userInfo = ref.read(userInfoProvider).userModel;
@@ -61,17 +66,33 @@ class WalkState extends _$WalkState {
       _walkStartDate = result.$2;
 
       if(_walkUuid.isEmpty) {
-        return false;
+        return '';
       }
 
       if(_walkStartDate.isEmpty) {
         _walkStartDate = DateTime.now().toString();
       }
 
-      return true;
+      // CookieJar cookieJar = GetIt.I<CookieJar>();
+      // var cookies = await cookieJar.loadForRequest(Uri.parse(baseUrl));
+      // Map<String, dynamic> cookieMap = {};
+      // for (var cookie in cookies) {
+      //   cookieMap[cookie.name] = cookie.value;
+      // }
+
+      // FlutterBackgroundService().invoke("setAsForeground");
+      // FlutterBackgroundService().invoke('setData', {
+      //   'memberUuid' : memberUuid,
+      //   'walkUuid' : _walkUuid,
+      //    'cookieMap' : cookieMap,
+      // });
+      // FlutterBackgroundService().startService();
+
+
+      return _walkUuid;
     } catch(e) {
       print('startWalk error $e');
-      return false;
+      return '';
     }
   }
 
@@ -96,6 +117,11 @@ class WalkState extends _$WalkState {
       }
       var result = await walkRepository.stopWalk(memberUuid, _walkUuid, lastWalkState.walkCount, _walkStartDate, lastWalkState.distance, lastWalkState.calorie);
 
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      await preferences.reload();
+      await preferences.setString('memberUuid', '');
+      await preferences.setString('walkUuid', '');
+
       ref.read(singleWalkStateProvider.notifier).state.clear();
       ref.read(walkSelectedPetStateProvider.notifier).state.clear();
     } catch(e) {
@@ -103,14 +129,15 @@ class WalkState extends _$WalkState {
     }
   }
   Future sendWalkInfo(WalkStateModel walkInfo, [bool isFinished = false]) async {
-    final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: 'https://pet-walk-dev-gps.devlabs.co.kr');
+    final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: 'https://walk-gps.pcstg.co.kr/');
+    // final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: 'https://pet-walk-dev-gps.devlabs.co.kr');
 
     try {
       if(!_walkInfoList.contains(walkInfo)) {
         _walkInfoList.add(walkInfo);
       }
 
-      if(_walkInfoList.length < 5 && !isFinished) {
+      if(_walkInfoList.length < 20 && !isFinished) {
         print('_walkInfoList.length ${_walkInfoList.length}');
         return;
       }
