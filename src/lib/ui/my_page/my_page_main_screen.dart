@@ -956,7 +956,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     MaterialPageRoute(
                       builder: (context) => WriteWalkLogScreen(
                         screenShotImage: screenShotImage,
-                        tabs: ["여름이", "이봄", "안녕", "여름이", "이봄", "안녕", "여름이", "이봄", "안녕", "여름이", "이봄", "안녕"],
+                        walkUuid: "walkko65589eafe95945ae9b291e1d2bca64f81697762874",
                       ),
                     ),
                   );

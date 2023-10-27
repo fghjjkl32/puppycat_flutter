@@ -317,6 +317,17 @@ enum PetCharacter {
   final String name;
 }
 
+String formatDuration(Duration d) {
+  String twoDigits(int n) {
+    if (n >= 10) return "$n";
+    return "0$n";
+  }
+
+  String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
+  return "${twoDigits(d.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+}
+
 List<String> peeColorList = ["밝은노랑", "어두운노랑", "갈색", "붉은색"];
 List<String> peeAmountList = ["적음", "중간", "많음", "잘모르겠음"];
 List<String> poopColorList = ["갈색", "흑색", "혈액", "흰색", "회색", "노랑"];

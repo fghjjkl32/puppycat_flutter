@@ -166,158 +166,160 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
             physics: const ClampingScrollPhysics(),
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
-                SliverAppBar(
-                    pinned: true,
-                    floating: false,
-                    backgroundColor: appBarColor,
-                    title: Text(widget.nick),
-                    leading: IconButton(
-                      onPressed: () {
-                        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-                        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-                        Navigator.of(context).pop();
-                      },
-                      icon: const Icon(
-                        Puppycat_social.icon_back,
-                        size: 40,
+                Consumer(builder: (context, ref, _) {
+                  return SliverAppBar(
+                      pinned: true,
+                      floating: false,
+                      backgroundColor: appBarColor,
+                      title: Text(widget.nick),
+                      leading: IconButton(
+                        onPressed: () {
+                          ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                          ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                          Navigator.of(context).pop();
+                        },
+                        icon: const Icon(
+                          Puppycat_social.icon_back,
+                          size: 40,
+                        ),
                       ),
-                    ),
-                    forceElevated: innerBoxIsScrolled,
-                    actions: [
-                      Consumer(builder: (context, ref, _) {
+                      forceElevated: innerBoxIsScrolled,
+                      actions: [
+                        Consumer(builder: (context, ref, _) {
+                          final userInformationState = ref.watch(userInformationStateProvider);
+                          final lists = userInformationState.list;
+
+                          return lists.isEmpty
+                              ? Container()
+                              : lists[0].blockedState == 1 || lists[0].blockedMeState == 1
+                                  ? Container()
+                                  : PopupMenuButton(
+                                      padding: EdgeInsets.zero,
+                                      offset: Offset(0, 42),
+                                      child: showLottieAnimation
+                                          ? Lottie.asset(
+                                              'assets/lottie/icon_more_header.json',
+                                              repeat: false,
+                                            )
+                                          : Padding(
+                                              padding: const EdgeInsets.only(right: 8.0),
+                                              child: const Icon(
+                                                Puppycat_social.icon_more_header,
+                                                size: 40,
+                                              ),
+                                            ),
+                                      onCanceled: () {
+                                        setState(() {
+                                          showLottieAnimation = false;
+                                        });
+                                      },
+                                      onSelected: (id) {
+                                        setState(() {
+                                          showLottieAnimation = false;
+                                        });
+                                        if (id == 'block') {
+                                          if (ref.read(userInfoProvider).userModel == null) {
+                                            context.pushReplacement("/loginScreen");
+                                          } else {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return CustomDialog(
+                                                  content: Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          "‘${widget.nick}’님을\n차단하시겠어요?",
+                                                          style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 8.h,
+                                                        ),
+                                                        Text(
+                                                          "‘${widget.nick}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
+                                                          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 8.h,
+                                                        ),
+                                                        Text(
+                                                          " ‘${widget.nick}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
+                                                          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  confirmTap: () async {
+                                                    context.pop();
+                                                    toast(
+                                                      context: context,
+                                                      text: "‘${widget.nick}’님을 차단하였습니다.",
+                                                      type: ToastType.purple,
+                                                    );
+                                                    final result = await ref.read(userInformationStateProvider.notifier).postBlock(
+                                                          memberIdx: ref.watch(userInfoProvider).userModel!.idx,
+                                                          blockIdx: widget.memberIdx,
+                                                        );
+
+                                                    if (result.result) {
+                                                      ref.watch(userInformationStateProvider.notifier).updateBlockState();
+                                                    }
+                                                  },
+                                                  cancelTap: () {
+                                                    context.pop();
+                                                  },
+                                                  confirmWidget: Text(
+                                                    "프로필 차단",
+                                                    style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          }
+                                        }
+                                      },
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(16.0),
+                                          bottomRight: Radius.circular(16.0),
+                                          topLeft: Radius.circular(16.0),
+                                          topRight: Radius.circular(16.0),
+                                        ),
+                                      ),
+                                      itemBuilder: (context) {
+                                        Future.delayed(Duration.zero, () {
+                                          setState(() {
+                                            showLottieAnimation = true;
+                                          });
+                                        });
+                                        final list = <PopupMenuEntry>[];
+                                        list.add(
+                                          diaryPopUpMenuItem(
+                                            'block',
+                                            '차단하기',
+                                            const Icon(
+                                              Puppycat_social.icon_user_block_ac,
+                                            ),
+                                            context,
+                                          ),
+                                        );
+                                        return list;
+                                      },
+                                    );
+                        }),
+                      ],
+                      expandedHeight: ref.watch(expandedHeightProvider),
+                      flexibleSpace: Consumer(builder: (context, ref, _) {
                         final userInformationState = ref.watch(userInformationStateProvider);
                         final lists = userInformationState.list;
 
-                        return lists.isEmpty
-                            ? Container()
-                            : lists[0].blockedState == 1 || lists[0].blockedMeState == 1
-                                ? Container()
-                                : PopupMenuButton(
-                                    padding: EdgeInsets.zero,
-                                    offset: Offset(0, 42),
-                                    child: showLottieAnimation
-                                        ? Lottie.asset(
-                                            'assets/lottie/icon_more_header.json',
-                                            repeat: false,
-                                          )
-                                        : Padding(
-                                            padding: const EdgeInsets.only(right: 8.0),
-                                            child: const Icon(
-                                              Puppycat_social.icon_more_header,
-                                              size: 40,
-                                            ),
-                                          ),
-                                    onCanceled: () {
-                                      setState(() {
-                                        showLottieAnimation = false;
-                                      });
-                                    },
-                                    onSelected: (id) {
-                                      setState(() {
-                                        showLottieAnimation = false;
-                                      });
-                                      if (id == 'block') {
-                                        if (ref.read(userInfoProvider).userModel == null) {
-                                          context.pushReplacement("/loginScreen");
-                                        } else {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return CustomDialog(
-                                                content: Padding(
-                                                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                                                  child: Column(
-                                                    children: [
-                                                      Text(
-                                                        "‘${widget.nick}’님을\n차단하시겠어요?",
-                                                        style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 8.h,
-                                                      ),
-                                                      Text(
-                                                        "‘${widget.nick}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
-                                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 8.h,
-                                                      ),
-                                                      Text(
-                                                        " ‘${widget.nick}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
-                                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                confirmTap: () async {
-                                                  context.pop();
-                                                  toast(
-                                                    context: context,
-                                                    text: "‘${widget.nick}’님을 차단하였습니다.",
-                                                    type: ToastType.purple,
-                                                  );
-                                                  final result = await ref.read(userInformationStateProvider.notifier).postBlock(
-                                                        memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                                                        blockIdx: widget.memberIdx,
-                                                      );
-
-                                                  if (result.result) {
-                                                    ref.watch(userInformationStateProvider.notifier).updateBlockState();
-                                                  }
-                                                },
-                                                cancelTap: () {
-                                                  context.pop();
-                                                },
-                                                confirmWidget: Text(
-                                                  "프로필 차단",
-                                                  style: kButton14MediumStyle.copyWith(color: kBadgeColor),
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        }
-                                      }
-                                    },
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(16.0),
-                                        bottomRight: Radius.circular(16.0),
-                                        topLeft: Radius.circular(16.0),
-                                        topRight: Radius.circular(16.0),
-                                      ),
-                                    ),
-                                    itemBuilder: (context) {
-                                      Future.delayed(Duration.zero, () {
-                                        setState(() {
-                                          showLottieAnimation = true;
-                                        });
-                                      });
-                                      final list = <PopupMenuEntry>[];
-                                      list.add(
-                                        diaryPopUpMenuItem(
-                                          'block',
-                                          '차단하기',
-                                          const Icon(
-                                            Puppycat_social.icon_user_block_ac,
-                                          ),
-                                          context,
-                                        ),
-                                      );
-                                      return list;
-                                    },
-                                  );
-                      }),
-                    ],
-                    expandedHeight: 200.h,
-                    flexibleSpace: Consumer(builder: (context, ref, _) {
-                      final userInformationState = ref.watch(userInformationStateProvider);
-                      final lists = userInformationState.list;
-
-                      return lists.isEmpty ? Container() : _myPageSuccessProfile(lists[0]);
-                    })),
+                        return lists.isEmpty ? Container() : _myPageSuccessProfile(lists[0]);
+                      }));
+                }),
                 const SliverPersistentHeader(
                   delegate: TabBarDelegate(),
                   pinned: true,
@@ -908,91 +910,111 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       ],
                     ),
             ),
+            ref.watch(myPetListStateProvider).itemList == null
+                ? Container()
+                : Padding(
+                    padding: const EdgeInsets.only(left: 12.0, bottom: 10, top: 6),
+                    child: Row(
+                      children: [
+                        Text(
+                          widget.nick.length > 15 ? '${widget.nick.substring(0, 15)}...님의 아이들' : "${widget.nick}님의 아이들",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          ref.watch(myPetListStateProvider).itemList!.length > 99 ? "99+" : "${ref.watch(myPetListStateProvider).itemList?.length}",
+                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
+                        ),
+                      ],
+                    ),
+                  ),
             Expanded(
-              child: PagedListView<int, MyPetItemModel>(
-                scrollDirection: Axis.horizontal,
-                pagingController: _myPetListPagingController,
-                builderDelegate: PagedChildBuilderDelegate<MyPetItemModel>(
-                  noItemsFoundIndicatorBuilder: (context) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "등록된 아이들이\n존재하지 않아요!",
-                            style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                  noMoreItemsIndicatorBuilder: (context) {
-                    return const SizedBox.shrink();
-                  },
-                  newPageProgressIndicatorBuilder: (context) {
-                    return Column(
-                      children: [
-                        Lottie.asset(
-                          'assets/lottie/icon_loading.json',
-                          fit: BoxFit.fill,
-                          width: 80,
-                          height: 80,
-                        ),
-                      ],
-                    );
-                  },
-                  firstPageProgressIndicatorBuilder: (context) {
-                    return Container();
-                  },
-                  itemBuilder: (context, item, index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => UserPetDetailScreen(
-                              itemModel: item,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Column(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: PagedListView<int, MyPetItemModel>(
+                  scrollDirection: Axis.horizontal,
+                  pagingController: _myPetListPagingController,
+                  builderDelegate: PagedChildBuilderDelegate<MyPetItemModel>(
+                    noItemsFoundIndicatorBuilder: (context) {
+                      return const SizedBox.shrink();
+                    },
+                    noMoreItemsIndicatorBuilder: (context) {
+                      return const SizedBox.shrink();
+                    },
+                    newPageProgressIndicatorBuilder: (context) {
+                      return Column(
                         children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-                            child: WidgetMask(
-                              blendMode: BlendMode.srcATop,
-                              childSaveLayer: true,
-                              mask: Center(
-                                child: item.url == null || item.url == ""
-                                    ? Center(
-                                        child: const Icon(
-                                          Puppycat_social.icon_profile_large,
-                                          size: 55,
-                                          color: kNeutralColor500,
-                                        ),
-                                      )
-                                    : Image.network(
-                                        Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.url}").toUrl(),
-                                        width: 110,
-                                        height: 110,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                              child: SvgPicture.asset(
-                                'assets/image/feed/image/squircle.svg',
-                                height: 40.h,
+                          Lottie.asset(
+                            'assets/lottie/icon_loading.json',
+                            fit: BoxFit.fill,
+                            width: 80,
+                            height: 80,
+                          ),
+                        ],
+                      );
+                    },
+                    firstPageProgressIndicatorBuilder: (context) {
+                      return Container();
+                    },
+                    itemBuilder: (context, item, index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => UserPetDetailScreen(
+                                itemModel: item,
                               ),
                             ),
-                          ),
-                          Text("${item.name}"),
-                        ],
-                      ),
-                    );
-                  },
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0.w),
+                              child: WidgetMask(
+                                blendMode: BlendMode.srcATop,
+                                childSaveLayer: true,
+                                mask: Center(
+                                  child: item.url == null || item.url == ""
+                                      ? Center(
+                                          child: const Icon(
+                                            Puppycat_social.icon_profile_large,
+                                            size: 48,
+                                            color: kNeutralColor500,
+                                          ),
+                                        )
+                                      : Image.network(
+                                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.url}").toUrl(),
+                                          width: 48,
+                                          height: 48,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                                child: SvgPicture.asset(
+                                  'assets/image/feed/image/squircle.svg',
+                                  height: 48,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6.0),
+                              child: Text(
+                                "${item.name!.length > 5 ? item.name!.substring(0, 5) + '...' : item.name}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: kBody11RegularStyle.copyWith(color: kTextTitleColor),
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

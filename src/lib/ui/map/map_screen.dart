@@ -8,11 +8,17 @@ import 'package:location/location.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/walk_result/walk_result_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/map/bottom_drawer.dart';
 import 'package:pet_mobile_social_flutter/ui/map/walk_info_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_result_edit_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_result_view_screen.dart';
+import 'package:thumbor/thumbor.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({
@@ -36,20 +42,62 @@ class MapScreenState extends ConsumerState<MapScreen> {
     onDrawerHeightChanged: (height) => setState(() => drawerHeight = height),
     rebuild: () => setState(() {}),
     // onPageDispose: () {},
-    widget: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.all(10.0),
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        return SizedBox(
-          width: 200,
-          height: 180,
-          child: Center(
-            child: Text('산책 일지 ${index + 1}'),
-          ),
-        );
-      },
-    ),
+    widget: Consumer(builder: (BuildContext context, WidgetRef ref, Widget? child) {
+      return ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.all(12.0),
+        itemCount: ref.read(walkResultStateProvider).list.length,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WalkLogResultViewScreen(
+                    events: ref.read(walkResultStateProvider).list,
+                    initialIndex: index,
+                  ),
+                ),
+              );
+            },
+            child: SizedBox(
+              width: 200,
+              height: 180,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                  color: kNeutralColor100,
+                ),
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Image.network(
+                        Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${ref.read(walkResultStateProvider).list[index].resultImgUrl}}").toUrl(),
+                        width: 200,
+                        height: 88,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Center(
+              //   child: Text('${ref.read(walkResultStateProvider).list[index]}'),
+              // ),
+            ),
+          );
+        },
+      );
+    }),
   );
 
   @override
@@ -60,6 +108,13 @@ class MapScreenState extends ConsumerState<MapScreen> {
         _walkCount = value;
       });
     });
+    init();
+  }
+
+  init() async {
+    await ref.read(walkResultStateProvider.notifier).getWalkResultForMap();
+    print(ref.read(walkResultStateProvider).list);
+    print(ref.read(walkResultStateProvider.notifier));
   }
 
   @override
@@ -165,6 +220,13 @@ class MapScreenState extends ConsumerState<MapScreen> {
                         width: double.infinity,
                         height: 46,
                         child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            disabledBackgroundColor: kNeutralColor400,
+                            backgroundColor: kPrimaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
                           onPressed: () async {
                             // final currentLocationData = await Location().getLocation();
                             // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
@@ -200,7 +262,10 @@ class MapScreenState extends ConsumerState<MapScreen> {
                               }
                             });
                           },
-                          child: const Text('산책하기'),
+                          child: Text(
+                            '산책하기',
+                            style: kBody14BoldStyle.copyWith(color: kNeutralColor100),
+                          ),
                         ),
                       ),
                     ),
