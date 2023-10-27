@@ -2,11 +2,14 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dio/dio.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
@@ -18,17 +21,20 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button_selected_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_carousel_controller_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/walk_result/walk_write_result_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_result_screen.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_result_edit_screen.dart';
 
 class WriteWalkLogScreen extends ConsumerStatefulWidget {
   final Uint8List screenShotImage;
-  final List<String> tabs;
+  final String walkUuid;
 
   const WriteWalkLogScreen({
     Key? key,
     required this.screenShotImage,
-    required this.tabs,
+    required this.walkUuid,
   }) : super(key: key);
 
   @override
@@ -37,33 +43,50 @@ class WriteWalkLogScreen extends ConsumerStatefulWidget {
 
 class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with TickerProviderStateMixin {
   List<File> additionalCroppedFiles = [];
-  late TabController tabController;
+  late TabController tabController = TabController(
+    initialIndex: 0,
+    length: 1,
+    vsync: this,
+  );
   int selectedButton = 0;
 
   List<PetState> petStates = [];
 
   @override
   void initState() {
-    tabController = TabController(
-      initialIndex: 0,
-      length: widget.tabs.length,
-      vsync: this,
-    );
-
-    for (var pet in widget.tabs) {
-      petStates.add(PetState(
-        petUuid: "",
-        peeCount: 0,
-        peeAmount: 0,
-        peeColor: 0,
-        poopCount: 0,
-        poopAmount: 0,
-        poopColor: 0,
-        poopForm: 0,
-      ));
-    }
-
+    init(widget.walkUuid);
     super.initState();
+  }
+
+  init(String walkUuid) async {
+    setState(() {
+      petStates = [];
+    });
+
+    Future(() async {
+      await ref.watch(walkWriteResultDetailStateProvider.notifier).getWalkWriteResultDetail(walkUuid: walkUuid);
+
+      tabController = TabController(
+        initialIndex: 0,
+        length: ref.watch(walkWriteResultDetailStateProvider).list[0].walkPetList!.length,
+        vsync: this,
+      );
+
+      ref.watch(walkLogContentProvider.notifier).state.text = "";
+
+      for (var pet in ref.watch(walkWriteResultDetailStateProvider).list[0].walkPetList!) {
+        petStates.add(PetState(
+          petUuid: pet.petUuid!,
+          peeCount: 0,
+          peeAmount: 0,
+          peeColor: 0,
+          poopCount: 0,
+          poopAmount: 0,
+          poopColor: 0,
+          poopForm: 0,
+        ));
+      }
+    });
   }
 
   @override
@@ -153,6 +176,78 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
               size: 40,
             ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return WillPopScope(
+                      onWillPop: () async => false,
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Lottie.asset(
+                              'assets/lottie/icon_loading.json',
+                              fit: BoxFit.fill,
+                              width: 80,
+                              height: 80,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+
+                List<MultipartFile> multiPartFiles = await Future.wait(
+                  additionalCroppedFiles.map((file) async {
+                    return MultipartFileRecreatable.fromFileSync(
+                      file.path,
+                      contentType: MediaType('image', 'jpg'),
+                    );
+                  }).toList(),
+                );
+
+                Map<String, dynamic> baseParams = {
+                  "walkUuid": widget.walkUuid,
+                  "memberUuid": ref.read(userInfoProvider).userModel!.uuid,
+                  "contents": ref.watch(walkLogContentProvider.notifier).state.text ?? "",
+                  "isView": buttonSelected,
+                  "uploadFile": multiPartFiles,
+                };
+
+                for (int i = 0; i < petStates.length; i++) {
+                  baseParams["walkPetList[$i].petUuid"] = petStates[i].petUuid;
+                  baseParams["walkPetList[$i].peeCount"] = petStates[i].peeCount;
+                  baseParams["walkPetList[$i].peeAmount"] = petStates[i].peeAmount;
+                  baseParams["walkPetList[$i].peeColor"] = petStates[i].peeColor;
+                  baseParams["walkPetList[$i].poopCount"] = petStates[i].poopCount;
+                  baseParams["walkPetList[$i].poopAmount"] = petStates[i].poopAmount;
+                  baseParams["walkPetList[$i].poopColor"] = petStates[i].poopColor;
+                  baseParams["walkPetList[$i].poopForm"] = petStates[i].poopForm;
+                }
+
+                final result = await ref.watch(walkWriteResultDetailStateProvider.notifier).postWalkResult(formDataMap: baseParams);
+                context.pop();
+
+                if (result.result) {}
+              },
+              child: Text(
+                '등록',
+                style: kButton12BoldStyle.copyWith(
+                  color: kPrimaryColor,
+                ),
+              ),
+            ),
+          ],
         ),
         body: ListView(
           shrinkWrap: true,
@@ -278,81 +373,84 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
                 ),
               ),
             ),
-            MultiTriggerAutocomplete(
-              optionsAlignment: OptionsAlignment.topStart,
-              autocompleteTriggers: [
-                AutocompleteTrigger(
-                  trigger: '@',
-                  optionsViewBuilder: (context, autocompleteQuery, controller) {
-                    return MentionAutocompleteOptions(
-                      query: autocompleteQuery.query,
-                      onMentionUserTap: (user) {
-                        final autocomplete = MultiTriggerAutocomplete.of(context);
-                        return autocomplete.acceptAutocompleteOption(user.nick!);
-                      },
-                    );
-                  },
-                ),
-              ],
-              fieldViewBuilder: (context, controller, focusNode) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ref.watch(walkLogContentProvider.notifier).state = controller;
-                });
+            SizedBox(
+              height: 150,
+              child: MultiTriggerAutocomplete(
+                optionsAlignment: OptionsAlignment.topStart,
+                autocompleteTriggers: [
+                  AutocompleteTrigger(
+                    trigger: '@',
+                    optionsViewBuilder: (context, autocompleteQuery, controller) {
+                      return MentionAutocompleteOptions(
+                        query: autocompleteQuery.query,
+                        onMentionUserTap: (user) {
+                          final autocomplete = MultiTriggerAutocomplete.of(context);
+                          return autocomplete.acceptAutocompleteOption(user.nick!);
+                        },
+                      );
+                    },
+                  ),
+                ],
+                fieldViewBuilder: (context, controller, focusNode) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ref.watch(walkLogContentProvider.notifier).state = controller;
+                  });
 
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    child: FormBuilderTextField(
-                      focusNode: focusNode,
-                      controller: ref.watch(walkLogContentProvider),
-                      onChanged: (text) {
-                        int cursorPos = ref.watch(walkLogContentProvider).selection.baseOffset;
-                        if (cursorPos > 0) {
-                          int from = text!.lastIndexOf('@', cursorPos);
-                          if (from != -1) {
-                            int prevCharPos = from - 1;
-                            if (prevCharPos >= 0 && text[prevCharPos] != ' ') {
-                              return;
-                            }
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      child: FormBuilderTextField(
+                        focusNode: focusNode,
+                        controller: ref.watch(walkLogContentProvider),
+                        onChanged: (text) {
+                          int cursorPos = ref.watch(walkLogContentProvider).selection.baseOffset;
+                          if (cursorPos > 0) {
+                            int from = text!.lastIndexOf('@', cursorPos);
+                            if (from != -1) {
+                              int prevCharPos = from - 1;
+                              if (prevCharPos >= 0 && text[prevCharPos] != ' ') {
+                                return;
+                              }
 
-                            int nextSpace = text.indexOf(' ', from);
-                            if (nextSpace == -1 || nextSpace >= cursorPos) {
-                              String toSearch = text.substring(from + 1, cursorPos);
-                              toSearch = toSearch.trim();
+                              int nextSpace = text.indexOf(' ', from);
+                              if (nextSpace == -1 || nextSpace >= cursorPos) {
+                                String toSearch = text.substring(from + 1, cursorPos);
+                                toSearch = toSearch.trim();
 
-                              if (toSearch.isNotEmpty) {
-                                if (toSearch.length >= 1) {
-                                  ref.watch(searchStateProvider.notifier).searchQuery.add(toSearch);
+                                if (toSearch.isNotEmpty) {
+                                  if (toSearch.length >= 1) {
+                                    ref.watch(searchStateProvider.notifier).searchQuery.add(toSearch);
+                                  }
+                                } else {
+                                  ref.watch(searchStateProvider.notifier).getMentionRecommendList(initPage: 1);
                                 }
-                              } else {
-                                ref.watch(searchStateProvider.notifier).getMentionRecommendList(initPage: 1);
                               }
                             }
                           }
-                        }
-                      },
-                      scrollPhysics: const ClampingScrollPhysics(),
-                      maxLength: 500,
-                      maxLines: 6,
-                      decoration: InputDecoration(
-                          counterText: "",
-                          hintText: '산책 중 일어난 일을 메모해 보세요 . (최대 500자)\n작성한 메모는 마이페이지 산책일지에서 나만 볼 수 있습니다.',
-                          hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
-                          contentPadding: const EdgeInsets.all(16)),
-                      name: 'content',
-                      style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-                      keyboardType: TextInputType.multiline,
-                      textAlignVertical: TextAlignVertical.center,
+                        },
+                        scrollPhysics: const ClampingScrollPhysics(),
+                        maxLength: 500,
+                        maxLines: 6,
+                        decoration: InputDecoration(
+                            counterText: "",
+                            hintText: '산책 중 일어난 일을 메모해 보세요 . (최대 500자)\n작성한 메모는 마이페이지 산책일지에서 나만 볼 수 있습니다.',
+                            hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                            contentPadding: const EdgeInsets.all(16)),
+                        name: 'content',
+                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                        keyboardType: TextInputType.multiline,
+                        textAlignVertical: TextAlignVertical.center,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(top: 20.0, bottom: 8.0, left: 12),
               child: Text(
                 "공개 범위",
-                style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
+                style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
               ),
             ),
             Padding(
@@ -440,10 +538,10 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        ref.watch(feedWriteButtonSelectedProvider.notifier).state = 3;
+                        ref.watch(feedWriteButtonSelectedProvider.notifier).state = 0;
                       },
                       child: Container(
-                        decoration: buttonSelected == 3
+                        decoration: buttonSelected == 0
                             ? BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: kPrimaryLightColor,
@@ -459,14 +557,14 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
                             Icon(
                               Puppycat_social.icon_view_all,
                               size: 14,
-                              color: buttonSelected == 3 ? kPrimaryColor : kTextBodyColor,
+                              color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor,
                             ),
                             SizedBox(
                               width: 9,
                             ),
                             Text(
                               "비공개",
-                              style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 3 ? kPrimaryColor : kTextBodyColor),
+                              style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor),
                             ),
                           ],
                         ),
@@ -480,7 +578,264 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
               padding: EdgeInsets.only(top: 20.0, bottom: 8.0, left: 12),
               child: Text(
                 "산책결과",
-                style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
+                style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+              ),
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: kNeutralColor400),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 20.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16.0),
+                            child: Row(
+                              children: [
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    color: kNeutralColor200,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(8.0),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
+                                    child: Text(
+                                      "날짜",
+                                      style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 4,
+                                ),
+                                Text(
+                                  "${DateFormat('yyyy-MM-dd (EEE)', 'ko_KR').format(DateTime.parse(ref.watch(walkWriteResultDetailStateProvider).list[0].startDate!))}",
+                                  style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    decoration: const BoxDecoration(
+                                      color: kNeutralColor200,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8.0),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
+                                      child: Text(
+                                        "시작",
+                                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text(
+                                    "${DateFormat('a h:mm', 'ko_KR').format(DateTime.parse(ref.watch(walkWriteResultDetailStateProvider).list[0].startDate!))}",
+                                    style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    decoration: const BoxDecoration(
+                                      color: kNeutralColor200,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8.0),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
+                                      child: Text(
+                                        "종료",
+                                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text(
+                                    "${DateFormat('a h:mm', 'ko_KR').format(DateTime.parse(ref.watch(walkWriteResultDetailStateProvider).list[0].endDate!))}",
+                                    style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: Divider(
+                              thickness: 1,
+                              height: 1,
+                              color: kNeutralColor300,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: kNeutralColor200,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Icon(
+                                              Puppycat_social.icon_comment,
+                                              size: 16,
+                                              color: kTextBodyColor,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        Text(
+                                          formatDuration(
+                                            DateTime.parse(ref.watch(walkWriteResultDetailStateProvider).list[0].endDate!).difference(
+                                              DateTime.parse(ref.watch(walkWriteResultDetailStateProvider).list[0].startDate!),
+                                            ),
+                                          ),
+                                          style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: kNeutralColor200,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Icon(
+                                              Puppycat_social.icon_comment,
+                                              size: 16,
+                                              color: kTextBodyColor,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        Text(
+                                          "${ref.watch(walkWriteResultDetailStateProvider).list[0].stepText}",
+                                          style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: 60,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: kNeutralColor200,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Icon(
+                                              Puppycat_social.icon_comment,
+                                              size: 16,
+                                              color: kTextBodyColor,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        Text(
+                                          '${ref.watch(walkWriteResultDetailStateProvider).list[0].distanceText}',
+                                          style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: kNeutralColor200,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Icon(
+                                              Puppycat_social.icon_comment,
+                                              size: 16,
+                                              color: kTextBodyColor,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        Text(
+                                          '${ref.watch(walkWriteResultDetailStateProvider).list[0].calorieText}',
+                                          style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 20.0, bottom: 8.0, left: 12),
+              child: Text(
+                "산책 파트너",
+                style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
               ),
             ),
             TabBar(
@@ -495,12 +850,15 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
                 top: 10,
                 bottom: 10,
               ),
-              tabs: widget.tabs
+              tabs: ref
+                  .watch(walkWriteResultDetailStateProvider)
+                  .list[0]
+                  .walkPetList!
                   .map(
                     (tab) => Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        tab,
+                        tab.name!,
                         style: kBody14BoldStyle,
                       ),
                     ),

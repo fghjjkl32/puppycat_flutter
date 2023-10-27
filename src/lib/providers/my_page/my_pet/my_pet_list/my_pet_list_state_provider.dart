@@ -15,6 +15,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'my_pet_list_state_provider.g.dart';
 
+final expandedHeightProvider = StateProvider<double>((ref) => 190.0);
+
 @Riverpod(keepAlive: true)
 class MyPetListState extends _$MyPetListState {
   int _lastPage = 0;
@@ -39,17 +41,15 @@ class MyPetListState extends _$MyPetListState {
       _apiStatus = ListAPIStatus.loading;
 
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-      print('loginMemberIdx $loginMemberIdx');
-      print('dio ${ref.read(dioProvider)}');
       var result = await MyPetListRepository(dio: ref.read(dioProvider)).getMyPetList(
         memberIdx: memberIdx ?? loginMemberIdx,
         loginMemberIdx: loginMemberIdx,
         page: pageKey,
       );
 
-      print('1111111 $result');
-
       imgDomain = result.data.imgDomain;
+
+      result.data.list.isEmpty ? ref.watch(expandedHeightProvider.notifier).state = 190 : ref.watch(expandedHeightProvider.notifier).state = 300;
 
       List<MyPetItemModel> petList = result.data.list
           .map(
@@ -85,7 +85,6 @@ class MyPetListState extends _$MyPetListState {
       petList.first = petList.first.copyWith(selected: true);
       ref.read(walkSelectedPetStateProvider.notifier).state.add(petList.first);
 
-
       try {
         _lastPage = result.data.params!.pagination!.totalPageCount!;
       } catch (_) {
@@ -110,24 +109,24 @@ class MyPetListState extends _$MyPetListState {
     int targetIdx = state.itemList!.indexWhere((element) => element == itemModel);
     // int targetIdx = Random().nextInt(state.itemList!.length ?? 4);
     print('targetIdx $targetIdx / uuid ${state.itemList}');
-    if(targetIdx >= 0) {
+    if (targetIdx >= 0) {
       bool selectedState = state.itemList![targetIdx].selected;
 
-      if(selectedState) {
-        if(ref.read(walkSelectedPetStateProvider.notifier).state.length == 1) {
+      if (selectedState) {
+        if (ref.read(walkSelectedPetStateProvider.notifier).state.length == 1) {
           return;
         } else {
           ref.read(walkSelectedPetStateProvider.notifier).state.remove(state.itemList![targetIdx]);
         }
       }
 
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          selected: !selectedState,
-        );
+      state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+        selected: !selectedState,
+      );
 
       state.notifyListeners();
 
-      if(!selectedState) {
+      if (!selectedState) {
         ref.read(walkSelectedPetStateProvider.notifier).state.add(state.itemList![targetIdx]);
       }
     }

@@ -13,9 +13,9 @@ class WalkResultListModel with _$WalkResultListModel {
     @Default(true) bool isLoading,
     String? imgDomain,
     ParamsModel? params,
-    int? totalCalorie,
-    String? totalWalkTime,
-    int? totalDistance,
+    @Default(0) int? totalCalorie,
+    @Default("00:00:00") String? totalWalkTime,
+    @Default(0) int? totalDistance,
   }) = _WalkResultListModel;
 
   factory WalkResultListModel.fromJson(Map<String, dynamic> json) => _$WalkResultListModelFromJson(json);
