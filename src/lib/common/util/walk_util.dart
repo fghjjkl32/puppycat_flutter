@@ -18,6 +18,7 @@ import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 
 class WalkUtil {
   static WalkStateModel calcWalkStateValue(WalkStateModel previousWalkStateModel, LocationData currentLocationData, List<MyPetItemModel> petList) {
+
     LocationData previousLocationData = LocationData.fromMap({
       'latitude': previousWalkStateModel.latitude,
       'longitude': previousWalkStateModel.longitude,

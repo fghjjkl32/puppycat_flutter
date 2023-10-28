@@ -54,6 +54,7 @@ class WalkWriteResultDetailState extends _$WalkWriteResultDetailState {
       formDataMap: formDataMap,
     );
 
+    state = [];
     return result;
   }
 }

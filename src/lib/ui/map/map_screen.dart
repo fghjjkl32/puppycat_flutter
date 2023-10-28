@@ -13,6 +13,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/walk_result/walk_result_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/map/bottom_drawer.dart';
 import 'package:pet_mobile_social_flutter/ui/map/walk_info_widget.dart';
@@ -239,6 +240,8 @@ class MapScreenState extends ConsumerState<MapScreen> {
                                 final userInfo = ref.read(userInfoProvider).userModel;
                                 print('start userModel $userInfo');
                                 final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
+                                final selectedPetList = ref.read(walkSelectedPetStateProvider);
+                                List<Map<String, dynamic>> petMap = selectedPetList.map((e) => e.toJson()).toList();
 
                                 FlutterBackgroundService().startService().then((isBackStarted) async {
                                   if(isBackStarted) {
@@ -254,6 +257,7 @@ class MapScreenState extends ConsumerState<MapScreen> {
                                       'memberUuid' : memberUuid,
                                       'walkUuid' : walkUuid,
                                       'cookieMap' : cookieMap,
+                                      'selectedPetList' : petMap,
                                     });
                                   }
                                 });

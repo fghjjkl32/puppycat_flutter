@@ -269,7 +269,7 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
                 if(result.result) {
                   if(context.mounted) {
                     // context.pop();
-                    context.push('/home');
+                    context.pushReplacement('/home');
                   }
                 }
 

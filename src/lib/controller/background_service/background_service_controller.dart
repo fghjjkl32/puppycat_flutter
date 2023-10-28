@@ -8,9 +8,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:location/location.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/common/util/location/geolocator_util.dart';
+import 'package:pet_mobile_social_flutter/common/util/walk_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/controller/walk_cache/walk_cache_controller.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
+import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/walk/walk_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -92,6 +97,8 @@ void onBackgroundStart(ServiceInstance service) async {
   String memberUuid = '';
   String walkUuid = '';
   CookieJar cookieJar = CookieJar();
+  WalkStateModel? previousWalkStateModel;
+  List<MyPetItemModel> selectedPetList = [];
 
   /// OPTIONAL when use custom notification
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -108,6 +115,7 @@ void onBackgroundStart(ServiceInstance service) async {
   }
 
   service.on('stopService').listen((event) {
+    previousWalkStateModel = null;
     service.stopSelf();
   });
 
@@ -126,6 +134,10 @@ void onBackgroundStart(ServiceInstance service) async {
       var cookie = Cookie(cookieName, cookieValue);
       cookieJar.saveFromResponse(Uri.parse(baseUrl), [cookie]);
     });
+
+    List<dynamic> petMap = event['selectedPetList'];
+    print('petMap $petMap / ${event['selectedPetList']}');
+    selectedPetList = petMap.map((e) => MyPetItemModel.fromJson(e)).toList();
     // cookieJar.saveFromResponse(Uri.parse(baseUrl), cookies);
   });
 
@@ -149,34 +161,12 @@ void onBackgroundStart(ServiceInstance service) async {
   }
   // bring to foreground
   Timer.periodic(const Duration(seconds: 1), (timer) async {
-    // if (service is AndroidServiceInstance) {
-    //   if (await service.isForegroundService()) {
-    //     /// OPTIONAL for use custom notification
-    //     /// the notification id must be equals with AndroidConfiguration when you call configure() method.
-    //     flutterLocalNotificationsPlugin.show(
-    //       3333,
-    //       '퍼피캣',
-    //       '우리 아이와 행복한 산책 중!',
-    //       const NotificationDetails(
-    //         android: AndroidNotificationDetails(
-    //           'puppycat_walk',
-    //           '산책 현황',
-    //           icon: 'ic_bg_service_small',
-    //           ongoing: true,
-    //           // importance: Importance.high,
-    //         ),
-    //       ),
-    //     );
-    //
-    //     // if you don't using custom notification, uncomment this
-    //     // service.setForegroundNotificationInfo(
-    //     //   title: "My App Service",
-    //     //   content: "Updated at ${DateTime.now()}",
-    //     // );
-    //   }
-    // }
 
-    // final cnt = await ref.read(walkStateProvider.notifier).getTodayWalkCount();
+    /// you can see this log in logcat
+    print('memberUuid $memberUuid / walkUuid $walkUuid');
+
+    final location = await GeolocatorUtil.getCurrentLocation();
+    print('location $location');
 
     // try {
     //   final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookieForBackground(cookieJar));
@@ -188,19 +178,30 @@ void onBackgroundStart(ServiceInstance service) async {
     //   print('getTodayWalkCount error $e');
     // }
 
-    /// you can see this log in logcat
-    print('FLUTTER BACKGROUND SERVICE: ${DateTime.now()}');
-    print('memberUuid $memberUuid / walkUuid $walkUuid');
+    previousWalkStateModel ??= WalkStateModel(
+      dateTime: DateTime.now(),
+      latitude: location.latitude,
+      longitude: location.longitude,
+      distance: 0,
+      walkTime: 0,
+      walkCount: 0,
+      calorie: {},
+    );
 
-    final location = await GeolocatorUtil.getCurrentLocation();
-    print('location $location');
+    LocationData currentLocationData = LocationData.fromMap({
+      'latitude': location.latitude,
+      'longitude': location.longitude,
+    });
+
+    final walkStateModel = WalkUtil.calcWalkStateValue(previousWalkStateModel!, currentLocationData, selectedPetList);
+    previousWalkStateModel = walkStateModel;
+
+    await WalkCacheController.writeWalkInfo(walkStateModel, walkUuid);
 
     service.invoke(
-      'location_update',
+      'walk_update',
       {
-        "current_date": DateTime.now().toIso8601String(),
-        "latitude": location.latitude,
-        "longitude": location.longitude,
+        'walkStateModel' : walkStateModel.toJson(),
       },
     );
   });
