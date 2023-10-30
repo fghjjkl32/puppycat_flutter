@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
 import 'package:location/location.dart';
 import 'package:pet_mobile_social_flutter/common/util/location/geolocator_util.dart';
+import 'package:pedometer/pedometer.dart';
+import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -38,6 +43,178 @@ class MapScreenState extends ConsumerState<MapScreen> {
   double drawerHeight = 0;
   late NaverMapController mapController;
   int _walkCount = 0;
+
+  Timer? _inactivityTimer20Min;
+  Timer? _inactivityTimer30Min;
+
+  late Stream<PedestrianStatus> _pedestrianStatusStream;
+  String _status = '?';
+
+  // Constants for inactivity durations
+  static const _inactivityDuration20Min = Duration(seconds: 5);
+  static const _inactivityDuration30Min = Duration(seconds: 20);
+
+  @override
+  void initState() {
+    super.initState();
+    _initializePedestrianStatusStream();
+
+    ref.read(walkStateProvider.notifier).getTodayWalkCount().then((value) {
+      setState(() {
+        _walkCount = value;
+      });
+    });
+    init();
+  }
+
+  void _initializePedestrianStatusStream() {
+    _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
+    _pedestrianStatusStream.listen(onPedestrianStatusChanged).onError(_handlePedestrianStatusError);
+
+    if (!mounted) return;
+  }
+
+  void onPedestrianStatusChanged(PedestrianStatus event) {
+    if (mounted) {
+      setState(() {
+        _status = event.status;
+        switch (_status) {
+          case 'stopped':
+            _startInactivityTimers();
+            break;
+          case 'walking':
+            _resetInactivityTimers();
+            break;
+        }
+      });
+    }
+  }
+
+  void _handlePedestrianStatusError(error) {
+    print('onPedestrianStatusError: $error');
+    setState(() => _status = 'Pedestrian Status not available');
+  }
+
+  void _startInactivityTimers() {
+    _inactivityTimer20Min = _startInactivityTimer(_inactivityDuration20Min, () {
+      if (mounted) {
+        toast(
+          context: context,
+          text: '',
+          type: ToastType.white,
+          toastDuration: Duration(days: 1000),
+          toastWidget: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  SizedBox(
+                    width: 14,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "현재 움직임이 없어 10분 후",
+                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                      ),
+                      Text(
+                        "산책 종료될 예정이에요.",
+                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Text(
+                          "우리 아이와 산책을 계속 진행하실 건가요?",
+                          style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  //TODO 20분이 지난 후 종료 버튼 클릭시 - 종료 API 연결 헤야함
+                  InkWell(
+                    onTap: () {
+                      FToast().removeCustomToast();
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: kNeutralColor300,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(100.0),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+                        child: Text(
+                          "종료",
+                          style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      FToast().removeCustomToast();
+                      _resetInactivityTimers();
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: kPrimaryLightColor,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(100.0),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+                        child: Text(
+                          "확인",
+                          style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      }
+    });
+
+    _inactivityTimer30Min = _startInactivityTimer(_inactivityDuration30Min, () {
+      if (mounted) {
+        //TODO 30분이 지났을때 케이스 - 종료 API 연결 헤야함
+        FToast().removeCustomToast();
+      }
+    });
+  }
+
+  Timer _startInactivityTimer(Duration duration, void Function() callback) {
+    Timer timer = Timer(duration, callback);
+    return timer;
+  }
+
+  void _resetInactivityTimers() {
+    _resetInactivityTimer(_inactivityTimer20Min);
+    _resetInactivityTimer(_inactivityTimer30Min);
+  }
+
+  void _resetInactivityTimer(Timer? timer) => timer?.cancel();
+
+  @override
+  void dispose() {
+    _inactivityTimer20Min?.cancel();
+    _inactivityTimer30Min?.cancel();
+    super.dispose();
+  }
 
   late final drawerTool = ExampleAppBottomDrawer(
     context: context,
@@ -101,17 +278,6 @@ class MapScreenState extends ConsumerState<MapScreen> {
       );
     }),
   );
-
-  @override
-  void initState() {
-    super.initState();
-    ref.read(walkStateProvider.notifier).getTodayWalkCount().then((value) {
-      setState(() {
-        _walkCount = value;
-      });
-    });
-    init();
-  }
 
   init() async {
     await ref.read(walkResultStateProvider.notifier).getWalkResultForMap();
@@ -199,6 +365,12 @@ class MapScreenState extends ConsumerState<MapScreen> {
                   ref.read(naverMapControllerStateProvider.notifier).state = controller;
                 },
               ),
+              Center(
+                child: Text(
+                  _status,
+                  style: _status == 'walking' || _status == 'stopped' ? TextStyle(fontSize: 30) : TextStyle(fontSize: 20, color: Colors.red),
+                ),
+              ),
               Visibility(
                 visible: !isWalking,
                 child: Positioned.fill(
@@ -251,7 +423,7 @@ class MapScreenState extends ConsumerState<MapScreen> {
                                 }
 
                                 FlutterBackgroundService().startService().then((isBackStarted) async {
-                                  if(isBackStarted) {
+                                  if (isBackStarted) {
                                     print('background start!!');
                                     FlutterBackgroundService().invoke("setAsForeground");
                                     FlutterBackgroundService().invoke('setData', {

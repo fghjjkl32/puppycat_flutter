@@ -7,6 +7,9 @@ import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
+import 'package:pet_mobile_social_flutter/models/walk/walk_result_state/walk_result_state_item_model.dart';
+import 'package:pet_mobile_social_flutter/models/walk/walk_result_state/walk_result_state_list_model.dart';
+import 'package:pet_mobile_social_flutter/models/walk/walk_result_state/walk_result_state_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/walk/walk_service.dart';
 
 class WalkRepository {
@@ -38,6 +41,25 @@ class WalkRepository {
       rethrow;
     }
     return walkCount;
+  }
+
+  Future<WalkResultStateResponseModel> getWalkResultState({
+    required String memberUuid,
+  }) async {
+    WalkResultStateResponseModel? responseModel = await _walkService.getWalkResultState(memberUuid);
+
+    if (responseModel == null) {
+      return WalkResultStateResponseModel(
+        result: false,
+        code: "",
+        data: WalkResultStateListModel(
+          list: WalkResultStateItemModel(),
+        ),
+        message: "",
+      );
+    }
+
+    return responseModel;
   }
 
   Future<(String, String)> startWalk(String memberUuid, List<String> petUuidList, String standardPet, [bool isTogetherWalk = false]) async {

@@ -14,6 +14,7 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/controller/walk_cache/walk_cache_controller.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
+import 'package:pet_mobile_social_flutter/models/walk/walk_result_state/walk_result_state_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
@@ -26,6 +27,7 @@ part 'walk_state_provider.g.dart';
 enum WalkStatus {
   idle,
   walking,
+  walkEndedWithoutLog,
   finished,
 }
 
@@ -90,8 +92,6 @@ class WalkState extends _$WalkState {
       //   await WalkCacheController.writeWalkInfo(next.last, _walkUuid);
       // });
 
-      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walking;
-      print('ref.read(walkStatusStateProvider ${ref.read(walkStatusStateProvider)}');
       return _walkUuid;
     } catch (e) {
       print('startWalk error $e');
@@ -136,7 +136,6 @@ class WalkState extends _$WalkState {
 
       try {
         if (mapController != null) {
-
           List<NLatLng> routeList = walkState.map((e) => NLatLng(e.latitude, e.longitude)).toList();
           final bounds = NLatLngBounds.from(routeList);
           final cameraUpdateWithPadding = NCameraUpdate.fitBounds(bounds, padding: const EdgeInsets.all(50));
@@ -189,5 +188,21 @@ class WalkState extends _$WalkState {
     } catch (e) {
       print('sendWalkInfo error $e');
     }
+  }
+
+  Future<WalkResultStateResponseModel> getWalkResultState(String memberUuid) async {
+    final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: walkBaseUrl);
+
+    WalkResultStateResponseModel walkResult = await walkRepository.getWalkResultState(memberUuid: memberUuid);
+
+    final result = walkResult.data.list;
+    if (!result.isRegistWalk! && !result.isEndWalk!) {
+      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walking;
+    } else if (!result.isEndWalk!) {
+      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walkEndedWithoutLog;
+    } else {
+      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.idle;
+    }
+    return walkResult;
   }
 }
