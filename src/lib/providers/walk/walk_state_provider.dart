@@ -165,7 +165,7 @@ class WalkState extends _$WalkState {
   }
 
   Future sendWalkInfo(WalkStateModel walkInfo, [bool isFinished = false]) async {
-    final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: 'https://walk-gps.pcstg.co.kr/');
+    final walkRepository = WalkRepository(dio: ref.read(dioProvider));
     // final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: 'https://pet-walk-dev-gps.devlabs.co.kr');
 
     try {
@@ -189,7 +189,7 @@ class WalkState extends _$WalkState {
   }
 
   Future<WalkResultStateResponseModel> getWalkResultState(String memberUuid) async {
-    final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: walkBaseUrl);
+    final walkRepository = WalkRepository(dio: ref.read(dioProvider));
 
     WalkResultStateResponseModel walkResult = await walkRepository.getWalkResultState(memberUuid: memberUuid);
 

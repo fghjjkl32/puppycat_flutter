@@ -10,30 +10,30 @@ part 'walk_service.g.dart';
 abstract class WalkService {
   factory WalkService(Dio dio, {String baseUrl}) = _WalkService;
 
-  @GET('/v1/walk/cnt')
+  @GET('/walk/cnt')
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
   Future<ResponseModel> getTodayWalkCount(@Query("memberUuid") String memberUuid, @Query("together") int together);
 
-  @POST('/v1/walk')
+  @POST('/walk')
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
   Future<ResponseModel> startWalk(@Body() Map<String, dynamic> body);
 
-  @POST('/v1/walk/stop')
+  @POST('/walk/stop')
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
   Future<ResponseModel> stopWalk(@Body() Map<String, dynamic> body);
 
-  @POST('/v1/gps/info')
+  @POST('/gps/info')
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
   Future<ResponseModel> sendWalkInfo(@Body() Map<String, dynamic> body);
 
-  @GET('/v1/walk/result/state')
+  @GET('/walk/result/state')
   Future<WalkResultStateResponseModel> getWalkResultState(@Query("memberUuid") String memberUuid);
 }
