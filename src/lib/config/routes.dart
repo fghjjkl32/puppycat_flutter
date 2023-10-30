@@ -17,6 +17,7 @@ import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider
 import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/matrix_chat_room_screen.dart';
@@ -52,6 +53,7 @@ import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_ter
 import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_unknown_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_calendar_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/write_walk_log_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_select_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
@@ -73,6 +75,7 @@ class AppRouter {
 
   final Ref ref;
 
+  // var _walkState = WalkStatus.idle;
   AppRouter({
     required this.ref,
   }) {
@@ -82,6 +85,7 @@ class AppRouter {
     _pushPayloadState = ref.watch(pushPayloadStateProvider);
     _maintenanceState = ref.watch(isMaintenanceProvider);
     // _pushPayloadState = ref.watch(pushPayloadNotifierProvider);
+    // _walkState = ref.watch(walkStatusStateProvider);
   }
 
   late final GoRouter _goRouter = GoRouter(
@@ -466,6 +470,13 @@ class AppRouter {
           );
         },
       ),
+      GoRoute(
+        path: '/writeWalkLog',
+        name: 'writeWalkLog',
+        builder: (BuildContext context, GoRouterState state) {
+            return const WriteWalkLogScreen();
+        },
+      ),
     ],
 
     redirect: (BuildContext context, GoRouterState state) {
@@ -476,17 +487,23 @@ class AppRouter {
       const signUpCompleteLocation = '$signUpLocation/signupCompleteScreen';
       const chatMainLocation = '/chatMain';
       const maintenanceLocation = '/maintenance';
+      const mapLocation = '/map';
+      const walkLogScreen = '/writeWalkLog';
 
       ///NOTE 테스트용 임시
 
       InitializationApp.initialize(ref);
 
-      // FirebaseCloudMessagePayload? payload = _pushPayloadState;
-      // if(payload != null) {
-      //   PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
-      //   print('pushType $pushType');
-      //   // ref.read(pushPayloadStateProvider.notifier).state = null;
-      //   return signUpCompleteLocation;
+      //
+      // bool isMapPage = state.matchedLocation == mapLocation;
+      // print('why?????????????? $isMapPage / $_walkState / ${state.matchedLocation}');
+      // if (isMapPage) {
+      //   print('_walkState $_walkState');
+      //   if (_walkState == WalkStatus.finished) {
+      //     return walkLogScreen;
+      //   } else {
+      //     return null;
+      //   }
       // }
 
       bool isSplashPage = state.matchedLocation == splashLocation;
@@ -495,6 +512,7 @@ class AppRouter {
           if (_maintenanceState) {
             return maintenanceLocation;
           } else if (_loginRouteState == LoginRoute.success) {
+            print('here ?? 11');
             return homeLocation;
           }
           return loginLocation;
@@ -506,6 +524,7 @@ class AppRouter {
       bool isLoginPage = state.matchedLocation == loginLocation;
       if (isLoginPage) {
         if (_loginRouteState == LoginRoute.success) {
+          print('here ?? 22');
           return homeLocation;
         } else if (_loginRouteState == LoginRoute.signUpScreen) {
           return signUpLocation;
@@ -522,6 +541,10 @@ class AppRouter {
           return null;
         }
       }
+
+      return null;
+
+
     },
   );
 }

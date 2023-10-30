@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
@@ -948,6 +950,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                   ),
                 );
 
+                final tempDir = await getTemporaryDirectory();
+                File firstImageFile = await File('${tempDir.path}/image.png').create();
+                firstImageFile.writeAsBytesSync(screenShotImage);
+
                 if (mounted) {
                   context.pop();
 
@@ -955,8 +961,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     context,
                     MaterialPageRoute(
                       builder: (context) => WriteWalkLogScreen(
-                        screenShotImage: screenShotImage,
-                        walkUuid: "walkko65589eafe95945ae9b291e1d2bca64f81697762874",
+                        // walkPathImageFile: firstImageFile,
+                        // walkUuid: "walkkoae25df7867d24855aad17ec97ed4acad1698407055",
                       ),
                     ),
                   );
@@ -1013,6 +1019,7 @@ PopupMenuItem diaryPopUpMenuItem(
 
 class TabBarDelegate extends SliverPersistentHeaderDelegate {
   final double tabBarHeight;
+
   const TabBarDelegate({this.tabBarHeight = 48});
 
   @override

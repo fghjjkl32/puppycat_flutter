@@ -153,7 +153,7 @@ class WalkRepository {
         'distance': walkInfo.distance.toString(),
         'petUuid': petUuids,
         'calorie': calorie,
-        'time': walkInfo.dateTime.toUtc().toString(),
+        'time': DateFormat('yyyy-MM-dd hh:mm:ss').format(walkInfo.dateTime.toUtc()),
       };
 
       dataList.add(data);

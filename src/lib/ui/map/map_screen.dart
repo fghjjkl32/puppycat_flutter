@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
 import 'package:location/location.dart';
+import 'package:pet_mobile_social_flutter/common/util/location/geolocator_util.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -17,6 +18,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/walk_result/walk_result_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/map/bottom_drawer.dart';
 import 'package:pet_mobile_social_flutter/ui/map/walk_info_widget.dart';
@@ -305,7 +307,7 @@ class MapScreenState extends ConsumerState<MapScreen> {
       await mapController.addOverlay(NPathOverlay(id: '2', coords: routeList, color: Colors.deepPurpleAccent));
     });
 
-    final bool isWalking = ref.watch(singleWalkStatusStateProvider) == WalkStatus.walking;
+    final bool isWalking = ref.watch(walkStatusStateProvider) == WalkStatus.walking;
     // print('isWalking $isWalking');
 
     final walkStateModelList = ref.watch(singleWalkStateProvider);
@@ -404,13 +406,14 @@ class MapScreenState extends ConsumerState<MapScreen> {
                             // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
                             await ref.read(walkStateProvider.notifier).startWalk().then((walkUuid) async {
                               if (walkUuid.isNotEmpty) {
-                                final currentLocationData = await Location().getLocation();
+                                final currentLocationData = await GeolocatorUtil.getCurrentLocation();
                                 // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
                                 ref.read(singleWalkStateProvider.notifier).startBackgroundLocation(currentLocationData);
-
                                 final userInfo = ref.read(userInfoProvider).userModel;
                                 print('start userModel $userInfo');
                                 final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
+                                final selectedPetList = ref.read(walkSelectedPetStateProvider);
+                                List<Map<String, dynamic>> petMap = selectedPetList.map((e) => e.toJson()).toList();
 
                                 FlutterBackgroundService().startService().then((isBackStarted) async {
                                   if (isBackStarted) {
@@ -423,9 +426,10 @@ class MapScreenState extends ConsumerState<MapScreen> {
                                       cookieMap[cookie.name] = cookie.value;
                                     }
                                     FlutterBackgroundService().invoke('setData', {
-                                      'memberUuid': memberUuid,
-                                      'walkUuid': walkUuid,
-                                      'cookieMap': cookieMap,
+                                      'memberUuid' : memberUuid,
+                                      'walkUuid' : walkUuid,
+                                      'cookieMap' : cookieMap,
+                                      'selectedPetList' : petMap,
                                     });
                                   }
                                 });
