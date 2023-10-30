@@ -13,6 +13,7 @@ import 'package:pet_mobile_social_flutter/providers/chat/chat_login_state_provid
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -111,6 +112,7 @@ class LoginState extends _$LoginState {
             );
           }
 
+          ref.read(walkStateProvider.notifier).getWalkResultState(next.uuid!);
           ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
           ref.read(userInfoProvider.notifier).state = userInfoModel;
         });

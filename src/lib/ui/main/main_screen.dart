@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,6 +14,7 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_wr
 import 'package:pet_mobile_social_flutter/components/feed/feed_best_post_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
+import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -29,6 +31,8 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_
 import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_write_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/dialog/restriction_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/popupmenu_with_reddot_widget.dart';
@@ -127,6 +131,69 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         _followFeedListPagingController.refresh();
 
         ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
+      }
+
+      print(ref.read(walkStatusStateProvider));
+      print(ref.read(walkStatusStateProvider));
+
+      if (ref.read(walkStatusStateProvider) == WalkStatus.walking) {
+        context.push('/map');
+      } else if (ref.read(walkStatusStateProvider) == WalkStatus.walkEndedWithoutLog) {
+        toast(
+          context: context,
+          text: '',
+          type: ToastType.white,
+          toastDuration: Duration(days: 1000),
+          toastWidget: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  SizedBox(
+                    width: 14,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "산책이 종료되었습니다.",
+                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Text(
+                          "'확인' 클릭 시 산책 결과 페이지로 이동합니다.",
+                          style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              InkWell(
+                onTap: () {
+                  FToast().removeCustomToast();
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(100.0),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+                    child: Text(
+                      "확인",
+                      style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
       }
     });
   }

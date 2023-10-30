@@ -42,6 +42,7 @@ import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_prov
 import 'package:uni_links/uni_links.dart';
 
 InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 9723);
+final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 class ScrollBehaviorModified extends ScrollBehavior {
   const ScrollBehaviorModified();
@@ -96,7 +97,6 @@ void main() async {
 
   await NaverMapSdk.instance.initialize(clientId: "omfrw8eeol");
 
-
   await initializeBackgroundService();
 
   /// Get It
@@ -139,7 +139,7 @@ class PuppycatApp extends ConsumerStatefulWidget {
   PuppycatAppState createState() => PuppycatAppState();
 }
 
-class PuppycatAppState extends ConsumerState<PuppycatApp>  with WidgetsBindingObserver {
+class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -266,6 +266,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp>  with WidgetsBindingOb
       builder: (BuildContext context, Widget? child) {
         return Portal(
           child: MaterialApp.router(
+            scaffoldMessengerKey: scaffoldMessengerKey,
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,

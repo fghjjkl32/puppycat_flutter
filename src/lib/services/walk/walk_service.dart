@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/walk/walk_result_state/walk_result_state_response_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'walk_service.g.dart';
@@ -33,4 +34,6 @@ abstract class WalkService {
   })
   Future<ResponseModel> sendWalkInfo(@Body() Map<String, dynamic> body);
 
+  @GET('/v1/walk/result/state')
+  Future<WalkResultStateResponseModel> getWalkResultState(@Query("memberUuid") String memberUuid);
 }
