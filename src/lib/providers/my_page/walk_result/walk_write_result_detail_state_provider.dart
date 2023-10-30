@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_r
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_result_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result_detail/walk_result_detail_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result_detail/walk_result_detail_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_write_result_detail/walk_write_result_detail_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_write_result_detail/walk_write_result_detail_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_write_result_detail/walk_write_result_detail_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_favorite_state_provider.dart';
@@ -20,14 +21,15 @@ import 'package:pet_mobile_social_flutter/repositories/my_page/walk_result/walk_
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final walkWriteResultDetailStateProvider = StateNotifierProvider<WalkWriteResultDetailStateNotifier, WalkWriteResultDetailListModel>((ref) {
-  return WalkWriteResultDetailStateNotifier(ref);
-});
+part 'walk_write_result_detail_state_provider.g.dart';
 
-class WalkWriteResultDetailStateNotifier extends StateNotifier<WalkWriteResultDetailListModel> {
-  WalkWriteResultDetailStateNotifier(this.ref) : super(const WalkWriteResultDetailListModel(list: []));
+@Riverpod(keepAlive: true)
+class WalkWriteResultDetailState extends _$WalkWriteResultDetailState {
 
-  final Ref ref;
+  @override
+  List<WalkWriteResultDetailItemModel> build() {
+    return [];
+  }
 
   Future<void> getWalkWriteResultDetail({
     required String walkUuid,
@@ -37,15 +39,12 @@ class WalkWriteResultDetailStateNotifier extends StateNotifier<WalkWriteResultDe
       walkUuid: walkUuid,
     );
 
-    if (lists == null) {
-      state = state.copyWith(isLoading: false);
+    if (lists.data.list.isEmpty) {
+      state = [];
       return;
     }
 
-    state = state.copyWith(
-      isLoading: false,
-      list: lists.data.list,
-    );
+    state = lists.data.list;
   }
 
   Future<ResponseModel> postWalkResult({
@@ -55,6 +54,7 @@ class WalkWriteResultDetailStateNotifier extends StateNotifier<WalkWriteResultDe
       formDataMap: formDataMap,
     );
 
+    state = [];
     return result;
   }
 }
