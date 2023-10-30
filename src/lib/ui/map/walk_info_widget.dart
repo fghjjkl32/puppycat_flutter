@@ -92,7 +92,7 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
 
                     final mapController = ref.read(naverMapControllerStateProvider);
                     if (mapController != null) {
-                      if(walkStateList.isEmpty) {
+                      if (walkStateList.isEmpty) {
                         return;
                       }
 

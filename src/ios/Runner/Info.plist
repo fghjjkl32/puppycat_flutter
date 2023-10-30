@@ -106,6 +106,12 @@
     <string>음성 녹음을 위해 마이크에 접근합니다.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>사진 저장을 위해 사진 라이브러리에 접근합니다.</string>
+    <key>NSMotionUsageDescription</key>
+    <string>This application tracks your steps</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>processing</string>
+    </array>
 	<key>PermissionGroupNotification</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

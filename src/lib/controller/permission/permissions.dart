@@ -10,11 +10,10 @@ class Permissions {
 
   static Future<void> requestNotificationPermission() async {
     await Permission.notification.request();
-
   }
 
   static Future<void> requestPhonePermission() async {
-      await Permission.phone.request();
+    await Permission.phone.request();
   }
 
   static Future<void> requestLocationPermission() async {
@@ -26,6 +25,7 @@ class Permissions {
       Permission.location,
       Permission.phone,
       Permission.notification,
+      Permission.activityRecognition,
     ].request();
   }
 

@@ -5,7 +5,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
-enum ToastType { red, purple, grey }
+enum ToastType { red, purple, grey, white }
 
 void toast({
   required BuildContext context,
@@ -13,8 +13,9 @@ void toast({
   String? secondText,
   String? buttonText,
   VoidCallback? buttonOnTap,
+  Widget? toastWidget,
   required ToastType type,
-  int milliseconds = 3000,
+  Duration toastDuration = const Duration(milliseconds: 3000),
 }) {
   final fToast = FToast();
   fToast.init(context);
@@ -38,6 +39,8 @@ void toast({
       'assets/image/toast/icon/Layer_1-1.png',
     );
     color = const Color(0xff98a0b0).withOpacity(0.8);
+  } else if (ToastType.white == type) {
+    color = const Color(0xffffffff).withOpacity(0.8);
   }
 
   Widget toast = Container(
@@ -47,75 +50,74 @@ void toast({
       borderRadius: BorderRadius.circular(100),
       color: color,
     ),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
+    child: toastWidget ??
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              height: 20.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: kNeutralColor100,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: iconImage,
-              ),
-            ),
-            SizedBox(
-              width: 14.w,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
               children: [
-                Text(
-                  text,
-                  style: kBody13BoldStyle.copyWith(color: kNeutralColor100),
-                ),
-                secondText == null
-                    ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.only(top: 2.0),
-                        child: Text(
-                          secondText,
-                          style: kBody11RegularStyle.copyWith(
-                              color: kNeutralColor100),
-                        ),
-                      ),
-              ],
-            ),
-          ],
-        ),
-        buttonText == null
-            ? Container()
-            : InkWell(
-                onTap: buttonOnTap,
-                child: Padding(
-                  padding: const EdgeInsets.all(3),
-                  child: Row(
-                    children: [
-                      Text(
-                        buttonText,
-                        style: kBody11SemiBoldStyle.copyWith(
-                            color: kNeutralColor100),
-                      ),
-                      const Icon(
-                        Puppycat_social.icon_take_back,
-                        color: kNeutralColor100,
-                      ),
-                    ],
+                Container(
+                  height: 20.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    color: kNeutralColor100,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: iconImage,
                   ),
                 ),
-              ),
-      ],
-    ),
+                SizedBox(
+                  width: 14.w,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      text,
+                      style: kBody13BoldStyle.copyWith(color: kNeutralColor100),
+                    ),
+                    secondText == null
+                        ? Container()
+                        : Padding(
+                            padding: const EdgeInsets.only(top: 2.0),
+                            child: Text(
+                              secondText,
+                              style: kBody11RegularStyle.copyWith(color: kNeutralColor100),
+                            ),
+                          ),
+                  ],
+                ),
+              ],
+            ),
+            buttonText == null
+                ? Container()
+                : InkWell(
+                    onTap: buttonOnTap,
+                    child: Padding(
+                      padding: const EdgeInsets.all(3),
+                      child: Row(
+                        children: [
+                          Text(
+                            buttonText,
+                            style: kBody11SemiBoldStyle.copyWith(color: kNeutralColor100),
+                          ),
+                          const Icon(
+                            Puppycat_social.icon_take_back,
+                            color: kNeutralColor100,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+          ],
+        ),
   );
 
   fToast.showToast(
     child: toast,
-    toastDuration: Duration(milliseconds: milliseconds),
+    toastDuration: toastDuration,
     positionedToastBuilder: (context, child) {
       return Stack(
         alignment: Alignment.center,
