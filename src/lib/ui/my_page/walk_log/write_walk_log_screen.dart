@@ -59,6 +59,7 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
   @override
   void initState() {
     _walkUuid = ref.read(walkStateProvider.notifier).walkUuid;
+    // _walkUuid = 'walkko42835b3876bf45a1834a0e16a09992841698643593';
     _walkPathImageFile = ref.read(walkPathImgStateProvider);
     super.initState();
 
@@ -125,10 +126,15 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
                 //   fit: BoxFit.cover,
                 // ),
                 Image.file(
-                  _walkPathImageFile!,
+                  _walkPathImageFile ?? File('temp.jpg'),
                   width: double.infinity,
                   height: 225,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, exception, stackTrace) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
                 ),
               ],
             ),

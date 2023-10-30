@@ -415,16 +415,17 @@ class MapScreenState extends ConsumerState<MapScreen> {
                                 final selectedPetList = ref.read(walkSelectedPetStateProvider);
                                 List<Map<String, dynamic>> petMap = selectedPetList.map((e) => e.toJson()).toList();
 
+                                CookieJar cookieJar = GetIt.I<CookieJar>();
+                                var cookies = await cookieJar.loadForRequest(Uri.parse(baseUrl));
+                                Map<String, dynamic> cookieMap = {};
+                                for (var cookie in cookies) {
+                                  cookieMap[cookie.name] = cookie.value;
+                                }
+
                                 FlutterBackgroundService().startService().then((isBackStarted) async {
                                   if (isBackStarted) {
                                     print('background start!!');
                                     FlutterBackgroundService().invoke("setAsForeground");
-                                    CookieJar cookieJar = GetIt.I<CookieJar>();
-                                    var cookies = await cookieJar.loadForRequest(Uri.parse(baseUrl));
-                                    Map<String, dynamic> cookieMap = {};
-                                    for (var cookie in cookies) {
-                                      cookieMap[cookie.name] = cookie.value;
-                                    }
                                     FlutterBackgroundService().invoke('setData', {
                                       'memberUuid' : memberUuid,
                                       'walkUuid' : walkUuid,
