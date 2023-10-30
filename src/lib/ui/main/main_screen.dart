@@ -133,12 +133,12 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
       }
 
-      print(ref.read(singleWalkStatusStateProvider));
-      print(ref.read(singleWalkStatusStateProvider));
+      print(ref.read(walkStatusStateProvider));
+      print(ref.read(walkStatusStateProvider));
 
-      if (ref.read(singleWalkStatusStateProvider) == WalkStatus.walking) {
+      if (ref.read(walkStatusStateProvider) == WalkStatus.walking) {
         context.push('/map');
-      } else if (ref.read(singleWalkStatusStateProvider) == WalkStatus.walkEndedWithoutLog) {
+      } else if (ref.read(walkStatusStateProvider) == WalkStatus.walkEndedWithoutLog) {
         toast(
           context: context,
           text: '',

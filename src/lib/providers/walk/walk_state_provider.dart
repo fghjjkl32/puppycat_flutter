@@ -195,11 +195,11 @@ class WalkState extends _$WalkState {
 
     final result = walkResult.data.list;
     if (!result.isRegistWalk! && !result.isEndWalk!) {
-      ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.walking;
+      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walking;
     } else if (!result.isEndWalk!) {
-      ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.walkEndedWithoutLog;
+      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walkEndedWithoutLog;
     } else {
-      ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.idle;
+      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.idle;
     }
     return walkResult;
   }
