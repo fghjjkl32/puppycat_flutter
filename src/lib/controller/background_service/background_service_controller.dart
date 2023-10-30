@@ -105,7 +105,6 @@ void onBackgroundStart(ServiceInstance service) async {
 
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen((event) {
-      print('setAsForeground');
       service.setAsForegroundService();
     });
 
@@ -161,7 +160,7 @@ void onBackgroundStart(ServiceInstance service) async {
   }
   // bring to foreground
   Timer.periodic(const Duration(seconds: 1), (timer) async {
-
+    print('timer.tick ${timer.tick}');
     /// you can see this log in logcat
     print('memberUuid $memberUuid / walkUuid $walkUuid');
 
@@ -198,6 +197,14 @@ void onBackgroundStart(ServiceInstance service) async {
 
     await WalkCacheController.writeWalkInfo(walkStateModel, walkUuid);
 
+
+    print('timer.tick % 60 == 0 ${timer.tick % 60 == 0} / ${timer.tick % 60}');
+    if(timer.tick % 20 == 0) {
+      final walkInfoList = await WalkCacheController.readWalkInfo('${walkUuid}_local');
+      final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookieForBackground(cookieJar), baseUrl: 'https://walk-gps.pcstg.co.kr/');
+      await walkRepository.sendWalkInfo(memberUuid, walkUuid, walkInfoList, false);
+    }
+
     service.invoke(
       'walk_update',
       {
@@ -206,3 +213,22 @@ void onBackgroundStart(ServiceInstance service) async {
     );
   });
 }
+
+// Future sendWalkInfo(WalkStateModel walkInfo, CookieJar cookieJar, [bool isFinished = false]) async {
+//   final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookieForBackground(cookieJar), baseUrl: 'https://walk-gps.pcstg.co.kr/');
+//
+//   try {
+//     if (_walkInfoList.length < 20 && !isFinished) {
+//       print('_walkInfoList.length ${_walkInfoList.length}');
+//       return;
+//     }
+//
+//     final userInfo = ref.read(userInfoProvider).userModel;
+//     print('userModel $userInfo');
+//     final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
+//
+//     await walkRepository.sendWalkInfo(memberUuid, _walkUuid, _walkInfoList, isFinished).then((value) => _walkInfoList.clear());
+//   } catch (e) {
+//     print('sendWalkInfo error $e');
+//   }
+// }

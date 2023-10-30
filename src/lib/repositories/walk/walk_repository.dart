@@ -153,4 +153,43 @@ class WalkRepository {
       throw "error";
     }
   }
+
+  ///Background용
+  Future sendWalkInfoByDataList(String memberUuid, String walkUuid, List<Map<String, dynamic>> dataList, [bool isFinished = false]) async {
+    // for (var walkInfo in walkInfoList) {
+    //   List<String> petUuidList = walkInfo.calorie.keys.toList();
+    //   List calorieList = walkInfo.calorie.values.map((e) => e['calorie']).toList();
+    //
+    //   String petUuids = petUuidList.join('&');
+    //   String calorie = calorieList.join('&');
+    //
+    //   Map<String, dynamic> data = {
+    //     'gps': '${walkInfo.latitude}, ${walkInfo.longitude}',
+    //     'state': isFinished ? '0' : '1',
+    //     'step': walkInfo.walkCount.toString(),
+    //     'distance': walkInfo.distance.toString(),
+    //     'petUuid': petUuids,
+    //     'calorie': calorie,
+    //     'time': DateFormat('yyyy-MM-dd hh:mm:ss').format(walkInfo.dateTime.toUtc()),
+    //   };
+    //
+    //   dataList.add(data);
+    // }
+
+    Map<String, dynamic> body = {
+      'walkUuid': walkUuid,
+      'memberUuid': memberUuid,
+      'data': dataList,
+    };
+
+    print('waking Body $body');
+
+    ResponseModel responseModel = await _walkService.sendWalkInfo(body);
+
+    if (responseModel == null) {
+      ///TODO
+      ///throw로 할지 그냥 return null로 할지 생각해보기
+      throw "error";
+    }
+  }
 }

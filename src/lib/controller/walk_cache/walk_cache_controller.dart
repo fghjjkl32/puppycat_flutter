@@ -10,7 +10,7 @@ class WalkCacheController {
   //   required this.fileName,
   // });
 
-  static Future writeWalkInfo(WalkStateModel walkInfo, String fileName) async {
+  static Future writeWalkInfo(WalkStateModel walkInfo, String fileName, [FileMode mode = FileMode.writeOnlyAppend]) async {
     List<String> walkInfoDataList = [];
 
     //좌표값
@@ -37,4 +37,51 @@ class WalkCacheController {
     File walkInfoFile = await File('${tempDir.path}/${fileName}_local.txt').create();
     walkInfoFile.writeAsStringSync('$walkInfoData\n', mode: FileMode.writeOnlyAppend, flush: true);
   }
+
+  static Future<List<WalkStateModel>> readWalkInfo(String fileName, [bool isMoveToTotal = true]) async {
+    final tempDir = await getTemporaryDirectory();
+    File walkInfoFile = File('${tempDir.path}/${fileName}.txt');
+    final readWalkInfo = walkInfoFile.readAsLinesSync();
+
+    List<WalkStateModel> walkInfoList = [];
+
+    for (var walkInfo in readWalkInfo) {
+      final walkInfoDataList = walkInfo.split('|');
+      List<String> petUuidList = walkInfoDataList[4].split('&');
+      List calorieList = walkInfoDataList[5].split('&');
+
+      Map<String, dynamic> calorie = {};
+
+      for(int i = 0; i < petUuidList.length; i++) {
+        Map<String, double> calorieMap = {
+          'calorie' : double.parse(calorieList[i]),
+        };
+        calorie[petUuidList[i]] = calorieMap;
+      }
+
+      walkInfoList.add(
+        WalkStateModel(
+          dateTime: DateTime.parse(walkInfoDataList.last),
+          latitude: double.parse(walkInfoDataList[0].split(',').first),
+          longitude: double.parse(walkInfoDataList[0].split(',').last),
+          distance: double.parse(walkInfoDataList[3]),
+          walkTime: 0,
+          walkCount: int.parse(walkInfoDataList[2]),
+          calorie: calorie,
+        ),
+      );
+    }
+
+    // walkInfoFile.renameSync('${tempDir.path}/${fileName}_total.txt');
+
+    if(isMoveToTotal) {
+      final readWalkInfos = readWalkInfo.join('\n');
+      File walkInfoTotal = await File('${tempDir.path}/${fileName}_total.txt').create();
+      walkInfoTotal.writeAsStringSync('$readWalkInfos\n', mode: FileMode.writeOnlyAppend, flush: true);
+      walkInfoFile.writeAsStringSync('');
+    }
+
+    return walkInfoList;
+  }
+
 }
