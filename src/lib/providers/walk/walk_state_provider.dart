@@ -173,7 +173,7 @@ class WalkState extends _$WalkState {
   }
 
   Future sendWalkInfo(List<WalkStateModel> walkInfoList, [bool isFinished = false]) async {
-    final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: 'https://walk-gps.pcstg.co.kr/');
+    final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: walkGpsBaseUrl);
     // final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: 'https://pet-walk-dev-gps.devlabs.co.kr');
 
     try {

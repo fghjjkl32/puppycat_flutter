@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
@@ -28,7 +29,7 @@ class WalkInfoWidget extends ConsumerStatefulWidget {
   WalkInfoWidgetState createState() => WalkInfoWidgetState();
 }
 
-class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
+class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> with TickerProviderStateMixin {
   WalkStateModel? walkStateModel;
 
   @override
@@ -91,8 +92,8 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              IconButton(
-                onPressed: () async {
+              InkWell(
+                onTap: () async {
                   final ImagePicker picker = ImagePicker();
 
                   final pickedFile = await picker.pickImage(source: ImageSource.camera);
@@ -101,46 +102,55 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
                     await ImageGallerySaver.saveFile(pickedFile.path);
                   }
                 },
-                icon: Icon(Icons.camera),
+                child: Image.asset(
+                  'assets/image/character/character_02_button_camera.png',
+                  width: 48,
+                  height: 48,
+                ),
               ),
-              IconButton(
-                  onPressed: () async {
-                    // final mapController = ref.read(naverMapControllerStateProvider);
-                    final walkStateList = ref.read(singleWalkStateProvider);
-                    File walkPathImgFile;
-                    FlutterBackgroundService().invoke("stopService");
-                    ref.read(singleWalkStateProvider.notifier).stopBackgroundLocation();
+              InkWell(
+                onTap: () async {
+                  // final mapController = ref.read(naverMapControllerStateProvider);
+                  final walkStateList = ref.read(singleWalkStateProvider);
+                  File walkPathImgFile;
+                  FlutterBackgroundService().invoke("stopService");
+                  ref.read(singleWalkStateProvider.notifier).stopBackgroundLocation();
 
-                    // await ref.read(walkStateProvider.notifier).stopWalk();
-                    // await ref.read(walkStateProvider.notifier).stopWalk().then((walkUuid) async {
+                  // await ref.read(walkStateProvider.notifier).stopWalk();
+                  // await ref.read(walkStateProvider.notifier).stopWalk().then((walkUuid) async {
 
-                    // if (mapController != null) {
-                    //   if (walkStateList.isEmpty) {
-                    //     return;
-                    //   }
-                    //
-                    //   List<NLatLng> routeList = walkStateList.map((e) => NLatLng(e.latitude, e.longitude)).toList();
-                    //   final bounds = NLatLngBounds.from(routeList);
-                    //   final cameraUpdateWithPadding = NCameraUpdate.fitBounds(bounds, padding: const EdgeInsets.all(50));
-                    //
-                    //   await mapController.updateCamera(cameraUpdateWithPadding).then((value) async {
-                    //     final screenShot = await mapController.takeSnapshot(showControls: false);
-                    //     final tempDir = await getTemporaryDirectory();
-                    //     screenShot.renameSync('$tempDir/$walu')
-                    //     ref.read(walkPathImgStateProvider.notifier).state = screenShot;
-                    //     mapController.clearOverlays(type: NOverlayType.pathOverlay);
-                    //   });
-                    // }
-                    final walkUuid = await ref.read(walkStateProvider.notifier).stopWalk();
-                    if (walkUuid.isNotEmpty) {
-                      if (context.mounted) {
-                        context.push('/writeWalkLog');
-                      }
+                  // if (mapController != null) {
+                  //   if (walkStateList.isEmpty) {
+                  //     return;
+                  //   }
+                  //
+                  //   List<NLatLng> routeList = walkStateList.map((e) => NLatLng(e.latitude, e.longitude)).toList();
+                  //   final bounds = NLatLngBounds.from(routeList);
+                  //   final cameraUpdateWithPadding = NCameraUpdate.fitBounds(bounds, padding: const EdgeInsets.all(50));
+                  //
+                  //   await mapController.updateCamera(cameraUpdateWithPadding).then((value) async {
+                  //     final screenShot = await mapController.takeSnapshot(showControls: false);
+                  //     final tempDir = await getTemporaryDirectory();
+                  //     screenShot.renameSync('$tempDir/$walu')
+                  //     ref.read(walkPathImgStateProvider.notifier).state = screenShot;
+                  //     mapController.clearOverlays(type: NOverlayType.pathOverlay);
+                  //   });
+                  // }
+                  final walkUuid = await ref.read(walkStateProvider.notifier).stopWalk();
+                  if (walkUuid.isNotEmpty) {
+                    if (context.mounted) {
+                      context.push('/writeWalkLog');
                     }
-                  },
-                  icon: Icon(Icons.stop)),
-              IconButton(
-                onPressed: () {
+                  }
+                },
+                child: Image.asset(
+                  'assets/image/character/character_02_button_stop.png',
+                  width: 48,
+                  height: 48,
+                ),
+              ),
+              InkWell(
+                onTap: () {
                   if (GoRouter.of(context).location() == "/home") {
                     context.push('/map');
                   } else {
@@ -148,7 +158,17 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
                     context.pushReplacement('/home');
                   }
                 },
-                icon: Icon(Icons.view_compact_alt_outlined),
+                child: GoRouter.of(context).location() == "/home"
+                    ? Image.asset(
+                        'assets/image/character/character_03_walking_walk_icon.png',
+                        width: 48,
+                        height: 48,
+                      )
+                    : Image.asset(
+                        'assets/image/character/character_03_walking_walk_icon.png',
+                        width: 48,
+                        height: 48,
+                      ),
               ),
             ],
           )
