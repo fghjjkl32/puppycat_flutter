@@ -59,6 +59,7 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
   @override
   void initState() {
     _walkUuid = ref.read(walkStateProvider.notifier).walkUuid;
+    // _walkUuid = 'walkko42835b3876bf45a1834a0e16a09992841698643593';
     _walkPathImageFile = ref.read(walkPathImgStateProvider);
     super.initState();
 
@@ -77,7 +78,7 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
     WalkWriteResultDetailItemModel? resultDetailModel; // = resultDetailModelItemList.first;
     List<WalkPetList> petList = [];
 
-    if(resultDetailModelItemList.isNotEmpty) {
+    if (resultDetailModelItemList.isNotEmpty) {
       resultDetailModel = resultDetailModelItemList.first;
       petList = [...resultDetailModel.walkPetList!];
       // startDate = resultDetailModel.startDate ?? 'Unknown';
@@ -93,15 +94,15 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
       petStates = [
         ...petList
             .map((e) => PetState(
-          petUuid: e.petUuid!,
-          peeCount: 0,
-          peeAmount: 0,
-          peeColor: 0,
-          poopCount: 0,
-          poopAmount: 0,
-          poopColor: 0,
-          poopForm: 0,
-        ))
+                  petUuid: e.petUuid!,
+                  peeCount: 0,
+                  peeAmount: 0,
+                  peeColor: 0,
+                  poopCount: 0,
+                  poopAmount: 0,
+                  poopColor: 0,
+                  poopForm: 0,
+                ))
             .toList()
       ];
     }
@@ -125,10 +126,15 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
                 //   fit: BoxFit.cover,
                 // ),
                 Image.file(
-                  _walkPathImageFile!,
+                  _walkPathImageFile ?? File('temp.jpg'),
                   width: double.infinity,
                   height: 225,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, exception, stackTrace) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
                 ),
               ],
             ),
@@ -266,8 +272,8 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
                 }
 
                 final result = await ref.watch(walkWriteResultDetailStateProvider.notifier).postWalkResult(formDataMap: baseParams);
-                if(result.result) {
-                  if(context.mounted) {
+                if (result.result) {
+                  if (context.mounted) {
                     // context.pop();
                     context.pushReplacement('/home');
                   }
