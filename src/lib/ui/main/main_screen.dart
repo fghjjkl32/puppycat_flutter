@@ -384,6 +384,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             floatingActionButton: Consumer(builder: (context, ref, _) {
               return !_isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking
                   ? FloatingActionButton(
+                      backgroundColor: kNeutralColor100,
+                      child: Lottie.asset(
+                        'assets/lottie/character_03_walking_floating.json',
+                        repeat: true,
+                      ),
                       onPressed: () {
                         setState(() {
                           _isWidgetVisible = true;

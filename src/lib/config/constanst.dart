@@ -30,6 +30,11 @@ class Constants {
     return prefs.getString('selectedWalkURL') ?? "https://walk-api.pcstg.co.kr/v1";
   }
 
+  static Future<String> getBaseWalkGpsUrl() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('selectedWalkGpsURL') ?? "https://walk-gps.pcstg.co.kr/v1";
+  }
+
   static Future<String> getThumborHostUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('thumborHostUrl') ?? "https://tb.pcstg.co.kr/";
@@ -60,6 +65,7 @@ String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
 // String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
 String walkBaseUrl = 'https://walk-api.pcstg.co.kr/v1';
+String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/v1';
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;

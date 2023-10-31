@@ -543,34 +543,58 @@ class WalkLogCalendarScreenState extends ConsumerState<WalkLogCalendarScreen> {
                       },
                       child: Center(
                         child: events.isEmpty && isToday(day)
-                            ? Padding(
-                                padding: EdgeInsets.only(top: 2),
-                                child: Image.asset(
-                                  'assets/image/character/character_06_mypage_walk_dailylog_default 1.png',
-                                  width: 40,
+                            ? Container(
+                                decoration: const BoxDecoration(
+                                  color: kNeutralColor200,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 2),
+                                  child: Image.asset(
+                                    'assets/image/character/character_06_mypage_walk_dailylog_default.png',
+                                    width: 40,
+                                  ),
                                 ),
                               )
                             : isToday(day)
-                                ? Padding(
-                                    padding: EdgeInsets.only(top: 2),
-                                    child: Image.asset(
-                                      'assets/image/character/character_06_mypage_walk_dailylog_Great 1.png',
-                                      width: 40,
+                                ? Container(
+                                    decoration: const BoxDecoration(
+                                      color: kPrimaryColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: 2),
+                                      child: Image.asset(
+                                        'assets/image/character/character_06_mypage_walk_dailylog_great.png',
+                                        width: 40,
+                                      ),
                                     ),
                                   )
                                 : events.isNotEmpty
-                                    ? Padding(
-                                        padding: EdgeInsets.only(top: 2),
-                                        child: Image.asset(
-                                          'assets/image/character/character_06_mypage_walk_dailylog_Great 1.png',
-                                          width: 30,
+                                    ? Container(
+                                        decoration: const BoxDecoration(
+                                          color: kPrimaryColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 2),
+                                          child: Image.asset(
+                                            'assets/image/character/character_06_mypage_walk_dailylog_great.png',
+                                            width: 30,
+                                          ),
                                         ),
                                       )
-                                    : Padding(
-                                        padding: EdgeInsets.only(top: 2),
-                                        child: Image.asset(
-                                          'assets/image/character/character_06_mypage_walk_dailylog_default 1.png',
-                                          width: 30,
+                                    : Container(
+                                        decoration: const BoxDecoration(
+                                          color: kNeutralColor200,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 2),
+                                          child: Image.asset(
+                                            'assets/image/character/character_06_mypage_walk_dailylog_default.png',
+                                            width: 30,
+                                          ),
                                         ),
                                       ),
                       ),

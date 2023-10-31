@@ -161,6 +161,7 @@ void onBackgroundStart(ServiceInstance service) async {
   // bring to foreground
   Timer.periodic(const Duration(seconds: 1), (timer) async {
     print('timer.tick ${timer.tick}');
+
     /// you can see this log in logcat
     print('memberUuid $memberUuid / walkUuid $walkUuid');
 
@@ -197,18 +198,17 @@ void onBackgroundStart(ServiceInstance service) async {
 
     await WalkCacheController.writeWalkInfo(walkStateModel, walkUuid);
 
-
     print('timer.tick % 60 == 0 ${timer.tick % 60 == 0} / ${timer.tick % 60}');
-    if(timer.tick % 20 == 0) {
+    if (timer.tick % 20 == 0) {
       final walkInfoList = await WalkCacheController.readWalkInfo('${walkUuid}_local');
-      final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookieForBackground(cookieJar), baseUrl: 'https://walk-gps.pcstg.co.kr/');
+      final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookieForBackground(cookieJar), baseUrl: walkGpsBaseUrl);
       await walkRepository.sendWalkInfo(memberUuid, walkUuid, walkInfoList, false);
     }
 
     service.invoke(
       'walk_update',
       {
-        'walkStateModel' : walkStateModel.toJson(),
+        'walkStateModel': walkStateModel.toJson(),
       },
     );
   });
