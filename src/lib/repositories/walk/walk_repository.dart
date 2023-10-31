@@ -22,7 +22,7 @@ class WalkRepository {
     required this.dio,
     this.baseUrl,
   }) {
-    _walkService = WalkService(dio, baseUrl: baseUrl ?? walkBaseUrl);
+    _walkService = WalkService(dio, baseUrl: walkBaseUrl);
   }
 
   Future<int> getTodayWalkCount(String memberUuid, [bool isTogetherWalk = false]) async {

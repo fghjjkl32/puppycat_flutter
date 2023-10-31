@@ -49,6 +49,7 @@ class DioWrap {
 
     return dio;
   }
+
   static Dio getDioWithCookieForBackground(CookieJar cookieJar) {
     // final dio = Dio();
 
@@ -105,7 +106,7 @@ class DioWrap {
             print('ref.read(userInfoProvider).userModel ${ref.read(userInfoProvider).userModel}');
             final userModel = ref.read(userInfoProvider).userModel;
             if (userModel != null) {
-              if(userModel.idx != 0) {
+              if (userModel.idx != 0) {
                 ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
               }
             }
@@ -114,6 +115,7 @@ class DioWrap {
             options.headers.addAll(await userAgentClientHintsHeader());
 
             //add referrer
+            //TODO
             options.headers['referrer'] = ref.read(routerProvider).routeInformationProvider.value.location;
 
             PackageInformationUtil pkgInfo = GetIt.I.get<PackageInformationUtil>();

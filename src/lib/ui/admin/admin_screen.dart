@@ -29,8 +29,11 @@ class AdminScreen extends ConsumerStatefulWidget {
 class AdminScreenState extends ConsumerState<AdminScreen> {
   late TextEditingController devUrlController;
   late TextEditingController stgUrlController;
+  late TextEditingController walkDevUrlController;
+  late TextEditingController walkStgUrlController;
   late TextEditingController prdUrlController;
   late TextEditingController selUrlController;
+  late TextEditingController selWalkUrlController;
   late TextEditingController selThumborHostController;
   late TextEditingController selThumborKeyController;
   late TextEditingController selThumborDomainController;
@@ -39,6 +42,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   late FocusNode stgFocusNode;
   late FocusNode prdFocusNode;
   late FocusNode selFocusNode;
+  late FocusNode selWalkFocusNode;
   late FocusNode selFocusNode2;
   late FocusNode selFocusNode3;
   late FocusNode selFocusNode4;
@@ -63,8 +67,14 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
 
     devUrlController = TextEditingController(text: "https://sns-api.devlabs.co.kr:28080/v1");
     stgUrlController = TextEditingController(text: "https://api.pcstg.co.kr/v1");
+
+    walkDevUrlController = TextEditingController(text: "https://pet-walk-dev-api.devlabs.co.kr/v1");
+    walkStgUrlController = TextEditingController(text: "https://walk-api.pcstg.co.kr/v1");
+
     prdUrlController = TextEditingController(text: "");
     selUrlController = TextEditingController(text: '');
+    selWalkUrlController = TextEditingController(text: '');
+
     selThumborHostController = TextEditingController(text: '');
     selThumborKeyController = TextEditingController(text: '');
     selThumborDomainController = TextEditingController(text: '');
@@ -73,6 +83,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     stgFocusNode = FocusNode();
     prdFocusNode = FocusNode();
     selFocusNode = FocusNode();
+    selWalkFocusNode = FocusNode();
     selFocusNode2 = FocusNode();
     selFocusNode3 = FocusNode();
     selFocusNode4 = FocusNode();
@@ -82,12 +93,16 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   void dispose() {
     devUrlController.dispose();
     stgUrlController.dispose();
+    walkDevUrlController.dispose();
+    walkStgUrlController.dispose();
     prdUrlController.dispose();
+    selWalkUrlController.dispose();
     selUrlController.dispose();
     devFocusNode.dispose();
     stgFocusNode.dispose();
     prdFocusNode.dispose();
     selFocusNode.dispose();
+    selWalkFocusNode.dispose();
     selFocusNode2.dispose();
     selFocusNode3.dispose();
     selFocusNode4.dispose();
@@ -96,13 +111,15 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   }
 
   void setSelectURL(
-    TextEditingController controller,
+    TextEditingController urlController,
+    TextEditingController walkUrlController,
     String thumborHost,
     String thumborKey,
     String thumborDomain,
   ) {
     setState(() {
-      selUrlController.text = controller.text;
+      selUrlController.text = urlController.text;
+      selWalkUrlController.text = walkUrlController.text;
       selThumborHostController.text = thumborHost;
       selThumborKeyController.text = thumborKey;
       selThumborDomainController.text = thumborDomain;
@@ -130,6 +147,14 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     await prefs.setString('selectedURL', selUrlController.text);
 
     baseUrl = await Constants.getBaseUrl();
+  }
+
+  setWalkUrlValue() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('selectedWalkURL', selWalkUrlController.text);
+
+    walkBaseUrl = await Constants.getBaseWalkUrl();
   }
 
   setThumborHostUrl() async {
@@ -161,6 +186,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
+          selWalkFocusNode.unfocus();
           devFocusNode.unfocus();
           stgFocusNode.unfocus();
           prdFocusNode.unfocus();
@@ -194,7 +220,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      setSelectURL(devUrlController, devThumborHostUrl, devThumborKey, devThumborDomainUrl);
+                      setSelectURL(devUrlController, walkDevUrlController, devThumborHostUrl, devThumborKey, devThumborDomainUrl);
                     },
                     child: const Text('선택'),
                   ),
@@ -217,7 +243,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      setSelectURL(stgUrlController, stgThumborHostUrl, stgThumborKey, stgThumborDomainUrl);
+                      setSelectURL(stgUrlController, walkStgUrlController, stgThumborHostUrl, stgThumborKey, stgThumborDomainUrl);
                     },
                     child: const Text('선택'),
                   ),
@@ -258,6 +284,19 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                 readOnly: true,
                 decoration: const InputDecoration(
                   label: Text('Select Url'),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Flexible(
+              child: TextField(
+                controller: selWalkUrlController,
+                focusNode: selWalkFocusNode,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  label: Text('Select Walk Url'),
                 ),
               ),
             ),
@@ -339,6 +378,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                         return;
                       } else {
                         setUrlValue();
+                        setWalkUrlValue();
                         setThumborHostUrl();
                         setThumborKey();
                         setThumborDomain();

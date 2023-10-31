@@ -65,6 +65,15 @@ import 'package:pet_mobile_social_flutter/ui/web_view/webview_widget.dart';
 
 final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref: ref).router);
 
+extension GoRouterExtension on GoRouter {
+  String location() {
+    final RouteMatch lastMatch = routerDelegate.currentConfiguration.last;
+    final RouteMatchList matchList = lastMatch is ImperativeRouteMatch ? lastMatch.matches : routerDelegate.currentConfiguration;
+    final String location = matchList.uri.toString();
+    return location;
+  }
+}
+
 class AppRouter {
   GoRouter get router => _goRouter;
   var _loginRouteState = LoginRoute.none;
@@ -474,7 +483,7 @@ class AppRouter {
         path: '/writeWalkLog',
         name: 'writeWalkLog',
         builder: (BuildContext context, GoRouterState state) {
-            return const WriteWalkLogScreen();
+          return const WriteWalkLogScreen();
         },
       ),
     ],
@@ -543,8 +552,6 @@ class AppRouter {
       }
 
       return null;
-
-
     },
   );
 }

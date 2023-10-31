@@ -427,10 +427,10 @@ class MapScreenState extends ConsumerState<MapScreen> {
                                     print('background start!!');
                                     FlutterBackgroundService().invoke("setAsForeground");
                                     FlutterBackgroundService().invoke('setData', {
-                                      'memberUuid' : memberUuid,
-                                      'walkUuid' : walkUuid,
-                                      'cookieMap' : cookieMap,
-                                      'selectedPetList' : petMap,
+                                      'memberUuid': memberUuid,
+                                      'walkUuid': walkUuid,
+                                      'cookieMap': cookieMap,
+                                      'selectedPetList': petMap,
                                     });
                                   }
                                 });

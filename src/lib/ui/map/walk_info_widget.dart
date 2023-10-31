@@ -6,7 +6,10 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
@@ -88,7 +91,18 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.camera)),
+              IconButton(
+                onPressed: () async {
+                  final ImagePicker picker = ImagePicker();
+
+                  final pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+                  if (pickedFile != null) {
+                    await ImageGallerySaver.saveFile(pickedFile.path);
+                  }
+                },
+                icon: Icon(Icons.camera),
+              ),
               IconButton(
                   onPressed: () async {
                     // final mapController = ref.read(naverMapControllerStateProvider);
@@ -119,13 +133,23 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> {
                     // }
                     final walkUuid = await ref.read(walkStateProvider.notifier).stopWalk();
                     if (walkUuid.isNotEmpty) {
-                      if(context.mounted) {
+                      if (context.mounted) {
                         context.push('/writeWalkLog');
                       }
                     }
                   },
                   icon: Icon(Icons.stop)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.view_compact_alt_outlined)),
+              IconButton(
+                onPressed: () {
+                  if (GoRouter.of(context).location() == "/home") {
+                    context.push('/map');
+                  } else {
+                    ref.read(isNavigatedFromMapProvider.notifier).state = true;
+                    context.pushReplacement('/home');
+                  }
+                },
+                icon: Icon(Icons.view_compact_alt_outlined),
+              ),
             ],
           )
         ],

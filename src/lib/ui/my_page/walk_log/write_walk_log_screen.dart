@@ -78,7 +78,7 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
     WalkWriteResultDetailItemModel? resultDetailModel; // = resultDetailModelItemList.first;
     List<WalkPetList> petList = [];
 
-    if(resultDetailModelItemList.isNotEmpty) {
+    if (resultDetailModelItemList.isNotEmpty) {
       resultDetailModel = resultDetailModelItemList.first;
       petList = [...resultDetailModel.walkPetList!];
       // startDate = resultDetailModel.startDate ?? 'Unknown';
@@ -94,15 +94,15 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
       petStates = [
         ...petList
             .map((e) => PetState(
-          petUuid: e.petUuid!,
-          peeCount: 0,
-          peeAmount: 0,
-          peeColor: 0,
-          poopCount: 0,
-          poopAmount: 0,
-          poopColor: 0,
-          poopForm: 0,
-        ))
+                  petUuid: e.petUuid!,
+                  peeCount: 0,
+                  peeAmount: 0,
+                  peeColor: 0,
+                  poopCount: 0,
+                  poopAmount: 0,
+                  poopColor: 0,
+                  poopForm: 0,
+                ))
             .toList()
       ];
     }
@@ -272,8 +272,8 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
                 }
 
                 final result = await ref.watch(walkWriteResultDetailStateProvider.notifier).postWalkResult(formDataMap: baseParams);
-                if(result.result) {
-                  if(context.mounted) {
+                if (result.result) {
+                  if (context.mounted) {
                     // context.pop();
                     context.pushReplacement('/home');
                   }

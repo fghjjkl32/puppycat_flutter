@@ -891,7 +891,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
             ),
             InkWell(
               onTap: () async {
-                context.push("/home/myPage/workLogCalendar");
+                context.push("/home/myPage/walkLogCalendar");
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
@@ -963,9 +963,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     context,
                     MaterialPageRoute(
                       builder: (context) => WriteWalkLogScreen(
-                        // walkPathImageFile: firstImageFile,
-                        // walkUuid: "walkkoae25df7867d24855aad17ec97ed4acad1698407055",
-                      ),
+                          // walkPathImageFile: firstImageFile,
+                          // walkUuid: "walkkoae25df7867d24855aad17ec97ed4acad1698407055",
+                          ),
                     ),
                   );
                 }
