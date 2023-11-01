@@ -202,12 +202,14 @@ class WalkState extends _$WalkState {
     WalkResultStateResponseModel walkResult = await walkRepository.getWalkResultState(memberUuid: memberUuid);
 
     final result = walkResult.data.list;
+    _walkUuid = result.walkUuid!;
+
     if (!result.isRegistWalk! && !result.isEndWalk!) {
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walking;
-      _walkUuid = result.walkUuid!;
+    } else if (result.isEndWalk! && result.isRegistWalk!) {
+      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.idle;
     } else if (result.isEndWalk!) {
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walkEndedWithoutLog;
-      _walkUuid = result.walkUuid!;
     } else {
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.idle;
     }

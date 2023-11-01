@@ -422,6 +422,45 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      ref.watch(feedWriteButtonSelectedProvider.notifier).state = 0;
+                    },
+                    child: Container(
+                      decoration: buttonSelected == 0
+                          ? BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: kPrimaryLightColor,
+                            )
+                          : BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: kNeutralColor400),
+                            ),
+                      height: 44,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Puppycat_social.icon_view_all,
+                            size: 14,
+                            color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor,
+                          ),
+                          SizedBox(
+                            width: 9,
+                          ),
+                          Text(
+                            "비공개",
+                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
