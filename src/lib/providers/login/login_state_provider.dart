@@ -56,7 +56,7 @@ class LoginState extends _$LoginState {
     _procLogin(loginResult);
   }
 
-  void _procLogin(UserModel? userModel) {
+  Future<void> _procLogin(UserModel? userModel) async {
     if (userModel == null) {
       state = LoginStatus.failure;
       return;
@@ -74,7 +74,7 @@ class LoginState extends _$LoginState {
         UserInfoModel userInfoModel = UserInfoModel(userModel: userModel);
         ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
         ref.read(myInfoStateProvider.notifier).getMyInfo(userModel.idx.toString());
-        ref.listen(myInfoStateProvider, (previous, next) async {
+        ref.listen(myInfoStateProvider, (previous, next) {
           print('next $next');
 
           ///TODO
@@ -112,12 +112,11 @@ class LoginState extends _$LoginState {
             );
           }
 
-          await ref.read(walkStateProvider.notifier).getWalkResultState(next.uuid!);
           ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
           ref.read(userInfoProvider.notifier).state = userInfoModel;
         });
 
-        print('userInfoModel $userInfoModel');
+        print('userInfoModel :: $userInfoModel');
         ref.read(userInfoProvider.notifier).state = userInfoModel;
       case LoginStatus.needSignUp:
         ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.signUpScreen);

@@ -111,8 +111,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     tabController = TabController(vsync: this, length: getTabs().length);
     tabController.index = widget.initialTabIndex;
 
-    Future(() {
+    Future(() async {
       final loginState = ref.watch(loginStateProvider);
+
+      await ref.read(walkStateProvider.notifier).getWalkResultState(ref.read(userInfoProvider).userModel!.uuid);
 
       _recentFeedListPagingController.refresh();
 
