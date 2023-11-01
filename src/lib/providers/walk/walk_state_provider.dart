@@ -34,6 +34,7 @@ enum WalkStatus {
 
 final walkStatusStateProvider = StateProvider<WalkStatus>((ref) => WalkStatus.idle);
 final walkPathImgStateProvider = StateProvider<File?>((ref) => null);
+final isNavigatedFromMapProvider = StateProvider<bool>((ref) => false);
 
 @Riverpod(keepAlive: true)
 class WalkState extends _$WalkState {
@@ -77,6 +78,7 @@ class WalkState extends _$WalkState {
       var result = await walkRepository.startWalk(memberUuid, petUuidList, standardPet);
       _walkUuid = result.$1;
       _walkStartDate = result.$2;
+      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walking;
 
       if (_walkUuid.isEmpty) {
         return '';
@@ -133,7 +135,7 @@ class WalkState extends _$WalkState {
       // if(_walkInfoList.isNotEmpty) {
       final walkInfoList = await WalkCacheController.readWalkInfo('${walkUuid}_local');
       // await walkRepository.sendWalkInfo(memberUuid, walkUuid, walkInfoList, true);
-        sendWalkInfo(walkInfoList, true);
+      sendWalkInfo(walkInfoList, true);
       // }
       // await WalkCacheController.writeWalkInfo(lastWalkState, _walkUuid);
 
@@ -155,6 +157,10 @@ class WalkState extends _$WalkState {
         print('screenshot error $e');
       }
 
+      if (_walkStartDate.isEmpty) {
+        _walkStartDate = DateTime.now().toString();
+      }
+
       var result = await walkRepository.stopWalk(memberUuid, _walkUuid, lastWalkState.walkCount, _walkStartDate, lastWalkState.distance, lastWalkState.calorie);
 
       ref.read(singleWalkStateProvider.notifier).state.clear();
@@ -171,7 +177,7 @@ class WalkState extends _$WalkState {
   }
 
   Future sendWalkInfo(List<WalkStateModel> walkInfoList, [bool isFinished = false]) async {
-    final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: 'https://walk-gps.pcstg.co.kr/');
+    final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: walkGpsBaseUrl);
     // final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: 'https://pet-walk-dev-gps.devlabs.co.kr');
 
     try {
@@ -195,15 +201,17 @@ class WalkState extends _$WalkState {
   }
 
   Future<WalkResultStateResponseModel> getWalkResultState(String memberUuid) async {
-    final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: walkBaseUrl);
+    final walkRepository = WalkRepository(dio: ref.read(dioProvider));
 
     WalkResultStateResponseModel walkResult = await walkRepository.getWalkResultState(memberUuid: memberUuid);
 
     final result = walkResult.data.list;
     if (!result.isRegistWalk! && !result.isEndWalk!) {
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walking;
-    } else if (!result.isEndWalk!) {
+      _walkUuid = result.walkUuid!;
+    } else if (result.isEndWalk!) {
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walkEndedWithoutLog;
+      _walkUuid = result.walkUuid!;
     } else {
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.idle;
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -36,6 +37,7 @@ import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dar
 import 'package:pet_mobile_social_flutter/ui/dialog/restriction_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/popupmenu_with_reddot_widget.dart';
+import 'package:pet_mobile_social_flutter/ui/map/walk_info_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
 import 'package:thumbor/thumbor.dart';
@@ -60,6 +62,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   late final PagingController<int, FeedData> _popularWeekFeedListPagingController = ref.read(popularWeekFeedStateProvider);
 
   bool showLottieAnimation = false;
+  bool _isWidgetVisible = true;
 
   List<Widget> getTabs() {
     final loginState = ref.read(loginStateProvider);
@@ -136,7 +139,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       print(ref.read(walkStatusStateProvider));
       print(ref.read(walkStatusStateProvider));
 
-      if (ref.read(walkStatusStateProvider) == WalkStatus.walking) {
+      if (ref.read(walkStatusStateProvider) == WalkStatus.walking && !ref.read(isNavigatedFromMapProvider)) {
         context.push('/map');
       } else if (ref.read(walkStatusStateProvider) == WalkStatus.walkEndedWithoutLog) {
         toast(
@@ -174,6 +177,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
               InkWell(
                 onTap: () {
                   FToast().removeCustomToast();
+                  context.push('/writeWalkLog');
                 },
                 child: Container(
                   decoration: const BoxDecoration(
@@ -202,6 +206,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     setState(() {
       ref.read(userInfoProvider).userModel == null ? _showIcon = false : _showIcon = scrollController.offset > 100.h;
     });
+    if (scrollController.position.userScrollDirection != ScrollDirection.idle) {
+      setState(() {
+        _isWidgetVisible = false;
+      });
+    }
   }
 
   @override
@@ -327,25 +336,67 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                               ),
                       ];
                     },
-                    body: TabBarView(
-                      controller: tabController,
-                      children: [
-                        _firstTab(),
-                        Container(
-                          color: Colors.blue,
-                        ),
-                        if (loginState == LoginStatus.success) ...[
-                          _thirdTab(),
+                    body: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _isWidgetVisible = false;
+                        });
+                      },
+                      child: Stack(
+                        children: [
+                          TabBarView(
+                            controller: tabController,
+                            children: [
+                              _firstTab(),
+                              Container(
+                                color: Colors.blue,
+                              ),
+                              if (loginState == LoginStatus.success) ...[
+                                _thirdTab(),
+                              ],
+                              if (loginState == LoginStatus.success) ...[
+                                _fourthTab(),
+                              ],
+                            ],
+                          ),
+                          Visibility(
+                            visible: _isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking,
+                            child: Positioned.fill(
+                              bottom: 10,
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 24.0),
+                                  child: WalkInfoWidget(
+                                    walkStateModel: ref.watch(singleWalkStateProvider).isEmpty ? null : ref.watch(singleWalkStateProvider).last,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
                         ],
-                        if (loginState == LoginStatus.success) ...[
-                          _fourthTab(),
-                        ],
-                      ],
+                      ),
                     ),
                   ),
                 );
               }),
             ),
+            floatingActionButton: Consumer(builder: (context, ref, _) {
+              return !_isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking
+                  ? FloatingActionButton(
+                      backgroundColor: kNeutralColor100,
+                      child: Lottie.asset(
+                        'assets/lottie/character_03_walking_floating.json',
+                        repeat: true,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isWidgetVisible = true;
+                        });
+                      },
+                    )
+                  : Container();
+            }),
           ),
           Positioned(
             top: 0,
@@ -369,7 +420,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       children: [
         GestureDetector(
           onTap: () async {
-            if (ref.read(userInfoProvider).userModel != null) {
+            if (ref.read(userInfoProvider).userModel != null && !(ref.read(walkStatusStateProvider) == WalkStatus.walking)) {
               await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
             }
 
@@ -377,6 +428,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
               if (mounted) {
                 context.pushReplacement("/loginScreen");
               }
+            } else if (ref.read(walkStatusStateProvider) == WalkStatus.walking) {
+              return;
             } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
               final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
 
@@ -426,39 +479,44 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
               );
             }
           },
-          child: const Icon(
-            Puppycat_social.icon_camera,
-            size: 40,
-          ),
+          child: Consumer(builder: (context, ref, _) {
+            return Icon(
+              Puppycat_social.icon_camera,
+              color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
+              size: 40,
+            );
+          }),
         ),
         GestureDetector(
           onTap: () async {
-            if (ref.read(userInfoProvider).userModel != null) {
+            if (ref.read(userInfoProvider).userModel != null && !(ref.read(walkStatusStateProvider) == WalkStatus.walking)) {
               await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
             }
             if (mounted) {
               ref.read(userInfoProvider).userModel == null
                   ? context.pushReplacement("/loginScreen")
-                  : ref.watch(restrainWriteStateProvider).restrain.state == null
-                      ? feedWriteShowBottomSheet(
-                          context: context,
-                          onClose: () {
-                            setState(() {
-                              showLottieAnimation = false;
-                            });
-                          },
-                        )
-                      : showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (context) => RestrictionDialog(
-                            isForever: false,
-                            date: ref.watch(restrainWriteStateProvider).restrain.date,
-                            restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-                            startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-                            endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-                          ),
-                        );
+                  : ref.read(walkStatusStateProvider) == WalkStatus.walking
+                      ? null
+                      : ref.watch(restrainWriteStateProvider).restrain.state == null
+                          ? feedWriteShowBottomSheet(
+                              context: context,
+                              onClose: () {
+                                setState(() {
+                                  showLottieAnimation = false;
+                                });
+                              },
+                            )
+                          : showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (context) => RestrictionDialog(
+                                isForever: false,
+                                date: ref.watch(restrainWriteStateProvider).restrain.date,
+                                restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
+                                startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
+                                endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
+                              ),
+                            );
             }
 
             setState(() {
@@ -470,10 +528,13 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   'assets/lottie/icon_feed.json',
                   repeat: false,
                 )
-              : const Icon(
-                  Puppycat_social.icon_feed,
-                  size: 40,
-                ),
+              : Consumer(builder: (context, ref, _) {
+                  return Icon(
+                    Puppycat_social.icon_feed,
+                    color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
+                    size: 40,
+                  );
+                }),
         ),
         const PopupMenuWithReddot(),
         GestureDetector(

@@ -30,7 +30,15 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   late TextEditingController devUrlController;
   late TextEditingController stgUrlController;
   late TextEditingController prdUrlController;
+  late TextEditingController walkDevUrlController;
+  late TextEditingController walkStgUrlController;
+  late TextEditingController walkPrdUrlController;
+  late TextEditingController walkDevGpsUrlController;
+  late TextEditingController walkStgGpsUrlController;
+  late TextEditingController walkPrdGpsUrlController;
   late TextEditingController selUrlController;
+  late TextEditingController selWalkUrlController;
+  late TextEditingController selWalkGpsUrlController;
   late TextEditingController selThumborHostController;
   late TextEditingController selThumborKeyController;
   late TextEditingController selThumborDomainController;
@@ -39,6 +47,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   late FocusNode stgFocusNode;
   late FocusNode prdFocusNode;
   late FocusNode selFocusNode;
+  late FocusNode selWalkFocusNode;
+  late FocusNode selWalkGpsFocusNode;
   late FocusNode selFocusNode2;
   late FocusNode selFocusNode3;
   late FocusNode selFocusNode4;
@@ -49,12 +59,15 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
 
   String devThumborHostUrl = "https://tb.devlabs.co.kr/";
   String stgThumborHostUrl = "https://tb.pcstg.co.kr/";
+  String prdThumborHostUrl = "https://tb.puppycat.co.kr/";
 
   String devThumborKey = "B5C2FAB11C3CB963";
   String stgThumborKey = "Tjaqhvpt";
+  String prdThumborKey = "vjvlzotvldkfel";
 
   String stgThumborDomainUrl = "https://imgs.pcstg.co.kr";
   String devThumborDomainUrl = "https://dev-imgs.devlabs.co.kr";
+  String prdThumborDomainUrl = "https://imgs.puppycat.co.kr";
 
   @override
   void initState() {
@@ -63,8 +76,20 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
 
     devUrlController = TextEditingController(text: "https://sns-api.devlabs.co.kr:28080/v1");
     stgUrlController = TextEditingController(text: "https://api.pcstg.co.kr/v1");
-    prdUrlController = TextEditingController(text: "");
+    prdUrlController = TextEditingController(text: "https://api.puppycat.co.kr/v1");
+
+    walkDevUrlController = TextEditingController(text: "https://pet-walk-dev-api.devlabs.co.kr/v1");
+    walkStgUrlController = TextEditingController(text: "https://walk-api.pcstg.co.kr/v1");
+    walkPrdUrlController = TextEditingController(text: "https://walk-api.puppycat.co.kr/v1");
+
+    walkDevGpsUrlController = TextEditingController(text: "https://pet-walk-dev-gps.devlabs.co.kr/v1");
+    walkStgGpsUrlController = TextEditingController(text: "https://walk-gps.pcstg.co.kr/v1");
+    walkPrdGpsUrlController = TextEditingController(text: "https://walk-gps.puppycat.co.kr/v1");
+
     selUrlController = TextEditingController(text: '');
+    selWalkUrlController = TextEditingController(text: '');
+    selWalkGpsUrlController = TextEditingController(text: '');
+
     selThumborHostController = TextEditingController(text: '');
     selThumborKeyController = TextEditingController(text: '');
     selThumborDomainController = TextEditingController(text: '');
@@ -73,6 +98,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     stgFocusNode = FocusNode();
     prdFocusNode = FocusNode();
     selFocusNode = FocusNode();
+    selWalkFocusNode = FocusNode();
+    selWalkGpsFocusNode = FocusNode();
     selFocusNode2 = FocusNode();
     selFocusNode3 = FocusNode();
     selFocusNode4 = FocusNode();
@@ -83,11 +110,21 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     devUrlController.dispose();
     stgUrlController.dispose();
     prdUrlController.dispose();
+    walkDevUrlController.dispose();
+    walkStgUrlController.dispose();
+    walkPrdUrlController.dispose();
+    walkDevGpsUrlController.dispose();
+    walkStgGpsUrlController.dispose();
+    walkPrdGpsUrlController.dispose();
     selUrlController.dispose();
+    selWalkUrlController.dispose();
+    selWalkGpsUrlController.dispose();
     devFocusNode.dispose();
     stgFocusNode.dispose();
     prdFocusNode.dispose();
     selFocusNode.dispose();
+    selWalkFocusNode.dispose();
+    selWalkGpsFocusNode.dispose();
     selFocusNode2.dispose();
     selFocusNode3.dispose();
     selFocusNode4.dispose();
@@ -96,13 +133,17 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   }
 
   void setSelectURL(
-    TextEditingController controller,
+    TextEditingController urlController,
+    TextEditingController walkUrlController,
+    TextEditingController walkGpsUrlController,
     String thumborHost,
     String thumborKey,
     String thumborDomain,
   ) {
     setState(() {
-      selUrlController.text = controller.text;
+      selUrlController.text = urlController.text;
+      selWalkUrlController.text = walkUrlController.text;
+      selWalkGpsUrlController.text = walkGpsUrlController.text;
       selThumborHostController.text = thumborHost;
       selThumborKeyController.text = thumborKey;
       selThumborDomainController.text = thumborDomain;
@@ -130,6 +171,22 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     await prefs.setString('selectedURL', selUrlController.text);
 
     baseUrl = await Constants.getBaseUrl();
+  }
+
+  setWalkUrlValue() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('selectedWalkURL', selWalkUrlController.text);
+
+    walkBaseUrl = await Constants.getBaseWalkUrl();
+  }
+
+  setWalkGpsUrlValue() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('selectedWalkGpsURL', selWalkGpsUrlController.text);
+
+    walkGpsBaseUrl = await Constants.getBaseWalkGpsUrl();
   }
 
   setThumborHostUrl() async {
@@ -161,6 +218,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
+          selWalkFocusNode.unfocus();
+          selWalkGpsFocusNode.unfocus();
           devFocusNode.unfocus();
           stgFocusNode.unfocus();
           prdFocusNode.unfocus();
@@ -194,7 +253,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      setSelectURL(devUrlController, devThumborHostUrl, devThumborKey, devThumborDomainUrl);
+                      setSelectURL(devUrlController, walkDevUrlController, walkDevGpsUrlController, devThumborHostUrl, devThumborKey, devThumborDomainUrl);
                     },
                     child: const Text('선택'),
                   ),
@@ -217,7 +276,30 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      setSelectURL(stgUrlController, stgThumborHostUrl, stgThumborKey, stgThumborDomainUrl);
+                      setSelectURL(stgUrlController, walkStgUrlController, walkStgGpsUrlController, stgThumborHostUrl, stgThumborKey, stgThumborDomainUrl);
+                    },
+                    child: const Text('선택'),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: TextField(
+                      controller: prdUrlController,
+                      focusNode: prdFocusNode,
+                      decoration: const InputDecoration(label: Text('Product')),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      setSelectURL(prdUrlController, walkPrdUrlController, walkPrdGpsUrlController, prdThumborHostUrl, prdThumborKey, prdThumborDomainUrl);
                     },
                     child: const Text('선택'),
                   ),
@@ -258,6 +340,32 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                 readOnly: true,
                 decoration: const InputDecoration(
                   label: Text('Select Url'),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Flexible(
+              child: TextField(
+                controller: selWalkUrlController,
+                focusNode: selWalkFocusNode,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  label: Text('Select Walk Url'),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Flexible(
+              child: TextField(
+                controller: selWalkGpsUrlController,
+                focusNode: selWalkGpsFocusNode,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  label: Text('Select Walk Gps Url'),
                 ),
               ),
             ),
@@ -339,6 +447,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                         return;
                       } else {
                         setUrlValue();
+                        setWalkUrlValue();
                         setThumborHostUrl();
                         setThumborKey();
                         setThumborDomain();

@@ -74,7 +74,7 @@ class LoginState extends _$LoginState {
         UserInfoModel userInfoModel = UserInfoModel(userModel: userModel);
         ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
         ref.read(myInfoStateProvider.notifier).getMyInfo(userModel.idx.toString());
-        ref.listen(myInfoStateProvider, (previous, next) {
+        ref.listen(myInfoStateProvider, (previous, next) async {
           print('next $next');
 
           ///TODO
@@ -112,7 +112,7 @@ class LoginState extends _$LoginState {
             );
           }
 
-          ref.read(walkStateProvider.notifier).getWalkResultState(next.uuid!);
+          await ref.read(walkStateProvider.notifier).getWalkResultState(next.uuid!);
           ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
           ref.read(userInfoProvider.notifier).state = userInfoModel;
         });
