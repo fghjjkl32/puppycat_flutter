@@ -2,7 +2,7 @@ name: pet_mobile_social_flutter
 description: pet_mobile_social_flutter
 publish_to: 'none'
 
-version: 0.0.5+6
+version: 0.0.6+7
 scripts:
   codegen: flutter pub run build_runner build
 
@@ -39,7 +39,7 @@ dependencies:
   insta_assets_crop: ^0.0.2 # custom package from image_crop
   fraction: ^5.0.0 # to show crop ratio in crop view
   provider: ^6.0.5 # match with wechat_assets_picker package
-  extended_image: ^8.0.1 # match with wechat_assets_picker package
+  extended_image: ^8.1.1 # match with wechat_assets_picker package
   photo_manager: ^2.6.0
   video_player: ^2.6.0
   image_picker: ^0.8.7+5
@@ -97,7 +97,7 @@ dependencies:
 
 
   #chat
-  matrix: ^0.21.2
+  matrix: ^0.22.6
   flutter_slidable:
     git:
       url: https://github.com/engine-smkang-uxplus/flutter_slidable

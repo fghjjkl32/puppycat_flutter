@@ -279,7 +279,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
                 return CustomError(errorDetails: errorDetails);
               };
 
-              return ScrollConfiguration(behavior: ScrollBehaviorModified(), child: widget!);
+              return MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0), child: ScrollConfiguration(behavior: ScrollBehaviorModified(), child: widget!));
             },
           ),
         );
