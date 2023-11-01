@@ -17,7 +17,7 @@ class MatrixChatClientController implements AbstractChatController {
 
   Client get client => _chatClient;
 
-  MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://sns-chat.pcstg.co.kr:8008']) {
+  MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://sns-chat.puppycat.co.kr']) {
     // MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://sns-chat.devlabs.co.kr:8008']) {
     // MatrixChatClientController([String clientName = 'puppycat', String homeServer = 'https://dev2.office.uxplus.kr']) {
     print('homeServer $homeServer / clientName $clientName');
