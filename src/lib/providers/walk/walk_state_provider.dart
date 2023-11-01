@@ -17,6 +17,7 @@ import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_result_state/walk_result_state_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/pedometer_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/walk/walk_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -92,6 +93,8 @@ class WalkState extends _$WalkState {
       //   await WalkCacheController.writeWalkInfo(next.last, _walkUuid);
       // });
 
+      ref.read(pedoMeterStateProvider.notifier).startPedoMeter();
+
       return _walkUuid;
     } catch (e) {
       print('startWalk error $e');
@@ -157,6 +160,7 @@ class WalkState extends _$WalkState {
       ref.read(singleWalkStateProvider.notifier).state.clear();
       ref.read(walkSelectedPetStateProvider.notifier).state.clear();
 
+      ref.read(pedoMeterStateProvider.notifier).stopPedoMeter();
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.finished;
       print('stop walk uuid : $_walkUuid');
       return _walkUuid;

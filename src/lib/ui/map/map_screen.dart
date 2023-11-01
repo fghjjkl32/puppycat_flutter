@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/common/util/location/geolocator_util.d
 import 'package:pedometer/pedometer.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -102,14 +103,14 @@ class MapScreenState extends ConsumerState<MapScreen> {
           context: context,
           text: '',
           type: ToastType.white,
-          toastDuration: Duration(days: 1000),
+          toastDuration: const Duration(days: 1000),
           toastWidget: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     width: 14,
                   ),
                   Column(
@@ -157,7 +158,7 @@ class MapScreenState extends ConsumerState<MapScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   InkWell(
