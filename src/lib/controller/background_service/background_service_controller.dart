@@ -186,6 +186,7 @@ void onBackgroundStart(ServiceInstance service) async {
       walkTime: 0,
       walkCount: 0,
       calorie: {},
+      petList: selectedPetList,
     );
 
     LocationData currentLocationData = LocationData.fromMap({

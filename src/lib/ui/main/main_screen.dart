@@ -111,8 +111,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     tabController = TabController(vsync: this, length: getTabs().length);
     tabController.index = widget.initialTabIndex;
 
-    Future(() {
+    Future(() async {
       final loginState = ref.watch(loginStateProvider);
+
+      await ref.read(walkStateProvider.notifier).getWalkResultState(ref.read(userInfoProvider).userModel!.uuid);
 
       _recentFeedListPagingController.refresh();
 
@@ -225,6 +227,102 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   Widget build(BuildContext context) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 320;
     final loginState = ref.watch(loginStateProvider);
+
+    ref.listen(loginStateProvider, (previous, next) {
+      print('loginStateProvider next $next');
+    });
+    // ref.listen(loginStateProvider, (previous, next) async {
+    //   print('loginStateProvider listner run??');
+    //     final loginState = next;
+    //
+    //     await ref.read(walkStateProvider.notifier).getWalkResultState(ref.read(userInfoProvider).userModel!.uuid);
+    //
+    //     _recentFeedListPagingController.refresh();
+    //
+    //     ref.read(popularUserListStateProvider.notifier).getInitUserList(
+    //       ref.read(userInfoProvider).userModel?.idx,
+    //     );
+    //
+    //     ref.read(popularHourFeedStateProvider.notifier).initPosts(
+    //       loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
+    //     );
+    //
+    //     scrollController.addListener(_myPostScrollListener);
+    //
+    //     if (loginState == LoginStatus.success) {
+    //       _myFeedListPagingController.refresh();
+    //
+    //       _popularWeekFeedListPagingController.refresh();
+    //
+    //       _followFeedListPagingController.refresh();
+    //
+    //       ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
+    //     }
+    //
+    //     print(ref.read(walkStatusStateProvider));
+    //     print(ref.read(walkStatusStateProvider));
+    //
+    //     if (ref.read(walkStatusStateProvider) == WalkStatus.walking && !ref.read(isNavigatedFromMapProvider)) {
+    //       context.push('/map');
+    //     } else if (ref.read(walkStatusStateProvider) == WalkStatus.walkEndedWithoutLog) {
+    //       toast(
+    //         context: context,
+    //         text: '',
+    //         type: ToastType.white,
+    //         toastDuration: Duration(days: 1000),
+    //         toastWidget: Row(
+    //           crossAxisAlignment: CrossAxisAlignment.center,
+    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //           children: [
+    //             Row(
+    //               children: [
+    //                 SizedBox(
+    //                   width: 14,
+    //                 ),
+    //                 Column(
+    //                   crossAxisAlignment: CrossAxisAlignment.start,
+    //                   children: [
+    //                     Text(
+    //                       "산책이 종료되었습니다.",
+    //                       style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+    //                     ),
+    //                     Padding(
+    //                       padding: const EdgeInsets.only(top: 2.0),
+    //                       child: Text(
+    //                         "'확인' 클릭 시 산책 결과 페이지로 이동합니다.",
+    //                         style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ],
+    //             ),
+    //             InkWell(
+    //               onTap: () {
+    //                 FToast().removeCustomToast();
+    //                 context.push('/writeWalkLog');
+    //               },
+    //               child: Container(
+    //                 decoration: const BoxDecoration(
+    //                   color: kPrimaryLightColor,
+    //                   borderRadius: BorderRadius.all(
+    //                     Radius.circular(100.0),
+    //                   ),
+    //                 ),
+    //                 child: Padding(
+    //                   padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+    //                   child: Text(
+    //                     "확인",
+    //                     style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
+    //                   ),
+    //                 ),
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //       );
+    //     }
+    // });
 
     return WillPopScope(
       onWillPop: () async {

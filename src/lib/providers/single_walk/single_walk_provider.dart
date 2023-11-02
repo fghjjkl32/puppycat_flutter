@@ -85,8 +85,10 @@ class SingleWalkState extends _$SingleWalkState {
           walkTime: 0,
           walkCount: 0,
           calorie: {},
+          petList: selectedPetList,
         );
       }
+      print('walkStateModel $walkStateModel');
       state = [...state, walkStateModel];
       // if (state.isNotEmpty) {
       //   await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last);

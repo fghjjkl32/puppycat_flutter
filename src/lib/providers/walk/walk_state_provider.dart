@@ -29,6 +29,7 @@ enum WalkStatus {
   idle,
   walking,
   walkEndedWithoutLog,
+  walkEndedForce,
   finished,
 }
 
@@ -40,7 +41,8 @@ final isNavigatedFromMapProvider = StateProvider<bool>((ref) => false);
 class WalkState extends _$WalkState {
   String _walkUuid = '';
   String _walkStartDate = '';
-  List<WalkStateModel> _walkInfoList = [];
+
+  // List<WalkStateModel> _walkInfoList = [];
 
   String get walkUuid => _walkUuid;
 
@@ -53,7 +55,7 @@ class WalkState extends _$WalkState {
     final walkRepository = WalkRepository(dio: ref.read(dioProvider));
     try {
       final userInfo = ref.read(userInfoProvider).userModel;
-      print('userModel $userInfo');
+      print('userModel222222 $userInfo');
       final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
       var result = await walkRepository.getTodayWalkCount(memberUuid, false);
       print('walkCount $result');
@@ -124,6 +126,7 @@ class WalkState extends _$WalkState {
           walkTime: 0,
           walkCount: 0,
           calorie: {},
+          petList: [],
         ));
       }
 
@@ -167,6 +170,12 @@ class WalkState extends _$WalkState {
       ref.read(walkSelectedPetStateProvider.notifier).state.clear();
 
       ref.read(pedoMeterStateProvider.notifier).stopPedoMeter();
+
+      final Directory cacheDir = await getTemporaryDirectory();
+      if (cacheDir.existsSync()) {
+        cacheDir.deleteSync(recursive: true);
+      }
+
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.finished;
       print('stop walk uuid : $_walkUuid');
       return _walkUuid;
@@ -194,7 +203,7 @@ class WalkState extends _$WalkState {
       print('userModel $userInfo');
       final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
 
-      await walkRepository.sendWalkInfo(memberUuid, _walkUuid, walkInfoList, isFinished).then((value) => _walkInfoList.clear());
+      await walkRepository.sendWalkInfo(memberUuid, _walkUuid, walkInfoList, isFinished); //.then((value) => _walkInfoList.clear());
     } catch (e) {
       print('sendWalkInfo error $e');
     }
@@ -206,15 +215,49 @@ class WalkState extends _$WalkState {
     WalkResultStateResponseModel walkResult = await walkRepository.getWalkResultState(memberUuid: memberUuid);
 
     final result = walkResult.data.list;
+    _walkUuid = result.walkUuid!;
+
     if (!result.isRegistWalk! && !result.isEndWalk!) {
+      await checkLocalLocationData();
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walking;
-      _walkUuid = result.walkUuid!;
+    } else if (result.isEndWalk! && result.isRegistWalk!) {
+      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.idle;
     } else if (result.isEndWalk!) {
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walkEndedWithoutLog;
-      _walkUuid = result.walkUuid!;
     } else {
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.idle;
     }
     return walkResult;
+  }
+
+  Future checkLocalLocationData() async {
+    try {
+      if (_walkUuid.isEmpty) {
+        return;
+      }
+
+      List<WalkStateModel> walkInfoList = [];
+      await WalkCacheController.readWalkInfo('${_walkUuid}_local').then((value) async {
+        final walkInfoTotalList = await WalkCacheController.readWalkInfo('${_walkUuid}_total');
+        final firstDate = walkInfoTotalList.first.dateTime;
+        final lastDate = walkInfoTotalList.last.dateTime;
+        Duration difference = lastDate.difference(firstDate);
+        int milliseconds = difference.inMilliseconds.abs();
+
+        walkInfoTotalList.last = walkInfoTotalList.last.copyWith(
+          walkTime: milliseconds,
+        );
+
+        List<String> petUuidList = walkInfoTotalList.last.calorie.keys.toList();
+        // ref.read(walkSelectedPetStateProvider.notifier).state.addAll(petUuidList);
+        // List calorieList = walkInfo.calorie.values.map((e) => e['calorie']).toList();
+
+        walkInfoList.addAll(walkInfoTotalList);
+      });
+
+      ref.read(singleWalkStateProvider.notifier).state.addAll(walkInfoList);
+    } catch (e) {
+      print('checkLocalLocationData error $e');
+    }
   }
 }

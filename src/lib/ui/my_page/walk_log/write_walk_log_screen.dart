@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focus_detector/focus_detector.dart';
@@ -64,6 +65,8 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
     _walkPathImageFile = ref.read(walkPathImgStateProvider);
     super.initState();
 
+    // testImageFile();
+
     ref.read(walkWriteResultDetailStateProvider.notifier).getWalkWriteResultDetail(walkUuid: _walkUuid);
     tabController = TabController(
       initialIndex: 0,
@@ -71,6 +74,14 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
       vsync: this,
     );
     // init(_walkUuid);
+  }
+
+  void testImageFile() async {
+    final byteData = await rootBundle.load('assets/image/character/character_02_page_error_1.png');
+    final file = File('${(await getTemporaryDirectory()).path}/testImage.png');
+    await file.create(recursive: true);
+    await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+    ref.read(walkPathImgStateProvider.notifier).state = file;
   }
 
   @override
@@ -127,14 +138,20 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
                 //   fit: BoxFit.cover,
                 // ),
                 Image.file(
-                  _walkPathImageFile ?? File('temp.jpg'),
+                  ref.watch(walkPathImgStateProvider) ?? File('test.png'),
                   width: double.infinity,
                   height: 225,
                   fit: BoxFit.cover,
                   errorBuilder: (context, exception, stackTrace) {
+                    testImageFile();
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
+
+                    // return Image.asset(
+                    //   'assets/image/character/character_02_page_error_1.png',
+                    //   fit: BoxFit.fill,
+                    // );
                   },
                 ),
               ],
@@ -242,7 +259,7 @@ class WriteWalkLogScreenState extends ConsumerState<WriteWalkLogScreen> with Tic
                   );
 
                   MultipartFile firstFile = MultipartFileRecreatable.fromFileSync(
-                    _walkPathImageFile!.path,
+                    ref.read(walkPathImgStateProvider)!.path,
                     contentType: MediaType('image', 'png'),
                   );
 

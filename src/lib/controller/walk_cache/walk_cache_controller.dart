@@ -41,6 +41,10 @@ class WalkCacheController {
   static Future<List<WalkStateModel>> readWalkInfo(String fileName, [bool isMoveToTotal = true]) async {
     final tempDir = await getTemporaryDirectory();
     File walkInfoFile = File('${tempDir.path}/${fileName}.txt');
+
+    if(!walkInfoFile.existsSync()) {
+      return [];
+    }
     final readWalkInfo = walkInfoFile.readAsLinesSync();
 
     List<WalkStateModel> walkInfoList = [];
@@ -68,6 +72,7 @@ class WalkCacheController {
           walkTime: 0,
           walkCount: int.parse(walkInfoDataList[2]),
           calorie: calorie,
+          petList: [],
         ),
       );
     }

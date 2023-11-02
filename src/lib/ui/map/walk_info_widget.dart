@@ -110,9 +110,10 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> with TickerProvi
               ),
               InkWell(
                 onTap: () async {
+                  print('stop buttion!!!!!!!');
                   // final mapController = ref.read(naverMapControllerStateProvider);
-                  final walkStateList = ref.read(singleWalkStateProvider);
-                  File walkPathImgFile;
+                  // final walkStateList = ref.read(singleWalkStateProvider);
+                  // File walkPathImgFile;
                   FlutterBackgroundService().invoke("stopService");
                   ref.read(singleWalkStateProvider.notifier).stopBackgroundLocation();
 

@@ -38,6 +38,7 @@ class WalkUtil {
       walkTime: previousWalkStateModel.walkTime + walkTime,
       walkCount: walkCount,
       calorie: calcALlCalorie(petList, previousWalkStateModel.walkTime + walkTime),
+      petList: petList,
     );
   }
 

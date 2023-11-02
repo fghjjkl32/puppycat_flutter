@@ -112,7 +112,7 @@ class LoginState extends _$LoginState {
             );
           }
 
-          await ref.read(walkStateProvider.notifier).getWalkResultState(next.uuid!);
+          // await ref.read(walkStateProvider.notifier).getWalkResultState(next.uuid!);
           ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
           ref.read(userInfoProvider.notifier).state = userInfoModel;
         });

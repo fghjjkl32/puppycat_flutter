@@ -309,7 +309,7 @@ class MapScreenState extends ConsumerState<MapScreen> {
     });
 
     final bool isWalking = ref.watch(walkStatusStateProvider) == WalkStatus.walking;
-    // print('isWalking $isWalking');
+    print('isWalking $isWalking');
 
     final walkStateModelList = ref.watch(singleWalkStateProvider);
 
@@ -403,6 +403,8 @@ class MapScreenState extends ConsumerState<MapScreen> {
                             ),
                           ),
                           onPressed: () async {
+                            ///TODO
+                            ///아래 로직  Provider  등으로 옮겨야함
                             // final currentLocationData = await Location().getLocation();
                             // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
                             await ref.read(walkStateProvider.notifier).startWalk().then((walkUuid) async {
@@ -413,7 +415,7 @@ class MapScreenState extends ConsumerState<MapScreen> {
                                 final userInfo = ref.read(userInfoProvider).userModel;
                                 print('start userModel $userInfo');
                                 final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
-                                final selectedPetList = ref.read(walkSelectedPetStateProvider);
+                                final selectedPetList = ref.read(walkSelectedPetStateProvider).toSet().toList();
                                 List<Map<String, dynamic>> petMap = selectedPetList.map((e) => e.toJson()).toList();
 
                                 CookieJar cookieJar = GetIt.I<CookieJar>();

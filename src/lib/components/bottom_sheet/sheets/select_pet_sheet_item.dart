@@ -32,7 +32,6 @@ class SelectPetSheetItemState extends ConsumerState<SelectPetSheetItem> {
 
   @override
   Widget build(BuildContext context) {
-    print('asdasd?');
     return Padding(
       padding: const EdgeInsets.fromLTRB(24.0, 14, 24, 4),
       child: SizedBox(
