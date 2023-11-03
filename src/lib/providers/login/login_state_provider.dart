@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
@@ -112,6 +113,7 @@ class LoginState extends _$LoginState {
             );
           }
 
+          ref.read(followUserStateProvider.notifier).resetState();
           ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
           ref.read(userInfoProvider.notifier).state = userInfoModel;
         });
@@ -140,6 +142,7 @@ class LoginState extends _$LoginState {
       var chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${userInfoModel.userModel!.idx}')));
       chatController.controller.logout();
       ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+      ref.read(followUserStateProvider.notifier).resetState();
       ref.read(userInfoProvider.notifier).state = UserInfoModel();
       saveUserModel(null);
       state = LoginStatus.none;

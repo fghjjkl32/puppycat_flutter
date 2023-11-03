@@ -6,15 +6,12 @@ import 'package:pet_mobile_social_flutter/repositories/my_page/content_like_user
 import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
-final contentLikeUserListStateProvider = StateNotifierProvider<
-    ContentLikeUserListStateNotifier, ContentLikeUserListDataListModel>((ref) {
+final contentLikeUserListStateProvider = StateNotifierProvider<ContentLikeUserListStateNotifier, ContentLikeUserListDataListModel>((ref) {
   return ContentLikeUserListStateNotifier(ref);
 });
 
-class ContentLikeUserListStateNotifier
-    extends StateNotifier<ContentLikeUserListDataListModel> {
-  ContentLikeUserListStateNotifier(this.ref )
-      : super(const ContentLikeUserListDataListModel());
+class ContentLikeUserListStateNotifier extends StateNotifier<ContentLikeUserListDataListModel> {
+  ContentLikeUserListStateNotifier(this.ref) : super(const ContentLikeUserListDataListModel());
 
   int maxPages = 1;
   int currentPage = 1;
@@ -37,8 +34,7 @@ class ContentLikeUserListStateNotifier
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
-    state = state.copyWith(
-        totalCount: lists.data.params!.pagination!.totalRecordCount!);
+    state = state.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!);
 
     if (lists == null) {
       state = state.copyWith(page: page, isLoading: false);
@@ -62,11 +58,9 @@ class ContentLikeUserListStateNotifier
       return;
     }
     bf.write(' success');
-    state = state.copyWith(
-        isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+    state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await ContentLikeUserListRepository(dio: ref.read(dioProvider)).getContentLikeUserList(
-        contentsIdx: contentsIdx, memberIdx: memberIdx, page: state.page + 1);
+    final lists = await ContentLikeUserListRepository(dio: ref.read(dioProvider)).getContentLikeUserList(contentsIdx: contentsIdx, memberIdx: memberIdx, page: state.page + 1);
 
     if (lists == null) {
       state = state.copyWith(isLoadMoreError: true, isLoading: false);
@@ -74,10 +68,7 @@ class ContentLikeUserListStateNotifier
     }
 
     if (lists.data.list.isNotEmpty) {
-      state = state.copyWith(
-          page: state.page + 1,
-          isLoading: false,
-          list: [...state.list, ...lists.data.list]);
+      state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.data.list]);
 
       currentPage++;
     } else {
@@ -87,33 +78,33 @@ class ContentLikeUserListStateNotifier
     }
   }
 
-  Future<void> refresh(contentsIdx, memberIdx) async {
-    initContentLikeUserList(contentsIdx, memberIdx, 1);
-    currentPage = 1;
-  }
+  // Future<void> refresh(contentsIdx, memberIdx) async {
+  //   initContentLikeUserList(contentsIdx, memberIdx, 1);
+  //   currentPage = 1;
+  // }
 
-  Future<ResponseModel> postFollow({
-    required memberIdx,
-    required followIdx,
-    required contentsIdx,
-  }) async {
-    final result = await FollowRepository(dio: ref.read(dioProvider))
-        .postFollow(memberIdx: memberIdx, followIdx: followIdx);
-
-    refresh(contentsIdx, memberIdx);
-    return result;
-  }
-
-  Future<ResponseModel> deleteFollow({
-    required memberIdx,
-    required followIdx,
-    required contentsIdx,
-  }) async {
-    final result = await FollowRepository(dio: ref.read(dioProvider))
-        .deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
-
-    refresh(contentsIdx, memberIdx);
-
-    return result;
-  }
+  // Future<ResponseModel> postFollow({
+  //   required memberIdx,
+  //   required followIdx,
+  //   required contentsIdx,
+  // }) async {
+  //   final result = await FollowRepository(dio: ref.read(dioProvider))
+  //       .postFollow(memberIdx: memberIdx, followIdx: followIdx);
+  //
+  //   refresh(contentsIdx, memberIdx);
+  //   return result;
+  // }
+  //
+  // Future<ResponseModel> deleteFollow({
+  //   required memberIdx,
+  //   required followIdx,
+  //   required contentsIdx,
+  // }) async {
+  //   final result = await FollowRepository(dio: ref.read(dioProvider))
+  //       .deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+  //
+  //   refresh(contentsIdx, memberIdx);
+  //
+  //   return result;
+  // }
 }

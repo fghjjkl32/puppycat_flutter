@@ -18,6 +18,7 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_s
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed_search/feed_search_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
@@ -54,7 +55,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
   @override
   void initState() {
-    ref.read(firstFeedStateProvider.notifier).apiStatus = ListAPIStatus.idle;
+    Future(() {
+      ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.idle;
+    });
     ref.read(firstFeedStateProvider.notifier).loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
     ref.read(feedListStateProvider.notifier).loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
 
@@ -88,6 +91,8 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isFollow = ref.watch(followUserStateProvider)[widget.memberIdx] ?? false;
+
     return FocusDetector(
       onFocusLost: () {
         ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");
@@ -99,8 +104,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
         ref.read(tagContentStateProvider.notifier).getStateForUserTagContent(widget.memberIdx);
       },
       child: Consumer(builder: (ctx, ref, child) {
-        final contentState = ref.watch(firstFeedStateProvider.notifier);
-        var apiStatus = contentState.apiStatus;
+        var apiStatus = ref.watch(firstFeedStatusProvider);
+        print("${apiStatus}");
+        print(ref.watch(firstFeedStateProvider).itemList);
 
         AppBar appBarWidget() {
           if (apiStatus == ListAPIStatus.loading || apiStatus == ListAPIStatus.idle) {
@@ -141,15 +147,23 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               actions: [
                 widget.contentType == "userContent" && ref.watch(firstFeedStateProvider).itemList![0].memberIdx != ref.read(userInfoProvider).userModel?.idx
-                    ? ref.watch(firstFeedStateProvider).itemList![0].followState == 1
+                    ? isFollow
                         ? InkWell(
-                            onTap: () {
-                              ref.read(userInfoProvider).userModel == null
-                                  ? context.pushReplacement("/loginScreen")
-                                  : ref.watch(firstFeedStateProvider.notifier).deleteFollow(
-                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        followIdx: ref.watch(firstFeedStateProvider).itemList![0].memberIdx!,
-                                      );
+                            onTap: () async {
+                              if (ref.read(userInfoProvider).userModel == null) {
+                                context.pushReplacement("/loginScreen");
+                              } else {
+                                final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                      followIdx: widget.memberIdx,
+                                    );
+
+                                if (result.result) {
+                                  setState(() {
+                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+                                  });
+                                }
+                              }
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
@@ -160,13 +174,21 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                             ),
                           )
                         : InkWell(
-                            onTap: () {
-                              ref.read(userInfoProvider).userModel == null
-                                  ? context.pushReplacement("/loginScreen")
-                                  : ref.watch(firstFeedStateProvider.notifier).postFollow(
-                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        followIdx: ref.watch(firstFeedStateProvider).itemList![0].memberIdx!,
-                                      );
+                            onTap: () async {
+                              if (ref.read(userInfoProvider).userModel == null) {
+                                context.pushReplacement("/loginScreen");
+                              } else {
+                                final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                      followIdx: widget.memberIdx,
+                                    );
+
+                                if (result.result) {
+                                  setState(() {
+                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
+                                  });
+                                }
+                              }
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
@@ -343,13 +365,14 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                     return Column(
                       children: [
                         FeedDetailWidget(
-                            feedData: item,
-                            nick: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].nick : ref.read(feedListStateProvider.notifier).memberInfo?[0].nick,
-                            profileImage: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].profileImgUrl : ref.watch(feedListStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
-                            memberIdx: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberIdx : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberIdx,
-                            contentType: widget.contentType,
-                            imgDomain: ref.watch(feedListStateProvider.notifier).imgDomain!,
-                            index: index),
+                          feedData: item,
+                          nick: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].nick : ref.read(feedListStateProvider.notifier).memberInfo?[0].nick,
+                          profileImage: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].profileImgUrl : ref.watch(feedListStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
+                          memberIdx: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberIdx : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberIdx,
+                          contentType: widget.contentType,
+                          imgDomain: ref.watch(feedListStateProvider.notifier).imgDomain!,
+                          index: index,
+                        ),
                       ],
                     );
                   },

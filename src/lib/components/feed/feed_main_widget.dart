@@ -112,6 +112,8 @@ class FeedMainWidget extends ConsumerWidget {
                 contentType: contentType,
                 feedData: feedData,
                 oldMemberIdx: memberIdx ?? 0,
+                isDetailWidget: false,
+                feedType: feedType,
               ),
               FeedImageMainWidget(
                 imageList: feedData.imgList!,

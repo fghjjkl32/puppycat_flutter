@@ -31,6 +31,7 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/popular_week_feed_
 import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_write_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
@@ -112,9 +113,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     tabController.index = widget.initialTabIndex;
 
     Future(() async {
-      final loginState = ref.watch(loginStateProvider);
+      ref.read(followUserStateProvider.notifier).resetState();
 
-      await ref.read(walkStateProvider.notifier).getWalkResultState(ref.read(userInfoProvider).userModel!.uuid);
+      final loginState = ref.watch(loginStateProvider);
 
       _recentFeedListPagingController.refresh();
 
@@ -129,6 +130,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       scrollController.addListener(_myPostScrollListener);
 
       if (loginState == LoginStatus.success) {
+        await ref.read(walkStateProvider.notifier).getWalkResultState(ref.read(userInfoProvider).userModel!.uuid);
+
         _myFeedListPagingController.refresh();
 
         _popularWeekFeedListPagingController.refresh();
@@ -591,6 +594,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
+          ref.read(followUserStateProvider.notifier).resetState();
+
           final loginState = ref.watch(loginStateProvider);
 
           _recentFeedListPagingController.refresh();
@@ -699,6 +704,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
+          ref.read(followUserStateProvider.notifier).resetState();
+
           final loginState = ref.watch(loginStateProvider);
 
           _recentFeedListPagingController.refresh();
@@ -839,6 +846,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
+          ref.read(followUserStateProvider.notifier).resetState();
+
           final loginState = ref.watch(loginStateProvider);
 
           _recentFeedListPagingController.refresh();

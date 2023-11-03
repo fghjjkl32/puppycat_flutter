@@ -12,12 +12,11 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
-
-final followProvider = StateProvider.family<bool, int>((ref, memberIdx) => false);
 
 class FeedFollowCardWidget extends ConsumerStatefulWidget {
   const FeedFollowCardWidget({
@@ -45,8 +44,19 @@ class FeedFollowCardWidget extends ConsumerStatefulWidget {
 
 class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
   @override
+  void initState() {
+    super.initState();
+    Future(() {
+      final currentFollowState = ref.read(followUserStateProvider)[widget.memberIdx];
+      if (currentFollowState == null) {
+        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isFollow = ref.watch(followProvider(widget.memberIdx));
+    final isFollow = ref.watch(followUserStateProvider)[widget.memberIdx] ?? false;
 
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w),
@@ -119,16 +129,17 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                     if (ref.read(userInfoProvider).userModel == null) {
                                       context.pushReplacement("/loginScreen");
                                     } else {
-                                      final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(
-                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        followIdx: widget.memberIdx,
-                                      );
+                                      final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                            followIdx: widget.memberIdx,
+                                          );
 
                                       if (result.result) {
                                         setState(() {
-                                          ref.read(followProvider(widget.memberIdx).notifier).state = false;
+                                          ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
                                         });
                                       }
+                                      print(ref.read(followUserStateProvider));
                                     }
                                   },
                                   child: Text(
@@ -141,16 +152,17 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                     if (ref.read(userInfoProvider).userModel == null) {
                                       context.pushReplacement("/loginScreen");
                                     } else {
-                                      final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(
-                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        followIdx: widget.memberIdx,
-                                      );
+                                      final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                            followIdx: widget.memberIdx,
+                                          );
 
                                       if (result.result) {
                                         setState(() {
-                                          ref.read(followProvider(widget.memberIdx).notifier).state = true;
+                                          ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
                                         });
                                       }
+                                      print(ref.read(followUserStateProvider));
                                     }
                                   },
                                   child: Text(

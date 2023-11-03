@@ -36,6 +36,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/my_pet_list/m
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/user_pet_detail_screen.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
@@ -92,7 +93,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
       vsync: this,
     );
 
-    Future(() {
+    Future(() async {
       ref.watch(userInformationStateProvider.notifier).getInitUserInformation(ref.watch(userInfoProvider).userModel?.idx, widget.memberIdx);
       ref.read(userContentStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel?.idx, widget.memberIdx, 1);
       ref.read(tagContentStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel?.idx, widget.memberIdx, 1);
@@ -317,7 +318,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         final userInformationState = ref.watch(userInformationStateProvider);
                         final lists = userInformationState.list;
 
-                        return lists.isEmpty ? Container() : _myPageSuccessProfile(lists[0]);
+                        final isFollow = ref.watch(followUserStateProvider)[widget.memberIdx] ?? false;
+
+                        return lists.isEmpty ? Container() : _myPageSuccessProfile(lists[0], isFollow);
                       }));
                 }),
                 const SliverPersistentHeader(
@@ -638,7 +641,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     );
   }
 
-  Widget _myPageSuccessProfile(UserInformationItemModel data) {
+  Widget _myPageSuccessProfile(UserInformationItemModel data, bool isFollow) {
     return FlexibleSpaceBar(
       centerTitle: true,
       expandedTitleScale: 1.0,
@@ -800,25 +803,24 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 ),
                               )
                             : Expanded(
-                                child: data.followState == 1
+                                child: isFollow
                                     ? GestureDetector(
                                         onTap: () async {
                                           if (ref.read(userInfoProvider).userModel == null) {
                                             context.pushReplacement("/loginScreen");
                                           } else {
-                                            ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
-                                            await ref.watch(followStateProvider.notifier).deleteFollow(
+                                            final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                                   memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                   followIdx: widget.memberIdx,
                                                 );
-                                          }
+                                            ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
 
-                                          // if (result.result) {
-                                          //   ref
-                                          //       .watch(
-                                          //           userInformationStateProvider.notifier)
-                                          //       .updateUnFollowState();
-                                          // }
+                                            if (result.result) {
+                                              setState(() {
+                                                ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+                                              });
+                                            }
+                                          }
                                         },
                                         child: Container(
                                           height: 30.h,
@@ -841,11 +843,17 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           if (ref.read(userInfoProvider).userModel == null) {
                                             context.pushReplacement("/loginScreen");
                                           } else {
-                                            ref.watch(userInformationStateProvider.notifier).updateFollowState();
-                                            await ref.watch(followStateProvider.notifier).postFollow(
+                                            final result = await ref.watch(followStateProvider.notifier).postFollow(
                                                   memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                   followIdx: widget.memberIdx,
                                                 );
+                                            ref.watch(userInformationStateProvider.notifier).updateFollowState();
+
+                                            if (result.result) {
+                                              setState(() {
+                                                ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
+                                              });
+                                            }
                                           }
 
                                           // if (result.result) {

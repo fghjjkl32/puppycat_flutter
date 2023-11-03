@@ -52,6 +52,7 @@ class FeedDetailWidget extends ConsumerWidget {
           contentType: contentType,
           contentIdx: feedData.idx,
           oldMemberIdx: memberIdx!,
+          isDetailWidget: true,
         ),
         //feed detail image
         FeedImageDetailWidget(

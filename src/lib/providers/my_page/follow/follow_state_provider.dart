@@ -9,6 +9,26 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
+class FollowUserStateNotifier extends StateNotifier<Map<int, bool>> {
+  FollowUserStateNotifier() : super({});
+
+  void setFollowState(int memberIdx, bool followState) {
+    state = {...state, memberIdx: followState};
+  }
+
+  void resetState() {
+    state = {};
+  }
+
+  bool? getFollowState(int memberIdx) {
+    return state[memberIdx];
+  }
+}
+
+final followUserStateProvider = StateNotifierProvider<FollowUserStateNotifier, Map<int, bool>>(
+  (ref) => FollowUserStateNotifier(),
+);
+
 final followStateProvider = StateNotifierProvider<FollowStateNotifier, FollowState>((ref) {
   final loginMemberIdx = ref.watch(userInfoProvider).userModel!.idx;
   return FollowStateNotifier(loginMemberIdx, ref);
@@ -262,11 +282,6 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
   final followerSearchQuery = PublishSubject<String>();
   final followSearchQuery = PublishSubject<String>();
 
-  Future<void> refreshFollowList(memberIdx) async {
-    initFollowList(memberIdx, 1);
-    followCurrentPage = 1;
-  }
-
   Future<void> searchFollowerList(String searchWord) async {
     followerSearchWord = searchWord;
     isFollowerSearching = true;
@@ -313,9 +328,6 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
   }) async {
     final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
 
-    await refreshFollowList(memberIdx);
-    await refreshFollowerList(memberIdx);
-
     return result;
   }
 
@@ -325,9 +337,6 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
   }) async {
     final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
 
-    await refreshFollowList(memberIdx);
-    await refreshFollowerList(memberIdx);
-
     return result;
   }
 
@@ -336,9 +345,6 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required followIdx,
   }) async {
     final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollower(memberIdx: memberIdx, followIdx: followIdx);
-
-    await refreshFollowList(memberIdx);
-    await refreshFollowerList(memberIdx);
 
     return result;
   }

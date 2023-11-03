@@ -9,6 +9,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class FavoriteItemWidget extends ConsumerStatefulWidget {
@@ -39,17 +40,22 @@ class FavoriteItemWidget extends ConsumerStatefulWidget {
 }
 
 class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
-  bool isFollowing = false;
-
   @override
   void initState() {
     super.initState();
 
-    isFollowing = widget.isFollow;
+    Future(() {
+      final currentFollowState = ref.read(followUserStateProvider)[widget.followerIdx];
+      if (currentFollowState == null) {
+        ref.read(followUserStateProvider.notifier).setFollowState(widget.followerIdx, widget.isFollow);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final isFollow = ref.watch(followUserStateProvider)[widget.followerIdx] ?? false;
+
     return InkWell(
       onTap: () {
         ref.read(userInfoProvider).userModel!.idx == widget.followerIdx
@@ -105,88 +111,120 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                 ),
               ],
             ),
-            ref.read(userInfoProvider).userModel?.idx == widget.followerIdx
-                ? Container()
-                : !isFollowing
-                    ? GestureDetector(
-                        onTap: () async {
-                          if (ref.read(userInfoProvider).userModel == null) {
-                            context.pushReplacement("/loginScreen");
-                          } else {
-                            setState(() {
-                              isFollowing = true;
-                            });
-                            if (widget.contentType == null) {
-                              await ref.watch(contentLikeUserListStateProvider.notifier).postFollow(
-                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                    followIdx: widget.followerIdx,
-                                    contentsIdx: widget.contentsIdx,
-                                  );
+            Consumer(builder: (context, ref, child) {
+              return ref.read(userInfoProvider).userModel?.idx == widget.followerIdx
+                  ? Container()
+                  : isFollow
+                      ? GestureDetector(
+                          onTap: () async {
+                            if (ref.read(userInfoProvider).userModel == null) {
+                              context.pushReplacement("/loginScreen");
                             } else {
-                              ref.watch(feedListStateProvider.notifier).postFollow(
+                              final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                     memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                     followIdx: widget.followerIdx,
-                                    contentsIdx: widget.contentsIdx,
-                                    contentType: widget.contentType,
                                   );
-                            }
-                          }
-                        },
-                        child: Container(
-                          width: 56.w,
-                          height: 32.h,
-                          decoration: const BoxDecoration(
-                            color: kPrimaryColor,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(8.0),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "팔로우",
-                              style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
-                            ),
-                          ),
-                        ),
-                      )
-                    : GestureDetector(
-                        onTap: () async {
-                          setState(() {
-                            isFollowing = false;
-                          });
 
-                          if (widget.contentType == null) {
-                            await ref.watch(contentLikeUserListStateProvider.notifier).deleteFollow(
-                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                  followIdx: widget.followerIdx,
-                                  contentsIdx: widget.contentsIdx,
-                                );
-                          } else {
-                            ref.watch(feedListStateProvider.notifier).deleteFollow(
-                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                  followIdx: widget.followerIdx,
-                                  contentsIdx: widget.contentsIdx,
-                                  contentType: widget.contentType,
-                                );
-                          }
-                        },
-                        child: Container(
-                          width: 56.w,
-                          height: 32.h,
-                          decoration: const BoxDecoration(
-                            color: kNeutralColor300,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(8.0),
+                              if (result.result) {
+                                setState(() {
+                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.followerIdx, false);
+                                });
+                              }
+                            }
+
+                            // setState(() {
+                            //   isFollowing = false;
+                            // });
+                            //
+                            // if (widget.contentType == null) {
+                            //   await ref.watch(contentLikeUserListStateProvider.notifier).deleteFollow(
+                            //         memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                            //         followIdx: widget.followerIdx,
+                            //         contentsIdx: widget.contentsIdx,
+                            //       );
+                            // } else {
+                            //   ref.watch(feedListStateProvider.notifier).deleteFollow(
+                            //         memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                            //         followIdx: widget.followerIdx,
+                            //         contentsIdx: widget.contentsIdx,
+                            //         contentType: widget.contentType,
+                            //       );
+                            // }
+                          },
+                          child: Container(
+                            width: 56.w,
+                            height: 32.h,
+                            decoration: const BoxDecoration(
+                              color: kNeutralColor300,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8.0),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "팔로잉",
+                                style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                              ),
                             ),
                           ),
-                          child: Center(
-                            child: Text(
-                              "팔로잉",
-                              style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                        )
+                      : GestureDetector(
+                          onTap: () async {
+                            if (ref.read(userInfoProvider).userModel == null) {
+                              context.pushReplacement("/loginScreen");
+                            } else {
+                              final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                    followIdx: widget.followerIdx,
+                                  );
+
+                              if (result.result) {
+                                setState(() {
+                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.followerIdx, true);
+                                });
+                              }
+                            }
+
+                            // if (ref.read(userInfoProvider).userModel == null) {
+                            //   context.pushReplacement("/loginScreen");
+                            // } else {
+                            //   setState(() {
+                            //     isFollowing = true;
+                            //   });
+                            //   if (widget.contentType == null) {
+                            //     await ref.watch(contentLikeUserListStateProvider.notifier).postFollow(
+                            //           memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                            //           followIdx: widget.followerIdx,
+                            //           contentsIdx: widget.contentsIdx,
+                            //         );
+                            //   } else {
+                            //     ref.watch(feedListStateProvider.notifier).postFollow(
+                            //           memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                            //           followIdx: widget.followerIdx,
+                            //           contentsIdx: widget.contentsIdx,
+                            //           contentType: widget.contentType,
+                            //         );
+                            //   }
+                            // }
+                          },
+                          child: Container(
+                            width: 56.w,
+                            height: 32.h,
+                            decoration: const BoxDecoration(
+                              color: kPrimaryColor,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(8.0),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "팔로우",
+                                style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
+                              ),
                             ),
                           ),
-                        ),
-                      )
+                        );
+            })
           ],
         ),
       ),

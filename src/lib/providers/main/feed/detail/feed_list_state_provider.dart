@@ -796,81 +796,81 @@ class FeedListState extends _$FeedListState {
     return result;
   }
 
-  Future<ResponseModel> postFollow({
-    required memberIdx,
-    required followIdx,
-    required contentsIdx,
-    required contentType,
-  }) async {
-    final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
-
-    int targetIdx = -1;
-
-    if (state.itemList != null) {
-      if (idxToRemove == contentsIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentsIdx);
-
-        ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-              followState: 1,
-            );
-        ref.read(firstFeedStateProvider).notifyListeners();
-      }
-
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentsIdx);
-
-      if (targetIdx != -1) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          followState: 1,
-        );
-        state.notifyListeners();
-      }
-    }
-
-    feedRefresh(
-      contentsIdx,
-      "postFollow",
-    );
-
-    return result;
-  }
-
-  Future<ResponseModel> deleteFollow({
-    required memberIdx,
-    required followIdx,
-    required contentsIdx,
-    required contentType,
-  }) async {
-    final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
-
-    int targetIdx = -1;
-
-    if (state.itemList != null) {
-      if (idxToRemove == contentsIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentsIdx);
-
-        ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-              followState: 0,
-            );
-        ref.read(firstFeedStateProvider).notifyListeners();
-      }
-
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentsIdx);
-
-      if (targetIdx != -1) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          followState: 0,
-        );
-        state.notifyListeners();
-      }
-    }
-
-    feedRefresh(
-      contentsIdx,
-      "deleteFollow",
-    );
-
-    return result;
-  }
+  // Future<ResponseModel> postFollow({
+  //   required memberIdx,
+  //   required followIdx,
+  //   required contentsIdx,
+  //   required contentType,
+  // }) async {
+  //   final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
+  //
+  //   int targetIdx = -1;
+  //
+  //   if (state.itemList != null) {
+  //     if (idxToRemove == contentsIdx) {
+  //       targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentsIdx);
+  //
+  //       ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+  //             followState: 1,
+  //           );
+  //       ref.read(firstFeedStateProvider).notifyListeners();
+  //     }
+  //
+  //     targetIdx = state.itemList!.indexWhere((element) => element.idx == contentsIdx);
+  //
+  //     if (targetIdx != -1) {
+  //       state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+  //         followState: 1,
+  //       );
+  //       state.notifyListeners();
+  //     }
+  //   }
+  //
+  //   feedRefresh(
+  //     contentsIdx,
+  //     "postFollow",
+  //   );
+  //
+  //   return result;
+  // }
+  //
+  // Future<ResponseModel> deleteFollow({
+  //   required memberIdx,
+  //   required followIdx,
+  //   required contentsIdx,
+  //   required contentType,
+  // }) async {
+  //   final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+  //
+  //   int targetIdx = -1;
+  //
+  //   if (state.itemList != null) {
+  //     if (idxToRemove == contentsIdx) {
+  //       targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentsIdx);
+  //
+  //       ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+  //             followState: 0,
+  //           );
+  //       ref.read(firstFeedStateProvider).notifyListeners();
+  //     }
+  //
+  //     targetIdx = state.itemList!.indexWhere((element) => element.idx == contentsIdx);
+  //
+  //     if (targetIdx != -1) {
+  //       state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+  //         followState: 0,
+  //       );
+  //       state.notifyListeners();
+  //     }
+  //   }
+  //
+  //   feedRefresh(
+  //     contentsIdx,
+  //     "deleteFollow",
+  //   );
+  //
+  //   return result;
+  // }
 
   final Map<int, List<FeedData>?> feedStateMap = {};
   final Map<int, List<MemberInfoListData>?> feedMemberInfoStateMap = {};

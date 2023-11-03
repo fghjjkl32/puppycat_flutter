@@ -137,6 +137,8 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> with TickerProvi
                   //   });
                   // }
                   final walkUuid = await ref.read(walkStateProvider.notifier).stopWalk();
+
+                  print(walkUuid);
                   if (walkUuid.isNotEmpty) {
                     if (context.mounted) {
                       context.push('/writeWalkLog');
