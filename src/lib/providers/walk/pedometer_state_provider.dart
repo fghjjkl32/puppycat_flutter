@@ -18,8 +18,8 @@ enum PedoMeterWalkStatus {
 class PedoMeterState extends _$PedoMeterState {
   StreamSubscription<PedestrianStatus>? _pedestrianStatusStream;
   Timer? _timer;
-  int _alertMin = 20;
-  int _forceExitMin = 30;
+  final int _alertMin = 20;
+  final int _forceExitMin = 30;
 
   @override
   PedoMeterWalkStatus build() {
@@ -37,6 +37,7 @@ class PedoMeterState extends _$PedoMeterState {
     }
 
     _pedestrianStatusStream!.cancel();
+    state = PedoMeterWalkStatus.none;
   }
 
   void _handlePedestrianStatusError(error) {
@@ -44,11 +45,14 @@ class PedoMeterState extends _$PedoMeterState {
   }
 
   void onPedestrianStatusChanged(PedestrianStatus event) {
+    print('pedo event.status ${event.status}');
+
     switch (event.status) {
       case 'stopped':
         _startTimer();
         break;
       case 'walking':
+      case 'unknown':
         _stopTimer();
         break;
     }
@@ -56,10 +60,13 @@ class PedoMeterState extends _$PedoMeterState {
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      print('pedo timer tick ${timer.tick}');
       if(timer.tick >= _alertMin && timer.tick < _forceExitMin) {
         state = PedoMeterWalkStatus.stoppedAlertMin;
       } else if(timer.tick >= _forceExitMin) {
         state = PedoMeterWalkStatus.stoppedForceExitMin;
+      } else {
+        state = PedoMeterWalkStatus.stopped;
       }
     });
   }
@@ -70,5 +77,6 @@ class PedoMeterState extends _$PedoMeterState {
         _timer!.cancel();
       }
     }
+    state = PedoMeterWalkStatus.walking;
   }
 }

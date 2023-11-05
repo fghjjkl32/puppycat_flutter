@@ -57,7 +57,6 @@ class WalkState extends _$WalkState {
     final walkRepository = WalkRepository(dio: ref.read(dioProvider));
     try {
       final userInfo = ref.read(userInfoProvider).userModel;
-      print('userModel222222 $userInfo');
       final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
       var result = await walkRepository.getTodayWalkCount(memberUuid, false);
       print('walkCount $result');
@@ -72,7 +71,6 @@ class WalkState extends _$WalkState {
     final walkRepository = WalkRepository(dio: ref.read(dioProvider));
     try {
       final userInfo = ref.read(userInfoProvider).userModel;
-      print('userModel $userInfo');
       final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
 
       final selectedPetList = ref.read(walkSelectedPetStateProvider);
@@ -128,12 +126,12 @@ class WalkState extends _$WalkState {
 
   Future startWalkConfigure(Position initLocationData) async {
     final userInfo = ref.read(userInfoProvider).userModel;
-    print('start userModel $userInfo');
     final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
     final selectedPetList = ref.read(walkSelectedPetStateProvider).toSet().toList();
     List<Map<String, dynamic>> petMap = selectedPetList.map((e) => e.toJson()).toList();
 
     ref.read(singleWalkStateProvider.notifier).startBackgroundLocation(initLocationData);
+    ref.read(pedoMeterStateProvider.notifier).startPedoMeter();
 
     CookieJar cookieJar = GetIt.I<CookieJar>();
     var cookies = await cookieJar.loadForRequest(Uri.parse(baseUrl));
@@ -154,8 +152,6 @@ class WalkState extends _$WalkState {
       });
       // }
     });
-
-    ref.read(pedoMeterStateProvider.notifier).startPedoMeter();
   }
 
   Future<String> stopWalk() async {
@@ -189,7 +185,8 @@ class WalkState extends _$WalkState {
 
       // if(_walkInfoList.isNotEmpty) {
       // final walkInfoList = await WalkCacheController.readWalkInfo('${walkUuid}_local');
-      final walkInfoList = await WalkCacheController.readXMLWalkInfo('${walkUuid}_local');
+      final walkInfoListLocal = await WalkCacheController.readXMLWalkInfo('${walkUuid}_local');
+      final walkInfoList = await WalkCacheController.readXMLWalkInfo('${walkUuid}_local_total', false);
       // await walkRepository.sendWalkInfo(memberUuid, walkUuid, walkInfoList, true);
       sendWalkInfo(walkInfoList, true);
       // }
@@ -201,13 +198,16 @@ class WalkState extends _$WalkState {
           final bounds = NLatLngBounds.from(routeList);
           final cameraUpdateWithPadding = NCameraUpdate.fitBounds(bounds, padding: const EdgeInsets.all(50));
 
-          await mapController.updateCamera(cameraUpdateWithPadding).then((value) async {
-            final screenShot = await mapController.takeSnapshot(showControls: false);
-            // final tempDir = await getTemporaryDirectory();
-            // await screenShot.rename('$tempDir/$_walkUuid.jpg');
-            ref.read(walkPathImgStateProvider.notifier).state = screenShot;
-            mapController.clearOverlays(type: NOverlayType.pathOverlay);
-          });
+          //true if the camera update was canceled
+          final bool isUpdatedCamera = await mapController.updateCamera(cameraUpdateWithPadding);
+
+            print('isUpdatedCamera $isUpdatedCamera');
+          if (!isUpdatedCamera) {
+            final screenShot = await mapController.takeSnapshot(showControls: false, compressQuality: 100);
+            final tempDir = await getTemporaryDirectory();
+            ref.read(walkPathImgStateProvider.notifier).state = screenShot.renameSync('${tempDir.path}/$_walkUuid.jpg');
+          }
+          mapController.clearOverlays(type: NOverlayType.pathOverlay);
         }
       } catch (e) {
         print('screenshot error $e');
@@ -224,10 +224,10 @@ class WalkState extends _$WalkState {
 
       ref.read(pedoMeterStateProvider.notifier).stopPedoMeter();
 
-      final Directory cacheDir = await getTemporaryDirectory();
-      if (cacheDir.existsSync()) {
-        cacheDir.deleteSync(recursive: true);
-      }
+      // final Directory cacheDir = await getTemporaryDirectory();
+      // if (cacheDir.existsSync()) {
+      //   cacheDir.deleteSync(recursive: true);
+      // }
 
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.finished;
       print('stop walk uuid : $_walkUuid');
@@ -270,13 +270,20 @@ class WalkState extends _$WalkState {
     final result = walkResult.data.list;
     _walkUuid = result.walkUuid!;
 
+    ///TODO
+    /// result 안에 변수들이 nullable이라서 여기서 null  아니라고 강제하는데
+    /// 이 부분 수정 필요해보임
     if (!result.isRegistWalk! && !result.isEndWalk!) {
       await checkLocalLocationData();
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walking;
     } else if (result.isEndWalk! && result.isRegistWalk!) {
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.idle;
     } else if (result.isEndWalk!) {
-      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walkEndedWithoutLog;
+      if (result.isForce!) {
+        ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walkEndedForce;
+      } else {
+        ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walkEndedWithoutLog;
+      }
     } else {
       ref.read(walkStatusStateProvider.notifier).state = WalkStatus.idle;
     }
@@ -291,7 +298,7 @@ class WalkState extends _$WalkState {
 
       // List<WalkStateModel> walkInfoList = [];
       await WalkCacheController.readXMLWalkInfo('${_walkUuid}_local', false).then((value) async {
-        final walkInfoTotalList = await WalkCacheController.readXMLWalkInfo('${_walkUuid}_total', false);
+        final walkInfoTotalList = await WalkCacheController.readXMLWalkInfo('${_walkUuid}_local_total', false);
         walkInfoTotalList.addAll(value);
         walkInfoTotalList.toSet().toList();
 
@@ -320,7 +327,6 @@ class WalkState extends _$WalkState {
         ///내부적으로 로직이 바뀌면서  여기서 전달하는 좌표는 에러일 때만 사용
         startWalkConfigure(currentLocationData);
       });
-
     } catch (e) {
       print('checkLocalLocationData error $e');
     }

@@ -68,7 +68,7 @@ class WalkUtil {
     final Map<String, dynamic> resultMap = {};
 
     for (var element in petList) {
-      print('element.uuid ${element.uuid}');
+      // print('element.uuid ${element.uuid}');
       final weight = element.weight ?? 1.0;
       final cal = 1.766 * weight * walkTimeH;
       Map<String, double> calorieMap = {

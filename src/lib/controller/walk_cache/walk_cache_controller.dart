@@ -62,67 +62,6 @@ class WalkCacheController {
             .copy());
     }
 
-    // for (var walkInfo in walkInfoList) {
-    //   if (localXmlFile.existsSync()) {
-    //     document = XmlDocument.parse(localXmlFile.readAsStringSync());
-    //
-    //     final builder = XmlBuilder();
-    //     // builder.processing('xml', 'version="1.0"');
-    //     builder.element('walkInfoList', nest: () {
-    //       builder.element('dateTime', nest: walkInfo.dateTime.toUtc().toString());
-    //       builder.element('latitude', nest: walkInfo.latitude);
-    //       builder.element('longitude', nest: walkInfo.longitude);
-    //       builder.element('distance', nest: walkInfo.distance);
-    //       builder.element('walkTime', nest: walkInfo.walkTime);
-    //       builder.element('walkCount', nest: walkInfo.walkCount);
-    //       builder.element('calorie', nest: () {
-    //         for (var element in walkInfo.petList) {
-    //           builder.element(element.uuid.toString(), nest: () {
-    //             builder.element('calorie', nest: walkInfo.calorie[element.uuid]['calorie']);
-    //           });
-    //         }
-    //       });
-    //     });
-    //
-    //     document.rootElement.children.add(builder
-    //         .buildDocument()
-    //         .firstChild!
-    //         .copy());
-    //   } else {
-    //     final builder = XmlBuilder();
-    //     builder.processing('xml', 'version="1.0"');
-    //     builder.element('root', nest: () {
-    //       builder.element('petList', nest: () {
-    //         for (var element in walkInfo.petList) {
-    //           builder.element(element.uuid.toString(), nest: element.toJson());
-    //         }
-    //       });
-    //       builder.element('walkInfoList', nest: () {
-    //         builder.element('dateTime', nest: walkInfo.dateTime.toUtc().toString());
-    //         builder.element('isTransfer', nest: 0);
-    //         builder.element('latitude', nest: walkInfo.latitude);
-    //         builder.element('longitude', nest: walkInfo.longitude);
-    //         builder.element('distance', nest: walkInfo.distance);
-    //         builder.element('walkTime', nest: walkInfo.walkTime);
-    //         builder.element('walkCount', nest: walkInfo.walkCount);
-    //         builder.element('calorie', nest: () {
-    //           for (var element in walkInfo.petList) {
-    //             builder.element(element.uuid.toString(), nest: () {
-    //               builder.element('calorie', nest: walkInfo.calorie[element.uuid]['calorie']);
-    //             });
-    //           }
-    //         });
-    //       });
-    //     });
-    //
-    //     document = builder.buildDocument();
-    //   }
-    // }
-
-
-    // if(document == null) {
-    //   return;
-    // }
 
     localXmlFile.writeAsStringSync('${document.toXmlString(pretty: true, indent: '\t')}\n', mode: FileMode.writeOnly, flush: true);
   }
@@ -208,17 +147,10 @@ class WalkCacheController {
         continue;
       }
     }
-    print('xml walkInfoList $walkInfoList');
+    // print('xml walkInfoList $walkInfoList');
 
-    print('aaaa');
     if (isMoveToTotal) {
-      print('zxczxczxczxc');
-      // final readWalkInfos = readWalkInfo.join('\n');
-      // File walkInfoXmlTotal = await File('${tempDir.path}/${fileName}_total.xml').create();
-      // walkInfoXmlTotal.writeAsStringSync('$readWalkInfos\n', mode: FileMode.writeOnly, flush: true);
-      // walkInfoFile.writeAsStringSync('');
       writeXMLWalkInfo(walkInfoList, petList,'${fileName}_total');
-      // walkInfoFile.writeAsStringSync('');
       walkInfoFile.deleteSync();
     }
 

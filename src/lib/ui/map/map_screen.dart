@@ -19,6 +19,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/walk_result/walk_result_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/pedometer_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/map/bottom_drawer.dart';
@@ -58,7 +59,7 @@ class MapScreenState extends ConsumerState<MapScreen> {
   @override
   void initState() {
     super.initState();
-    _initializePedestrianStatusStream();
+    // _initializePedestrianStatusStream();
 
     ref.read(walkStateProvider.notifier).getTodayWalkCount().then((value) {
       setState(() {
@@ -68,152 +69,152 @@ class MapScreenState extends ConsumerState<MapScreen> {
     init();
   }
 
-  void _initializePedestrianStatusStream() {
-    _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
-    _pedestrianStatusStream.listen(onPedestrianStatusChanged).onError(_handlePedestrianStatusError);
-
-    if (!mounted) return;
-  }
-
-  void onPedestrianStatusChanged(PedestrianStatus event) {
-    if (mounted) {
-      setState(() {
-        _status = event.status;
-        switch (_status) {
-          case 'stopped':
-            _startInactivityTimers();
-            break;
-          case 'walking':
-            _resetInactivityTimers();
-            break;
-        }
-      });
-    }
-  }
-
-  void _handlePedestrianStatusError(error) {
-    print('onPedestrianStatusError: $error');
-    setState(() => _status = 'Pedestrian Status not available');
-  }
-
-  void _startInactivityTimers() {
-    _inactivityTimer20Min = _startInactivityTimer(_inactivityDuration20Min, () {
-      if (mounted) {
-        toast(
-          context: context,
-          text: '',
-          type: ToastType.white,
-          toastDuration: const Duration(days: 1000),
-          toastWidget: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  const SizedBox(
-                    width: 14,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "현재 움직임이 없어 10분 후",
-                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                      ),
-                      Text(
-                        "산책 종료될 예정이에요.",
-                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2.0),
-                        child: Text(
-                          "우리 아이와 산책을 계속 진행하실 건가요?",
-                          style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  //TODO 20분이 지난 후 종료 버튼 클릭시 - 종료 API 연결 헤야함
-                  InkWell(
-                    onTap: () {
-                      FToast().removeCustomToast();
-                    },
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: kNeutralColor300,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(100.0),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
-                        child: Text(
-                          "종료",
-                          style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      FToast().removeCustomToast();
-                      _resetInactivityTimers();
-                    },
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: kPrimaryLightColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(100.0),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
-                        child: Text(
-                          "확인",
-                          style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      }
-    });
-
-    _inactivityTimer30Min = _startInactivityTimer(_inactivityDuration30Min, () {
-      if (mounted) {
-        //TODO 30분이 지났을때 케이스 - 종료 API 연결 헤야함
-        FToast().removeCustomToast();
-      }
-    });
-  }
-
-  Timer _startInactivityTimer(Duration duration, void Function() callback) {
-    Timer timer = Timer(duration, callback);
-    return timer;
-  }
-
-  void _resetInactivityTimers() {
-    _resetInactivityTimer(_inactivityTimer20Min);
-    _resetInactivityTimer(_inactivityTimer30Min);
-  }
-
-  void _resetInactivityTimer(Timer? timer) => timer?.cancel();
+  // void _initializePedestrianStatusStream() {
+  //   _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
+  //   _pedestrianStatusStream.listen(onPedestrianStatusChanged).onError(_handlePedestrianStatusError);
+  //
+  //   if (!mounted) return;
+  // }
+  //
+  // void onPedestrianStatusChanged(PedestrianStatus event) {
+  //   if (mounted) {
+  //     setState(() {
+  //       _status = event.status;
+  //       switch (_status) {
+  //         case 'stopped':
+  //           _startInactivityTimers();
+  //           break;
+  //         case 'walking':
+  //           _resetInactivityTimers();
+  //           break;
+  //       }
+  //     });
+  //   }
+  // }
+  //
+  // void _handlePedestrianStatusError(error) {
+  //   print('onPedestrianStatusError: $error');
+  //   setState(() => _status = 'Pedestrian Status not available');
+  // }
+  //
+  // void _startInactivityTimers() {
+  //   _inactivityTimer20Min = _startInactivityTimer(_inactivityDuration20Min, () {
+  //     if (mounted) {
+  //       toast(
+  //         context: context,
+  //         text: '',
+  //         type: ToastType.white,
+  //         toastDuration: const Duration(days: 1000),
+  //         toastWidget: Row(
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Row(
+  //               children: [
+  //                 const SizedBox(
+  //                   width: 14,
+  //                 ),
+  //                 Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Text(
+  //                       "현재 움직임이 없어 10분 후",
+  //                       style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+  //                     ),
+  //                     Text(
+  //                       "산책 종료될 예정이에요.",
+  //                       style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+  //                     ),
+  //                     Padding(
+  //                       padding: const EdgeInsets.only(top: 2.0),
+  //                       child: Text(
+  //                         "우리 아이와 산책을 계속 진행하실 건가요?",
+  //                         style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //             Row(
+  //               children: [
+  //                 //TODO 20분이 지난 후 종료 버튼 클릭시 - 종료 API 연결 헤야함
+  //                 InkWell(
+  //                   onTap: () {
+  //                     FToast().removeCustomToast();
+  //                   },
+  //                   child: Container(
+  //                     decoration: const BoxDecoration(
+  //                       color: kNeutralColor300,
+  //                       borderRadius: BorderRadius.all(
+  //                         Radius.circular(100.0),
+  //                       ),
+  //                     ),
+  //                     child: Padding(
+  //                       padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+  //                       child: Text(
+  //                         "종료",
+  //                         style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 const SizedBox(
+  //                   width: 10,
+  //                 ),
+  //                 InkWell(
+  //                   onTap: () {
+  //                     FToast().removeCustomToast();
+  //                     _resetInactivityTimers();
+  //                   },
+  //                   child: Container(
+  //                     decoration: const BoxDecoration(
+  //                       color: kPrimaryLightColor,
+  //                       borderRadius: BorderRadius.all(
+  //                         Radius.circular(100.0),
+  //                       ),
+  //                     ),
+  //                     child: Padding(
+  //                       padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+  //                       child: Text(
+  //                         "확인",
+  //                         style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     }
+  //   });
+  //
+  //   _inactivityTimer30Min = _startInactivityTimer(_inactivityDuration30Min, () {
+  //     if (mounted) {
+  //       //TODO 30분이 지났을때 케이스 - 종료 API 연결 헤야함
+  //       FToast().removeCustomToast();
+  //     }
+  //   });
+  // }
+  //
+  // Timer _startInactivityTimer(Duration duration, void Function() callback) {
+  //   Timer timer = Timer(duration, callback);
+  //   return timer;
+  // }
+  //
+  // void _resetInactivityTimers() {
+  //   _resetInactivityTimer(_inactivityTimer20Min);
+  //   _resetInactivityTimer(_inactivityTimer30Min);
+  // }
+  //
+  // void _resetInactivityTimer(Timer? timer) => timer?.cancel();
 
   @override
   void dispose() {
-    _inactivityTimer20Min?.cancel();
-    _inactivityTimer30Min?.cancel();
+    // _inactivityTimer20Min?.cancel();
+    // _inactivityTimer30Min?.cancel();
     super.dispose();
   }
 
@@ -294,26 +295,31 @@ class MapScreenState extends ConsumerState<MapScreen> {
       }
 
       final mapController = ref.read(naverMapControllerStateProvider);
-      NCameraPosition updatePosition = NCameraPosition(target: NLatLng(next.last.latitude, next.last.longitude!), zoom: 16.0);
-      await mapController!.updateCamera(NCameraUpdate.withParams(
-        target: updatePosition.target,
-        zoom: updatePosition.zoom,
-      ));
+      // NCameraPosition updatePosition = NCameraPosition(target: NLatLng(next.last.latitude, next.last.longitude!), zoom: 16.0);
+      // await mapController!.updateCamera(NCameraUpdate.withParams(
+      //   target: updatePosition.target,
+      //   zoom: updatePosition.zoom,
+      // ));
 
       if (next.length <= 1) {
         return;
       }
       List<NLatLng> routeList = next.map((e) => NLatLng(e.latitude, e.longitude)).toList();
 
-      await mapController.addOverlay(NPathOverlay(id: '2', coords: routeList, color: Colors.deepPurpleAccent));
+      await mapController!.addOverlay(NPathOverlay(id: '2', coords: routeList, color: Colors.deepPurpleAccent));
     });
 
     final bool isWalking = ref.watch(walkStatusStateProvider) == WalkStatus.walking;
-    print('isWalking $isWalking');
 
     final walkStateModelList = ref.watch(singleWalkStateProvider);
 
-    // final mapPadding =
+    ref.listen(pedoMeterStateProvider, (previous, next) {
+      if(next == PedoMeterWalkStatus.stoppedAlertMin) {
+        print('pedo event stopped Alert');
+      } else if(next == PedoMeterWalkStatus.stoppedForceExitMin) {
+        print('pedo event stopped Force');
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
