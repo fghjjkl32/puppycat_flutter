@@ -409,34 +409,34 @@ class MapScreenState extends ConsumerState<MapScreen> {
                             // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
                             await ref.read(walkStateProvider.notifier).startWalk().then((walkUuid) async {
                               if (walkUuid.isNotEmpty) {
-                                final currentLocationData = await GeolocatorUtil.getCurrentLocation();
-                                // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
-                                ref.read(singleWalkStateProvider.notifier).startBackgroundLocation(currentLocationData);
-                                final userInfo = ref.read(userInfoProvider).userModel;
-                                print('start userModel $userInfo');
-                                final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
-                                final selectedPetList = ref.read(walkSelectedPetStateProvider).toSet().toList();
-                                List<Map<String, dynamic>> petMap = selectedPetList.map((e) => e.toJson()).toList();
-
-                                CookieJar cookieJar = GetIt.I<CookieJar>();
-                                var cookies = await cookieJar.loadForRequest(Uri.parse(baseUrl));
-                                Map<String, dynamic> cookieMap = {};
-                                for (var cookie in cookies) {
-                                  cookieMap[cookie.name] = cookie.value;
-                                }
-
-                                FlutterBackgroundService().startService().then((isBackStarted) async {
-                                  if (isBackStarted) {
-                                    print('background start!!');
-                                    FlutterBackgroundService().invoke("setAsForeground");
-                                    FlutterBackgroundService().invoke('setData', {
-                                      'memberUuid': memberUuid,
-                                      'walkUuid': walkUuid,
-                                      'cookieMap': cookieMap,
-                                      'selectedPetList': petMap,
-                                    });
-                                  }
-                                });
+                                // final currentLocationData = await GeolocatorUtil.getCurrentLocation();
+                                // // ref.read(singleWalkStateProvider.notifier).startLocationCollection(currentLocationData);
+                                // ref.read(singleWalkStateProvider.notifier).startBackgroundLocation(currentLocationData);
+                                // final userInfo = ref.read(userInfoProvider).userModel;
+                                // print('start userModel $userInfo');
+                                // final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
+                                // final selectedPetList = ref.read(walkSelectedPetStateProvider).toSet().toList();
+                                // List<Map<String, dynamic>> petMap = selectedPetList.map((e) => e.toJson()).toList();
+                                //
+                                // CookieJar cookieJar = GetIt.I<CookieJar>();
+                                // var cookies = await cookieJar.loadForRequest(Uri.parse(baseUrl));
+                                // Map<String, dynamic> cookieMap = {};
+                                // for (var cookie in cookies) {
+                                //   cookieMap[cookie.name] = cookie.value;
+                                // }
+                                //
+                                // FlutterBackgroundService().startService().then((isBackStarted) async {
+                                //   // if (isBackStarted) {
+                                //     print('background start!!');
+                                //     FlutterBackgroundService().invoke("setAsForeground");
+                                //     FlutterBackgroundService().invoke('setData', {
+                                //       'memberUuid': memberUuid,
+                                //       'walkUuid': walkUuid,
+                                //       'cookieMap': cookieMap,
+                                //       'selectedPetList': petMap,
+                                //     });
+                                //   // }
+                                // });
                               } else {
                                 print('Error Start Walk');
                               }

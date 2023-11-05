@@ -30,7 +30,7 @@ class WalkStateModel with _$WalkStateModel{
 
   double getPetCalorie(String uuid) {
     if(calorie.containsKey(uuid)) {
-      return calorie[uuid]['calorie'];
+      return double.parse(calorie[uuid]['calorie'].toString());
     } else {
       return 0.00;
     }

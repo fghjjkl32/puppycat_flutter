@@ -151,6 +151,10 @@ dependencies:
   geolocator: ^10.1.0
   pedometer: ^4.0.1
 
+  xml: ^6.3.0 # 버전 충돌로 이전 버전 사용
+#  xml_map_converter: ^1.0.0+1
+  xml2json: ^6.2.0
+
 
 dev_dependencies:
   flutter_test:

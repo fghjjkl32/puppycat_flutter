@@ -7,9 +7,11 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/common/util/location/geolocator_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/controller/walk_cache/walk_cache_controller.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
@@ -90,20 +92,70 @@ class WalkState extends _$WalkState {
         _walkStartDate = DateTime.now().toString();
       }
 
-      // ref.listen(singleWalkStateProvider, (previous, next) async {
-      //   if (next.isEmpty) {
-      //     return;
-      //   }
-      //   await WalkCacheController.writeWalkInfo(next.last, _walkUuid);
+      final currentLocationData = await GeolocatorUtil.getCurrentLocation();
+      startWalkConfigure(currentLocationData);
+      // ref.read(singleWalkStateProvider.notifier).startBackgroundLocation(currentLocationData);
+      // List<Map<String, dynamic>> petMap = selectedPetList.map((e) => e.toJson()).toList();
+      //
+      // CookieJar cookieJar = GetIt.I<CookieJar>();
+      // var cookies = await cookieJar.loadForRequest(Uri.parse(baseUrl));
+      // Map<String, dynamic> cookieMap = {};
+      // for (var cookie in cookies) {
+      //   cookieMap[cookie.name] = cookie.value;
+      // }
+      //
+      // FlutterBackgroundService().startService().then((isBackStarted) async {
+      //   // if (isBackStarted) {
+      //   print('background start!!');
+      //   FlutterBackgroundService().invoke('setData', {
+      //     'memberUuid': memberUuid,
+      //     'walkUuid': _walkUuid,
+      //     'cookieMap': cookieMap,
+      //     'selectedPetList': petMap,
+      //   });
+      //   // }
+      //   FlutterBackgroundService().invoke("setAsForeground");
       // });
-
-      ref.read(pedoMeterStateProvider.notifier).startPedoMeter();
+      //
+      // ref.read(pedoMeterStateProvider.notifier).startPedoMeter();
 
       return _walkUuid;
     } catch (e) {
       print('startWalk error $e');
       return '';
     }
+  }
+
+  Future startWalkConfigure(Position initLocationData) async {
+    final userInfo = ref.read(userInfoProvider).userModel;
+    print('start userModel $userInfo');
+    final String memberUuid = ref.read(userInfoProvider).userModel!.uuid!;
+    final selectedPetList = ref.read(walkSelectedPetStateProvider).toSet().toList();
+    List<Map<String, dynamic>> petMap = selectedPetList.map((e) => e.toJson()).toList();
+
+    ref.read(singleWalkStateProvider.notifier).startBackgroundLocation(initLocationData);
+
+    CookieJar cookieJar = GetIt.I<CookieJar>();
+    var cookies = await cookieJar.loadForRequest(Uri.parse(baseUrl));
+    Map<String, dynamic> cookieMap = {};
+    for (var cookie in cookies) {
+      cookieMap[cookie.name] = cookie.value;
+    }
+
+    await FlutterBackgroundService().startService().then((isBackStarted) async {
+      // if (isBackStarted) {
+      print('background start!!');
+      FlutterBackgroundService().invoke("setAsForeground");
+      FlutterBackgroundService().invoke('setData', {
+        'memberUuid': memberUuid,
+        'walkUuid': _walkUuid,
+        'cookieMap': cookieMap,
+        'selectedPetList': petMap,
+      });
+      // }
+    });
+
+    ref.read(pedoMeterStateProvider.notifier).startPedoMeter();
   }
 
   Future<String> stopWalk() async {
@@ -136,7 +188,8 @@ class WalkState extends _$WalkState {
       ///String memberUuid, String walkUuid, int steps, String startDate, double distance, Map<String, dynamic> petWalkInfo,
 
       // if(_walkInfoList.isNotEmpty) {
-      final walkInfoList = await WalkCacheController.readWalkInfo('${walkUuid}_local');
+      // final walkInfoList = await WalkCacheController.readWalkInfo('${walkUuid}_local');
+      final walkInfoList = await WalkCacheController.readXMLWalkInfo('${walkUuid}_local');
       // await walkRepository.sendWalkInfo(memberUuid, walkUuid, walkInfoList, true);
       sendWalkInfo(walkInfoList, true);
       // }
@@ -236,9 +289,12 @@ class WalkState extends _$WalkState {
         return;
       }
 
-      List<WalkStateModel> walkInfoList = [];
-      await WalkCacheController.readWalkInfo('${_walkUuid}_local').then((value) async {
-        final walkInfoTotalList = await WalkCacheController.readWalkInfo('${_walkUuid}_total');
+      // List<WalkStateModel> walkInfoList = [];
+      await WalkCacheController.readXMLWalkInfo('${_walkUuid}_local', false).then((value) async {
+        final walkInfoTotalList = await WalkCacheController.readXMLWalkInfo('${_walkUuid}_total', false);
+        walkInfoTotalList.addAll(value);
+        walkInfoTotalList.toSet().toList();
+
         final firstDate = walkInfoTotalList.first.dateTime;
         final lastDate = walkInfoTotalList.last.dateTime;
         Duration difference = lastDate.difference(firstDate);
@@ -248,14 +304,23 @@ class WalkState extends _$WalkState {
           walkTime: milliseconds,
         );
 
-        List<String> petUuidList = walkInfoTotalList.last.calorie.keys.toList();
-        // ref.read(walkSelectedPetStateProvider.notifier).state.addAll(petUuidList);
-        // List calorieList = walkInfo.calorie.values.map((e) => e['calorie']).toList();
+        // List<String> petUuidList = walkInfoTotalList.last.calorie.keys.toList();
+        List<MyPetItemModel> petList = walkInfoTotalList.last.petList;
+        ref.read(walkSelectedPetStateProvider.notifier).state.addAll(petList);
 
-        walkInfoList.addAll(walkInfoTotalList);
+        // walkInfoList.addAll(walkInfoTotalList);
+
+        ref.read(singleWalkStateProvider.notifier).state.addAll(walkInfoTotalList);
+        _walkStartDate = DateFormat('yyyy-MM-dd hh:mm:ss').format(walkInfoTotalList.first.dateTime.toUtc());
+        //walkInfoTotalList.first.dateTime.toUtc().toString();
+
+        final currentLocationData = await GeolocatorUtil.getCurrentLocation();
+
+        ///NOTE
+        ///내부적으로 로직이 바뀌면서  여기서 전달하는 좌표는 에러일 때만 사용
+        startWalkConfigure(currentLocationData);
       });
 
-      ref.read(singleWalkStateProvider.notifier).state.addAll(walkInfoList);
     } catch (e) {
       print('checkLocalLocationData error $e');
     }

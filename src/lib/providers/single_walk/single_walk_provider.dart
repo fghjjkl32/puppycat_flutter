@@ -45,33 +45,7 @@ class SingleWalkState extends _$SingleWalkState {
       if(event == null) {
         return;
       }
-      //
-      // final WalkStateModel previousWalkStateModel;
-      // if (state.isEmpty) {
-      //   previousWalkStateModel = WalkStateModel(
-      //     dateTime: DateTime.now(),
-      //     latitude: initLocationData.latitude,
-      //     longitude: initLocationData.longitude,
-      //     distance: 0,
-      //     walkTime: 0,
-      //     walkCount: 0,
-      //     calorie: {},
-      //   );
-      // } else {
-      //   previousWalkStateModel = state.last;
-      // }
-      //
-      // if(ref.read(walkStatusStateProvider) != WalkStatus.walking) {
-      //   return;
-      // }
-      //
-      // print('event : $event');
-      // LocationData currentLocationData = LocationData.fromMap({
-      //   'latitude': event['latitude'],
-      //   'longitude': event['longitude'],
-      // });
-      //
-      // final walkStateModel = WalkUtil.calcWalkStateValue(previousWalkStateModel, currentLocationData, selectedPetList);
+
       WalkStateModel walkStateModel;
       try {
         walkStateModel = WalkStateModel.fromJson(event['walkStateModel']);

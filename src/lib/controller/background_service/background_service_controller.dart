@@ -197,13 +197,16 @@ void onBackgroundStart(ServiceInstance service) async {
     final walkStateModel = WalkUtil.calcWalkStateValue(previousWalkStateModel!, currentLocationData, selectedPetList);
     previousWalkStateModel = walkStateModel;
 
-    await WalkCacheController.writeWalkInfo(walkStateModel, walkUuid);
+    // await WalkCacheController.writeWalkInfo(walkStateModel, walkUuid);
+    await WalkCacheController.writeXMLWalkInfo([walkStateModel], selectedPetList, '${walkUuid}_local');
 
-    print('timer.tick % 60 == 0 ${timer.tick % 60 == 0} / ${timer.tick % 60}');
+    print('timer.tick % 20 == 0 ${timer.tick % 20 == 0} / ${timer.tick % 20}');
     if (timer.tick % 20 == 0) {
-      final walkInfoList = await WalkCacheController.readWalkInfo('${walkUuid}_local');
-      final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookieForBackground(cookieJar), baseUrl: walkGpsBaseUrl);
-      await walkRepository.sendWalkInfo(memberUuid, walkUuid, walkInfoList, false);
+      // final walkInfoList = await WalkCacheController.readWalkInfo('${walkUuid}_local');
+      final walkInfoList = await WalkCacheController.readXMLWalkInfo('${walkUuid}_local');
+
+      // final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookieForBackground(cookieJar), baseUrl: walkGpsBaseUrl);
+      // await walkRepository.sendWalkInfo(memberUuid, walkUuid, walkInfoList, false);
     }
 
     service.invoke(
