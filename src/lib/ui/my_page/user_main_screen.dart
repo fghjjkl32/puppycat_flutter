@@ -11,6 +11,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
 import 'package:matrix/matrix.dart' hide Visibility;
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
@@ -153,10 +154,11 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
   @override
   Widget build(BuildContext context) {
-    return FocusDetector(
-      onFocusLost: () async {
+    return DefaultOnWillPopScope(
+      onWillPop: () async {
         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
         ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+        return Future.value(true);
       },
       child: Material(
         child: SafeArea(
@@ -317,6 +319,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       flexibleSpace: Consumer(builder: (context, ref, _) {
                         final userInformationState = ref.watch(userInformationStateProvider);
                         final lists = userInformationState.list;
+
+                        print(userInformationState.list);
+                        print("${userInformationState.list} : userInformationState.list");
 
                         final isFollow = ref.watch(followUserStateProvider)[widget.memberIdx] ?? false;
 

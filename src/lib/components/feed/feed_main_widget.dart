@@ -51,13 +51,15 @@ class FeedMainWidget extends ConsumerWidget {
         child: Container(
           color: kNeutralColor100,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (index == 0 && feedType == "popular")
+              if (index == 0 && feedType == "follow")
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h),
+                      padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h, top: 24),
                       child: Text(
                         "인기있는 펫 집사들",
                         style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
@@ -70,21 +72,12 @@ class FeedMainWidget extends ConsumerWidget {
                   ],
                 ),
               if (index == 0 && feedType == "popular")
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(12.0.h),
-                      child: const Divider(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h),
-                      child: Text(
-                        "인기 게시글",
-                        style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
-                      ),
-                    ),
-                  ],
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h),
+                  child: Text(
+                    "인기 게시글",
+                    style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                  ),
                 ),
               if (index == 4 && feedType == "recent")
                 FeedFollowWidget(

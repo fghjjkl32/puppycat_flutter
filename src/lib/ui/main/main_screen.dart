@@ -73,10 +73,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         "최신",
         style: kBody16MediumStyle,
       ),
-      Text(
-        "산책",
-        style: kBody16MediumStyle,
-      ),
+      // Text(
+      //   "산책",
+      //   style: kBody16MediumStyle,
+      // ),
     ];
 
     if (loginState == LoginStatus.success) {
@@ -140,9 +140,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
         ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
       }
-
-      print(ref.read(walkStatusStateProvider));
-      print(ref.read(walkStatusStateProvider));
 
       if (ref.read(walkStatusStateProvider) == WalkStatus.walking && !ref.read(isNavigatedFromMapProvider)) {
         context.push('/map');
@@ -228,7 +225,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
-    bool isBigDevice = MediaQuery.of(context).size.width >= 320;
+    bool isBigDevice = MediaQuery.of(context).size.width >= 345;
     final loginState = ref.watch(loginStateProvider);
 
     return WillPopScope(
@@ -353,9 +350,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             controller: tabController,
                             children: [
                               _firstTab(),
-                              Container(
-                                color: Colors.blue,
-                              ),
+                              // Container(
+                              //   color: Colors.blue,
+                              // ),
+
                               if (loginState == LoginStatus.success) ...[
                                 _thirdTab(),
                               ],
@@ -919,12 +917,26 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                               ref.read(userInfoProvider).userModel == null
                                   ? context.pushReplacement("/loginScreen")
                                   : ref.watch(restrainWriteStateProvider).restrain.state == null
-                                      ? feedWriteShowBottomSheet(
-                                          context: context,
-                                          onClose: () {
-                                            setState(() {
-                                              showLottieAnimation = false;
-                                            });
+                                      ? InstaAssetPicker.pickAssets(
+                                          context,
+                                          maxAssets: 12,
+                                          pickerTheme: themeData(context).copyWith(
+                                            canvasColor: kNeutralColor100,
+                                            colorScheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).colorScheme.copyWith(
+                                                  background: kNeutralColor100,
+                                                ),
+                                            appBarTheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).appBarTheme.copyWith(
+                                                  backgroundColor: kNeutralColor100,
+                                                ),
+                                          ),
+                                          onCompleted: (cropStream) {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) => FeedWriteScreen(
+                                                  cropStream: cropStream,
+                                                ),
+                                              ),
+                                            );
                                           },
                                         )
                                       : showDialog(
@@ -1002,7 +1014,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   Widget _buildBackGround() {
-    bool isBigDevice = MediaQuery.of(context).size.width >= 320;
+    bool isBigDevice = MediaQuery.of(context).size.width >= 345;
 
     final loginState = ref.watch(loginStateProvider);
 
@@ -1160,7 +1172,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   Widget _buildTabbar(bool innerBoxIsScrolled) {
-    bool isBigDevice = MediaQuery.of(context).size.width >= 320;
+    bool isBigDevice = MediaQuery.of(context).size.width >= 345;
 
     return Container(
       decoration: innerBoxIsScrolled

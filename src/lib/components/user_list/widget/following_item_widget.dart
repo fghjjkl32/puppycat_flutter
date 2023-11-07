@@ -130,77 +130,79 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                 ),
               ],
             ),
-            Consumer(builder: (context, ref, child) {
-              return isFollow
-                  ? GestureDetector(
-                      onTap: () async {
-                        if (ref.read(userInfoProvider).userModel == null) {
-                          context.pushReplacement("/loginScreen");
-                        } else {
-                          final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                followIdx: widget.followIdx,
-                              );
+            ref.read(userInfoProvider).userModel!.idx == widget.followIdx
+                ? Container()
+                : Consumer(builder: (context, ref, child) {
+                    return isFollow
+                        ? GestureDetector(
+                            onTap: () async {
+                              if (ref.read(userInfoProvider).userModel == null) {
+                                context.pushReplacement("/loginScreen");
+                              } else {
+                                final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                      followIdx: widget.followIdx,
+                                    );
 
-                          if (result.result) {
-                            setState(() {
-                              ref.read(followUserStateProvider.notifier).setFollowState(widget.followIdx, false);
-                            });
-                          }
-                        }
-                      },
-                      child: Container(
-                        width: 56.w,
-                        height: 32.h,
-                        decoration: const BoxDecoration(
-                          color: kNeutralColor300,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "팔로잉",
-                            style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
-                          ),
-                        ),
-                      ),
-                    )
-                  : GestureDetector(
-                      onTap: () async {
-                        if (ref.read(userInfoProvider).userModel == null) {
-                          context.pushReplacement("/loginScreen");
-                        } else {
-                          final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                followIdx: widget.followIdx,
-                              );
+                                if (result.result) {
+                                  setState(() {
+                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.followIdx, false);
+                                  });
+                                }
+                              }
+                            },
+                            child: Container(
+                              width: 56.w,
+                              height: 32.h,
+                              decoration: const BoxDecoration(
+                                color: kNeutralColor300,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8.0),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "팔로잉",
+                                  style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                                ),
+                              ),
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () async {
+                              if (ref.read(userInfoProvider).userModel == null) {
+                                context.pushReplacement("/loginScreen");
+                              } else {
+                                final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                      followIdx: widget.followIdx,
+                                    );
 
-                          if (result.result) {
-                            setState(() {
-                              ref.read(followUserStateProvider.notifier).setFollowState(widget.followIdx, true);
-                            });
-                          }
-                        }
-                      },
-                      child: Container(
-                        width: 56.w,
-                        height: 32.h,
-                        decoration: const BoxDecoration(
-                          color: kPrimaryColor,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "팔로우",
-                            style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
-                          ),
-                        ),
-                      ),
-                    );
-            })
+                                if (result.result) {
+                                  setState(() {
+                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.followIdx, true);
+                                  });
+                                }
+                              }
+                            },
+                            child: Container(
+                              width: 56.w,
+                              height: 32.h,
+                              decoration: const BoxDecoration(
+                                color: kPrimaryColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8.0),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "팔로우",
+                                  style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
+                                ),
+                              ),
+                            ),
+                          );
+                  })
           ],
         ),
       ),

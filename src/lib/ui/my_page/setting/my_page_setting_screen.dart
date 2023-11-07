@@ -109,7 +109,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
               title: '차단 유저 관리',
               onPressed: () {
-                ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.go("/home/myPage/setting/settingBlockedUser");
+                ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingBlockedUser");
               },
             ),
             Padding(

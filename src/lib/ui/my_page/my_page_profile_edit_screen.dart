@@ -256,7 +256,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                           profileImgUrl: selectedImage == null ? null : selectedImage!.path,
                           idx: ref.watch(editStateProvider).userInfoModel!.userModel!.idx,
                           nick: nickController.text == "" ? ref.watch(editStateProvider).userInfoModel!.userModel!.nick : nickController.text,
-                          introText: introController.text == "" ? ref.watch(editStateProvider).userInfoModel!.userModel!.introText : introController.text,
+                          introText: introController.text,
                           phone: ref.watch(editStateProvider).authModel == null ? ref.watch(editStateProvider).userInfoModel!.userModel!.phone : ref.watch(editStateProvider).authModel?.phone,
                           ci: ref.watch(editStateProvider).authModel == null ? ref.watch(editStateProvider).userInfoModel!.userModel!.ci : ref.watch(editStateProvider).authModel?.ci,
                           di: ref.watch(editStateProvider).authModel == null ? ref.watch(editStateProvider).userInfoModel!.userModel!.di : ref.watch(editStateProvider).authModel?.di,

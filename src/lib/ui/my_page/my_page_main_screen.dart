@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
@@ -143,15 +144,16 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
     super.dispose();
   }
 
-  void handleFocusLost() {
+  Future<bool> handleFocusLost() {
     feedListStateNotifier.getStateForUser(widget.oldMemberIdx ?? 0);
     firstFeedStateNotifier.getStateForUser(widget.oldMemberIdx ?? 0);
+    return Future.value(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FocusDetector(
-      onFocusLost: handleFocusLost,
+    return DefaultOnWillPopScope(
+      onWillPop: handleFocusLost,
       child: Material(
         child: SafeArea(
             child: DefaultTabController(

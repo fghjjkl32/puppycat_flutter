@@ -5,12 +5,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/my_feed_delete_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/my_feed_keep_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_follow_card_widget.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -246,7 +249,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                               contentIdx: widget.contentIdx,
                                             );
 
-                                        if (result.result) {
+                                        if (result.result && mounted) {
                                           toast(
                                             context: context,
                                             text: '게시물 보관이 취소됐습니다.',
@@ -264,19 +267,26 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                       onTap: () async {
                                         context.pop();
 
-                                        final result = await ref.watch(feedListStateProvider.notifier).postKeepContents(
-                                              loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                              contentIdxList: [widget.contentIdx],
-                                              contentType: widget.contentType,
-                                            );
+                                        myFeedKeepBottomSheet(
+                                          context: context,
+                                          onTap: () async {
+                                            context.pop();
 
-                                        if (result.result) {
-                                          toast(
-                                            context: context,
-                                            text: '게시물 보관이 완료되었습니다.',
-                                            type: ToastType.purple,
-                                          );
-                                        }
+                                            final result = await ref.watch(feedListStateProvider.notifier).postKeepContents(
+                                                  loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                  contentIdxList: [widget.contentIdx],
+                                                  contentType: widget.contentType,
+                                                );
+
+                                            if (result.result && mounted) {
+                                              toast(
+                                                context: context,
+                                                text: '게시물 보관이 완료되었습니다.',
+                                                type: ToastType.purple,
+                                              );
+                                            }
+                                          },
+                                        );
                                       },
                                     ),
                               BottomSheetButtonItem(
@@ -306,19 +316,26 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                 onTap: () async {
                                   context.pop();
 
-                                  final result = await ref.watch(feedListStateProvider.notifier).deleteOneContents(
-                                        loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        contentType: widget.contentType,
-                                        contentIdx: widget.contentIdx,
-                                      );
+                                  myFeedDeleteBottomSheet(
+                                    context: context,
+                                    onTap: () async {
+                                      context.pop();
 
-                                  if (result.result) {
-                                    toast(
-                                      context: context,
-                                      text: '게시물 삭제가 완료되었습니다.',
-                                      type: ToastType.purple,
-                                    );
-                                  }
+                                      final result = await ref.watch(feedListStateProvider.notifier).deleteOneContents(
+                                            loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                            contentType: widget.contentType,
+                                            contentIdx: widget.contentIdx,
+                                          );
+
+                                      if (result.result && mounted) {
+                                        toast(
+                                          context: context,
+                                          text: '게시물 삭제가 완료되었습니다.',
+                                          type: ToastType.purple,
+                                        );
+                                      }
+                                    },
+                                  );
                                 },
                               ),
                             ],
@@ -338,38 +355,43 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                   if (ref.read(userInfoProvider).userModel == null) {
                                     context.pushReplacement("/loginScreen");
                                   } else {
+                                    final tempContentIdx = widget.contentIdx;
                                     context.pop();
 
                                     final result = await ref.watch(feedListStateProvider.notifier).postHide(
                                           loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                           contentType: widget.contentType,
-                                          contentIdx: widget.contentIdx,
+                                          contentIdx: tempContentIdx,
                                           memberIdx: widget.memberIdx,
                                         );
 
                                     if (result.result) {
-                                      toast(
-                                        context: context,
-                                        text: '게시물 숨기기를 완료하였습니다.',
-                                        type: ToastType.purple,
-                                        buttonText: "숨기기 취소",
-                                        buttonOnTap: () async {
-                                          final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
-                                                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                contentType: widget.contentType,
-                                                contentIdx: widget.contentIdx,
-                                                memberIdx: widget.memberIdx,
-                                              );
+                                      if (mounted) {
+                                        toast(
+                                          context: context,
+                                          text: '게시물 숨기기를 완료하였습니다.',
+                                          type: ToastType.purple,
+                                          buttonText: "숨기기 취소",
+                                          buttonOnTap: () async {
+                                            final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
+                                                  loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                  contentType: widget.contentType,
+                                                  contentIdx: tempContentIdx,
+                                                  memberIdx: widget.memberIdx,
+                                                );
 
-                                          if (result.result) {
-                                            toast(
-                                              context: context,
-                                              text: '게시물 숨기기 취소',
-                                              type: ToastType.purple,
-                                            );
-                                          }
-                                        },
-                                      );
+                                            if (result.result) {
+                                              if (mounted) {
+                                                toast(
+                                                  context: context,
+                                                  text: '게시물 숨기기 취소',
+                                                  type: ToastType.purple,
+                                                );
+                                              }
+                                            }
+                                          },
+                                        );
+                                      }
                                     }
                                   }
                                 },
@@ -414,11 +436,11 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                   if (ref.read(userInfoProvider).userModel == null) {
                                     context.pushReplacement("/loginScreen");
                                   } else {
-                                    context.pop();
+                                    Navigator.of(context).pop();
 
                                     showDialog(
                                       context: context,
-                                      builder: (BuildContext context) {
+                                      builder: (BuildContext ctx) {
                                         return CustomDialog(
                                             content: Padding(
                                               padding: EdgeInsets.symmetric(vertical: 24.0.h),
@@ -449,23 +471,28 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                               ),
                                             ),
                                             confirmTap: () async {
-                                              context.pop();
-
-                                              final result = await ref.read(feedListStateProvider.notifier).postBlock(
-                                                    memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                                                    blockIdx: widget.memberIdx,
-                                                    contentType: widget.contentType,
-                                                    contentIdx: widget.contentIdx,
-                                                  );
-
-                                              if (result.result) {
+                                              if (mounted) {
                                                 context.pop();
 
-                                                toast(
-                                                  context: context,
-                                                  text: "‘${widget.userName}’님을 차단하였습니다.",
-                                                  type: ToastType.purple,
-                                                );
+                                                final result = await ref.read(feedListStateProvider.notifier).postBlock(
+                                                      memberIdx: ref.watch(userInfoProvider).userModel!.idx,
+                                                      blockIdx: widget.memberIdx,
+                                                      contentType: widget.contentType,
+                                                    );
+
+                                                if (result.result && mounted) {
+                                                  String location = GoRouter.of(context).location();
+
+                                                  if (location.contains("/home/myPage/detail/")) {
+                                                    context.pop();
+                                                  }
+
+                                                  toast(
+                                                    context: context,
+                                                    text: "‘${widget.userName}’님을 차단하였습니다.",
+                                                    type: ToastType.purple,
+                                                  );
+                                                }
                                               }
                                             },
                                             cancelTap: () {

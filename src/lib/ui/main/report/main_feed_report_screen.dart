@@ -144,8 +144,9 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                                       reportType: "contents",
                                     );
 
-                            if (result.result) {
-                              // ignore: use_build_context_synchronously
+                            if (result.result && mounted) {
+                              context.pop();
+
                               toast(
                                 context: context,
                                 text: '정상적으로 신고 접수가 되었습니다.',
@@ -153,18 +154,18 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                                 buttonText: "신고취소",
                                 buttonOnTap: () async {
                                   final result = widget.isComment
-                                      ? await ref.watch(commentStateProvider.notifier).deleteCommentReport(
-                                            loginMemberIdx: ref.watch(userInfoProvider).userModel!.idx,
+                                      ? await ref.read(commentStateProvider.notifier).deleteCommentReport(
+                                            loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                             contentIdx: widget.contentIdx,
                                             reportType: widget.isComment ? "comment" : "contents",
                                           )
-                                      : await ref.watch(feedListStateProvider.notifier).deleteContentReport(
-                                            loginMemberIdx: ref.watch(userInfoProvider).userModel!.idx,
+                                      : await ref.read(feedListStateProvider.notifier).deleteContentReport(
+                                            loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                             contentIdx: widget.contentIdx,
                                             reportType: widget.isComment ? "comment" : "contents",
                                           );
 
-                                  if (result.result) {
+                                  if (result.result && mounted) {
                                     toast(
                                       context: context,
                                       text: '신고 접수가 취소되었습니다.',

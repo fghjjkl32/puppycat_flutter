@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/my_feed_delete_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/my_feed_keep_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -368,96 +370,24 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                               ),
                               onTap: () {
                                 myPageMyPostController.hasMyPostSelectedImage()
-                                    ? showCustomModalBottomSheet(
+                                    ? myFeedKeepBottomSheet(
                                         context: context,
-                                        widget: Column(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "게시물을 보관하시겠어요?",
-                                                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Text(
-                                              "보관된 게시물은 언제든지 프로필에",
-                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                            ),
-                                            Text(
-                                              "다시 표시 가능합니다.",
-                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                            ),
-                                            SizedBox(height: 20.h),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    context.pop();
-                                                  },
-                                                  child: Container(
-                                                    width: 152.w,
-                                                    height: 36.h,
-                                                    decoration: const BoxDecoration(
-                                                      color: kPrimaryLightColor,
-                                                      borderRadius: BorderRadius.all(
-                                                        Radius.circular(8.0),
-                                                      ),
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "취소",
-                                                        style: kButton14BoldStyle.copyWith(color: kPrimaryColor),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 8.w,
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    context.pop();
+                                        onTap: () async {
+                                          context.pop();
 
-                                                    final result = await myPageMyPostController.postKeepContents(
-                                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                      idxList: myPageMyPostController.getSelectedMyPostImageIdx(),
-                                                    );
+                                          final result = await myPageMyPostController.postKeepContents(
+                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                            idxList: myPageMyPostController.getSelectedMyPostImageIdx(),
+                                          );
 
-                                                    if (result.result) {
-                                                      toast(
-                                                        context: context,
-                                                        text: '게시물 보관이 완료되었습니다.',
-                                                        type: ToastType.purple,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    width: 152.w,
-                                                    height: 36.h,
-                                                    decoration: const BoxDecoration(
-                                                      color: kPrimaryColor,
-                                                      borderRadius: BorderRadius.all(
-                                                        Radius.circular(8.0),
-                                                      ),
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "보관",
-                                                        style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
+                                          if (result.result && mounted) {
+                                            toast(
+                                              context: context,
+                                              text: '게시물 보관이 완료되었습니다.',
+                                              type: ToastType.purple,
+                                            );
+                                          }
+                                        },
                                       )
                                     : null;
                               },
@@ -486,96 +416,24 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                               ),
                               onTap: () {
                                 myPageMyPostController.hasMyPostSelectedImage()
-                                    ? showCustomModalBottomSheet(
+                                    ? myFeedDeleteBottomSheet(
                                         context: context,
-                                        widget: Column(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "게시물을 삭제하시겠어요?",
-                                                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Text(
-                                              "삭제한 게시물은",
-                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                            ),
-                                            Text(
-                                              "복구할 수 없습니다.",
-                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                            ),
-                                            SizedBox(height: 20.h),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    context.pop();
-                                                  },
-                                                  child: Container(
-                                                    width: 152.w,
-                                                    height: 36.h,
-                                                    decoration: const BoxDecoration(
-                                                      color: kPrimaryLightColor,
-                                                      borderRadius: BorderRadius.all(
-                                                        Radius.circular(8.0),
-                                                      ),
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "취소",
-                                                        style: kButton14BoldStyle.copyWith(color: kPrimaryColor),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 8.w,
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    context.pop();
+                                        onTap: () async {
+                                          context.pop();
 
-                                                    final result = await myPageMyPostController.deleteContents(
-                                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                      idx: myPageMyPostController.getSelectedImageIndices(isKeepSelect: false),
-                                                    );
+                                          final result = await myPageMyPostController.deleteContents(
+                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                            idx: myPageMyPostController.getSelectedImageIndices(isKeepSelect: false),
+                                          );
 
-                                                    if (result.result) {
-                                                      toast(
-                                                        context: context,
-                                                        text: '게시물 삭제가 완료되었습니다.',
-                                                        type: ToastType.purple,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    width: 152.w,
-                                                    height: 36.h,
-                                                    decoration: const BoxDecoration(
-                                                      color: kBadgeColor,
-                                                      borderRadius: BorderRadius.all(
-                                                        Radius.circular(8.0),
-                                                      ),
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "삭제",
-                                                        style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
+                                          if (result.result && mounted) {
+                                            toast(
+                                              context: context,
+                                              text: '게시물 삭제가 완료되었습니다.',
+                                              type: ToastType.purple,
+                                            );
+                                          }
+                                        },
                                       )
                                     : null;
                               },
@@ -863,97 +721,25 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 ),
                               ),
                               onTap: () {
-                                myKeepController.hasMyKeepSelectedImage()
-                                    ? showCustomModalBottomSheet(
+                                myKeepController.hasMyPostSelectedImage()
+                                    ? myFeedDeleteBottomSheet(
                                         context: context,
-                                        widget: Column(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "게시물을 삭제하시겠어요?",
-                                                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Text(
-                                              "삭제한 게시물은",
-                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                            ),
-                                            Text(
-                                              "복구할 수 없습니다.",
-                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                            ),
-                                            SizedBox(height: 20.h),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    context.pop();
-                                                  },
-                                                  child: Container(
-                                                    width: 152.w,
-                                                    height: 36.h,
-                                                    decoration: const BoxDecoration(
-                                                      color: kPrimaryLightColor,
-                                                      borderRadius: BorderRadius.all(
-                                                        Radius.circular(8.0),
-                                                      ),
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "취소",
-                                                        style: kButton14BoldStyle.copyWith(color: kPrimaryColor),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 8.w,
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    context.pop();
+                                        onTap: () async {
+                                          context.pop();
 
-                                                    final result = await myKeepController.deleteContents(
-                                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                      idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
-                                                    );
+                                          final result = await myKeepController.deleteContents(
+                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                            idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
+                                          );
 
-                                                    if (result.result) {
-                                                      toast(
-                                                        context: context,
-                                                        text: '게시물 삭제가 완료되었습니다.',
-                                                        type: ToastType.purple,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    width: 152.w,
-                                                    height: 36.h,
-                                                    decoration: const BoxDecoration(
-                                                      color: kBadgeColor,
-                                                      borderRadius: BorderRadius.all(
-                                                        Radius.circular(8.0),
-                                                      ),
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "삭제",
-                                                        style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
+                                          if (result.result && mounted) {
+                                            toast(
+                                              context: context,
+                                              text: '게시물 삭제가 완료되었습니다.',
+                                              type: ToastType.purple,
+                                            );
+                                          }
+                                        },
                                       )
                                     : null;
                               },

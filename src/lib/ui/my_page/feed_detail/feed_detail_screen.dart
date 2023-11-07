@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -93,8 +94,8 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
   Widget build(BuildContext context) {
     final isFollow = ref.watch(followUserStateProvider)[widget.memberIdx] ?? false;
 
-    return FocusDetector(
-      onFocusLost: () {
+    return DefaultOnWillPopScope(
+      onWillPop: () {
         ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");
 
         ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberIdx);
@@ -102,6 +103,8 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
         ref.read(userContentStateProvider.notifier).getStateForUserContent(widget.memberIdx);
 
         ref.read(tagContentStateProvider.notifier).getStateForUserTagContent(widget.memberIdx);
+
+        return Future.value(true);
       },
       child: Consumer(builder: (ctx, ref, child) {
         var apiStatus = ref.watch(firstFeedStatusProvider);
@@ -282,10 +285,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                 pagingController: _feedListPagingController,
                 builderDelegate: PagedChildBuilderDelegate<FeedData>(
                   noItemsFoundIndicatorBuilder: (context) {
-                    return const SizedBox.shrink();
-                  },
-                  noMoreItemsIndicatorBuilder: (context) {
-                    return widget.contentType == "userContent"
+                    return widget.memberIdx != ref.read(userInfoProvider).userModel?.idx
                         ? Column(
                             children: [
                               SizedBox(
@@ -326,7 +326,69 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (_) => PuppyCatMain(
-                                            initialTabIndex: ref.read(userInfoProvider).userModel == null ? 0 : 2,
+                                            initialTabIndex: ref.read(userInfoProvider).userModel == null ? 0 : 1,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Text(
+                                        "다른 유저 게시물 볼래요",
+                                        textAlign: TextAlign.center,
+                                        style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container();
+                  },
+                  noMoreItemsIndicatorBuilder: (context) {
+                    return widget.memberIdx != ref.read(userInfoProvider).userModel?.idx
+                        ? Column(
+                            children: [
+                              SizedBox(
+                                height: 12,
+                              ),
+                              Lottie.asset(
+                                'assets/lottie/feed_end.json',
+                                width: 48,
+                                height: 48,
+                                fit: BoxFit.fill,
+                                repeat: false,
+                              ),
+                              SizedBox(
+                                height: 12,
+                              ),
+                              Text(
+                                "${ref.read(firstFeedStateProvider.notifier).memberInfo?[0].nick} 님의\n게시물을 모두 확인했어요!",
+                                textAlign: TextAlign.center,
+                                style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                "다른 유저의 게시물도 보시겠어요?",
+                                textAlign: TextAlign.center,
+                                style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                              ),
+                              SizedBox(
+                                height: 12,
+                              ),
+                              Material(
+                                child: Container(
+                                  color: kNeutralColor100,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => PuppyCatMain(
+                                            initialTabIndex: ref.read(userInfoProvider).userModel == null ? 0 : 1,
                                           ),
                                         ),
                                       );
