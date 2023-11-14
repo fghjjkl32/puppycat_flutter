@@ -536,68 +536,96 @@ class WalkLogCalendarScreenState extends ConsumerState<WalkLogCalendarScreen> {
                       style: kBody14BoldStyle.copyWith(color: kTextBodyColor),
                     );
                   },
-                  markerBuilder: (context, day, events) {
-                    return InkWell(
-                      onTap: () {
-                        _onDaySelected(day, _focusedDay);
-                      },
-                      child: Center(
-                        child: events.isEmpty && isToday(day)
-                            ? Container(
-                                decoration: const BoxDecoration(
-                                  color: kNeutralColor200,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: 2),
-                                  child: Image.asset(
-                                    'assets/image/character/character_06_mypage_walk_dailylog_default.png',
-                                    width: 40,
-                                  ),
-                                ),
-                              )
-                            : isToday(day)
-                                ? Container(
-                                    decoration: const BoxDecoration(
-                                      color: kPrimaryColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.only(top: 2),
-                                      child: Image.asset(
-                                        'assets/image/character/character_06_mypage_walk_dailylog_great.png',
-                                        width: 40,
-                                      ),
-                                    ),
-                                  )
-                                : events.isNotEmpty
-                                    ? Container(
-                                        decoration: const BoxDecoration(
-                                          color: kPrimaryColor,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.only(top: 2),
-                                          child: Image.asset(
-                                            'assets/image/character/character_06_mypage_walk_dailylog_great.png',
-                                            width: 30,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(
-                                        decoration: const BoxDecoration(
-                                          color: kNeutralColor200,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.only(top: 2),
-                                          child: Image.asset(
-                                            'assets/image/character/character_06_mypage_walk_dailylog_default.png',
-                                            width: 30,
-                                          ),
-                                        ),
-                                      ),
-                      ),
+                  // markerBuilder: (context, day, events) {
+                  //   return InkWell(
+                  //     onTap: () {
+                  //       _onDaySelected(day, _focusedDay);
+                  //     },
+                  //     child: Center(
+                  //       child: events.isEmpty && isToday(day)
+                  //           ? Container(
+                  //               decoration: const BoxDecoration(
+                  //                 color: kNeutralColor200,
+                  //                 shape: BoxShape.circle,
+                  //               ),
+                  //               child: Padding(
+                  //                 padding: EdgeInsets.only(top: 2),
+                  //                 child: Image.asset(
+                  //                   'assets/image/character/character_06_mypage_walk_dailylog_default.png',
+                  //                   width: 40,
+                  //                 ),
+                  //               ),
+                  //             )
+                  //           : isToday(day)
+                  //               ? Container(
+                  //                   decoration: const BoxDecoration(
+                  //                     color: kPrimaryColor,
+                  //                     shape: BoxShape.circle,
+                  //                   ),
+                  //                   child: Padding(
+                  //                     padding: EdgeInsets.only(top: 2),
+                  //                     child: Image.asset(
+                  //                       'assets/image/character/character_06_mypage_walk_dailylog_great.png',
+                  //                       width: 40,
+                  //                     ),
+                  //                   ),
+                  //                 )
+                  //               : events.isNotEmpty
+                  //                   ? Container(
+                  //                       decoration: const BoxDecoration(
+                  //                         color: kPrimaryColor,
+                  //                         shape: BoxShape.circle,
+                  //                       ),
+                  //                       child: Padding(
+                  //                         padding: EdgeInsets.only(top: 2),
+                  //                         child: Image.asset(
+                  //                           'assets/image/character/character_06_mypage_walk_dailylog_great.png',
+                  //                           width: 30,
+                  //                         ),
+                  //                       ),
+                  //                     )
+                  //                   : Container(
+                  //                       decoration: const BoxDecoration(
+                  //                         color: kNeutralColor200,
+                  //                         shape: BoxShape.circle,
+                  //                       ),
+                  //                       child: Padding(
+                  //                         padding: EdgeInsets.only(top: 2),
+                  //                         child: Image.asset(
+                  //                           'assets/image/character/character_06_mypage_walk_dailylog_default.png',
+                  //                           width: 30,
+                  //                         ),
+                  //                       ),
+                  //                     ),
+                  //     ),
+                  //   );
+                  // },
+                  prioritizedBuilder: (context, day, events) {
+                    return Column(
+                      children: [
+                        Text(
+                          DateFormat('d', 'ko_KR').format(day).replaceAll('일', ''),
+                          style: kBody14RegularStyle.copyWith(color: kTextSubTitleColor),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _onDaySelected(day, _focusedDay);
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: kNeutralColor200,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 2),
+                              child: Image.asset(
+                                'assets/image/character/character_06_mypage_walk_dailylog_default.png',
+                                width: 24,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   },
 

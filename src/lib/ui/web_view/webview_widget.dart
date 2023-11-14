@@ -96,11 +96,15 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
   Widget build(BuildContext context) {
     return FocusDetector(
       onFocusLost: () => _goBack(context),
-      child: Stack(
-        children: webViewList,
-        // children: [
-        //   webviewList.last,
-        // ],
+      child: Scaffold(
+        body: SafeArea(
+          child: Stack(
+            children: webViewList,
+            // children: [
+            //   webviewList.last,
+            // ],
+          ),
+        ),
       ),
     );
   }

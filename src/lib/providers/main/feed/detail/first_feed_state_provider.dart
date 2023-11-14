@@ -25,6 +25,8 @@ part 'first_feed_state_provider.g.dart';
 
 final firstFeedEmptyProvider = StateProvider<bool>((ref) => true);
 
+final firstFeedStatusProvider = StateProvider<ListAPIStatus>((ref) => ListAPIStatus.idle);
+
 @Riverpod(keepAlive: true)
 class FirstFeedState extends _$FirstFeedState {
   int _lastPage = 0;
@@ -50,6 +52,9 @@ class FirstFeedState extends _$FirstFeedState {
       }
 
       apiStatus = ListAPIStatus.loading;
+      Future(() {
+        ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.loading;
+      });
       state.notifyListeners();
 
       FeedResponseModel searchResult = feedNullResponseModel;
@@ -58,7 +63,7 @@ class FirstFeedState extends _$FirstFeedState {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "myTagContent") {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
-      } else if (contentType == "userContent") {
+      } else if (contentType == "userContent" || contentType == "FollowCardContent") {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx, contentIdx: contentIdx!);
       } else if (contentType == "userTagContent") {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
@@ -126,48 +131,57 @@ class FirstFeedState extends _$FirstFeedState {
       if (pageKey == _lastPage) {
         state.appendLastPage(searchList);
         apiStatus = ListAPIStatus.loaded;
+        Future(() {
+          ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.loaded;
+        });
       } else {
         state.appendPage(searchList, nextPageKey);
         apiStatus = ListAPIStatus.loaded;
+        Future(() {
+          ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.loaded;
+        });
       }
+
       print("---------------------------------------------------------");
       print(apiStatus);
       print("---------------------------------------------------------");
 
       ref.read(firstFeedEmptyProvider.notifier).state = searchList.isEmpty;
+
+      state.notifyListeners();
     } catch (e) {
       apiStatus = ListAPIStatus.error;
       state.error = e;
     }
   }
 
-  Future<ResponseModel> postFollow({
-    required memberIdx,
-    required followIdx,
-  }) async {
-    final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
+  // Future<ResponseModel> postFollow({
+  //   required memberIdx,
+  //   required followIdx,
+  // }) async {
+  //   final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
+  //
+  //   state.itemList![0] = state.itemList![0].copyWith(
+  //     followState: 1,
+  //   );
+  //   state.notifyListeners();
+  //
+  //   return result;
+  // }
 
-    state.itemList![0] = state.itemList![0].copyWith(
-      followState: 1,
-    );
-    state.notifyListeners();
-
-    return result;
-  }
-
-  Future<ResponseModel> deleteFollow({
-    required memberIdx,
-    required followIdx,
-  }) async {
-    final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
-
-    state.itemList![0] = state.itemList![0].copyWith(
-      followState: 0,
-    );
-    state.notifyListeners();
-
-    return result;
-  }
+  // Future<ResponseModel> deleteFollow({
+  //   required memberIdx,
+  //   required followIdx,
+  // }) async {
+  //   final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+  //
+  //   state.itemList![0] = state.itemList![0].copyWith(
+  //     followState: 0,
+  //   );
+  //   state.notifyListeners();
+  //
+  //   return result;
+  // }
 
   final Map<int, List<FeedData>?> firstFeedStateMap = {};
   final Map<int, List<MemberInfoListData>?> firstFeedMemberInfoStateMap = {};

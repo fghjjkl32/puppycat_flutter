@@ -21,6 +21,7 @@ class FeedDetailWidget extends ConsumerWidget {
   final FeedData feedData;
   final int? memberIdx;
   final String contentType;
+  final bool isSpecialUser;
   final String imgDomain;
   final int index;
 
@@ -31,6 +32,7 @@ class FeedDetailWidget extends ConsumerWidget {
     required this.memberIdx,
     required this.contentType,
     required this.imgDomain,
+    required this.isSpecialUser,
     required this.index,
     Key? key,
   }) : super(key: key);
@@ -41,6 +43,7 @@ class FeedDetailWidget extends ConsumerWidget {
       children: [
         //feed title
         FeedTitleWidget(
+          isSpecialUser: isSpecialUser,
           feedData: feedData,
           profileImage: profileImage,
           userName: nick,
@@ -52,6 +55,7 @@ class FeedDetailWidget extends ConsumerWidget {
           contentType: contentType,
           contentIdx: feedData.idx,
           oldMemberIdx: memberIdx!,
+          isDetailWidget: true,
         ),
         //feed detail image
         FeedImageDetailWidget(
@@ -100,6 +104,7 @@ class FeedDetailWidget extends ConsumerWidget {
         feedData.commentList!.isEmpty
             ? Container()
             : FeedCommentWidget(
+                userMemberIdx: feedData.commentList![0].memberIdx!,
                 profileImage: feedData.commentList![0].profileImgUrl,
                 name: feedData.commentList![0].nick!,
                 comment: feedData.commentList![0].contents!,
@@ -112,7 +117,7 @@ class FeedDetailWidget extends ConsumerWidget {
           padding: EdgeInsets.all(12.0.h),
           child: const Divider(),
         ),
-        if (index != 0 && index % 4 == 0)
+        if (index != 0 && index == 4)
           FeedFollowWidget(
             popularUserListData: ref.watch(popularUserListStateProvider).list,
             oldMemberIdx: memberIdx!,

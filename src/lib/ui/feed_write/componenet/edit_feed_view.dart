@@ -245,7 +245,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                     maxLines: 6,
                     decoration: InputDecoration(
                         counterText: "",
-                        hintText: '내용을 입력해 주세요.\n\n작성한 글에 대한 책임은 본인에게 있습니다.\n운영 정책에 위반되는(폭력성, 선정성, 욕설 등) 게시물은 당사자의 동의 없이 삭제될 수 있습니다.',
+                        hintText: '내용을 입력해 주세요.\n\n작성한 글에 대한 책임은 본인에게 있습니다.\n운영 정책에 위반되는(폭력성, 선정성, 욕설 등) 피드는 당사자의 동의 없이 삭제될 수 있습니다.',
                         hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
                         contentPadding: const EdgeInsets.all(16)),
                     name: 'content',
@@ -416,6 +416,45 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                           Text(
                             "팔로우 공개",
                             style: kButton14BoldStyle.copyWith(color: buttonSelected == 2 ? kPrimaryColor : kTextBodyColor),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      ref.watch(feedWriteButtonSelectedProvider.notifier).state = 0;
+                    },
+                    child: Container(
+                      decoration: buttonSelected == 0
+                          ? BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: kPrimaryLightColor,
+                            )
+                          : BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: kNeutralColor400),
+                            ),
+                      height: 44,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Puppycat_social.icon_view_all,
+                            size: 14,
+                            color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor,
+                          ),
+                          SizedBox(
+                            width: 9,
+                          ),
+                          Text(
+                            "비공개",
+                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor),
                           ),
                         ],
                       ),

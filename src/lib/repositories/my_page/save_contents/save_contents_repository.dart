@@ -20,7 +20,7 @@ class SaveContentsRepository {
     ContentResponseModel? saveContentsResponseModel = await _saveContentsService.getSaveContents(memberIdx, page);
 
     if (saveContentsResponseModel == null) {
-      throw contentNullResponseModel;
+      return contentNullResponseModel;
     }
 
     return saveContentsResponseModel;
@@ -30,7 +30,7 @@ class SaveContentsRepository {
     FeedResponseModel? saveContentsResponseModel = await _saveContentsService.getSaveDetailContentList(loginMemberIdx, page);
 
     if (saveContentsResponseModel == null) {
-      throw feedNullResponseModel;
+      return feedNullResponseModel;
     }
 
     return saveContentsResponseModel;

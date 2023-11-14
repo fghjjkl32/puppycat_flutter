@@ -19,7 +19,6 @@ class NotificationController {
 
   get pushController => flutterLocalNotificationsPlugin;
 
-
   NotificationController() {
     // initNotification();
   }
@@ -44,7 +43,7 @@ class NotificationController {
         android: AndroidInitializationSettings('@drawable/launch_background'),
         iOS: DarwinInitializationSettings(),
       ),
-      onDidReceiveNotificationResponse: (response)  {
+      onDidReceiveNotificationResponse: (response) {
         try {
           if (response.payload != null) {
             print('response.payload ${response.payload}');
@@ -57,7 +56,7 @@ class NotificationController {
           } else {
             print('onDidReceiveNotificationResponse 2 $response');
           }
-        } catch(e) {
+        } catch (e) {
           print('onDidReceiveNotificationResponse 3 $e');
         }
       },
@@ -174,14 +173,14 @@ class NotificationController {
       case PushType.new_contents:
         return '푸시.팔로우새글'.tr();
       case PushType.metion_contents:
-        return '푸시.게시물멘션'.tr();
+        return '푸시.피드멘션'.tr();
       case PushType.img_tag:
-        return '푸시.게시물태그'.tr();
+        return '푸시.피드태그'.tr();
       case PushType.like_contents:
         if (isMultiple) {
-          return '푸시.게시물좋아요멀티'.tr();
+          return '푸시.피드좋아요멀티'.tr();
         } else {
-          return '푸시.게시물좋아요싱글'.tr();
+          return '푸시.피드좋아요싱글'.tr();
         }
       case PushType.new_comment:
       case PushType.new_reply:

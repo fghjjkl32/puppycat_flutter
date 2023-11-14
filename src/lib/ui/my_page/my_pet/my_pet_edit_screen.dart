@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/date_time_spinner.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/i18n_model.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
@@ -24,6 +25,7 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_pet/create_my_pet/pet_detail/pet_detail_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/edit_my_information/edit_state_provider.dart';
@@ -489,10 +491,55 @@ class MyPetEditScreenState extends ConsumerState<MyPetEditScreen> with SingleTic
                                         ),
                                         title: '앨범에서 선택',
                                         titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
-                                        onTap: () {
+                                        onTap: () async {
                                           context.pop();
 
-                                          openGallery();
+                                          if (await Permissions.getPhotosPermissionState()) {
+                                            openGallery();
+                                          } else {
+                                            if (mounted) {
+                                              showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return CustomDialog(
+                                                      content: Padding(
+                                                        padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                        child: Column(
+                                                          children: [
+                                                            Text(
+                                                              "퍼피캣 접근 권한 허용",
+                                                              style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 4.h,
+                                                            ),
+                                                            Text(
+                                                              "반려동물 사진 등록을 위해\n사진 접근을 허용해 주세요.",
+                                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                              textAlign: TextAlign.center,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      confirmTap: () {
+                                                        context.pop();
+                                                        openAppSettings();
+                                                      },
+                                                      cancelTap: () {
+                                                        context.pop();
+                                                      },
+                                                      confirmWidget: Text(
+                                                        "허용",
+                                                        style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                                                      ),
+                                                      cancelWidget: Text(
+                                                        "허용 안 함",
+                                                        style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                                                      ));
+                                                },
+                                              );
+                                            }
+                                          }
                                         },
                                       ),
                                       BottomSheetButtonItem(

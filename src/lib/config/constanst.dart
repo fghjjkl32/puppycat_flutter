@@ -61,7 +61,9 @@ String baseUrl = "https://api.pcstg.co.kr/v1";
 // String baseUrl = "https://api.puppycat.co.kr/v1";
 
 String thumborHostUrl = "https://tb.pcstg.co.kr/";
+
 String thumborKey = "Tjaqhvpt";
+// String thumborKey = "vjvlzotvldkfel"; //prd
 String imgDomain = "https://imgs.pcstg.co.kr";
 String firstInstallTime = "";
 String lastestBuildVersion = "";

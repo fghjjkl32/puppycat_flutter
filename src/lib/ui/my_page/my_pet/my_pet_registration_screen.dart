@@ -15,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:lottie/lottie.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/date_time_spinner.dart';
 import 'package:pet_mobile_social_flutter/common/library/date_time_spinner/i18n_model.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
@@ -25,6 +26,7 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_pet/create_my_pet/pet_detail/pet_detail_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/edit_my_information/edit_state_provider.dart';
@@ -110,6 +112,9 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
   @override
   Widget build(BuildContext context) {
     final nameProvider = ref.watch(nickNameProvider);
+    final genderSelected = ref.watch(myPetGenderProvider);
+    final sizeSelected = ref.watch(myPetSizeProvider);
+    final ageSelected = ref.watch(myPetAgeProvider);
 
     void showConfirmDialog(String message, bool isHealthTab) {
       showDialog(
@@ -357,539 +362,542 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
           ),
           body: Form(
             key: _formKey,
-            child: Column(
+            child: ListView(
               children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 20.0.h, bottom: 30.h),
-                      child: Stack(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                            child: WidgetMask(
-                              blendMode: BlendMode.srcATop,
-                              childSaveLayer: true,
-                              mask: Center(
-                                child: selectedImage == null
-                                    ? const Icon(
-                                        Puppycat_social.icon_profile_large,
-                                        size: 92,
-                                        color: kNeutralColor500,
-                                      )
-                                    : Image.file(
-                                        File(selectedImage!.path),
-                                        width: 135,
-                                        height: 135,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                              // Center(
-                              //     child: "${ref.watch(editStateProvider).userInfoModel!.userModel!.profileImgUrl}" == ""
-                              //         ? selectedImage == null
-                              //         ? const Icon(
-                              //       Puppycat_social.icon_profile_large,
-                              //       size: 92,
-                              //       color: kNeutralColor500,
-                              //     )
-                              //         : Image.file(
-                              //       File(selectedImage!.path),
-                              //       width: 135,
-                              //       height: 135,
-                              //       fit: BoxFit.cover,
-                              //     )
-                              //         : selectedImage == null
-                              //         ? isProfileImageDelete
-                              //         ? const Icon(
-                              //       Puppycat_social.icon_profile_large,
-                              //       size: 92,
-                              //       color: kNeutralColor500,
-                              //     )
-                              //         : Image.network(
-                              //       Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${ref.read(userInfoProvider).userModel!.profileImgUrl}").toUrl(),
-                              //       width: 135,
-                              //       height: 135,
-                              //       fit: BoxFit.cover,
-                              //     )
-                              //         : Image.file(
-                              //       File(selectedImage!.path),
-                              //       width: 135,
-                              //       height: 135,
-                              //       fit: BoxFit.cover,
-                              //     )),
-                              child: SvgPicture.asset(
-                                'assets/image/feed/image/squircle.svg',
-                                height: 84.h,
-                              ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20.0.h, bottom: 30.h),
+                  child: Center(
+                    child: Stack(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                          child: WidgetMask(
+                            blendMode: BlendMode.srcATop,
+                            childSaveLayer: true,
+                            mask: Center(
+                              child: selectedImage == null
+                                  ? const Icon(
+                                      Puppycat_social.icon_profile_large,
+                                      size: 92,
+                                      color: kNeutralColor500,
+                                    )
+                                  : Image.file(
+                                      File(selectedImage!.path),
+                                      width: 135,
+                                      height: 135,
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/image/feed/image/squircle.svg',
+                              height: 84.h,
                             ),
                           ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: GestureDetector(
-                              onTap: () {
-                                showCustomModalBottomSheet(
-                                  context: context,
-                                  widget: Column(
-                                    children: [
-                                      BottomSheetButtonItem(
-                                        icon: const Icon(
-                                          Puppycat_social.icon_photo,
-                                        ),
-                                        title: '앨범에서 선택',
-                                        titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
-                                        onTap: () {
-                                          context.pop();
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: () {
+                              showCustomModalBottomSheet(
+                                context: context,
+                                widget: Column(
+                                  children: [
+                                    BottomSheetButtonItem(
+                                      icon: const Icon(
+                                        Puppycat_social.icon_photo,
+                                      ),
+                                      title: '앨범에서 선택',
+                                      titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                      onTap: () async {
+                                        context.pop();
 
+                                        if (await Permissions.getPhotosPermissionState()) {
                                           openGallery();
-                                        },
+                                        } else {
+                                          if (mounted) {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return CustomDialog(
+                                                    content: Padding(
+                                                      padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                      child: Column(
+                                                        children: [
+                                                          Text(
+                                                            "퍼피캣 접근 권한 허용",
+                                                            style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 4.h,
+                                                          ),
+                                                          Text(
+                                                            "반려동물 사진 등록을 위해\n사진 접근을 허용해 주세요.",
+                                                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    confirmTap: () {
+                                                      context.pop();
+                                                      openAppSettings();
+                                                    },
+                                                    cancelTap: () {
+                                                      context.pop();
+                                                    },
+                                                    confirmWidget: Text(
+                                                      "허용",
+                                                      style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                                                    ),
+                                                    cancelWidget: Text(
+                                                      "허용 안 함",
+                                                      style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                                                    ));
+                                              },
+                                            );
+                                          }
+                                        }
+                                      },
+                                    ),
+                                    BottomSheetButtonItem(
+                                      icon: const Icon(
+                                        Puppycat_social.icon_delete_small,
+                                        color: kBadgeColor,
                                       ),
-                                      BottomSheetButtonItem(
-                                        icon: const Icon(
-                                          Puppycat_social.icon_delete_small,
-                                          color: kBadgeColor,
-                                        ),
-                                        title: '프로필 사진 삭제',
-                                        titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
-                                        onTap: () {
-                                          setState(() {
-                                            selectedImage = null;
-                                            isProfileImageDelete = false;
-                                          });
-                                          context.pop();
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                width: 32.w,
-                                height: 32.h,
-                                decoration: BoxDecoration(
-                                  color: kNeutralColor100,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      spreadRadius: -2,
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
+                                      title: '프로필 사진 삭제',
+                                      titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
+                                      onTap: () {
+                                        setState(() {
+                                          selectedImage = null;
+                                          isProfileImageDelete = false;
+                                        });
+                                        context.pop();
+                                      },
                                     ),
                                   ],
                                 ),
-                                child: Icon(
-                                  Puppycat_social.icon_modify_medium,
-                                  color: kTextBodyColor,
-                                ),
+                              );
+                            },
+                            child: Container(
+                              width: 32.w,
+                              height: 32.h,
+                              decoration: BoxDecoration(
+                                color: kNeutralColor100,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: -2,
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                Puppycat_social.icon_modify_medium,
+                                color: kTextBodyColor,
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: nameController,
-                            decoration: InputDecoration(
-                              hintText: '이름을 입력해주세요',
-                              hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
-                              errorStyle: kBody11RegularStyle.copyWith(color: kBadgeColor, fontWeight: FontWeight.w400, height: 1.2),
-                              errorText: getNickDescription(nameProvider),
-                              errorBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  width: 1,
-                                  color: kBadgeColor,
-                                ),
-                              ),
-                              errorMaxLines: 2,
-                              counterText: '',
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.4),
+                        spreadRadius: -5,
+                        blurRadius: 7,
+                        offset: const Offset(0, -6),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 24.0, top: 32),
+                        child: Row(
+                          children: [
+                            Text(
+                              "이름",
+                              style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
                             ),
-                            style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-                            maxLength: 20,
-                            autovalidateMode: AutovalidateMode.always,
-                            onChanged: (value) {
-                              if (value.isNotEmpty) {
-                                if (value.length > 1) {
-                                  setState(() {
-                                    // ref.read(checkButtonProvider.notifier).state = true;
-                                  });
-                                }
-                                if (value == ref.watch(editStateProvider).userInfoModel!.userModel!.nick) {
-                                  setState(() {
-                                    // ref.read(checkButtonProvider.notifier).state = false;
-                                  });
-                                }
-                                String lastChar = value[value.length - 1];
-                                if (lastChar.contains(RegExp(r'[a-zA-Z]'))) {
-                                  nameController.value = TextEditingValue(text: toLowercase(value), selection: nameController.selection);
-                                  return;
-                                }
-                              } else {
+                            Text(
+                              "*",
+                              style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 24.0, top: 8),
+                        child: TextFormField(
+                          controller: nameController,
+                          decoration: InputDecoration(
+                            hintText: '이름을 입력해주세요',
+                            hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                            errorStyle: kBody11RegularStyle.copyWith(color: kBadgeColor, fontWeight: FontWeight.w400, height: 1.2),
+                            errorText: getNickDescription(nameProvider),
+                            errorBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 1,
+                                color: kBadgeColor,
+                              ),
+                            ),
+                            errorMaxLines: 2,
+                            counterText: '',
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          ),
+                          style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                          maxLength: 20,
+                          autovalidateMode: AutovalidateMode.always,
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              if (value.length > 1) {
+                                setState(() {
+                                  // ref.read(checkButtonProvider.notifier).state = true;
+                                });
+                              }
+                              if (value == ref.watch(editStateProvider).userInfoModel!.userModel!.nick) {
                                 setState(() {
                                   // ref.read(checkButtonProvider.notifier).state = false;
                                 });
                               }
-                              ref.read(nickNameProvider.notifier).state = NickNameStatus.nonValid;
-                            },
-                            validator: (value) {
-                              if (value != null) {
-                                if (value.isNotEmpty) {
-                                  if (_letterRegExp.allMatches(value).length != value.length) {
-                                    Future(() {
-                                      ref.watch(nickNameProvider.notifier).state = NickNameStatus.invalidLetter;
-                                    });
-                                    return getNickDescription(NickNameStatus.invalidLetter);
-                                  } else if (value.isNotEmpty && value.length < 2) {
-                                    Future(() {
-                                      ref.watch(nickNameProvider.notifier).state = NickNameStatus.minLength;
-                                    });
-                                    return getNickDescription(NickNameStatus.minLength);
-                                  } else {
-                                    // isCheckableNickName = true;
-                                    return null;
-                                  }
+                              String lastChar = value[value.length - 1];
+                              if (lastChar.contains(RegExp(r'[a-zA-Z]'))) {
+                                nameController.value = TextEditingValue(text: toLowercase(value), selection: nameController.selection);
+                                return;
+                              }
+                            } else {
+                              setState(() {
+                                // ref.read(checkButtonProvider.notifier).state = false;
+                              });
+                            }
+                            ref.read(nickNameProvider.notifier).state = NickNameStatus.nonValid;
+                          },
+                          validator: (value) {
+                            if (value != null) {
+                              if (value.isNotEmpty) {
+                                if (_letterRegExp.allMatches(value).length != value.length) {
+                                  Future(() {
+                                    ref.watch(nickNameProvider.notifier).state = NickNameStatus.invalidLetter;
+                                  });
+                                  return getNickDescription(NickNameStatus.invalidLetter);
+                                } else if (value.isNotEmpty && value.length < 2) {
+                                  Future(() {
+                                    ref.watch(nickNameProvider.notifier).state = NickNameStatus.minLength;
+                                  });
+                                  return getNickDescription(NickNameStatus.minLength);
+                                } else {
+                                  // isCheckableNickName = true;
+                                  return null;
                                 }
                               }
-                            },
-                            onSaved: (val) {},
-                          ),
+                            }
+                          },
+                          onSaved: (val) {},
+                        ),
+                      ),
+                      Text("품종"),
+                      TextFormField(
+                        controller: breedController,
+                        readOnly: isReadOnly,
+                        focusNode: breedFocusNode,
+                        onFieldSubmitted: (value) {
+                          setState(() {
+                            isReadOnly = true;
+                          });
+                        },
+                        onTap: () async {
+                          if (isReadOnly) {
+                            final result = await Navigator.of(context).push(
+                              PageRouteBuilder(
+                                opaque: false, // set to false
+                                pageBuilder: (_, __, ___) => const MyPetBreedSearchScreen(),
+                              ),
+                            );
+
+                            breedController.text = result['name'];
+                            breedValue = result['idx'];
+
+                            if (breedController.text == "") {
+                              isReadOnly = !isReadOnly;
+                              if (!isReadOnly) {
+                                FocusScope.of(context).requestFocus(breedFocusNode);
+                              }
+                            }
+                          }
+                        },
+                        decoration: InputDecoration(
+                          hintText: '품종 검색',
+                          hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                          errorMaxLines: 2,
+                          counterText: '',
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        ),
+                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                        maxLength: 20,
+                      ),
+                      Text("성별"),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: PetGender.values.map((item) {
+                            return Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      ref.watch(myPetGenderProvider.notifier).state = item.value;
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(8.0),
+                                    decoration: genderSelected == item.value
+                                        ? BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: kPrimaryLightColor,
+                                          )
+                                        : BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(color: kNeutralColor400),
+                                          ),
+                                    child: Center(
+                                      child: Text(
+                                        item.name,
+                                        style: kButton14BoldStyle.copyWith(color: genderSelected == item.value ? kPrimaryColor : kTextBodyColor),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      Text("크기"),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: PetSize.values.map((item) {
+                            return Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      ref.watch(myPetSizeProvider.notifier).state = item.value; // state에 code 값을 설정
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(8.0),
+                                    decoration: sizeSelected == item.value
+                                        ? BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: kPrimaryLightColor,
+                                          )
+                                        : BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(color: kNeutralColor400),
+                                          ),
+                                    child: Center(
+                                      child: Text(
+                                        item.name,
+                                        style: kButton14BoldStyle.copyWith(color: sizeSelected == item.value ? kPrimaryColor : kTextBodyColor),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      Text(
+                        "무게 ${weightValue} kg",
+                      ),
+                      DecimalNumberPicker(
+                        minValue: 1,
+                        maxValue: 50,
+                        value: weightValue,
+                        onChanged: (value) => setState(() => weightValue = value),
+                        decimalPlaces: 1,
+                      ),
+                      Row(
+                        children: [
+                          Text("연령이 어떻게 되나요?"),
+                          JustTheTooltip(
+                            child: Material(
+                              color: Colors.grey.shade800,
+                              shape: const CircleBorder(),
+                              elevation: 4.0,
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.question_mark,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            preferredDirection: AxisDirection.up,
+                            content: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                '생후 1세 이하\n강아지 : 퍼피 ㅣ 고양이 : 키튼\n7세 미만\n강아지&고양이 공통 : 어덜트\n7세 이상\n강아지&고양이 공통 : 시니어',
+                              ),
+                            ),
+                          )
                         ],
                       ),
-                    )
-                  ],
-                ),
-                TabBar(
-                    controller: tabController,
-                    indicatorWeight: 3,
-                    labelColor: kPrimaryColor,
-                    indicatorColor: kPrimaryColor,
-                    unselectedLabelColor: kNeutralColor500,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    labelPadding: EdgeInsets.only(
-                      top: 10.h,
-                      bottom: 10.h,
-                    ),
-                    tabs: [
-                      Text(
-                        "기본정보",
-                        style: kBody14BoldStyle,
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: PetAge.values.map((item) {
+                            return Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      ref.watch(myPetAgeProvider.notifier).state = item.value;
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(8.0),
+                                    decoration: ageSelected == item.value
+                                        ? BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: kPrimaryLightColor,
+                                          )
+                                        : BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(color: kNeutralColor400),
+                                          ),
+                                    child: Center(
+                                      child: Text(
+                                        item.name,
+                                        style: kButton14BoldStyle.copyWith(color: ageSelected == item.value ? kPrimaryColor : kTextBodyColor),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
-                      Text(
-                        "건강정보",
-                        style: kBody14BoldStyle,
+                      Text("생년월일"),
+                      TextFormField(
+                        readOnly: true,
+                        controller: ageEditingController,
+                        onTap: () async {
+                          DatePicker.showDatePicker(
+                            context,
+                            showTitleActions: true,
+                            minTime: DateTime(1930, 1, 1),
+                            maxTime: DateTime.now(),
+                            onConfirm: (date) {
+                              setState(() {
+                                ageEditingController.text = DateFormat('yyyy-MM-dd').format(date);
+                              });
+                            },
+                            currentTime: ageEditingController.text == "" ? DateTime(2020, 01, 01) : DateTime.parse(ageEditingController.text),
+                            locale: LocaleType.ko,
+                            theme: picker_theme.DatePickerTheme(
+                              itemStyle: kButton14MediumStyle.copyWith(color: kNeutralColor600),
+                              backgroundColor: kNeutralColor100,
+                              title: "나이 입력하기",
+                            ),
+                          );
+                        },
+                        decoration: InputDecoration(
+                          hintText: '생년월일',
+                          hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                          errorMaxLines: 2,
+                          counterText: '',
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        ),
+                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                        maxLength: 20,
                       ),
-                    ]),
-                Expanded(
-                  child: TabBarView(
-                    controller: tabController,
-                    children: [
-                      _firstTabBody(),
-                      _secondTabBody(),
+                      Text("성격 및 특징"),
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Text(
+                            '우리 아이 성격은 어떤가요',
+                          ),
+                          items: PetCharacter.values
+                              .map(
+                                (PetCharacter item) => DropdownMenuItem<String>(
+                                  value: item.value.toString(),
+                                  child: Text(
+                                    item.name,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          value: personalityValue,
+                          onChanged: (String? value) {
+                            setState(() {
+                              personalityValue = value;
+                            });
+                          },
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            height: 40,
+                            width: 140,
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                          ),
+                        ),
+                      ),
+                      if (personalityValue == '7')
+                        TextFormField(
+                          controller: personalityController,
+                          decoration: InputDecoration(
+                            hintText: '우리 아이 성격은 어떤가요?',
+                            hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                            errorMaxLines: 2,
+                            counterText: '',
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          ),
+                          style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                          maxLength: 40,
+                        ),
                     ],
                   ),
-                ),
+                )
               ],
             ),
           ),
         ),
       ),
-    );
-  }
-
-  Widget _firstTabBody() {
-    final genderSelected = ref.watch(myPetGenderProvider);
-    final sizeSelected = ref.watch(myPetSizeProvider);
-    final ageSelected = ref.watch(myPetAgeProvider);
-
-    return ListView(
-      children: [
-        Text("품종"),
-        TextFormField(
-          controller: breedController,
-          readOnly: isReadOnly,
-          focusNode: breedFocusNode,
-          onFieldSubmitted: (value) {
-            setState(() {
-              isReadOnly = true;
-            });
-          },
-          onTap: () async {
-            if (isReadOnly) {
-              final result = await Navigator.of(context).push(
-                PageRouteBuilder(
-                  opaque: false, // set to false
-                  pageBuilder: (_, __, ___) => const MyPetBreedSearchScreen(),
-                ),
-              );
-
-              breedController.text = result['name'];
-              breedValue = result['idx'];
-
-              if (breedController.text == "") {
-                isReadOnly = !isReadOnly;
-                if (!isReadOnly) {
-                  FocusScope.of(context).requestFocus(breedFocusNode);
-                }
-              }
-            }
-          },
-          decoration: InputDecoration(
-            hintText: '품종 검색',
-            hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
-            errorMaxLines: 2,
-            counterText: '',
-            isDense: true,
-            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          ),
-          style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-          maxLength: 20,
-        ),
-        Text("성별"),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.0.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: PetGender.values.map((item) {
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        ref.watch(myPetGenderProvider.notifier).state = item.value;
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(8.0),
-                      decoration: genderSelected == item.value
-                          ? BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: kPrimaryLightColor,
-                            )
-                          : BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: kNeutralColor400),
-                            ),
-                      child: Center(
-                        child: Text(
-                          item.name,
-                          style: kButton14BoldStyle.copyWith(color: genderSelected == item.value ? kPrimaryColor : kTextBodyColor),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-        Text("크기"),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.0.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: PetSize.values.map((item) {
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        ref.watch(myPetSizeProvider.notifier).state = item.value; // state에 code 값을 설정
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(8.0),
-                      decoration: sizeSelected == item.value
-                          ? BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: kPrimaryLightColor,
-                            )
-                          : BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: kNeutralColor400),
-                            ),
-                      child: Center(
-                        child: Text(
-                          item.name,
-                          style: kButton14BoldStyle.copyWith(color: sizeSelected == item.value ? kPrimaryColor : kTextBodyColor),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-        Text(
-          "무게 ${weightValue} kg",
-        ),
-        DecimalNumberPicker(
-          minValue: 1,
-          maxValue: 50,
-          value: weightValue,
-          onChanged: (value) => setState(() => weightValue = value),
-          decimalPlaces: 1,
-        ),
-        Row(
-          children: [
-            Text("연령이 어떻게 되나요?"),
-            JustTheTooltip(
-              child: Material(
-                color: Colors.grey.shade800,
-                shape: const CircleBorder(),
-                elevation: 4.0,
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.question_mark,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              preferredDirection: AxisDirection.up,
-              content: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  '생후 1세 이하\n강아지 : 퍼피 ㅣ 고양이 : 키튼\n7세 미만\n강아지&고양이 공통 : 어덜트\n7세 이상\n강아지&고양이 공통 : 시니어',
-                ),
-              ),
-            )
-          ],
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.0.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: PetAge.values.map((item) {
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        ref.watch(myPetAgeProvider.notifier).state = item.value;
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(8.0),
-                      decoration: ageSelected == item.value
-                          ? BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: kPrimaryLightColor,
-                            )
-                          : BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: kNeutralColor400),
-                            ),
-                      child: Center(
-                        child: Text(
-                          item.name,
-                          style: kButton14BoldStyle.copyWith(color: ageSelected == item.value ? kPrimaryColor : kTextBodyColor),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-        Text("생년월일"),
-        TextFormField(
-          readOnly: true,
-          controller: ageEditingController,
-          onTap: () async {
-            DatePicker.showDatePicker(
-              context,
-              showTitleActions: true,
-              minTime: DateTime(1930, 1, 1),
-              maxTime: DateTime.now(),
-              onConfirm: (date) {
-                setState(() {
-                  ageEditingController.text = DateFormat('yyyy-MM-dd').format(date);
-                });
-              },
-              currentTime: ageEditingController.text == "" ? DateTime(2020, 01, 01) : DateTime.parse(ageEditingController.text),
-              locale: LocaleType.ko,
-              theme: picker_theme.DatePickerTheme(
-                itemStyle: kButton14MediumStyle.copyWith(color: kNeutralColor600),
-                backgroundColor: kNeutralColor100,
-                title: "나이 입력하기",
-              ),
-            );
-          },
-          decoration: InputDecoration(
-            hintText: '생년월일',
-            hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
-            errorMaxLines: 2,
-            counterText: '',
-            isDense: true,
-            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-          ),
-          style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-          maxLength: 20,
-        ),
-        Text("성격 및 특징"),
-        DropdownButtonHideUnderline(
-          child: DropdownButton2<String>(
-            isExpanded: true,
-            hint: Text(
-              '우리 아이 성격은 어떤가요',
-            ),
-            items: PetCharacter.values
-                .map(
-                  (PetCharacter item) => DropdownMenuItem<String>(
-                    value: item.value.toString(),
-                    child: Text(
-                      item.name,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
-            value: personalityValue,
-            onChanged: (String? value) {
-              setState(() {
-                personalityValue = value;
-              });
-            },
-            buttonStyleData: const ButtonStyleData(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              height: 40,
-              width: 140,
-            ),
-            menuItemStyleData: const MenuItemStyleData(
-              height: 40,
-            ),
-          ),
-        ),
-        if (personalityValue == '7')
-          TextFormField(
-            controller: personalityController,
-            decoration: InputDecoration(
-              hintText: '우리 아이 성격은 어떤가요?',
-              hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
-              errorMaxLines: 2,
-              counterText: '',
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-            ),
-            style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-            maxLength: 40,
-          ),
-      ],
     );
   }
 

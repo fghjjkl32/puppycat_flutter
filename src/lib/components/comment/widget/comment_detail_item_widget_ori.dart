@@ -269,7 +269,7 @@
 //                                                                             8.h,
 //                                                                       ),
 //                                                                       Text(
-//                                                                         "‘${name}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
+//                                                                         "‘${name}’님은 더 이상 회원님의\n피드를 보거나 메시지 등을 보낼 수 없습니다.",
 //                                                                         style: kBody12RegularStyle.copyWith(
 //                                                                             color:
 //                                                                                 kTextBodyColor),

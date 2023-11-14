@@ -9,9 +9,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
@@ -20,6 +22,7 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
@@ -27,7 +30,7 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_s
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
@@ -54,6 +57,8 @@ class MyPageMainScreen extends ConsumerStatefulWidget {
 class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
   ScrollController commentController = ScrollController();
+  late final PagingController<int, ContentImageData> _myContentsListPagingController = ref.read(myContentsStateProvider);
+  late final PagingController<int, ContentImageData> _myTagContentsListPagingController = ref.read(myTagContentsStateProvider);
 
   late TabController tabController;
   Color appBarColor = Colors.transparent;
@@ -90,12 +95,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
       vsync: this,
     );
 
+    _myContentsListPagingController.refresh();
+    _myTagContentsListPagingController.refresh();
+
     ref.read(myInformationStateProvider.notifier).getInitUserInformation(ref.read(userInfoProvider).userModel!.idx);
-    ref.read(myContentStateProvider.notifier).initPosts(
-          loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-          initPage: 1,
-        );
-    ref.read(myTagContentStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel!.idx, ref.read(userInfoProvider).userModel!.idx, 1);
     super.initState();
   }
 
@@ -109,27 +112,12 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
         appBarColor = Colors.transparent;
       });
     }
-
-    if (scrollController.position.pixels > scrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
-      if (tagOldLength == ref.read(myTagContentStateProvider).list.length) {
-        ref.read(myTagContentStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx, ref.read(userInfoProvider).userModel!.idx);
-      }
-    }
-
-    if (scrollController.position.pixels > scrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
-      if (userOldLength == ref.read(myContentStateProvider).list.length) {
-        ref.read(myContentStateProvider.notifier).loadMorePost(
-              loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-              memberIdx: ref.read(userInfoProvider).userModel!.idx,
-            );
-      }
-    }
   }
 
   void _commentScrollListener() {
     if (commentController.position.extentAfter < 200) {
       if (commentOldLength == ref.read(commentStateProvider).list.length) {
-        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userInfoProvider).userModel!.idx);
+        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userInfoProvider).userModel?.idx);
       }
     }
   }
@@ -143,15 +131,16 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
     super.dispose();
   }
 
-  void handleFocusLost() {
+  Future<bool> handleFocusLost() {
     feedListStateNotifier.getStateForUser(widget.oldMemberIdx ?? 0);
     firstFeedStateNotifier.getStateForUser(widget.oldMemberIdx ?? 0);
+    return Future.value(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FocusDetector(
-      onFocusLost: handleFocusLost,
+    return DefaultOnWillPopScope(
+      onWillPop: handleFocusLost,
       child: Material(
         child: SafeArea(
             child: DefaultTabController(
@@ -302,467 +291,485 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   }
 
   Widget _firstTabBody() {
-    return Consumer(
-      builder: (ctx, ref, child) {
-        final myContentState = ref.watch(myContentStateProvider);
-        final isLoadMoreError = myContentState.isLoadMoreError;
-        final isLoadMoreDone = myContentState.isLoadMoreDone;
-        final isLoading = myContentState.isLoading;
-        final lists = myContentState.list;
-
-        userOldLength = lists.length ?? 0;
-
-        return RefreshIndicator(
-          onRefresh: () {
-            return ref.read(myContentStateProvider.notifier).refresh(
-                  ref.read(userInfoProvider).userModel!.idx,
-                  ref.read(userInfoProvider).userModel!.idx,
-                );
-          },
-          child: lists.isEmpty
-              ? Container(
-                  color: kNeutralColor100,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                          width: 88,
-                          height: 88,
+    return RefreshIndicator(
+      onRefresh: () {
+        return Future(() {
+          _myContentsListPagingController.refresh();
+        });
+      },
+      child: Container(
+        color: kNeutralColor100,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            PagedSliverGrid<int, ContentImageData>(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              shrinkWrapFirstPageIndicators: true,
+              pagingController: _myContentsListPagingController,
+              builderDelegate: PagedChildBuilderDelegate<ContentImageData>(
+                noItemsFoundIndicatorBuilder: (context) {
+                  return Stack(
+                    children: [
+                      Container(
+                        height: 400,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            color: kNeutralColor100,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                  width: 88,
+                                  height: 88,
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                Text(
+                                  '피드가 없습니다.',
+                                  textAlign: TextAlign.center,
+                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          '게시물이 없습니다.',
-                          textAlign: TextAlign.center,
-                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : Container(
-                  color: kNeutralColor100,
-                  child: CustomScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    slivers: <Widget>[
-                      SliverGrid(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                        ),
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            if (index == lists.length) {
-                              if (isLoadMoreError) {
-                                return const Center(
-                                  child: Text('Error'),
-                                );
-                              }
-                              if (isLoadMoreDone) {
-                                return Container();
-                              }
-                              return Container();
-                            }
-
-                            return Container(
-                              margin: const EdgeInsets.all(10.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  context
-                                      .push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/게시물/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myContent");
-                                },
-                                child: Center(
-                                  child: Stack(
-                                    children: [
-                                      Positioned.fill(
-                                        child: ClipRRect(
-                                          borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                          child: CachedNetworkImage(
-                                            placeholder: (context, url) => Container(
-                                              color: kNeutralColor300,
-                                            ),
-                                            imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 0,
-                                        left: 0,
-                                        right: 0,
-                                        child: Container(
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                            gradient: LinearGradient(
-                                              begin: Alignment.bottomCenter,
-                                              end: Alignment.topCenter,
-                                              colors: [
-                                                Colors.black.withOpacity(0.5),
-                                                Colors.transparent,
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 0,
-                                        left: 0,
-                                        right: 0,
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.only(left: 6.0.w, right: 2.w),
-                                              child: InkWell(
-                                                onTap: () async {
-                                                  await ref.read(contentLikeUserListStateProvider.notifier).initContentLikeUserList(
-                                                        lists[index].idx,
-                                                        ref.read(userInfoProvider).userModel!.idx,
-                                                        1,
-                                                      );
-
-                                                  // ignore: use_build_context_synchronously
-                                                  showCustomModalBottomSheet(
-                                                    context: context,
-                                                    widget: Consumer(builder: (context, ref, child) {
-                                                      final contentLikeUserListContentState = ref.watch(contentLikeUserListStateProvider);
-                                                      final contentLikeUserList = contentLikeUserListContentState.list;
-
-                                                      commentOldLength = contentLikeUserList.length ?? 0;
-                                                      return SizedBox(
-                                                        height: 500.h,
-                                                        child: Stack(
-                                                          children: [
-                                                            Column(
-                                                              children: [
-                                                                Padding(
-                                                                  padding: EdgeInsets.only(
-                                                                    top: 8.0.h,
-                                                                    bottom: 10.0.h,
-                                                                  ),
-                                                                  child: Text(
-                                                                    "좋아요",
-                                                                    style: kTitle16ExtraBoldStyle.copyWith(color: kTextSubTitleColor),
-                                                                  ),
-                                                                ),
-                                                                contentLikeUserList.isEmpty
-                                                                    ? Expanded(
-                                                                        child: Container(
-                                                                          color: kNeutralColor100,
-                                                                          child: Center(
-                                                                            child: Column(
-                                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                                              children: [
-                                                                                Image.asset(
-                                                                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                                                                                  width: 88,
-                                                                                  height: 88,
-                                                                                ),
-                                                                                const SizedBox(
-                                                                                  height: 12,
-                                                                                ),
-                                                                                Text(
-                                                                                  '좋아요 한 유저가 없습니다.',
-                                                                                  textAlign: TextAlign.center,
-                                                                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      )
-                                                                    : Expanded(
-                                                                        child: ListView.builder(
-                                                                          controller: commentController,
-                                                                          itemCount: contentLikeUserList.length,
-                                                                          padding: EdgeInsets.only(bottom: 80.h),
-                                                                          itemBuilder: (BuildContext context, int commentIndex) {
-                                                                            return FavoriteItemWidget(
-                                                                              profileImage: contentLikeUserList[commentIndex].profileImgUrl,
-                                                                              userName: contentLikeUserList[commentIndex].nick!,
-                                                                              content: contentLikeUserList[commentIndex].intro!,
-                                                                              isSpecialUser: contentLikeUserList[commentIndex].isBadge == 1,
-                                                                              isFollow: contentLikeUserList[commentIndex].followState == 1,
-                                                                              followerIdx: contentLikeUserList[commentIndex].memberIdx!,
-                                                                              contentsIdx: lists[index].idx,
-                                                                              oldMemberIdx: 0,
-                                                                            );
-                                                                          },
-                                                                        ),
-                                                                      ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    }),
-                                                  );
-                                                },
-                                                child: lists[index].selfLike == 1
-                                                    ? const Icon(
-                                                        Puppycat_social.icon_comment_like_ac,
-                                                        size: 24,
-                                                        color: kPrimaryColor,
-                                                      )
-                                                    : const Icon(
-                                                        Puppycat_social.icon_comment_like_de,
-                                                        size: 24,
-                                                        color: kNeutralColor100,
-                                                      ),
-                                              ),
-                                            ),
-                                            Text(
-                                              '${lists[index].likeCnt}',
-                                              style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(left: 6.0.w, right: 2.w),
-                                              child: Builder(builder: (context) {
-                                                return InkWell(
-                                                  onTap: () async {
-                                                    await ref.read(commentStateProvider.notifier).getInitComment(lists[index].idx, ref.read(userInfoProvider).userModel!.idx, 1);
-
-                                                    // ignore: use_build_context_synchronously
-                                                    showCustomModalBottomSheet(
-                                                      context: context,
-                                                      widget: Consumer(builder: (context, ref, child) {
-                                                        final commentContentState = ref.watch(commentStateProvider);
-                                                        final commentLists = commentContentState.list;
-
-                                                        commentOldLength = commentLists.length ?? 0;
-                                                        return SizedBox(
-                                                          height: 500.h,
-                                                          child: Stack(
-                                                            children: [
-                                                              Column(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: EdgeInsets.only(
-                                                                      top: 8.0.h,
-                                                                      bottom: 10.0.h,
-                                                                    ),
-                                                                    child: Text(
-                                                                      "댓글",
-                                                                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextSubTitleColor),
-                                                                    ),
-                                                                  ),
-                                                                  Expanded(
-                                                                    child: ListView.builder(
-                                                                      controller: commentController,
-                                                                      itemCount: commentLists.length,
-                                                                      padding: EdgeInsets.only(bottom: 80.h),
-                                                                      itemBuilder: (BuildContext context, int index) {
-                                                                        return CommentDetailItemWidget(
-                                                                          key: UniqueKey(),
-                                                                          parentIdx: commentLists[index].parentIdx,
-                                                                          commentIdx: commentLists[index].idx,
-                                                                          profileImage: commentLists[index].url ?? 'assets/image/feed/image/sample_image1.png',
-                                                                          name: commentLists[index].nick,
-                                                                          comment: commentLists[index].contents,
-                                                                          isSpecialUser: commentLists[index].isBadge == 1,
-                                                                          time: DateTime.parse(commentLists[index].regDate),
-                                                                          isReply: false,
-                                                                          likeCount: commentLists[index].commentLikeCnt ?? 0,
-                                                                          // replies: commentLists[index].childCommentData, // TODO 댓글 위젯 수정하면서 영향이 있음
-                                                                          contentIdx: commentLists[index].contentsIdx,
-                                                                          isLike: commentLists[index].likeState == 1,
-                                                                          memberIdx: commentLists[index].memberIdx,
-                                                                          mentionListData: commentLists[index].mentionList ?? [],
-                                                                          isLastDisPlayChild: false,
-                                                                          pageNumber: commentLists[index].pageNumber,
-                                                                          isDisplayPreviousMore: false,
-                                                                          oldMemberIdx: commentLists[index].memberIdx,
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              Positioned(
-                                                                left: 0,
-                                                                right: 0,
-                                                                bottom: 0,
-                                                                child: CommentCustomTextField(
-                                                                  contentIdx: lists[index].idx,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        );
-                                                      }),
-                                                    );
-                                                  },
-                                                  child: const Icon(
-                                                    Puppycat_social.icon_comment_comment,
-                                                    size: 24,
-                                                    color: kNeutralColor100,
-                                                  ),
-                                                );
-                                              }),
-                                            ),
-                                            Text(
-                                              '${lists[index].commentCnt}',
-                                              style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Positioned(
-                                        right: 6.w,
-                                        top: 6.w,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xff414348).withOpacity(0.75),
-                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                          ),
-                                          width: 18.w,
-                                          height: 14.w,
-                                          child: Center(
-                                            child: Text(
-                                              '${lists[index].imageCnt}',
-                                              style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+                      ),
+                    ],
+                  );
+                },
+                newPageProgressIndicatorBuilder: (context) {
+                  return Column(
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/icon_loading.json',
+                        fit: BoxFit.fill,
+                        width: 80,
+                        height: 80,
+                      ),
+                    ],
+                  );
+                },
+                firstPageProgressIndicatorBuilder: (context) {
+                  return Column(
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/icon_loading.json',
+                        fit: BoxFit.fill,
+                        width: 80,
+                        height: 80,
+                      ),
+                    ],
+                  );
+                },
+                itemBuilder: (context, item, itemBuilderIndex) {
+                  return Container(
+                    margin: const EdgeInsets.all(10.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/피드/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myContent");
+                      },
+                      child: Center(
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                child: CachedNetworkImage(
+                                  placeholder: (context, url) => Container(
+                                    color: kNeutralColor300,
+                                  ),
+                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.imgUrl}").toUrl(),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                    colors: [
+                                      Colors.black.withOpacity(0.5),
+                                      Colors.transparent,
                                     ],
                                   ),
                                 ),
                               ),
-                            );
-                          },
-                          childCount: lists.length,
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 6.0.w, right: 2.w),
+                                    child: InkWell(
+                                      onTap: () async {
+                                        await ref.read(contentLikeUserListStateProvider.notifier).initContentLikeUserList(
+                                              item.idx,
+                                              ref.read(userInfoProvider).userModel!.idx,
+                                              1,
+                                            );
+
+                                        // ignore: use_build_context_synchronously
+                                        showCustomModalBottomSheet(
+                                          context: context,
+                                          widget: Consumer(builder: (context, ref, child) {
+                                            final contentLikeUserListContentState = ref.watch(contentLikeUserListStateProvider);
+                                            final contentLikeUserList = contentLikeUserListContentState.list;
+
+                                            commentOldLength = contentLikeUserList.length ?? 0;
+                                            return SizedBox(
+                                              height: 500.h,
+                                              child: Stack(
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: EdgeInsets.only(
+                                                          top: 8.0.h,
+                                                          bottom: 10.0.h,
+                                                        ),
+                                                        child: Text(
+                                                          "좋아요",
+                                                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextSubTitleColor),
+                                                        ),
+                                                      ),
+                                                      contentLikeUserList.isEmpty
+                                                          ? Expanded(
+                                                              child: Container(
+                                                                color: kNeutralColor100,
+                                                                child: Center(
+                                                                  child: Column(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Image.asset(
+                                                                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                                                        width: 88,
+                                                                        height: 88,
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        height: 12,
+                                                                      ),
+                                                                      Text(
+                                                                        '좋아요 한 유저가 없습니다.',
+                                                                        textAlign: TextAlign.center,
+                                                                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            )
+                                                          : Expanded(
+                                                              child: ListView.builder(
+                                                                controller: commentController,
+                                                                itemCount: contentLikeUserList.length,
+                                                                padding: EdgeInsets.only(bottom: 80.h),
+                                                                itemBuilder: (BuildContext context, int commentIndex) {
+                                                                  return FavoriteItemWidget(
+                                                                    profileImage: contentLikeUserList[commentIndex].profileImgUrl,
+                                                                    userName: contentLikeUserList[commentIndex].nick!,
+                                                                    content: contentLikeUserList[commentIndex].intro!,
+                                                                    isSpecialUser: contentLikeUserList[commentIndex].isBadge == 1,
+                                                                    isFollow: contentLikeUserList[commentIndex].followState == 1,
+                                                                    followerIdx: contentLikeUserList[commentIndex].memberIdx!,
+                                                                    contentsIdx: item.idx,
+                                                                    oldMemberIdx: 0,
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                        );
+                                      },
+                                      child: item.selfLike == 1
+                                          ? const Icon(
+                                              Puppycat_social.icon_comment_like_ac,
+                                              size: 24,
+                                              color: kPrimaryColor,
+                                            )
+                                          : const Icon(
+                                              Puppycat_social.icon_comment_like_de,
+                                              size: 24,
+                                              color: kNeutralColor100,
+                                            ),
+                                    ),
+                                  ),
+                                  Text(
+                                    '${item.likeCnt}',
+                                    style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 6.0.w, right: 2.w),
+                                    child: Builder(builder: (context) {
+                                      return InkWell(
+                                        onTap: () async {
+                                          await ref.read(commentStateProvider.notifier).getInitComment(item.idx, ref.read(userInfoProvider).userModel!.idx, 1);
+
+                                          // ignore: use_build_context_synchronously
+                                          showCustomModalBottomSheet(
+                                            context: context,
+                                            widget: Consumer(builder: (context, ref, child) {
+                                              final commentContentState = ref.watch(commentStateProvider);
+                                              final commentLists = commentContentState.list;
+
+                                              commentOldLength = commentLists.length ?? 0;
+                                              return SizedBox(
+                                                height: 500.h,
+                                                child: Stack(
+                                                  children: [
+                                                    Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: EdgeInsets.only(
+                                                            top: 8.0.h,
+                                                            bottom: 10.0.h,
+                                                          ),
+                                                          child: Text(
+                                                            "댓글",
+                                                            style: kTitle16ExtraBoldStyle.copyWith(color: kTextSubTitleColor),
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: ListView.builder(
+                                                            controller: commentController,
+                                                            itemCount: commentLists.length,
+                                                            padding: EdgeInsets.only(bottom: 80.h),
+                                                            itemBuilder: (BuildContext context, int index) {
+                                                              return CommentDetailItemWidget(
+                                                                key: UniqueKey(),
+                                                                parentIdx: commentLists[index].parentIdx,
+                                                                commentIdx: commentLists[index].idx,
+                                                                profileImage: commentLists[index].url ?? 'assets/image/feed/image/sample_image1.png',
+                                                                name: commentLists[index].nick,
+                                                                comment: commentLists[index].contents,
+                                                                isSpecialUser: commentLists[index].isBadge == 1,
+                                                                time: DateTime.parse(commentLists[index].regDate),
+                                                                isReply: false,
+                                                                likeCount: commentLists[index].commentLikeCnt ?? 0,
+                                                                // replies: commentLists[index].childCommentData, // TODO 댓글 위젯 수정하면서 영향이 있음
+                                                                contentIdx: commentLists[index].contentsIdx,
+                                                                isLike: commentLists[index].likeState == 1,
+                                                                memberIdx: commentLists[index].memberIdx,
+                                                                mentionListData: commentLists[index].mentionList ?? [],
+                                                                isLastDisPlayChild: false,
+                                                                pageNumber: commentLists[index].pageNumber,
+                                                                isDisplayPreviousMore: false,
+                                                                oldMemberIdx: commentLists[index].memberIdx,
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Positioned(
+                                                      left: 0,
+                                                      right: 0,
+                                                      bottom: 0,
+                                                      child: CommentCustomTextField(
+                                                        contentIdx: item.idx,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }),
+                                          );
+                                        },
+                                        child: const Icon(
+                                          Puppycat_social.icon_comment_comment,
+                                          size: 24,
+                                          color: kNeutralColor100,
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                  Text(
+                                    '${item.commentCnt}',
+                                    style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Positioned(
+                              right: 6.w,
+                              top: 6.w,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff414348).withOpacity(0.75),
+                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                width: 18.w,
+                                height: 14.w,
+                                child: Center(
+                                  child: Text(
+                                    '${item.imageCnt}',
+                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-        );
-      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _secondTabBody() {
-    return Consumer(
-      builder: (ctx, ref, child) {
-        final tagContentState = ref.watch(myTagContentStateProvider);
-        final isLoadMoreError = tagContentState.isLoadMoreError;
-        final isLoadMoreDone = tagContentState.isLoadMoreDone;
-        final isLoading = tagContentState.isLoading;
-        final lists = tagContentState.list;
-
-        tagOldLength = lists.length ?? 0;
-
-        return RefreshIndicator(
-          onRefresh: () {
-            return ref.read(myTagContentStateProvider.notifier).refresh(
-                  ref.read(userInfoProvider).userModel!.idx,
-                  ref.read(userInfoProvider).userModel!.idx,
-                );
-          },
-          child: lists.isEmpty
-              ? Container(
-                  color: kNeutralColor100,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                          width: 88,
-                          height: 88,
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          '게시물이 없습니다.',
-                          textAlign: TextAlign.center,
-                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : Container(
-                  color: kNeutralColor100,
-                  child: CustomScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    slivers: <Widget>[
-                      SliverGrid(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                        ),
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            if (index == lists.length) {
-                              if (isLoadMoreError) {
-                                return const Center(
-                                  child: Text('Error'),
-                                );
-                              }
-                              if (isLoadMoreDone) {
-                                return Container();
-                              }
-                              return Container();
-                            }
-
-                            return Container(
-                              margin: const EdgeInsets.all(10.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  context.push(
-                                      "/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myTagContent");
-                                },
-                                child: Center(
-                                  child: Stack(
-                                    children: [
-                                      Positioned.fill(
-                                        child: ClipRRect(
-                                          borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                          child: CachedNetworkImage(
-                                            placeholder: (context, url) => Container(
-                                              color: kNeutralColor300,
-                                            ),
-                                            imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        right: 6.w,
-                                        top: 6.w,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xff414348).withOpacity(0.75),
-                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                          ),
-                                          width: 18.w,
-                                          height: 14.w,
-                                          child: Center(
-                                            child: Text(
-                                              "${lists[index].imageCnt}",
-                                              style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+    return RefreshIndicator(
+      onRefresh: () {
+        return Future(() {
+          _myTagContentsListPagingController.refresh();
+        });
+      },
+      child: Container(
+        color: kNeutralColor100,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            PagedSliverGrid<int, ContentImageData>(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              shrinkWrapFirstPageIndicators: true,
+              pagingController: _myTagContentsListPagingController,
+              builderDelegate: PagedChildBuilderDelegate<ContentImageData>(
+                noItemsFoundIndicatorBuilder: (context) {
+                  return Stack(
+                    children: [
+                      Container(
+                        height: 400,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            color: kNeutralColor100,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                  width: 88,
+                                  height: 88,
                                 ),
-                              ),
-                            );
-                          },
-                          childCount: lists.length,
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                Text(
+                                  '피드가 없습니다.',
+                                  textAlign: TextAlign.center,
+                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ],
-                  ),
-                ),
-        );
-      },
+                  );
+                },
+                newPageProgressIndicatorBuilder: (context) {
+                  return Column(
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/icon_loading.json',
+                        fit: BoxFit.fill,
+                        width: 80,
+                        height: 80,
+                      ),
+                    ],
+                  );
+                },
+                firstPageProgressIndicatorBuilder: (context) {
+                  return Column(
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/icon_loading.json',
+                        fit: BoxFit.fill,
+                        width: 80,
+                        height: 80,
+                      ),
+                    ],
+                  );
+                },
+                itemBuilder: (context, item, itemBuilderIndex) {
+                  return Container(
+                    margin: const EdgeInsets.all(10.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myTagContent");
+                      },
+                      child: Center(
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                child: CachedNetworkImage(
+                                  placeholder: (context, url) => Container(
+                                    color: kNeutralColor300,
+                                  ),
+                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.imgUrl}").toUrl(),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 6.w,
+                              top: 6.w,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff414348).withOpacity(0.75),
+                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                width: 18.w,
+                                height: 14.w,
+                                child: Center(
+                                  child: Text(
+                                    "${item.imageCnt}",
+                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -1073,7 +1080,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                           width: 6,
                         ),
                         Text(
-                          "${ref.watch(myContentStateProvider).totalCount}",
+                          "${ref.watch(myContentsFeedTotalCountProvider)}",
                           style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                         ),
                       ],
@@ -1091,7 +1098,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                           width: 6,
                         ),
                         Text(
-                          "${ref.watch(myTagContentStateProvider).totalCount}",
+                          "${ref.watch(myTagContentsFeedTotalCountProvider)}",
                           style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                         ),
                       ],

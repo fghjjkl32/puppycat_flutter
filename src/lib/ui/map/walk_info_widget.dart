@@ -5,12 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/walk/walk_info_model.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
@@ -118,6 +124,8 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> with TickerProvi
                   ref.read(singleWalkStateProvider.notifier).stopBackgroundLocation();
 
                   final walkUuid = await ref.read(walkStateProvider.notifier).stopWalk();
+
+                  print(walkUuid);
                   if (walkUuid.isNotEmpty) {
                     if (context.mounted) {
                       context.push('/writeWalkLog');

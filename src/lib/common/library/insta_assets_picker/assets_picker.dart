@@ -1,6 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/widget/insta_asset_picker_delegate.dart';
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/constants/constants.dart';
@@ -10,6 +13,9 @@ import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/de
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/provider/asset_picker_provider.dart';
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/widget/asset_picker.dart';
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/widget/asset_picker_page_route.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
+import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 const _kGridCount = 4;
@@ -53,23 +59,58 @@ class InstaAssetPicker {
   /// Since the exception is thrown from the MethodChannel it cannot be caught by a try/catch
   ///
   /// check `AssetPickerDelegate.permissionCheck()` from flutter_wechat_assets_picker package for more information.
-  static Future<PermissionState> _permissionCheck() =>
-      AssetPicker.permissionCheck();
+  static Future<PermissionState> _permissionCheck() => AssetPicker.permissionCheck();
 
   /// Open a [ScaffoldMessenger] describing the reason why the picker cannot be opened.
-  static void _openErrorPermission(
+  static Future<void> _openErrorPermission(
     BuildContext context,
     AssetPickerTextDelegate textDelegate,
     Function(BuildContext, String)? customHandler,
-  ) {
-    final defaultDescription =
-        '${textDelegate.unableToAccessAll}\n${textDelegate.goToSystemSettings}';
+  ) async {
+    final defaultDescription = '${textDelegate.unableToAccessAll}\n${textDelegate.goToSystemSettings}';
 
     if (customHandler != null) {
       customHandler(context, defaultDescription);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(defaultDescription)),
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CustomDialog(
+              content: Padding(
+                padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                child: Column(
+                  children: [
+                    Text(
+                      "퍼피캣 접근 권한 허용",
+                      style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                    ),
+                    SizedBox(
+                      height: 4.h,
+                    ),
+                    Text(
+                      "피드 등록을 위해\n사진 접근을 허용해 주세요.",
+                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              confirmTap: () {
+                context.pop();
+                openAppSettings();
+              },
+              cancelTap: () {
+                context.pop();
+              },
+              confirmWidget: Text(
+                "허용",
+                style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+              ),
+              cancelWidget: Text(
+                "허용 안 함",
+                style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+              ));
+        },
       );
     }
   }
@@ -77,8 +118,7 @@ class InstaAssetPicker {
   /// Build a [ThemeData] with the given [themeColor] for the picker.
   ///
   /// check `AssetPickerDelegate.themeData()` from flutter_wechat_assets_picker package for more information.
-  static ThemeData themeData(Color? themeColor, {bool light = false}) =>
-      AssetPicker.themeData(themeColor, light: light);
+  static ThemeData themeData(Color? themeColor, {bool light = false}) => AssetPicker.themeData(themeColor, light: light);
 
   /// When using `restorableAssetsPicker` function, the picker's state is preserved even after pop
   ///
@@ -125,8 +165,7 @@ class InstaAssetPicker {
     Key? key,
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
-    Function(BuildContext context, String delegateDescription)?
-        onPermissionDenied,
+    Function(BuildContext context, String delegateDescription)? onPermissionDenied,
 
     /// Crop options
     InstaAssetCropDelegate cropDelegate = const InstaAssetCropDelegate(),
@@ -138,14 +177,12 @@ class InstaAssetPicker {
     AssetPickerTextDelegate? textDelegate,
     String? title,
     bool closeOnComplete = false,
-    required Function(Stream<InstaAssetsExportDetails> exportDetails)
-        onCompleted,
+    required Function(Stream<InstaAssetsExportDetails> exportDetails) onCompleted,
     Widget Function(BuildContext, bool)? loadingIndicatorBuilder,
     Widget? Function(BuildContext, AssetPathEntity?, int)? specialItemBuilder,
     SpecialItemPosition? specialItemPosition,
   }) async {
-    assert(provider.requestType == RequestType.image,
-        'Only images can be shown in the picker for now');
+    assert(provider.requestType == RequestType.image, 'Only images can be shown in the picker for now');
 
     final locale = Localizations.maybeLocaleOf(context);
     final text = textDelegate ?? assetPickerTextDelegateFromLocale(locale);
@@ -249,8 +286,7 @@ class InstaAssetPicker {
     Key? key,
     bool useRootNavigator = true,
     AssetPickerPageRouteBuilder<List<AssetEntity>>? pageRouteBuilder,
-    Function(BuildContext context, String delegateDescription)?
-        onPermissionDenied,
+    Function(BuildContext context, String delegateDescription)? onPermissionDenied,
 
     /// Crop options
     InstaAssetCropDelegate cropDelegate = const InstaAssetCropDelegate(),
@@ -260,8 +296,7 @@ class InstaAssetPicker {
     ThemeData? pickerTheme,
     AssetPickerTextDelegate? textDelegate,
     bool closeOnComplete = false,
-    required Function(Stream<InstaAssetsExportDetails> exportDetails)
-        onCompleted,
+    required Function(Stream<InstaAssetsExportDetails> exportDetails) onCompleted,
     Widget Function(BuildContext, bool)? loadingIndicatorBuilder,
 
     /// DefaultAssetPickerProvider options
@@ -269,8 +304,7 @@ class InstaAssetPicker {
     int maxAssets = defaultMaxAssetsCount,
     int pageSize = defaultAssetsPerPage,
     ThumbnailSize pathThumbnailSize = defaultPathThumbnailSize,
-    SortPathDelegate<AssetPathEntity>? sortPathDelegate =
-        SortPathDelegate.common,
+    SortPathDelegate<AssetPathEntity>? sortPathDelegate = SortPathDelegate.common,
     bool sortPathsByModifiedDate = false,
     FilterOptionGroup? filterOptions,
     Duration initializeDelayDuration = _kInitializeDelayDuration,

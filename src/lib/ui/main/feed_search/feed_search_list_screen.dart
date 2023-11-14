@@ -5,6 +5,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -66,10 +67,11 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
 
   @override
   Widget build(BuildContext context) {
-    return FocusDetector(
-      onFocusLost: () async {
+    return DefaultOnWillPopScope(
+      onWillPop: () async {
         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
         ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+        return Future.value(true);
       },
       child: Material(
         child: Scaffold(

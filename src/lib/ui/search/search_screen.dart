@@ -206,10 +206,10 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                     "해시태그",
                     style: kBody16MediumStyle,
                   ),
-                  Text(
-                    "산책",
-                    style: kBody16MediumStyle,
-                  ),
+                  // Text(
+                  //   "산책",
+                  //   style: kBody16MediumStyle,
+                  // ),
                 ],
               ),
             Expanded(
@@ -686,7 +686,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                             );
                           }
                         }),
-                        Center(child: Text('Tab 4 Content')),
+                        // Center(child: Text('Tab 4 Content')),
                       ],
                     )
                   : ref.watch(searchProvider).when(
@@ -735,7 +735,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "최근검색어",
+                                          "최근 검색어",
                                           style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                                         ),
                                         GestureDetector(

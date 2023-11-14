@@ -8,12 +8,18 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_detail_state.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/popular_week_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_tag_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
@@ -23,6 +29,9 @@ import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/sav
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'feed_list_state_provider.g.dart';
+
+final likeApiIsLoadingStateProvider = StateProvider<bool>((ref) => false);
+final saveApiIsLoadingStateProvider = StateProvider<bool>((ref) => false);
 
 final feedListEmptyProvider = StateProvider<bool>((ref) => true);
 
@@ -40,6 +49,16 @@ class FeedListState extends _$FeedListState {
   int? loginMemberIdx;
 
   FeedData? tempFeedData;
+  ContentImageData? tempContentImageData;
+
+  int? tempFeedDataIndex;
+  int? tempFirstFeedDataIndex;
+  int? tempRecentFeedIndex;
+  int? tempMyFeedDataIndex;
+  int? tempFollowFeedDataIndex;
+  int? tempPopularWeekFeedDataIndex;
+  int? tempContentImageDataIndex;
+  int? tempTagContentImageDataIndex;
 
   @override
   PagingController<int, FeedData> build() {
@@ -62,7 +81,7 @@ class FeedListState extends _$FeedListState {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: pageKey);
       } else if (contentType == "myTagContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyTagContentsDetailList(loginMemberIdx: loginMemberIdx, page: pageKey);
-      } else if (contentType == "userContent") {
+      } else if (contentType == "userContent" || contentType == "FollowCardContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserContentsDetailList(loginMemberIdx: loginMemberIdx, page: pageKey, memberIdx: memberIdx);
       } else if (contentType == "userTagContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentDetail(loginMemberIdx: loginMemberIdx!, page: pageKey, memberIdx: memberIdx!);
@@ -156,6 +175,15 @@ class FeedListState extends _$FeedListState {
     int targetIdx = -1;
 
     if (ref.read(myFeedStateProvider).itemList != null) {
+      if (type == "deleteHide" || type == "deleteContentReport") {
+        if (tempFeedData != null && tempMyFeedDataIndex != null) {
+          ref.read(myFeedStateProvider).itemList!.insert(tempMyFeedDataIndex!, tempFeedData!);
+          tempMyFeedDataIndex = null;
+        }
+      } else if (type == "postBlock") {
+        ref.read(myFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == contentIdx);
+      }
+
       targetIdx = ref.read(myFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
@@ -178,24 +206,16 @@ class FeedListState extends _$FeedListState {
                 saveState: 0,
               );
         } else if (type == "postKeepContents") {
-          ref.read(myFeedStateProvider).itemList![targetIdx] = ref.read(myFeedStateProvider).itemList![targetIdx].copyWith(
-                keepState: 1,
-              );
+          ref.read(myFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
           ref.read(myFeedStateProvider).itemList![targetIdx] = ref.read(myFeedStateProvider).itemList![targetIdx].copyWith(
                 keepState: 0,
               );
         } else if (type == "deleteOneContents") {
           ref.read(myFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "deleteOneKeepContents") {
-          ref.read(myFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postHide") {
+        } else if (type == "postHide" || type == "postContentReport") {
           tempFeedData = ref.read(myFeedStateProvider).itemList![targetIdx];
-          ref.read(myFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postBlock") {
-          ref.read(myFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postContentReport") {
-          tempFeedData = ref.read(myFeedStateProvider).itemList![targetIdx];
+          tempMyFeedDataIndex = targetIdx;
           ref.read(myFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "postFollow") {
           ref.read(myFeedStateProvider).itemList![targetIdx] = ref.read(myFeedStateProvider).itemList![targetIdx].copyWith(
@@ -212,6 +232,15 @@ class FeedListState extends _$FeedListState {
     }
 
     if (ref.read(recentFeedStateProvider).itemList != null) {
+      if (type == "deleteHide" || type == "deleteContentReport") {
+        if (tempFeedData != null && tempRecentFeedIndex != null) {
+          ref.read(recentFeedStateProvider).itemList!.insert(tempRecentFeedIndex!, tempFeedData!);
+          tempRecentFeedIndex = null;
+        }
+      } else if (type == "postBlock") {
+        ref.read(recentFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == contentIdx);
+      }
+
       targetIdx = ref.read(recentFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
@@ -234,24 +263,16 @@ class FeedListState extends _$FeedListState {
                 saveState: 0,
               );
         } else if (type == "postKeepContents") {
-          ref.read(recentFeedStateProvider).itemList![targetIdx] = ref.read(recentFeedStateProvider).itemList![targetIdx].copyWith(
-                keepState: 1,
-              );
+          ref.read(recentFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
           ref.read(recentFeedStateProvider).itemList![targetIdx] = ref.read(recentFeedStateProvider).itemList![targetIdx].copyWith(
                 keepState: 0,
               );
         } else if (type == "deleteOneContents") {
           ref.read(recentFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "deleteOneKeepContents") {
-          ref.read(recentFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postHide") {
-          tempFeedData = ref.read(myFeedStateProvider).itemList![targetIdx];
-          ref.read(recentFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postBlock") {
-          ref.read(recentFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postContentReport") {
-          tempFeedData = ref.read(myFeedStateProvider).itemList![targetIdx];
+        } else if (type == "postHide" || type == "postContentReport") {
+          tempFeedData = ref.read(recentFeedStateProvider).itemList![targetIdx];
+          tempRecentFeedIndex = targetIdx;
           ref.read(recentFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "postFollow") {
           ref.read(recentFeedStateProvider).itemList![targetIdx] = ref.read(recentFeedStateProvider).itemList![targetIdx].copyWith(
@@ -268,6 +289,15 @@ class FeedListState extends _$FeedListState {
     }
 
     if (ref.read(followFeedStateProvider).itemList != null) {
+      if (type == "deleteHide" || type == "deleteContentReport") {
+        if (tempFeedData != null && tempFollowFeedDataIndex != null) {
+          ref.read(followFeedStateProvider).itemList!.insert(tempFollowFeedDataIndex!, tempFeedData!);
+          tempFollowFeedDataIndex = null;
+        }
+      } else if (type == "postBlock") {
+        ref.read(followFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == contentIdx);
+      }
+
       targetIdx = ref.read(followFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
@@ -290,24 +320,16 @@ class FeedListState extends _$FeedListState {
                 saveState: 0,
               );
         } else if (type == "postKeepContents") {
-          ref.read(followFeedStateProvider).itemList![targetIdx] = ref.read(followFeedStateProvider).itemList![targetIdx].copyWith(
-                keepState: 1,
-              );
+          ref.read(followFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
           ref.read(followFeedStateProvider).itemList![targetIdx] = ref.read(followFeedStateProvider).itemList![targetIdx].copyWith(
                 keepState: 0,
               );
         } else if (type == "deleteOneContents") {
           ref.read(followFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "deleteOneKeepContents") {
-          ref.read(followFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postHide") {
+        } else if (type == "postHide" || type == "postContentReport") {
           tempFeedData = ref.read(followFeedStateProvider).itemList![targetIdx];
-          ref.read(followFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postBlock") {
-          ref.read(followFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postContentReport") {
-          tempFeedData = ref.read(followFeedStateProvider).itemList![targetIdx];
+          tempFollowFeedDataIndex = targetIdx;
           ref.read(followFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "postFollow") {
           ref.read(followFeedStateProvider).itemList![targetIdx] = ref.read(followFeedStateProvider).itemList![targetIdx].copyWith(
@@ -324,6 +346,15 @@ class FeedListState extends _$FeedListState {
     }
 
     if (ref.read(popularWeekFeedStateProvider).itemList != null) {
+      if (type == "deleteHide" || type == "deleteContentReport") {
+        if (tempFeedData != null && tempPopularWeekFeedDataIndex != null) {
+          ref.read(popularWeekFeedStateProvider).itemList!.insert(tempPopularWeekFeedDataIndex!, tempFeedData!);
+          tempPopularWeekFeedDataIndex = null;
+        }
+      } else if (type == "postBlock") {
+        ref.read(popularWeekFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == contentIdx);
+      }
+
       targetIdx = ref.read(popularWeekFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
@@ -346,24 +377,16 @@ class FeedListState extends _$FeedListState {
                 saveState: 0,
               );
         } else if (type == "postKeepContents") {
-          ref.read(popularWeekFeedStateProvider).itemList![targetIdx] = ref.read(popularWeekFeedStateProvider).itemList![targetIdx].copyWith(
-                keepState: 1,
-              );
+          ref.read(popularWeekFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
           ref.read(popularWeekFeedStateProvider).itemList![targetIdx] = ref.read(popularWeekFeedStateProvider).itemList![targetIdx].copyWith(
                 keepState: 0,
               );
         } else if (type == "deleteOneContents") {
           ref.read(popularWeekFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "deleteOneKeepContents") {
-          ref.read(popularWeekFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postHide") {
+        } else if (type == "postHide" || type == "postContentReport") {
           tempFeedData = ref.read(popularWeekFeedStateProvider).itemList![targetIdx];
-          ref.read(popularWeekFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postBlock") {
-          ref.read(popularWeekFeedStateProvider).itemList!.removeAt(targetIdx);
-        } else if (type == "postContentReport") {
-          tempFeedData = ref.read(popularWeekFeedStateProvider).itemList![targetIdx];
+          tempPopularWeekFeedDataIndex = targetIdx;
           ref.read(popularWeekFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "postFollow") {
           ref.read(popularWeekFeedStateProvider).itemList![targetIdx] = ref.read(popularWeekFeedStateProvider).itemList![targetIdx].copyWith(
@@ -378,6 +401,91 @@ class FeedListState extends _$FeedListState {
         ref.read(popularWeekFeedStateProvider).notifyListeners();
       }
     }
+
+    if (ref.read(myContentsStateProvider).itemList != null) {
+      targetIdx = ref.read(myContentsStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        if (type == "postLike") {
+          ref.read(myContentsStateProvider).itemList![targetIdx] = ref.read(myContentsStateProvider).itemList![targetIdx].copyWith(
+                selfLike: 1,
+                likeCnt: ref.read(myContentsStateProvider).itemList![targetIdx].likeCnt! + 1,
+              );
+        } else if (type == "deleteLike") {
+          ref.read(myContentsStateProvider).itemList![targetIdx] = ref.read(myContentsStateProvider).itemList![targetIdx].copyWith(
+                selfLike: 0,
+                likeCnt: ref.read(myContentsStateProvider).itemList![targetIdx].likeCnt! - 1,
+              );
+        } else if (type == "postKeepContents") {
+          ref.read(myContentsStateProvider).itemList!.removeAt(targetIdx);
+        } else if (type == "deleteOneContents") {
+          ref.read(myContentsStateProvider).itemList!.removeAt(targetIdx);
+        }
+
+        ref.read(myContentsStateProvider).notifyListeners();
+      }
+    }
+    if (ref.read(myTagContentsStateProvider).itemList != null) {
+      targetIdx = ref.read(myTagContentsStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        if (type == "postKeepContents") {
+          ref.read(myTagContentsStateProvider).itemList!.removeAt(targetIdx);
+        } else if (type == "deleteOneContents") {
+          ref.read(myTagContentsStateProvider).itemList!.removeAt(targetIdx);
+        }
+
+        ref.read(myTagContentsStateProvider).notifyListeners();
+      }
+    }
+
+    if (ref.read(userContentsStateProvider).itemList != null) {
+      if (type == "deleteHide" || type == "deleteContentReport") {
+        if (tempContentImageData != null && tempContentImageDataIndex != null) {
+          ref.read(userContentsStateProvider).itemList!.insert(tempContentImageDataIndex!, tempContentImageData!);
+          tempContentImageDataIndex = null;
+        }
+      } else if (type == "postBlock") {
+        ref.read(userContentsStateProvider).itemList!.clear();
+        ref.read(userTagContentsStateProvider).itemList!.clear();
+      }
+
+      targetIdx = ref.read(userContentsStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        if (type == "postHide" || type == "postContentReport") {
+          tempContentImageData = ref.read(userContentsStateProvider).itemList![targetIdx];
+          tempContentImageDataIndex = targetIdx;
+          ref.read(userContentsStateProvider).itemList!.removeAt(targetIdx);
+        }
+      }
+
+      ref.read(userContentsStateProvider).notifyListeners();
+    }
+
+    if (ref.read(userTagContentsStateProvider).itemList != null) {
+      if (type == "deleteHide" || type == "deleteContentReport") {
+        if (tempContentImageData != null && tempTagContentImageDataIndex != null) {
+          ref.read(userTagContentsStateProvider).itemList!.insert(tempTagContentImageDataIndex!, tempContentImageData!);
+          tempTagContentImageDataIndex = null;
+        }
+      } else if (type == "postBlock") {
+        ref.read(userTagContentsStateProvider).itemList!.clear();
+        ref.read(userContentsStateProvider).itemList!.clear();
+      }
+
+      targetIdx = ref.read(userTagContentsStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        if (type == "postHide" || type == "postContentReport") {
+          tempContentImageData = ref.read(userTagContentsStateProvider).itemList![targetIdx];
+          tempTagContentImageDataIndex = targetIdx;
+          ref.read(userTagContentsStateProvider).itemList!.removeAt(targetIdx);
+        }
+      }
+
+      ref.read(userTagContentsStateProvider).notifyListeners();
+    }
   }
 
   Future<ResponseModel> postLike({
@@ -386,6 +494,8 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
     int targetIdx = -1;
@@ -417,6 +527,8 @@ class FeedListState extends _$FeedListState {
       "postLike",
     );
 
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+
     return result;
   }
 
@@ -426,6 +538,8 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
     int targetIdx = -1;
@@ -457,6 +571,8 @@ class FeedListState extends _$FeedListState {
       "deleteLike",
     );
 
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+
     return result;
   }
 
@@ -466,6 +582,8 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
+    ref.read(saveApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FeedRepository(dio: ref.read(dioProvider)).postSave(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
     int targetIdx = -1;
@@ -495,6 +613,8 @@ class FeedListState extends _$FeedListState {
       "postSave",
     );
 
+    ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
+
     return result;
   }
 
@@ -504,6 +624,8 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
+    ref.read(saveApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FeedRepository(dio: ref.read(dioProvider)).deleteSave(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
     int targetIdx = -1;
@@ -533,6 +655,8 @@ class FeedListState extends _$FeedListState {
       "deleteSave",
     );
 
+    ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
+
     return result;
   }
 
@@ -549,18 +673,15 @@ class FeedListState extends _$FeedListState {
       if (idxToRemove == contentIdxList[0]) {
         targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdxList[0]);
 
-        ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-              keepState: 1,
-            );
+        ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+        ref.read(firstFeedEmptyProvider.notifier).state = true;
         ref.read(firstFeedStateProvider).notifyListeners();
       }
 
       targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdxList[0]);
 
       if (targetIdx != -1) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          keepState: 1,
-        );
+        state.itemList!.removeAt(targetIdx);
         state.notifyListeners();
       }
     }
@@ -586,18 +707,16 @@ class FeedListState extends _$FeedListState {
       if (idxToRemove == contentIdx) {
         targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
-        ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-              keepState: 0,
-            );
+        ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+        ref.read(firstFeedEmptyProvider.notifier).state = true;
+
         ref.read(firstFeedStateProvider).notifyListeners();
       }
 
       targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          keepState: 0,
-        );
+        state.itemList!.removeAt(targetIdx);
         state.notifyListeners();
       }
     }
@@ -624,6 +743,8 @@ class FeedListState extends _$FeedListState {
         targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
         ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+        ref.read(firstFeedEmptyProvider.notifier).state = true;
+
         ref.read(firstFeedStateProvider).notifyListeners();
       }
 
@@ -657,13 +778,19 @@ class FeedListState extends _$FeedListState {
       if (idxToRemove == contentIdx) {
         targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
+        tempFirstFeedDataIndex = targetIdx;
+
         tempFeedData = ref.read(firstFeedStateProvider).itemList![targetIdx];
 
         ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+        ref.read(firstFeedEmptyProvider.notifier).state = true;
+
         ref.read(firstFeedStateProvider).notifyListeners();
       }
 
       targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      tempFeedDataIndex = targetIdx;
 
       if (targetIdx != -1) {
         tempFeedData = state.itemList![targetIdx];
@@ -689,7 +816,24 @@ class FeedListState extends _$FeedListState {
   }) async {
     final result = await FeedRepository(dio: ref.read(dioProvider)).deleteHide(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
-    state.itemList?.add(tempFeedData!);
+    if (state.itemList != null) {
+      if (tempFirstFeedDataIndex != null) {
+        ref.read(firstFeedStateProvider).itemList!.insert(tempFirstFeedDataIndex!, tempFeedData!);
+        ref.read(firstFeedStateProvider).notifyListeners();
+        tempFirstFeedDataIndex = null;
+      }
+
+      if (tempFeedDataIndex != null && tempFeedDataIndex != -1) {
+        state.itemList!.insert(tempFeedDataIndex!, tempFeedData!);
+        state.notifyListeners();
+        tempFeedDataIndex = null;
+      }
+    }
+
+    feedRefresh(
+      contentIdx,
+      "deleteHide",
+    );
 
     tempFeedData = null;
 
@@ -699,7 +843,6 @@ class FeedListState extends _$FeedListState {
   Future<ResponseModel> postBlock({
     required memberIdx,
     required blockIdx,
-    required contentIdx,
     required contentType,
   }) async {
     final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
@@ -707,26 +850,16 @@ class FeedListState extends _$FeedListState {
       blockIdx: blockIdx,
     );
 
-    int targetIdx = -1;
-
     if (state.itemList != null) {
-      if (idxToRemove == contentIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+      state.itemList!.removeWhere((element) => element.memberIdx == blockIdx);
+      state.notifyListeners();
 
-        ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
-        ref.read(firstFeedStateProvider).notifyListeners();
-      }
-
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
-
-      if (targetIdx != -1) {
-        state.itemList!.removeAt(targetIdx);
-        state.notifyListeners();
-      }
+      ref.read(firstFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == blockIdx);
+      ref.read(firstFeedStateProvider).notifyListeners();
     }
 
     feedRefresh(
-      contentIdx,
+      blockIdx,
       "postBlock",
     );
 
@@ -754,13 +887,19 @@ class FeedListState extends _$FeedListState {
       if (idxToRemove == contentIdx) {
         targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
+        tempFirstFeedDataIndex = targetIdx;
+
         tempFeedData = ref.read(firstFeedStateProvider).itemList![targetIdx];
 
         ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+        ref.read(firstFeedEmptyProvider.notifier).state = true;
+
         ref.read(firstFeedStateProvider).notifyListeners();
       }
 
       targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      tempFeedDataIndex = targetIdx;
 
       if (targetIdx != -1) {
         tempFeedData = state.itemList![targetIdx];
@@ -789,88 +928,105 @@ class FeedListState extends _$FeedListState {
       contentsIdx: contentIdx,
     );
 
-    state.itemList?.add(tempFeedData!);
+    if (state.itemList != null) {
+      if (tempFirstFeedDataIndex != null) {
+        ref.read(firstFeedStateProvider).itemList!.insert(tempFirstFeedDataIndex!, tempFeedData!);
+        ref.read(firstFeedStateProvider).notifyListeners();
+        tempFirstFeedDataIndex = null;
+      }
+
+      if (tempFeedDataIndex != null && tempFeedDataIndex != -1) {
+        state.itemList!.insert(tempFeedDataIndex!, tempFeedData!);
+        state.notifyListeners();
+        tempFeedDataIndex = null;
+      }
+    }
+
+    feedRefresh(
+      contentIdx,
+      "deleteContentReport",
+    );
 
     tempFeedData = null;
 
     return result;
   }
 
-  Future<ResponseModel> postFollow({
-    required memberIdx,
-    required followIdx,
-    required contentsIdx,
-    required contentType,
-  }) async {
-    final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
-
-    int targetIdx = -1;
-
-    if (state.itemList != null) {
-      if (idxToRemove == contentsIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentsIdx);
-
-        ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-              followState: 1,
-            );
-        ref.read(firstFeedStateProvider).notifyListeners();
-      }
-
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentsIdx);
-
-      if (targetIdx != -1) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          followState: 1,
-        );
-        state.notifyListeners();
-      }
-    }
-
-    feedRefresh(
-      contentsIdx,
-      "postFollow",
-    );
-
-    return result;
-  }
-
-  Future<ResponseModel> deleteFollow({
-    required memberIdx,
-    required followIdx,
-    required contentsIdx,
-    required contentType,
-  }) async {
-    final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
-
-    int targetIdx = -1;
-
-    if (state.itemList != null) {
-      if (idxToRemove == contentsIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentsIdx);
-
-        ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-              followState: 0,
-            );
-        ref.read(firstFeedStateProvider).notifyListeners();
-      }
-
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentsIdx);
-
-      if (targetIdx != -1) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          followState: 0,
-        );
-        state.notifyListeners();
-      }
-    }
-
-    feedRefresh(
-      contentsIdx,
-      "deleteFollow",
-    );
-
-    return result;
-  }
+  // Future<ResponseModel> postFollow({
+  //   required memberIdx,
+  //   required followIdx,
+  //   required contentsIdx,
+  //   required contentType,
+  // }) async {
+  //   final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
+  //
+  //   int targetIdx = -1;
+  //
+  //   if (state.itemList != null) {
+  //     if (idxToRemove == contentsIdx) {
+  //       targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentsIdx);
+  //
+  //       ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+  //             followState: 1,
+  //           );
+  //       ref.read(firstFeedStateProvider).notifyListeners();
+  //     }
+  //
+  //     targetIdx = state.itemList!.indexWhere((element) => element.idx == contentsIdx);
+  //
+  //     if (targetIdx != -1) {
+  //       state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+  //         followState: 1,
+  //       );
+  //       state.notifyListeners();
+  //     }
+  //   }
+  //
+  //   feedRefresh(
+  //     contentsIdx,
+  //     "postFollow",
+  //   );
+  //
+  //   return result;
+  // }
+  //
+  // Future<ResponseModel> deleteFollow({
+  //   required memberIdx,
+  //   required followIdx,
+  //   required contentsIdx,
+  //   required contentType,
+  // }) async {
+  //   final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+  //
+  //   int targetIdx = -1;
+  //
+  //   if (state.itemList != null) {
+  //     if (idxToRemove == contentsIdx) {
+  //       targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentsIdx);
+  //
+  //       ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+  //             followState: 0,
+  //           );
+  //       ref.read(firstFeedStateProvider).notifyListeners();
+  //     }
+  //
+  //     targetIdx = state.itemList!.indexWhere((element) => element.idx == contentsIdx);
+  //
+  //     if (targetIdx != -1) {
+  //       state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+  //         followState: 0,
+  //       );
+  //       state.notifyListeners();
+  //     }
+  //   }
+  //
+  //   feedRefresh(
+  //     contentsIdx,
+  //     "deleteFollow",
+  //   );
+  //
+  //   return result;
+  // }
 
   final Map<int, List<FeedData>?> feedStateMap = {};
   final Map<int, List<MemberInfoListData>?> feedMemberInfoStateMap = {};

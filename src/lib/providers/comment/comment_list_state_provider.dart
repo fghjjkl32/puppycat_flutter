@@ -41,7 +41,7 @@ class CommentListState extends _$CommentListState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+      var loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
 
       final searchResult = await CommentRepository(dio: ref.read(dioProvider)).getComment(
         contentIdx: _contentsIdx,
@@ -81,7 +81,7 @@ class CommentListState extends _$CommentListState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+      var loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
 
       var currentPageKey = state.nextPageKey!.toInt() - 1;
       var previousPageKey = 0;
@@ -208,10 +208,10 @@ class CommentListState extends _$CommentListState {
 
       // _apiStatus = ListAPIStatus.loading;
       _isChildMore = false;
-      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+      var loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
 
       CommentResponseModel searchResult = await CommentRepository(dio: ref.read(dioProvider)).getFocusComments(
-        loginMemberIdx,
+        loginMemberIdx!,
         contentsIdx,
         commentIdx,
       );
@@ -250,8 +250,6 @@ class CommentListState extends _$CommentListState {
       );
 
       List<CommentData> commentList = _serializationComment(parentPageResult.data.list);
-
-
 
       if (childPage != null) {
         final childPageResult = await CommentRepository(dio: ref.read(dioProvider)).getReplyComment(
@@ -332,7 +330,7 @@ class CommentListState extends _$CommentListState {
 
       List<CommentData> childList = searchList.map((e) => e.copyWith(isReply: true)).toList();
 
-      if(isNext) {
+      if (isNext) {
         currentList[insertIdx] = currentList[insertIdx].copyWith(isLastDisPlayChild: false);
         childList.last = childList.last.copyWith(isLastDisPlayChild: pageNumber != totalPageCount, pageNumber: pageNumber + 1);
       } else {

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/my_pet_list/my_pet_list_state_provider.dart';
@@ -84,9 +88,100 @@ class SelectPetSheetItemState extends ConsumerState<SelectPetSheetItem> {
               child: SizedBox(
                 width: 88, // 버튼의 너비
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     context.pop();
-                    context.push('/map');
+
+                    if (await Permissions.getLocationPermissionState()) {
+                      if (await Permissions.getActivityRecognitionPermissionState()) {
+                        context.push('/map');
+                      } else {
+                        if (mounted) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return CustomDialog(
+                                  content: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "퍼피캣 접근 권한 허용",
+                                          style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                        ),
+                                        SizedBox(
+                                          height: 4.h,
+                                        ),
+                                        Text(
+                                          "산책기능을 사용하기 위해\n신체 활동 데이터 접근을 허용해 주세요.",
+                                          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  confirmTap: () {
+                                    context.pop();
+                                    openAppSettings();
+                                  },
+                                  cancelTap: () {
+                                    context.pop();
+                                  },
+                                  confirmWidget: Text(
+                                    "허용",
+                                    style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                                  ),
+                                  cancelWidget: Text(
+                                    "허용 안 함",
+                                    style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                                  ));
+                            },
+                          );
+                        }
+                      }
+                    } else {
+                      if (mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CustomDialog(
+                                content: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "퍼피캣 접근 권한 허용",
+                                        style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                      ),
+                                      SizedBox(
+                                        height: 4.h,
+                                      ),
+                                      Text(
+                                        "산책기능을 사용하기 위해\n위치 권한을 항상 허용해 주세요.",
+                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                confirmTap: () {
+                                  context.pop();
+                                  openAppSettings();
+                                },
+                                cancelTap: () {
+                                  context.pop();
+                                },
+                                confirmWidget: Text(
+                                  "허용",
+                                  style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                                ),
+                                cancelWidget: Text(
+                                  "허용 안 함",
+                                  style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                                ));
+                          },
+                        );
+                      }
+                    }
                   },
                   child: Text('산책하기'),
                 ),

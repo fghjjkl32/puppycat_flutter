@@ -12,12 +12,12 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
-
-final followProvider = StateProvider.family<bool, int>((ref, memberIdx) => false);
 
 class FeedFollowCardWidget extends ConsumerStatefulWidget {
   const FeedFollowCardWidget({
@@ -45,8 +45,19 @@ class FeedFollowCardWidget extends ConsumerStatefulWidget {
 
 class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
   @override
+  void initState() {
+    super.initState();
+    Future(() {
+      final currentFollowState = ref.read(followUserStateProvider)[widget.memberIdx];
+      if (currentFollowState == null) {
+        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isFollow = ref.watch(followProvider(widget.memberIdx));
+    final isFollow = ref.watch(followUserStateProvider)[widget.memberIdx] ?? false;
 
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w),
@@ -116,18 +127,21 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           isFollow
                               ? InkWell(
                                   onTap: () async {
-                                    if (ref.read(userInfoProvider).userModel == null) {
-                                      context.pushReplacement("/loginScreen");
-                                    } else {
-                                      final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(
-                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        followIdx: widget.memberIdx,
-                                      );
+                                    if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                      if (ref.read(userInfoProvider).userModel == null) {
+                                        context.pushReplacement("/loginScreen");
+                                      } else {
+                                        final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                              followIdx: widget.memberIdx,
+                                            );
 
-                                      if (result.result) {
-                                        setState(() {
-                                          ref.read(followProvider(widget.memberIdx).notifier).state = false;
-                                        });
+                                        if (result.result) {
+                                          setState(() {
+                                            ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+                                          });
+                                        }
+                                        print(ref.read(followUserStateProvider));
                                       }
                                     }
                                   },
@@ -138,18 +152,20 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                 )
                               : InkWell(
                                   onTap: () async {
-                                    if (ref.read(userInfoProvider).userModel == null) {
-                                      context.pushReplacement("/loginScreen");
-                                    } else {
-                                      final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(
-                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        followIdx: widget.memberIdx,
-                                      );
+                                    if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                      if (ref.read(userInfoProvider).userModel == null) {
+                                        context.pushReplacement("/loginScreen");
+                                      } else {
+                                        final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                              followIdx: widget.memberIdx,
+                                            );
 
-                                      if (result.result) {
-                                        setState(() {
-                                          ref.read(followProvider(widget.memberIdx).notifier).state = true;
-                                        });
+                                        if (result.result) {
+                                          setState(() {
+                                            ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
+                                          });
+                                        }
                                       }
                                     }
                                   },
@@ -175,7 +191,18 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
             if (widget.imageList.length == 1) ...[
               GestureDetector(
                 onTap: () {
-                  context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[0].idx}/userContent");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FeedDetailScreen(
+                              firstTitle: widget.userName,
+                              secondTitle: "피드",
+                              memberIdx: widget.memberIdx,
+                              contentIdx: widget.imageList[0].idx!,
+                              contentType: "FollowCardContent",
+                              oldMemberIdx: widget.oldMemberIdx,
+                            )),
+                  );
                 },
                 child: Row(
                   children: [
@@ -224,7 +251,18 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     flex: 1,
                     child: GestureDetector(
                       onTap: () {
-                        context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[0].idx}/userContent");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FeedDetailScreen(
+                                    firstTitle: widget.userName,
+                                    secondTitle: "피드",
+                                    memberIdx: widget.memberIdx,
+                                    contentIdx: widget.imageList[0].idx!,
+                                    contentType: "FollowCardContent",
+                                    oldMemberIdx: widget.oldMemberIdx,
+                                  )),
+                        );
                       },
                       child: Stack(
                         children: [
@@ -268,7 +306,18 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     flex: 1,
                     child: GestureDetector(
                       onTap: () {
-                        context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[1].idx}/userContent");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FeedDetailScreen(
+                                    firstTitle: widget.userName,
+                                    secondTitle: "피드",
+                                    memberIdx: widget.memberIdx,
+                                    contentIdx: widget.imageList[1].idx!,
+                                    contentType: "FollowCardContent",
+                                    oldMemberIdx: widget.oldMemberIdx,
+                                  )),
+                        );
                       },
                       child: Stack(
                         children: [
@@ -314,7 +363,18 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     flex: 10,
                     child: GestureDetector(
                       onTap: () {
-                        context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[0].idx}/userContent");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FeedDetailScreen(
+                                    firstTitle: widget.userName,
+                                    secondTitle: "피드",
+                                    memberIdx: widget.memberIdx,
+                                    contentIdx: widget.imageList[0].idx!,
+                                    contentType: "FollowCardContent",
+                                    oldMemberIdx: widget.oldMemberIdx,
+                                  )),
+                        );
                       },
                       child: Stack(
                         children: [
@@ -360,7 +420,18 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[1].idx}/userContent");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FeedDetailScreen(
+                                        firstTitle: widget.userName,
+                                        secondTitle: "피드",
+                                        memberIdx: widget.memberIdx,
+                                        contentIdx: widget.imageList[1].idx!,
+                                        contentType: "FollowCardContent",
+                                        oldMemberIdx: widget.oldMemberIdx,
+                                      )),
+                            );
                           },
                           child: Stack(
                             children: [
@@ -396,7 +467,18 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            context.push("/home/myPage/detail/${widget.userName}/게시물/${widget.memberIdx}/${widget.imageList[2].idx}/userContent");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FeedDetailScreen(
+                                        firstTitle: widget.userName,
+                                        secondTitle: "피드",
+                                        memberIdx: widget.memberIdx,
+                                        contentIdx: widget.imageList[2].idx!,
+                                        contentType: "FollowCardContent",
+                                        oldMemberIdx: widget.oldMemberIdx,
+                                      )),
+                            );
                           },
                           child: ClipRRect(
                             borderRadius: const BorderRadius.only(
