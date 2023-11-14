@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
@@ -22,7 +25,7 @@ class WalkRepository {
     required this.dio,
     this.baseUrl,
   }) {
-    _walkService = WalkService(dio, baseUrl: walkBaseUrl);
+    _walkService = WalkService(dio, baseUrl: baseUrl ?? walkBaseUrl);
   }
 
   Future<int> getTodayWalkCount(String memberUuid, [bool isTogetherWalk = false]) async {
@@ -90,7 +93,7 @@ class WalkRepository {
     // return walkCount;
   }
 
-  Future stopWalk(String memberUuid, String walkUuid, int steps, String startDate, double distance, Map<String, dynamic> petWalkInfo, [bool isForce = false]) async {
+  Future<bool> stopWalk(String memberUuid, String walkUuid, int steps, String startDate, double distance, Map<String, dynamic> petWalkInfo, [bool isForce = false]) async {
     List<Map<String, dynamic>> petWalkInfoList = [];
 
     petWalkInfo.forEach((key, value) {
@@ -121,8 +124,11 @@ class WalkRepository {
 
     try {
       print('stop result : ${responseModel.result}');
+      return responseModel.result;
     } catch (e) {
-      rethrow;
+      // rethrow;
+      print('stopWalk error $e');
+      return false;
     }
     // return walkCount;
   }
@@ -147,8 +153,10 @@ class WalkRepository {
       String calorie = calorieList.join('&');
 
       Map<String, dynamic> data = {
-        'gps': '${walkInfo.latitude}, ${walkInfo.longitude}',
-        'state': isFinished ? '0' : '1',
+        // 'gps': '${walkInfo.latitude}, ${walkInfo.longitude}',
+        'latitude' : walkInfo.latitude.toString(),
+        'longitude' : walkInfo.longitude.toString(),
+        // 'state': isFinished ? '0' : '1',
         'step': walkInfo.walkCount.toString(),
         'distance': walkInfo.distance.toString(),
         'petUuid': petUuids,
@@ -156,9 +164,44 @@ class WalkRepository {
         'time': DateFormat('yyyy-MM-dd hh:mm:ss').format(walkInfo.dateTime.toUtc()),
       };
 
+      print('DateTime.now() ${walkInfo.dateTime}');
+      print('DateTime.now() ${DateTime.now().toUtc()}');
+      print('walkInfo.dateTime.toUtc() ${walkInfo.dateTime.toUtc()}');
       dataList.add(data);
     }
 
+    Map<String, dynamic> body = {
+      'walkUuid': walkUuid,
+      'memberUuid': memberUuid,
+      'data': dataList,
+    };
+
+
+    print('waking Body $body');
+
+
+    ResponseModel responseModel = await _walkService.sendWalkInfo(body);
+
+    if (responseModel == null) {
+      ///TODO
+      ///throw로 할지 그냥 return null로 할지 생각해보기
+      throw "sendWalkInfo error";
+    }
+
+    final tempDir = await getTemporaryDirectory();
+    File tempFile = File('${tempDir.path}/sendWalkInfo.txt');
+
+    tempFile.writeAsStringSync(DateTime.now().toString());
+    tempFile.writeAsStringSync(body.toString());
+    tempFile.writeAsStringSync(responseModel.toString());
+    tempFile.writeAsStringSync('--------------------------');
+
+
+    print('sendWalkInfo log $responseModel');
+  }
+
+  ///Background용
+  Future sendWalkInfoByDataList(String memberUuid, String walkUuid, List<Map<String, dynamic>> dataList, [bool isFinished = false]) async {
     Map<String, dynamic> body = {
       'walkUuid': walkUuid,
       'memberUuid': memberUuid,
@@ -176,42 +219,31 @@ class WalkRepository {
     }
   }
 
-  ///Background용
-  Future sendWalkInfoByDataList(String memberUuid, String walkUuid, List<Map<String, dynamic>> dataList, [bool isFinished = false]) async {
-    // for (var walkInfo in walkInfoList) {
-    //   List<String> petUuidList = walkInfo.calorie.keys.toList();
-    //   List calorieList = walkInfo.calorie.values.map((e) => e['calorie']).toList();
-    //
-    //   String petUuids = petUuidList.join('&');
-    //   String calorie = calorieList.join('&');
-    //
-    //   Map<String, dynamic> data = {
-    //     'gps': '${walkInfo.latitude}, ${walkInfo.longitude}',
-    //     'state': isFinished ? '0' : '1',
-    //     'step': walkInfo.walkCount.toString(),
-    //     'distance': walkInfo.distance.toString(),
-    //     'petUuid': petUuids,
-    //     'calorie': calorie,
-    //     'time': DateFormat('yyyy-MM-dd hh:mm:ss').format(walkInfo.dateTime.toUtc()),
-    //   };
-    //
-    //   dataList.add(data);
-    // }
+  Future<bool> getWalkState(String memberUuid, String walkUuid) async {
+    final walkStateResult = await _walkService.getWalkState(memberUuid, walkUuid);
 
-    Map<String, dynamic> body = {
-      'walkUuid': walkUuid,
-      'memberUuid': memberUuid,
-      'data': dataList,
-    };
-
-    print('waking Body $body');
-
-    ResponseModel responseModel = await _walkService.sendWalkInfo(body);
-
-    if (responseModel == null) {
-      ///TODO
-      ///throw로 할지 그냥 return null로 할지 생각해보기
-      throw "error";
+    if(!walkStateResult.result) {
+      //TODO
+      //Error Handling
+      return false;
     }
+
+    final resultData = walkStateResult.data;
+
+    if(resultData == null) {
+      //TODO
+      //Error Handling
+      return false;
+    }
+
+    if(!resultData.containsKey('walkEnd')) {
+      //TODO
+      //Error Handling
+      return false;
+    }
+
+    bool isWalkEnded = resultData['walkEnd'];
+
+    return isWalkEnded;
   }
 }

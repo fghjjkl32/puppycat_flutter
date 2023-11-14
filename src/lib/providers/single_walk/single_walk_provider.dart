@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/controller/walk_cache/walk_cache_controller.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
@@ -45,33 +46,7 @@ class SingleWalkState extends _$SingleWalkState {
       if(event == null) {
         return;
       }
-      //
-      // final WalkStateModel previousWalkStateModel;
-      // if (state.isEmpty) {
-      //   previousWalkStateModel = WalkStateModel(
-      //     dateTime: DateTime.now(),
-      //     latitude: initLocationData.latitude,
-      //     longitude: initLocationData.longitude,
-      //     distance: 0,
-      //     walkTime: 0,
-      //     walkCount: 0,
-      //     calorie: {},
-      //   );
-      // } else {
-      //   previousWalkStateModel = state.last;
-      // }
-      //
-      // if(ref.read(walkStatusStateProvider) != WalkStatus.walking) {
-      //   return;
-      // }
-      //
-      // print('event : $event');
-      // LocationData currentLocationData = LocationData.fromMap({
-      //   'latitude': event['latitude'],
-      //   'longitude': event['longitude'],
-      // });
-      //
-      // final walkStateModel = WalkUtil.calcWalkStateValue(previousWalkStateModel, currentLocationData, selectedPetList);
+
       WalkStateModel walkStateModel;
       try {
         walkStateModel = WalkStateModel.fromJson(event['walkStateModel']);
@@ -85,13 +60,19 @@ class SingleWalkState extends _$SingleWalkState {
           walkTime: 0,
           walkCount: 0,
           calorie: {},
+          petList: selectedPetList,
         );
       }
+      // print('walkStateModel $walkStateModel');
       state = [...state, walkStateModel];
       // if (state.isNotEmpty) {
       //   await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last);
       // }
       // await WalkCacheController.writeWalkInfo(walkStateModel, _walk);
+      // final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookie2(ref), baseUrl: walkGpsBaseUrl);
+      // if(state.length > 20) {
+      //   await ref.read(walkStateProvider.notifier).sendWalkInfo(state, false);
+      // }
     });
 
     // ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.walking;

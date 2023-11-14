@@ -116,32 +116,13 @@ class WalkInfoWidgetState extends ConsumerState<WalkInfoWidget> with TickerProvi
               ),
               InkWell(
                 onTap: () async {
+                  print('stop buttion!!!!!!!');
                   // final mapController = ref.read(naverMapControllerStateProvider);
-                  final walkStateList = ref.read(singleWalkStateProvider);
-                  File walkPathImgFile;
+                  // final walkStateList = ref.read(singleWalkStateProvider);
+                  // File walkPathImgFile;
                   FlutterBackgroundService().invoke("stopService");
                   ref.read(singleWalkStateProvider.notifier).stopBackgroundLocation();
 
-                  // await ref.read(walkStateProvider.notifier).stopWalk();
-                  // await ref.read(walkStateProvider.notifier).stopWalk().then((walkUuid) async {
-
-                  // if (mapController != null) {
-                  //   if (walkStateList.isEmpty) {
-                  //     return;
-                  //   }
-                  //
-                  //   List<NLatLng> routeList = walkStateList.map((e) => NLatLng(e.latitude, e.longitude)).toList();
-                  //   final bounds = NLatLngBounds.from(routeList);
-                  //   final cameraUpdateWithPadding = NCameraUpdate.fitBounds(bounds, padding: const EdgeInsets.all(50));
-                  //
-                  //   await mapController.updateCamera(cameraUpdateWithPadding).then((value) async {
-                  //     final screenShot = await mapController.takeSnapshot(showControls: false);
-                  //     final tempDir = await getTemporaryDirectory();
-                  //     screenShot.renameSync('$tempDir/$walu')
-                  //     ref.read(walkPathImgStateProvider.notifier).state = screenShot;
-                  //     mapController.clearOverlays(type: NOverlayType.pathOverlay);
-                  //   });
-                  // }
                   final walkUuid = await ref.read(walkStateProvider.notifier).stopWalk();
 
                   print(walkUuid);

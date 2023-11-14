@@ -10,6 +10,7 @@ class WalkResultStateItemModel with _$WalkResultStateItemModel {
     bool? isRegistWalk,
     String? walkUuid,
     bool? isEndWalk,
+    bool? isForce,
   }) = _WalkResultStateItemModel;
 
   factory WalkResultStateItemModel.fromJson(Map<String, dynamic> json) => _$WalkResultStateItemModelFromJson(json);

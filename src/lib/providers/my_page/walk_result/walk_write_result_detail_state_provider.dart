@@ -31,7 +31,7 @@ class WalkWriteResultDetailState extends _$WalkWriteResultDetailState {
     return [];
   }
 
-  Future<void> getWalkWriteResultDetail({
+  Future<List<WalkWriteResultDetailItemModel>> getWalkWriteResultDetail({
     required String walkUuid,
   }) async {
     WalkWriteResultDetailResponseModel lists = await WalkResultRepository(dio: ref.read(dioProvider)).getWalkWriteResultDetail(
@@ -41,10 +41,11 @@ class WalkWriteResultDetailState extends _$WalkWriteResultDetailState {
 
     if (lists.data.list.isEmpty) {
       state = [];
-      return;
+      return [];
     }
 
     state = lists.data.list;
+    return state;
   }
 
   Future<ResponseModel> postWalkResult({

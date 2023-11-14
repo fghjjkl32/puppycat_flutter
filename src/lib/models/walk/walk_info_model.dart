@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
 
 ///TODO
 /// - DateTime
@@ -24,11 +25,12 @@ class WalkStateModel with _$WalkStateModel{
     required int walkCount,
     // required double calorie,
     required Map<String, dynamic> calorie,
+    required List<MyPetItemModel> petList,
   }) = _WalkStateModel;
 
   double getPetCalorie(String uuid) {
     if(calorie.containsKey(uuid)) {
-      return calorie[uuid]['calorie'];
+      return double.parse(calorie[uuid]['calorie'].toString());
     } else {
       return 0.00;
     }
