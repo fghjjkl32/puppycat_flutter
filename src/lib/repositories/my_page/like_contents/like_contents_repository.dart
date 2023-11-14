@@ -20,7 +20,7 @@ class LikeContentsRepository {
     ContentResponseModel? likeContentsResponseModel = await _likeContentsService.getLikeContents(memberIdx, page);
 
     if (likeContentsResponseModel == null) {
-      throw contentNullResponseModel;
+      return contentNullResponseModel;
     }
 
     return likeContentsResponseModel;
@@ -30,7 +30,7 @@ class LikeContentsRepository {
     FeedResponseModel? likeContentsResponseModel = await _likeContentsService.getLikeDetailContentList(loginMemberIdx, page);
 
     if (likeContentsResponseModel == null) {
-      throw feedNullResponseModel;
+      return feedNullResponseModel;
     }
 
     return likeContentsResponseModel;

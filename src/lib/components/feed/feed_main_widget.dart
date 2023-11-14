@@ -27,6 +27,7 @@ class FeedMainWidget extends ConsumerWidget {
       required this.imageDomain,
       required this.index,
       required this.feedType,
+      required this.isSpecialUser,
       Key? key})
       : super(key: key);
 
@@ -40,6 +41,7 @@ class FeedMainWidget extends ConsumerWidget {
   final String imageDomain;
   final int index;
   final String feedType;
+  final bool isSpecialUser;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,7 +69,7 @@ class FeedMainWidget extends ConsumerWidget {
                     ),
                     FeedFollowWidget(
                       popularUserListData: ref.watch(popularUserListStateProvider).list,
-                      oldMemberIdx: 0,
+                      oldMemberIdx: memberIdx ?? 0,
                     ),
                   ],
                 ),
@@ -82,7 +84,7 @@ class FeedMainWidget extends ConsumerWidget {
               if (index == 4 && feedType == "recent")
                 FeedFollowWidget(
                   popularUserListData: ref.watch(popularUserListStateProvider).list,
-                  oldMemberIdx: 0,
+                  oldMemberIdx: memberIdx ?? 0,
                 ),
               if (index != 0 && index % 10 == 0 && feedType == "recent")
                 FeedBestPostWidget(
@@ -107,6 +109,7 @@ class FeedMainWidget extends ConsumerWidget {
                 oldMemberIdx: memberIdx ?? 0,
                 isDetailWidget: false,
                 feedType: feedType,
+                isSpecialUser: isSpecialUser,
               ),
               FeedImageMainWidget(
                 imageList: feedData.imgList!,

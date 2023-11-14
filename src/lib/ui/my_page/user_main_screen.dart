@@ -24,6 +24,7 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -34,7 +35,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_pr
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/my_pet_list/my_pet_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/tag_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
@@ -59,10 +60,10 @@ class UserMainScreen extends ConsumerStatefulWidget {
 
 class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTickerProviderStateMixin {
   late final PagingController<int, MyPetItemModel> _myPetListPagingController = ref.read(myPetListStateProvider);
+  late final PagingController<int, ContentImageData> _userContentsListPagingController = ref.read(userContentsStateProvider);
+  late final PagingController<int, ContentImageData> _userTagContentsListPagingController = ref.read(userTagContentsStateProvider);
 
   ScrollController scrollController = ScrollController();
-  ScrollController userContentController = ScrollController();
-  ScrollController tagContentController = ScrollController();
   ScrollController commentController = ScrollController();
 
   bool showLottieAnimation = false;
@@ -76,6 +77,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   @override
   void initState() {
     ref.read(myPetListStateProvider.notifier).memberIdx = widget.memberIdx;
+    ref.read(userContentsStateProvider.notifier).memberIdx = widget.memberIdx;
+    ref.read(userTagContentsStateProvider.notifier).memberIdx = widget.memberIdx;
+
     _myPetListPagingController.refresh();
 
     scrollController = ScrollController();
@@ -84,8 +88,6 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
     ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
 
-    userContentController.addListener(_userContentsScrollListener);
-    tagContentController.addListener(_tagContentsScrollListener);
     commentController.addListener(_commentScrollListener);
 
     tabController = TabController(
@@ -96,8 +98,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
     Future(() async {
       ref.watch(userInformationStateProvider.notifier).getInitUserInformation(ref.watch(userInfoProvider).userModel?.idx, widget.memberIdx);
-      ref.read(userContentStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel?.idx, widget.memberIdx, 1);
-      ref.read(tagContentStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel?.idx, widget.memberIdx, 1);
+      _userContentsListPagingController.refresh();
+      _userTagContentsListPagingController.refresh();
     });
 
     super.initState();
@@ -115,26 +117,10 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     }
   }
 
-  void _userContentsScrollListener() {
-    if (userContentController.position.pixels > userContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
-      if (userOldLength == ref.read(userContentStateProvider).list.length) {
-        ref.read(userContentStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx, widget.memberIdx);
-      }
-    }
-  }
-
-  void _tagContentsScrollListener() {
-    if (tagContentController.position.pixels > tagContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
-      if (tagOldLength == ref.read(tagContentStateProvider).list.length) {
-        ref.read(tagContentStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx, widget.memberIdx);
-      }
-    }
-  }
-
   void _commentScrollListener() {
     if (commentController.position.extentAfter < 200) {
       if (commentOldLength == ref.read(commentStateProvider).list.length) {
-        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userInfoProvider).userModel!.idx);
+        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userInfoProvider).userModel?.idx);
       }
     }
   }
@@ -143,10 +129,6 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   void dispose() {
     scrollController.removeListener(_scrollListener);
     scrollController.dispose();
-    userContentController.removeListener(_userContentsScrollListener);
-    userContentController.dispose();
-    tagContentController.removeListener(_userContentsScrollListener);
-    tagContentController.dispose();
     commentController.removeListener(_commentScrollListener);
     commentController.dispose();
     super.dispose();
@@ -241,7 +223,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                           height: 8.h,
                                                         ),
                                                         Text(
-                                                          "‘${widget.nick}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
+                                                          "‘${widget.nick}’님은 더 이상 회원님의\n피드를 보거나 메시지 등을 보낼 수 없습니다.",
                                                           style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                                           textAlign: TextAlign.center,
                                                         ),
@@ -320,9 +302,6 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         final userInformationState = ref.watch(userInformationStateProvider);
                         final lists = userInformationState.list;
 
-                        print(userInformationState.list);
-                        print("${userInformationState.list} : userInformationState.list");
-
                         final isFollow = ref.watch(followUserStateProvider)[widget.memberIdx] ?? false;
 
                         return lists.isEmpty ? Container() : _myPageSuccessProfile(lists[0], isFollow);
@@ -396,253 +375,293 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   }
 
   Widget _firstTabBody() {
-    return Consumer(
-      builder: (ctx, ref, child) {
-        final myContentState = ref.watch(userContentStateProvider);
-        final isLoadMoreError = myContentState.isLoadMoreError;
-        final isLoadMoreDone = myContentState.isLoadMoreDone;
-        final isLoading = myContentState.isLoading;
-        final lists = myContentState.list;
+    return RefreshIndicator(
+      onRefresh: () {
+        return Future(() {
+          print(widget.oldMemberIdx);
+          if (widget.oldMemberIdx != ref.watch(userInfoProvider).userModel?.idx) {
+            ref.read(userContentsStateProvider.notifier).memberIdx = widget.oldMemberIdx;
+          }
 
-        userOldLength = lists.length ?? 0;
-
-        return lists.isEmpty
-            ? Container(
-                color: kNeutralColor100,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+          _userContentsListPagingController.refresh();
+        });
+      },
+      child: Container(
+        color: kNeutralColor100,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            PagedSliverGrid<int, ContentImageData>(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              shrinkWrapFirstPageIndicators: true,
+              pagingController: _userContentsListPagingController,
+              builderDelegate: PagedChildBuilderDelegate<ContentImageData>(
+                noItemsFoundIndicatorBuilder: (context) {
+                  return Stack(
                     children: [
-                      Image.asset(
-                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                        width: 88,
-                        height: 88,
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      Text(
-                        '게시물이 없습니다.',
-                        textAlign: TextAlign.center,
-                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : RefreshIndicator(
-                onRefresh: () {
-                  return ref.read(userContentStateProvider.notifier).refresh(
-                        ref.read(userInfoProvider).userModel?.idx,
-                        widget.memberIdx,
-                      );
-                },
-                child: Container(
-                  color: kNeutralColor100,
-                  child: GridView.builder(
-                    controller: userContentController,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-                    itemCount: lists.length,
-                    itemBuilder: (context, index) {
-                      if (index == lists.length) {
-                        if (isLoadMoreError) {
-                          return const Center(
-                            child: Text('Error'),
-                          );
-                        }
-                        if (isLoadMoreDone) {
-                          return Container();
-                        }
-                        return Container();
-                      }
-
-                      return Container(
-                        margin: const EdgeInsets.all(10.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            context.push(
-                                "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/게시물/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userContent");
-                          },
-                          child: Center(
-                            child: Stack(
+                      Container(
+                        height: 400,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            color: kNeutralColor100,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Positioned.fill(
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                    child: CachedNetworkImage(
-                                      placeholder: (context, url) => Container(
-                                        color: kNeutralColor300,
-                                      ),
-                                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
+                                Image.asset(
+                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                  width: 88,
+                                  height: 88,
                                 ),
-                                Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  right: 0,
-                                  child: Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      gradient: LinearGradient(
-                                        begin: Alignment.bottomCenter,
-                                        end: Alignment.topCenter,
-                                        colors: [
-                                          Colors.black.withOpacity(0.5),
-                                          Colors.transparent,
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                const SizedBox(
+                                  height: 12,
                                 ),
-                                Positioned(
-                                  right: 6.w,
-                                  top: 6.w,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xff414348).withOpacity(0.75),
-                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                    ),
-                                    width: 18.w,
-                                    height: 14.w,
-                                    child: Center(
-                                      child: Text(
-                                        '${lists[index].imageCnt}',
-                                        style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
-                                      ),
-                                    ),
-                                  ),
+                                Text(
+                                  '피드가 없습니다.',
+                                  textAlign: TextAlign.center,
+                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ),
-              );
-      },
+                      ),
+                    ],
+                  );
+                },
+                newPageProgressIndicatorBuilder: (context) {
+                  return Column(
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/icon_loading.json',
+                        fit: BoxFit.fill,
+                        width: 80,
+                        height: 80,
+                      ),
+                    ],
+                  );
+                },
+                firstPageProgressIndicatorBuilder: (context) {
+                  return Column(
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/icon_loading.json',
+                        fit: BoxFit.fill,
+                        width: 80,
+                        height: 80,
+                      ),
+                    ],
+                  );
+                },
+                itemBuilder: (context, item, itemBuilderIndex) {
+                  return Container(
+                    margin: const EdgeInsets.all(10.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push(
+                            "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/피드/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userContent");
+                      },
+                      child: Center(
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                child: CachedNetworkImage(
+                                  placeholder: (context, url) => Container(
+                                    color: kNeutralColor300,
+                                  ),
+                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.imgUrl}").toUrl(),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                    colors: [
+                                      Colors.black.withOpacity(0.5),
+                                      Colors.transparent,
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 6.w,
+                              top: 6.w,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff414348).withOpacity(0.75),
+                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                width: 18.w,
+                                height: 14.w,
+                                child: Center(
+                                  child: Text(
+                                    '${item.imageCnt}',
+                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _secondTabBody() {
-    return Consumer(
-      builder: (ctx, ref, child) {
-        final tagContentState = ref.watch(tagContentStateProvider);
-        final isLoadMoreError = tagContentState.isLoadMoreError;
-        final isLoadMoreDone = tagContentState.isLoadMoreDone;
-        final isLoading = tagContentState.isLoading;
-        final lists = tagContentState.list;
-
-        tagOldLength = lists.length ?? 0;
-
-        return RefreshIndicator(
-          onRefresh: () {
-            return ref.read(tagContentStateProvider.notifier).refresh(
-                  ref.read(userInfoProvider).userModel?.idx,
-                  widget.memberIdx,
-                );
-          },
-          child: lists.isEmpty
-              ? Container(
-                  color: kNeutralColor100,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                          width: 88,
-                          height: 88,
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          '게시물이 없습니다.',
-                          textAlign: TextAlign.center,
-                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : Container(
-                  color: kNeutralColor100,
-                  child: GridView.builder(
-                    controller: tagContentController,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-                    itemCount: lists.length,
-                    itemBuilder: (context, index) {
-                      if (index == lists.length) {
-                        if (isLoadMoreError) {
-                          return const Center(
-                            child: Text('Error'),
-                          );
-                        }
-                        if (isLoadMoreDone) {
-                          return Container();
-                        }
-                        return Container();
-                      }
-
-                      return Container(
-                        margin: const EdgeInsets.all(10.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            context.push(
-                                "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${lists[index].idx}/userTagContent");
-                          },
-                          child: Center(
-                            child: Stack(
+    return RefreshIndicator(
+      onRefresh: () {
+        return Future(() {
+          if (widget.oldMemberIdx != ref.watch(userInfoProvider).userModel?.idx) {
+            ref.read(userTagContentsStateProvider.notifier).memberIdx = widget.oldMemberIdx;
+          }
+          _userTagContentsListPagingController.refresh();
+        });
+      },
+      child: Container(
+        color: kNeutralColor100,
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: <Widget>[
+            PagedSliverGrid<int, ContentImageData>(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              shrinkWrapFirstPageIndicators: true,
+              pagingController: _userTagContentsListPagingController,
+              builderDelegate: PagedChildBuilderDelegate<ContentImageData>(
+                noItemsFoundIndicatorBuilder: (context) {
+                  return Stack(
+                    children: [
+                      Container(
+                        height: 400,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            color: kNeutralColor100,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Positioned.fill(
-                                  child: ClipRRect(
-                                    borderRadius: const BorderRadius.all(Radius.circular(12)),
-                                    child: CachedNetworkImage(
-                                      placeholder: (context, url) => Container(
-                                        color: kNeutralColor300,
-                                      ),
-                                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
+                                Image.asset(
+                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                  width: 88,
+                                  height: 88,
                                 ),
-                                Positioned(
-                                  right: 6.w,
-                                  top: 6.w,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xff414348).withOpacity(0.75),
-                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                    ),
-                                    width: 18.w,
-                                    height: 14.w,
-                                    child: Center(
-                                      child: Text(
-                                        "${lists[index].imageCnt}",
-                                        style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
-                                      ),
-                                    ),
-                                  ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                Text(
+                                  '피드가 없습니다.',
+                                  textAlign: TextAlign.center,
+                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ),
-        );
-      },
+                      ),
+                    ],
+                  );
+                },
+                newPageProgressIndicatorBuilder: (context) {
+                  return Column(
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/icon_loading.json',
+                        fit: BoxFit.fill,
+                        width: 80,
+                        height: 80,
+                      ),
+                    ],
+                  );
+                },
+                firstPageProgressIndicatorBuilder: (context) {
+                  return Column(
+                    children: [
+                      Lottie.asset(
+                        'assets/lottie/icon_loading.json',
+                        fit: BoxFit.fill,
+                        width: 80,
+                        height: 80,
+                      ),
+                    ],
+                  );
+                },
+                itemBuilder: (context, item, itemBuilderIndex) {
+                  return Container(
+                    margin: const EdgeInsets.all(10.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        context.push(
+                            "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userTagContent");
+                      },
+                      child: Center(
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                                child: CachedNetworkImage(
+                                  placeholder: (context, url) => Container(
+                                    color: kNeutralColor300,
+                                  ),
+                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.imgUrl}").toUrl(),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              right: 6.w,
+                              top: 6.w,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff414348).withOpacity(0.75),
+                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                ),
+                                width: 18.w,
+                                height: 14.w,
+                                child: Center(
+                                  child: Text(
+                                    "${item.imageCnt}",
+                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -811,19 +830,21 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 child: isFollow
                                     ? GestureDetector(
                                         onTap: () async {
-                                          if (ref.read(userInfoProvider).userModel == null) {
-                                            context.pushReplacement("/loginScreen");
-                                          } else {
-                                            final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                  followIdx: widget.memberIdx,
-                                                );
-                                            ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
+                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                            if (ref.read(userInfoProvider).userModel == null) {
+                                              context.pushReplacement("/loginScreen");
+                                            } else {
+                                              final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                    followIdx: widget.memberIdx,
+                                                  );
+                                              ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
 
-                                            if (result.result) {
-                                              setState(() {
-                                                ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
-                                              });
+                                              if (result.result) {
+                                                setState(() {
+                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+                                                });
+                                              }
                                             }
                                           }
                                         },
@@ -845,19 +866,21 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                       )
                                     : GestureDetector(
                                         onTap: () async {
-                                          if (ref.read(userInfoProvider).userModel == null) {
-                                            context.pushReplacement("/loginScreen");
-                                          } else {
-                                            final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                  followIdx: widget.memberIdx,
-                                                );
-                                            ref.watch(userInformationStateProvider.notifier).updateFollowState();
+                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                            if (ref.read(userInfoProvider).userModel == null) {
+                                              context.pushReplacement("/loginScreen");
+                                            } else {
+                                              final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                    followIdx: widget.memberIdx,
+                                                  );
+                                              ref.watch(userInformationStateProvider.notifier).updateFollowState();
 
-                                            if (result.result) {
-                                              setState(() {
-                                                ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
-                                              });
+                                              if (result.result) {
+                                                setState(() {
+                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
+                                                });
+                                              }
                                             }
                                           }
 
@@ -1124,7 +1147,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                         width: 6.w,
                                       ),
                                       Text(
-                                        "${ref.watch(userContentStateProvider).totalCount}",
+                                        "${ref.watch(userContentsFeedTotalCountProvider)}",
                                         style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                                       ),
                                     ],
@@ -1142,7 +1165,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                         width: 6.w,
                                       ),
                                       Text(
-                                        "${ref.watch(tagContentStateProvider).totalCount}",
+                                        "${ref.watch(userTagContentsFeedTotalCountProvider)}",
                                         style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                                       ),
                                     ],

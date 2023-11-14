@@ -93,7 +93,9 @@ void main() async {
 
   // await LocationUtil.checkLocationPermission();
   // Location().changeSettings(interval: 500);
-  await GeolocatorUtil.checkLocationPermission();
+
+  //TODO 11/8 Permission 작업때문에 주석 위치 가져오는 권한을 산책하기 할때로 이동
+  // await GeolocatorUtil.checkLocationPermission();
 
   await NaverMapSdk.instance.initialize(clientId: "omfrw8eeol");
 
@@ -205,7 +207,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
       case PushType.like_contents:
       case PushType.img_tag:
         var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-        router.push("/home/myPage/detail/Contents/게시물/$loginMemberIdx/${payload.contentsIdx}/notificationContent");
+        router.push("/home/myPage/detail/Contents/피드/$loginMemberIdx/${payload.contentsIdx}/notificationContent");
         break;
 
       case PushType.new_comment:
@@ -213,7 +215,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
       case PushType.mention_comment:
       case PushType.like_comment:
         var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-        router.push("/home/myPage/detail/nickname/게시물/$loginMemberIdx/${payload.contentsIdx}/notificationContent", extra: {
+        router.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${payload.contentsIdx}/notificationContent", extra: {
           "isRouteComment": true,
           "focusIdx": payload.commentIdx,
         });

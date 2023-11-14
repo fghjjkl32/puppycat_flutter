@@ -161,11 +161,11 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
     //         height: 12.h,
     //       ),
     //       Text(
-    //         "게시물이 없습니다.",
+    //         "피드가 없습니다.",
     //         style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
     //       ),
     //       Text(
-    //         "좋아요한 게시물이 여기에 표시됩니다.",
+    //         "좋아요한 피드가 여기에 표시됩니다.",
     //         style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
     //       ),
     //     ],
@@ -197,7 +197,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         height: 12,
                       ),
                       Text(
-                        '게시물이 없습니다.\n좋아요한 게시물이 여기에 표시됩니다.',
+                        '피드가 없습니다.\n좋아요한 피드가 여기에 표시됩니다.',
                         textAlign: TextAlign.center,
                         style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
@@ -253,7 +253,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
                       return GestureDetector(
                         onTap: () {
-                          context.push("/home/myPage/detail/null/좋아요한 게시물/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myLikeContent");
+                          context.push("/home/myPage/detail/null/좋아요한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myLikeContent");
                         },
                         child: Stack(
                           children: [
@@ -333,7 +333,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         height: 12,
                       ),
                       Text(
-                        '게시물이 없습니다.\n저장한 게시물이 여기에 표시됩니다.',
+                        '피드가 없습니다.\n저장한 피드가 여기에 표시됩니다.',
                         textAlign: TextAlign.center,
                         style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
@@ -387,7 +387,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
                       return GestureDetector(
                         onTap: () {
-                          context.push("/home/myPage/detail/null/저장한 게시물/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/mySaveContent");
+                          context.push("/home/myPage/detail/null/저장한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/mySaveContent");
                         },
                         child: Stack(
                           children: [

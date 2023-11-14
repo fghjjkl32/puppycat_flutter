@@ -117,18 +117,20 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                   : isFollow
                       ? GestureDetector(
                           onTap: () async {
-                            if (ref.read(userInfoProvider).userModel == null) {
-                              context.pushReplacement("/loginScreen");
-                            } else {
-                              final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                    followIdx: widget.followerIdx,
-                                  );
+                            if (!ref.watch(followApiIsLoadingStateProvider)) {
+                              if (ref.read(userInfoProvider).userModel == null) {
+                                context.pushReplacement("/loginScreen");
+                              } else {
+                                final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                      followIdx: widget.followerIdx,
+                                    );
 
-                              if (result.result) {
-                                setState(() {
-                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.followerIdx, false);
-                                });
+                                if (result.result) {
+                                  setState(() {
+                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.followerIdx, false);
+                                  });
+                                }
                               }
                             }
 
@@ -170,18 +172,20 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                         )
                       : GestureDetector(
                           onTap: () async {
-                            if (ref.read(userInfoProvider).userModel == null) {
-                              context.pushReplacement("/loginScreen");
-                            } else {
-                              final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                    followIdx: widget.followerIdx,
-                                  );
+                            if (!ref.watch(followApiIsLoadingStateProvider)) {
+                              if (ref.read(userInfoProvider).userModel == null) {
+                                context.pushReplacement("/loginScreen");
+                              } else {
+                                final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                      followIdx: widget.followerIdx,
+                                    );
 
-                              if (result.result) {
-                                setState(() {
-                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.followerIdx, true);
-                                });
+                                if (result.result) {
+                                  setState(() {
+                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.followerIdx, true);
+                                  });
+                                }
                               }
                             }
 

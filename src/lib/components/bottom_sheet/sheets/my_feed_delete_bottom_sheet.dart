@@ -21,14 +21,14 @@ void myFeedDeleteBottomSheet({required BuildContext context, required VoidCallba
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "게시물을 삭제하시겠어요?",
+                "피드를 삭제하시겠어요?",
                 style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
               ),
             ],
           ),
         ),
         Text(
-          "삭제한 게시물은",
+          "삭제한 피드는",
           style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
         ),
         Text(

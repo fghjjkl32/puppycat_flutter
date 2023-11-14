@@ -53,9 +53,16 @@ class CustomDialog extends StatelessWidget {
                   cancelWidget != null
                       ? Expanded(
                           child: InkWell(
-                            borderRadius: const BorderRadius.only(bottomRight: Radius.circular(20)),
+                            borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20)),
                             onTap: cancelTap,
-                            child: Center(child: cancelWidget),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  right: BorderSide(width: 1.0, color: kNeutralColor300),
+                                ),
+                              ),
+                              child: Center(child: cancelWidget),
+                            ),
                           ),
                         )
                       : Visibility(

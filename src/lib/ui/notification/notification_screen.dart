@@ -16,6 +16,8 @@ import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/setting_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/notification_list_state_provider.dart';
@@ -227,11 +229,13 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
                               isFollowed: item.followState == 1 ? true : false,
                               onTapFollowButton: (isFollowed) {
-                                var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                if (isFollowed) {
-                                  ref.read(notificationListStateProvider.notifier).unSetFollow(loginMemberIdx, item.senderIdx);
-                                } else {
-                                  ref.read(notificationListStateProvider.notifier).setFollow(loginMemberIdx, item.senderIdx);
+                                if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                  var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                  if (isFollowed) {
+                                    ref.read(notificationListStateProvider.notifier).unSetFollow(loginMemberIdx, item.senderIdx);
+                                  } else {
+                                    ref.read(notificationListStateProvider.notifier).setFollow(loginMemberIdx, item.senderIdx);
+                                  }
                                 }
                               },
                             );
@@ -252,21 +256,23 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                 ///TODO
                                 ///route 정리 필요
                                 var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                context.push("/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/notificationContent");
+                                context.push("/home/myPage/detail/testaaa/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent");
                               },
                               onLikeTap: (isLiked) {
-                                var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                if (isLiked) {
-                                  ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
-                                } else {
-                                  ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
+                                if (!ref.watch(likeApiIsLoadingStateProvider)) {
+                                  var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                  if (isLiked) {
+                                    ref.read(notificationListStateProvider.notifier).unSetFeedLike(loginMemberIdx, item.contentsIdx);
+                                  } else {
+                                    ref.read(notificationListStateProvider.notifier).setFeedLike(loginMemberIdx, item.contentsIdx);
+                                  }
                                 }
                               },
                               onCommentTap: () {
                                 ///TODO
                                 ///route 정리 필요
                                 var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                context.push("/home/myPage/detail/nickname/게시물/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
+                                context.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
                                   "isRouteComment": true,
                                 });
                               },
@@ -288,7 +294,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               onTap: () {
                                 print('item.commentIdx ${item.commentIdx} / ${item.contentsIdx}');
                                 var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                context.push("/home/myPage/detail/nickname/게시물/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
+                                context.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
                                   "isRouteComment": true,
                                   "focusIdx": item.commentIdx,
                                 });
@@ -421,7 +427,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
             //                         ///TODO
             //                         ///route 정리 필요
             //                         var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-            //                         context.push("/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent");
+            //                         context.push("/home/myPage/detail/testaaa/피드/$loginMemberIdx/${item.contentsIdx}/userContent");
             //                       },
             //                       onLikeTap: (isLiked) {
             //                         var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
@@ -435,7 +441,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
             //                         ///TODO
             //                         ///route 정리 필요
             //                         var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-            //                         context.push("/home/myPage/detail/testaaa/게시물/$loginMemberIdx/${item.contentsIdx}/userContent", extra: {
+            //                         context.push("/home/myPage/detail/testaaa/피드/$loginMemberIdx/${item.contentsIdx}/userContent", extra: {
             //                           "isRouteComment": true,
             //                         });
             //                       },

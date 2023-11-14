@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
@@ -21,14 +22,14 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "게시물을 보관하시겠어요?",
+                "피드를 보관하시겠어요?",
                 style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
               ),
             ],
           ),
         ),
         Text(
-          "보관된 게시물은 언제든지 프로필에",
+          "보관된 피드는 언제든지 프로필에",
           style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
         ),
         Text(

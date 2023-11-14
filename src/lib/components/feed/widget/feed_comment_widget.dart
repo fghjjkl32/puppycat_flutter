@@ -9,10 +9,13 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class FeedCommentWidget extends ConsumerWidget {
   const FeedCommentWidget({
+    required this.userMemberIdx,
     required this.profileImage,
     required this.name,
     required this.comment,
@@ -23,6 +26,7 @@ class FeedCommentWidget extends ConsumerWidget {
     Key? key,
   }) : super(key: key);
 
+  final int userMemberIdx;
   final String? profileImage;
   final String name;
   final String comment;
@@ -42,7 +46,21 @@ class FeedCommentWidget extends ConsumerWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            getProfileAvatar(profileImage ?? "", 30.w, 30.h),
+            GestureDetector(
+              onTap: () {
+                ref.read(userInfoProvider).userModel?.idx == userMemberIdx
+                    ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyPageMainScreen(
+                            oldMemberIdx: oldMemberIdx,
+                          ),
+                        ),
+                      )
+                    : context.push("/home/myPage/followList/$userMemberIdx/userPage/$name/$userMemberIdx/$oldMemberIdx");
+              },
+              child: getProfileAvatar(profileImage ?? "", 30.w, 30.h),
+            ),
             SizedBox(
               width: 8.w,
             ),
@@ -55,8 +73,7 @@ class FeedCommentWidget extends ConsumerWidget {
                 nip: BubbleNip.leftTop,
                 nipOffset: 15.h,
                 color: kNeutralColor200,
-                padding: BubbleEdges.only(
-                    left: 12.w, right: 12.w, top: 10.h, bottom: 12.h),
+                padding: BubbleEdges.only(left: 12.w, right: 12.w, top: 10.h, bottom: 12.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -77,8 +94,7 @@ class FeedCommentWidget extends ConsumerWidget {
                             : Container(),
                         Text(
                           name,
-                          style: kBody12SemiBoldStyle.copyWith(
-                              color: kTextSubTitleColor),
+                          style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                         ),
                       ],
                     ),
@@ -93,13 +109,11 @@ class FeedCommentWidget extends ConsumerWidget {
                             comment,
                             mentionListData,
                             context,
-                            kBody11RegularStyle.copyWith(
-                                color: kSecondaryColor),
+                            kBody11RegularStyle.copyWith(color: kSecondaryColor),
                             ref,
                             oldMemberIdx,
                           ),
-                          style: kBody11RegularStyle.copyWith(
-                              color: kTextTitleColor),
+                          style: kBody11RegularStyle.copyWith(color: kTextTitleColor),
                         ),
                       ),
                     ),

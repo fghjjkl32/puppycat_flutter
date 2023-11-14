@@ -735,7 +735,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "최근검색어",
+                                          "최근 검색어",
                                           style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                                         ),
                                         GestureDetector(

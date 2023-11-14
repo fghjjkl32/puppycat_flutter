@@ -8,12 +8,18 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_detail_state.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/popular_week_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_tag_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
@@ -23,6 +29,9 @@ import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/sav
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'feed_list_state_provider.g.dart';
+
+final likeApiIsLoadingStateProvider = StateProvider<bool>((ref) => false);
+final saveApiIsLoadingStateProvider = StateProvider<bool>((ref) => false);
 
 final feedListEmptyProvider = StateProvider<bool>((ref) => true);
 
@@ -40,6 +49,7 @@ class FeedListState extends _$FeedListState {
   int? loginMemberIdx;
 
   FeedData? tempFeedData;
+  ContentImageData? tempContentImageData;
 
   int? tempFeedDataIndex;
   int? tempFirstFeedDataIndex;
@@ -47,6 +57,8 @@ class FeedListState extends _$FeedListState {
   int? tempMyFeedDataIndex;
   int? tempFollowFeedDataIndex;
   int? tempPopularWeekFeedDataIndex;
+  int? tempContentImageDataIndex;
+  int? tempTagContentImageDataIndex;
 
   @override
   PagingController<int, FeedData> build() {
@@ -69,7 +81,7 @@ class FeedListState extends _$FeedListState {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: pageKey);
       } else if (contentType == "myTagContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyTagContentsDetailList(loginMemberIdx: loginMemberIdx, page: pageKey);
-      } else if (contentType == "userContent") {
+      } else if (contentType == "userContent" || contentType == "FollowCardContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserContentsDetailList(loginMemberIdx: loginMemberIdx, page: pageKey, memberIdx: memberIdx);
       } else if (contentType == "userTagContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentDetail(loginMemberIdx: loginMemberIdx!, page: pageKey, memberIdx: memberIdx!);
@@ -389,6 +401,91 @@ class FeedListState extends _$FeedListState {
         ref.read(popularWeekFeedStateProvider).notifyListeners();
       }
     }
+
+    if (ref.read(myContentsStateProvider).itemList != null) {
+      targetIdx = ref.read(myContentsStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        if (type == "postLike") {
+          ref.read(myContentsStateProvider).itemList![targetIdx] = ref.read(myContentsStateProvider).itemList![targetIdx].copyWith(
+                selfLike: 1,
+                likeCnt: ref.read(myContentsStateProvider).itemList![targetIdx].likeCnt! + 1,
+              );
+        } else if (type == "deleteLike") {
+          ref.read(myContentsStateProvider).itemList![targetIdx] = ref.read(myContentsStateProvider).itemList![targetIdx].copyWith(
+                selfLike: 0,
+                likeCnt: ref.read(myContentsStateProvider).itemList![targetIdx].likeCnt! - 1,
+              );
+        } else if (type == "postKeepContents") {
+          ref.read(myContentsStateProvider).itemList!.removeAt(targetIdx);
+        } else if (type == "deleteOneContents") {
+          ref.read(myContentsStateProvider).itemList!.removeAt(targetIdx);
+        }
+
+        ref.read(myContentsStateProvider).notifyListeners();
+      }
+    }
+    if (ref.read(myTagContentsStateProvider).itemList != null) {
+      targetIdx = ref.read(myTagContentsStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        if (type == "postKeepContents") {
+          ref.read(myTagContentsStateProvider).itemList!.removeAt(targetIdx);
+        } else if (type == "deleteOneContents") {
+          ref.read(myTagContentsStateProvider).itemList!.removeAt(targetIdx);
+        }
+
+        ref.read(myTagContentsStateProvider).notifyListeners();
+      }
+    }
+
+    if (ref.read(userContentsStateProvider).itemList != null) {
+      if (type == "deleteHide" || type == "deleteContentReport") {
+        if (tempContentImageData != null && tempContentImageDataIndex != null) {
+          ref.read(userContentsStateProvider).itemList!.insert(tempContentImageDataIndex!, tempContentImageData!);
+          tempContentImageDataIndex = null;
+        }
+      } else if (type == "postBlock") {
+        ref.read(userContentsStateProvider).itemList!.clear();
+        ref.read(userTagContentsStateProvider).itemList!.clear();
+      }
+
+      targetIdx = ref.read(userContentsStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        if (type == "postHide" || type == "postContentReport") {
+          tempContentImageData = ref.read(userContentsStateProvider).itemList![targetIdx];
+          tempContentImageDataIndex = targetIdx;
+          ref.read(userContentsStateProvider).itemList!.removeAt(targetIdx);
+        }
+      }
+
+      ref.read(userContentsStateProvider).notifyListeners();
+    }
+
+    if (ref.read(userTagContentsStateProvider).itemList != null) {
+      if (type == "deleteHide" || type == "deleteContentReport") {
+        if (tempContentImageData != null && tempTagContentImageDataIndex != null) {
+          ref.read(userTagContentsStateProvider).itemList!.insert(tempTagContentImageDataIndex!, tempContentImageData!);
+          tempTagContentImageDataIndex = null;
+        }
+      } else if (type == "postBlock") {
+        ref.read(userTagContentsStateProvider).itemList!.clear();
+        ref.read(userContentsStateProvider).itemList!.clear();
+      }
+
+      targetIdx = ref.read(userTagContentsStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        if (type == "postHide" || type == "postContentReport") {
+          tempContentImageData = ref.read(userTagContentsStateProvider).itemList![targetIdx];
+          tempTagContentImageDataIndex = targetIdx;
+          ref.read(userTagContentsStateProvider).itemList!.removeAt(targetIdx);
+        }
+      }
+
+      ref.read(userTagContentsStateProvider).notifyListeners();
+    }
   }
 
   Future<ResponseModel> postLike({
@@ -397,6 +494,8 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
     int targetIdx = -1;
@@ -428,6 +527,8 @@ class FeedListState extends _$FeedListState {
       "postLike",
     );
 
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+
     return result;
   }
 
@@ -437,6 +538,8 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
     int targetIdx = -1;
@@ -468,6 +571,8 @@ class FeedListState extends _$FeedListState {
       "deleteLike",
     );
 
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+
     return result;
   }
 
@@ -477,6 +582,8 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
+    ref.read(saveApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FeedRepository(dio: ref.read(dioProvider)).postSave(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
     int targetIdx = -1;
@@ -506,6 +613,8 @@ class FeedListState extends _$FeedListState {
       "postSave",
     );
 
+    ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
+
     return result;
   }
 
@@ -515,6 +624,8 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
+    ref.read(saveApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FeedRepository(dio: ref.read(dioProvider)).deleteSave(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
     int targetIdx = -1;
@@ -544,6 +655,8 @@ class FeedListState extends _$FeedListState {
       "deleteSave",
     );
 
+    ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
+
     return result;
   }
 
@@ -561,6 +674,7 @@ class FeedListState extends _$FeedListState {
         targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdxList[0]);
 
         ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+        ref.read(firstFeedEmptyProvider.notifier).state = true;
         ref.read(firstFeedStateProvider).notifyListeners();
       }
 
@@ -593,18 +707,16 @@ class FeedListState extends _$FeedListState {
       if (idxToRemove == contentIdx) {
         targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
-        ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-              keepState: 0,
-            );
+        ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+        ref.read(firstFeedEmptyProvider.notifier).state = true;
+
         ref.read(firstFeedStateProvider).notifyListeners();
       }
 
       targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          keepState: 0,
-        );
+        state.itemList!.removeAt(targetIdx);
         state.notifyListeners();
       }
     }
@@ -631,6 +743,8 @@ class FeedListState extends _$FeedListState {
         targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
         ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+        ref.read(firstFeedEmptyProvider.notifier).state = true;
+
         ref.read(firstFeedStateProvider).notifyListeners();
       }
 
@@ -669,6 +783,8 @@ class FeedListState extends _$FeedListState {
         tempFeedData = ref.read(firstFeedStateProvider).itemList![targetIdx];
 
         ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+        ref.read(firstFeedEmptyProvider.notifier).state = true;
+
         ref.read(firstFeedStateProvider).notifyListeners();
       }
 
@@ -776,6 +892,8 @@ class FeedListState extends _$FeedListState {
         tempFeedData = ref.read(firstFeedStateProvider).itemList![targetIdx];
 
         ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+        ref.read(firstFeedEmptyProvider.notifier).state = true;
+
         ref.read(firstFeedStateProvider).notifyListeners();
       }
 

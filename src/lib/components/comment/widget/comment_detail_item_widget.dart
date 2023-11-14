@@ -91,7 +91,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                   : Container(),
               GestureDetector(
                 onTap: () {
-                  ref.read(userInfoProvider).userModel!.idx == memberIdx
+                  ref.read(userInfoProvider).userModel?.idx == memberIdx
                       ? Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -127,13 +127,17 @@ class CommentDetailItemWidget extends ConsumerWidget {
                       ),
                     GestureDetector(
                       onDoubleTap: () {
-                        isLike
-                            ? null
-                            : ref.watch(commentStateProvider.notifier).postCommentLike(
-                                  commentIdx: commentIdx,
-                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                  contentsIdx: contentIdx,
-                                );
+                        if (ref.read(userInfoProvider).userModel == null) {
+                          context.pushReplacement("/loginScreen");
+                        } else {
+                          isLike
+                              ? null
+                              : ref.watch(commentStateProvider.notifier).postCommentLike(
+                                    commentIdx: commentIdx,
+                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                    contentsIdx: contentIdx,
+                                  );
+                        }
                       },
                       child: Bubble(
                         isComment: true,
@@ -152,7 +156,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    ref.read(userInfoProvider).userModel!.idx == memberIdx
+                                    ref.read(userInfoProvider).userModel?.idx == memberIdx
                                         ? Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -193,7 +197,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        memberIdx == ref.read(userInfoProvider).userModel!.idx
+                                        memberIdx == ref.read(userInfoProvider).userModel?.idx
                                             ? showCustomModalBottomSheet(
                                                 context: context,
                                                 widget: Column(
@@ -253,66 +257,68 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                       onTap: () async {
                                                         context.pop();
 
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (BuildContext context) {
-                                                            return CustomDialog(
-                                                                content: Padding(
-                                                                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Text(
-                                                                        "‘${name}’님을\n차단하시겠어요?",
-                                                                        style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                                                                        textAlign: TextAlign.center,
+                                                        ref.read(userInfoProvider).userModel == null
+                                                            ? context.pushReplacement("/loginScreen")
+                                                            : showDialog(
+                                                                context: context,
+                                                                builder: (BuildContext context) {
+                                                                  return CustomDialog(
+                                                                      content: Padding(
+                                                                        padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                                        child: Column(
+                                                                          children: [
+                                                                            Text(
+                                                                              "‘${name}’님을\n차단하시겠어요?",
+                                                                              style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                                              textAlign: TextAlign.center,
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: 8.h,
+                                                                            ),
+                                                                            Text(
+                                                                              "‘${name}’님은 더 이상 회원님의\n피드를 보거나 메시지 등을 보낼 수 없습니다.",
+                                                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                                              textAlign: TextAlign.center,
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: 8.h,
+                                                                            ),
+                                                                            Text(
+                                                                              " ‘${name}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
+                                                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                                              textAlign: TextAlign.center,
+                                                                            ),
+                                                                          ],
+                                                                        ),
                                                                       ),
-                                                                      SizedBox(
-                                                                        height: 8.h,
-                                                                      ),
-                                                                      Text(
-                                                                        "‘${name}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
-                                                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                                                        textAlign: TextAlign.center,
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height: 8.h,
-                                                                      ),
-                                                                      Text(
-                                                                        " ‘${name}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
-                                                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                                                        textAlign: TextAlign.center,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                confirmTap: () async {
-                                                                  context.pop();
+                                                                      confirmTap: () async {
+                                                                        context.pop();
 
-                                                                  final result = await ref.read(commentStateProvider.notifier).postBlock(
-                                                                        memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                                                                        blockIdx: memberIdx,
-                                                                        contentsIdx: contentIdx,
-                                                                      );
+                                                                        final result = await ref.read(commentStateProvider.notifier).postBlock(
+                                                                              memberIdx: ref.watch(userInfoProvider).userModel!.idx,
+                                                                              blockIdx: memberIdx,
+                                                                              contentsIdx: contentIdx,
+                                                                            );
 
-                                                                  if (result.result) {
-                                                                    context.pop();
+                                                                        if (result.result) {
+                                                                          context.pop();
 
-                                                                    toast(
-                                                                      context: context,
-                                                                      text: "‘${name}’님을 차단하였습니다.",
-                                                                      type: ToastType.purple,
-                                                                    );
-                                                                  }
+                                                                          toast(
+                                                                            context: context,
+                                                                            text: "‘${name}’님을 차단하였습니다.",
+                                                                            type: ToastType.purple,
+                                                                          );
+                                                                        }
+                                                                      },
+                                                                      cancelTap: () {
+                                                                        context.pop();
+                                                                      },
+                                                                      confirmWidget: Text(
+                                                                        "유저 차단",
+                                                                        style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+                                                                      ));
                                                                 },
-                                                                cancelTap: () {
-                                                                  context.pop();
-                                                                },
-                                                                confirmWidget: Text(
-                                                                  "유저 차단",
-                                                                  style: kButton14MediumStyle.copyWith(color: kBadgeColor),
-                                                                ));
-                                                          },
-                                                        );
+                                                              );
                                                       },
                                                     ),
                                                     BottomSheetButtonItem(
@@ -324,7 +330,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () {
                                                         context.pop();
-                                                        context.push("/home/report/true/$commentIdx");
+                                                        ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/report/true/$commentIdx");
                                                       },
                                                     ),
                                                   ],
@@ -383,11 +389,15 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                 )
                               : InkWell(
                                   onTap: () {
-                                    ref.watch(commentStateProvider.notifier).postCommentLike(
-                                          commentIdx: commentIdx,
-                                          memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                          contentsIdx: contentIdx,
-                                        );
+                                    if (ref.read(userInfoProvider).userModel == null) {
+                                      context.pushReplacement("/loginScreen");
+                                    } else {
+                                      ref.watch(commentStateProvider.notifier).postCommentLike(
+                                            commentIdx: commentIdx,
+                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                            contentsIdx: contentIdx,
+                                          );
+                                    }
                                   },
                                   child: const Icon(
                                     Puppycat_social.icon_comment_like_de,
@@ -401,11 +411,15 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            if (!isReply) {
-                              ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, commentIdx);
-                              ref.watch(commentHeaderProvider.notifier).setHasInput(true);
+                            if (ref.read(userInfoProvider).userModel == null) {
+                              context.pushReplacement("/loginScreen");
                             } else {
-                              ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, parentIdx);
+                              if (!isReply) {
+                                ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, commentIdx);
+                                ref.watch(commentHeaderProvider.notifier).setHasInput(true);
+                              } else {
+                                ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, parentIdx);
+                              }
                             }
                           },
                           child: Row(

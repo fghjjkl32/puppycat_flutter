@@ -7,6 +7,7 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
+import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -28,8 +29,7 @@ class FeedWriteScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ConditionalWillPopScope(
-      shouldAddCallback: true,
+    return DefaultOnWillPopScope(
       onWillPop: () async {
         showDialog(
           context: context,
@@ -60,6 +60,7 @@ class FeedWriteScreen extends ConsumerWidget {
 
                 ref.read(feedWriteProvider.notifier).resetTag();
                 ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+                ref.watch(feedWriteContentProvider.notifier).state = TextEditingController(text: "");
                 ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
               },
               cancelTap: () {
@@ -78,12 +79,13 @@ class FeedWriteScreen extends ConsumerWidget {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('새 게시물'),
+          title: const Text('새 피드'),
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
 
               ref.read(feedWriteProvider.notifier).resetTag();
+              ref.watch(feedWriteContentProvider.notifier).state = TextEditingController(text: "");
               ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
               ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
             },
@@ -139,6 +141,7 @@ class FeedWriteScreen extends ConsumerWidget {
                 if (result.result) {
                   ref.read(feedWriteProvider.notifier).resetTag();
                   ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+                  ref.watch(feedWriteContentProvider.notifier).state = TextEditingController(text: "");
                   ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
                   context.pushReplacement("/home");
                 } else {
@@ -152,14 +155,14 @@ class FeedWriteScreen extends ConsumerWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  "게시물을 등록할 수 없습니다.",
+                                  "피드를 등록할 수 없습니다.",
                                   style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                                 ),
                                 SizedBox(
                                   height: 4.h,
                                 ),
                                 Text(
-                                  "죄송합니다.\n게시물 등록 중 오류가 발생하였습니다.\n다시 시도해 주세요.",
+                                  "죄송합니다.\n피드 등록 중 오류가 발생하였습니다.\n다시 시도해 주세요.",
                                   style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                   textAlign: TextAlign.center,
                                 ),

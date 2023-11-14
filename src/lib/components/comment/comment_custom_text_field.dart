@@ -160,6 +160,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                         borderRadius: BorderRadius.all(lineCount <= 2 ? const Radius.circular(50) : const Radius.circular(10)),
                       ),
                       child: TextField(
+                        readOnly: ref.read(userInfoProvider).userModel == null ? true : false,
                         focusNode: focusNode,
                         controller: ref.watch(commentValueProvider),
                         onChanged: (text) {
@@ -202,7 +203,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                           fillColor: Colors.transparent,
                           border: InputBorder.none,
                           counterText: "",
-                          hintText: '댓글을 입력해주세요.',
+                          hintText: ref.read(userInfoProvider).userModel == null ? "로그인 하면 쓸 수 있어요." : '댓글을 입력해주세요.',
                           hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
                           contentPadding: const EdgeInsets.all(16),
                           suffixIcon: ref.read(commentHeaderProvider).hasInput

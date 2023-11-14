@@ -6,6 +6,8 @@ import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
@@ -80,7 +82,7 @@ class NotificationListState extends _$NotificationListState {
         }
       }).toList();
 
-      if(result.isFirst != null) {
+      if (result.isFirst != null) {
         print('result.isFirst');
         ref.read(notificationFirstVisitProvider.notifier).state = true; //result.isFirst!;
       }
@@ -113,31 +115,43 @@ class NotificationListState extends _$NotificationListState {
   }
 
   void setFeedLike(int memberIdx, int contentsIdx) async {
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(memberIdx: memberIdx, contentIdx: contentsIdx);
     if (result.result) {
       changedLikeState(contentsIdx, true);
     }
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
   }
 
   void unSetFeedLike(int memberIdx, int contentsIdx) async {
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(memberIdx: memberIdx, contentsIdx: contentsIdx);
     if (result.result) {
       changedLikeState(contentsIdx, false);
     }
+    ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
   }
 
   void setFollow(int memberIdx, int followIdx) async {
+    ref.read(followApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
     if (result.result) {
       changedFollowState(followIdx, true);
     }
+    ref.read(followApiIsLoadingStateProvider.notifier).state = false;
   }
 
   void unSetFollow(int memberIdx, int followIdx) async {
+    ref.read(followApiIsLoadingStateProvider.notifier).state = true;
+
     final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
     if (result.result) {
       changedFollowState(followIdx, false);
     }
+    ref.read(followApiIsLoadingStateProvider.notifier).state = false;
   }
 
   void setCommentLike(int memberIdx, int commentIdx) async {

@@ -122,7 +122,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "작성한 게시물",
+                                    "작성한 피드",
                                     style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
                                   ),
                                   Text(
@@ -138,7 +138,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "저장한 게시물",
+                                    "저장한 피드",
                                     style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
                                   ),
                                   Text(
@@ -154,7 +154,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "태그된 게시물",
+                                    "태그된 피드",
                                     style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
                                   ),
                                   Text(

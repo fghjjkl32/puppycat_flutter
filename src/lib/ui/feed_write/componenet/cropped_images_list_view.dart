@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
@@ -36,9 +37,7 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
   @override
   Widget build(BuildContext context) {
     if (widget.progress == 1.0 && !alreadyLoaded) {
-      ref
-          .read(feedWriteCroppedFilesProvider.notifier)
-          .addAll(widget.croppedFiles);
+      ref.read(feedWriteCroppedFilesProvider.notifier).addAll(widget.croppedFiles);
       alreadyLoaded = true;
     }
 
@@ -64,24 +63,16 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
               aspectRatio: 1,
               padEnds: false,
               onPageChanged: (index, reason) {
-                ref.watch(feedWriteCurrentTagCountProvider.notifier).state =
-                    taggedImages
-                        .firstWhere((tagImage) => tagImage.index == index,
-                            orElse: () => TagImages(index: index, tag: []))
-                        .tag
-                        .length;
+                ref.watch(feedWriteCurrentTagCountProvider.notifier).state = taggedImages.firstWhere((tagImage) => tagImage.index == index, orElse: () => TagImages(index: index, tag: [])).tag.length;
 
-                ref.watch(feedWriteCurrentViewCountProvider.notifier).state =
-                    index;
+                ref.watch(feedWriteCurrentViewCountProvider.notifier).state = index;
               },
             ),
             itemCount: providerCroppedFiles.length,
             itemBuilder: (BuildContext context, int index, int realIndex) {
               File file = providerCroppedFiles[index];
 
-              TagImages tagImages = taggedImages.firstWhere(
-                  (tagImage) => tagImage.index == index,
-                  orElse: () => TagImages(index: index, tag: []));
+              TagImages tagImages = taggedImages.firstWhere((tagImage) => tagImage.index == index, orElse: () => TagImages(index: index, tag: []));
 
               List<Tag> tags = tagImages.tag;
 
@@ -92,8 +83,7 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                   children: [
                     Center(
                       child: ClipRRect(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
                         child: Image.file(
                           width: 300.w,
                           height: 225.h,
@@ -108,28 +98,14 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                       child: providerCroppedFiles.length > 1
                           ? GestureDetector(
                               onTap: () {
-                                ref
-                                    .read(
-                                        feedWriteCroppedFilesProvider.notifier)
-                                    .removeAt(index);
+                                ref.read(feedWriteCroppedFilesProvider.notifier).removeAt(index);
 
-                                ref
-                                    .read(feedWriteProvider.notifier)
-                                    .removeTagsFromImage(index);
+                                ref.read(feedWriteProvider.notifier).removeTagsFromImage(index);
 
-                                if (index >= 0 &&
-                                    index < taggedImages.length - 1) {
-                                  ref
-                                          .watch(
-                                              feedWriteCurrentTagCountProvider
-                                                  .notifier)
-                                          .state =
-                                      taggedImages[index + 1].tag.length;
+                                if (index >= 0 && index < taggedImages.length - 1) {
+                                  ref.watch(feedWriteCurrentTagCountProvider.notifier).state = taggedImages[index + 1].tag.length;
                                 } else {
-                                  ref
-                                      .watch(feedWriteCurrentTagCountProvider
-                                          .notifier)
-                                      .state = 0;
+                                  ref.watch(feedWriteCurrentTagCountProvider.notifier).state = 0;
                                 }
                               },
                               child: Container(
@@ -148,53 +124,50 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                             )
                           : Container(),
                     ),
-                    ...tags.map((item) {
-                      return Positioned(
-                        top: item.position.dy,
-                        left: item.position.dx,
-                        child: GestureDetector(
-                          onTap: () {
-                            ref
-                                .read(feedWriteProvider.notifier)
-                                .removeTag(item);
-                            ref
-                                .watch(
-                                    feedWriteCurrentTagCountProvider.notifier)
-                                .state = taggedImages
-                                    .firstWhere(
-                                        (tagImage) => tagImage.index == index,
-                                        orElse: () =>
-                                            TagImages(index: index, tag: []))
-                                    .tag
-                                    .length -
-                                1;
-                          },
-                          child: MentionTagWidget(
-                            color: kTextSubTitleColor.withOpacity(0.8),
-                            textStyle: kBody11RegularStyle.copyWith(
-                                color: kNeutralColor100),
-                            text: item.username,
-                            onDelete: () {
-                              ref
-                                  .read(feedWriteProvider.notifier)
-                                  .removeTag(item);
-
-                              ref
-                                  .watch(
-                                      feedWriteCurrentTagCountProvider.notifier)
-                                  .state = taggedImages
-                                      .firstWhere(
-                                          (tagImage) => tagImage.index == index,
-                                          orElse: () =>
-                                              TagImages(index: index, tag: []))
-                                      .tag
-                                      .length -
-                                  1;
-                            },
+                    if (tags.isNotEmpty)
+                      Positioned(
+                        left: 20,
+                        bottom: 10,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xff414348).withOpacity(0.6),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: Icon(
+                              Puppycat_social.icon_taguser,
+                              size: 24,
+                              color: kNeutralColor100,
+                            ),
                           ),
                         ),
-                      );
-                    }).toList(),
+                      ),
+
+                    // ...tags.map((item) {
+                    //   return Positioned(
+                    //     top: item.position.dy,
+                    //     left: item.position.dx,
+                    //     child: GestureDetector(
+                    //       onTap: () {
+                    //         ref.read(feedWriteProvider.notifier).removeTag(item);
+                    //         ref.watch(feedWriteCurrentTagCountProvider.notifier).state =
+                    //             taggedImages.firstWhere((tagImage) => tagImage.index == index, orElse: () => TagImages(index: index, tag: [])).tag.length - 1;
+                    //       },
+                    //       child: MentionTagWidget(
+                    //         color: kTextSubTitleColor.withOpacity(0.8),
+                    //         textStyle: kBody11RegularStyle.copyWith(color: kNeutralColor100),
+                    //         text: item.username,
+                    //         onDelete: () {
+                    //           ref.read(feedWriteProvider.notifier).removeTag(item);
+                    //
+                    //           ref.watch(feedWriteCurrentTagCountProvider.notifier).state =
+                    //               taggedImages.firstWhere((tagImage) => tagImage.index == index, orElse: () => TagImages(index: index, tag: [])).tag.length - 1;
+                    //         },
+                    //       ),
+                    //     ),
+                    //   );
+                    // }).toList(),
                   ],
                 ),
               );
@@ -204,8 +177,7 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
             Positioned.fill(
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color:
-                      Theme.of(context).scaffoldBackgroundColor.withOpacity(.5),
+                  color: Theme.of(context).scaffoldBackgroundColor.withOpacity(.5),
                 ),
               ),
             ),

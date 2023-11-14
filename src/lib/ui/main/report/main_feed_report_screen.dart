@@ -45,7 +45,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(
-            widget.isComment ? "댓글 신고" : "게시물 신고",
+            widget.isComment ? "댓글 신고" : "피드 신고",
           ),
           leading: IconButton(
             onPressed: () {

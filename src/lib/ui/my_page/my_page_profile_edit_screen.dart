@@ -12,6 +12,7 @@ import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
@@ -19,6 +20,7 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
@@ -374,10 +376,55 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                     ),
                                     title: '앨범에서 선택',
                                     titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
-                                    onTap: () {
+                                    onTap: () async {
                                       context.pop();
 
-                                      openGallery();
+                                      if (await Permissions.getPhotosPermissionState()) {
+                                        openGallery();
+                                      } else {
+                                        if (mounted) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return CustomDialog(
+                                                  content: Padding(
+                                                    padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          "퍼피캣 접근 권한 허용",
+                                                          style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 4.h,
+                                                        ),
+                                                        Text(
+                                                          "프로필 사진 등록을 위해\n사진 접근을 허용해 주세요.",
+                                                          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  confirmTap: () {
+                                                    context.pop();
+                                                    openAppSettings();
+                                                  },
+                                                  cancelTap: () {
+                                                    context.pop();
+                                                  },
+                                                  confirmWidget: Text(
+                                                    "허용",
+                                                    style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                                                  ),
+                                                  cancelWidget: Text(
+                                                    "허용 안 함",
+                                                    style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                                                  ));
+                                            },
+                                          );
+                                        }
+                                      }
                                     },
                                   ),
                                   BottomSheetButtonItem(
@@ -658,25 +705,23 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24.0.w),
-                      child: SizedBox(
-                          height: 32.h,
-                          child: TextField(
-                            controller: introController,
-                            decoration: InputDecoration(
-                              counterText: "",
-                              hintText:
-                                  "${ref.watch(editStateProvider).userInfoModel!.userModel!.introText == "" ? '소개 글을 입력해 주세요.' : ref.watch(editStateProvider).userInfoModel!.userModel!.introText}",
-                              hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
-                              contentPadding: const EdgeInsets.all(16),
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                isNextStep = true;
-                              });
-                            },
-                            style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-                            textAlignVertical: TextAlignVertical.center,
-                          )),
+                      child: TextField(
+                        controller: introController,
+                        maxLength: 30,
+                        decoration: InputDecoration(
+                          counterText: "",
+                          hintText: "${ref.watch(editStateProvider).userInfoModel!.userModel!.introText == "" ? '소개 글을 입력해 주세요.' : ref.watch(editStateProvider).userInfoModel!.userModel!.introText}",
+                          hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                          contentPadding: const EdgeInsets.all(16),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            isNextStep = true;
+                          });
+                        },
+                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                        textAlignVertical: TextAlignVertical.center,
+                      ),
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 16.h, left: 12.0.w, bottom: 8.h),

@@ -24,6 +24,7 @@ class DefaultOnWillPopScope extends StatelessWidget {
                 });
               }
             },
+            child: child,
           )
         : WillPopScope(
             onWillPop: onWillPop,

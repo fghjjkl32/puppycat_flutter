@@ -257,6 +257,7 @@ class AppRouter {
                       contentType: contentType,
                       isRouteComment: isRouteComment,
                       commentFocusIndex: commentFocusIndex,
+                      oldMemberIdx: 0,
                     );
                   },
                 ),

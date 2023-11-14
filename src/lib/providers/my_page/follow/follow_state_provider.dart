@@ -9,6 +9,8 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
+final followApiIsLoadingStateProvider = StateProvider<bool>((ref) => false);
+
 class FollowUserStateNotifier extends StateNotifier<Map<int, bool>> {
   FollowUserStateNotifier() : super({});
 
@@ -326,7 +328,9 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required memberIdx,
     required followIdx,
   }) async {
+    ref.read(followApiIsLoadingStateProvider.notifier).state = true;
     final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
+    ref.read(followApiIsLoadingStateProvider.notifier).state = false;
 
     return result;
   }
@@ -335,7 +339,9 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required memberIdx,
     required followIdx,
   }) async {
+    ref.read(followApiIsLoadingStateProvider.notifier).state = true;
     final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+    ref.read(followApiIsLoadingStateProvider.notifier).state = false;
 
     return result;
   }
@@ -344,7 +350,9 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required memberIdx,
     required followIdx,
   }) async {
+    ref.read(followApiIsLoadingStateProvider.notifier).state = true;
     final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollower(memberIdx: memberIdx, followIdx: followIdx);
+    ref.read(followApiIsLoadingStateProvider.notifier).state = false;
 
     return result;
   }

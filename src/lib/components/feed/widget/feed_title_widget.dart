@@ -40,6 +40,7 @@ class FeedTitleWidget extends ConsumerStatefulWidget {
     required this.isEdit,
     required this.memberIdx,
     required this.isKeep,
+    required this.isSpecialUser,
     required this.contentIdx,
     required this.contentType,
     required this.oldMemberIdx,
@@ -55,6 +56,7 @@ class FeedTitleWidget extends ConsumerStatefulWidget {
   final bool isEdit;
   final int? memberIdx;
   final bool isKeep;
+  final bool isSpecialUser;
   final int contentIdx;
   final String contentType;
   final FeedData feedData;
@@ -114,6 +116,19 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                     children: [
                       Row(
                         children: [
+                          widget.isSpecialUser
+                              ? Row(
+                                  children: [
+                                    Image.asset(
+                                      'assets/image/feed/icon/small_size/icon_special.png',
+                                      height: 13.h,
+                                    ),
+                                    SizedBox(
+                                      width: 4.w,
+                                    ),
+                                  ],
+                                )
+                              : Container(),
                           Text(
                             "${widget.userName}",
                             style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
@@ -131,18 +146,20 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                               ),
                                               InkWell(
                                                 onTap: () async {
-                                                  if (ref.read(userInfoProvider).userModel == null) {
-                                                    context.pushReplacement("/loginScreen");
-                                                  } else {
-                                                    final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                          memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                          followIdx: widget.memberIdx,
-                                                        );
+                                                  if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                                    if (ref.read(userInfoProvider).userModel == null) {
+                                                      context.pushReplacement("/loginScreen");
+                                                    } else {
+                                                      final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                            followIdx: widget.memberIdx,
+                                                          );
 
-                                                    if (result.result) {
-                                                      setState(() {
-                                                        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx!, false);
-                                                      });
+                                                      if (result.result) {
+                                                        setState(() {
+                                                          ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx!, false);
+                                                        });
+                                                      }
                                                     }
                                                   }
                                                 },
@@ -161,18 +178,20 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                               ),
                                               InkWell(
                                                 onTap: () async {
-                                                  if (ref.read(userInfoProvider).userModel == null) {
-                                                    context.pushReplacement("/loginScreen");
-                                                  } else {
-                                                    final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                          memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                          followIdx: widget.memberIdx,
-                                                        );
+                                                  if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                                    if (ref.read(userInfoProvider).userModel == null) {
+                                                      context.pushReplacement("/loginScreen");
+                                                    } else {
+                                                      final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                            followIdx: widget.memberIdx,
+                                                          );
 
-                                                    if (result.result) {
-                                                      setState(() {
-                                                        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx!, true);
-                                                      });
+                                                      if (result.result) {
+                                                        setState(() {
+                                                          ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx!, true);
+                                                        });
+                                                      }
                                                     }
                                                   }
                                                 },
@@ -252,7 +271,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                         if (result.result && mounted) {
                                           toast(
                                             context: context,
-                                            text: '게시물 보관이 취소됐습니다.',
+                                            text: '피드 보관이 취소됐습니다.',
                                             type: ToastType.purple,
                                           );
                                         }
@@ -281,7 +300,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                             if (result.result && mounted) {
                                               toast(
                                                 context: context,
-                                                text: '게시물 보관이 완료되었습니다.',
+                                                text: '피드 보관이 완료되었습니다.',
                                                 type: ToastType.purple,
                                               );
                                             }
@@ -330,7 +349,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                       if (result.result && mounted) {
                                         toast(
                                           context: context,
-                                          text: '게시물 삭제가 완료되었습니다.',
+                                          text: '피드 삭제가 완료되었습니다.',
                                           type: ToastType.purple,
                                         );
                                       }
@@ -365,33 +384,31 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                           memberIdx: widget.memberIdx,
                                         );
 
-                                    if (result.result) {
-                                      if (mounted) {
-                                        toast(
-                                          context: context,
-                                          text: '게시물 숨기기를 완료하였습니다.',
-                                          type: ToastType.purple,
-                                          buttonText: "숨기기 취소",
-                                          buttonOnTap: () async {
-                                            final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
-                                                  loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                  contentType: widget.contentType,
-                                                  contentIdx: tempContentIdx,
-                                                  memberIdx: widget.memberIdx,
-                                                );
+                                    if (result.result && mounted) {
+                                      toast(
+                                        context: context,
+                                        text: '피드 숨기기를 완료하였습니다.',
+                                        type: ToastType.purple,
+                                        buttonText: "숨기기 취소",
+                                        buttonOnTap: () async {
+                                          if (!mounted) return;
 
-                                            if (result.result) {
-                                              if (mounted) {
-                                                toast(
-                                                  context: context,
-                                                  text: '게시물 숨기기 취소',
-                                                  type: ToastType.purple,
-                                                );
-                                              }
-                                            }
-                                          },
-                                        );
-                                      }
+                                          final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
+                                                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                contentType: widget.contentType,
+                                                contentIdx: tempContentIdx,
+                                                memberIdx: widget.memberIdx,
+                                              );
+
+                                          if (result.result && mounted) {
+                                            toast(
+                                              context: context,
+                                              text: '피드 숨기기 취소',
+                                              type: ToastType.purple,
+                                            );
+                                          }
+                                        },
+                                      );
                                     }
                                   }
                                 },
@@ -404,24 +421,26 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                       title: '팔로우 취소',
                                       titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                       onTap: () async {
-                                        context.pop();
+                                        if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                          context.pop();
 
-                                        // ref.watch(feedListStateProvider.notifier).deleteFollow(
-                                        //       memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        //       followIdx: widget.feedData.memberIdx,
-                                        //       contentsIdx: widget.feedData.idx,
-                                        //       contentType: widget.contentType,
-                                        //     );
+                                          // ref.watch(feedListStateProvider.notifier).deleteFollow(
+                                          //       memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                          //       followIdx: widget.feedData.memberIdx,
+                                          //       contentsIdx: widget.feedData.idx,
+                                          //       contentType: widget.contentType,
+                                          //     );
 
-                                        final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                              followIdx: widget.memberIdx,
-                                            );
+                                          final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                                memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                followIdx: widget.memberIdx,
+                                              );
 
-                                        if (result.result) {
-                                          setState(() {
-                                            ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx!, false);
-                                          });
+                                          if (result.result) {
+                                            setState(() {
+                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx!, false);
+                                            });
+                                          }
                                         }
                                       },
                                     )
@@ -455,7 +474,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                     height: 8.h,
                                                   ),
                                                   Text(
-                                                    "‘${widget.userName}’님은 더 이상 회원님의\n게시물을 보거나 메시지 등을 보낼 수 없습니다.",
+                                                    "‘${widget.userName}’님은 더 이상 회원님의\n피드를 보거나 메시지 등을 보낼 수 없습니다.",
                                                     style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                                     textAlign: TextAlign.center,
                                                   ),

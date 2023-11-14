@@ -19,6 +19,7 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/my_page_setting_provider.dart';
@@ -94,8 +95,53 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 size: 20,
               ),
               title: '알림',
-              onPressed: () {
-                ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingAlarm");
+              onPressed: () async {
+                if (await Permissions.getNotificationPermissionState()) {
+                  ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingAlarm");
+                } else {
+                  if (mounted) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CustomDialog(
+                            content: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "퍼피캣 접근 권한 허용",
+                                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                  ),
+                                  SizedBox(
+                                    height: 4.h,
+                                  ),
+                                  Text(
+                                    "푸시 알림 설정을 위해\n알림 접근을 허용해 주세요.",
+                                    style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            confirmTap: () {
+                              context.pop();
+                              openAppSettings();
+                            },
+                            cancelTap: () {
+                              context.pop();
+                            },
+                            confirmWidget: Text(
+                              "허용",
+                              style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                            ),
+                            cancelWidget: Text(
+                              "허용 안 함",
+                              style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                            ));
+                      },
+                    );
+                  }
+                }
               },
             ),
             Padding(

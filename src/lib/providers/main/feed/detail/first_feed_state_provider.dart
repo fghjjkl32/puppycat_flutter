@@ -63,7 +63,7 @@ class FirstFeedState extends _$FirstFeedState {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "myTagContent") {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
-      } else if (contentType == "userContent") {
+      } else if (contentType == "userContent" || contentType == "FollowCardContent") {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx, contentIdx: contentIdx!);
       } else if (contentType == "userTagContent") {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);

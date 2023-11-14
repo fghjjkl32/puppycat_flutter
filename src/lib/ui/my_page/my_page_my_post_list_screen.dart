@@ -185,7 +185,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                         height: 12,
                       ),
                       Text(
-                        '게시물이 없습니다.',
+                        '피드가 없습니다.',
                         textAlign: TextAlign.center,
                         style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
@@ -234,8 +234,16 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                         }
 
                         return GestureDetector(
-                          onTap: () {
-                            context.push("/home/myPage/detail/null/일상글 게시물/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myDetailContent");
+                          onTap: () async {
+                            final result = await context.push("/home/myPage/detail/null/일상글 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myDetailContent");
+
+                            if (result == null) {
+                              await ref.watch(myPostStateProvider.notifier).refreshMyKeeps(ref.read(userInfoProvider).userModel!.idx);
+                              await ref.watch(myPostStateProvider.notifier).refreshMyPost(ref.read(userInfoProvider).userModel!.idx);
+
+                              ref.watch(myPostStateProvider.notifier).resetMyPostSelection();
+                              ref.watch(myPostStateProvider.notifier).resetMyKeepSelection();
+                            }
                           },
                           child: Stack(
                             children: [
@@ -383,7 +391,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                           if (result.result && mounted) {
                                             toast(
                                               context: context,
-                                              text: '게시물 보관이 완료되었습니다.',
+                                              text: '피드 보관이 완료되었습니다.',
                                               type: ToastType.purple,
                                             );
                                           }
@@ -429,7 +437,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                           if (result.result && mounted) {
                                             toast(
                                               context: context,
-                                              text: '게시물 삭제가 완료되었습니다.',
+                                              text: '피드 삭제가 완료되었습니다.',
                                               type: ToastType.purple,
                                             );
                                           }
@@ -465,11 +473,11 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
     //         height: 12.h,
     //       ),
     //       Text(
-    //         "게시물이 없습니다.",
+    //         "피드가 없습니다.",
     //         style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
     //       ),
     //       Text(
-    //         "보관한 게시물이 여기에 표시됩니다.",
+    //         "보관한 피드가 여기에 표시됩니다.",
     //         style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
     //       ),
     //     ],
@@ -501,7 +509,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                         height: 12,
                       ),
                       Text(
-                        '게시물이 없습니다.\n보관한 게시물이 여기에 표시됩니다.',
+                        '피드가 없습니다.\n보관한 피드가 여기에 표시됩니다.',
                         textAlign: TextAlign.center,
                         style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
@@ -549,8 +557,16 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           return Container();
                         }
                         return GestureDetector(
-                          onTap: () {
-                            context.push("/home/myPage/detail/null/보관한 게시물/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myKeepContent");
+                          onTap: () async {
+                            final result = await context.push("/home/myPage/detail/null/보관한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myKeepContent");
+
+                            if (result == null) {
+                              await ref.watch(myPostStateProvider.notifier).refreshMyKeeps(ref.read(userInfoProvider).userModel!.idx);
+                              await ref.watch(myPostStateProvider.notifier).refreshMyPost(ref.read(userInfoProvider).userModel!.idx);
+
+                              ref.watch(myPostStateProvider.notifier).resetMyPostSelection();
+                              ref.watch(myPostStateProvider.notifier).resetMyKeepSelection();
+                            }
                           },
                           child: Stack(
                             children: [
@@ -735,7 +751,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                           if (result.result && mounted) {
                                             toast(
                                               context: context,
-                                              text: '게시물 삭제가 완료되었습니다.',
+                                              text: '피드 삭제가 완료되었습니다.',
                                               type: ToastType.purple,
                                             );
                                           }
