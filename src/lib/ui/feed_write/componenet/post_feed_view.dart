@@ -193,7 +193,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                     maxLines: 6,
                     decoration: InputDecoration(
                         counterText: "",
-                        hintText: '내용을 입력해 주세요.\n\n작성한 글에 대한 책임은 본인에게 있습니다.\n운영 정책에 위반되는(폭력성, 선정성, 욕설 등) 게시물은 당사자의 동의 없이 삭제될 수 있습니다.',
+                        hintText: '내용을 입력해 주세요.\n\n작성한 글에 대한 책임은 본인에게 있습니다.\n운영 정책에 위반되는(폭력성, 선정성, 욕설 등) 피드는 당사자의 동의 없이 삭제될 수 있습니다.',
                         hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
                         contentPadding: const EdgeInsets.all(16)),
                     name: 'content',

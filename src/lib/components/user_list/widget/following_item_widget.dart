@@ -10,7 +10,7 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class FollowingItemWidget extends ConsumerWidget {
+class FollowingItemWidget extends ConsumerStatefulWidget {
   const FollowingItemWidget({
     required this.profileImage,
     required this.userName,
@@ -35,10 +35,31 @@ class FollowingItemWidget extends ConsumerWidget {
   final int oldMemberIdx;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  FollowingItemWidgetState createState() => FollowingItemWidgetState();
+}
+
+class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
+  @override
+  void initState() {
+    super.initState();
+
+    Future(() {
+      final currentFollowState = ref.read(followUserStateProvider)[widget.followIdx];
+      if (currentFollowState == null) {
+        ref.read(followUserStateProvider.notifier).setFollowState(widget.followIdx, widget.isFollow);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isFollow = ref.watch(followUserStateProvider)[widget.followIdx] ?? false;
+
     return InkWell(
       onTap: () {
-        ref.read(userInfoProvider).userModel!.idx == followIdx ? context.push("/home/myPage") : context.push("/home/myPage/followList/$followIdx/userPage/$userName/$followIdx/$oldMemberIdx");
+        ref.read(userInfoProvider).userModel!.idx == widget.followIdx
+            ? context.push("/home/myPage")
+            : context.push("/home/myPage/followList/${widget.followIdx}/userPage/${widget.userName}/${widget.followIdx}/${widget.oldMemberIdx}");
       },
       child: Padding(
         padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
@@ -52,14 +73,14 @@ class FollowingItemWidget extends ConsumerWidget {
                   padding: EdgeInsets.only(
                     right: 10.w,
                   ),
-                  child: getProfileAvatar(profileImage ?? "", 32.w, 32.h),
+                  child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        isSpecialUser
+                        widget.isSpecialUser
                             ? Row(
                                 children: [
                                   Image.asset(
@@ -73,13 +94,13 @@ class FollowingItemWidget extends ConsumerWidget {
                               )
                             : Container(),
                         Text(
-                          userName,
+                          widget.userName,
                           style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                         ),
                         SizedBox(
                           width: 4.w,
                         ),
-                        isNewUser
+                        widget.isNewUser
                             ? Center(
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -102,62 +123,90 @@ class FollowingItemWidget extends ConsumerWidget {
                       height: 4.h,
                     ),
                     Text(
-                      content,
+                      widget.content,
                       style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                     ),
                   ],
                 ),
               ],
             ),
-            isFollow
-                ? GestureDetector(
-                    onTap: () async {
-                      await ref.watch(followStateProvider.notifier).postFollow(
-                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                            followIdx: followIdx,
+            ref.read(userInfoProvider).userModel!.idx == widget.followIdx
+                ? Container()
+                : Consumer(builder: (context, ref, child) {
+                    return isFollow
+                        ? GestureDetector(
+                            onTap: () async {
+                              if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                if (ref.read(userInfoProvider).userModel == null) {
+                                  context.pushReplacement("/loginScreen");
+                                } else {
+                                  final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                        followIdx: widget.followIdx,
+                                      );
+
+                                  if (result.result) {
+                                    setState(() {
+                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followIdx, false);
+                                    });
+                                  }
+                                }
+                              }
+                            },
+                            child: Container(
+                              width: 56.w,
+                              height: 32.h,
+                              decoration: const BoxDecoration(
+                                color: kNeutralColor300,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8.0),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "팔로잉",
+                                  style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                                ),
+                              ),
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () async {
+                              if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                if (ref.read(userInfoProvider).userModel == null) {
+                                  context.pushReplacement("/loginScreen");
+                                } else {
+                                  final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                        followIdx: widget.followIdx,
+                                      );
+
+                                  if (result.result) {
+                                    setState(() {
+                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followIdx, true);
+                                    });
+                                  }
+                                }
+                              }
+                            },
+                            child: Container(
+                              width: 56.w,
+                              height: 32.h,
+                              decoration: const BoxDecoration(
+                                color: kPrimaryColor,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8.0),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "팔로우",
+                                  style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
+                                ),
+                              ),
+                            ),
                           );
-                    },
-                    child: Container(
-                      width: 56.w,
-                      height: 32.h,
-                      decoration: const BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8.0),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "팔로우",
-                          style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
-                        ),
-                      ),
-                    ),
-                  )
-                : GestureDetector(
-                    onTap: () async {
-                      await ref.watch(followStateProvider.notifier).deleteFollow(
-                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                            followIdx: followIdx,
-                          );
-                    },
-                    child: Container(
-                      width: 56.w,
-                      height: 32.h,
-                      decoration: const BoxDecoration(
-                        color: kNeutralColor300,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8.0),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "팔로잉",
-                          style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
-                        ),
-                      ),
-                    ),
-                  )
+                  })
           ],
         ),
       ),

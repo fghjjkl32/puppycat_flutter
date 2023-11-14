@@ -17,11 +17,24 @@ abstract class CommentService {
     @Path("page") int page,
   );
 
+  @GET('/contents/{contentIdx}/comment')
+  Future<CommentResponseModel?> getLogoutComment(
+    @Path("contentIdx") int contentIdx,
+    @Query("page") int page,
+  );
+
   @GET('/contents/{contentsIdx}/comment/{commentIdx}/child?memberIdx={memberIdx}&page={page}&limit=10')
   Future<CommentResponseModel?> getReplyComment(
     @Path("contentsIdx") int contentsIdx,
     @Path("commentIdx") int commentIdx,
     @Path("memberIdx") int memberIdx,
+    @Path("page") int page,
+  );
+
+  @GET('/contents/{contentsIdx}/comment/{commentIdx}/child?&page={page}&limit=10')
+  Future<CommentResponseModel?> getLogoutReplyComment(
+    @Path("contentsIdx") int contentsIdx,
+    @Path("commentIdx") int commentIdx,
     @Path("page") int page,
   );
 

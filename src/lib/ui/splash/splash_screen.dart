@@ -29,7 +29,7 @@ class InitializationApp {
     if (ref.read(_initStateProvider)) {
       return;
     }
-    Permissions.requestPermissions();
+    // Permissions.requestPermissions();
 
     if (await _checkNetwork()) {
       if (await _checkServers()) {
@@ -165,7 +165,7 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
       case PushType.like_contents:
       case PushType.img_tag:
         var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-        router.push("/home/myPage/detail/Contents/게시물/$loginMemberIdx/${payload.contentsIdx}/notificationContent");
+        router.push("/home/myPage/detail/Contents/피드/$loginMemberIdx/${payload.contentsIdx}/notificationContent");
         break;
 
       case PushType.new_comment:
@@ -173,7 +173,7 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
       case PushType.mention_comment:
       case PushType.like_comment:
         var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-        router.push("/home/myPage/detail/nickname/게시물/$loginMemberIdx/${payload.contentsIdx}/notificationContent", extra: {
+        router.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${payload.contentsIdx}/notificationContent", extra: {
           "isRouteComment": true,
           "focusIdx": payload.commentIdx,
         });

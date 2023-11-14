@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
@@ -56,7 +57,7 @@ class LoginState extends _$LoginState {
     _procLogin(loginResult);
   }
 
-  void _procLogin(UserModel? userModel) {
+  Future<void> _procLogin(UserModel? userModel) async {
     if (userModel == null) {
       state = LoginStatus.failure;
       return;
@@ -74,7 +75,7 @@ class LoginState extends _$LoginState {
         UserInfoModel userInfoModel = UserInfoModel(userModel: userModel);
         ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
         ref.read(myInfoStateProvider.notifier).getMyInfo(userModel.idx.toString());
-        ref.listen(myInfoStateProvider, (previous, next) async {
+        ref.listen(myInfoStateProvider, (previous, next) {
           print('next $next');
 
           ///TODO
@@ -112,12 +113,12 @@ class LoginState extends _$LoginState {
             );
           }
 
-          await ref.read(walkStateProvider.notifier).getWalkResultState(next.uuid!);
+          ref.read(followUserStateProvider.notifier).resetState();
           ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
           ref.read(userInfoProvider.notifier).state = userInfoModel;
         });
 
-        print('userInfoModel $userInfoModel');
+        print('userInfoModel :: $userInfoModel');
         ref.read(userInfoProvider.notifier).state = userInfoModel;
       case LoginStatus.needSignUp:
         ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.signUpScreen);
@@ -141,6 +142,7 @@ class LoginState extends _$LoginState {
       var chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${userInfoModel.userModel!.idx}')));
       chatController.controller.logout();
       ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+      ref.read(followUserStateProvider.notifier).resetState();
       ref.read(userInfoProvider.notifier).state = UserInfoModel();
       saveUserModel(null);
       state = LoginStatus.none;

@@ -257,6 +257,7 @@ class AppRouter {
                       contentType: contentType,
                       isRouteComment: isRouteComment,
                       commentFocusIndex: commentFocusIndex,
+                      oldMemberIdx: 0,
                     );
                   },
                 ),
@@ -514,10 +515,13 @@ class AppRouter {
       //     return null;
       //   }
       // }
+      print("state.matchedLocation : ${state.matchedLocation}");
 
       bool isSplashPage = state.matchedLocation == splashLocation;
       if (isSplashPage) {
+        print("ASDADSSADDSAADSDSASA");
         if (_splashState) {
+          print("DAJNDSAKJNDSKJNDSKDNJKSADASADSAAA");
           if (_maintenanceState) {
             return maintenanceLocation;
           } else if (_loginRouteState == LoginRoute.success) {

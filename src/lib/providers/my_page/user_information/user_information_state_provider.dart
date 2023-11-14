@@ -3,6 +3,7 @@ import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_list_model.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
 // import 'package:pet_mobile_social_flutter/repositories/my_page/user_information/user_information_repository.dart';
@@ -37,6 +38,8 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationListMode
     state = state.copyWith(isLoading: false, list: lists.data.info);
 
     userInformationStateMap[memberIdx] = state.copyWith(isLoading: false, list: lists.data.info);
+
+    ref.read(followUserStateProvider.notifier).setFollowState(memberIdx!, state.list[0].followState == 1);
   }
 
   Future<ResponseModel> postBlock({

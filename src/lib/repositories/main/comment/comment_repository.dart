@@ -16,13 +16,16 @@ class CommentRepository {
 
   CommentRepository({
     required this.dio,
-}) {
+  }) {
     _contentsService = CommentService(dio, baseUrl: baseUrl);
   }
 
-  Future<CommentResponseModel> getComment({required int contentIdx, required int memberIdx, required int page}) async {
+  Future<CommentResponseModel> getComment({required int contentIdx, required int? memberIdx, required int page}) async {
     try {
-      CommentResponseModel? commentResponseModel = await _contentsService.getComment(contentIdx, memberIdx, page);
+      CommentResponseModel? commentResponseModel;
+      memberIdx == null
+          ? commentResponseModel = await _contentsService.getLogoutComment(contentIdx, page).catchError((Object obj) async {})
+          : commentResponseModel = await _contentsService.getComment(contentIdx, memberIdx, page);
 
       if (commentResponseModel == null) {
         return _getDefaultCommentResponseModel();
@@ -34,9 +37,13 @@ class CommentRepository {
     }
   }
 
-  Future<CommentResponseModel> getReplyComment({required int contentIdx, required int commentIdx, required int memberIdx, required int page}) async {
+  Future<CommentResponseModel> getReplyComment({required int contentIdx, required int commentIdx, required int? memberIdx, required int page}) async {
     try {
-      CommentResponseModel? commentResponseModel = await _contentsService.getReplyComment(contentIdx, commentIdx, memberIdx, page);
+      CommentResponseModel? commentResponseModel;
+
+      memberIdx == null
+          ? commentResponseModel = await _contentsService.getLogoutReplyComment(contentIdx, commentIdx, page)
+          : commentResponseModel = await _contentsService.getReplyComment(contentIdx, commentIdx, memberIdx, page);
 
       if (commentResponseModel == null) {
         return _getDefaultCommentResponseModel();

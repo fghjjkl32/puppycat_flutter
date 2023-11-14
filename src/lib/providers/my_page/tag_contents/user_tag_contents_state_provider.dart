@@ -7,20 +7,21 @@ import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/con
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'user_contents_state_provider.g.dart';
+part 'user_tag_contents_state_provider.g.dart';
 
-final userContentsFeedListEmptyProvider = StateProvider<bool>((ref) => true);
-final userContentsFeedTotalCountProvider = StateProvider<int>((ref) => 0);
+final userTagContentsFeedListEmptyProvider = StateProvider<bool>((ref) => true);
+final userTagContentsFeedTotalCountProvider = StateProvider<int>((ref) => 0);
 
 @Riverpod(keepAlive: true)
-class UserContentsState extends _$UserContentsState {
+class UserTagContentsState extends _$UserTagContentsState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
   int? memberIdx;
 
-  final Map<int, List<ContentImageData>> userContentStateMap = {};
+  final Map<int, List<ContentImageData>> userTagContentStateMap = {};
 
   @override
   PagingController<int, ContentImageData> build() {
@@ -38,9 +39,9 @@ class UserContentsState extends _$UserContentsState {
       _apiStatus = ListAPIStatus.loading;
 
       var loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
-      var result = await FeedRepository(dio: ref.read(dioProvider)).getUserContentList(loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: pageKey);
+      var result = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentList(loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: pageKey);
 
-      ref.read(userContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination!.totalRecordCount!;
+      ref.read(userTagContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination!.totalRecordCount!;
 
       List<ContentImageData> feedList = result.data.list
           .map(
@@ -52,7 +53,7 @@ class UserContentsState extends _$UserContentsState {
           )
           .toList();
 
-      userContentStateMap[memberIdx!] = feedList;
+      userTagContentStateMap[memberIdx!] = feedList;
 
       try {
         _lastPage = result.data.params!.pagination!.totalPageCount!;
@@ -68,14 +69,14 @@ class UserContentsState extends _$UserContentsState {
         state.appendPage(feedList, nextPageKey);
       }
       _apiStatus = ListAPIStatus.loaded;
-      ref.read(userContentsFeedListEmptyProvider.notifier).state = feedList.isEmpty;
+      ref.read(userTagContentsFeedListEmptyProvider.notifier).state = feedList.isEmpty;
     } catch (e) {
       _apiStatus = ListAPIStatus.error;
       state.error = e;
     }
   }
 
-  void getStateForUserContent(int userIdx) {
-    state.itemList = userContentStateMap[userIdx] ?? [const ContentImageData(idx: 0, imgUrl: '', imageCnt: 0)];
+  void getStateForUserTagContent(int userIdx) {
+    state.itemList = userTagContentStateMap[userIdx] ?? [const ContentImageData(idx: 0, imgUrl: '', imageCnt: 0)];
   }
 }

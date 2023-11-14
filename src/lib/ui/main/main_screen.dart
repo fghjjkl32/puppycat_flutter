@@ -10,8 +10,10 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_write_show_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_best_post_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
@@ -21,6 +23,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
+import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -31,6 +34,7 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/popular_week_feed_
 import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_write_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
@@ -72,10 +76,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         "최신",
         style: kBody16MediumStyle,
       ),
-      Text(
-        "산책",
-        style: kBody16MediumStyle,
-      ),
+      // Text(
+      //   "산책",
+      //   style: kBody16MediumStyle,
+      // ),
     ];
 
     if (loginState == LoginStatus.success) {
@@ -106,12 +110,16 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   void initState() {
     super.initState();
 
+    Permissions.requestNotificationPermission();
+
     ref.read(recentFeedStateProvider.notifier).loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
 
     tabController = TabController(vsync: this, length: getTabs().length);
     tabController.index = widget.initialTabIndex;
 
-    Future(() {
+    Future(() async {
+      ref.read(followUserStateProvider.notifier).resetState();
+
       final loginState = ref.watch(loginStateProvider);
 
       _recentFeedListPagingController.refresh();
@@ -127,6 +135,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       scrollController.addListener(_myPostScrollListener);
 
       if (loginState == LoginStatus.success) {
+        await ref.read(walkStateProvider.notifier).getWalkResultState(ref.read(userInfoProvider).userModel!.uuid);
+
         _myFeedListPagingController.refresh();
 
         _popularWeekFeedListPagingController.refresh();
@@ -135,9 +145,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
         ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
       }
-
-      print(ref.read(walkStatusStateProvider));
-      print(ref.read(walkStatusStateProvider));
 
       if (ref.read(walkStatusStateProvider) == WalkStatus.walking && !ref.read(isNavigatedFromMapProvider)) {
         context.push('/map');
@@ -223,7 +230,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
   @override
   Widget build(BuildContext context) {
-    bool isBigDevice = MediaQuery.of(context).size.width >= 320;
+    bool isBigDevice = MediaQuery.of(context).size.width >= 345;
     final loginState = ref.watch(loginStateProvider);
 
     return WillPopScope(
@@ -348,9 +355,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             controller: tabController,
                             children: [
                               _firstTab(),
-                              Container(
-                                color: Colors.blue,
-                              ),
+                              // Container(
+                              //   color: Colors.blue,
+                              // ),
+
                               if (loginState == LoginStatus.success) ...[
                                 _thirdTab(),
                               ],
@@ -589,6 +597,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
+          ref.read(followUserStateProvider.notifier).resetState();
+
           final loginState = ref.watch(loginStateProvider);
 
           _recentFeedListPagingController.refresh();
@@ -662,7 +672,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             height: 12,
                           ),
                           Text(
-                            '등록된 게시물이 없습니다.',
+                            '등록된 피드가 없습니다.',
                             textAlign: TextAlign.center,
                             style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                           ),
@@ -680,10 +690,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   profileImage: item.memberInfoList?[0].profileImgUrl! ?? "",
                   memberIdx: ref.read(userInfoProvider).userModel?.idx,
                   firstTitle: item.memberInfoList![0].nick!,
-                  secondTitle: '게시물',
+                  secondTitle: '피드',
                   imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'recent',
+                  isSpecialUser: item.memberInfoList?[0].isBadge == 1,
                 );
               },
             ),
@@ -697,6 +708,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
+          ref.read(followUserStateProvider.notifier).resetState();
+
           final loginState = ref.watch(loginStateProvider);
 
           _recentFeedListPagingController.refresh();
@@ -754,10 +767,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   profileImage: ref.read(followFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? item.memberInfoList![0].profileImgUrl! ?? "",
                   memberIdx: ref.read(userInfoProvider).userModel!.idx,
                   firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
-                  secondTitle: '게시물',
+                  secondTitle: '피드',
                   imageDomain: ref.read(followFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'follow',
+                  isSpecialUser: ref.read(followFeedStateProvider.notifier).memberInfo?[0].isBadge == 1,
                 );
               },
             ),
@@ -783,7 +797,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             height: 12,
                           ),
                           Text(
-                            '등록된 게시물이 없습니다.',
+                            '등록된 피드가 없습니다.',
                             textAlign: TextAlign.center,
                             style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                           ),
@@ -819,10 +833,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   // firstTitle: "null",
                   firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   // secondTitle: '인기 급상승',
-                  secondTitle: '게시물',
+                  secondTitle: '피드',
                   imageDomain: ref.read(popularWeekFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'popular',
+                  isSpecialUser: item.memberInfoList?[0].isBadge == 1,
                   // feedType: 'follow',
                 );
               },
@@ -837,6 +852,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
+          ref.read(followUserStateProvider.notifier).resetState();
+
           final loginState = ref.watch(loginStateProvider);
 
           _recentFeedListPagingController.refresh();
@@ -865,7 +882,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       child: CustomScrollView(
         slivers: <Widget>[
           PagedSliverList<int, FeedData>(
-            // shrinkWrap: true,
             shrinkWrapFirstPageIndicators: true,
             pagingController: _myFeedListPagingController,
             builderDelegate: PagedChildBuilderDelegate<FeedData>(
@@ -886,7 +902,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             height: 12,
                           ),
                           Text(
-                            '등록된 작성 글이 없습니다.\n게시물을 등록해 주세요!',
+                            '등록된 작성 글이 없습니다.\n피드를 등록해 주세요!',
                             textAlign: TextAlign.center,
                             style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                           ),
@@ -908,12 +924,26 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                               ref.read(userInfoProvider).userModel == null
                                   ? context.pushReplacement("/loginScreen")
                                   : ref.watch(restrainWriteStateProvider).restrain.state == null
-                                      ? feedWriteShowBottomSheet(
-                                          context: context,
-                                          onClose: () {
-                                            setState(() {
-                                              showLottieAnimation = false;
-                                            });
+                                      ? InstaAssetPicker.pickAssets(
+                                          context,
+                                          maxAssets: 12,
+                                          pickerTheme: themeData(context).copyWith(
+                                            canvasColor: kNeutralColor100,
+                                            colorScheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).colorScheme.copyWith(
+                                                  background: kNeutralColor100,
+                                                ),
+                                            appBarTheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).appBarTheme.copyWith(
+                                                  backgroundColor: kNeutralColor100,
+                                                ),
+                                          ),
+                                          onCompleted: (cropStream) {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) => FeedWriteScreen(
+                                                  cropStream: cropStream,
+                                                ),
+                                              ),
+                                            );
                                           },
                                         )
                                       : showDialog(
@@ -977,10 +1007,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   profileImage: ref.read(myFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
                   memberIdx: ref.read(userInfoProvider).userModel!.idx,
                   firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
-                  secondTitle: '게시물',
+                  secondTitle: '피드',
                   imageDomain: ref.read(myFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'my',
+                  isSpecialUser: ref.read(myFeedStateProvider.notifier).memberInfo![0].isBadge == 1,
                 );
               },
             ),
@@ -991,7 +1022,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   Widget _buildBackGround() {
-    bool isBigDevice = MediaQuery.of(context).size.width >= 320;
+    bool isBigDevice = MediaQuery.of(context).size.width >= 345;
 
     final loginState = ref.watch(loginStateProvider);
 
@@ -1149,7 +1180,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   Widget _buildTabbar(bool innerBoxIsScrolled) {
-    bool isBigDevice = MediaQuery.of(context).size.width >= 320;
+    bool isBigDevice = MediaQuery.of(context).size.width >= 345;
 
     return Container(
       decoration: innerBoxIsScrolled

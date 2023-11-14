@@ -94,14 +94,16 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
             _isTagVisible.value = !_isTagVisible.value;
           },
           onDoubleTap: () {
-            widget.isLike
-                ? null
-                : ref.watch(feedListStateProvider.notifier).postLike(
-                      loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                      memberIdx: widget.memberIdx,
-                      contentIdx: widget.contentIdx,
-                      contentType: widget.contentType,
-                    );
+            if (!ref.watch(likeApiIsLoadingStateProvider)) {
+              widget.isLike
+                  ? null
+                  : ref.watch(feedListStateProvider.notifier).postLike(
+                        loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                        memberIdx: widget.memberIdx,
+                        contentIdx: widget.contentIdx,
+                        contentType: widget.contentType,
+                      );
+            }
           },
           child: CarouselSlider(
             options: CarouselOptions(
