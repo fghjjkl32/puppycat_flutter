@@ -14,6 +14,7 @@ import 'package:pet_mobile_social_flutter/models/my_page/walk/walk_result/walk_r
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/walk_result/walk_result_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
+import 'package:pet_mobile_social_flutter/providers/walk/walk_pet_bowel_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
 
 final walkLogContentProvider = StateProvider<TextEditingController>((ref) => TextEditingController());
@@ -1183,24 +1184,24 @@ class WalkLogResultEditScreenState extends ConsumerState<WalkLogResultEditScreen
   }
 }
 
-class PetState {
-  String petUuid;
-  int peeCount;
-  int peeAmount;
-  int peeColor;
-  int poopCount;
-  int poopAmount;
-  int poopColor;
-  int poopForm;
-
-  PetState({
-    required this.petUuid,
-    required this.peeCount,
-    required this.peeAmount,
-    required this.peeColor,
-    required this.poopCount,
-    required this.poopAmount,
-    required this.poopColor,
-    required this.poopForm,
-  });
-}
+// class PetState {
+//   String petUuid;
+//   int peeCount;
+//   int peeAmount;
+//   int peeColor;
+//   int poopCount;
+//   int poopAmount;
+//   int poopColor;
+//   int poopForm;
+//
+//   PetState({
+//     required this.petUuid,
+//     required this.peeCount,
+//     required this.peeAmount,
+//     required this.peeColor,
+//     required this.poopCount,
+//     required this.poopAmount,
+//     required this.poopColor,
+//     required this.poopForm,
+//   });
+// }

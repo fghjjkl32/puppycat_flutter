@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
@@ -32,6 +33,7 @@ enum WalkStatus {
   walking,
   walkEndedWithoutLog,
   walkEndedForce,
+  waitForForceEnded,
   finished,
 }
 
@@ -92,30 +94,6 @@ class WalkState extends _$WalkState {
 
       final currentLocationData = await GeolocatorUtil.getCurrentLocation();
       startWalkConfigure(currentLocationData);
-      // ref.read(singleWalkStateProvider.notifier).startBackgroundLocation(currentLocationData);
-      // List<Map<String, dynamic>> petMap = selectedPetList.map((e) => e.toJson()).toList();
-      //
-      // CookieJar cookieJar = GetIt.I<CookieJar>();
-      // var cookies = await cookieJar.loadForRequest(Uri.parse(baseUrl));
-      // Map<String, dynamic> cookieMap = {};
-      // for (var cookie in cookies) {
-      //   cookieMap[cookie.name] = cookie.value;
-      // }
-      //
-      // FlutterBackgroundService().startService().then((isBackStarted) async {
-      //   // if (isBackStarted) {
-      //   print('background start!!');
-      //   FlutterBackgroundService().invoke('setData', {
-      //     'memberUuid': memberUuid,
-      //     'walkUuid': _walkUuid,
-      //     'cookieMap': cookieMap,
-      //     'selectedPetList': petMap,
-      //   });
-      //   // }
-      //   FlutterBackgroundService().invoke("setAsForeground");
-      // });
-      //
-      // ref.read(pedoMeterStateProvider.notifier).startPedoMeter();
 
       return _walkUuid;
     } catch (e) {
@@ -140,21 +118,27 @@ class WalkState extends _$WalkState {
       cookieMap[cookie.name] = cookie.value;
     }
 
+    Map<String, dynamic> isolateDataMap = {
+      'memberUuid': memberUuid,
+      'walkUuid': _walkUuid,
+      'cookieMap': cookieMap,
+      'selectedPetList': petMap,
+    };
+
     await FlutterBackgroundService().startService().then((isBackStarted) async {
       // if (isBackStarted) {
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('isolateDataMap', jsonEncode(isolateDataMap));
+
       print('background start!!');
       FlutterBackgroundService().invoke("setAsForeground");
-      FlutterBackgroundService().invoke('setData', {
-        'memberUuid': memberUuid,
-        'walkUuid': _walkUuid,
-        'cookieMap': cookieMap,
-        'selectedPetList': petMap,
-      });
+      FlutterBackgroundService().invoke('setData', isolateDataMap);
       // }
     });
   }
 
-  Future<String> stopWalk() async {
+  Future<String> stopWalk([bool isForce = false]) async {
     final walkRepository = WalkRepository(dio: ref.read(dioProvider));
     final mapController = ref.read(naverMapControllerStateProvider);
     try {
@@ -164,6 +148,21 @@ class WalkState extends _$WalkState {
 
       final walkState = ref.read(singleWalkStateProvider);
       print('walkState $walkState');
+
+      ///NOTE
+      ///서버단에서 강제 종료되었는지 체크
+      bool isWalkEndedForce = false;
+      if (isForce) {
+        FlutterBackgroundService().invoke('pause');
+        while (!isWalkEndedForce) {
+          isWalkEndedForce = await getWalkState(); // API 호출
+          print('isWalkEndedForce $isWalkEndedForce');
+          ref.read(walkStatusStateProvider.notifier).state = WalkStatus.waitForForceEnded;
+          await Future.delayed(const Duration(seconds: 1));
+        }
+      }
+
+      print('next isWalkEndedForce $isWalkEndedForce');
 
       if (walkState.isEmpty) {
         walkState.add(WalkStateModel(
@@ -183,14 +182,11 @@ class WalkState extends _$WalkState {
 
       ///String memberUuid, String walkUuid, int steps, String startDate, double distance, Map<String, dynamic> petWalkInfo,
 
-      // if(_walkInfoList.isNotEmpty) {
-      // final walkInfoList = await WalkCacheController.readWalkInfo('${walkUuid}_local');
       final walkInfoListLocal = await WalkCacheController.readXMLWalkInfo('${walkUuid}_local');
       final walkInfoList = await WalkCacheController.readXMLWalkInfo('${walkUuid}_local_total', false);
-      // await walkRepository.sendWalkInfo(memberUuid, walkUuid, walkInfoList, true);
-      sendWalkInfo(walkInfoList, true);
-      // }
-      // await WalkCacheController.writeWalkInfo(lastWalkState, _walkUuid);
+      if (!isForce) {
+        sendWalkInfo(walkInfoList, true);
+      }
 
       try {
         if (mapController != null) {
@@ -201,7 +197,7 @@ class WalkState extends _$WalkState {
           //true if the camera update was canceled
           final bool isUpdatedCamera = await mapController.updateCamera(cameraUpdateWithPadding);
 
-            print('isUpdatedCamera $isUpdatedCamera');
+          print('isUpdatedCamera $isUpdatedCamera');
           if (!isUpdatedCamera) {
             final screenShot = await mapController.takeSnapshot(showControls: false, compressQuality: 100);
             final tempDir = await getTemporaryDirectory();
@@ -217,19 +213,23 @@ class WalkState extends _$WalkState {
         _walkStartDate = DateTime.now().toString();
       }
 
-      var result = await walkRepository.stopWalk(memberUuid, _walkUuid, lastWalkState.walkCount, _walkStartDate, lastWalkState.distance, lastWalkState.calorie);
+      if (!isForce) {
+        var result = await walkRepository.stopWalk(memberUuid, _walkUuid, lastWalkState.walkCount, _walkStartDate, lastWalkState.distance, lastWalkState.calorie, isForce);
+      }
 
       ref.read(singleWalkStateProvider.notifier).state.clear();
       ref.read(walkSelectedPetStateProvider.notifier).state.clear();
 
       ref.read(pedoMeterStateProvider.notifier).stopPedoMeter();
 
-      // final Directory cacheDir = await getTemporaryDirectory();
-      // if (cacheDir.existsSync()) {
-      //   cacheDir.deleteSync(recursive: true);
-      // }
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove('isolateDataMap');
 
-      ref.read(walkStatusStateProvider.notifier).state = WalkStatus.finished;
+      if (isForce) {
+        ref.read(walkStatusStateProvider.notifier).state = WalkStatus.walkEndedForce;
+      } else {
+        ref.read(walkStatusStateProvider.notifier).state = WalkStatus.finished;
+      }
       print('stop walk uuid : $_walkUuid');
       return _walkUuid;
     } catch (e) {
@@ -239,6 +239,7 @@ class WalkState extends _$WalkState {
   }
 
   Future sendWalkInfo(List<WalkStateModel> walkInfoList, [bool isFinished = false]) async {
+    print('walkGpsBaseUrl $walkGpsBaseUrl');
     final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: walkGpsBaseUrl);
     // final walkRepository = WalkRepository(dio: ref.read(dioProvider), baseUrl: 'https://pet-walk-dev-gps.devlabs.co.kr');
 
@@ -330,5 +331,19 @@ class WalkState extends _$WalkState {
     } catch (e) {
       print('checkLocalLocationData error $e');
     }
+  }
+
+  Future<bool> getWalkState() async {
+    final walkRepository = WalkRepository(dio: ref.read(dioProvider));
+    final userInfo = ref.read(userInfoProvider).userModel;
+    if (userInfo == null) {
+      throw 'userInfo is Null';
+    }
+
+    final String memberUuid = ref.read(userInfoProvider).userModel!.uuid;
+
+    bool isWalkEnded = await walkRepository.getWalkState(memberUuid, _walkUuid);
+
+    return isWalkEnded;
   }
 }

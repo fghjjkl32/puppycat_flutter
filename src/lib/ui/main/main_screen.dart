@@ -201,6 +201,64 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           ),
         );
       }
+      else if(ref.read(walkStatusStateProvider) == WalkStatus.walkEndedForce) {
+        toast(
+          context: context,
+          text: '',
+          type: ToastType.white,
+          toastDuration: Duration(days: 1000),
+          toastWidget: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  SizedBox(
+                    width: 14,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "산책이 강제 종료되었습니다.",
+                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Text(
+                          "'확인' 클릭 시 산책 결과 페이지로 이동합니다.",
+                          style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              InkWell(
+                onTap: () {
+                  FToast().removeCustomToast();
+                  context.push('/writeWalkLog');
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(100.0),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+                    child: Text(
+                      "확인",
+                      style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
     });
   }
 

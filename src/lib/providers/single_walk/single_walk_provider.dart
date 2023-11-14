@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/controller/walk_cache/walk_cache_controller.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
@@ -68,6 +69,10 @@ class SingleWalkState extends _$SingleWalkState {
       //   await ref.read(walkStateProvider.notifier).sendWalkInfo(state.last);
       // }
       // await WalkCacheController.writeWalkInfo(walkStateModel, _walk);
+      // final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookie2(ref), baseUrl: walkGpsBaseUrl);
+      // if(state.length > 20) {
+      //   await ref.read(walkStateProvider.notifier).sendWalkInfo(state, false);
+      // }
     });
 
     // ref.read(singleWalkStatusStateProvider.notifier).state = WalkStatus.walking;

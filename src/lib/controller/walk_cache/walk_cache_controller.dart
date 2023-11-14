@@ -41,7 +41,7 @@ class WalkCacheController {
         final builder = XmlBuilder();
         builder.element('walkInfoList', nest: () {
           // builder.element('dateTime', nest: walkInfo.dateTime.toUtc().toString());
-          builder.element('dateTime', nest: DateFormat('yyyy-MM-dd hh:mm:ss').format(walkInfo.dateTime.toUtc()),);
+          builder.element('dateTime', nest: walkInfo.dateTime);
           builder.element('latitude', nest: walkInfo.latitude);
           builder.element('longitude', nest: walkInfo.longitude);
           builder.element('distance', nest: walkInfo.distance);

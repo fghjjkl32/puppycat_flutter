@@ -79,4 +79,15 @@ class PedoMeterState extends _$PedoMeterState {
     }
     state = PedoMeterWalkStatus.walking;
   }
+
+  void initPedoTimer() {
+    if(_timer == null) {
+      return;
+    }
+
+    if(state == PedoMeterWalkStatus.stopped) {
+      _stopTimer();
+      _startTimer();
+    }
+  }
 }

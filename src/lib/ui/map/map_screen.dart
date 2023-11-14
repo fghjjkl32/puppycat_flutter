@@ -7,6 +7,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
 import 'package:pet_mobile_social_flutter/common/util/location/geolocator_util.dart';
 import 'package:pedometer/pedometer.dart';
@@ -309,15 +310,115 @@ class MapScreenState extends ConsumerState<MapScreen> {
       await mapController!.addOverlay(NPathOverlay(id: '2', coords: routeList, color: Colors.deepPurpleAccent));
     });
 
-    final bool isWalking = ref.watch(walkStatusStateProvider) == WalkStatus.walking;
+    final walkStatus = ref.watch(walkStatusStateProvider);
+
+    if(walkStatus == WalkStatus.walkEndedForce) {
+      context.pushReplacement('/home');
+    }
+
+    final bool isWalking = (walkStatus == WalkStatus.walking) || (walkStatus == WalkStatus.waitForForceEnded);
 
     final walkStateModelList = ref.watch(singleWalkStateProvider);
 
     ref.listen(pedoMeterStateProvider, (previous, next) {
       if(next == PedoMeterWalkStatus.stoppedAlertMin) {
         print('pedo event stopped Alert');
+              toast(
+          context: context,
+          text: '',
+          type: ToastType.white,
+          toastDuration: const Duration(days: 1000),
+          toastWidget: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 14,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "현재 움직임이 없어 10분 후",
+                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                      ),
+                      Text(
+                        "산책 종료될 예정이에요.",
+                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: Text(
+                          "우리 아이와 산책을 계속 진행하실 건가요?",
+                          style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  //TODO 20분이 지난 후 종료 버튼 클릭시 - 종료 API 연결 헤야함
+                  InkWell(
+                    onTap: () {
+                      FToast().removeCustomToast();
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: kNeutralColor300,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(100.0),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+                        child: Text(
+                          "종료",
+                          style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      FToast().removeCustomToast();
+                      ref.read(pedoMeterStateProvider.notifier).initPedoTimer();
+                    },
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: kPrimaryLightColor,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(100.0),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+                        child: Text(
+                          "확인",
+                          style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
       } else if(next == PedoMeterWalkStatus.stoppedForceExitMin) {
-        print('pedo event stopped Force');
+        if(previous == PedoMeterWalkStatus.stoppedAlertMin) {
+          print('pedo event stopped Force');
+          FlutterBackgroundService().invoke("stopService");
+          ref.read(singleWalkStateProvider.notifier).stopBackgroundLocation();
+
+          ref.read(walkStateProvider.notifier).stopWalk(true);
+        }
       }
     });
 

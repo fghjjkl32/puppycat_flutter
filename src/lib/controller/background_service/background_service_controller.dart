@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
@@ -100,6 +101,8 @@ void onBackgroundStart(ServiceInstance service) async {
   WalkStateModel? previousWalkStateModel;
   List<MyPetItemModel> selectedPetList = [];
 
+  bool isPause = false;
+
   /// OPTIONAL when use custom notification
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -116,6 +119,10 @@ void onBackgroundStart(ServiceInstance service) async {
   service.on('stopService').listen((event) {
     previousWalkStateModel = null;
     service.stopSelf();
+  });
+
+  service.on('pause').listen((event) {
+    isPause = !isPause;
   });
 
   service.on('setData').listen((event) {
@@ -162,8 +169,42 @@ void onBackgroundStart(ServiceInstance service) async {
   Timer.periodic(const Duration(seconds: 1), (timer) async {
     print('timer.tick ${timer.tick}');
 
+    if(isPause) {
+      print('background timer pause');
+      return;
+    }
     /// you can see this log in logcat
-    print('memberUuid $memberUuid / walkUuid $walkUuid');
+    print('1 memberUuid $memberUuid / walkUuid $walkUuid');
+
+    if(memberUuid.isEmpty || walkUuid.isEmpty || selectedPetList.isEmpty) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? isolateData = prefs.getString('isolateDataMap');
+
+      if (isolateData == null || isolateData.isEmpty) {
+        print('setData background service SharedPreferences is empty.');
+        return;
+      }
+
+      Map<String, dynamic> isolateDataMap = jsonDecode(isolateData);
+      memberUuid = isolateDataMap['memberUuid'];
+      walkUuid = isolateDataMap['walkUuid'];
+      final Map<String, dynamic> cookieMap = isolateDataMap['cookieMap'];
+
+      // cookieMap.forEach((cookieName, cookieValue) {
+      //   var cookie = Cookie(cookieName, cookieValue);
+      //   cookieJar.saveFromResponse(Uri.parse(baseUrl), [cookie]);
+      // });
+
+      cookieMap.forEach((cookieName, cookieValue) {
+        var cookie = Cookie(cookieName, cookieValue);
+        cookieJar.saveFromResponse(Uri.parse(walkGpsBaseUrl), [cookie]);
+      });
+
+      List<dynamic> petMap = isolateDataMap['selectedPetList'];
+      selectedPetList = petMap.map((e) => MyPetItemModel.fromJson(e)).toList();
+    }
+
+    print('2 memberUuid $memberUuid / walkUuid $walkUuid');
 
     final location = await GeolocatorUtil.getCurrentLocation();
     print('location $location');
@@ -205,8 +246,10 @@ void onBackgroundStart(ServiceInstance service) async {
       // final walkInfoList = await WalkCacheController.readWalkInfo('${walkUuid}_local');
       final walkInfoList = await WalkCacheController.readXMLWalkInfo('${walkUuid}_local');
 
-      // final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookieForBackground(cookieJar), baseUrl: walkGpsBaseUrl);
-      // await walkRepository.sendWalkInfo(memberUuid, walkUuid, walkInfoList, false);
+      ///NOTE
+      ///XML작업 다 되면 살려야함
+      final walkRepository = WalkRepository(dio: DioWrap.getDioWithCookieForBackground(cookieJar), baseUrl: walkGpsBaseUrl);
+      await walkRepository.sendWalkInfo(memberUuid, walkUuid, walkInfoList, false);
     }
 
     service.invoke(

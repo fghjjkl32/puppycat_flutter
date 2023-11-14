@@ -36,4 +36,7 @@ abstract class WalkService {
 
   @GET('/walk/result/state')
   Future<WalkResultStateResponseModel> getWalkResultState(@Query("memberUuid") String memberUuid);
+
+  @GET('/walk/state')
+  Future<ResponseModel> getWalkState(@Query('memberUuid') String memberUuid, @Query('walkUuid') String walkUuid);
 }

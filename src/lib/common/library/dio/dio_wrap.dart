@@ -52,6 +52,7 @@ class DioWrap {
 
   static Dio getDioWithCookieForBackground(CookieJar cookieJar) {
     // final dio = Dio();
+    dio.interceptors.add(LogInterceptor(responseBody: true));
 
     if (dio.interceptors.whereType<CookieManager>().isEmpty) {
       // CookieJar cookieJar = GetIt.I<CookieJar>();

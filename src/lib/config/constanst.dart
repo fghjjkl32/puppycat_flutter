@@ -56,16 +56,25 @@ class Constants {
   }
 }
 
+// String baseUrl = "https://sns-api.devlabs.co.kr:28080/v1";
 String baseUrl = "https://api.pcstg.co.kr/v1";
+// String baseUrl = "https://api.puppycat.co.kr/v1";
+
 String thumborHostUrl = "https://tb.pcstg.co.kr/";
 String thumborKey = "Tjaqhvpt";
 String imgDomain = "https://imgs.pcstg.co.kr";
 String firstInstallTime = "";
 String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
-// String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
+
+// String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr/v1';
 String walkBaseUrl = 'https://walk-api.pcstg.co.kr/v1';
+// String walkBaseUrl = 'https://walk-api.puppycat.co.kr/v1';
+
+// String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr/v1';
 String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/v1';
+// String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/v1';
+
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
