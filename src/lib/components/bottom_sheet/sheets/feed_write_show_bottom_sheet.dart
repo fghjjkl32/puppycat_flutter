@@ -97,8 +97,13 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                     borderRadius: const BorderRadius.only(bottomRight: Radius.circular(20)),
                     onTap: () {
                       // context.push('/map');
-                      Navigator.pop(context);
-                      showCustomModalBottomSheet(context: context, widget: const SelectPetSheetItem());
+                      ///NOTE
+                      ///2023.11.14.
+                      ///산책하기 보류로 주석 처리
+                      // Navigator.pop(context);
+                      // showCustomModalBottomSheet(context: context, widget: const SelectPetSheetItem());
+                      ///산책하기 보류로 주석 처리 완료
+                      ///여긴 UI가 바뀌어야함
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

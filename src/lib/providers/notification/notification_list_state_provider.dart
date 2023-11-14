@@ -36,7 +36,11 @@ enum NotificationType {
   all,
   activity,
   notice,
-  walk,
+  ///NOTE
+  ///2023.11.14.
+  ///산책하기 보류로 주석 처리
+  // walk,
+  ///산책하기 보류로 주석 처리 완료
 }
 
 final notificationFirstVisitProvider = StateProvider<bool>((ref) => false);

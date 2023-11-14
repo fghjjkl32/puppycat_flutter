@@ -30,7 +30,11 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
-import 'package:pet_mobile_social_flutter/controller/background_service/background_service_controller.dart';
+///NOTE
+///2023.11.14.
+///산책하기 보류로 주석 처리
+// import 'package:pet_mobile_social_flutter/controller/background_service/background_service_controller.dart';
+///산책하기 보류로 주석 처리 완료
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.dart';
@@ -97,9 +101,13 @@ void main() async {
   //TODO 11/8 Permission 작업때문에 주석 위치 가져오는 권한을 산책하기 할때로 이동
   // await GeolocatorUtil.checkLocationPermission();
 
-  await NaverMapSdk.instance.initialize(clientId: "omfrw8eeol");
 
-  await initializeBackgroundService();
+  ///NOTE
+  ///2023.11.14.
+  ///산책하기 보류로 주석 처리
+  // await NaverMapSdk.instance.initialize(clientId: "omfrw8eeol");
+  // await initializeBackgroundService();
+  ///산책하기 보류로 주석 처리 완료
 
   /// Get It
   /// SingleTon

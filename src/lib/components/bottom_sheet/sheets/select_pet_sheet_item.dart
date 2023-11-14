@@ -72,7 +72,11 @@ class SelectPetSheetItemState extends ConsumerState<SelectPetSheetItem> {
                     bool selected = item.selected;
                     return GestureDetector(
                       onTap: () {
-                        ref.read(myPetListStateProvider.notifier).changedPetSelectState(item);
+                        ///NOTE
+                        ///2023.11.14.
+                        ///산책하기 보류로 주석 처리
+                        // ref.read(myPetListStateProvider.notifier).changedPetSelectState(item);
+                        ///산책하기 보류로 주석 처리 완료
                       },
                       child: SizedBox(
                         width: 64,
