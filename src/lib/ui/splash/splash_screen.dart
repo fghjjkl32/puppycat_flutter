@@ -215,7 +215,8 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
           width: double.infinity,
           child: Lottie.asset(
             // 'assets/lottie/character_00_introSplash_360x640.json',
-            'assets/lottie/character_00_AppSplash.json',
+            // 'assets/lottie/character_00_AppSplash.json',
+            'assets/lottie/character_00_AppSplash_231113.json',
             // fit: BoxFit.fill,
           ),
         ),
