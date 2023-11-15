@@ -14,7 +14,6 @@ import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_pro
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

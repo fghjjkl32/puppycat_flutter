@@ -17,7 +17,6 @@ import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider
 import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/matrix_chat_room_screen.dart';
@@ -31,17 +30,25 @@ import 'package:pet_mobile_social_flutter/ui/main/comment/main_comment_detail_sc
 import 'package:pet_mobile_social_flutter/ui/main/feed_search/feed_search_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/maintenance/maintenance_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/map/map_screen.dart';
+///NOTE
+///2023.11.14.
+///산책하기 보류로 주석 처리
+// import 'package:pet_mobile_social_flutter/ui/map/map_screen.dart';
+///산책하기 보류로 주석 처리 완료
 import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_post_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_breed_search_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_edit_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_list_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_registration_screen.dart';
+///NOTE
+///2023.11.14.
+///산책하기 보류로 주석 처리
+// import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_breed_search_screen.dart';
+// import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_edit_screen.dart';
+// import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_list_screen.dart';
+// import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_registration_screen.dart';
+///산책하기 보류로 주석 처리 완료
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_alarm_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_blocked_user_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_faq_screen.dart';
@@ -52,8 +59,12 @@ import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_scr
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_terms_of_service_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_unknown_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_calendar_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/write_walk_log_screen.dart';
+///NOTE
+///2023.11.14.
+///산책하기 보류로 주석 처리
+// import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_calendar_screen.dart';
+// import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/write_walk_log_screen.dart';
+///산책하기 보류로 주석 처리 완료
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_select_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
@@ -177,48 +188,52 @@ class AppRouter {
                 );
               },
               routes: [
-                GoRoute(
-                  path: 'myPetList',
-                  name: 'myPetList',
-                  builder: (BuildContext context, GoRouterState state) {
-                    return const MyPetListScreen();
-                  },
-                  routes: [
-                    GoRoute(
-                      path: 'myPetRegistration',
-                      name: 'myPetRegistration',
-                      builder: (BuildContext context, GoRouterState state) {
-                        return const MyPetRegistrationScreen();
-                      },
-                      routes: [
-                        GoRoute(
-                          path: 'myPetEdit/:idx',
-                          name: 'myPetEdit/:idx',
-                          builder: (BuildContext context, GoRouterState state) {
-                            final idx = state.pathParameters['idx']!;
-                            return MyPetEditScreen(idx: int.parse(idx));
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  path: 'walkLogCalendar',
-                  name: 'walkLogCalendar',
-                  builder: (BuildContext context, GoRouterState state) {
-                    return const WalkLogCalendarScreen();
-                  },
-                  // routes: [
-                  //   GoRoute(
-                  //     path: 'myPetRegistration',
-                  //     name: 'myPetRegistration',
-                  //     builder: (BuildContext context, GoRouterState state) {
-                  //       return const MyPetRegistrationScreen();
-                  //     },
-                  //   ),
-                  // ],
-                ),
+                ///NOTE
+                ///2023.11.14.
+                ///산책하기 보류로 주석 처리
+                // GoRoute(
+                //   path: 'myPetList',
+                //   name: 'myPetList',
+                //   builder: (BuildContext context, GoRouterState state) {
+                //     return const MyPetListScreen();
+                //   },
+                //   routes: [
+                //     GoRoute(
+                //       path: 'myPetRegistration',
+                //       name: 'myPetRegistration',
+                //       builder: (BuildContext context, GoRouterState state) {
+                //         return const MyPetRegistrationScreen();
+                //       },
+                //       routes: [
+                //         GoRoute(
+                //           path: 'myPetEdit/:idx',
+                //           name: 'myPetEdit/:idx',
+                //           builder: (BuildContext context, GoRouterState state) {
+                //             final idx = state.pathParameters['idx']!;
+                //             return MyPetEditScreen(idx: int.parse(idx));
+                //           },
+                //         ),
+                //       ],
+                //     ),
+                //   ],
+                // ),
+                // GoRoute(
+                //   path: 'walkLogCalendar',
+                //   name: 'walkLogCalendar',
+                //   builder: (BuildContext context, GoRouterState state) {
+                //     return const WalkLogCalendarScreen();
+                //   },
+                //   // routes: [
+                //   //   GoRoute(
+                //   //     path: 'myPetRegistration',
+                //   //     name: 'myPetRegistration',
+                //   //     builder: (BuildContext context, GoRouterState state) {
+                //   //       return const MyPetRegistrationScreen();
+                //   //     },
+                //   //   ),
+                //   // ],
+                // ),
+                ///산책하기 보류로 주석 처리 완료
                 GoRoute(
                   path: 'userUnknown',
                   name: 'userUnknown',
@@ -467,26 +482,30 @@ class AppRouter {
           return const MaintenanceScreen();
         },
       ),
-      GoRoute(
-        path: '/map',
-        name: 'map',
-        builder: (BuildContext context, GoRouterState state) {
-          String title = '지도';
-          if (state.extra is String) {
-            title = state.extra.toString();
-          }
-          return MapScreen(
-            appBarTitle: title,
-          );
-        },
-      ),
-      GoRoute(
-        path: '/writeWalkLog',
-        name: 'writeWalkLog',
-        builder: (BuildContext context, GoRouterState state) {
-          return const WriteWalkLogScreen();
-        },
-      ),
+      ///NOTE
+      ///2023.11.14.
+      ///산책하기 보류로 주석 처리
+      // GoRoute(
+      //   path: '/map',
+      //   name: 'map',
+      //   builder: (BuildContext context, GoRouterState state) {
+      //     String title = '지도';
+      //     if (state.extra is String) {
+      //       title = state.extra.toString();
+      //     }
+      //     return MapScreen(
+      //       appBarTitle: title,
+      //     );
+      //   },
+      // ),
+      // GoRoute(
+      //   path: '/writeWalkLog',
+      //   name: 'writeWalkLog',
+      //   builder: (BuildContext context, GoRouterState state) {
+      //     return const WriteWalkLogScreen();
+      //   },
+      // ),
+      ///산책하기 보류로 주석 처리 완료
     ],
 
     redirect: (BuildContext context, GoRouterState state) {

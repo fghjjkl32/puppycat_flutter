@@ -36,12 +36,20 @@ import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_write_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
+///NOTE
+///2023.11.14.
+///산책하기 보류로 주석 처리
+// import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
+// import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
+///산책하기 보류로 주석 처리 완료
 import 'package:pet_mobile_social_flutter/ui/dialog/restriction_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/popupmenu_with_reddot_widget.dart';
-import 'package:pet_mobile_social_flutter/ui/map/walk_info_widget.dart';
+///NOTE
+///2023.11.14.
+///산책하기 보류로 주석 처리
+// import 'package:pet_mobile_social_flutter/ui/map/walk_info_widget.dart';
+///산책하기 보류로 주석 처리 완료
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
 import 'package:thumbor/thumbor.dart';
@@ -135,7 +143,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       scrollController.addListener(_myPostScrollListener);
 
       if (loginState == LoginStatus.success) {
+        ///NOTE
+        ///2023.11.14.
+        ///산책하기 보류로 주석 처리
         // await ref.read(walkStateProvider.notifier).getWalkResultState(ref.read(userInfoProvider).userModel!.uuid);
+        ///산책하기 보류로 주석 처리 완료
 
         _myFeedListPagingController.refresh();
 
@@ -146,123 +158,128 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
       }
 
-      if (ref.read(walkStatusStateProvider) == WalkStatus.walking && !ref.read(isNavigatedFromMapProvider)) {
-        context.push('/map');
-      } else if (ref.read(walkStatusStateProvider) == WalkStatus.walkEndedWithoutLog) {
-        toast(
-          context: context,
-          text: '',
-          type: ToastType.white,
-          toastDuration: Duration(days: 1000),
-          toastWidget: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  SizedBox(
-                    width: 14,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "산책이 종료되었습니다.",
-                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2.0),
-                        child: Text(
-                          "'확인' 클릭 시 산책 결과 페이지로 이동합니다.",
-                          style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              InkWell(
-                onTap: () {
-                  FToast().removeCustomToast();
-                  context.push('/writeWalkLog');
-                },
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: kPrimaryLightColor,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(100.0),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
-                    child: Text(
-                      "확인",
-                      style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      } else if (ref.read(walkStatusStateProvider) == WalkStatus.walkEndedForce) {
-        toast(
-          context: context,
-          text: '',
-          type: ToastType.white,
-          toastDuration: Duration(days: 1000),
-          toastWidget: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  SizedBox(
-                    width: 14,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "산책이 강제 종료되었습니다.",
-                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2.0),
-                        child: Text(
-                          "'확인' 클릭 시 산책 결과 페이지로 이동합니다.",
-                          style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              InkWell(
-                onTap: () {
-                  FToast().removeCustomToast();
-                  context.push('/writeWalkLog');
-                },
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: kPrimaryLightColor,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(100.0),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
-                    child: Text(
-                      "확인",
-                      style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
+      ///NOTE
+      ///2023.11.14.
+      ///산책하기 보류로 주석 처리
+      // if (ref.read(walkStatusStateProvider) == WalkStatus.walking && !ref.read(isNavigatedFromMapProvider)) {
+      //   context.push('/map');
+      // } else if (ref.read(walkStatusStateProvider) == WalkStatus.walkEndedWithoutLog) {
+      //   toast(
+      //     context: context,
+      //     text: '',
+      //     type: ToastType.white,
+      //     toastDuration: Duration(days: 1000),
+      //     toastWidget: Row(
+      //       crossAxisAlignment: CrossAxisAlignment.center,
+      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //       children: [
+      //         Row(
+      //           children: [
+      //             SizedBox(
+      //               width: 14,
+      //             ),
+      //             Column(
+      //               crossAxisAlignment: CrossAxisAlignment.start,
+      //               children: [
+      //                 Text(
+      //                   "산책이 종료되었습니다.",
+      //                   style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+      //                 ),
+      //                 Padding(
+      //                   padding: const EdgeInsets.only(top: 2.0),
+      //                   child: Text(
+      //                     "'확인' 클릭 시 산책 결과 페이지로 이동합니다.",
+      //                     style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //           ],
+      //         ),
+      //         InkWell(
+      //           onTap: () {
+      //             FToast().removeCustomToast();
+      //             context.push('/writeWalkLog');
+      //           },
+      //           child: Container(
+      //             decoration: const BoxDecoration(
+      //               color: kPrimaryLightColor,
+      //               borderRadius: BorderRadius.all(
+      //                 Radius.circular(100.0),
+      //               ),
+      //             ),
+      //             child: Padding(
+      //               padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+      //               child: Text(
+      //                 "확인",
+      //                 style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //   );
+      // }
+      // else if(ref.read(walkStatusStateProvider) == WalkStatus.walkEndedForce) {
+      //   toast(
+      //     context: context,
+      //     text: '',
+      //     type: ToastType.white,
+      //     toastDuration: Duration(days: 1000),
+      //     toastWidget: Row(
+      //       crossAxisAlignment: CrossAxisAlignment.center,
+      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //       children: [
+      //         Row(
+      //           children: [
+      //             SizedBox(
+      //               width: 14,
+      //             ),
+      //             Column(
+      //               crossAxisAlignment: CrossAxisAlignment.start,
+      //               children: [
+      //                 Text(
+      //                   "산책이 강제 종료되었습니다.",
+      //                   style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+      //                 ),
+      //                 Padding(
+      //                   padding: const EdgeInsets.only(top: 2.0),
+      //                   child: Text(
+      //                     "'확인' 클릭 시 산책 결과 페이지로 이동합니다.",
+      //                     style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //           ],
+      //         ),
+      //         InkWell(
+      //           onTap: () {
+      //             FToast().removeCustomToast();
+      //             context.push('/writeWalkLog');
+      //           },
+      //           child: Container(
+      //             decoration: const BoxDecoration(
+      //               color: kPrimaryLightColor,
+      //               borderRadius: BorderRadius.all(
+      //                 Radius.circular(100.0),
+      //               ),
+      //             ),
+      //             child: Padding(
+      //               padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
+      //               child: Text(
+      //                 "확인",
+      //                 style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //   );
+      // }
+      ///산책하기 보류로 주석 처리 완료
     });
   }
 
@@ -289,102 +306,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   Widget build(BuildContext context) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
     final loginState = ref.watch(loginStateProvider);
-
-    ref.listen(loginStateProvider, (previous, next) {
-      print('loginStateProvider next $next');
-    });
-    // ref.listen(loginStateProvider, (previous, next) async {
-    //   print('loginStateProvider listner run??');
-    //     final loginState = next;
-    //
-    //     await ref.read(walkStateProvider.notifier).getWalkResultState(ref.read(userInfoProvider).userModel!.uuid);
-    //
-    //     _recentFeedListPagingController.refresh();
-    //
-    //     ref.read(popularUserListStateProvider.notifier).getInitUserList(
-    //       ref.read(userInfoProvider).userModel?.idx,
-    //     );
-    //
-    //     ref.read(popularHourFeedStateProvider.notifier).initPosts(
-    //       loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
-    //     );
-    //
-    //     scrollController.addListener(_myPostScrollListener);
-    //
-    //     if (loginState == LoginStatus.success) {
-    //       _myFeedListPagingController.refresh();
-    //
-    //       _popularWeekFeedListPagingController.refresh();
-    //
-    //       _followFeedListPagingController.refresh();
-    //
-    //       ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
-    //     }
-    //
-    //     print(ref.read(walkStatusStateProvider));
-    //     print(ref.read(walkStatusStateProvider));
-    //
-    //     if (ref.read(walkStatusStateProvider) == WalkStatus.walking && !ref.read(isNavigatedFromMapProvider)) {
-    //       context.push('/map');
-    //     } else if (ref.read(walkStatusStateProvider) == WalkStatus.walkEndedWithoutLog) {
-    //       toast(
-    //         context: context,
-    //         text: '',
-    //         type: ToastType.white,
-    //         toastDuration: Duration(days: 1000),
-    //         toastWidget: Row(
-    //           crossAxisAlignment: CrossAxisAlignment.center,
-    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //           children: [
-    //             Row(
-    //               children: [
-    //                 SizedBox(
-    //                   width: 14,
-    //                 ),
-    //                 Column(
-    //                   crossAxisAlignment: CrossAxisAlignment.start,
-    //                   children: [
-    //                     Text(
-    //                       "산책이 종료되었습니다.",
-    //                       style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-    //                     ),
-    //                     Padding(
-    //                       padding: const EdgeInsets.only(top: 2.0),
-    //                       child: Text(
-    //                         "'확인' 클릭 시 산책 결과 페이지로 이동합니다.",
-    //                         style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
-    //                       ),
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ],
-    //             ),
-    //             InkWell(
-    //               onTap: () {
-    //                 FToast().removeCustomToast();
-    //                 context.push('/writeWalkLog');
-    //               },
-    //               child: Container(
-    //                 decoration: const BoxDecoration(
-    //                   color: kPrimaryLightColor,
-    //                   borderRadius: BorderRadius.all(
-    //                     Radius.circular(100.0),
-    //                   ),
-    //                 ),
-    //                 child: Padding(
-    //                   padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
-    //                   child: Text(
-    //                     "확인",
-    //                     style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
-    //                   ),
-    //                 ),
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //       );
-    //     }
-    // });
 
     return WillPopScope(
       onWillPop: () async {
@@ -520,21 +441,25 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                               ],
                             ],
                           ),
-                          Visibility(
-                            visible: _isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking,
-                            child: Positioned.fill(
-                              bottom: 10,
-                              child: Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 24.0),
-                                  child: WalkInfoWidget(
-                                    walkStateModel: ref.watch(singleWalkStateProvider).isEmpty ? null : ref.watch(singleWalkStateProvider).last,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
+                          ///NOTE
+                          ///2023.11.14.
+                          ///산책하기 보류로 주석 처리
+                          // Visibility(
+                          //   visible: _isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking,
+                          //   child: Positioned.fill(
+                          //     bottom: 10,
+                          //     child: Align(
+                          //       alignment: Alignment.bottomCenter,
+                          //       child: Padding(
+                          //         padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 24.0),
+                          //         child: WalkInfoWidget(
+                          //           walkStateModel: ref.watch(singleWalkStateProvider).isEmpty ? null : ref.watch(singleWalkStateProvider).last,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // )
+                          ///산책하기 보류로 주석 처리 완료
                         ],
                       ),
                     ),
@@ -542,22 +467,26 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 );
               }),
             ),
-            floatingActionButton: Consumer(builder: (context, ref, _) {
-              return !_isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking
-                  ? FloatingActionButton(
-                      backgroundColor: kNeutralColor100,
-                      child: Lottie.asset(
-                        'assets/lottie/character_03_walking_floating.json',
-                        repeat: true,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isWidgetVisible = true;
-                        });
-                      },
-                    )
-                  : Container();
-            }),
+            ///NOTE
+            ///2023.11.14.
+            ///산책하기 보류로 주석 처리
+            // floatingActionButton: Consumer(builder: (context, ref, _) {
+            //   return !_isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking
+            //       ? FloatingActionButton(
+            //           backgroundColor: kNeutralColor100,
+            //           child: Lottie.asset(
+            //             'assets/lottie/character_03_walking_floating.json',
+            //             repeat: true,
+            //           ),
+            //           onPressed: () {
+            //             setState(() {
+            //               _isWidgetVisible = true;
+            //             });
+            //           },
+            //         )
+            //       : Container();
+            // }),
+            ///산책하기 보류로 주석 처리 완료
           ),
           Positioned(
             top: 0,
@@ -581,17 +510,32 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       children: [
         GestureDetector(
           onTap: () async {
-            if (ref.read(userInfoProvider).userModel != null && !(ref.read(walkStatusStateProvider) == WalkStatus.walking)) {
+            ///NOTE
+            ///2023.11.14.
+            ///산책하기 보류로 주석 처리
+            // if (ref.read(userInfoProvider).userModel != null && !(ref.read(walkStatusStateProvider) == WalkStatus.walking)) {
+            //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
+            // }
+            ///
+            if (ref.read(userInfoProvider).userModel != null) {
               await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
             }
+            ///위 코드로 변경
+            ///산책하기 보류로 주석 처리 완료
 
             if (ref.read(userInfoProvider).userModel == null) {
               if (mounted) {
                 context.pushReplacement("/loginScreen");
               }
-            } else if (ref.read(walkStatusStateProvider) == WalkStatus.walking) {
-              return;
-            } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
+            }
+            ///NOTE
+            ///2023.11.14.
+            ///산책하기 보류로 주석 처리
+            // else if (ref.read(walkStatusStateProvider) == WalkStatus.walking) {
+            //   return;
+            // }
+            ///산책하기 보류로 주석 처리 완료
+            else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
               final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
 
               final ImagePicker picker = ImagePicker();
@@ -641,24 +585,47 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             }
           },
           child: Consumer(builder: (context, ref, _) {
-            return Icon(
+            return const Icon(
               Puppycat_social.icon_camera,
-              color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
+              ///NOTE
+              ///2023.11.14.
+              ///산책하기 보류로 주석 처리
+              // color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
+              ///산책하기 보류로 주석 처리 완료
+              color: kNeutralColor600,
+              ///주석 대신 위 코드로 변경
+              ///const도 추가
               size: 40,
             );
           }),
         ),
         GestureDetector(
           onTap: () async {
-            if (ref.read(userInfoProvider).userModel != null && !(ref.read(walkStatusStateProvider) == WalkStatus.walking)) {
+            ///NOTE
+            ///2023.11.14.
+            ///산책하기 보류로 주석 처리
+            // if (ref.read(userInfoProvider).userModel != null && !(ref.read(walkStatusStateProvider) == WalkStatus.walking)) {
+            //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
+            // }
+            ///
+            if (ref.read(userInfoProvider).userModel != null) {
               await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
             }
+            ///위 코드로 변경
+            ///산책하기 보류로 주석 처리 완료
             if (mounted) {
               ref.read(userInfoProvider).userModel == null
                   ? context.pushReplacement("/loginScreen")
-                  : ref.read(walkStatusStateProvider) == WalkStatus.walking
-                      ? null
-                      : ref.watch(restrainWriteStateProvider).restrain.state == null
+              ///NOTE
+              ///2023.11.14.
+              ///산책하기 보류로 주석 처리
+              //     : ref.read(walkStatusStateProvider) == WalkStatus.walking
+              //         ? null
+              //         : ref.watch(restrainWriteStateProvider).restrain.state == null
+              ///
+                  : ref.watch(restrainWriteStateProvider).restrain.state == null
+              ///위 코드로 변경
+              ///산책하기 보류로 주석 처리 완료
                           ? feedWriteShowBottomSheet(
                               context: context,
                               onClose: () {
@@ -690,9 +657,17 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   repeat: false,
                 )
               : Consumer(builder: (context, ref, _) {
-                  return Icon(
+                  return const Icon(
                     Puppycat_social.icon_feed,
-                    color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
+                    ///NOTE
+                    ///2023.11.14.
+                    ///산책하기 보류로 주석 처리
+                    // color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
+                    ///
+                    color: kNeutralColor600,
+                    ///위 코드로 변경
+                    ///const 추가
+                    ///산책하기 보류로 주석 처리 완료
                     size: 40,
                   );
                 }),
