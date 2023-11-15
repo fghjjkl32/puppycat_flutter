@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cupertino_will_pop_scope/cupertino_will_pop_scope.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -562,8 +563,10 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                         style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                                         maxLength: 20,
                                         autovalidateMode: AutovalidateMode.always,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                                        ],
                                         onChanged: (value) {
-                                          print("DSA");
                                           checkNextStep();
                                           if (value.isNotEmpty) {
                                             if (value.length > 1) {
@@ -576,11 +579,6 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                               setState(() {
                                                 ref.read(checkButtonProvider.notifier).state = false;
                                               });
-                                            }
-                                            String lastChar = value[value.length - 1];
-                                            if (lastChar.contains(RegExp(r'[a-zA-Z]'))) {
-                                              nickController.value = TextEditingValue(text: toLowercase(value), selection: nickController.selection);
-                                              return;
                                             }
                                           } else {
                                             setState(() {

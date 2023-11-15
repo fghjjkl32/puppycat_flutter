@@ -309,15 +309,13 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                         ),
                   maxLength: 20,
                   autovalidateMode: AutovalidateMode.always,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                  ],
                   onChanged: (value) {
                     if (value.isNotEmpty) {
                       if (value.length > 1) {
                         ref.read(checkButtonProvider.notifier).state = true;
-                      }
-                      String lastChar = value[value.length - 1];
-                      if (lastChar.contains(RegExp(r'[a-zA-Z]'))) {
-                        nickController.value = TextEditingValue(text: toLowercase(value), selection: nickController.selection);
-                        return;
                       }
                     } else {
                       ref.read(checkButtonProvider.notifier).state = false;
@@ -482,7 +480,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     ref.listen(passUrlProvider, (previous, next) {
       final url = Uri.encodeComponent(next);
       // context.go('/webview/$url');
-      context.goNamed('webview', pathParameters: {"url": url, "authType" : 'pass'});
+      context.goNamed('webview', pathParameters: {"url": url, "authType": 'pass'});
     });
 
     ref.listen(signUpStateProvider, (previous, next) {

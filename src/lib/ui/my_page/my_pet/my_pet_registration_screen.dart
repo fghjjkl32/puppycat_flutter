@@ -6,6 +6,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -559,6 +560,9 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
                             isDense: true,
                             contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                          ],
                           style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                           maxLength: 20,
                           autovalidateMode: AutovalidateMode.always,
@@ -573,11 +577,6 @@ class MyPetRegistrationScreenState extends ConsumerState<MyPetRegistrationScreen
                                 setState(() {
                                   // ref.read(checkButtonProvider.notifier).state = false;
                                 });
-                              }
-                              String lastChar = value[value.length - 1];
-                              if (lastChar.contains(RegExp(r'[a-zA-Z]'))) {
-                                nameController.value = TextEditingValue(text: toLowercase(value), selection: nameController.selection);
-                                return;
                               }
                             } else {
                               setState(() {

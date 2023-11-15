@@ -135,7 +135,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       scrollController.addListener(_myPostScrollListener);
 
       if (loginState == LoginStatus.success) {
-        await ref.read(walkStateProvider.notifier).getWalkResultState(ref.read(userInfoProvider).userModel!.uuid);
+        // await ref.read(walkStateProvider.notifier).getWalkResultState(ref.read(userInfoProvider).userModel!.uuid);
 
         _myFeedListPagingController.refresh();
 
@@ -205,8 +205,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             ],
           ),
         );
-      }
-      else if(ref.read(walkStatusStateProvider) == WalkStatus.walkEndedForce) {
+      } else if (ref.read(walkStatusStateProvider) == WalkStatus.walkEndedForce) {
         toast(
           context: context,
           text: '',

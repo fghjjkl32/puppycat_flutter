@@ -77,7 +77,6 @@ String walkBaseUrl = 'https://walk-api.pcstg.co.kr/v1';
 String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/v1';
 // String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/v1';
 
-
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
   var seconds = milliSeconds / 1000;
@@ -246,12 +245,6 @@ String replaceMentionsWithNicknamesInContentAsTextFieldString(String content, Li
   });
 
   return result;
-}
-
-String toLowercase(String input) {
-  return input.replaceAllMapped(RegExp(r'[A-Z]'), (match) {
-    return match.group(0)!.toLowerCase();
-  });
 }
 
 String? getNickDescription(NickNameStatus nickNameStatus) {

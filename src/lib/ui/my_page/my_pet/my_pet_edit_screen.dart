@@ -6,6 +6,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -610,6 +611,9 @@ class MyPetEditScreenState extends ConsumerState<MyPetEditScreen> with SingleTic
                             style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
                             maxLength: 20,
                             autovalidateMode: AutovalidateMode.always,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                            ],
                             onChanged: (value) {
                               if (value.isNotEmpty) {
                                 if (value.length > 1) {
@@ -621,11 +625,6 @@ class MyPetEditScreenState extends ConsumerState<MyPetEditScreen> with SingleTic
                                   setState(() {
                                     // ref.read(checkButtonProvider.notifier).state = false;
                                   });
-                                }
-                                String lastChar = value[value.length - 1];
-                                if (lastChar.contains(RegExp(r'[a-zA-Z]'))) {
-                                  nameController.value = TextEditingValue(text: toLowercase(value), selection: nameController.selection);
-                                  return;
                                 }
                               } else {
                                 setState(() {
