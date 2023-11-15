@@ -35,8 +35,12 @@ import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_con
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/write_walk_log_screen.dart';
+///NOTE
+///2023.11.14.
+///산책하기 보류로 주석 처리
+// import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
+// import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/write_walk_log_screen.dart';
+///산책하기 보류로 주석 처리 완료
 import 'package:screenshot/screenshot.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -875,125 +879,131 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                 ),
               ],
             ),
-            InkWell(
-              onTap: () {
-                context.push("/home/myPage/myPetList");
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "우리집 아이들",
-                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: 20,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () async {
-                context.push("/home/myPage/walkLogCalendar");
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "산책 일지",
-                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: 20,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            InkWell(
-              onTap: () async {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return WillPopScope(
-                      onWillPop: () async => false,
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.6),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Lottie.asset(
-                              'assets/lottie/icon_loading.json',
-                              fit: BoxFit.fill,
-                              width: 80,
-                              height: 80,
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
+            ///NOTE
+            ///2023.11.14.
+            ///산책하기 보류로 주석 처리
+            // InkWell(
+            //   onTap: () {
+            //     context.push("/home/myPage/myPetList");
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         Text(
+            //           "우리집 아이들",
+            //           style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+            //         ),
+            //         Icon(
+            //           Icons.arrow_forward_ios,
+            //           size: 20,
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
 
-                final screenShotImage = await screenshotController.captureFromWidget(
-                  Container(
-                    padding: const EdgeInsets.all(30.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.blueAccent, width: 5.0),
-                      color: Colors.redAccent,
-                    ),
-                    child: Text("This is an invisible widget"),
-                  ),
-                );
+            // InkWell(
+            //   onTap: () async {
+            //     context.push("/home/myPage/walkLogCalendar");
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         Text(
+            //           "산책 일지",
+            //           style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+            //         ),
+            //         Icon(
+            //           Icons.arrow_forward_ios,
+            //           size: 20,
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
 
-                final tempDir = await getTemporaryDirectory();
-                File firstImageFile = await File('${tempDir.path}/image.png').create();
-                firstImageFile.writeAsBytesSync(screenShotImage);
-                ref.read(walkPathImgStateProvider.notifier).state = firstImageFile;
-
-                if (mounted) {
-                  context.pop();
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WriteWalkLogScreen(
-                          // walkPathImageFile: firstImageFile,
-                          // walkUuid: "walkkoae25df7867d24855aad17ec97ed4acad1698407055",
-                          ),
-                    ),
-                  );
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "산책 일지 생성",
-                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      size: 20,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // InkWell(
+            //   onTap: () async {
+            //     showDialog(
+            //       context: context,
+            //       barrierDismissible: false,
+            //       builder: (BuildContext context) {
+            //         return WillPopScope(
+            //           onWillPop: () async => false,
+            //           child: Container(
+            //             alignment: Alignment.center,
+            //             decoration: BoxDecoration(
+            //               color: Colors.black.withOpacity(0.6),
+            //             ),
+            //             child: Column(
+            //               crossAxisAlignment: CrossAxisAlignment.center,
+            //               mainAxisAlignment: MainAxisAlignment.center,
+            //               children: [
+            //                 Lottie.asset(
+            //                   'assets/lottie/icon_loading.json',
+            //                   fit: BoxFit.fill,
+            //                   width: 80,
+            //                   height: 80,
+            //                 ),
+            //               ],
+            //             ),
+            //           ),
+            //         );
+            //       },
+            //     );
+            //
+            //     final screenShotImage = await screenshotController.captureFromWidget(
+            //       Container(
+            //         padding: const EdgeInsets.all(30.0),
+            //         decoration: BoxDecoration(
+            //           border: Border.all(color: Colors.blueAccent, width: 5.0),
+            //           color: Colors.redAccent,
+            //         ),
+            //         child: Text("This is an invisible widget"),
+            //       ),
+            //     );
+            //
+            //     final tempDir = await getTemporaryDirectory();
+            //     File firstImageFile = await File('${tempDir.path}/image.png').create();
+            //     firstImageFile.writeAsBytesSync(screenShotImage);
+            //     ref.read(walkPathImgStateProvider.notifier).state = firstImageFile;
+            //
+            //     if (mounted) {
+            //       context.pop();
+            //
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) => WriteWalkLogScreen(
+            //               // walkPathImageFile: firstImageFile,
+            //               // walkUuid: "walkkoae25df7867d24855aad17ec97ed4acad1698407055",
+            //               ),
+            //         ),
+            //       );
+            //     }
+            //   },
+            //   child: Padding(
+            //     padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: [
+            //         Text(
+            //           "산책 일지 생성",
+            //           style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+            //         ),
+            //         Icon(
+            //           Icons.arrow_forward_ios,
+            //           size: 20,
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            ///산책하기 보류로 주석 처리 완료
           ],
         ),
       ),

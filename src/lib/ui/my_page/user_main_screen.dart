@@ -39,7 +39,11 @@ import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_ta
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/user_pet_detail_screen.dart';
+///NOTE
+///2023.11.14.
+///산책하기 보류로 주석 처리
+// import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/user_pet_detail_screen.dart';
+///산책하기 보류로 주석 처리 완료
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -999,14 +1003,18 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                     itemBuilder: (context, item, index) {
                       return InkWell(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => UserPetDetailScreen(
-                                itemModel: item,
-                              ),
-                            ),
-                          );
+                          ///NOTE
+                          ///2023.11.14.
+                          ///산책하기 보류로 주석 처리
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (_) => UserPetDetailScreen(
+                          //       itemModel: item,
+                          //     ),
+                          //   ),
+                          // );
+                          ///산책하기 보류로 주석 처리 완료
                         },
                         child: Column(
                           children: [
@@ -1017,8 +1025,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 childSaveLayer: true,
                                 mask: Center(
                                   child: item.url == null || item.url == ""
-                                      ? Center(
-                                          child: const Icon(
+                                      ? const Center(
+                                          child: Icon(
                                             Puppycat_social.icon_profile_large,
                                             size: 48,
                                             color: kNeutralColor500,
