@@ -4,11 +4,13 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_user_model.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
@@ -39,9 +41,15 @@ class LoginState extends _$LoginState {
     required String provider,
   }) async {
     final loginRepository = LoginRepository(provider: provider, dio: ref.read(dioProvider));
-    // final loginRepository = ref.watch(loginRepositoryProvider(provider));
-    var loginResult = await loginRepository.login();
-    _procLogin(loginResult);
+
+    try {
+      var loginResult = await loginRepository.login();
+      _procLogin(loginResult);
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('login exception ($e)');
+    }
   }
 
   ///NOTE
@@ -50,10 +58,15 @@ class LoginState extends _$LoginState {
     required UserModel userModel,
   }) async {
     final loginRepository = LoginRepository(provider: userModel.simpleType, dio: ref.read(dioProvider));
-    // final loginRepository = ref.watch(loginRepositoryProvider(userModel.simpleType));
-    var loginResult = await loginRepository.loginByUserModel(userModel: userModel);
 
-    _procLogin(loginResult);
+    try {
+      var loginResult = await loginRepository.loginByUserModel(userModel: userModel);
+      _procLogin(loginResult);
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('auto login exception ($e)');
+    }
   }
 
   Future<void> _procLogin(UserModel? userModel) async {
@@ -119,8 +132,8 @@ class LoginState extends _$LoginState {
 
         print('userInfoModel :: $userInfoModel');
         ref.read(userInfoProvider.notifier).state = userInfoModel;
-      case LoginStatus.needSignUp:
-        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.signUpScreen);
+      // case LoginStatus.needSignUp:
+      //   ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.signUpScreen);
       // case LoginStatus.withdrawalPending:
       // case LoginStatus.failure:
       // case LoginStatus.restriction:

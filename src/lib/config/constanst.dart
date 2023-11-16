@@ -143,6 +143,68 @@ final FeedResponseModel feedNullResponseModel = FeedResponseModel(
   ),
   message: "",
 );
+// List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int? oldMemberIdx) {
+//   List<InlineSpan> spans = [];
+//
+//   // Combining both mention and hashtag patterns
+//   RegExp pattern = RegExp(r"\[@\[(.*?)\]\]|\[#\[(.*?)\]\]");
+//
+//   List<Match> matches = pattern.allMatches(content).toList();
+//
+//   int lastIndex = 0;
+//
+//   for (var match in matches) {
+//     String mentionMatched = match.group(1) ?? "";
+//     String hashtagMatched = match.group(2) ?? "";
+//
+//     // Add the plain text between the current and the last mention/hashtag
+//     spans.add(TextSpan(text: content.substring(lastIndex, match.start)));
+//
+//     if (mentionMatched.isNotEmpty) {
+//       if (mentionList.any((mention) => mention.uuid == mentionMatched)) {
+//         var mention = mentionList.firstWhere((m) => m.uuid == mentionMatched);
+//         spans.add(WidgetSpan(
+//           child: GestureDetector(
+//             onTap: () {
+//               ref.read(userInfoProvider).userModel?.idx == mention.memberIdx
+//                   ? Navigator.push(
+//                       context,
+//                       MaterialPageRoute(
+//                         builder: (context) => MyPageMainScreen(
+//                           oldMemberIdx: oldMemberIdx!,
+//                         ),
+//                       ),
+//                     )
+//                   : mention.memberState == 0
+//                       ? context.push("/home/myPage/userUnknown")
+//                       : context.push("/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}/${oldMemberIdx}");
+//             },
+//             child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
+//           ),
+//         ));
+//       } else {
+//         spans.add(TextSpan(text: '@' + mentionMatched));
+//       }
+//     } else if (hashtagMatched.isNotEmpty) {
+//       // Handle hashtag
+//       spans.add(WidgetSpan(
+//         child: GestureDetector(
+//           onTap: () {
+//             context.push("/home/search/$hashtagMatched/$oldMemberIdx");
+//           },
+//           child: Text('#' + hashtagMatched, style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),
+//         ),
+//       ));
+//     }
+//
+//     lastIndex = match.end;
+//   }
+//
+//   // Add any remaining text after the last mention/hashtag
+//   spans.add(TextSpan(text: content.substring(lastIndex)));
+//
+//   return spans;
+// }
 List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int? oldMemberIdx) {
   List<InlineSpan> spans = [];
 
@@ -168,16 +230,16 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
             onTap: () {
               ref.read(userInfoProvider).userModel?.idx == mention.memberIdx
                   ? Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyPageMainScreen(
-                          oldMemberIdx: oldMemberIdx!,
-                        ),
-                      ),
-                    )
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyPageMainScreen(
+                    oldMemberIdx: oldMemberIdx!,
+                  ),
+                ),
+              )
                   : mention.memberState == 0
-                      ? context.push("/home/myPage/userUnknown")
-                      : context.push("/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}/${oldMemberIdx}");
+                  ? context.push("/home/myPage/userUnknown")
+                  : context.push("/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}/${oldMemberIdx}");
             },
             child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
           ),
@@ -186,15 +248,21 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
         spans.add(TextSpan(text: '@' + mentionMatched));
       }
     } else if (hashtagMatched.isNotEmpty) {
-      // Handle hashtag
-      spans.add(WidgetSpan(
-        child: GestureDetector(
-          onTap: () {
-            context.push("/home/search/$hashtagMatched/$oldMemberIdx");
-          },
-          child: Text('#' + hashtagMatched, style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),
-        ),
-      ));
+      // Check if the hashtag contains '*'
+      if (hashtagMatched.contains('*')) {
+        // If it contains '*', treat as plain text and remove [#[]]
+        spans.add(TextSpan(text: '#' + hashtagMatched));
+      } else {
+        // Handle hashtag as usual
+        spans.add(WidgetSpan(
+          child: GestureDetector(
+            onTap: () {
+              context.push("/home/search/$hashtagMatched/$oldMemberIdx");
+            },
+            child: Text('#' + hashtagMatched, style: tagStyle),
+          ),
+        ));
+      }
     }
 
     lastIndex = match.end;
@@ -205,7 +273,6 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
 
   return spans;
 }
-
 String replaceMentionsWithNicknamesInContentAsString(String content, List<MentionListData> mentionList) {
   RegExp pattern = RegExp(r"\[@\[(.*?)\]\]");
   String result = content.replaceAllMapped(pattern, (match) {

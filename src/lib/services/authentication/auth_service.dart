@@ -11,7 +11,7 @@ abstract class AuthService {
 
   @GET('/certification/popup')
   // Future<ResponseModel?> getPassAuthUrl(@Queries(encoded: false) Map<String, dynamic> queries);
-  Future<ResponseModel?> getPassAuthUrl({
+  Future<ResponseModel> getPassAuthUrl({
     @Query('appKey') required String appKey,
     @Query('token', encoded: false) required String token,
   });

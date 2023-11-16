@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/edit_my_information/edit_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/authentication/auth_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/authentication/bearer_token_auth_repository.dart';
+// import 'package:pet_mobile_social_flutter/repositories/authentication/bearer_token_auth_repository.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,22 +14,26 @@ part 'auth_state_provider.g.dart';
 
 final passUrlProvider = StateProvider<String>((ref) => 'about:blank');
 final authModelProvider = StateProvider<SignUpAuthModel?>((ref) => null);
-final tossTxIdProvider = StateProvider<String>((ref) => "");
-final tossAccessTokenProvider = StateProvider<String>((ref) => "");
+// final tossTxIdProvider = StateProvider<String>((ref) => "");
+// final tossAccessTokenProvider = StateProvider<String>((ref) => "");
 
 @Riverpod(keepAlive: true)
 class AuthState extends _$AuthState {
+  late final AuthRepository _authRepository = AuthRepository(dio: ref.read(dioProvider));
+
   @override
   bool build() {
     return false;
   }
 
   void getPassAuthUrl() async {
-    final authRepository = AuthRepository(dio: ref.read(dioProvider));
     try {
-      String passUrl = await authRepository.getPassAuthUrl();
-      // passUrl = "http://172.16.4.8:3037";
+      String passUrl = await _authRepository.getPassAuthUrl();
       ref.read(passUrlProvider.notifier).state = passUrl;
+    } on APIException catch (apiException) {
+      ///TODO ERROR HANDLING
+      print('API Exception ${apiException.toString()}');
+      return;
     } catch (e) {
       print(e);
       ref.read(passUrlProvider.notifier).state = 'about:blank';
@@ -84,39 +89,39 @@ class AuthState extends _$AuthState {
     return signUpAuthModel;
   }
 
-  Future<String> getTossAuthUrl(String txId) async {
-    final authRepository = BearerTokenAuthRepository(dio: ref.read(dioProvider));
-    try {
-      // String txId = await authRepository.getTossAuthUrl();
-
-      // ref.read(tossAccessTokenProvider.notifier).state = txId;
-
-      // ref.read(tossTxIdProvider.notifier).state = txId;
-
-      String url = await authRepository.getTossTransactionsUrl(txId);
-
-      return url;
-    } catch (e) {
-      print(e);
-      return "";
-    }
-  }
-
-  Future<String> getTossUserResult(sessionKey) async {
-    final authRepository = BearerTokenAuthRepository(dio: ref.read(dioProvider));
-    try {
-      String txId = await authRepository.getTossAuthUrl();
-
-      ref.read(tossAccessTokenProvider.notifier).state = txId;
-
-      ref.read(tossTxIdProvider.notifier).state = txId;
-
-      String url = await authRepository.getTossUserResult(sessionKey: '', accessToken: ref.read(tossAccessTokenProvider.notifier).state, txId: ref.read(tossAccessTokenProvider.notifier).state);
-
-      return url;
-    } catch (e) {
-      print(e);
-      return "";
-    }
-  }
+// Future<String> getTossAuthUrl(String txId) async {
+//   final authRepository = BearerTokenAuthRepository(dio: ref.read(dioProvider));
+//   try {
+//     // String txId = await authRepository.getTossAuthUrl();
+//
+//     // ref.read(tossAccessTokenProvider.notifier).state = txId;
+//
+//     // ref.read(tossTxIdProvider.notifier).state = txId;
+//
+//     String url = await authRepository.getTossTransactionsUrl(txId);
+//
+//     return url;
+//   } catch (e) {
+//     print(e);
+//     return "";
+//   }
+// }
+//
+// Future<String> getTossUserResult(sessionKey) async {
+//   final authRepository = BearerTokenAuthRepository(dio: ref.read(dioProvider));
+//   try {
+//     String txId = await authRepository.getTossAuthUrl();
+//
+//     ref.read(tossAccessTokenProvider.notifier).state = txId;
+//
+//     ref.read(tossTxIdProvider.notifier).state = txId;
+//
+//     String url = await authRepository.getTossUserResult(sessionKey: '', accessToken: ref.read(tossAccessTokenProvider.notifier).state, txId: ref.read(tossAccessTokenProvider.notifier).state);
+//
+//     return url;
+//   } catch (e) {
+//     print(e);
+//     return "";
+//   }
+// }
 }

@@ -17,7 +17,7 @@ enum LoginStatus {
 @freezed
 class UserModel with _$UserModel {
   factory UserModel({
-    required LoginStatus loginStatus,
+    // required LoginStatus loginStatus,
     required int idx,
     @Default('') String appKey,
     required String nick,

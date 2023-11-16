@@ -17,7 +17,7 @@ abstract class LoginService {
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
-  Future<ResponseModel?> socialLogin(@Body() Map<String, dynamic> body);
+  Future<ResponseModel> socialLogin(@Body() Map<String, dynamic> body);
 
   @POST('/logout')
   @Headers(<String, dynamic>{
