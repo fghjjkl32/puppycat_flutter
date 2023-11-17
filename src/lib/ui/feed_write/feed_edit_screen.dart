@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -66,6 +67,8 @@ class FeedEditScreen extends ConsumerWidget {
                 ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
                 ref.watch(feedEditContentProvider.notifier).state = TextEditingController(text: "");
                 ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
+                ref.read(hashtagListProvider.notifier).state = [];
+                ref.read(mentionListProvider.notifier).state = [];
               },
               cancelTap: () {
                 context.pop();
@@ -92,6 +95,8 @@ class FeedEditScreen extends ConsumerWidget {
               ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
               ref.watch(feedEditContentProvider.notifier).state = TextEditingController(text: "");
               ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
+              ref.read(hashtagListProvider.notifier).state = [];
+              ref.read(mentionListProvider.notifier).state = [];
             },
             icon: const Icon(
               Puppycat_social.icon_close_large,
@@ -132,11 +137,23 @@ class FeedEditScreen extends ConsumerWidget {
                   },
                 );
 
+                String tempContents;
+
+                tempContents = await processHashtagEditedText(
+                  ref.watch(feedEditContentProvider.notifier).state.text,
+                  ref.read(hashtagListProvider),
+                );
+
+                tempContents = await processMentionEditedText(
+                  tempContents,
+                  ref.read(mentionListProvider),
+                );
+
                 final result = await ref.watch(feedWriteProvider.notifier).putFeed(
                       memberIdx: ref.watch(userInfoProvider).userModel!.idx,
                       isView: ref.watch(feedWriteButtonSelectedProvider),
                       location: ref.watch(feedWriteLocationInformationProvider.notifier).state,
-                      contents: ref.watch(feedEditContentProvider.notifier).state.text,
+                      contents: tempContents,
                       feedState: ref.watch(feedWriteProvider),
                       contentIdx: contentIdx,
                       initialTagList: ref.read(feedWriteProvider.notifier).state.initialTagList,
@@ -149,6 +166,9 @@ class FeedEditScreen extends ConsumerWidget {
                   ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
                   ref.watch(feedEditContentProvider.notifier).state = TextEditingController(text: "");
                   ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
+                  ref.read(hashtagListProvider.notifier).state = [];
+                  ref.read(mentionListProvider.notifier).state = [];
+
                   context.pushReplacement("/home");
                 } else {
                   showDialog(

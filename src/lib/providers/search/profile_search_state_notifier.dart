@@ -30,6 +30,10 @@ class ProfileSearchStateNotifier extends StateNotifier<SearchDataListModel> {
   final searchQuery = PublishSubject<String>();
 
   Future<void> searchTagList(String searchWord) async {
+    if (searchWord.isEmpty) {
+      return;
+    }
+
     searchSearchWord = searchWord;
 
     final lists = await SearchRepository(dio: ref.read(dioProvider)).getNickSearchList(

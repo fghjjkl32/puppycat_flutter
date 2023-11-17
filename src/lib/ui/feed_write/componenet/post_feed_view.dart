@@ -151,7 +151,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
             ],
             fieldViewBuilder: (context, controller, focusNode) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref.watch(feedEditContentProvider.notifier).state = controller;
+                ref.watch(feedWriteContentProvider.notifier).state = controller;
               });
 
               return Padding(
@@ -159,7 +159,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                 child: Container(
                   child: FormBuilderTextField(
                     focusNode: focusNode,
-                    controller: ref.watch(feedWriteContentProvider),
+                    controller: controller,
                     onChanged: (text) {
                       int cursorPos = ref.watch(feedWriteContentProvider).selection.baseOffset;
                       if (cursorPos > 0) {
@@ -413,7 +413,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
             ),
           ),
           SizedBox(
-            height: 60,
+            height: 100,
           ),
         ],
       ),

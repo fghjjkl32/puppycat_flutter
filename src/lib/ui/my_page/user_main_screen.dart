@@ -39,6 +39,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_ta
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
+
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -68,7 +69,6 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   late final PagingController<int, ContentImageData> _userTagContentsListPagingController = ref.read(userTagContentsStateProvider);
 
   ScrollController scrollController = ScrollController();
-  ScrollController commentController = ScrollController();
 
   bool showLottieAnimation = false;
 
@@ -91,8 +91,6 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
     ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-
-    commentController.addListener(_commentScrollListener);
 
     tabController = TabController(
       initialIndex: 0,
@@ -121,20 +119,10 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     }
   }
 
-  void _commentScrollListener() {
-    if (commentController.position.extentAfter < 200) {
-      if (commentOldLength == ref.read(commentStateProvider).list.length) {
-        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userInfoProvider).userModel?.idx);
-      }
-    }
-  }
-
   @override
   void dispose() {
     scrollController.removeListener(_scrollListener);
     scrollController.dispose();
-    commentController.removeListener(_commentScrollListener);
-    commentController.dispose();
     super.dispose();
   }
 

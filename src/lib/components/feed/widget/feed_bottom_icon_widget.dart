@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
@@ -42,14 +44,13 @@ class FeedBottomIconWidget extends ConsumerStatefulWidget {
 class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerProviderStateMixin {
   bool showLikeLottieAnimation = false;
   bool showSaveLottieAnimation = false;
+  late final PagingController<int, ContentLikeUserListData> _contentLikeUserPagingController = ref.read(contentLikeUserListStateProvider);
 
   late final AnimationController likeController;
   late final AnimationController saveController;
 
   @override
   void initState() {
-    commentController.addListener(_commentScrollListener);
-
     likeController = AnimationController(
       vsync: this,
     );
@@ -60,21 +61,8 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
     super.initState();
   }
 
-  void _commentScrollListener() {
-    if (commentController.position.extentAfter < 200) {
-      if (commentOldLength == ref.read(commentStateProvider).list.length) {
-        ref.read(commentStateProvider.notifier).loadMoreComment(ref.watch(commentStateProvider).list[0].contentsIdx, ref.read(userInfoProvider).userModel?.idx);
-      }
-    }
-  }
-
-  int commentOldLength = 0;
-  ScrollController commentController = ScrollController();
-
   @override
   void dispose() {
-    commentController.removeListener(_commentScrollListener);
-    commentController.dispose();
     likeController.dispose();
     saveController.dispose();
     super.dispose();
@@ -119,84 +107,65 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                 ),
                           InkWell(
                             onTap: () async {
-                              await ref.read(contentLikeUserListStateProvider.notifier).initContentLikeUserList(
-                                    widget.contentIdx,
-                                    ref.read(userInfoProvider).userModel?.idx,
-                                    1,
-                                  );
+                              ref.read(contentLikeUserListStateProvider.notifier).memberIdx = ref.read(userInfoProvider).userModel?.idx;
+                              ref.read(contentLikeUserListStateProvider.notifier).contentsIdx = widget.contentIdx;
 
-                              // ignore: use_build_context_synchronously
+                              _contentLikeUserPagingController.refresh();
+
                               showCustomModalBottomSheet(
                                 context: context,
                                 widget: Consumer(builder: (context, ref, child) {
-                                  final contentLikeUserListContentState = ref.watch(contentLikeUserListStateProvider);
-                                  final contentLikeUserList = contentLikeUserListContentState.list;
-
-                                  commentOldLength = contentLikeUserList.length ?? 0;
                                   return SizedBox(
                                     height: 500.h,
-                                    child: Stack(
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                top: 8.0.h,
-                                                bottom: 10.0.h,
-                                              ),
-                                              child: Text(
-                                                "좋아요",
-                                                style: kTitle16ExtraBoldStyle.copyWith(color: kTextSubTitleColor),
-                                              ),
-                                            ),
-                                            contentLikeUserList.isEmpty
-                                                ? Expanded(
-                                                    child: Container(
-                                                      color: kNeutralColor100,
-                                                      child: Center(
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Image.asset(
-                                                              'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                                                              width: 88,
-                                                              height: 88,
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 12,
-                                                            ),
-                                                            Text(
-                                                              '좋아요 한 유저가 없습니다.',
-                                                              textAlign: TextAlign.center,
-                                                              style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
+                                    child: PagedListView<int, ContentLikeUserListData>(
+                                      pagingController: _contentLikeUserPagingController,
+                                      builderDelegate: PagedChildBuilderDelegate<ContentLikeUserListData>(
+                                        // animateTransitions: true,
+                                        noItemsFoundIndicatorBuilder: (context) {
+                                          // return const Text('No Comments');
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 100.0),
+                                                child: Column(
+                                                  children: [
+                                                    Image.asset(
+                                                      'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                                      width: 88,
+                                                      height: 88,
                                                     ),
-                                                  )
-                                                : Expanded(
-                                                    child: ListView.builder(
-                                                      controller: commentController,
-                                                      itemCount: contentLikeUserList.length,
-                                                      padding: EdgeInsets.only(bottom: 80.h),
-                                                      itemBuilder: (BuildContext context, int commentIndex) {
-                                                        return FavoriteItemWidget(
-                                                          profileImage: contentLikeUserList[commentIndex].profileImgUrl,
-                                                          userName: contentLikeUserList[commentIndex].nick!,
-                                                          content: contentLikeUserList[commentIndex].intro!,
-                                                          isSpecialUser: contentLikeUserList[commentIndex].isBadge == 1,
-                                                          isFollow: contentLikeUserList[commentIndex].followState == 1,
-                                                          followerIdx: contentLikeUserList[commentIndex].memberIdx!,
-                                                          contentsIdx: widget.contentIdx,
-                                                          oldMemberIdx: 0,
-                                                        );
-                                                      },
+                                                    const SizedBox(
+                                                      height: 12,
                                                     ),
-                                                  ),
-                                          ],
-                                        ),
-                                      ],
+                                                    Text(
+                                                      '좋아요 한 유저가 없습니다.',
+                                                      textAlign: TextAlign.center,
+                                                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                        firstPageProgressIndicatorBuilder: (context) {
+                                          // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+                                          return const Center(child: CircularProgressIndicator());
+                                        },
+                                        itemBuilder: (context, contentLikeUserItem, index) {
+                                          return FavoriteItemWidget(
+                                            profileImage: contentLikeUserItem.profileImgUrl,
+                                            userName: contentLikeUserItem.nick!,
+                                            content: contentLikeUserItem.intro!,
+                                            isSpecialUser: contentLikeUserItem.isBadge == 1,
+                                            isFollow: contentLikeUserItem.followState == 1,
+                                            followerIdx: contentLikeUserItem.memberIdx!,
+                                            contentsIdx: widget.contentIdx,
+                                            oldMemberIdx: 0,
+                                          );
+                                        },
+                                      ),
                                     ),
                                   );
                                 }),
@@ -238,84 +207,65 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                           ),
                           InkWell(
                             onTap: () async {
-                              await ref.read(contentLikeUserListStateProvider.notifier).initContentLikeUserList(
-                                    widget.contentIdx,
-                                    ref.read(userInfoProvider).userModel?.idx,
-                                    1,
-                                  );
+                              ref.read(contentLikeUserListStateProvider.notifier).memberIdx = ref.read(userInfoProvider).userModel?.idx;
+                              ref.read(contentLikeUserListStateProvider.notifier).contentsIdx = widget.contentIdx;
 
-                              // ignore: use_build_context_synchronously
+                              _contentLikeUserPagingController.refresh();
+
                               showCustomModalBottomSheet(
                                 context: context,
                                 widget: Consumer(builder: (context, ref, child) {
-                                  final contentLikeUserListContentState = ref.watch(contentLikeUserListStateProvider);
-                                  final contentLikeUserList = contentLikeUserListContentState.list;
-
-                                  commentOldLength = contentLikeUserList.length ?? 0;
                                   return SizedBox(
                                     height: 500.h,
-                                    child: Stack(
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                top: 8.0.h,
-                                                bottom: 10.0.h,
-                                              ),
-                                              child: Text(
-                                                "좋아요",
-                                                style: kTitle16ExtraBoldStyle.copyWith(color: kTextSubTitleColor),
-                                              ),
-                                            ),
-                                            contentLikeUserList.isEmpty
-                                                ? Expanded(
-                                                    child: Container(
-                                                      color: kNeutralColor100,
-                                                      child: Center(
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Image.asset(
-                                                              'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                                                              width: 88,
-                                                              height: 88,
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 12,
-                                                            ),
-                                                            Text(
-                                                              '좋아요 한 유저가 없습니다.',
-                                                              textAlign: TextAlign.center,
-                                                              style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
+                                    child: PagedListView<int, ContentLikeUserListData>(
+                                      pagingController: _contentLikeUserPagingController,
+                                      builderDelegate: PagedChildBuilderDelegate<ContentLikeUserListData>(
+                                        // animateTransitions: true,
+                                        noItemsFoundIndicatorBuilder: (context) {
+                                          // return const Text('No Comments');
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 100.0),
+                                                child: Column(
+                                                  children: [
+                                                    Image.asset(
+                                                      'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                                      width: 88,
+                                                      height: 88,
                                                     ),
-                                                  )
-                                                : Expanded(
-                                                    child: ListView.builder(
-                                                      controller: commentController,
-                                                      itemCount: contentLikeUserList.length,
-                                                      padding: EdgeInsets.only(bottom: 80.h),
-                                                      itemBuilder: (BuildContext context, int commentIndex) {
-                                                        return FavoriteItemWidget(
-                                                          profileImage: contentLikeUserList[commentIndex].profileImgUrl,
-                                                          userName: contentLikeUserList[commentIndex].nick!,
-                                                          content: contentLikeUserList[commentIndex].intro!,
-                                                          isSpecialUser: contentLikeUserList[commentIndex].isBadge == 1,
-                                                          isFollow: contentLikeUserList[commentIndex].followState == 1,
-                                                          followerIdx: contentLikeUserList[commentIndex].memberIdx!,
-                                                          contentsIdx: widget.contentIdx,
-                                                          oldMemberIdx: 0,
-                                                        );
-                                                      },
+                                                    const SizedBox(
+                                                      height: 12,
                                                     ),
-                                                  ),
-                                          ],
-                                        ),
-                                      ],
+                                                    Text(
+                                                      '좋아요 한 유저가 없습니다.',
+                                                      textAlign: TextAlign.center,
+                                                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                        firstPageProgressIndicatorBuilder: (context) {
+                                          // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+                                          return const Center(child: CircularProgressIndicator());
+                                        },
+                                        itemBuilder: (context, contentLikeUserItem, index) {
+                                          return FavoriteItemWidget(
+                                            profileImage: contentLikeUserItem.profileImgUrl,
+                                            userName: contentLikeUserItem.nick!,
+                                            content: contentLikeUserItem.intro!,
+                                            isSpecialUser: contentLikeUserItem.isBadge == 1,
+                                            isFollow: contentLikeUserItem.followState == 1,
+                                            followerIdx: contentLikeUserItem.memberIdx!,
+                                            contentsIdx: widget.contentIdx,
+                                            oldMemberIdx: 0,
+                                          );
+                                        },
+                                      ),
                                     ),
                                   );
                                 }),
