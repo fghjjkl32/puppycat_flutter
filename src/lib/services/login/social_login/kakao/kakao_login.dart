@@ -70,7 +70,7 @@ class KakaoLoginService implements SocialLoginService {
     User userInfo = await UserApi.instance.me();
 
     UserModel userModel = UserModel(
-      loginStatus: LoginStatus.none,
+      // loginStatus: LoginStatus.none,
       idx: 0,
       nick: userInfo.kakaoAccount?.name ?? '',
 

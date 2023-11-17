@@ -48,114 +48,59 @@ class LoginRepository {
         throw 'Failed Social Login.(1)';
       }
 
-      var appKey = await GetIt.I.get<UuidUtil>().getUUID();
-      String fcmToken;
-      if (Platform.isIOS) {
-        ///TODO ios Push
-        fcmToken = '1234565';
-      } else {
-        fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';
-      }
-      LoginRequestModel reqModel = LoginRequestModel(
-        id: userModel.id,
-        simpleId: userModel.simpleId,
-        simpleType: userModel.simpleType ?? provider,
-        appKey: appKey,
-        appVer: GetIt.I.get<PackageInformationUtil>().appVersion,
-        fcmToken: fcmToken,
-        isBadge: userModel.isBadge,
-      );
-
-      LoginStatus loginStatus = LoginStatus.success;
-      ResponseModel responseModel = await _loginService.socialLogin(reqModel.toJson());
-
-      if (!responseModel.result) {
-        throw APIException(
-            msg: responseModel.message,
-            code: responseModel.code,
-            refer: 'Login Repository'
-        );
-      }
-
-      userModel = userModel.copyWith(loginStatus: loginStatus, idx: int.parse(_getMemberIdx(responseModel) ?? '0'), appKey: appKey);
-
-      return userModel;
+      return await loginByUserModel(userModel: userModel);
     } else {
       ///TODO exception 고도화 필요
       throw 'Failed Social Login.(2)';
     }
   }
 
-  Future<UserModel?> loginByUserModel({required UserModel userModel}) async {
-    // UserModel? userModel = await _socialLoginService?.getUserInfo();
-
+  Future<UserModel> loginByUserModel({required UserModel userModel}) async {
     var appKey = await GetIt.I.get<UuidUtil>().getUUID();
     String fcmToken;
     if (Platform.isIOS) {
+      ///TODO ios Push
       fcmToken = '1234565';
     } else {
       fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';
     }
+
     LoginRequestModel reqModel = LoginRequestModel(
-      id: userModel!.id,
-      // id: 'thirdnsov4@gmail.com',
-      simpleId: userModel!.simpleId,
-      // simpleId: '2809229088121356223',
-      simpleType: userModel!.simpleType ?? provider,
+      id: userModel.id,
+      simpleId: userModel.simpleId,
+      simpleType: userModel.simpleType ?? provider,
       appKey: appKey,
       appVer: GetIt.I.get<PackageInformationUtil>().appVersion,
-      // domain: "11",
-      // fcmToken: GetIt.I.get<FireBaseMessageController>().fcmToken ?? '',
       fcmToken: fcmToken,
-      isBadge: userModel!.isBadge,
+      isBadge: userModel.isBadge,
     );
 
-    // var isNeedSignUp = false;
-    LoginStatus loginStatus = LoginStatus.success;
-    ResponseModel? result = await _loginService.socialLogin(reqModel.toJson()).catchError((Object obj) async {
-      (ResponseModel?, LoginStatus) errorResult = await errorHandler(obj);
-      var responseModel = errorResult.$1;
-      loginStatus = errorResult.$2;
+    ResponseModel responseModel = await _loginService.socialLogin(reqModel.toJson());
 
-      print('loginStatus $loginStatus');
-
-      return responseModel;
-    });
-
-    if (result == null) {
-      ///TODO
-      ///result == null 이면 실제 통신 에러 발생으로 추측할 수 있음
-      return null;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message,
+        code: responseModel.code,
+        refer: 'LoginRepository',
+        caller: 'loginByUserModel',
+      );
     }
 
-    if (!result!.result && loginStatus != LoginStatus.needSignUp) {
-      loginStatus = parseResponse(result);
-    }
-
-    print('result : $result');
-
-    print('loginStatus 2 $loginStatus');
-    userModel = userModel.copyWith(
-      loginStatus: loginStatus,
-      idx: int.parse(_getMemberIdx(result) ?? '0'),
-      appKey: appKey,
-      isBadge: 1,
-    );
-    print('userModel $userModel');
+    userModel = userModel.copyWith(idx: int.parse(_getMemberIdx(responseModel) ?? '0'), appKey: appKey);
 
     return userModel;
   }
 
-  LoginStatus parseResponse(ResponseModel responseModel) {
-    switch (responseModel.code) {
-      case 'ERES-9999':
-        return LoginStatus.restriction;
-      case 'EOUT-7777':
-        return LoginStatus.withdrawalPending;
-      default:
-        return LoginStatus.failure;
-    }
-  }
+  // LoginStatus parseResponse(ResponseModel responseModel) {
+  //   switch (responseModel.code) {
+  //     case 'ERES-9999':
+  //       return LoginStatus.restriction;
+  //     case 'EOUT-7777':
+  //       return LoginStatus.withdrawalPending;
+  //     default:
+  //       return LoginStatus.failure;
+  //   }
+  // }
 
   String? _getMemberIdx(ResponseModel responseModel) {
     if (responseModel.data == null) {
@@ -163,7 +108,7 @@ class LoginRepository {
     }
 
     Map<String, dynamic> jsonData = {};
-    if (responseModel?.data == null) {
+    if (responseModel.data == null) {
       ///TODO
       ///Error Proc
       return null;
@@ -189,66 +134,20 @@ class LoginRepository {
       "appKey": appKey,
     };
 
-    ///NOTE
-    ///errorHandler를 사용하려면 새로 작성해야해서 그냥 try/catch로 ,,
-    try {
-      var result = await _loginService.logout(body);
+    var responseModel = await _loginService.logout(body);
 
-      print('result2 $result');
-      if (result == null) {
-        print('run???');
-        return false;
-      }
-
-      await _socialLoginService!.logout();
-
-      return result.result;
-    } catch (e) {
-      print('here?????? $e');
-      return false;
-    }
-  }
-
-  Future<(ResponseModel?, LoginStatus)> errorHandler(Object obj) async {
-    if (obj is! DioException) {
-      return (null, LoginStatus.failure);
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message,
+        code: responseModel.code,
+        refer: 'LoginRepository',
+        caller: 'logout',
+      );
     }
 
-    final res = obj.response;
-    print('Status Code: ${res?.statusCode}');
+    await _socialLoginService!.logout();
 
-    if (res?.statusCode == 301) {
-      String? newUrl = res!.headers.value('location');
-      if (newUrl != null) {
-        ResponseModel? responseModel = await _fetchRedirectedUrl(newUrl);
-        if (responseModel != null && !responseModel.result) {
-          return (responseModel, LoginStatus.needSignUp);
-        } else {
-          return (responseModel, LoginStatus.success);
-        }
-      }
-    } else if (res?.statusCode == 302) {
-      ResponseModel? responseModel = _parseResponseData(res?.data);
-      return (responseModel, LoginStatus.needSignUp);
-    }
-
-    ResponseModel? responseModel = _parseResponseData(res?.data);
-    return (responseModel, LoginStatus.failure);
-  }
-
-  ResponseModel? _parseResponseData(dynamic data) {
-    if (data is Map) {
-      return ResponseModel.fromJson(data as Map<String, dynamic>);
-    } else if (data is String) {
-      Map<String, dynamic> valueMap = jsonDecode(data);
-      return ResponseModel.fromJson(valueMap);
-    }
-    return null;
-  }
-
-  Future<ResponseModel?> _fetchRedirectedUrl(String newUrl) async {
-    var newResponse = await dio.get(newUrl);
-    return _parseResponseData(newResponse.data);
+    return responseModel.result;
   }
 
   Future<bool> _socialLogin() async {

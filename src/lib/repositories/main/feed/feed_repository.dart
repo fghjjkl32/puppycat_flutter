@@ -3,14 +3,11 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/material.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/params_model.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
@@ -18,7 +15,7 @@ import 'package:pet_mobile_social_flutter/services/main/feed/feed_service.dart';
 import 'package:http_parser/http_parser.dart';
 
 class FeedRepository {
-  late final FeedService _feedService;// = FeedService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final FeedService _feedService; // = FeedService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   final Dio dio;
 
@@ -33,26 +30,36 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel = await _feedService.getMyContentList(loginMemberIdx, page);
+    ContentResponseModel responseModel = await _feedService.getMyContentList(loginMemberIdx, page);
 
-    if (contentsResponseModel == null) {
-      return contentNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getMyContentList',
+      );
     }
 
-    return contentsResponseModel;
+    return responseModel;
   }
 
   Future<ContentResponseModel> getMyTagContentList({
     required page,
     required loginMemberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel = await _feedService.getMyTagContentList(loginMemberIdx, page);
+    ContentResponseModel responseModel = await _feedService.getMyTagContentList(loginMemberIdx, page);
 
-    if (contentsResponseModel == null) {
-      return contentNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getMyTagContentList',
+      );
     }
 
-    return contentsResponseModel;
+    return responseModel;
   }
 
   //user page feed list - user
@@ -61,19 +68,20 @@ class FeedRepository {
     required loginMemberIdx,
     required memberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel;
+    ContentResponseModel responseModel;
 
-    loginMemberIdx == null
-        ? contentsResponseModel =
-            await _feedService.getLogoutUserContentList(memberIdx, page)
-        : contentsResponseModel = await _feedService.getUserContentList(
-            loginMemberIdx, memberIdx, page);
+    loginMemberIdx == null ? responseModel = await _feedService.getLogoutUserContentList(memberIdx, page) : responseModel = await _feedService.getUserContentList(loginMemberIdx, memberIdx, page);
 
-    if (contentsResponseModel == null) {
-      return contentNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getUserContentList',
+      );
     }
 
-    return contentsResponseModel;
+    return responseModel;
   }
 
   Future<ContentResponseModel> getUserTagContentList({
@@ -81,19 +89,22 @@ class FeedRepository {
     required loginMemberIdx,
     required memberIdx,
   }) async {
-    ContentResponseModel? contentsResponseModel;
+    ContentResponseModel responseModel;
 
     loginMemberIdx == null
-        ? contentsResponseModel =
-            await _feedService.getLogoutUserTagContentList(memberIdx, page)
-        : contentsResponseModel = await _feedService.getUserTagContentList(
-            loginMemberIdx, memberIdx, page);
+        ? responseModel = await _feedService.getLogoutUserTagContentList(memberIdx, page)
+        : responseModel = await _feedService.getUserTagContentList(loginMemberIdx, memberIdx, page);
 
-    if (contentsResponseModel == null) {
-      return contentNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getUserTagContentList',
+      );
     }
 
-    return contentsResponseModel;
+    return responseModel;
   }
 
   Future<ContentResponseModel> getUserHashtagContentList({
@@ -101,19 +112,22 @@ class FeedRepository {
     required searchWord,
     required page,
   }) async {
-    ContentResponseModel? contentsResponseModel;
+    ContentResponseModel responseModel;
 
     memberIdx == null
-        ? contentsResponseModel =
-            await _feedService.getLogoutUserHashtagContentList(searchWord, page)
-        : contentsResponseModel = await _feedService.getUserHashtagContentList(
-            memberIdx, searchWord, page);
+        ? responseModel = await _feedService.getLogoutUserHashtagContentList(searchWord, page)
+        : responseModel = await _feedService.getUserHashtagContentList(memberIdx, searchWord, page);
 
-    if (contentsResponseModel == null) {
-      return contentNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getUserHashtagContentList',
+      );
     }
 
-    return contentsResponseModel;
+    return responseModel;
   }
 
   //user contents detail
@@ -122,19 +136,22 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentsResponseModel;
+    FeedResponseModel responseModel;
 
     loginMemberIdx == null
-        ? contentsResponseModel =
-            await _feedService.getLogoutUserContentDetailList(memberIdx, page)
-        : contentsResponseModel = await _feedService.getUserContentDetailList(
-            loginMemberIdx, memberIdx, page);
+        ? responseModel = await _feedService.getLogoutUserContentDetailList(memberIdx, page)
+        : responseModel = await _feedService.getUserContentDetailList(loginMemberIdx, memberIdx, page);
 
-    if (contentsResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getUserContentsDetailList',
+      );
     }
 
-    return contentsResponseModel;
+    return responseModel;
   }
 
   Future<FeedResponseModel> getUserTagContentDetail({
@@ -142,14 +159,18 @@ class FeedRepository {
     required int page,
     required int loginMemberIdx,
   }) async {
-    FeedResponseModel? tagResponseModel = await _feedService
-        .getUserTagContentDetail(loginMemberIdx, memberIdx, page);
+    FeedResponseModel responseModel = await _feedService.getUserTagContentDetail(loginMemberIdx, memberIdx, page);
 
-    if (tagResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getUserTagContentDetail',
+      );
     }
 
-    return tagResponseModel;
+    return responseModel;
   }
 
   Future<FeedResponseModel> getUserHashtagContentDetailList({
@@ -157,14 +178,18 @@ class FeedRepository {
     required String searchWord,
     required int page,
   }) async {
-    FeedResponseModel? tagResponseModel = await _feedService
-        .getUserHashtagContentDetailList(loginMemberIdx, searchWord, page);
+    FeedResponseModel responseModel = await _feedService.getUserHashtagContentDetailList(loginMemberIdx, searchWord, page);
 
-    if (tagResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getUserHashtagContentDetailList',
+      );
     }
 
-    return tagResponseModel;
+    return responseModel;
   }
 
   //my contents
@@ -172,14 +197,18 @@ class FeedRepository {
     required int contentIdx,
     required int loginMemberIdx,
   }) async {
-    FeedResponseModel? myContentResponseModel =
-        await _feedService.getMyContentDetail(contentIdx, loginMemberIdx);
+    FeedResponseModel responseModel = await _feedService.getMyContentDetail(contentIdx, loginMemberIdx);
 
-    if (myContentResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getMyContentsDetail',
+      );
     }
 
-    return myContentResponseModel;
+    return responseModel;
   }
 
   Future<FeedResponseModel> getMyContentsDetailList({
@@ -187,115 +216,134 @@ class FeedRepository {
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? myContentResponseModel = await _feedService
-        .getMyContentDetailList(loginMemberIdx, memberIdx, page);
+    FeedResponseModel responseModel = await _feedService.getMyContentDetailList(loginMemberIdx, memberIdx, page);
 
-    if (myContentResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getMyContentsDetailList',
+      );
     }
 
-    return myContentResponseModel;
+    return responseModel;
   }
 
   Future<FeedResponseModel> getContentDetail({
     required int contentIdx,
     required int? loginMemberIdx,
   }) async {
-    FeedResponseModel? myContentResponseModel;
+    FeedResponseModel responseModel;
 
-    loginMemberIdx == null
-        ? myContentResponseModel =
-            await _feedService.getLogoutContentDetail(contentIdx)
-        : myContentResponseModel =
-            await _feedService.getContentDetail(contentIdx, loginMemberIdx);
+    loginMemberIdx == null ? responseModel = await _feedService.getLogoutContentDetail(contentIdx) : responseModel = await _feedService.getContentDetail(contentIdx, loginMemberIdx);
 
-    if (myContentResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getContentDetail',
+      );
     }
 
-    return myContentResponseModel;
+    return responseModel;
   }
 
   Future<FeedResponseModel> getMyTagContentsDetailList({
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? myContentResponseModel =
-        await _feedService.getMyTagContentDetailList(loginMemberIdx, page);
+    FeedResponseModel responseModel = await _feedService.getMyTagContentDetailList(loginMemberIdx, page);
 
-    if (myContentResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getMyTagContentsDetailList',
+      );
     }
 
-    return myContentResponseModel;
+    return responseModel;
   }
 
   Future<FeedResponseModel> getPopularWeekDetailList({
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentResponseModel;
+    FeedResponseModel responseModel;
 
-    contentResponseModel =
-        await _feedService.getPopularWeekDetailList(loginMemberIdx, page);
+    responseModel = await _feedService.getPopularWeekDetailList(loginMemberIdx, page);
 
-    if (contentResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getPopularWeekDetailList',
+      );
     }
 
-    return contentResponseModel;
+    return responseModel;
   }
 
   Future<FeedResponseModel> getPopularHourDetailList({
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentResponseModel;
+    FeedResponseModel responseModel;
 
-    loginMemberIdx == null
-        ? contentResponseModel =
-            await _feedService.getLogoutPopularHourDetailList(page)
-        : contentResponseModel =
-            await _feedService.getPopularHourDetailList(loginMemberIdx, page);
+    loginMemberIdx == null ? responseModel = await _feedService.getLogoutPopularHourDetailList(page) : responseModel = await _feedService.getPopularHourDetailList(loginMemberIdx, page);
 
-    if (contentResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getPopularHourDetailList',
+      );
     }
 
-    return contentResponseModel;
+    return responseModel;
   }
 
   Future<FeedResponseModel> getFollowDetailList({
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentResponseModel =
-        await _feedService.getFollowDetailList(loginMemberIdx, page);
+    FeedResponseModel responseModel = await _feedService.getFollowDetailList(loginMemberIdx, page);
 
-    if (contentResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getFollowDetailList',
+      );
     }
 
-    return contentResponseModel;
+    return responseModel;
   }
 
   Future<FeedResponseModel> getRecentDetailList({
     required page,
     required loginMemberIdx,
   }) async {
-    FeedResponseModel? contentResponseModel;
+    FeedResponseModel responseModel;
 
-    loginMemberIdx == null
-        ? contentResponseModel =
-            await _feedService.getRecentLogoutDetailList(page)
-        : contentResponseModel =
-            await _feedService.getRecentDetailList(loginMemberIdx, page);
+    loginMemberIdx == null ? responseModel = await _feedService.getRecentLogoutDetailList(page) : responseModel = await _feedService.getRecentDetailList(loginMemberIdx, page);
 
-    if (contentResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getRecentDetailList',
+      );
     }
 
-    return contentResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> postLike({
@@ -306,30 +354,39 @@ class FeedRepository {
       "memberIdx": memberIdx,
     };
 
-    ResponseModel? feedResponseModel =
-        await _feedService.postLike(contentIdx, body);
+    ResponseModel responseModel = await _feedService.postLike(contentIdx, body);
 
-    if (feedResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'postLike',
+      );
     }
 
-    return feedResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> deleteLike({
     required int contentsIdx,
     required int memberIdx,
   }) async {
-    ResponseModel? feedResponseModel = await _feedService.deleteLike(
+    ResponseModel responseModel = await _feedService.deleteLike(
       contentsIdx: contentsIdx,
       memberIdx: memberIdx,
     );
 
-    if (feedResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'deleteLike',
+      );
     }
 
-    return feedResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> postSave({
@@ -340,30 +397,39 @@ class FeedRepository {
       "memberIdx": memberIdx,
     };
 
-    ResponseModel? feedResponseModel =
-        await _feedService.postSave(contentIdx, body);
+    ResponseModel responseModel = await _feedService.postSave(contentIdx, body);
 
-    if (feedResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'postSave',
+      );
     }
 
-    return feedResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> deleteSave({
     required int contentsIdx,
     required int memberIdx,
   }) async {
-    ResponseModel? feedResponseModel = await _feedService.deleteSave(
+    ResponseModel responseModel = await _feedService.deleteSave(
       contentsIdx: contentsIdx,
       memberIdx: memberIdx,
     );
 
-    if (feedResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'deleteSave',
+      );
     }
 
-    return feedResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> postHide({
@@ -374,54 +440,69 @@ class FeedRepository {
       "memberIdx": memberIdx,
     };
 
-    ResponseModel? feedResponseModel =
-        await _feedService.postHide(contentIdx, body);
+    ResponseModel responseModel = await _feedService.postHide(contentIdx, body);
 
-    if (feedResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'postHide',
+      );
     }
 
-    return feedResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> deleteHide({
     required int contentsIdx,
     required int memberIdx,
   }) async {
-    ResponseModel? feedResponseModel = await _feedService.deleteHide(
+    ResponseModel responseModel = await _feedService.deleteHide(
       contentsIdx: contentsIdx,
       memberIdx: memberIdx,
     );
 
-    if (feedResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'deleteHide',
+      );
     }
 
-    return feedResponseModel;
+    return responseModel;
   }
 
-  Future<ResponseModel> deleteContents(
-      {required int memberIdx, required String idx}) async {
-    ResponseModel? contentsResponseModel =
-        await _feedService.deleteContents(memberIdx, idx);
+  Future<ResponseModel> deleteContents({required int memberIdx, required String idx}) async {
+    ResponseModel responseModel = await _feedService.deleteContents(memberIdx, idx);
 
-    if (contentsResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'deleteContents',
+      );
     }
 
-    return contentsResponseModel;
+    return responseModel;
   }
 
-  Future<ResponseModel> deleteOneContents(
-      {required int memberIdx, required int idx}) async {
-    ResponseModel? contentsResponseModel =
-        await _feedService.deleteOneContents(memberIdx, idx);
+  Future<ResponseModel> deleteOneContents({required int memberIdx, required int idx}) async {
+    ResponseModel responseModel = await _feedService.deleteOneContents(memberIdx, idx);
 
-    if (contentsResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'deleteOneContents',
+      );
     }
 
-    return contentsResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> postContentReport({
@@ -444,14 +525,18 @@ class FeedRepository {
             "memberIdx": memberIdx,
           };
 
-    ResponseModel? feedResponseModel =
-        await _feedService.postContentReport(reportType, contentIdx, body);
+    ResponseModel responseModel = await _feedService.postContentReport(reportType, contentIdx, body);
 
-    if (feedResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'postContentReport',
+      );
     }
 
-    return feedResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> deleteContentReport({
@@ -459,17 +544,22 @@ class FeedRepository {
     required int contentsIdx,
     required int memberIdx,
   }) async {
-    ResponseModel? feedResponseModel = await _feedService.deleteContentReport(
+    ResponseModel responseModel = await _feedService.deleteContentReport(
       reportType,
       contentsIdx,
       memberIdx,
     );
 
-    if (feedResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'deleteContentReport',
+      );
     }
 
-    return feedResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> postFeed({
@@ -515,13 +605,18 @@ class FeedRepository {
 
     final formData = FormData.fromMap(formDataMap);
 
-    ResponseModel? feedResponseModel = await _feedService.postFeed(formData);
+    ResponseModel responseModel = await _feedService.postFeed(formData);
 
-    if (feedResponseModel == null) {
-      throw "error posting feed";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'postFeed',
+      );
     }
 
-    return feedResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> putFeed({
@@ -548,16 +643,13 @@ class FeedRepository {
     for (var tagImage in feedState.tagImage) {
       for (var tag in tagImage.tag) {
         // 초기 태그 리스트에서 해당 태그를 찾습니다.
-        var initialTag = initialTagList
-            .where((e) => e.index == tagImage.index)
-            .expand((e) => e.tag)
-            .firstWhere((t) => t.memberIdx == tag.memberIdx,
-                orElse: () => Tag(
-                      username: '',
-                      memberIdx: 0,
-                      position: Offset(0, 0),
-                      imageIndex: tag.imageIndex,
-                    ));
+        var initialTag = initialTagList.where((e) => e.index == tagImage.index).expand((e) => e.tag).firstWhere((t) => t.memberIdx == tag.memberIdx,
+            orElse: () => Tag(
+                  username: '',
+                  memberIdx: 0,
+                  position: Offset(0, 0),
+                  imageIndex: tag.imageIndex,
+                ));
 
         // 태그의 상태를 결정하는 로직
         String status = "";
@@ -570,41 +662,32 @@ class FeedRepository {
           status = "";
         }
 
-        imgTagList.add({
-          "imgIdx": tag.imageIndex,
-          "memberIdx": tag.memberIdx,
-          "width": tag.position.dx,
-          "height": tag.position.dy,
-          "status": status
-        });
+        imgTagList.add({"imgIdx": tag.imageIndex, "memberIdx": tag.memberIdx, "width": tag.position.dx, "height": tag.position.dy, "status": status});
       }
     }
 
     // 초기 태그 리스트에만 있는 태그를 찾아서 "status": "del"로 설정합니다.
     for (var initialTagImage in initialTagList) {
       for (var initialTag in initialTagImage.tag) {
-        if (!feedState.tagImage.any(
-            (ti) => ti.tag.any((t) => t.memberIdx == initialTag.memberIdx))) {
-          imgTagList.add({
-            "imgIdx": initialTag.imageIndex,
-            "memberIdx": initialTag.memberIdx,
-            "width": initialTag.position.dx,
-            "height": initialTag.position.dy,
-            "status": "del"
-          });
+        if (!feedState.tagImage.any((ti) => ti.tag.any((t) => t.memberIdx == initialTag.memberIdx))) {
+          imgTagList.add({"imgIdx": initialTag.imageIndex, "memberIdx": initialTag.memberIdx, "width": initialTag.position.dx, "height": initialTag.position.dy, "status": "del"});
         }
       }
     }
 
     formDataMap["imgTagList"] = imgTagList;
 
-    ResponseModel? feedResponseModel =
-        await _feedService.putFeed(contentIdx, formDataMap);
+    ResponseModel responseModel = await _feedService.putFeed(contentIdx, formDataMap);
 
-    if (feedResponseModel == null) {
-      throw "error posting feed";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'putFeed',
+      );
     }
 
-    return feedResponseModel;
+    return responseModel;
   }
 }

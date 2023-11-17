@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_response_model.dart';
@@ -19,22 +20,32 @@ class ReportRepository {
   }
 
   Future<SelectButtonResponseModel> getCommentReportList() async {
-    SelectButtonResponseModel? reportResponseModel = await _reportService.getCommentReportList();
+    SelectButtonResponseModel responseModel = await _reportService.getCommentReportList();
 
-    if (reportResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'ReportRepository',
+        caller: 'getCommentReportList',
+      );
     }
 
-    return reportResponseModel;
+    return responseModel;
   }
 
   Future<SelectButtonResponseModel> getContentReportList() async {
-    SelectButtonResponseModel? reportResponseModel = await _reportService.getContentReportList();
+    SelectButtonResponseModel responseModel = await _reportService.getContentReportList();
 
-    if (reportResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'ReportRepository',
+        caller: 'getContentReportList',
+      );
     }
 
-    return reportResponseModel;
+    return responseModel;
   }
 }

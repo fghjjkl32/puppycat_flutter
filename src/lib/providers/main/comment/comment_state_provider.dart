@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
@@ -28,19 +30,25 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
   ) async {
     currentPage = 1;
 
-    final page = initPage ?? state.page;
-    final lists = await CommentRepository(dio: ref.read(dioProvider)).getComment(page: page, memberIdx: memberIdx, contentIdx: contentIdx);
+    try {
+      final page = initPage ?? state.page;
+      final lists = await CommentRepository(dio: ref.read(dioProvider)).getComment(page: page, memberIdx: memberIdx, contentIdx: contentIdx);
 
-    maxPages = lists.data.params!.pagination!.endPage!;
+      maxPages = lists.data.params!.pagination!.endPage!;
 
-    state = state.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!);
+      state = state.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!);
 
-    if (lists == null) {
-      state = state.copyWith(page: page, isLoading: false);
-      return;
+      if (lists == null) {
+        state = state.copyWith(page: page, isLoading: false);
+        return;
+      }
+
+      state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('getInitComment Error $e');
     }
-
-    state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
   }
 
   loadMoreComment(contentIdx, memberIdx) async {
@@ -51,33 +59,39 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
 
     StringBuffer bf = StringBuffer();
 
-    bf.write('try to request loading ${state.isLoading} at ${state.page + 1}');
-    if (state.isLoading) {
-      bf.write(' fail');
-      return;
-    }
-    bf.write(' success');
-    state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
+    try {
+      bf.write('try to request loading ${state.isLoading} at ${state.page + 1}');
+      if (state.isLoading) {
+        bf.write(' fail');
+        return;
+      }
+      bf.write(' success');
+      state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-    final lists = await CommentRepository(dio: ref.read(dioProvider)).getComment(
-      contentIdx: contentIdx,
-      page: state.page + 1,
-      memberIdx: memberIdx,
-    );
-
-    if (lists == null) {
-      state = state.copyWith(isLoadMoreError: true, isLoading: false);
-      return;
-    }
-
-    if (lists.data.list.isNotEmpty) {
-      state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.data.list]);
-
-      currentPage++;
-    } else {
-      state = state.copyWith(
-        isLoading: false,
+      final lists = await CommentRepository(dio: ref.read(dioProvider)).getComment(
+        contentIdx: contentIdx,
+        page: state.page + 1,
+        memberIdx: memberIdx,
       );
+
+      if (lists == null) {
+        state = state.copyWith(isLoadMoreError: true, isLoading: false);
+        return;
+      }
+
+      if (lists.data.list.isNotEmpty) {
+        state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.data.list]);
+
+        currentPage++;
+      } else {
+        state = state.copyWith(
+          isLoading: false,
+        );
+      }
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('loadMoreComment Error $e');
     }
   }
 
@@ -92,16 +106,24 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required commentIdx,
     required parentIdx,
   }) async {
-    final result = await CommentRepository(dio: ref.read(dioProvider)).deleteComment(
-      memberIdx: memberIdx,
-      contentsIdx: contentsIdx,
-      commentIdx: commentIdx,
-      parentIdx: parentIdx,
-    );
+    try {
+      final result = await CommentRepository(dio: ref.read(dioProvider)).deleteComment(
+        memberIdx: memberIdx,
+        contentsIdx: contentsIdx,
+        commentIdx: commentIdx,
+        parentIdx: parentIdx,
+      );
 
-    await refresh(contentsIdx, memberIdx);
+      await refresh(contentsIdx, memberIdx);
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('comment deleteContents error $e');
+      rethrow;
+    }
   }
 
   Future<ResponseModel> postContents({
@@ -110,11 +132,19 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required contentIdx,
     int? parentIdx,
   }) async {
-    final result = await CommentRepository(dio: ref.read(dioProvider)).postComment(memberIdx: memberIdx, contents: contents, parentIdx: parentIdx, contentIdx: contentIdx);
+    try {
+      final result = await CommentRepository(dio: ref.read(dioProvider)).postComment(memberIdx: memberIdx, contents: contents, parentIdx: parentIdx, contentIdx: contentIdx);
 
-    await refresh(contentIdx, memberIdx);
+      await refresh(contentIdx, memberIdx);
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('comment postContents error $e');
+      rethrow;
+    }
   }
 
   Future<ResponseModel> editContents({
@@ -123,16 +153,24 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required String contents,
     required int contentIdx,
   }) async {
-    final result = await CommentRepository(dio: ref.read(dioProvider)).editComment(
-      memberIdx: memberIdx,
-      contents: contents,
-      contentIdx: contentIdx,
-      commentIdx: commentIdx,
-    );
+    try {
+      final result = await CommentRepository(dio: ref.read(dioProvider)).editComment(
+        memberIdx: memberIdx,
+        contents: contents,
+        contentIdx: contentIdx,
+        commentIdx: commentIdx,
+      );
 
-    await refresh(contentIdx, memberIdx);
+      await refresh(contentIdx, memberIdx);
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('comment editContents error $e');
+      rethrow;
+    }
   }
 
   Future<ResponseModel> postCommentLike({
@@ -140,11 +178,19 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required commentIdx,
     required contentsIdx,
   }) async {
+    try {
     final result = await CommentRepository(dio: ref.read(dioProvider)).postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
 
     await refresh(contentsIdx, memberIdx);
 
     return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('postCommentLike error $e');
+      rethrow;
+    }
   }
 
   Future<ResponseModel> deleteCommentLike({
@@ -152,11 +198,19 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required commentIdx,
     required contentsIdx,
   }) async {
-    final result = await CommentRepository(dio: ref.read(dioProvider)).deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+    try {
+      final result = await CommentRepository(dio: ref.read(dioProvider)).deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
 
-    await refresh(contentsIdx, memberIdx);
+      await refresh(contentsIdx, memberIdx);
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('deleteCommentLike error $e');
+      rethrow;
+    }
   }
 
   Future<ResponseModel> postBlock({
@@ -164,14 +218,22 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required memberIdx,
     required blockIdx,
   }) async {
-    final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
-      memberIdx: memberIdx,
-      blockIdx: blockIdx,
-    );
+    try {
+      final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
+        memberIdx: memberIdx,
+        blockIdx: blockIdx,
+      );
 
-    await refresh(contentsIdx, memberIdx);
+      await refresh(contentsIdx, memberIdx);
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('comment postBlock error $e');
+      rethrow;
+    }
   }
 
   Future<ResponseModel> postCommentReport({
@@ -181,6 +243,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required String? reason,
     required String reportType,
   }) async {
+    try {
     final result = await FeedRepository(dio: ref.read(dioProvider)).postContentReport(
       reportType: reportType,
       memberIdx: loginMemberIdx,
@@ -190,6 +253,13 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     );
 
     return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('postCommentReport error $e');
+      rethrow;
+    }
   }
 
   Future<ResponseModel> deleteCommentReport({
@@ -197,13 +267,21 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     required int loginMemberIdx,
     required int contentIdx,
   }) async {
-    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContentReport(
-      reportType: reportType,
-      memberIdx: loginMemberIdx,
-      contentsIdx: contentIdx,
-    );
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContentReport(
+        reportType: reportType,
+        memberIdx: loginMemberIdx,
+        contentsIdx: contentIdx,
+      );
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('deleteCommentReport error $e');
+      rethrow;
+    }
   }
 
   getInitReplyComment(
@@ -214,28 +292,36 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
   ) async {
     repliesCurrentPage = 1;
 
-    final page = initPage ?? state.page;
-    final lists = await CommentRepository(dio: ref.read(dioProvider)).getReplyComment(page: page, memberIdx: memberIdx, contentIdx: contentIdx, commentIdx: commentIdx);
+    try {
+      final page = initPage ?? state.page;
+      final lists = await CommentRepository(dio: ref.read(dioProvider)).getReplyComment(page: page, memberIdx: memberIdx, contentIdx: contentIdx, commentIdx: commentIdx);
 
-    repliesMaxPages = lists.data.params!.pagination!.endPage!;
+      repliesMaxPages = lists.data.params!.pagination!.endPage!;
 
-    if (lists == null) {
-      state = state.copyWith(page: page, isLoading: false);
-      return;
+      if (lists == null) {
+        state = state.copyWith(page: page, isLoading: false);
+        return;
+      }
+
+      // Find the comment with the given commentIdx
+      final commentIndex = state.list.indexWhere((c) => c.idx == commentIdx);
+
+      // Update the childCommentData of the comment
+      final updatedComment = state.list[commentIndex].copyWith(childCommentData: ChildCommentData(params: lists.data.params!, list: lists.data.list), showAllReplies: true);
+
+      // Update the comment in the state
+      state = state.copyWith(list: [
+        ...state.list.sublist(0, commentIndex),
+        updatedComment,
+        ...state.list.sublist(commentIndex + 1),
+      ], page: page, isLoading: false);
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('getInitReplyComment error $e');
+      rethrow;
     }
-
-    // Find the comment with the given commentIdx
-    final commentIndex = state.list.indexWhere((c) => c.idx == commentIdx);
-
-    // Update the childCommentData of the comment
-    final updatedComment = state.list[commentIndex].copyWith(childCommentData: ChildCommentData(params: lists.data.params!, list: lists.data.list), showAllReplies: true);
-
-    // Update the comment in the state
-    state = state.copyWith(list: [
-      ...state.list.sublist(0, commentIndex),
-      updatedComment,
-      ...state.list.sublist(commentIndex + 1),
-    ], page: page, isLoading: false);
   }
 
   loadMoreReplyComment(contentIdx, memberIdx, commentIdx) async {
@@ -246,6 +332,7 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
 
     StringBuffer bf = StringBuffer();
 
+    try {
     bf.write('try to request loading ${state.isLoading} at ${state.page + 1}');
     if (state.isLoading) {
       bf.write(' fail');
@@ -286,6 +373,13 @@ class CommentStateNotifier extends StateNotifier<CommentDataListModel> {
     );
 
     repliesCurrentPage++;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('loadMoreReplyComment error $e');
+      rethrow;
+    }
   }
 
   void increaseLoadMoreClickCount(int commentIdx) {

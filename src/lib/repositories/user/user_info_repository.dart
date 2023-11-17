@@ -3,6 +3,7 @@ import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -32,34 +33,42 @@ class UserInfoRepository {
       "simpleId": simpleId,
     };
 
-    ResponseModel? responseModel = await _userInfoService.restoreAccount(body);
+    ResponseModel responseModel = await _userInfoService.restoreAccount(body);
 
-    if (responseModel == null) {
-      ///TODO
-      ///throw로 할지 그냥 return null로 할지 생각해보기
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'UserInfoRepository',
+        caller: 'restoreAccount',
+      );
     }
 
     return responseModel.result;
   }
 
   Future<UserInformationItemModel> getMyInfo(String memberIdx) async {
-    UserInformationResponseModel? responseModel = await _userInfoService.getMyInfo(memberIdx);
+    UserInformationResponseModel responseModel = await _userInfoService.getMyInfo(memberIdx);
 
-    if (responseModel == null) {
-      ///TODO
-      ///throw로 할지 그냥 return null로 할지 생각해보기
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'UserInfoRepository',
+        caller: 'getMyInfo',
+      );
     }
 
-    if (responseModel.data == null || responseModel.data.info.isEmpty) {
-      ///TODO
-      throw "empty error";
+    if (responseModel.data.info.isEmpty) {
+      throw APIException(
+        msg: 'data is null(or empty)',
+        code: responseModel.code,
+        refer: 'UserInfoRepository',
+        caller: 'getMyInfo',
+      );
     }
 
-    UserInformationItemModel infoModel = responseModel.data.info!.first;
-
-    return infoModel;
+    return responseModel.data.info.first;
   }
 
   Future<ResponseModel> updateMyInfo(UserModel userInfoModel, XFile? file, String beforeNick, bool isProfileImageDelete, bool isPhoneNumberEdit) async {
@@ -93,55 +102,69 @@ class UserInfoRepository {
 
     FormData params = FormData.fromMap(baseParams);
 
-    ResponseModel? responseModel = await _userInfoService.updateMyInfo(params);
+    ResponseModel responseModel = await _userInfoService.updateMyInfo(params);
 
-    if (responseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'UserInfoRepository',
+        caller: 'updateMyInfo',
+      );
     }
 
     return responseModel;
   }
 
-  Future<bool> updateMyChatInfo(UserInfoModel userInfoModel) async {
-    FormData params = FormData.fromMap({
-      "memberIdx": userInfoModel.userModel!.idx,
-      // "chatInfo" : {
-      "chatMemberId": userInfoModel.chatUserModel!.chatMemberId,
-      "chatHomeServer": userInfoModel.chatUserModel!.homeServer,
-      "chatAccessToken": userInfoModel.chatUserModel!.accessToken,
-      "chatDeviceId": userInfoModel.chatUserModel!.deviceId,
-      "resetState": 0,
-      // }
-    });
-
-    ResponseModel? responseModel = await _userInfoService.updateMyInfo(params);
-
-    if (responseModel == null) {
-      ///TODO
-      ///throw로 할지 그냥 return null로 할지 생각해보기
-      throw "error";
-    }
-
-    return true;
-  }
+  ///NOTE
+  ///2023.11.17.
+  ///채팅 교체 예정으로 일단 주석 처리
+  // Future<bool> updateMyChatInfo(UserInfoModel userInfoModel) async {
+  //   FormData params = FormData.fromMap({
+  //     "memberIdx": userInfoModel.userModel!.idx,
+  //     // "chatInfo" : {
+  //     "chatMemberId": userInfoModel.chatUserModel!.chatMemberId,
+  //     "chatHomeServer": userInfoModel.chatUserModel!.homeServer,
+  //     "chatAccessToken": userInfoModel.chatUserModel!.accessToken,
+  //     "chatDeviceId": userInfoModel.chatUserModel!.deviceId,
+  //     "resetState": 0,
+  //     // }
+  //   });
+  //
+  //   ResponseModel? responseModel = await _userInfoService.updateMyInfo(params);
+  //
+  //   if (responseModel == null) {
+  //     ///TODO
+  //     ///throw로 할지 그냥 return null로 할지 생각해보기
+  //     throw "error";
+  //   }
+  //
+  //   return true;
+  // }
+  ///여기까지 채팅 교체 주석
 
   //User Info
   Future<UserInformationResponseModel> getUserInformation(int? loginMemberIdx, int memberIdx) async {
-    UserInformationResponseModel? userInformationResponseModel;
+    UserInformationResponseModel responseModel;
 
     loginMemberIdx == null
-        ? userInformationResponseModel = await _userInfoService.getLogoutUserInformation(
+        ? responseModel = await _userInfoService.getLogoutUserInformation(
             memberIdx,
           )
-        : userInformationResponseModel = await _userInfoService.getUserInformation(
+        : responseModel = await _userInfoService.getUserInformation(
             loginMemberIdx,
             memberIdx,
           );
 
-    if (userInformationResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'UserInfoRepository',
+        caller: 'getUserInformation',
+      );
     }
 
-    return userInformationResponseModel;
+    return responseModel;
   }
 }

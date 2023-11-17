@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
@@ -21,14 +22,17 @@ class PolicyRepository {
   }
 
   Future<List<PolicyItemModel>> getPolicies() async {
-    PolicyResponseModel? policyResponseModel = await _policyService.getPolicies();
+    PolicyResponseModel responseModel = await _policyService.getPolicies();
 
-    if (policyResponseModel == null) {
-      ///TODO
-      ///throw로 할지 그냥 return null로 할지 생각해보기
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'PolicyRepository',
+        caller: 'getPolicies',
+      );
     }
 
-    return policyResponseModel.data.list;
+    return responseModel.data.list;
   }
 }

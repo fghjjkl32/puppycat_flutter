@@ -10,13 +10,13 @@ part 'setting_service.g.dart';
 abstract class SettingService {
   factory SettingService(Dio dio, {String baseUrl}) = _SettingService;
 
-  @GET('/notification/{memberIdx}')
-  Future<SettingResponseModel?> getSetting(
+  @GET('v1/notification/{memberIdx}')
+  Future<SettingResponseModel> getSetting(
     @Path("memberIdx") int memberIdx,
   );
 
-  @PUT('/notification')
-  Future<ResponseModel?> putSetting(
+  @PUT('v1/notification')
+  Future<ResponseModel> putSetting(
     @Body() Map<String, dynamic> body,
   );
 }

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -22,23 +23,33 @@ class CustomerSupportRepository {
   Future<CustomerSupportResponseModel?> getFaqList({
     required int page,
   }) async {
-    CustomerSupportResponseModel? customerSupportResponseModel = await _settingService.getFaqList(page).catchError((Object obj) async {});
+    CustomerSupportResponseModel responseModel = await _settingService.getFaqList(page);
 
-    if (customerSupportResponseModel == null) {
-      return null;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CustomerSupportRepository',
+        caller: 'getFaqList',
+      );
     }
 
-    return customerSupportResponseModel;
+    return responseModel;
   }
 
   Future<MenuResponseModel?> getFaqMenuList() async {
-    MenuResponseModel? customerSupportResponseModel = await _settingService.getFaqMenuList().catchError((Object obj) async {});
+    MenuResponseModel responseModel = await _settingService.getFaqMenuList();
 
-    if (customerSupportResponseModel == null) {
-      return null;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CustomerSupportRepository',
+        caller: 'getFaqMenuList',
+      );
     }
 
-    return customerSupportResponseModel;
+    return responseModel;
   }
 
   Future<CustomerSupportResponseModel?> getNoticeList(int page, [int? type, int limit = 10]) async {
@@ -51,22 +62,32 @@ class CustomerSupportRepository {
       queries['type'] = type;
     }
 
-    CustomerSupportResponseModel? customerSupportResponseModel = await _settingService.getNoticeList(queries).catchError((Object obj) async {});
+    CustomerSupportResponseModel responseModel = await _settingService.getNoticeList(queries);
 
-    if (customerSupportResponseModel == null) {
-      return null;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CustomerSupportRepository',
+        caller: 'getNoticeList',
+      );
     }
 
-    return customerSupportResponseModel;
+    return responseModel;
   }
 
   Future<MenuResponseModel?> getNoticeMenuList() async {
-    MenuResponseModel? customerSupportResponseModel = await _settingService.getNoticeMenuList().catchError((Object obj) async {});
+    MenuResponseModel responseModel = await _settingService.getNoticeMenuList();
 
-    if (customerSupportResponseModel == null) {
-      return null;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CustomerSupportRepository',
+        caller: 'getNoticeMenuList',
+      );
     }
 
-    return customerSupportResponseModel;
+    return responseModel;
   }
 }

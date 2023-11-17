@@ -39,7 +39,8 @@ class AuthRepository {
       throw APIException(
         msg: responseModel.message,
         code: responseModel.code,
-        refer: 'Auth Repository'
+        refer: 'AuthRepository',
+        caller: 'getPassAuthUrl',
       );
       throw 'response result is false(code: ${responseModel.code})';
     }
@@ -48,7 +49,8 @@ class AuthRepository {
       throw APIException(
         msg: 'data is null(or empty)',
         code: responseModel.code,
-          refer: 'Auth Repository'
+        refer: 'AuthRepository',
+        caller: 'getPassAuthUrl',
       );
     }
 
@@ -56,7 +58,8 @@ class AuthRepository {
       throw APIException(
         msg: 'Not found data.location',
         code: responseModel.code,
-          refer: 'Auth Repository'
+        refer: 'AuthRepository',
+        caller: 'getPassAuthUrl',
       );
     }
 

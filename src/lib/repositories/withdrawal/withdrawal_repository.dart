@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -21,23 +22,33 @@ class WithdrawalRepository {
   }
 
   Future<SelectButtonResponseModel> getWithdrawalReasonList() async {
-    SelectButtonResponseModel? withdrawalResponseModel = await _withdrawalService.getWithdrawalReasonList();
+    SelectButtonResponseModel responseModel = await _withdrawalService.getWithdrawalReasonList();
 
-    if (withdrawalResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'WithdrawalRepository',
+        caller: 'getWithdrawalReasonList',
+      );
     }
 
-    return withdrawalResponseModel;
+    return responseModel;
   }
 
   Future<WithdrawalDetailResponseModel> getWithdrawalDetailList(memberIdx) async {
-    WithdrawalDetailResponseModel? withdrawalResponseModel = await _withdrawalService.getWithdrawalDetailList(memberIdx);
+    WithdrawalDetailResponseModel responseModel = await _withdrawalService.getWithdrawalDetailList(memberIdx);
 
-    if (withdrawalResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'WithdrawalRepository',
+        caller: 'getWithdrawalDetailList',
+      );
     }
 
-    return withdrawalResponseModel;
+    return responseModel;
   }
 
   Future<WithdrawalStatus> withdrawalUser({required int idx, required int code, String? reason}) async {
@@ -52,43 +63,17 @@ class WithdrawalRepository {
             "code": code,
           };
 
-    bool isError = false;
-    ResponseModel? res = await _withdrawalService.withdrawalUser(body).catchError((Object obj) async {
-      (ResponseModel?, bool) errorResult = await errorHandler(obj);
-      var responseModel = errorResult.$1;
-      isError = errorResult.$2;
+    ResponseModel responseModel = await _withdrawalService.withdrawalUser(body);
 
-      return responseModel;
-    });
-
-    if (res == null || isError) {
-      throw 'API Response is Null.';
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'WithdrawalRepository',
+        caller: 'withdrawalUser',
+      );
     }
 
-    if (res.result) {
-      return WithdrawalStatus.success;
-    } else {
-      return WithdrawalStatus.failure;
-    }
-  }
-
-  Future<(ResponseModel?, bool)> errorHandler(Object obj) async {
-    ResponseModel? responseModel;
-    switch (obj.runtimeType) {
-      case DioException:
-        final res = (obj as DioException).response;
-        if (res?.data == null) {
-          return (responseModel, true);
-        } else if (res?.data is Map) {
-          responseModel = ResponseModel.fromJson(res?.data);
-        } else if (res?.data is String) {
-          Map<String, dynamic> valueMap = jsonDecode(res?.data);
-          responseModel = ResponseModel.fromJson(valueMap);
-        }
-        break;
-      default:
-        break;
-    }
-    return (responseModel, true);
+    return WithdrawalStatus.success;
   }
 }

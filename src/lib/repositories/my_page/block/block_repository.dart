@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -23,87 +24,54 @@ class BlockRepository {
     required int page,
     required String searchWord,
   }) async {
-    SearchResponseModel? searchResponseModel = await _blockService.getBlockSearchList(memberIdx, page, searchWord).catchError((Object obj) async {});
+    SearchResponseModel responseModel = await _blockService.getBlockSearchList(memberIdx, page, searchWord);
 
-    if (searchResponseModel == null) {
-      return SearchResponseModel(
-        result: false,
-        code: "",
-        data: const SearchDataListModel(
-          list: [],
-          params: ParamsModel(
-            memberIdx: 0,
-            pagination: Pagination(
-              startPage: 0,
-              limitStart: 0,
-              totalPageCount: 0,
-              existNextPage: false,
-              endPage: 0,
-              existPrevPage: false,
-              totalRecordCount: 0,
-            ),
-            offset: 0,
-            limit: 0,
-            pageSize: 0,
-            page: 0,
-            recordSize: 0,
-          ),
-        ),
-        message: "",
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'BlockRepository',
+        caller: 'getBlockSearchList',
       );
     }
 
-    return searchResponseModel;
+    return responseModel;
   }
 
   Future<SearchResponseModel> getBlockList({
     required int memberIdx,
     required int page,
   }) async {
-    SearchResponseModel? searchResponseModel = await _blockService.getBlockList(memberIdx, page).catchError((Object obj) async {});
+    SearchResponseModel responseModel = await _blockService.getBlockList(memberIdx, page);
 
-    if (searchResponseModel == null) {
-      return SearchResponseModel(
-        result: false,
-        code: "",
-        data: const SearchDataListModel(
-          list: [],
-          params: ParamsModel(
-            memberIdx: 0,
-            pagination: Pagination(
-              startPage: 0,
-              limitStart: 0,
-              totalPageCount: 0,
-              existNextPage: false,
-              endPage: 0,
-              existPrevPage: false,
-              totalRecordCount: 0,
-            ),
-            offset: 0,
-            limit: 0,
-            pageSize: 0,
-            page: 0,
-            recordSize: 0,
-          ),
-        ),
-        message: "",
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'BlockRepository',
+        caller: 'getBlockList',
       );
     }
 
-    return searchResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> deleteBlock({
     required int blockIdx,
     required int memberIdx,
   }) async {
-    ResponseModel? blockResponseModel = await _blockService.deleteBlock(blockIdx, memberIdx).catchError((Object obj) async {});
+    ResponseModel responseModel = await _blockService.deleteBlock(blockIdx, memberIdx);
 
-    if (blockResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'BlockRepository',
+        caller: 'deleteBlock',
+      );
     }
 
-    return blockResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> postBlock({
@@ -114,12 +82,17 @@ class BlockRepository {
       "memberIdx": memberIdx,
     };
 
-    ResponseModel? followResponseModel = await _blockService.postBlock(blockIdx, body);
+    ResponseModel responseModel = await _blockService.postBlock(blockIdx, body);
 
-    if (followResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'BlockRepository',
+        caller: 'postBlock',
+      );
     }
 
-    return followResponseModel;
+    return responseModel;
   }
 }

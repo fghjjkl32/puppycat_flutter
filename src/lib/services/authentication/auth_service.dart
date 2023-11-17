@@ -9,7 +9,7 @@ part 'auth_service.g.dart';
 abstract class AuthService {
   factory AuthService(Dio dio, {String baseUrl}) = _AuthService;
 
-  @GET('/certification/popup')
+  @GET('v1/certification/popup')
   // Future<ResponseModel?> getPassAuthUrl(@Queries(encoded: false) Map<String, dynamic> queries);
   Future<ResponseModel> getPassAuthUrl({
     @Query('appKey') required String appKey,

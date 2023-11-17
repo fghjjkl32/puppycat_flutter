@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_data_list_model.dart';
@@ -22,40 +23,21 @@ class ContentLikeUserListRepository {
     required int? memberIdx,
     required int page,
   }) async {
-    ContentLikeUserListResponseModel? contentLikeUserListResponseModel;
+    ContentLikeUserListResponseModel responseModel;
 
     memberIdx == null
-        ? contentLikeUserListResponseModel = await _contentLikeUserListService.getLogoutContentLikeUserList(contentsIdx, page).catchError((Object obj) async {})
-        : contentLikeUserListResponseModel = await _contentLikeUserListService.getContentLikeUserList(contentsIdx, memberIdx, page).catchError((Object obj) async {});
+        ? responseModel = await _contentLikeUserListService.getLogoutContentLikeUserList(contentsIdx, page)
+        : responseModel = await _contentLikeUserListService.getContentLikeUserList(contentsIdx, memberIdx, page);
 
-    if (contentLikeUserListResponseModel == null) {
-      return ContentLikeUserListResponseModel(
-        result: false,
-        code: '',
-        data: const ContentLikeUserListDataListModel(
-          list: [],
-          params: ParamsModel(
-            memberIdx: 0,
-            pagination: Pagination(
-              startPage: 0,
-              limitStart: 0,
-              totalPageCount: 0,
-              existNextPage: false,
-              endPage: 0,
-              existPrevPage: false,
-              totalRecordCount: 0,
-            ),
-            offset: 0,
-            limit: 0,
-            pageSize: 0,
-            page: 0,
-            recordSize: 0,
-          ),
-        ),
-        message: "",
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'ContentLikeUserListRepository',
+        caller: 'getContentLikeUserList',
       );
     }
 
-    return contentLikeUserListResponseModel;
+    return responseModel;
   }
 }

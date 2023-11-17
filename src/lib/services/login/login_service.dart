@@ -9,19 +9,16 @@ part 'login_service.g.dart';
 @RestApi()
 abstract class LoginService {
   factory LoginService(Dio dio, {String baseUrl}) = _LoginService;
-  //
-  // @GET('/auth/{provider}')
-  // Future<LoginResponseModel?> socialLogin(@Path("provider") String provider, @Queries() Map<String, dynamic> queries);
 
-  @POST('/login/social')
+  @POST('v1/login/social')
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
   Future<ResponseModel> socialLogin(@Body() Map<String, dynamic> body);
 
-  @POST('/logout')
+  @POST('v1/logout')
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
-  Future<ResponseModel?> logout(@Body() Map<String, dynamic> body);
+  Future<ResponseModel> logout(@Body() Map<String, dynamic> body);
 }

@@ -448,33 +448,37 @@ class AppRouter {
           return const SplashScreen();
         },
       ),
-      GoRoute(
-          path: '/chatMain',
-          name: 'chatMain',
-          builder: (BuildContext context, GoRouterState state) {
-            return const ChatMainScreen();
-          },
-          routes: [
-            GoRoute(
-              path: 'chatRoom',
-              name: 'chatRoom',
-              builder: (BuildContext context, GoRouterState state) {
-                if (state.extra is Room) {
-                  return ChatRoomScreen(room: state.extra! as Room);
-                  // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
-                } else {
-                  return const ChatMainScreen();
-                }
-              },
-            ),
-            GoRoute(
-              path: 'chatSearch',
-              name: 'chatSearch',
-              builder: (BuildContext context, GoRouterState state) {
-                return const ChatSearchScreen();
-              },
-            ),
-          ]),
+      ///NOTE
+      ///2023.11.17.
+      ///채팅 교체 예정으로 일단 주석 처리
+      // GoRoute(
+      //     path: '/chatMain',
+      //     name: 'chatMain',
+      //     builder: (BuildContext context, GoRouterState state) {
+      //       return const ChatMainScreen();
+      //     },
+      //     routes: [
+      //       GoRoute(
+      //         path: 'chatRoom',
+      //         name: 'chatRoom',
+      //         builder: (BuildContext context, GoRouterState state) {
+      //           if (state.extra is Room) {
+      //             return ChatRoomScreen(room: state.extra! as Room);
+      //             // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
+      //           } else {
+      //             return const ChatMainScreen();
+      //           }
+      //         },
+      //       ),
+      //       GoRoute(
+      //         path: 'chatSearch',
+      //         name: 'chatSearch',
+      //         builder: (BuildContext context, GoRouterState state) {
+      //           return const ChatSearchScreen();
+      //         },
+      //       ),
+      //     ]),
+      ///여기까지 채팅 교체 주석
       GoRoute(
         path: '/maintenance',
         name: 'maintenance',

@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
@@ -47,35 +49,31 @@ class SignUpState extends _$SignUpState {
   }
 
   void socialSignUp(UserModel userModel) async {
-    var idxList = ref.read(policyStateProvider.notifier).getSelectPolicy();
-    var result = await _signUpRepository.socialSignUp(userModel, idxList);
+    try {
+      var idxList = ref.read(policyStateProvider.notifier).getSelectPolicy();
+      var result = await _signUpRepository.socialSignUp(userModel, idxList);
 
-    if (result == SignUpStatus.success) {
-      ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.success;
-      // ref.read(chatRegisterStateProvider.notifier).register(userModel);
+      if (result == SignUpStatus.success) {
+        ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.success;
+        // ref.read(chatRegisterStateProvider.notifier).register(userModel);
+      }
+      state = result;
+      // state = SignUpStatus.failedAuth;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('socialSignUp error $e');
+      state = SignUpStatus.failure;
     }
-    state = result;
-    // state = SignUpStatus.failedAuth;
   }
 
-  ///230621 smkang
-  ///result false - API 응답은 다양한 종류가 오는데 대부분 이미 앞단에서 체크하는 것이고 이미 사용 중인 닉네임만 체크하고자함
-  ///따라서 false인 경우는 중복 닉네임일 때만이라고 가정하고 진행
-  ///안그러면 response의 code 값을 또 봐야하는데 고정 code가 아닐 수도 있기 때문에 ,,
   void checkNickName(String nick) async {
-    ///앞단에서 처리 완료
-    // if (nick.length < 2) {
-    //   ref.read(nickNameProvider.notifier).state = NickNameStatus.minLength;
-    //   return;
-    // }
-    //
-    // if (nick.length > 20) {
-    //   ref.read(nickNameProvider.notifier).state = NickNameStatus.maxLength;
-    //   return;
-    // }
-
-    ///InvalidWord
-
-    ref.read(nickNameProvider.notifier).state = await _signUpRepository.checkNickName(nick);
+    try {
+      ref.read(nickNameProvider.notifier).state = await _signUpRepository.checkNickName(nick);
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('checkNickName error $e');
+    }
   }
 }

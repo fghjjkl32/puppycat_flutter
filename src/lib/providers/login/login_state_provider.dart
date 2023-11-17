@@ -66,98 +66,105 @@ class LoginState extends _$LoginState {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
       print('auto login exception ($e)');
+      state = LoginStatus.failure;
     }
   }
 
   Future<void> _procLogin(UserModel? userModel) async {
     if (userModel == null) {
       state = LoginStatus.failure;
+      ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.none);
       return;
     }
 
-    print('loginResult.loginStatus ${userModel.loginStatus}');
-    state = userModel.loginStatus;
+    saveUserModel(userModel);
+    UserInfoModel userInfoModel = UserInfoModel(userModel: userModel);
 
-    ref.read(userInfoProvider.notifier).state = UserInfoModel(userModel: userModel);
+    ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
+    ref.read(myInfoStateProvider.notifier).getMyInfo(userModel.idx.toString());
 
-    ///Login Route State 관련
-    switch (userModel.loginStatus) {
-      case LoginStatus.success:
-        saveUserModel(userModel);
-        UserInfoModel userInfoModel = UserInfoModel(userModel: userModel);
-        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
-        ref.read(myInfoStateProvider.notifier).getMyInfo(userModel.idx.toString());
-        ref.listen(myInfoStateProvider, (previous, next) {
-          print('next $next');
+    ref.listen(myInfoStateProvider, (previous, next) {
+      print('next $next');
 
-          ///TODO
-          /// previous와 next값 (이전값)이 같을때 해당 로직 무시하는 코드
-          /// 회원탈퇴하고, 7일전 데이터로 다시 로그인 하면 스테이트가 변경되자 않아서 주석처리 진행
-          // if (previous == next) {
-          //   return;
-          // }
+      ///TODO
+      /// previous와 next값 (이전값)이 같을때 해당 로직 무시하는 코드
+      /// 회원탈퇴하고, 7일전 데이터로 다시 로그인 하면 스테이트가 변경되자 않아서 주석처리 진행
+      // if (previous == next) {
+      //   return;
+      // }
 
-          userInfoModel = userInfoModel.copyWith(
-              userModel: userModel.copyWith(
-            idx: next.memberIdx ?? userModel.idx,
-            nick: next.nick ?? userModel.nick,
-            id: next.email ?? userModel.id,
-            // id: 'thirdnsov4@gmail.com',
-            name: next.name ?? userModel.name,
-            phone: next.phone ?? userModel.phone,
-            introText: next.intro,
-            profileImgUrl: next.profileImgUrl,
-            isBadge: next.isBadge ?? 0,
-            uuid: next.uuid ?? userModel.uuid,
-            channelTalkHash: next.channelTalkHash ?? userModel.channelTalkHash,
-            // password: '2809229088121356223',
-          ));
+      userInfoModel = userInfoModel.copyWith(
+          userModel: userModel.copyWith(
+        idx: next.memberIdx ?? userModel.idx,
+        nick: next.nick ?? userModel.nick,
+        id: next.email ?? userModel.id,
+        name: next.name ?? userModel.name,
+        phone: next.phone ?? userModel.phone,
+        introText: next.intro,
+        profileImgUrl: next.profileImgUrl,
+        isBadge: next.isBadge ?? 0,
+        uuid: next.uuid ?? userModel.uuid,
+        channelTalkHash: next.channelTalkHash ?? userModel.channelTalkHash,
+      ));
 
-          if (ref.read(myInfoStateProvider.notifier).checkChatInfo(next)) {
-            // ref.read(chatRegisterStateProvider.notifier).register(userModel);
-            userInfoModel = userInfoModel.copyWith(
-              chatUserModel: ChatUserModel(
-                chatMemberId: next.chatMemberId,
-                homeServer: next.chatHomeServer,
-                deviceId: next.chatDeviceId,
-                accessToken: next.chatAccessToken,
-              ),
-            );
-          }
+      ///NOTE
+      ///2023.11.16.
+      ///채팅 교체 예정으로 일단 주석 처리
+      // if (ref.read(myInfoStateProvider.notifier).checkChatInfo(next)) {
+      //   // ref.read(chatRegisterStateProvider.notifier).register(userModel);
+      //   userInfoModel = userInfoModel.copyWith(
+      //     chatUserModel: ChatUserModel(
+      //       chatMemberId: next.chatMemberId,
+      //       homeServer: next.chatHomeServer,
+      //       deviceId: next.chatDeviceId,
+      //       accessToken: next.chatAccessToken,
+      //     ),
+      //   );
+      // }
+      ///여기까지 채팅 교체 주석
 
-          ref.read(followUserStateProvider.notifier).resetState();
-          ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
-          ref.read(userInfoProvider.notifier).state = userInfoModel;
-        });
+      ref.read(followUserStateProvider.notifier).resetState();
 
-        print('userInfoModel :: $userInfoModel');
-        ref.read(userInfoProvider.notifier).state = userInfoModel;
-      // case LoginStatus.needSignUp:
-      //   ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.signUpScreen);
-      // case LoginStatus.withdrawalPending:
-      // case LoginStatus.failure:
-      // case LoginStatus.restriction:
-      case LoginStatus.none:
-      default:
-        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.none);
-    }
+      ///NOTE
+      ///2023.11.16.
+      ///채팅 교체 예정으로 일단 주석 처리
+      // ref.read(chatLoginStateProvider.notifier).chatLogin(userInfoModel);
+      ///여기까지 채팅 교체 주석
+
+      ref.read(userInfoProvider.notifier).state = userInfoModel;
+    });
+
+    print('userInfoModel :: $userInfoModel');
+    ref.read(userInfoProvider.notifier).state = userInfoModel;
+    state = LoginStatus.success;
   }
 
   void logout(String provider, String appKey) async {
     final loginRepository = LoginRepository(provider: provider, dio: ref.read(dioProvider));
-    // final loginRepository = ref.watch(loginRepositoryProvider(provider));
 
-    var result = await loginRepository.logout(appKey);
-    print('result $result');
-    if (result) {
-      var userInfoModel = ref.read(userInfoProvider);
-      var chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${userInfoModel.userModel!.idx}')));
-      chatController.controller.logout();
-      ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
-      ref.read(followUserStateProvider.notifier).resetState();
-      ref.read(userInfoProvider.notifier).state = UserInfoModel();
-      saveUserModel(null);
-      state = LoginStatus.none;
+    try {
+      var result = await loginRepository.logout(appKey);
+      if (result) {
+        var userInfoModel = ref.read(userInfoProvider);
+
+        ///NOTE
+        ///2023.11.16.
+        ///채팅 교체 예정으로 일단 주석 처리
+        //     var chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${userInfoModel.userModel!.idx}')));
+        //     chatController.controller.logout();
+        ///여기까지 채팅 교체 주석
+
+        ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+        ref.read(followUserStateProvider.notifier).resetState();
+        ref.read(userInfoProvider.notifier).state = UserInfoModel();
+        saveUserModel(null);
+        state = LoginStatus.none;
+      }
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('logout exception ($e)');
+      state = LoginStatus.failure;
     }
   }
 
@@ -189,7 +196,7 @@ class LoginState extends _$LoginState {
   Future autoLogin() async {
     UserModel? userModel = await _getUserModel();
     if (userModel == null) {
-      print('aa');
+      print('AutoLogin Failed');
       state = LoginStatus.failure;
       return;
     }

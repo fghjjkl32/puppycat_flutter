@@ -24,15 +24,19 @@ class MyInfoState extends _$MyInfoState {
     state = userInfoModel;
   }
 
-  void updateMyChatInfo(UserInfoModel userInfoModel) async {
-    var result = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).updateMyChatInfo(userInfoModel);
-  }
-
-  bool checkChatInfo(UserInformationItemModel userInfoModel) {
-    if (userInfoModel.chatMemberId == null) {
-      return false;
-    } else {
-      return true;
-    }
-  }
+  ///NOTE
+  ///2023.11.17.
+  ///채팅 교체 예정으로 일단 주석 처리
+// void updateMyChatInfo(UserInfoModel userInfoModel) async {
+//   var result = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).updateMyChatInfo(userInfoModel);
+// }
+//
+// bool checkChatInfo(UserInformationItemModel userInfoModel) {
+//   if (userInfoModel.chatMemberId == null) {
+//     return false;
+//   } else {
+//     return true;
+//   }
+// }
+  ///여기까지 채팅 교체 주석
 }

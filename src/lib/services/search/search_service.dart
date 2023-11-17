@@ -12,56 +12,56 @@ part 'search_service.g.dart';
 abstract class SearchService {
   factory SearchService(Dio dio, {String baseUrl}) = _SearchService;
 
-  @GET('/search/nick/mention?memberIdx={memberIdx}&page={page}')
-  Future<SearchResponseModel?> getMentionRecommendList(
+  @GET('v1/search/nick/mention?memberIdx={memberIdx}&page={page}')
+  Future<SearchResponseModel> getMentionRecommendList(
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
-  @GET('/search/nick/img?memberIdx={memberIdx}&page={page}')
-  Future<SearchResponseModel?> getImageTagRecommendList(
+  @GET('v1/search/nick/img?memberIdx={memberIdx}&page={page}')
+  Future<SearchResponseModel> getImageTagRecommendList(
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
-  @GET('/search/nick')
-  Future<SearchResponseModel?> getNickSearchList(
+  @GET('v1/search/nick')
+  Future<SearchResponseModel> getNickSearchList(
     @Query("memberIdx") int memberIdx,
     @Query("page") int page,
     @Query("searchWord") String searchWord,
     @Query("limit") int limit,
   );
 
-  @GET('/search/nick')
-  Future<SearchResponseModel?> getLogoutNickSearchList(
+  @GET('v1/search/nick')
+  Future<SearchResponseModel> getLogoutNickSearchList(
     @Query("page") int page,
     @Query("searchWord") String searchWord,
     @Query("limit") int limit,
   );
 
-  @GET('/search/tag')
-  Future<SearchResponseModel?> getTagSearchList(
+  @GET('v1/search/tag')
+  Future<SearchResponseModel> getTagSearchList(
     @Query("memberIdx") int memberIdx,
     @Query("page") int page,
     @Query("searchWord") String searchWord,
     @Query("limit") int limit,
   );
 
-  @GET('/search/tag')
-  Future<SearchResponseModel?> getLogoutTagSearchList(
+  @GET('v1/search/tag')
+  Future<SearchResponseModel> getLogoutTagSearchList(
     @Query("page") int page,
     @Query("searchWord") String searchWord,
     @Query("limit") int limit,
   );
 
-  @GET('/search')
-  Future<SearchResponseModel?> getFullSearchList(
+  @GET('v1/search')
+  Future<SearchResponseModel> getFullSearchList(
     @Query("memberIdx") int memberIdx,
     @Query("searchWord") String searchWord,
   );
 
-  @GET('/search')
-  Future<SearchResponseModel?> getLogoutFullSearchList(
+  @GET('v1/search')
+  Future<SearchResponseModel> getLogoutFullSearchList(
     @Query("searchWord") String searchWord,
   );
 }

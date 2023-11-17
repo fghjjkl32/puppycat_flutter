@@ -3,10 +3,15 @@ class APIException implements Exception {
   final String code;
   final String refer;
 
-  const APIException({
+  final String caller;
+  List<String>? arguments;
+
+  APIException({
     required this.msg,
     required this.code,
     required this.refer,
+    required this.caller,
+    this.arguments,
   }); // []: optional positional parameters
 
   @override
@@ -15,6 +20,9 @@ class APIException implements Exception {
   String getExceptionMsg() => msg;
   String getExceptionCode() => code;
   String getExceptionRefer() => refer;
+
+  String getExceptionCaller() => caller;
+  List<String>? getExceptionArgs() => arguments;
 }
 
 // enum APIExceptionType {

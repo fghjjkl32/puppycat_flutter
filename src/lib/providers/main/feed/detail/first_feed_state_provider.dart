@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -8,6 +9,7 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_detail_state.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
@@ -149,39 +151,15 @@ class FirstFeedState extends _$FirstFeedState {
       ref.read(firstFeedEmptyProvider.notifier).state = searchList.isEmpty;
 
       state.notifyListeners();
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      apiStatus = ListAPIStatus.error;
+      state.error = apiException.toString();
     } catch (e) {
       apiStatus = ListAPIStatus.error;
       state.error = e;
     }
   }
-
-  // Future<ResponseModel> postFollow({
-  //   required memberIdx,
-  //   required followIdx,
-  // }) async {
-  //   final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
-  //
-  //   state.itemList![0] = state.itemList![0].copyWith(
-  //     followState: 1,
-  //   );
-  //   state.notifyListeners();
-  //
-  //   return result;
-  // }
-
-  // Future<ResponseModel> deleteFollow({
-  //   required memberIdx,
-  //   required followIdx,
-  // }) async {
-  //   final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
-  //
-  //   state.itemList![0] = state.itemList![0].copyWith(
-  //     followState: 0,
-  //   );
-  //   state.notifyListeners();
-  //
-  //   return result;
-  // }
 
   final Map<int, List<FeedData>?> firstFeedStateMap = {};
   final Map<int, List<MemberInfoListData>?> firstFeedMemberInfoStateMap = {};

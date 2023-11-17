@@ -34,7 +34,11 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/my_pet_list/my_pet_list_state_provider.dart';
+///NOTE
+///2023.11.16.
+///산책하기 보류로 주석 처리
+// import 'package:pet_mobile_social_flutter/providers/my_page/my_pet/my_pet_list/my_pet_list_state_provider.dart';
+///산책하기 보류로 주석 처리 완료
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
@@ -63,7 +67,11 @@ class UserMainScreen extends ConsumerStatefulWidget {
 }
 
 class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTickerProviderStateMixin {
-  late final PagingController<int, MyPetItemModel> _myPetListPagingController = ref.read(myPetListStateProvider);
+  ///NOTE
+  ///2023.11.16.
+  ///산책하기 보류로 주석 처리
+  // late final PagingController<int, MyPetItemModel> _myPetListPagingController = ref.read(myPetListStateProvider);
+  ///산책하기 보류로 주석 처리 완료
   late final PagingController<int, ContentImageData> _userContentsListPagingController = ref.read(userContentsStateProvider);
   late final PagingController<int, ContentImageData> _userTagContentsListPagingController = ref.read(userTagContentsStateProvider);
 
@@ -80,11 +88,15 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
   @override
   void initState() {
-    ref.read(myPetListStateProvider.notifier).memberIdx = widget.memberIdx;
+    ///NOTE
+    ///2023.11.16.
+    ///산책하기 보류로 주석 처리
+    // ref.read(myPetListStateProvider.notifier).memberIdx = widget.memberIdx;
+    // _myPetListPagingController.refresh(); //이건 ref.read(userTagContentsStateProvider.notifier).memberIdx = widget.memberIdx; 아래에 있었음
+    ///산책하기 보류로 주석 처리 완료
     ref.read(userContentsStateProvider.notifier).memberIdx = widget.memberIdx;
-    ref.read(userTagContentsStateProvider.notifier).memberIdx = widget.memberIdx;
 
-    _myPetListPagingController.refresh();
+
 
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
@@ -301,7 +313,11 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     );
                         }),
                       ],
-                      expandedHeight: ref.watch(expandedHeightProvider),
+                      ///NOTE
+                      ///2023.11.16.
+                      ///산책하기 보류로 주석 처리
+                      // expandedHeight: ref.watch(expandedHeightProvider),
+                      ///산책하기 보류로 주석 처리 완료
                       flexibleSpace: Consumer(builder: (context, ref, _) {
                         final userInformationState = ref.watch(userInformationStateProvider);
                         final lists = userInformationState.list;
@@ -918,17 +934,21 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         Expanded(
                           child: GestureDetector(
                             onTap: () async {
-                              if (data.chatMemberId != null) {
-                                ChatController chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${data.memberIdx}')));
-
-                                var roomId = await chatController.client.startDirectChat(data.chatMemberId!, enableEncryption: false);
-
-                                Room? room = chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
-
-                                if (mounted) {
-                                  ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain/chatRoom', extra: room);
-                                }
-                              }
+                              ///NOTE
+                              ///2023.11.17.
+                              ///채팅 교체 예정으로 일단 주석 처리
+                              // if (data.chatMemberId != null) {
+                              //   ChatController chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${data.memberIdx}')));
+                              //
+                              //   var roomId = await chatController.client.startDirectChat(data.chatMemberId!, enableEncryption: false);
+                              //
+                              //   Room? room = chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
+                              //
+                              //   if (mounted) {
+                              //     ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain/chatRoom', extra: room);
+                              //   }
+                              // }
+                              ///여기까지 채팅 교체 주석
                             },
                             child: Container(
                               height: 30.h,
@@ -950,118 +970,122 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       ],
                     ),
             ),
-            ref.watch(myPetListStateProvider).itemList == null
-                ? Container()
-                : Padding(
-                    padding: const EdgeInsets.only(left: 12.0, bottom: 10, top: 6),
-                    child: Row(
-                      children: [
-                        Text(
-                          widget.nick.length > 15 ? '${widget.nick.substring(0, 15)}...님의 아이들' : "${widget.nick}님의 아이들",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          ref.watch(myPetListStateProvider).itemList!.length > 99 ? "99+" : "${ref.watch(myPetListStateProvider).itemList?.length}",
-                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
-                        ),
-                      ],
-                    ),
-                  ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: PagedListView<int, MyPetItemModel>(
-                  scrollDirection: Axis.horizontal,
-                  pagingController: _myPetListPagingController,
-                  builderDelegate: PagedChildBuilderDelegate<MyPetItemModel>(
-                    noItemsFoundIndicatorBuilder: (context) {
-                      return const SizedBox.shrink();
-                    },
-                    noMoreItemsIndicatorBuilder: (context) {
-                      return const SizedBox.shrink();
-                    },
-                    newPageProgressIndicatorBuilder: (context) {
-                      return Column(
-                        children: [
-                          Lottie.asset(
-                            'assets/lottie/icon_loading.json',
-                            fit: BoxFit.fill,
-                            width: 80,
-                            height: 80,
-                          ),
-                        ],
-                      );
-                    },
-                    firstPageProgressIndicatorBuilder: (context) {
-                      return Container();
-                    },
-                    itemBuilder: (context, item, index) {
-                      return InkWell(
-                        onTap: () {
-                          ///NOTE
-                          ///2023.11.14.
-                          ///산책하기 보류로 주석 처리
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) => UserPetDetailScreen(
-                          //       itemModel: item,
-                          //     ),
-                          //   ),
-                          // );
-                          ///산책하기 보류로 주석 처리 완료
-                        },
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-                              child: WidgetMask(
-                                blendMode: BlendMode.srcATop,
-                                childSaveLayer: true,
-                                mask: Center(
-                                  child: item.url == null || item.url == ""
-                                      ? const Center(
-                                          child: Icon(
-                                            Puppycat_social.icon_profile_large,
-                                            size: 48,
-                                            color: kNeutralColor500,
-                                          ),
-                                        )
-                                      : Image.network(
-                                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.url}").toUrl(),
-                                          width: 48,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
-                                child: SvgPicture.asset(
-                                  'assets/image/feed/image/squircle.svg',
-                                  height: 48,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6.0),
-                              child: Text(
-                                "${item.name!.length > 5 ? item.name!.substring(0, 5) + '...' : item.name}",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: kBody11RegularStyle.copyWith(color: kTextTitleColor),
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
+            ///NOTE
+            ///2023.11.16.
+            ///산책하기 보류로 주석 처리
+            // ref.watch(myPetListStateProvider).itemList == null
+            //     ? Container()
+            //     : Padding(
+            //         padding: const EdgeInsets.only(left: 12.0, bottom: 10, top: 6),
+            //         child: Row(
+            //           children: [
+            //             Text(
+            //               widget.nick.length > 15 ? '${widget.nick.substring(0, 15)}...님의 아이들' : "${widget.nick}님의 아이들",
+            //               maxLines: 1,
+            //               overflow: TextOverflow.ellipsis,
+            //               style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+            //             ),
+            //             SizedBox(
+            //               width: 10,
+            //             ),
+            //             Text(
+            //               ref.watch(myPetListStateProvider).itemList!.length > 99 ? "99+" : "${ref.watch(myPetListStateProvider).itemList?.length}",
+            //               style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            // Expanded(
+            //   child: Padding(
+            //     padding: const EdgeInsets.only(left: 8.0),
+            //     child: PagedListView<int, MyPetItemModel>(
+            //       scrollDirection: Axis.horizontal,
+            //       pagingController: _myPetListPagingController,
+            //       builderDelegate: PagedChildBuilderDelegate<MyPetItemModel>(
+            //         noItemsFoundIndicatorBuilder: (context) {
+            //           return const SizedBox.shrink();
+            //         },
+            //         noMoreItemsIndicatorBuilder: (context) {
+            //           return const SizedBox.shrink();
+            //         },
+            //         newPageProgressIndicatorBuilder: (context) {
+            //           return Column(
+            //             children: [
+            //               Lottie.asset(
+            //                 'assets/lottie/icon_loading.json',
+            //                 fit: BoxFit.fill,
+            //                 width: 80,
+            //                 height: 80,
+            //               ),
+            //             ],
+            //           );
+            //         },
+            //         firstPageProgressIndicatorBuilder: (context) {
+            //           return Container();
+            //         },
+            //         itemBuilder: (context, item, index) {
+            //           return InkWell(
+            //             onTap: () {
+            //               ///NOTE
+            //               ///2023.11.14.
+            //               ///산책하기 보류로 주석 처리
+            //               // Navigator.push(
+            //               //   context,
+            //               //   MaterialPageRoute(
+            //               //     builder: (_) => UserPetDetailScreen(
+            //               //       itemModel: item,
+            //               //     ),
+            //               //   ),
+            //               // );
+            //               ///산책하기 보류로 주석 처리 완료
+            //             },
+            //             child: Column(
+            //               children: [
+            //                 Padding(
+            //                   padding: EdgeInsets.symmetric(horizontal: 8.0.w),
+            //                   child: WidgetMask(
+            //                     blendMode: BlendMode.srcATop,
+            //                     childSaveLayer: true,
+            //                     mask: Center(
+            //                       child: item.url == null || item.url == ""
+            //                           ? const Center(
+            //                               child: Icon(
+            //                                 Puppycat_social.icon_profile_large,
+            //                                 size: 48,
+            //                                 color: kNeutralColor500,
+            //                               ),
+            //                             )
+            //                           : Image.network(
+            //                               Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.url}").toUrl(),
+            //                               width: 48,
+            //                               height: 48,
+            //                               fit: BoxFit.cover,
+            //                             ),
+            //                     ),
+            //                     child: SvgPicture.asset(
+            //                       'assets/image/feed/image/squircle.svg',
+            //                       height: 48,
+            //                     ),
+            //                   ),
+            //                 ),
+            //                 Padding(
+            //                   padding: const EdgeInsets.only(top: 6.0),
+            //                   child: Text(
+            //                     "${item.name!.length > 5 ? item.name!.substring(0, 5) + '...' : item.name}",
+            //                     maxLines: 1,
+            //                     overflow: TextOverflow.ellipsis,
+            //                     style: kBody11RegularStyle.copyWith(color: kTextTitleColor),
+            //                   ),
+            //                 )
+            //               ],
+            //             ),
+            //           );
+            //         },
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            ///산책하기 보류로 주석 처리 완료
           ],
         ),
       ),

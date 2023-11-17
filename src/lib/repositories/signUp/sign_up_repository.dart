@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
@@ -49,31 +50,19 @@ class SignUpRepository {
       body['selectPolicy_${element.idx}'] = element.isAgreed ? 1 : 0;
     }
 
-    bool isError = false;
-    ResponseModel? res = await _signUpService.socialSignUp(body).catchError((Object obj) async {
-      (ResponseModel?, bool) errorResult = await errorHandler(obj);
-      var responseModel = errorResult.$1;
-      isError = errorResult.$2;
+    ResponseModel responseModel = await _signUpService.socialSignUp(body);
 
-      return responseModel;
-    });
-
-    if (res == null || isError) {
-      throw 'API Response is Null.';
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'SignUpRepository',
+        caller: 'socialSignUp',
+      );
     }
 
-    if (res.result) {
-      return SignUpStatus.success;
-    } else {
-      switch (res.code) {
-        case "JCER-8888": // 본인인증 실패
-          return SignUpStatus.failedAuth;
-        case "EJOI-3998":
-          return SignUpStatus.duplication;
-        default:
-          return SignUpStatus.failure;
-      }
-    }
+    //TODO Error 처리 추가 필요
+    return SignUpStatus.success;
   }
 
   Future<NickNameStatus> checkNickName(String nick) async {
@@ -81,56 +70,18 @@ class SignUpRepository {
       "nick": nick,
     };
 
-    bool isError = false;
-    ResponseModel? res = await _signUpService.checkNickName(queries).catchError((Object obj) async {
-      (ResponseModel?, bool) errorResult = await errorHandler(obj);
-      var responseModel = errorResult.$1;
-      isError = errorResult.$2;
+    ResponseModel responseModel = await _signUpService.checkNickName(queries);
 
-      return responseModel;
-    });
-
-    if (res == null) {
-      throw 'API Response is Null.';
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'SignUpRepository',
+        caller: 'checkNickName',
+      );
     }
 
-    if (res.result) {
-      return NickNameStatus.valid;
-    } else {
-      switch (res.code) {
-        case "ENIC-3998":
-          return NickNameStatus.invalidWord;
-        case "ENIC-3997":
-          return NickNameStatus.duplication;
-        default:
-          return NickNameStatus.failure;
-      }
-    }
-  }
-
-  Future<(ResponseModel?, bool)> errorHandler(Object obj) async {
-    ResponseModel? responseModel;
-    switch (obj.runtimeType) {
-      case DioException:
-        final res = (obj as DioException).response;
-
-        if (res?.data == null) {
-          ///TODO
-          ///Error Proc
-          return (responseModel, true);
-        } else if (res?.data is Map) {
-          print('res data : ${res?.data}');
-          responseModel = ResponseModel.fromJson(res?.data);
-        } else if (res?.data is String) {
-          Map<String, dynamic> valueMap = jsonDecode(res?.data);
-          responseModel = ResponseModel.fromJson(valueMap);
-        }
-
-        // print('responseModel $responseModel');
-        break;
-      default:
-        break;
-    }
-    return (responseModel, true);
+    //TODO Error 처리 추가 필요
+    return NickNameStatus.valid;
   }
 }
