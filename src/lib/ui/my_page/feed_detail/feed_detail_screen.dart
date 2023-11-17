@@ -303,6 +303,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                       ],
                     );
                   },
+                  // firstPageErrorIndicatorBuilder: (context) {
+                  //   return Text("DSA");
+                  // },
                 ),
               ),
               PagedSliverList<int, FeedData>(

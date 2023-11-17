@@ -19,6 +19,10 @@ import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provide
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+final hashtagListProvider = StateProvider<List<String>>((ref) => []);
+
+final mentionListProvider = StateProvider<List<MentionListData>>((ref) => []);
+
 class Constants {
   static Future<String> getBaseUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -76,7 +80,6 @@ String walkBaseUrl = 'https://walk-api.pcstg.co.kr/v1';
 // String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr/v1';
 String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/v1';
 // String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/v1';
-
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
@@ -143,6 +146,47 @@ final FeedResponseModel feedNullResponseModel = FeedResponseModel(
   ),
   message: "",
 );
+
+List<String> getHashtagList(textData) {
+  RegExp pattern = RegExp(r"\[#\[(.*?)\]\]");
+  Iterable<Match> matches = pattern.allMatches(textData);
+  return matches.map((m) => '#' + m.group(1)!).toList();
+}
+
+List<String> getMentionList(String textData) {
+  RegExp pattern = RegExp(r"\[@\[(.*?)\]\]");
+  Iterable<Match> matches = pattern.allMatches(textData);
+  return matches.map((m) => '@' + m.group(1)!).toList();
+}
+
+Future<String> processHashtagEditedText(String editedText, List<String> hashtagList) {
+  for (String hashtag in hashtagList) {
+    String pattern = '(^|\\s)' + RegExp.escape(hashtag) + '(\\s|\$)';
+    RegExp regex = RegExp(pattern);
+
+    editedText = editedText.replaceAllMapped(
+      regex,
+      (match) => '${match.group(1)}[#[' + hashtag.substring(1) + ']]${match.group(2)}',
+    );
+  }
+
+  return Future.value(editedText);
+}
+
+Future<String> processMentionEditedText(String editedText, List<MentionListData> mentionList) {
+  for (MentionListData mention in mentionList) {
+    String pattern = '(^|\\s)@' + RegExp.escape(mention.nick!) + '(\\s|\$)';
+    RegExp regex = RegExp(pattern);
+
+    editedText = editedText.replaceAllMapped(
+      regex,
+      (match) => '${match.group(1)}[@[' + mention.uuid! + ']]${match.group(2)}',
+    );
+  }
+
+  return Future.value(editedText);
+}
+
 List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int? oldMemberIdx) {
   List<InlineSpan> spans = [];
 
@@ -186,15 +230,18 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
         spans.add(TextSpan(text: '@' + mentionMatched));
       }
     } else if (hashtagMatched.isNotEmpty) {
-      // Handle hashtag
-      spans.add(WidgetSpan(
-        child: GestureDetector(
-          onTap: () {
-            context.push("/home/search/$hashtagMatched/$oldMemberIdx");
-          },
-          child: Text('#' + hashtagMatched, style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),
-        ),
-      ));
+      if (hashtagMatched.contains('*')) {
+        spans.add(TextSpan(text: '#' + hashtagMatched));
+      } else {
+        spans.add(WidgetSpan(
+          child: GestureDetector(
+            onTap: () {
+              context.push("/home/search/$hashtagMatched/$oldMemberIdx");
+            },
+            child: Text('#' + hashtagMatched, style: tagStyle),
+          ),
+        ));
+      }
     }
 
     lastIndex = match.end;
@@ -246,12 +293,6 @@ String replaceMentionsWithNicknamesInContentAsTextFieldString(String content, Li
   });
 
   return result;
-}
-
-String toLowercase(String input) {
-  return input.replaceAllMapped(RegExp(r'[A-Z]'), (match) {
-    return match.group(0)!.toLowerCase();
-  });
 }
 
 String? getNickDescription(NickNameStatus nickNameStatus) {

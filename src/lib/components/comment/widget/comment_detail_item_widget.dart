@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:linkfy_text/linkfy_text.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
@@ -25,7 +26,7 @@ import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-class CommentDetailItemWidget extends ConsumerWidget {
+class CommentDetailItemWidget extends ConsumerStatefulWidget {
   const CommentDetailItemWidget({
     required this.parentIdx,
     required this.contentIdx,
@@ -76,7 +77,31 @@ class CommentDetailItemWidget extends ConsumerWidget {
   final Function? onPrevMoreChildComment;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  CommentDetailItemWidgetState createState() => CommentDetailItemWidgetState();
+}
+
+class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget> with TickerProviderStateMixin {
+  bool showLikeLottieAnimation = false;
+
+  late final AnimationController likeController;
+
+  @override
+  void initState() {
+    likeController = AnimationController(
+      vsync: this,
+    );
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    likeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 12.h),
       child: Column(
@@ -84,25 +109,25 @@ class CommentDetailItemWidget extends ConsumerWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              isReply
+              widget.isReply
                   ? SizedBox(
                       width: 30.w,
                     )
                   : Container(),
               GestureDetector(
                 onTap: () {
-                  ref.read(userInfoProvider).userModel?.idx == memberIdx
+                  ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
                       ? Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => MyPageMainScreen(
-                              oldMemberIdx: oldMemberIdx,
+                              oldMemberIdx: widget.oldMemberIdx,
                             ),
                           ),
                         )
-                      : context.push("/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
+                      : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.name}/${widget.memberIdx}/${widget.oldMemberIdx}");
                 },
-                child: getProfileAvatar(profileImage!, 30.w, 30.h),
+                child: getProfileAvatar(widget.profileImage!, 30.w, 30.h),
               ),
               SizedBox(
                 width: 8.w,
@@ -111,11 +136,11 @@ class CommentDetailItemWidget extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (isDisplayPreviousMore)
+                    if (widget.isDisplayPreviousMore)
                       GestureDetector(
                         onTap: () {
-                          if (onPrevMoreChildComment != null) {
-                            onPrevMoreChildComment!(pageNumber);
+                          if (widget.onPrevMoreChildComment != null) {
+                            widget.onPrevMoreChildComment!(widget.pageNumber);
                           }
                         },
                         child: Center(
@@ -130,13 +155,13 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         if (ref.read(userInfoProvider).userModel == null) {
                           context.pushReplacement("/loginScreen");
                         } else {
-                          isLike
-                              ? null
-                              : ref.watch(commentStateProvider.notifier).postCommentLike(
-                                    commentIdx: commentIdx,
-                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                    contentsIdx: contentIdx,
-                                  );
+                          if (!ref.watch(commentLikeApiIsLoadingStateProvider) && widget.isLike) {
+                            ref.watch(commentListStateProvider.notifier).postCommentLike(
+                                  commentIdx: widget.commentIdx,
+                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                  contentsIdx: widget.contentIdx,
+                                );
+                          }
                         }
                       },
                       child: Bubble(
@@ -156,20 +181,20 @@ class CommentDetailItemWidget extends ConsumerWidget {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    ref.read(userInfoProvider).userModel?.idx == memberIdx
+                                    ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
                                         ? Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => MyPageMainScreen(
-                                                oldMemberIdx: oldMemberIdx,
+                                                oldMemberIdx: widget.oldMemberIdx,
                                               ),
                                             ),
                                           )
-                                        : context.push("/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx/$oldMemberIdx");
+                                        : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.name}/${widget.memberIdx}/${widget.oldMemberIdx}");
                                   },
                                   child: Row(
                                     children: [
-                                      isSpecialUser
+                                      widget.isSpecialUser
                                           ? Row(
                                               children: [
                                                 Image.asset(
@@ -183,7 +208,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                             )
                                           : Container(),
                                       Text(
-                                        name,
+                                        widget.name,
                                         style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                                       ),
                                     ],
@@ -192,12 +217,12 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      displayedAt(time),
+                                      displayedAt(widget.time),
                                       style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        memberIdx == ref.read(userInfoProvider).userModel?.idx
+                                        widget.memberIdx == ref.read(userInfoProvider).userModel?.idx
                                             ? showCustomModalBottomSheet(
                                                 context: context,
                                                 widget: Column(
@@ -213,11 +238,14 @@ class CommentDetailItemWidget extends ConsumerWidget {
 
                                                         // context.pop();
 
-                                                        commentHeaderState.addEditCommentHeader(comment, commentIdx);
+                                                        commentHeaderState.addEditCommentHeader(widget.comment, widget.commentIdx);
 
                                                         commentHeaderState.setHasInput(true);
 
-                                                        commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(comment, mentionListData));
+                                                        ref.read(hashtagListProvider.notifier).state = getHashtagList(widget.comment);
+                                                        ref.read(mentionListProvider.notifier).state = widget.mentionListData;
+
+                                                        commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(widget.comment, widget.mentionListData));
                                                         context.pop();
                                                       },
                                                     ),
@@ -229,11 +257,11 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                       title: '삭제하기',
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () async {
-                                                        final result = await ref.watch(commentStateProvider.notifier).deleteContents(
+                                                        final result = await ref.watch(commentListStateProvider.notifier).deleteContents(
                                                               memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                              contentsIdx: contentIdx,
-                                                              commentIdx: commentIdx,
-                                                              parentIdx: parentIdx,
+                                                              contentsIdx: widget.contentIdx,
+                                                              commentIdx: widget.commentIdx,
+                                                              parentIdx: widget.parentIdx,
                                                             );
 
                                                         if (result.result) {
@@ -268,7 +296,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                                         child: Column(
                                                                           children: [
                                                                             Text(
-                                                                              "‘${name}’님을\n차단하시겠어요?",
+                                                                              "‘${widget.name}’님을\n차단하시겠어요?",
                                                                               style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                                                                               textAlign: TextAlign.center,
                                                                             ),
@@ -276,7 +304,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                                               height: 8.h,
                                                                             ),
                                                                             Text(
-                                                                              "‘${name}’님은 더 이상 회원님의\n피드를 보거나 메시지 등을 보낼 수 없습니다.",
+                                                                              "‘${widget.name}’님은 더 이상 회원님의\n피드를 보거나 메시지 등을 보낼 수 없습니다.",
                                                                               style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                                                               textAlign: TextAlign.center,
                                                                             ),
@@ -284,7 +312,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                                               height: 8.h,
                                                                             ),
                                                                             Text(
-                                                                              " ‘${name}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
+                                                                              " ‘${widget.name}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
                                                                               style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                                                                               textAlign: TextAlign.center,
                                                                             ),
@@ -294,10 +322,10 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                                       confirmTap: () async {
                                                                         context.pop();
 
-                                                                        final result = await ref.read(commentStateProvider.notifier).postBlock(
+                                                                        final result = await ref.read(commentListStateProvider.notifier).postBlock(
                                                                               memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                                                                              blockIdx: memberIdx,
-                                                                              contentsIdx: contentIdx,
+                                                                              blockIdx: widget.memberIdx,
+                                                                              contentsIdx: widget.contentIdx,
                                                                             );
 
                                                                         if (result.result) {
@@ -305,7 +333,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
 
                                                                           toast(
                                                                             context: context,
-                                                                            text: "‘${name}’님을 차단하였습니다.",
+                                                                            text: "‘${widget.name}’님을 차단하였습니다.",
                                                                             type: ToastType.purple,
                                                                           );
                                                                         }
@@ -330,7 +358,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () {
                                                         context.pop();
-                                                        ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/report/true/$commentIdx");
+                                                        ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/report/true/${widget.commentIdx}");
                                                       },
                                                     ),
                                                   ],
@@ -354,12 +382,12 @@ class CommentDetailItemWidget extends ConsumerWidget {
                               child: RichText(
                                 text: TextSpan(
                                   children: replaceMentionsWithNicknamesInContent(
-                                    comment,
-                                    mentionListData,
+                                    widget.comment,
+                                    widget.mentionListData,
                                     context,
                                     kBody11RegularStyle.copyWith(color: kSecondaryColor),
                                     ref,
-                                    oldMemberIdx,
+                                    widget.oldMemberIdx,
                                   ),
                                   style: kBody11RegularStyle.copyWith(color: kTextTitleColor),
                                 ),
@@ -373,30 +401,51 @@ class CommentDetailItemWidget extends ConsumerWidget {
                       children: [
                         Padding(
                           padding: EdgeInsets.only(left: 12.0.w, right: 2.w),
-                          child: isLike
+                          child: widget.isLike
                               ? InkWell(
                                   onTap: () {
-                                    ref.watch(commentStateProvider.notifier).deleteCommentLike(
-                                          commentIdx: commentIdx,
-                                          memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                          contentsIdx: contentIdx,
-                                        );
+                                    if (!ref.watch(commentLikeApiIsLoadingStateProvider)) {
+                                      ref.watch(commentListStateProvider.notifier).deleteCommentLike(
+                                            commentIdx: widget.commentIdx,
+                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                            contentsIdx: widget.contentIdx,
+                                          );
+                                    }
                                   },
-                                  child: const Icon(
-                                    Puppycat_social.icon_comment_like_ac,
-                                    color: kPrimaryColor,
-                                  ),
+                                  child: showLikeLottieAnimation
+                                      ? Lottie.asset(
+                                          'assets/lottie/icon_like.json',
+                                          controller: likeController,
+                                          onLoaded: (composition) {
+                                            print("composition ${composition}");
+
+                                            likeController.duration = composition.duration;
+                                            likeController.forward();
+                                          },
+                                        )
+                                      : Icon(
+                                          Puppycat_social.icon_comment_like_ac,
+                                          color: kPrimaryColor,
+                                        ),
                                 )
                               : InkWell(
                                   onTap: () {
                                     if (ref.read(userInfoProvider).userModel == null) {
                                       context.pushReplacement("/loginScreen");
                                     } else {
-                                      ref.watch(commentStateProvider.notifier).postCommentLike(
-                                            commentIdx: commentIdx,
-                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                            contentsIdx: contentIdx,
-                                          );
+                                      if (!ref.watch(commentLikeApiIsLoadingStateProvider)) {
+                                        ref.watch(commentListStateProvider.notifier).postCommentLike(
+                                              commentIdx: widget.commentIdx,
+                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                              contentsIdx: widget.contentIdx,
+                                            );
+
+                                        setState(() {
+                                          showLikeLottieAnimation = true;
+                                        });
+
+                                        likeController.forward(from: 0);
+                                      }
                                     }
                                   },
                                   child: const Icon(
@@ -406,7 +455,7 @@ class CommentDetailItemWidget extends ConsumerWidget {
                                 ),
                         ),
                         Text(
-                          '$likeCount',
+                          '${widget.likeCount}',
                           style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                         ),
                         GestureDetector(
@@ -414,11 +463,11 @@ class CommentDetailItemWidget extends ConsumerWidget {
                             if (ref.read(userInfoProvider).userModel == null) {
                               context.pushReplacement("/loginScreen");
                             } else {
-                              if (!isReply) {
-                                ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, commentIdx);
+                              if (!widget.isReply) {
+                                ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(widget.name, widget.commentIdx);
                                 ref.watch(commentHeaderProvider.notifier).setHasInput(true);
                               } else {
-                                ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(name, parentIdx);
+                                ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(widget.name, widget.parentIdx);
                               }
                             }
                           },
@@ -440,11 +489,11 @@ class CommentDetailItemWidget extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    if (isLastDisPlayChild)
+                    if (widget.isLastDisPlayChild)
                       GestureDetector(
                         onTap: () {
-                          if (onMoreChildComment != null) {
-                            onMoreChildComment!(pageNumber);
+                          if (widget.onMoreChildComment != null) {
+                            widget.onMoreChildComment!(widget.pageNumber);
                           }
                         },
                         child: Center(

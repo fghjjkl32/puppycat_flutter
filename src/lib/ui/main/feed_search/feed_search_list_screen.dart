@@ -104,137 +104,170 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
             print(feedSearchState);
 
             searchOldLength = lists.length ?? 0;
-            return Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 12.0.w, right: 12.0.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return searchOldLength == 0
+                ? Stack(
                     children: [
-                      Row(
-                        children: [
-                          WidgetMask(
-                            blendMode: BlendMode.srcATop,
-                            childSaveLayer: true,
-                            mask: Center(
-                              child: Image.asset(
-                                'assets/image/search/icon/icon_tag_large.png',
-                                height: 20.w,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                            child: SvgPicture.asset(
-                              'assets/image/feed/image/squircle.svg',
-                              height: 32.h,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 8.w,
-                          ),
-                          Text(
-                            widget.searchWord,
-                            style: kTitle14BoldStyle.copyWith(color: kTextSubTitleColor),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        feedSearchState.totalCnt,
-                        style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: RefreshIndicator(
-                      onRefresh: () {
-                        return ref.read(feedSearchStateProvider.notifier).refresh(ref.read(userInfoProvider).userModel!.idx, widget.searchWord);
-                      },
-                      child: GridView.builder(
-                        controller: searchContentController,
-                        gridDelegate: SliverQuiltedGridDelegate(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 4,
-                          crossAxisSpacing: 4,
-                          repeatPattern: QuiltedGridRepeatPattern.same,
-                          pattern: [
-                            const QuiltedGridTile(2, 2),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(2, 2),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                            const QuiltedGridTile(1, 1),
-                          ],
-                        ),
-                        itemCount: lists.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == lists.length) {
-                            if (isLoadMoreError) {
-                              return const Center(
-                                child: Text('Error'),
-                              );
-                            }
-                            if (isLoadMoreDone) {
-                              return Container();
-                            }
-                            return Container();
-                          }
-
-                          return GestureDetector(
-                            onTap: () {
-                              context.push("/home/myPage/detail/null/${widget.searchWord}/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/searchContent");
-                            },
-                            child: Stack(
+                      Container(
+                        height: 400,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            color: kNeutralColor100,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: (index == 0)
-                                        ? const BorderRadius.only(topLeft: Radius.circular(10))
-                                        : index == 1
-                                            ? const BorderRadius.only(topRight: Radius.circular(10))
-                                            : BorderRadius.circular(0),
-                                    image: DecorationImage(
-                                        image: NetworkImage(
-                                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
-                                        ),
-                                        fit: BoxFit.cover),
-                                  ),
+                                Image.asset(
+                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                  width: 88,
+                                  height: 88,
                                 ),
-                                Positioned(
-                                  right: 4.w,
-                                  top: 4.w,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xff414348).withOpacity(0.75),
-                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                    ),
-                                    width: 18.w,
-                                    height: 14.w,
-                                    child: Center(
-                                      child: Text(
-                                        "${lists[index].imageCnt}",
-                                        style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
-                                      ),
-                                    ),
-                                  ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                Text(
+                                  "'${widget.searchWord}'에 대한 피드가 없어요",
+                                  textAlign: TextAlign.center,
+                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
-                          );
-                        },
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            );
+                    ],
+                  )
+                : Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 12.0.w, right: 12.0.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                WidgetMask(
+                                  blendMode: BlendMode.srcATop,
+                                  childSaveLayer: true,
+                                  mask: Center(
+                                    child: Image.asset(
+                                      'assets/image/search/icon/icon_tag_large.png',
+                                      height: 20.w,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                  child: SvgPicture.asset(
+                                    'assets/image/feed/image/squircle.svg',
+                                    height: 32.h,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 8.w,
+                                ),
+                                Text(
+                                  widget.searchWord,
+                                  style: kTitle14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              feedSearchState.totalCnt,
+                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: RefreshIndicator(
+                            onRefresh: () {
+                              return ref.read(feedSearchStateProvider.notifier).refresh(ref.read(userInfoProvider).userModel!.idx, widget.searchWord);
+                            },
+                            child: GridView.builder(
+                              controller: searchContentController,
+                              gridDelegate: SliverQuiltedGridDelegate(
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 4,
+                                crossAxisSpacing: 4,
+                                repeatPattern: QuiltedGridRepeatPattern.same,
+                                pattern: [
+                                  const QuiltedGridTile(2, 2),
+                                  const QuiltedGridTile(1, 1),
+                                  const QuiltedGridTile(1, 1),
+                                  const QuiltedGridTile(1, 1),
+                                  const QuiltedGridTile(1, 1),
+                                  const QuiltedGridTile(1, 1),
+                                  const QuiltedGridTile(1, 1),
+                                  const QuiltedGridTile(2, 2),
+                                  const QuiltedGridTile(1, 1),
+                                  const QuiltedGridTile(1, 1),
+                                  const QuiltedGridTile(1, 1),
+                                  const QuiltedGridTile(1, 1),
+                                ],
+                              ),
+                              itemCount: lists.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index == lists.length) {
+                                  if (isLoadMoreError) {
+                                    return const Center(
+                                      child: Text('Error'),
+                                    );
+                                  }
+                                  if (isLoadMoreDone) {
+                                    return Container();
+                                  }
+                                  return Container();
+                                }
+
+                                return GestureDetector(
+                                  onTap: () {
+                                    context.push("/home/myPage/detail/null/${widget.searchWord}/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/searchContent");
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: (index == 0)
+                                              ? const BorderRadius.only(topLeft: Radius.circular(10))
+                                              : index == 1
+                                                  ? const BorderRadius.only(topRight: Radius.circular(10))
+                                                  : BorderRadius.circular(0),
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                              ),
+                                              fit: BoxFit.cover),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        right: 4.w,
+                                        top: 4.w,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xff414348).withOpacity(0.75),
+                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                          ),
+                                          width: 18.w,
+                                          height: 14.w,
+                                          child: Center(
+                                            child: Text(
+                                              "${lists[index].imageCnt}",
+                                              style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
           }),
         ),
       ),

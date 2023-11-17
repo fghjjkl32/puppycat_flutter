@@ -3,16 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 part 'comment_list_state_provider.g.dart';
 
+final commentLikeApiIsLoadingStateProvider = StateProvider<bool>((ref) => false);
 final commentListRefreshFocusProvider = StateProvider<int>((ref) => 0);
 
 @Riverpod(keepAlive: true)
@@ -23,6 +27,9 @@ class CommentListState extends _$CommentListState {
   int _commentIdx = -1;
   CommentDataListModel? _childFocusListModel;
   bool _isChildMore = false;
+
+  int? tempCommentDataIndex;
+  CommentData? tempCommentData;
 
   ListAPIStatus get listStatus => _apiStatus;
 
@@ -134,6 +141,9 @@ class CommentListState extends _$CommentListState {
             return child.copyWith(isReply: true);
           }).toList();
 
+          print("pageNumber :: ${pageNumber}");
+          print("totalPageCount :: ${totalPageCount}");
+
           childList.last = childList.last.copyWith(
             isLastDisPlayChild: pageNumber != totalPageCount,
             pageNumber: pageNumber,
@@ -202,6 +212,8 @@ class CommentListState extends _$CommentListState {
 
     //int memberIdx, int contentsIdx, int commentIdx, int page,
     try {
+      //TODO 11/17 리스트 초기화 하기 위해 추가함
+      state.itemList = null;
       // if (_apiStatus == ListAPIStatus.loading) {
       //   return;
       // }
@@ -282,7 +294,17 @@ class CommentListState extends _$CommentListState {
 
         print('searchList.last ${searchList.last}');
       }
-      state.appendPage(commentList.toSet().toList(), currentPage + 1);
+
+      //TODO 11/17 리스트 중복 제거 하기 위해 추가
+      var uniqueComments = Map<int, CommentData>();
+      for (var comment in commentList) {
+        uniqueComments[comment.idx] = comment;
+      }
+      //TODO 11/17 무한으로 리스트 나오는 문제 떄문에 수정함
+      //currentPage + 1 => currentPage 으로 수정
+      //하지만 페이지 불러오고 그다음 로직을 태우도록 비동기를 걸어놔도 addPageRequestListener를 1페이지 부터 렌더링을 하는 이슈가 있음
+      //removePageRequestListener를 해도 여전히 동일
+      state.appendPage(uniqueComments.values.toList(), currentPage);
       state.notifyListeners();
 
       state.addPageRequestListener(fetchPage);
@@ -342,7 +364,12 @@ class CommentListState extends _$CommentListState {
       currentList.insertAll(isNext ? insertIdx + 1 : insertIdx, childList);
 
       print('searchList.last ${searchList.last}');
-      state.itemList = currentList.toSet().toList();
+
+      var uniqueComments = Map<int, CommentData>();
+      for (var comment in currentList) {
+        uniqueComments[comment.idx] = comment;
+      }
+      state.itemList = uniqueComments.values.toList();
       _isChildMore = true;
       state.notifyListeners();
     } catch (e) {
@@ -350,5 +377,190 @@ class CommentListState extends _$CommentListState {
       _apiStatus = ListAPIStatus.error;
       state.error = e;
     }
+  }
+
+  Future<ResponseModel> deleteContents({
+    required memberIdx,
+    required contentsIdx,
+    required commentIdx,
+    required parentIdx,
+  }) async {
+    final result = await CommentRepository(dio: ref.read(dioProvider)).deleteComment(
+      memberIdx: memberIdx,
+      contentsIdx: contentsIdx,
+      commentIdx: commentIdx,
+      parentIdx: parentIdx,
+    );
+
+    int targetIdx = -1;
+
+    if (state.itemList != null) {
+      targetIdx = state.itemList!.indexWhere((element) => element.idx == commentIdx);
+
+      if (targetIdx != -1) {
+        tempCommentData = state.itemList![targetIdx];
+
+        state.notifyListeners();
+      }
+    }
+
+    return result;
+  }
+
+  Future<ResponseModel> postContents({
+    required memberIdx,
+    required contents,
+    required contentIdx,
+    int? parentIdx,
+  }) async {
+    final result = await CommentRepository(dio: ref.read(dioProvider)).postComment(memberIdx: memberIdx, contents: contents, parentIdx: parentIdx, contentIdx: contentIdx);
+
+    return result;
+  }
+
+  Future<ResponseModel> editContents({
+    required int memberIdx,
+    required int commentIdx,
+    required String contents,
+    required int contentIdx,
+  }) async {
+    final result = await CommentRepository(dio: ref.read(dioProvider)).editComment(
+      memberIdx: memberIdx,
+      contents: contents,
+      contentIdx: contentIdx,
+      commentIdx: commentIdx,
+    );
+
+    return result;
+  }
+
+  Future<ResponseModel> postCommentLike({
+    required memberIdx,
+    required commentIdx,
+    required contentsIdx,
+  }) async {
+    ref.read(commentLikeApiIsLoadingStateProvider.notifier).state = true;
+
+    final result = await CommentRepository(dio: ref.read(dioProvider)).postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+
+    int targetIdx = -1;
+
+    if (state.itemList != null) {
+      targetIdx = state.itemList!.indexWhere((element) => element.idx == commentIdx);
+
+      if (targetIdx != -1) {
+        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+          likeState: 1,
+          commentLikeCnt: state.itemList![targetIdx].commentLikeCnt! + 1,
+        );
+        state.notifyListeners();
+      }
+    }
+
+    ref.read(commentLikeApiIsLoadingStateProvider.notifier).state = false;
+
+    return result;
+  }
+
+  Future<ResponseModel> deleteCommentLike({
+    required memberIdx,
+    required commentIdx,
+    required contentsIdx,
+  }) async {
+    ref.read(commentLikeApiIsLoadingStateProvider.notifier).state = true;
+
+    final result = await CommentRepository(dio: ref.read(dioProvider)).deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+
+    int targetIdx = -1;
+
+    if (state.itemList != null) {
+      targetIdx = state.itemList!.indexWhere((element) => element.idx == commentIdx);
+
+      if (targetIdx != -1) {
+        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+          likeState: 0,
+          commentLikeCnt: state.itemList![targetIdx].commentLikeCnt! - 1,
+        );
+        state.notifyListeners();
+      }
+    }
+
+    ref.read(commentLikeApiIsLoadingStateProvider.notifier).state = false;
+
+    return result;
+  }
+
+  Future<ResponseModel> postBlock({
+    required contentsIdx,
+    required memberIdx,
+    required blockIdx,
+  }) async {
+    final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
+      memberIdx: memberIdx,
+      blockIdx: blockIdx,
+    );
+
+    if (state.itemList != null) {
+      state.itemList!.removeWhere((element) => element.memberIdx == blockIdx);
+      state.notifyListeners();
+    }
+
+    return result;
+  }
+
+  Future<ResponseModel> postCommentReport({
+    required int loginMemberIdx,
+    required int contentIdx,
+    required int reportCode,
+    required String? reason,
+    required String reportType,
+  }) async {
+    final result = await FeedRepository(dio: ref.read(dioProvider)).postContentReport(
+      reportType: reportType,
+      memberIdx: loginMemberIdx,
+      contentIdx: contentIdx,
+      reportCode: reportCode,
+      reason: reason,
+    );
+
+    int targetIdx = -1;
+
+    if (state.itemList != null) {
+      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      tempCommentDataIndex = targetIdx;
+
+      if (targetIdx != -1) {
+        tempCommentData = state.itemList![targetIdx];
+
+        state.itemList!.removeAt(targetIdx);
+        state.notifyListeners();
+      }
+    }
+
+    return result;
+  }
+
+  Future<ResponseModel> deleteCommentReport({
+    required String reportType,
+    required int loginMemberIdx,
+    required int contentIdx,
+  }) async {
+    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContentReport(
+      reportType: reportType,
+      memberIdx: loginMemberIdx,
+      contentsIdx: contentIdx,
+    );
+
+    if (state.itemList != null) {
+      if (tempCommentDataIndex != null && tempCommentDataIndex != -1) {
+        state.itemList!.insert(tempCommentDataIndex!, tempCommentData!);
+        state.notifyListeners();
+        tempCommentDataIndex = null;
+        tempCommentData = null;
+      }
+    }
+
+    return result;
   }
 }

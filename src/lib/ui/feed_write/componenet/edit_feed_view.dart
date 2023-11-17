@@ -74,6 +74,9 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
   void initState() {
     super.initState();
     Future(() {
+      ref.read(hashtagListProvider.notifier).state = getHashtagList(widget.feedData.contents!);
+      ref.read(mentionListProvider.notifier).state = widget.feedData.mentionList!;
+
       Future<void>.delayed(Duration(milliseconds: 100), () async {
         ref.watch(feedEditContentProvider.notifier).state.text = replaceMentionsWithNicknamesInContentAsTextFieldString(widget.feedData.contents!, widget.feedData.mentionList!);
         ref.watch(feedWriteLocationInformationProvider.notifier).state = widget.feedData.location!;
@@ -465,7 +468,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
             ),
           ),
           SizedBox(
-            height: 60,
+            height: 100,
           ),
         ],
       ),
