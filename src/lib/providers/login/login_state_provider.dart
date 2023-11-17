@@ -43,12 +43,20 @@ class LoginState extends _$LoginState {
     final loginRepository = LoginRepository(provider: provider, dio: ref.read(dioProvider));
 
     try {
-      var loginResult = await loginRepository.login();
+      // var loginResult = await loginRepository.login();
+      final socialUserModel = await loginRepository.socialLogin();
+      UserInfoModel userInfoModel = ref.read(userInfoProvider);
+      ref.read(userInfoProvider.notifier).state = userInfoModel.copyWith(
+        userModel: socialUserModel,
+      );
+
+      final loginResult = await loginRepository.loginByUserModel(userModel: socialUserModel);
       _procLogin(loginResult);
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
       print('login exception ($e)');
+      ref.read(userInfoProvider.notifier).state = UserInfoModel();
     }
   }
 
@@ -72,6 +80,7 @@ class LoginState extends _$LoginState {
 
   Future<void> _procLogin(UserModel? userModel) async {
     if (userModel == null) {
+      print('login state userModel null');
       state = LoginStatus.failure;
       ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.none);
       return;

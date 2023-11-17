@@ -38,7 +38,24 @@ class LoginRepository {
   }
 
   /// UserModel이 null이면 로그인 실패로 간주
-  Future<UserModel> login() async {
+  // Future<UserModel> login() async {
+  //   if (await _socialLogin()) {
+  //     UserModel? userModel = await _socialLoginService?.getUserInfo();
+  //
+  //     if (userModel == null) {
+  //       // return null;
+  //       ///TODO exception 고도화 필요
+  //       throw 'Failed Social Login.(1)';
+  //     }
+  //
+  //     return await loginByUserModel(userModel: userModel);
+  //   } else {
+  //     ///TODO exception 고도화 필요
+  //     throw 'Failed Social Login.(2)';
+  //   }
+  // }
+
+  Future<UserModel> socialLogin() async {
     if (await _socialLogin()) {
       UserModel? userModel = await _socialLoginService?.getUserInfo();
 
@@ -48,7 +65,7 @@ class LoginRepository {
         throw 'Failed Social Login.(1)';
       }
 
-      return await loginByUserModel(userModel: userModel);
+      return userModel;
     } else {
       ///TODO exception 고도화 필요
       throw 'Failed Social Login.(2)';

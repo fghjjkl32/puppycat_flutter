@@ -317,6 +317,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       ///2023.11.16.
                       ///산책하기 보류로 주석 처리
                       // expandedHeight: ref.watch(expandedHeightProvider),
+                      expandedHeight: 210,
                       ///산책하기 보류로 주석 처리 완료
                       flexibleSpace: Consumer(builder: (context, ref, _) {
                         final userInformationState = ref.watch(userInformationStateProvider);
