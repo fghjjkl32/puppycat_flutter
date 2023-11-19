@@ -19,6 +19,10 @@ import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provide
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+final hashtagListProvider = StateProvider<List<String>>((ref) => []);
+
+final mentionListProvider = StateProvider<List<MentionListData>>((ref) => []);
+
 class Constants {
   static Future<String> getBaseUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -76,7 +80,6 @@ String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
 // String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr';
 String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
 // String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr';
-
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
@@ -143,68 +146,47 @@ final FeedResponseModel feedNullResponseModel = FeedResponseModel(
   ),
   message: "",
 );
-// List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int? oldMemberIdx) {
-//   List<InlineSpan> spans = [];
-//
-//   // Combining both mention and hashtag patterns
-//   RegExp pattern = RegExp(r"\[@\[(.*?)\]\]|\[#\[(.*?)\]\]");
-//
-//   List<Match> matches = pattern.allMatches(content).toList();
-//
-//   int lastIndex = 0;
-//
-//   for (var match in matches) {
-//     String mentionMatched = match.group(1) ?? "";
-//     String hashtagMatched = match.group(2) ?? "";
-//
-//     // Add the plain text between the current and the last mention/hashtag
-//     spans.add(TextSpan(text: content.substring(lastIndex, match.start)));
-//
-//     if (mentionMatched.isNotEmpty) {
-//       if (mentionList.any((mention) => mention.uuid == mentionMatched)) {
-//         var mention = mentionList.firstWhere((m) => m.uuid == mentionMatched);
-//         spans.add(WidgetSpan(
-//           child: GestureDetector(
-//             onTap: () {
-//               ref.read(userInfoProvider).userModel?.idx == mention.memberIdx
-//                   ? Navigator.push(
-//                       context,
-//                       MaterialPageRoute(
-//                         builder: (context) => MyPageMainScreen(
-//                           oldMemberIdx: oldMemberIdx!,
-//                         ),
-//                       ),
-//                     )
-//                   : mention.memberState == 0
-//                       ? context.push("/home/myPage/userUnknown")
-//                       : context.push("/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}/${oldMemberIdx}");
-//             },
-//             child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
-//           ),
-//         ));
-//       } else {
-//         spans.add(TextSpan(text: '@' + mentionMatched));
-//       }
-//     } else if (hashtagMatched.isNotEmpty) {
-//       // Handle hashtag
-//       spans.add(WidgetSpan(
-//         child: GestureDetector(
-//           onTap: () {
-//             context.push("/home/search/$hashtagMatched/$oldMemberIdx");
-//           },
-//           child: Text('#' + hashtagMatched, style: kBody13RegularStyle.copyWith(color: kSecondaryColor)),
-//         ),
-//       ));
-//     }
-//
-//     lastIndex = match.end;
-//   }
-//
-//   // Add any remaining text after the last mention/hashtag
-//   spans.add(TextSpan(text: content.substring(lastIndex)));
-//
-//   return spans;
-// }
+
+List<String> getHashtagList(textData) {
+  RegExp pattern = RegExp(r"\[#\[(.*?)\]\]");
+  Iterable<Match> matches = pattern.allMatches(textData);
+  return matches.map((m) => '#' + m.group(1)!).toList();
+}
+
+List<String> getMentionList(String textData) {
+  RegExp pattern = RegExp(r"\[@\[(.*?)\]\]");
+  Iterable<Match> matches = pattern.allMatches(textData);
+  return matches.map((m) => '@' + m.group(1)!).toList();
+}
+
+Future<String> processHashtagEditedText(String editedText, List<String> hashtagList) {
+  for (String hashtag in hashtagList) {
+    String pattern = '(^|\\s)' + RegExp.escape(hashtag) + '(\\s|\$)';
+    RegExp regex = RegExp(pattern);
+
+    editedText = editedText.replaceAllMapped(
+      regex,
+      (match) => '${match.group(1)}[#[' + hashtag.substring(1) + ']]${match.group(2)}',
+    );
+  }
+
+  return Future.value(editedText);
+}
+
+Future<String> processMentionEditedText(String editedText, List<MentionListData> mentionList) {
+  for (MentionListData mention in mentionList) {
+    String pattern = '(^|\\s)@' + RegExp.escape(mention.nick!) + '(\\s|\$)';
+    RegExp regex = RegExp(pattern);
+
+    editedText = editedText.replaceAllMapped(
+      regex,
+      (match) => '${match.group(1)}[@[' + mention.uuid! + ']]${match.group(2)}',
+    );
+  }
+
+  return Future.value(editedText);
+}
+
 List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int? oldMemberIdx) {
   List<InlineSpan> spans = [];
 
@@ -230,16 +212,16 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
             onTap: () {
               ref.read(userInfoProvider).userModel?.idx == mention.memberIdx
                   ? Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MyPageMainScreen(
-                    oldMemberIdx: oldMemberIdx!,
-                  ),
-                ),
-              )
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyPageMainScreen(
+                          oldMemberIdx: oldMemberIdx!,
+                        ),
+                      ),
+                    )
                   : mention.memberState == 0
-                  ? context.push("/home/myPage/userUnknown")
-                  : context.push("/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}/${oldMemberIdx}");
+                      ? context.push("/home/myPage/userUnknown")
+                      : context.push("/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}/${oldMemberIdx}");
             },
             child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
           ),
@@ -248,12 +230,9 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
         spans.add(TextSpan(text: '@' + mentionMatched));
       }
     } else if (hashtagMatched.isNotEmpty) {
-      // Check if the hashtag contains '*'
       if (hashtagMatched.contains('*')) {
-        // If it contains '*', treat as plain text and remove [#[]]
         spans.add(TextSpan(text: '#' + hashtagMatched));
       } else {
-        // Handle hashtag as usual
         spans.add(WidgetSpan(
           child: GestureDetector(
             onTap: () {
@@ -273,6 +252,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
 
   return spans;
 }
+
 String replaceMentionsWithNicknamesInContentAsString(String content, List<MentionListData> mentionList) {
   RegExp pattern = RegExp(r"\[@\[(.*?)\]\]");
   String result = content.replaceAllMapped(pattern, (match) {
@@ -313,12 +293,6 @@ String replaceMentionsWithNicknamesInContentAsTextFieldString(String content, Li
   });
 
   return result;
-}
-
-String toLowercase(String input) {
-  return input.replaceAllMapped(RegExp(r'[A-Z]'), (match) {
-    return match.group(0)!.toLowerCase();
-  });
 }
 
 String? getNickDescription(NickNameStatus nickNameStatus) {

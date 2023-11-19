@@ -32,6 +32,10 @@ class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
   final searchQuery = PublishSubject<String>();
 
   Future<void> searchTagList(String searchWord) async {
+    if (searchWord.isEmpty) {
+      return;
+    }
+
     searchSearchWord = searchWord;
 
     try {

@@ -7,6 +7,7 @@ import 'package:flutter_social_textfield/flutter_social_textfield.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autocomplete_options.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_item_widget.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -17,6 +18,7 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
+import 'package:pet_mobile_social_flutter/ui/main/comment/comment_detail_screen.dart';
 
 class CommentCustomTextField extends ConsumerStatefulWidget {
   const CommentCustomTextField({required this.contentIdx, super.key});
@@ -35,237 +37,256 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Theme(
-        data: ThemeData(
-          inputDecorationTheme: const InputDecorationTheme(
-            border: InputBorder.none,
+      child: Container(
+        color: kNeutralColor100,
+        child: Theme(
+          data: ThemeData(
+            inputDecorationTheme: const InputDecorationTheme(
+              border: InputBorder.none,
+            ),
           ),
-        ),
-        child: Consumer(builder: (context, ref, child) {
-          final commentHeaderState = ref.watch(commentHeaderProvider);
+          child: Consumer(builder: (context, ref, child) {
+            final commentHeaderState = ref.watch(commentHeaderProvider);
 
-          if (commentHeaderState.hasSetControllerValue && commentHeaderState.controllerValue != ref.watch(commentValueProvider).text) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                ref.watch(commentValueProvider).text = commentHeaderState.controllerValue;
-                ref.read(commentHeaderProvider.notifier).resetHasSetControllerValue();
-              }
-            });
-          }
+            if (commentHeaderState.hasSetControllerValue && commentHeaderState.controllerValue != ref.watch(commentValueProvider).text) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  ref.watch(commentValueProvider).text = commentHeaderState.controllerValue;
+                  ref.read(commentHeaderProvider.notifier).resetHasSetControllerValue();
+                }
+              });
+            }
 
-          if (ref.watch(commentValueProvider).text != '@${commentHeaderState.name} ' && commentHeaderState.isReply && !initialized.value) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                ref.watch(commentValueProvider).value = TextEditingValue(
-                  text: '@${commentHeaderState.name} ',
-                  selection: TextSelection.collapsed(
-                    offset: '@${commentHeaderState.name} '.length,
-                  ),
-                );
-                initialized.value = true;
-              }
-            });
-          }
-          return Column(
-            children: [
-              commentHeaderState.isReply
-                  ? Container(
-                      width: double.infinity,
-                      color: kNeutralColor300,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 12.0.w),
-                            child: Text(
-                              "@${ref.watch(commentHeaderProvider).name} 님에게 답글 남기기",
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+            if (ref.watch(commentValueProvider).text != '@${commentHeaderState.name} ' && commentHeaderState.isReply && !initialized.value) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  ref.watch(commentValueProvider).value = TextEditingValue(
+                    text: '@${commentHeaderState.name} ',
+                    selection: TextSelection.collapsed(
+                      offset: '@${commentHeaderState.name} '.length,
+                    ),
+                  );
+                  initialized.value = true;
+                }
+              });
+            }
+            return Column(
+              children: [
+                commentHeaderState.isReply
+                    ? Container(
+                        width: double.infinity,
+                        color: kNeutralColor300,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 12.0.w),
+                              child: Text(
+                                "@${ref.watch(commentHeaderProvider).name} 님에게 답글 남기기",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
-                              ref.watch(commentValueProvider).text = '';
-                              ref.read(commentHeaderProvider.notifier).setHasInput(false);
-                              initialized.value = false;
-                            },
-                            icon: const Icon(
-                              Puppycat_social.icon_close,
-                              size: 26,
-                              color: kTextBodyColor,
+                            IconButton(
+                              onPressed: () {
+                                ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
+                                ref.watch(commentValueProvider).text = '';
+                                ref.read(commentHeaderProvider.notifier).setHasInput(false);
+                                initialized.value = false;
+                              },
+                              icon: const Icon(
+                                Puppycat_social.icon_close,
+                                size: 26,
+                                color: kTextBodyColor,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Container(),
-              commentHeaderState.isEdit
-                  ? Container(
-                      width: double.infinity,
-                      color: kNeutralColor300,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(left: 12.0.w),
-                            child: Text(
-                              "댓글 수정",
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                          ],
+                        ),
+                      )
+                    : Container(),
+                commentHeaderState.isEdit
+                    ? Container(
+                        width: double.infinity,
+                        color: kNeutralColor300,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 12.0.w),
+                              child: Text(
+                                "댓글 수정",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
-                              ref.watch(commentValueProvider).text = '';
-                              ref.read(commentHeaderProvider.notifier).setHasInput(false);
+                            IconButton(
+                              onPressed: () {
+                                ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
+                                ref.watch(commentValueProvider).text = '';
+                                ref.read(commentHeaderProvider.notifier).setHasInput(false);
 
-                              initialized.value = false;
-                            },
-                            icon: const Icon(
-                              Puppycat_social.icon_close,
-                              size: 26,
-                              color: kTextBodyColor,
+                                initialized.value = false;
+                              },
+                              icon: const Icon(
+                                Puppycat_social.icon_close,
+                                size: 26,
+                                color: kTextBodyColor,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Container(),
-              MultiTriggerAutocomplete(
-                optionsAlignment: OptionsAlignment.topStart,
-                autocompleteTriggers: [
-                  AutocompleteTrigger(
-                    trigger: '@',
-                    optionsViewBuilder: (context, autocompleteQuery, controller) {
-                      return MentionAutocompleteOptions(
-                        query: autocompleteQuery.query,
-                        onMentionUserTap: (user) {
-                          final autocomplete = MultiTriggerAutocomplete.of(context);
-                          return autocomplete.acceptAutocompleteOption(user.nick!);
-                        },
-                      );
-                    },
-                  ),
-                ],
-                fieldViewBuilder: (context, controller, focusNode) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    ref.watch(commentValueProvider.notifier).state = controller;
-                  });
+                          ],
+                        ),
+                      )
+                    : Container(),
+                MultiTriggerAutocomplete(
+                  optionsAlignment: OptionsAlignment.topStart,
+                  autocompleteTriggers: [
+                    AutocompleteTrigger(
+                      trigger: '@',
+                      optionsViewBuilder: (context, autocompleteQuery, controller) {
+                        return MentionAutocompleteOptions(
+                          query: autocompleteQuery.query,
+                          onMentionUserTap: (user) {
+                            final autocomplete = MultiTriggerAutocomplete.of(context);
+                            return autocomplete.acceptAutocompleteOption(user.nick!);
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                  fieldViewBuilder: (context, controller, focusNode) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ref.watch(commentValueProvider.notifier).state = controller;
+                    });
 
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: kNeutralColor400, width: 1),
-                        borderRadius: BorderRadius.all(lineCount <= 2 ? const Radius.circular(50) : const Radius.circular(10)),
-                      ),
-                      child: TextField(
-                        readOnly: ref.read(userInfoProvider).userModel == null ? true : false,
-                        focusNode: focusNode,
-                        controller: ref.watch(commentValueProvider),
-                        onChanged: (text) {
-                          setState(() {
-                            lineCount = text.split('\n').length;
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: kNeutralColor400, width: 1),
+                          borderRadius: BorderRadius.all(lineCount <= 2 ? const Radius.circular(50) : const Radius.circular(10)),
+                        ),
+                        child: TextField(
+                          readOnly: ref.read(userInfoProvider).userModel == null ? true : false,
+                          focusNode: focusNode,
+                          controller: ref.watch(commentValueProvider),
+                          onChanged: (text) {
+                            setState(() {
+                              lineCount = text.split('\n').length;
 
-                            ref.read(commentHeaderProvider.notifier).setHasInput(text.isNotEmpty);
-                          });
+                              ref.read(commentHeaderProvider.notifier).setHasInput(text.isNotEmpty);
+                            });
 
-                          int cursorPos = ref.watch(commentValueProvider).selection.baseOffset;
-                          if (cursorPos > 0) {
-                            int from = text.lastIndexOf('@', cursorPos);
-                            if (from != -1) {
-                              int prevCharPos = from - 1;
-                              if (prevCharPos >= 0 && text[prevCharPos] != ' ') {
-                                return;
-                              }
+                            int cursorPos = ref.watch(commentValueProvider).selection.baseOffset;
+                            if (cursorPos > 0) {
+                              int from = text.lastIndexOf('@', cursorPos);
+                              if (from != -1) {
+                                int prevCharPos = from - 1;
+                                if (prevCharPos >= 0 && text[prevCharPos] != ' ') {
+                                  return;
+                                }
 
-                              int nextSpace = text.indexOf(' ', from);
-                              if (nextSpace == -1 || nextSpace >= cursorPos) {
-                                String toSearch = text.substring(from + 1, cursorPos);
-                                toSearch = toSearch.trim();
+                                int nextSpace = text.indexOf(' ', from);
+                                if (nextSpace == -1 || nextSpace >= cursorPos) {
+                                  String toSearch = text.substring(from + 1, cursorPos);
+                                  toSearch = toSearch.trim();
 
-                                if (toSearch.isNotEmpty) {
-                                  if (toSearch.length >= 1) {
-                                    ref.watch(searchStateProvider.notifier).searchQuery.add(toSearch);
+                                  if (toSearch.isNotEmpty) {
+                                    if (toSearch.length >= 1) {
+                                      ref.watch(searchStateProvider.notifier).searchQuery.add(toSearch);
+                                    }
+                                  } else {
+                                    ref.watch(searchStateProvider.notifier).getMentionRecommendList(initPage: 1);
                                   }
-                                } else {
-                                  ref.watch(searchStateProvider.notifier).getMentionRecommendList(initPage: 1);
                                 }
                               }
                             }
-                          }
-                        },
-                        scrollPhysics: const ClampingScrollPhysics(),
-                        maxLength: 200,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.transparent,
-                          border: InputBorder.none,
-                          counterText: "",
-                          hintText: ref.read(userInfoProvider).userModel == null ? "로그인 하면 쓸 수 있어요." : '댓글을 입력해주세요.',
-                          hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
-                          contentPadding: const EdgeInsets.all(16),
-                          suffixIcon: ref.read(commentHeaderProvider).hasInput
-                              ? IconButton(
-                                  onPressed: () async {
-                                    print('ref.read(commentHeaderProvider) ${ref.read(commentHeaderProvider)}');
-                                    final result = commentHeaderState.isEdit
-                                        ? await ref.watch(commentStateProvider.notifier).editContents(
+                          },
+                          scrollPhysics: const ClampingScrollPhysics(),
+                          maxLength: 200,
+                          maxLines: lineCount > 4 ? 4 : null,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.transparent,
+                            border: InputBorder.none,
+                            counterText: "",
+                            hintText: ref.read(userInfoProvider).userModel == null ? "로그인 하면 쓸 수 있어요." : '댓글을 입력해주세요.',
+                            hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                            contentPadding: const EdgeInsets.all(16),
+                            suffixIcon: ref.read(commentHeaderProvider).hasInput
+                                ? IconButton(
+                                    onPressed: () async {
+                                      if (commentHeaderState.isEdit) {
+                                        String tempContents;
+                                        tempContents = await processHashtagEditedText(
+                                          ref.watch(commentValueProvider.notifier).state.text,
+                                          ref.read(hashtagListProvider),
+                                        );
+
+                                        tempContents = await processMentionEditedText(
+                                          tempContents,
+                                          ref.read(mentionListProvider),
+                                        );
+
+                                        await ref.watch(commentListStateProvider.notifier).editContents(
                                               memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                              contents: ref.watch(commentValueProvider).value.text,
+                                              contents: tempContents,
                                               contentIdx: widget.contentIdx,
                                               commentIdx: ref.watch(commentHeaderProvider).commentIdx!,
-                                            )
-                                        : await ref.watch(commentStateProvider.notifier).postContents(
+                                            );
+                                      } else {
+                                        await ref.watch(commentListStateProvider.notifier).postContents(
                                               memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                               contents: ref.watch(commentValueProvider).value.text,
                                               contentIdx: widget.contentIdx,
                                               parentIdx: ref.watch(commentHeaderProvider).isReply ? ref.watch(commentHeaderProvider).commentIdx : null,
                                             );
+                                      }
 
-                                    int commentIdx = -1;
-                                    if (ref.read(commentHeaderProvider).commentIdx != null) {
-                                      commentIdx = ref.read(commentHeaderProvider).commentIdx!;
-                                    }
+                                      int commentIdx = -1;
+                                      if (ref.read(commentHeaderProvider).commentIdx != null) {
+                                        commentIdx = ref.read(commentHeaderProvider).commentIdx!;
+                                      }
 
-                                    print('ref.watch(commentHeaderProvider).isReply ${ref.watch(commentHeaderProvider).isReply}');
-                                    if (ref.watch(commentHeaderProvider).isReply) {
-                                      ref.read(commentListRefreshFocusProvider.notifier).state = ref.read(commentHeaderProvider).commentIdx!;
-                                      ref.read(commentListStateProvider.notifier).getFocusingComments(widget.contentIdx, ref.watch(commentHeaderProvider).commentIdx!);
-                                    } else {
-                                      ref.read(commentListStateProvider).refresh();
-                                    }
+                                      print('ref.watch(commentHeaderProvider).isReply ${ref.watch(commentHeaderProvider).isReply}');
+                                      if (ref.watch(commentHeaderProvider).isReply) {
+                                        ref.read(commentListRefreshFocusProvider.notifier).state = ref.read(commentHeaderProvider).commentIdx!;
+                                        // ref.read(commentListStateProvider.notifier).getFocusingComments(widget.contentIdx, ref.watch(commentHeaderProvider).commentIdx!);
+                                        ref.read(commentListStateProvider).refresh();
+                                      } else {
+                                        ref.read(commentListStateProvider).refresh();
+                                      }
 
-                                    // if (result.result) {
-                                    //   FocusScope.of(context).unfocus();
-                                    ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
-                                    ref.watch(commentValueProvider).text = '';
-                                    ref.read(commentHeaderProvider.notifier).setHasInput(false);
-                                    initialized.value = false;
-                                    // }
-                                  },
-                                  icon: const Icon(
+                                      // if (result.result) {
+                                      //   FocusScope.of(context).unfocus();
+                                      ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
+                                      ref.watch(commentValueProvider).text = '';
+                                      ref.read(commentHeaderProvider.notifier).setHasInput(false);
+                                      initialized.value = false;
+
+                                      ref.read(hashtagListProvider.notifier).state = [];
+                                      ref.read(mentionListProvider.notifier).state = [];
+                                      // }
+                                    },
+                                    icon: const Icon(
+                                      Puppycat_social.icon_send,
+                                      color: kPrimaryColor,
+                                    ),
+                                  )
+                                : const Icon(
                                     Puppycat_social.icon_send,
-                                    color: kPrimaryColor,
+                                    color: Colors.grey,
                                   ),
-                                )
-                              : const Icon(
-                                  Puppycat_social.icon_send,
-                                  color: Colors.grey,
-                                ),
+                          ),
+                          style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                          keyboardType: TextInputType.multiline,
+                          textAlignVertical: TextAlignVertical.center,
                         ),
-                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
-                        keyboardType: TextInputType.multiline,
-                        textAlignVertical: TextAlignVertical.center,
                       ),
-                    ),
-                  );
-                },
-              ),
-            ],
-          );
-        }),
+                    );
+                  },
+                ),
+              ],
+            );
+          }),
+        ),
       ),
     );
   }

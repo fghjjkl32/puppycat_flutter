@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
@@ -129,7 +130,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                         ? null
                         : () async {
                             final result = widget.isComment
-                                ? await ref.watch(commentStateProvider.notifier).postCommentReport(
+                                ? await ref.watch(commentListStateProvider.notifier).postCommentReport(
                                       loginMemberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                       contentIdx: widget.contentIdx,
                                       reportCode: code,
@@ -154,7 +155,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                                 buttonText: "신고취소",
                                 buttonOnTap: () async {
                                   final result = widget.isComment
-                                      ? await ref.read(commentStateProvider.notifier).deleteCommentReport(
+                                      ? await ref.read(commentListStateProvider.notifier).deleteCommentReport(
                                             loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                             contentIdx: widget.contentIdx,
                                             reportType: widget.isComment ? "comment" : "contents",

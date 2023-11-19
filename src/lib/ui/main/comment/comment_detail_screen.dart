@@ -30,7 +30,7 @@ class CommentDetailScreen extends ConsumerStatefulWidget {
 class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
   int _contentsIdx = -1;
   late int? _commentFocusIndex;
-  late PagingController<int, CommentData> _commentPagingController;
+  late final PagingController<int, CommentData> _commentPagingController = ref.read(commentListStateProvider);
   final AutoScrollController _scrollController = AutoScrollController();
   bool _isInitLoad = true;
 
@@ -44,8 +44,6 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
 
     _contentsIdx = widget.contentsIdx;
     _commentFocusIndex = widget.commentFocusIndex;
-
-    _commentPagingController = ref.read(commentListStateProvider);
 
     super.initState();
 
@@ -113,68 +111,73 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
       body: Column(
         children: [
           Expanded(
-            child: PagedListView<int, CommentData>(
-              pagingController: _commentPagingController,
-              scrollController: _scrollController,
-              builderDelegate: PagedChildBuilderDelegate<CommentData>(
-                // animateTransitions: true,
-                noItemsFoundIndicatorBuilder: (context) {
-                  // return const Text('No Comments');
-                  return const SizedBox.shrink();
-                },
-                firstPageProgressIndicatorBuilder: (context) {
-                  // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
-                  return const Center(child: CircularProgressIndicator());
-                },
-                itemBuilder: (context, item, index) {
-                  return AutoScrollTag(
-                    key: UniqueKey(),
-                    controller: _scrollController,
-                    index: index,
-                    child: CommentDetailItemWidget(
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              child: PagedListView<int, CommentData>(
+                pagingController: _commentPagingController,
+                scrollController: _scrollController,
+                builderDelegate: PagedChildBuilderDelegate<CommentData>(
+                  // animateTransitions: true,
+                  noItemsFoundIndicatorBuilder: (context) {
+                    // return const Text('No Comments');
+                    return const SizedBox.shrink();
+                  },
+                  firstPageProgressIndicatorBuilder: (context) {
+                    // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                  itemBuilder: (context, item, index) {
+                    return AutoScrollTag(
                       key: UniqueKey(),
-                      parentIdx: item.parentIdx,
-                      commentIdx: item.idx,
-                      profileImage: item.url ?? 'assets/image/feed/image/sample_image1.png',
-                      name: item.nick,
-                      comment: item.contents,
-                      isSpecialUser: item.isBadge == 1,
-                      time: DateTime.parse(item.regDate),
-                      isReply: item.isReply,
-                      likeCount: item.commentLikeCnt ?? 0,
-                      // replies: item.childCommentData,
-                      contentIdx: item.contentsIdx,
-                      isLike: item.likeState == 1,
-                      memberIdx: item.memberIdx,
-                      mentionListData: item.mentionList ?? [],
-                      oldMemberIdx: widget.oldMemberIdx,
-                      isLastDisPlayChild: item.isLastDisPlayChild,
-                      // remainChildCount: item.remainChildCount,
-                      onMoreChildComment: (page) {
-                        print('load more child comment');
-                        ref.read(commentListStateProvider.notifier).getChildComments(
-                              item.contentsIdx,
-                              item.parentIdx,
-                              item.idx,
-                              page,
-                              true,
-                            );
-                      },
-                      pageNumber: item.pageNumber,
-                      isDisplayPreviousMore: item.isDisplayPreviousMore,
-                      onPrevMoreChildComment: (page) {
-                        print('load prev more child comment');
-                        ref.read(commentListStateProvider.notifier).getChildComments(
-                              item.contentsIdx,
-                              item.parentIdx,
-                              item.idx,
-                              page,
-                              false,
-                            );
-                      },
-                    ),
-                  );
-                },
+                      controller: _scrollController,
+                      index: index,
+                      child: CommentDetailItemWidget(
+                        key: UniqueKey(),
+                        parentIdx: item.parentIdx,
+                        commentIdx: item.idx,
+                        profileImage: item.url ?? 'assets/image/feed/image/sample_image1.png',
+                        name: item.nick,
+                        comment: item.contents,
+                        isSpecialUser: item.isBadge == 1,
+                        time: DateTime.parse(item.regDate),
+                        isReply: item.isReply,
+                        likeCount: item.commentLikeCnt ?? 0,
+                        // replies: item.childCommentData,
+                        contentIdx: item.contentsIdx,
+                        isLike: item.likeState == 1,
+                        memberIdx: item.memberIdx,
+                        mentionListData: item.mentionList ?? [],
+                        oldMemberIdx: widget.oldMemberIdx,
+                        isLastDisPlayChild: item.isLastDisPlayChild,
+                        // remainChildCount: item.remainChildCount,
+                        onMoreChildComment: (page) {
+                          print('load more child comment');
+                          ref.read(commentListStateProvider.notifier).getChildComments(
+                                item.contentsIdx,
+                                item.parentIdx,
+                                item.idx,
+                                page,
+                                true,
+                              );
+                        },
+                        pageNumber: item.pageNumber,
+                        isDisplayPreviousMore: item.isDisplayPreviousMore,
+                        onPrevMoreChildComment: (page) {
+                          print('load prev more child comment');
+                          ref.read(commentListStateProvider.notifier).getChildComments(
+                                item.contentsIdx,
+                                item.parentIdx,
+                                item.idx,
+                                page,
+                                false,
+                              );
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ),
