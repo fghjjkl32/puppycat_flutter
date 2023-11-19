@@ -104,6 +104,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                       // showCustomModalBottomSheet(context: context, widget: const SelectPetSheetItem());
                       ///산책하기 보류로 주석 처리 완료
                       ///여긴 UI가 바뀌어야함
+                      // context.pushNamed('error_dialog');
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

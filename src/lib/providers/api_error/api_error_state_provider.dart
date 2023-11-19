@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -24,7 +25,7 @@ class APIErrorState extends _$APIErrorState {
     String msg = apiException.getExceptionMsg();
     String code = apiException.getExceptionCode();
     String refer = apiException.getExceptionRefer();
-    print('apiException $apiException');
+    print('apiException2 $apiException');
 
     switch (code) {
       case 'EJOI-7777':
@@ -46,17 +47,16 @@ class APIErrorState extends _$APIErrorState {
         //TODO 더 고도화 필요
         ref.read(nickNameProvider.notifier).state = NickNameStatus.failure;
         break;
-
       case 'SIJD-3999': //TODO 중복 가입 alert, 멤버 서버 나오면 다시 작업
         print('SIJD-3999 ${apiException.toString()}');
         break;
-      case 'ELGI-9999': //TODO 로그인 실패
       case 'ENSA-2999': // PASS 인증 URL 실패(AppKey)
+      case 'ELGI-9999': //TODO 로그인 실패
       case 'EJOI-9999': //TODO 회원가입 실패
-      case 'ENIC-9998': //TODO 닉네임 체크  실패
       default:
-      //TODO
-      //Popup Dialog
+        print('aaaaaaaaaaaaaaaaaaaaaaaaaa');
+        final goRouter = ref.read(routerProvider);
+        goRouter.pushNamed('error_dialog', extra: code);
     }
 
     apiErrorLogging(apiException);

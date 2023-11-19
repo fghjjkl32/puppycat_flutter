@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/edit_my_information/edit_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/authentication/auth_repository.dart';
 // import 'package:pet_mobile_social_flutter/repositories/authentication/bearer_token_auth_repository.dart';
@@ -31,11 +32,9 @@ class AuthState extends _$AuthState {
       String passUrl = await _authRepository.getPassAuthUrl();
       ref.read(passUrlProvider.notifier).state = passUrl;
     } on APIException catch (apiException) {
-      ///TODO ERROR HANDLING
-      print('API Exception ${apiException.toString()}');
-      return;
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(passUrlProvider.notifier).state = 'about:blank';
     } catch (e) {
-      print(e);
       ref.read(passUrlProvider.notifier).state = 'about:blank';
     }
   }

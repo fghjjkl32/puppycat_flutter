@@ -55,14 +55,14 @@ class NotificationRepository {
   Future<bool> checkNewNotifications(int memberIdx) async {
     ResponseModel responseModel = await _notificationService.checkNewNotifications(memberIdx);
 
-    if (!responseModel.result) {
-      throw APIException(
-        msg: responseModel.message ?? '',
-        code: responseModel.code,
-        refer: 'SettingRepository',
-        caller: 'getSetting',
-      );
-    }
+    // if (!responseModel.result) {
+    //   throw APIException(
+    //     msg: responseModel.message ?? '',
+    //     code: responseModel.code,
+    //     refer: 'SettingRepository',
+    //     caller: 'getSetting',
+    //   );
+    // }
 
     return responseModel.result;
   }

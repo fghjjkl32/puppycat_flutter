@@ -6,6 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:matrix/matrix.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_deatil_list_widget.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/dialog_page.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
+import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
 import 'package:pet_mobile_social_flutter/main.dart';
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
@@ -30,6 +35,7 @@ import 'package:pet_mobile_social_flutter/ui/main/comment/main_comment_detail_sc
 import 'package:pet_mobile_social_flutter/ui/main/feed_search/feed_search_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/maintenance/maintenance_screen.dart';
+
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -41,6 +47,7 @@ import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_post_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
+
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -59,6 +66,7 @@ import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_scr
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_terms_of_service_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_unknown_screen.dart';
+
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -112,7 +120,7 @@ class AppRouter {
     // refreshListenable: AppService(),//redirect 시 사용되는 리스너 이다.
     initialLocation: '/splash',
     //제일 처음 보여 줄 route
-    debugLogDiagnostics: true,
+    debugLogDiagnostics: false,
     //router 정보 콘솔에 출력
     // errorBuilder: (BuildContext context, GoRouterState state) =>
     // const ErrorPage(),
@@ -448,6 +456,7 @@ class AppRouter {
           return const SplashScreen();
         },
       ),
+
       ///NOTE
       ///2023.11.17.
       ///채팅 교체 예정으로 일단 주석 처리
@@ -486,6 +495,7 @@ class AppRouter {
           return const MaintenanceScreen();
         },
       ),
+
       ///NOTE
       ///2023.11.14.
       ///산책하기 보류로 주석 처리
@@ -510,6 +520,26 @@ class AppRouter {
       //   },
       // ),
       ///산책하기 보류로 주석 처리 완료
+      GoRoute(
+        path: '/error_dialog',
+        name: 'error_dialog',
+        // builder: (BuildContext context, GoRouterState state) {
+        //   return const MaintenanceScreen();
+        // },
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          String errorCode = 'unknown';
+          if (state.extra != null) {
+            if (state.extra is String) {
+              errorCode = state.extra.toString();
+            }
+          }
+          return DialogPage(
+            builder: (_) => ErrorDialog(
+              code: errorCode,
+            ),
+          );
+        },
+      ),
     ],
 
     redirect: (BuildContext context, GoRouterState state) {
@@ -518,37 +548,16 @@ class AppRouter {
       const splashLocation = '/splash';
       const signUpLocation = '$loginLocation/signupScreen/:authType';
       const signUpCompleteLocation = '$signUpLocation/signupCompleteScreen';
-      const chatMainLocation = '/chatMain';
       const maintenanceLocation = '/maintenance';
-      const mapLocation = '/map';
-      const walkLogScreen = '/writeWalkLog';
-
-      ///NOTE 테스트용 임시
 
       InitializationApp.initialize(ref);
 
-      //
-      // bool isMapPage = state.matchedLocation == mapLocation;
-      // print('why?????????????? $isMapPage / $_walkState / ${state.matchedLocation}');
-      // if (isMapPage) {
-      //   print('_walkState $_walkState');
-      //   if (_walkState == WalkStatus.finished) {
-      //     return walkLogScreen;
-      //   } else {
-      //     return null;
-      //   }
-      // }
-      print("state.matchedLocation : ${state.matchedLocation}");
-
       bool isSplashPage = state.matchedLocation == splashLocation;
       if (isSplashPage) {
-        print("ASDADSSADDSAADSDSASA");
         if (_splashState) {
-          print("DAJNDSAKJNDSKJNDSKDNJKSADASADSAAA");
           if (_maintenanceState) {
             return maintenanceLocation;
           } else if (_loginRouteState == LoginRoute.success) {
-            print('here ?? 11');
             return homeLocation;
           }
           return loginLocation;
@@ -560,7 +569,6 @@ class AppRouter {
       bool isLoginPage = state.matchedLocation == loginLocation;
       if (isLoginPage) {
         if (_loginRouteState == LoginRoute.success) {
-          print('here ?? 22');
           return homeLocation;
         } else if (_loginRouteState == LoginRoute.signUpScreen) {
           return signUpLocation;
