@@ -11,17 +11,17 @@ part 'withdrawal_service.g.dart';
 abstract class WithdrawalService {
   factory WithdrawalService(Dio dio, {String baseUrl}) = _WithdrawalService;
 
-  @PUT('/member/out')
+  @PUT('v1/member/out')
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
-  Future<ResponseModel?> withdrawalUser(@Body() Map<String, dynamic> body);
+  Future<ResponseModel> withdrawalUser(@Body() Map<String, dynamic> body);
 
-  @GET('/member/out/code')
-  Future<SelectButtonResponseModel?> getWithdrawalReasonList();
+  @GET('v1/member/out/code')
+  Future<SelectButtonResponseModel> getWithdrawalReasonList();
 
-  @GET('/member/activity/info')
-  Future<WithdrawalDetailResponseModel?> getWithdrawalDetailList(
+  @GET('v1/member/activity/info')
+  Future<WithdrawalDetailResponseModel> getWithdrawalDetailList(
     @Query('memberIdx') int memberIdx,
   );
 }

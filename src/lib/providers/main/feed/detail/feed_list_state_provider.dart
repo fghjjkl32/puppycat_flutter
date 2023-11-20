@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -9,6 +10,7 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_detail_state.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
@@ -165,6 +167,10 @@ class FeedListState extends _$FeedListState {
       }
       apiStatus = ListAPIStatus.loaded;
       ref.read(feedListEmptyProvider.notifier).state = searchList.isEmpty;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      apiStatus = ListAPIStatus.error;
+      state.error = apiException.toString();
     } catch (e) {
       apiStatus = ListAPIStatus.error;
       state.error = e;
@@ -496,40 +502,48 @@ class FeedListState extends _$FeedListState {
   }) async {
     ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
 
-    final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(memberIdx: loginMemberIdx, contentIdx: contentIdx);
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
-    int targetIdx = -1;
+      int targetIdx = -1;
 
-    if (state.itemList != null) {
-      if (idxToRemove == contentIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+      if (state.itemList != null) {
+        if (idxToRemove == contentIdx) {
+          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
-        ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-              likeState: 1,
-              likeCnt: ref.read(firstFeedStateProvider).itemList![targetIdx].likeCnt! + 1,
-            );
-        ref.read(firstFeedStateProvider).notifyListeners();
+          ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+                likeState: 1,
+                likeCnt: ref.read(firstFeedStateProvider).itemList![targetIdx].likeCnt! + 1,
+              );
+          ref.read(firstFeedStateProvider).notifyListeners();
+        }
+
+        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+        if (targetIdx != -1) {
+          state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+            likeState: 1,
+            likeCnt: state.itemList![targetIdx].likeCnt! + 1,
+          );
+          state.notifyListeners();
+        }
       }
 
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+      feedRefresh(
+        contentIdx,
+        "postLike",
+      );
 
-      if (targetIdx != -1) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          likeState: 1,
-          likeCnt: state.itemList![targetIdx].likeCnt! + 1,
-        );
-        state.notifyListeners();
-      }
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('postLike error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      contentIdx,
-      "postLike",
-    );
-
-    ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
-
-    return result;
   }
 
   Future<ResponseModel> deleteLike({
@@ -540,40 +554,48 @@ class FeedListState extends _$FeedListState {
   }) async {
     ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
 
-    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
-    int targetIdx = -1;
+      int targetIdx = -1;
 
-    if (state.itemList != null) {
-      if (idxToRemove == contentIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+      if (state.itemList != null) {
+        if (idxToRemove == contentIdx) {
+          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
-        ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-              likeState: 0,
-              likeCnt: ref.read(firstFeedStateProvider).itemList![targetIdx].likeCnt! - 1,
-            );
-        ref.read(firstFeedStateProvider).notifyListeners();
+          ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+                likeState: 0,
+                likeCnt: ref.read(firstFeedStateProvider).itemList![targetIdx].likeCnt! - 1,
+              );
+          ref.read(firstFeedStateProvider).notifyListeners();
+        }
+
+        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+        if (targetIdx != -1) {
+          state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+            likeState: 0,
+            likeCnt: state.itemList![targetIdx].likeCnt! - 1,
+          );
+          state.notifyListeners();
+        }
       }
 
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+      feedRefresh(
+        contentIdx,
+        "deleteLike",
+      );
 
-      if (targetIdx != -1) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          likeState: 0,
-          likeCnt: state.itemList![targetIdx].likeCnt! - 1,
-        );
-        state.notifyListeners();
-      }
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('deleteLike error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      contentIdx,
-      "deleteLike",
-    );
-
-    ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
-
-    return result;
   }
 
   Future<ResponseModel> postSave({
@@ -584,38 +606,46 @@ class FeedListState extends _$FeedListState {
   }) async {
     ref.read(saveApiIsLoadingStateProvider.notifier).state = true;
 
-    final result = await FeedRepository(dio: ref.read(dioProvider)).postSave(memberIdx: loginMemberIdx, contentIdx: contentIdx);
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).postSave(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
-    int targetIdx = -1;
+      int targetIdx = -1;
 
-    if (state.itemList != null) {
-      if (idxToRemove == contentIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+      if (state.itemList != null) {
+        if (idxToRemove == contentIdx) {
+          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
-        ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-              saveState: 1,
-            );
-        ref.read(firstFeedStateProvider).notifyListeners();
+          ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+                saveState: 1,
+              );
+          ref.read(firstFeedStateProvider).notifyListeners();
+        }
+
+        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+        if (targetIdx != -1) {
+          state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+            saveState: 1,
+          );
+          state.notifyListeners();
+        }
       }
 
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+      feedRefresh(
+        contentIdx,
+        "postSave",
+      );
 
-      if (targetIdx != -1) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          saveState: 1,
-        );
-        state.notifyListeners();
-      }
+      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
+
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('postSave error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      contentIdx,
-      "postSave",
-    );
-
-    ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
-
-    return result;
   }
 
   Future<ResponseModel> deleteSave({
@@ -626,38 +656,46 @@ class FeedListState extends _$FeedListState {
   }) async {
     ref.read(saveApiIsLoadingStateProvider.notifier).state = true;
 
-    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteSave(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteSave(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
-    int targetIdx = -1;
+      int targetIdx = -1;
 
-    if (state.itemList != null) {
-      if (idxToRemove == contentIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+      if (state.itemList != null) {
+        if (idxToRemove == contentIdx) {
+          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
-        ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-              saveState: 0,
-            );
-        ref.read(firstFeedStateProvider).notifyListeners();
+          ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+                saveState: 0,
+              );
+          ref.read(firstFeedStateProvider).notifyListeners();
+        }
+
+        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+        if (targetIdx != -1) {
+          state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+            saveState: 0,
+          );
+          state.notifyListeners();
+        }
       }
 
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+      feedRefresh(
+        contentIdx,
+        "deleteSave",
+      );
 
-      if (targetIdx != -1) {
-        state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-          saveState: 0,
-        );
-        state.notifyListeners();
-      }
+      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
+
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('delete save error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      contentIdx,
-      "deleteSave",
-    );
-
-    ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
-
-    return result;
   }
 
   Future<ResponseModel> postKeepContents({
@@ -665,33 +703,41 @@ class FeedListState extends _$FeedListState {
     required List<int> contentIdxList,
     required contentType,
   }) async {
-    final result = await KeepContentsRepository(dio: ref.read(dioProvider)).postKeepContents(memberIdx: loginMemberIdx, idxList: contentIdxList);
+    try {
+      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).postKeepContents(memberIdx: loginMemberIdx, idxList: contentIdxList);
 
-    int targetIdx = -1;
+      int targetIdx = -1;
 
-    if (state.itemList != null) {
-      if (idxToRemove == contentIdxList[0]) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdxList[0]);
+      if (state.itemList != null) {
+        if (idxToRemove == contentIdxList[0]) {
+          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdxList[0]);
 
-        ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
-        ref.read(firstFeedEmptyProvider.notifier).state = true;
-        ref.read(firstFeedStateProvider).notifyListeners();
+          ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+          ref.read(firstFeedEmptyProvider.notifier).state = true;
+          ref.read(firstFeedStateProvider).notifyListeners();
+        }
+
+        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdxList[0]);
+
+        if (targetIdx != -1) {
+          state.itemList!.removeAt(targetIdx);
+          state.notifyListeners();
+        }
       }
 
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdxList[0]);
+      feedRefresh(
+        contentIdxList[0],
+        "postKeepContents",
+      );
 
-      if (targetIdx != -1) {
-        state.itemList!.removeAt(targetIdx);
-        state.notifyListeners();
-      }
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('postKeepContents error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      contentIdxList[0],
-      "postKeepContents",
-    );
-
-    return result;
   }
 
   Future<ResponseModel> deleteOneKeepContents({
@@ -699,34 +745,42 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required contentType,
   }) async {
-    final result = await KeepContentsRepository(dio: ref.read(dioProvider)).deleteOneKeepContents(memberIdx: loginMemberIdx, idx: contentIdx);
+    try {
+      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).deleteOneKeepContents(memberIdx: loginMemberIdx, idx: contentIdx);
 
-    int targetIdx = -1;
+      int targetIdx = -1;
 
-    if (state.itemList != null) {
-      if (idxToRemove == contentIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+      if (state.itemList != null) {
+        if (idxToRemove == contentIdx) {
+          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
-        ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
-        ref.read(firstFeedEmptyProvider.notifier).state = true;
+          ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+          ref.read(firstFeedEmptyProvider.notifier).state = true;
 
-        ref.read(firstFeedStateProvider).notifyListeners();
+          ref.read(firstFeedStateProvider).notifyListeners();
+        }
+
+        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+        if (targetIdx != -1) {
+          state.itemList!.removeAt(targetIdx);
+          state.notifyListeners();
+        }
       }
 
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+      feedRefresh(
+        contentIdx,
+        "deleteOneKeepContents",
+      );
 
-      if (targetIdx != -1) {
-        state.itemList!.removeAt(targetIdx);
-        state.notifyListeners();
-      }
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('deleteOneKeepContents error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      contentIdx,
-      "deleteOneKeepContents",
-    );
-
-    return result;
   }
 
   Future<ResponseModel> deleteOneContents({
@@ -734,34 +788,42 @@ class FeedListState extends _$FeedListState {
     required int contentIdx,
     required contentType,
   }) async {
-    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteOneContents(memberIdx: loginMemberIdx, idx: contentIdx);
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteOneContents(memberIdx: loginMemberIdx, idx: contentIdx);
 
-    int targetIdx = -1;
+      int targetIdx = -1;
 
-    if (state.itemList != null) {
-      if (idxToRemove == contentIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+      if (state.itemList != null) {
+        if (idxToRemove == contentIdx) {
+          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
-        ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
-        ref.read(firstFeedEmptyProvider.notifier).state = true;
+          ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+          ref.read(firstFeedEmptyProvider.notifier).state = true;
 
-        ref.read(firstFeedStateProvider).notifyListeners();
+          ref.read(firstFeedStateProvider).notifyListeners();
+        }
+
+        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+        if (targetIdx != -1) {
+          state.itemList!.removeAt(targetIdx);
+          state.notifyListeners();
+        }
       }
 
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+      feedRefresh(
+        contentIdx,
+        "deleteOneContents",
+      );
 
-      if (targetIdx != -1) {
-        state.itemList!.removeAt(targetIdx);
-        state.notifyListeners();
-      }
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('deleteOneContents error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      contentIdx,
-      "deleteOneContents",
-    );
-
-    return result;
   }
 
   Future<ResponseModel> postHide({
@@ -770,42 +832,50 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository(dio: ref.read(dioProvider)).postHide(memberIdx: loginMemberIdx, contentIdx: contentIdx);
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).postHide(memberIdx: loginMemberIdx, contentIdx: contentIdx);
 
-    int targetIdx = -1;
+      int targetIdx = -1;
 
-    if (state.itemList != null) {
-      if (idxToRemove == contentIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+      if (state.itemList != null) {
+        if (idxToRemove == contentIdx) {
+          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
-        tempFirstFeedDataIndex = targetIdx;
+          tempFirstFeedDataIndex = targetIdx;
 
-        tempFeedData = ref.read(firstFeedStateProvider).itemList![targetIdx];
+          tempFeedData = ref.read(firstFeedStateProvider).itemList![targetIdx];
 
-        ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
-        ref.read(firstFeedEmptyProvider.notifier).state = true;
+          ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+          ref.read(firstFeedEmptyProvider.notifier).state = true;
 
-        ref.read(firstFeedStateProvider).notifyListeners();
+          ref.read(firstFeedStateProvider).notifyListeners();
+        }
+
+        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+        tempFeedDataIndex = targetIdx;
+
+        if (targetIdx != -1) {
+          tempFeedData = state.itemList![targetIdx];
+
+          state.itemList!.removeAt(targetIdx);
+          state.notifyListeners();
+        }
       }
 
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+      feedRefresh(
+        contentIdx,
+        "postHide",
+      );
 
-      tempFeedDataIndex = targetIdx;
-
-      if (targetIdx != -1) {
-        tempFeedData = state.itemList![targetIdx];
-
-        state.itemList!.removeAt(targetIdx);
-        state.notifyListeners();
-      }
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('postHide error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      contentIdx,
-      "postHide",
-    );
-
-    return result;
   }
 
   Future<ResponseModel> deleteHide({
@@ -814,30 +884,38 @@ class FeedListState extends _$FeedListState {
     required contentIdx,
     required String contentType,
   }) async {
-    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteHide(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteHide(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
-    if (state.itemList != null) {
-      if (tempFirstFeedDataIndex != null) {
-        ref.read(firstFeedStateProvider).itemList!.insert(tempFirstFeedDataIndex!, tempFeedData!);
-        ref.read(firstFeedStateProvider).notifyListeners();
-        tempFirstFeedDataIndex = null;
+      if (state.itemList != null) {
+        if (tempFirstFeedDataIndex != null) {
+          ref.read(firstFeedStateProvider).itemList!.insert(tempFirstFeedDataIndex!, tempFeedData!);
+          ref.read(firstFeedStateProvider).notifyListeners();
+          tempFirstFeedDataIndex = null;
+        }
+
+        if (tempFeedDataIndex != null && tempFeedDataIndex != -1) {
+          state.itemList!.insert(tempFeedDataIndex!, tempFeedData!);
+          state.notifyListeners();
+          tempFeedDataIndex = null;
+        }
       }
 
-      if (tempFeedDataIndex != null && tempFeedDataIndex != -1) {
-        state.itemList!.insert(tempFeedDataIndex!, tempFeedData!);
-        state.notifyListeners();
-        tempFeedDataIndex = null;
-      }
+      feedRefresh(
+        contentIdx,
+        "deleteHide",
+      );
+
+      tempFeedData = null;
+
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('deleteHide error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      contentIdx,
-      "deleteHide",
-    );
-
-    tempFeedData = null;
-
-    return result;
   }
 
   Future<ResponseModel> postBlock({
@@ -845,25 +923,33 @@ class FeedListState extends _$FeedListState {
     required blockIdx,
     required contentType,
   }) async {
-    final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
-      memberIdx: memberIdx,
-      blockIdx: blockIdx,
-    );
+    try {
+      final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
+        memberIdx: memberIdx,
+        blockIdx: blockIdx,
+      );
 
-    if (state.itemList != null) {
-      state.itemList!.removeWhere((element) => element.memberIdx == blockIdx);
-      state.notifyListeners();
+      if (state.itemList != null) {
+        state.itemList!.removeWhere((element) => element.memberIdx == blockIdx);
+        state.notifyListeners();
 
-      ref.read(firstFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == blockIdx);
-      ref.read(firstFeedStateProvider).notifyListeners();
+        ref.read(firstFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == blockIdx);
+        ref.read(firstFeedStateProvider).notifyListeners();
+      }
+
+      feedRefresh(
+        blockIdx,
+        "postBlock",
+      );
+
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('notification setFeedLike error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      blockIdx,
-      "postBlock",
-    );
-
-    return result;
   }
 
   Future<ResponseModel> postContentReport({
@@ -873,48 +959,56 @@ class FeedListState extends _$FeedListState {
     required String? reason,
     required String reportType,
   }) async {
-    final result = await FeedRepository(dio: ref.read(dioProvider)).postContentReport(
-      reportType: reportType,
-      memberIdx: loginMemberIdx,
-      contentIdx: contentIdx,
-      reportCode: reportCode,
-      reason: reason,
-    );
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).postContentReport(
+        reportType: reportType,
+        memberIdx: loginMemberIdx,
+        contentIdx: contentIdx,
+        reportCode: reportCode,
+        reason: reason,
+      );
 
-    int targetIdx = -1;
+      int targetIdx = -1;
 
-    if (state.itemList != null) {
-      if (idxToRemove == contentIdx) {
-        targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+      if (state.itemList != null) {
+        if (idxToRemove == contentIdx) {
+          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
-        tempFirstFeedDataIndex = targetIdx;
+          tempFirstFeedDataIndex = targetIdx;
 
-        tempFeedData = ref.read(firstFeedStateProvider).itemList![targetIdx];
+          tempFeedData = ref.read(firstFeedStateProvider).itemList![targetIdx];
 
-        ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
-        ref.read(firstFeedEmptyProvider.notifier).state = true;
+          ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
+          ref.read(firstFeedEmptyProvider.notifier).state = true;
 
-        ref.read(firstFeedStateProvider).notifyListeners();
+          ref.read(firstFeedStateProvider).notifyListeners();
+        }
+
+        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+        tempFeedDataIndex = targetIdx;
+
+        if (targetIdx != -1) {
+          tempFeedData = state.itemList![targetIdx];
+
+          state.itemList!.removeAt(targetIdx);
+          state.notifyListeners();
+        }
       }
 
-      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+      feedRefresh(
+        contentIdx,
+        "postContentReport",
+      );
 
-      tempFeedDataIndex = targetIdx;
-
-      if (targetIdx != -1) {
-        tempFeedData = state.itemList![targetIdx];
-
-        state.itemList!.removeAt(targetIdx);
-        state.notifyListeners();
-      }
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('postContentReport error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      contentIdx,
-      "postContentReport",
-    );
-
-    return result;
   }
 
   Future<ResponseModel> deleteContentReport({
@@ -922,111 +1016,43 @@ class FeedListState extends _$FeedListState {
     required int loginMemberIdx,
     required int contentIdx,
   }) async {
-    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContentReport(
-      reportType: reportType,
-      memberIdx: loginMemberIdx,
-      contentsIdx: contentIdx,
-    );
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContentReport(
+        reportType: reportType,
+        memberIdx: loginMemberIdx,
+        contentsIdx: contentIdx,
+      );
 
-    if (state.itemList != null) {
-      if (tempFirstFeedDataIndex != null) {
-        ref.read(firstFeedStateProvider).itemList!.insert(tempFirstFeedDataIndex!, tempFeedData!);
-        ref.read(firstFeedStateProvider).notifyListeners();
-        tempFirstFeedDataIndex = null;
+      if (state.itemList != null) {
+        if (tempFirstFeedDataIndex != null) {
+          ref.read(firstFeedStateProvider).itemList!.insert(tempFirstFeedDataIndex!, tempFeedData!);
+          ref.read(firstFeedStateProvider).notifyListeners();
+          tempFirstFeedDataIndex = null;
+        }
+
+        if (tempFeedDataIndex != null && tempFeedDataIndex != -1) {
+          state.itemList!.insert(tempFeedDataIndex!, tempFeedData!);
+          state.notifyListeners();
+          tempFeedDataIndex = null;
+        }
       }
 
-      if (tempFeedDataIndex != null && tempFeedDataIndex != -1) {
-        state.itemList!.insert(tempFeedDataIndex!, tempFeedData!);
-        state.notifyListeners();
-        tempFeedDataIndex = null;
-      }
+      feedRefresh(
+        contentIdx,
+        "deleteContentReport",
+      );
+
+      tempFeedData = null;
+
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('deleteContentReport error $e');
+      rethrow;
     }
-
-    feedRefresh(
-      contentIdx,
-      "deleteContentReport",
-    );
-
-    tempFeedData = null;
-
-    return result;
   }
-
-  // Future<ResponseModel> postFollow({
-  //   required memberIdx,
-  //   required followIdx,
-  //   required contentsIdx,
-  //   required contentType,
-  // }) async {
-  //   final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
-  //
-  //   int targetIdx = -1;
-  //
-  //   if (state.itemList != null) {
-  //     if (idxToRemove == contentsIdx) {
-  //       targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentsIdx);
-  //
-  //       ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-  //             followState: 1,
-  //           );
-  //       ref.read(firstFeedStateProvider).notifyListeners();
-  //     }
-  //
-  //     targetIdx = state.itemList!.indexWhere((element) => element.idx == contentsIdx);
-  //
-  //     if (targetIdx != -1) {
-  //       state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-  //         followState: 1,
-  //       );
-  //       state.notifyListeners();
-  //     }
-  //   }
-  //
-  //   feedRefresh(
-  //     contentsIdx,
-  //     "postFollow",
-  //   );
-  //
-  //   return result;
-  // }
-  //
-  // Future<ResponseModel> deleteFollow({
-  //   required memberIdx,
-  //   required followIdx,
-  //   required contentsIdx,
-  //   required contentType,
-  // }) async {
-  //   final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
-  //
-  //   int targetIdx = -1;
-  //
-  //   if (state.itemList != null) {
-  //     if (idxToRemove == contentsIdx) {
-  //       targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentsIdx);
-  //
-  //       ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
-  //             followState: 0,
-  //           );
-  //       ref.read(firstFeedStateProvider).notifyListeners();
-  //     }
-  //
-  //     targetIdx = state.itemList!.indexWhere((element) => element.idx == contentsIdx);
-  //
-  //     if (targetIdx != -1) {
-  //       state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-  //         followState: 0,
-  //       );
-  //       state.notifyListeners();
-  //     }
-  //   }
-  //
-  //   feedRefresh(
-  //     contentsIdx,
-  //     "deleteFollow",
-  //   );
-  //
-  //   return result;
-  // }
 
   final Map<int, List<FeedData>?> feedStateMap = {};
   final Map<int, List<MemberInfoListData>?> feedMemberInfoStateMap = {};

@@ -10,13 +10,13 @@ part 'notification_service.g.dart';
 abstract class NotificationService {
   factory NotificationService(Dio dio, {String baseUrl}) = _NotificationService;
 
-  @GET('/noti')
-  Future<NotificationResponseModel?> getNotifications(
+  @GET('v1/noti')
+  Future<NotificationResponseModel> getNotifications(
     @Queries() Map<String, dynamic> queries,
   );
 
-  @GET('/noti/new')
-  Future<ResponseModel?> checkNewNotifications(
+  @GET('v1/noti/new')
+  Future<ResponseModel> checkNewNotifications(
     @Query('memberIdx') int memberIdx,
   );
   // @GET('/noti')

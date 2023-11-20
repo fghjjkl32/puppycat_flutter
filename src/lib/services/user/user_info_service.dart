@@ -11,32 +11,32 @@ abstract class UserInfoService {
   factory UserInfoService(Dio dio, {String baseUrl}) = _UserInfoService;
 
   //My Info
-  @PATCH('/member/restore')
+  @PATCH('v1/member/restore')
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
-  Future<ResponseModel?> restoreAccount(@Body() Map<String, dynamic> body);
+  Future<ResponseModel> restoreAccount(@Body() Map<String, dynamic> body);
 
-  @GET('/my/info')
+  @GET('v1/my/info')
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
-  Future<UserInformationResponseModel?> getMyInfo(@Query("memberIdx") String memberIdx);
+  Future<UserInformationResponseModel> getMyInfo(@Query("memberIdx") String memberIdx);
 
-  @PUT('/my/info')
+  @PUT('v1/my/info')
   Future<ResponseModel> updateMyInfo(
     @Body() FormData formData,
   );
 
   //User Info
-  @GET('/member/info/{memberIdx}?loginMemberIdx={loginMemberIdx}')
-  Future<UserInformationResponseModel?> getUserInformation(
+  @GET('v1/member/info/{memberIdx}?loginMemberIdx={loginMemberIdx}')
+  Future<UserInformationResponseModel> getUserInformation(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
   );
 
-  @GET('/member/info/{memberIdx}')
-  Future<UserInformationResponseModel?> getLogoutUserInformation(
+  @GET('v1/member/info/{memberIdx}')
+  Future<UserInformationResponseModel> getLogoutUserInformation(
     @Path("memberIdx") int memberIdx,
   );
 }

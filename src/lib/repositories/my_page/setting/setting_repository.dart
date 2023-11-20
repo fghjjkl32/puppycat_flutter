@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -19,25 +20,35 @@ class SettingRepository {
   Future<SettingResponseModel?> getSetting({
     required int memberIdx,
   }) async {
-    SettingResponseModel? settingResponseModel = await _settingService.getSetting(memberIdx).catchError((Object obj) async {});
+    SettingResponseModel responseModel = await _settingService.getSetting(memberIdx);
 
-    if (settingResponseModel == null) {
-      return null;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'SettingRepository',
+        caller: 'getSetting',
+      );
     }
 
-    return settingResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> putSetting({
     required int memberIdx,
     required Map<String, dynamic> body,
   }) async {
-    ResponseModel? followResponseModel = await _settingService.putSetting(body);
+    ResponseModel responseModel = await _settingService.putSetting(body);
 
-    if (followResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'SettingRepository',
+        caller: 'putSetting',
+      );
     }
 
-    return followResponseModel;
+    return responseModel;
   }
 }

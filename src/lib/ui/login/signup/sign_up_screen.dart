@@ -156,40 +156,40 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                       icon: Image.asset('assets/image/signUpScreen/kakao_icon.png'),
                     ),
                   ),
-                  SizedBox(
-                    width: 100.w,
-                    height: 40.h,
-                    child: ElevatedButton.icon(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                        ),
-                        backgroundColor: MaterialStateProperty.all<Color>(kNaverLoginColor),
-                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
-                      ),
-                      onPressed: () async {
-                        final url = await ref.read(authStateProvider.notifier).getTossAuthUrl("2ecf4e89-e1bc-48e0-93c6-d2de8fe4a2d0");
-                        //
-                        final appScheme = ConvertUrl(url); // Intent URL을 앱 스킴 URL로 변환
-                        //
-                        print(appScheme);
-
-                        print(appScheme.appScheme);
-                        print(appScheme.url);
-
-                        if (appScheme.isAppLink()) {
-                          print(appScheme.appLink);
-
-                          await appScheme.launchApp();
-                        }
-                      },
-                      label: Text(
-                        '회원가입.네이버 인증'.tr(),
-                        style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
-                      ),
-                      icon: Image.asset('assets/image/signUpScreen/naver_icon.png'),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   width: 100.w,
+                  //   height: 40.h,
+                  //   child: ElevatedButton.icon(
+                  //     style: ButtonStyle(
+                  //       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                  //       ),
+                  //       backgroundColor: MaterialStateProperty.all<Color>(kNaverLoginColor),
+                  //       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
+                  //     ),
+                  //     onPressed: () async {
+                  //       final url = await ref.read(authStateProvider.notifier).getTossAuthUrl("2ecf4e89-e1bc-48e0-93c6-d2de8fe4a2d0");
+                  //       //
+                  //       final appScheme = ConvertUrl(url); // Intent URL을 앱 스킴 URL로 변환
+                  //       //
+                  //       print(appScheme);
+                  //
+                  //       print(appScheme.appScheme);
+                  //       print(appScheme.url);
+                  //
+                  //       if (appScheme.isAppLink()) {
+                  //         print(appScheme.appLink);
+                  //
+                  //         await appScheme.launchApp();
+                  //       }
+                  //     },
+                  //     label: Text(
+                  //       '회원가입.네이버 인증'.tr(),
+                  //       style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
+                  //     ),
+                  //     icon: Image.asset('assets/image/signUpScreen/naver_icon.png'),
+                  //   ),
+                  // ),
                   SizedBox(
                     width: 100.w,
                     height: 40.h,

@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/policy/policy_repository.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -27,11 +29,14 @@ class PolicyState extends _$PolicyState {
   }
 
   void getPolicies() async {
-    final PolicyRepository policyRepository = PolicyRepository(dio: ref.read(dioProvider));
     try {
+      final PolicyRepository policyRepository = PolicyRepository(dio: ref.read(dioProvider));
       List<PolicyItemModel> result = await policyRepository.getPolicies();
 
       state = result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      state = [];
     } catch (e) {
       print('get Policy Error');
       state = [];

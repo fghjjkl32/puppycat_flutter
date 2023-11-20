@@ -2,9 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:matrix/matrix.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
@@ -67,47 +69,56 @@ class NotificationListState extends _$NotificationListState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      // NotificationRepository repository = ref.read(notificationRepositoryProvider);
-      NotificationRepository repository = NotificationRepository(dio: ref.read(dioProvider));
-      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-      int type = _notiType.index;
-      var result = await repository.getNotifications(loginMemberIdx, pageKey, type == 0 ? null : type);
-
-      var resultList = result.list.map((e) {
-        if (e.senderInfo == null) {
-          return e;
-        }
-        try {
-          return e.copyWith(
-            senderInfo: [e.senderInfo!.first.copyWith(profileImgUrl: '${e.senderInfo!.first.profileImgUrl}')],
-            img: '${e.img}',
-          );
-        } catch (_) {
-          return e;
-        }
-      }).toList();
-
-      if (result.isFirst != null) {
-        print('result.isFirst');
-        ref.read(notificationFirstVisitProvider.notifier).state = true; //result.isFirst!;
-      }
-
-      print('resultList $resultList');
-      //result.list.first.mentionMemberInfo.first['ko10bd036fcdcb4aad9989296f340f54cc1688623039'].first['nick']
       try {
-        _lastPage = result.params!.pagination!.totalPageCount!;
-      } catch (_) {
-        _lastPage = 1;
-      }
+        // NotificationRepository repository = ref.read(notificationRepositoryProvider);
+        NotificationRepository repository = NotificationRepository(dio: ref.read(dioProvider));
+        var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+        int type = _notiType.index;
+        var result = await repository.getNotifications(loginMemberIdx, pageKey, type == 0 ? null : type);
 
-      final nextPageKey = resultList.isEmpty ? null : pageKey + 1;
+        var resultList = result.list.map((e) {
+          if (e.senderInfo == null) {
+            return e;
+          }
+          try {
+            return e.copyWith(
+              senderInfo: [e.senderInfo!.first.copyWith(profileImgUrl: '${e.senderInfo!.first.profileImgUrl}')],
+              img: '${e.img}',
+            );
+          } catch (_) {
+            return e;
+          }
+        }).toList();
 
-      if (pageKey == _lastPage) {
-        state.appendLastPage(resultList);
-      } else {
-        state.appendPage(resultList, nextPageKey);
+        if (result.isFirst != null) {
+          print('result.isFirst');
+          ref.read(notificationFirstVisitProvider.notifier).state = true; //result.isFirst!;
+        }
+
+        print('resultList $resultList');
+        //result.list.first.mentionMemberInfo.first['ko10bd036fcdcb4aad9989296f340f54cc1688623039'].first['nick']
+        try {
+          _lastPage = result.params!.pagination!.totalPageCount!;
+        } catch (_) {
+          _lastPage = 1;
+        }
+
+        final nextPageKey = resultList.isEmpty ? null : pageKey + 1;
+
+        if (pageKey == _lastPage) {
+          state.appendLastPage(resultList);
+        } else {
+          state.appendPage(resultList, nextPageKey);
+        }
+        _apiStatus = ListAPIStatus.loaded;
+      } catch (e) {
+        _apiStatus = ListAPIStatus.error;
+        state.error = e;
       }
-      _apiStatus = ListAPIStatus.loaded;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      _apiStatus = ListAPIStatus.error;
+      state.error = apiException.toString();
     } catch (e) {
       _apiStatus = ListAPIStatus.error;
       state.error = e;
@@ -122,55 +133,99 @@ class NotificationListState extends _$NotificationListState {
   void setFeedLike(int memberIdx, int contentsIdx) async {
     ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
 
-    final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(memberIdx: memberIdx, contentIdx: contentsIdx);
-    if (result.result) {
-      changedLikeState(contentsIdx, true);
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(memberIdx: memberIdx, contentIdx: contentsIdx);
+      if (result.result) {
+        changedLikeState(contentsIdx, true);
+      }
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('notification setFeedLike error $e');
     }
-    ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
   }
 
   void unSetFeedLike(int memberIdx, int contentsIdx) async {
     ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
 
-    final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(memberIdx: memberIdx, contentsIdx: contentsIdx);
-    if (result.result) {
-      changedLikeState(contentsIdx, false);
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(memberIdx: memberIdx, contentsIdx: contentsIdx);
+      if (result.result) {
+        changedLikeState(contentsIdx, false);
+      }
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('notification unSetFeedLike error $e');
     }
-    ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
   }
 
   void setFollow(int memberIdx, int followIdx) async {
-    ref.read(followApiIsLoadingStateProvider.notifier).state = true;
+    try {
+      ref.read(followApiIsLoadingStateProvider.notifier).state = true;
 
-    final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
-    if (result.result) {
-      changedFollowState(followIdx, true);
+      final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
+      if (result.result) {
+        changedFollowState(followIdx, true);
+      }
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
+    } catch (e) {
+      print('setFollow error $e');
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
     }
-    ref.read(followApiIsLoadingStateProvider.notifier).state = false;
   }
 
   void unSetFollow(int memberIdx, int followIdx) async {
-    ref.read(followApiIsLoadingStateProvider.notifier).state = true;
+    try {
+      ref.read(followApiIsLoadingStateProvider.notifier).state = true;
 
-    final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
-    if (result.result) {
-      changedFollowState(followIdx, false);
+      final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+      if (result.result) {
+        changedFollowState(followIdx, false);
+      }
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
+    } catch (e) {
+      print('unSetFollow error $e');
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
     }
-    ref.read(followApiIsLoadingStateProvider.notifier).state = false;
   }
 
   void setCommentLike(int memberIdx, int commentIdx) async {
-    final result = await CommentRepository(dio: ref.read(dioProvider)).postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
-    if (result.result) {
-      changedLikeState(commentIdx, true);
+    try {
+      final result = await CommentRepository(dio: ref.read(dioProvider)).postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+      if (result.result) {
+        changedLikeState(commentIdx, true);
+      }
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('setCommentLike error $e');
+      rethrow;
     }
   }
 
   void unSetCommentLike(int memberIdx, int commentIdx) async {
-    final result = await CommentRepository(dio: ref.read(dioProvider)).deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+    try {
+      final result = await CommentRepository(dio: ref.read(dioProvider)).deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
 
-    if (result.result) {
-      changedLikeState(commentIdx, false);
+      if (result.result) {
+        changedLikeState(commentIdx, false);
+      }
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('unSetCommentLike error $e');
+      rethrow;
     }
   }
 

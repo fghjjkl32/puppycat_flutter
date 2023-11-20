@@ -18,7 +18,7 @@ import 'package:ua_client_hints/ua_client_hints.dart';
 
 final dioProvider = StateProvider<Dio>((ref) {
   // return DioWrap.getDioWithCookie();
-  return DioWrap.getDioWithCookie2(ref);
+  return DioWrap.getDioWithCookieWithRef(ref);
 });
 
 class DioWrap {
@@ -77,7 +77,7 @@ class DioWrap {
     return dio;
   }
 
-  static Dio getDioWithCookie2(Ref ref) {
+  static Dio getDioWithCookieWithRef(Ref ref) {
     // final dio = Dio();
     if (dio.interceptors.whereType<CookieManager>().isEmpty) {
       CookieJar cookieJar = GetIt.I<CookieJar>();
@@ -146,6 +146,10 @@ class DioWrap {
           }
           return handler.next(options);
         },
+        onError: (error, handler) {
+          print('dio onerror : ${error.toString()}');
+          return handler.reject(error);
+        }
       ),
     );
 

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
@@ -17,22 +18,32 @@ class SaveContentsRepository {
   }
 
   Future<ContentResponseModel> getSaveContents({required int memberIdx, required int page}) async {
-    ContentResponseModel? saveContentsResponseModel = await _saveContentsService.getSaveContents(memberIdx, page);
+    ContentResponseModel responseModel = await _saveContentsService.getSaveContents(memberIdx, page);
 
-    if (saveContentsResponseModel == null) {
-      return contentNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'SaveContentsRepository',
+        caller: 'getSaveContents',
+      );
     }
 
-    return saveContentsResponseModel;
+    return responseModel;
   }
 
   Future<FeedResponseModel> getSaveDetailContentList({required int loginMemberIdx, required int page}) async {
-    FeedResponseModel? saveContentsResponseModel = await _saveContentsService.getSaveDetailContentList(loginMemberIdx, page);
+    FeedResponseModel responseModel = await _saveContentsService.getSaveDetailContentList(loginMemberIdx, page);
 
-    if (saveContentsResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'SaveContentsRepository',
+        caller: 'getSaveDetailContentList',
+      );
     }
 
-    return saveContentsResponseModel;
+    return responseModel;
   }
 }

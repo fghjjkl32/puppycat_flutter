@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 
 final feedWriteProvider =
@@ -139,6 +141,7 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     String? contents,
     required PostFeedState feedState,
   }) async {
+    try {
     final result = await FeedRepository(dio: ref.read(dioProvider)).postFeed(
       files: files,
       memberIdx: memberIdx,
@@ -149,6 +152,13 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     );
 
     return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('postFeed error $e');
+      rethrow;
+    }
   }
 
   Future<ResponseModel> putFeed({
@@ -160,6 +170,7 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     required int contentIdx,
     required List<TagImages> initialTagList,
   }) async {
+    try {
     final result = await FeedRepository(dio: ref.read(dioProvider)).putFeed(
       memberIdx: memberIdx,
       isView: isView,
@@ -171,6 +182,13 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     );
 
     return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('putFeed error $e');
+      rethrow;
+    }
   }
 
   void initializeTags(List<TagImages> initialTagImages) {

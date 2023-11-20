@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/customer_support/customer_support_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/customer_support/customer_support_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -53,6 +55,10 @@ class FaqListState extends _$FaqListState {
         state.appendPage(searchList, nextPageKey);
       }
       _apiStatus = ListAPIStatus.loaded;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      _apiStatus = ListAPIStatus.error;
+      state.error = apiException.toString();
     } catch (e) {
       _apiStatus = ListAPIStatus.error;
       state.error = e;

@@ -10,14 +10,14 @@ part 'save_contents_service.g.dart';
 abstract class SaveContentsService {
   factory SaveContentsService(Dio dio, {String baseUrl}) = _SaveContentsService;
 
-  @GET('/my/save/contents?memberIdx={memberIdx}&page={page}&limit=15')
-  Future<ContentResponseModel?> getSaveContents(
+  @GET('v1/my/save/contents?memberIdx={memberIdx}&page={page}&limit=15')
+  Future<ContentResponseModel> getSaveContents(
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
-  @GET('/my/save/contents/detail?loginMemberIdx={loginMemberIdx}&page={page}&imgLimit=12')
-  Future<FeedResponseModel?> getSaveDetailContentList(
+  @GET('v1/my/save/contents/detail?loginMemberIdx={loginMemberIdx}&page={page}&imgLimit=12')
+  Future<FeedResponseModel> getSaveDetailContentList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("page") int page,
   );

@@ -291,13 +291,17 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                 ),
                               );
 
-                          var chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${ref.read(userInfoProvider).userModel!.idx}'))).controller;
+                          ///NOTE
+                          ///2023.11.17.
+                          ///채팅 교체 예정으로 일단 주석 처리
+                          //         var chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${ref.read(userInfoProvider).userModel!.idx}'))).controller;
+                          //
+                          //         if (selectedImage != null) {
+                          //           chatController.setAvatarUrl(lists[0].profileImgUrl!);
+                          //         }
+                          //         chatController.setDisplayName(null, editUserModel.nick);
 
-                          if (selectedImage != null) {
-                            chatController.setAvatarUrl(lists[0].profileImgUrl!);
-                          }
-                          chatController.setDisplayName(null, editUserModel.nick);
-
+                          ///여기까지 채팅 교체 주석
                           context.pop();
                         }
                       }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -21,38 +22,39 @@ class CommentRepository {
   }
 
   Future<CommentResponseModel> getComment({required int contentIdx, required int? memberIdx, required int page}) async {
-    try {
-      CommentResponseModel? commentResponseModel;
-      memberIdx == null
-          ? commentResponseModel = await _contentsService.getLogoutComment(contentIdx, page).catchError((Object obj) async {})
-          : commentResponseModel = await _contentsService.getComment(contentIdx, memberIdx, page);
+    CommentResponseModel responseModel;
+    memberIdx == null ? responseModel = await _contentsService.getLogoutComment(contentIdx, page) : responseModel = await _contentsService.getComment(contentIdx, memberIdx, page);
 
-      if (commentResponseModel == null) {
-        return _getDefaultCommentResponseModel();
-      }
-
-      return commentResponseModel;
-    } catch (error) {
-      return _getDefaultCommentResponseModel();
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CommentRepository',
+        caller: 'getComment',
+      );
     }
+
+    return responseModel;
   }
 
   Future<CommentResponseModel> getReplyComment({required int contentIdx, required int commentIdx, required int? memberIdx, required int page}) async {
-    try {
-      CommentResponseModel? commentResponseModel;
+    CommentResponseModel responseModel;
 
-      memberIdx == null
-          ? commentResponseModel = await _contentsService.getLogoutReplyComment(contentIdx, commentIdx, page)
-          : commentResponseModel = await _contentsService.getReplyComment(contentIdx, commentIdx, memberIdx, page);
+    memberIdx == null
+        ? responseModel = await _contentsService.getLogoutReplyComment(contentIdx, commentIdx, page)
+        : responseModel = await _contentsService.getReplyComment(contentIdx, commentIdx, memberIdx, page);
 
-      if (commentResponseModel == null) {
-        return _getDefaultCommentResponseModel();
-      }
-
-      return commentResponseModel;
-    } catch (error) {
-      return _getDefaultCommentResponseModel();
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CommentRepository',
+        caller: 'getReplyComment',
+        arguments: ['${memberIdx == null}'],
+      );
     }
+
+    return responseModel;
   }
 
   CommentResponseModel _getDefaultCommentResponseModel() {
@@ -103,13 +105,18 @@ class CommentRepository {
       };
     }
 
-    ResponseModel? commentResponseModel = await _contentsService.postComment(contentIdx, body);
+    ResponseModel responseModel = await _contentsService.postComment(contentIdx, body);
 
-    if (commentResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CommentRepository',
+        caller: 'postComment',
+      );
     }
 
-    return commentResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> editComment({
@@ -123,13 +130,18 @@ class CommentRepository {
       "contents": contents,
     };
 
-    ResponseModel? commentResponseModel = await _contentsService.editComment(contentIdx, commentIdx, body);
+    ResponseModel responseModel = await _contentsService.editComment(contentIdx, commentIdx, body);
 
-    if (commentResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CommentRepository',
+        caller: 'editComment',
+      );
     }
 
-    return commentResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> deleteComment({
@@ -138,18 +150,23 @@ class CommentRepository {
     required int memberIdx,
     required int parentIdx,
   }) async {
-    ResponseModel? commentResponseModel = await _contentsService.deleteComment(
+    ResponseModel responseModel = await _contentsService.deleteComment(
       contentsIdx: contentsIdx,
       commentIdx: commentIdx,
       memberIdx: memberIdx,
       parentIdx: parentIdx,
     );
 
-    if (commentResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CommentRepository',
+        caller: 'deleteComment',
+      );
     }
 
-    return commentResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> postCommentLike({
@@ -160,54 +177,39 @@ class CommentRepository {
       "memberIdx": memberIdx,
     };
 
-    ResponseModel? commentResponseModel = await _contentsService.postCommentLike(commentIdx, body);
+    ResponseModel responseModel = await _contentsService.postCommentLike(commentIdx, body);
 
-    if (commentResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CommentRepository',
+        caller: 'postCommentLike',
+      );
     }
 
-    return commentResponseModel;
+    return responseModel;
   }
 
   Future<ResponseModel> deleteCommentLike({
     required int commentIdx,
     required int memberIdx,
   }) async {
-    ResponseModel? commentResponseModel = await _contentsService.deleteCommentLike(
+    ResponseModel responseModel = await _contentsService.deleteCommentLike(
       commentIdx: commentIdx,
       memberIdx: memberIdx,
     );
 
-    if (commentResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CommentRepository',
+        caller: 'deleteCommentLike',
+      );
     }
 
-    return commentResponseModel;
-  }
-
-  Future<(ResponseModel?, bool)> errorHandler(Object obj) async {
-    ResponseModel? responseModel;
-    switch (obj.runtimeType) {
-      case DioException:
-        final res = (obj as DioException).response;
-
-        if (res?.data == null) {
-        } else if (res?.data is Map) {
-          print('res data : ${res?.data}');
-          responseModel = ResponseModel.fromJson(res?.data);
-        } else if (res?.data is String) {
-          Map<String, dynamic> valueMap = jsonDecode(res?.data);
-          responseModel = ResponseModel.fromJson(valueMap);
-        }
-
-        if (res?.statusCode == 204) {}
-
-        // print('responseModel $responseModel');
-        break;
-      default:
-        break;
-    }
-    return (responseModel, true);
+    return responseModel;
   }
 
   Future<CommentResponseModel> getFocusComments(int memberIdx, int contentsIdx, int commentIdx, [int page = 1, int limit = 10]) async {
@@ -217,22 +219,21 @@ class CommentRepository {
       "limit": limit,
     };
 
-    try {
-      CommentResponseModel? commentResponseModel = await _contentsService.getFocusComments(
-        contentsIdx: contentsIdx,
-        commentIdx: commentIdx,
-        queries: queries,
+    CommentResponseModel responseModel = await _contentsService.getFocusComments(
+      contentsIdx: contentsIdx,
+      commentIdx: commentIdx,
+      queries: queries,
+    );
+
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'CommentRepository',
+        caller: 'getFocusComments',
       );
-
-      print('commentResponseModel $commentResponseModel');
-      if (commentResponseModel == null) {
-        return _getDefaultCommentResponseModel();
-      }
-
-      return commentResponseModel;
-    } catch (error) {
-      print('commentResponseModel error $error');
-      return _getDefaultCommentResponseModel();
     }
+
+    return responseModel;
   }
 }
