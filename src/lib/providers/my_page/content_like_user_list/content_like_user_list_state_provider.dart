@@ -74,6 +74,10 @@ class ContentLikeUserListState extends _$ContentLikeUserListState {
       }
       _apiStatus = ListAPIStatus.loaded;
       ref.read(contentLikeUserListEmptyProvider.notifier).state = feedList.isEmpty;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      _apiStatus = ListAPIStatus.error;
+      state.error = apiException.toString();
     } catch (e) {
       _apiStatus = ListAPIStatus.error;
       state.error = e;
