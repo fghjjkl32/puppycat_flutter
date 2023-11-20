@@ -74,17 +74,17 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     super.initState();
     getDevelopMode();
 
-    devUrlController = TextEditingController(text: "https://sns-api.devlabs.co.kr:28080/v1");
+    devUrlController = TextEditingController(text: "https://sns-api.devlabs.co.kr:28080/");
     stgUrlController = TextEditingController(text: "https://api.pcstg.co.kr/");
-    prdUrlController = TextEditingController(text: "https://api.puppycat.co.kr/v1");
+    prdUrlController = TextEditingController(text: "https://api.puppycat.co.kr/");
 
-    walkDevUrlController = TextEditingController(text: "https://pet-walk-dev-api.devlabs.co.kr/v1");
-    walkStgUrlController = TextEditingController(text: "https://walk-api.pcstg.co.kr/v1");
-    walkPrdUrlController = TextEditingController(text: "https://walk-api.puppycat.co.kr/v1");
+    walkDevUrlController = TextEditingController(text: "https://pet-walk-dev-api.devlabs.co.kr/");
+    walkStgUrlController = TextEditingController(text: "https://walk-api.pcstg.co.kr/");
+    walkPrdUrlController = TextEditingController(text: "https://walk-api.puppycat.co.kr/");
 
-    walkDevGpsUrlController = TextEditingController(text: "https://pet-walk-dev-gps.devlabs.co.kr/v1");
-    walkStgGpsUrlController = TextEditingController(text: "https://walk-gps.pcstg.co.kr/v1");
-    walkPrdGpsUrlController = TextEditingController(text: "https://walk-gps.puppycat.co.kr/v1");
+    walkDevGpsUrlController = TextEditingController(text: "https://pet-walk-dev-gps.devlabs.co.kr/");
+    walkStgGpsUrlController = TextEditingController(text: "https://walk-gps.pcstg.co.kr/");
+    walkPrdGpsUrlController = TextEditingController(text: "https://walk-gps.puppycat.co.kr/");
 
     selUrlController = TextEditingController(text: '');
     selWalkUrlController = TextEditingController(text: '');

@@ -82,8 +82,8 @@ class NotificationListState extends _$NotificationListState {
           }
           try {
             return e.copyWith(
-              senderInfo: [e.senderInfo!.first.copyWith(profileImgUrl: '${result.imgDomain}${e.senderInfo!.first.profileImgUrl}')],
-              img: '${result.imgDomain}${e.img}',
+              senderInfo: [e.senderInfo!.first.copyWith(profileImgUrl: '${e.senderInfo!.first.profileImgUrl}')],
+              img: '${e.img}',
             );
           } catch (_) {
             return e;
