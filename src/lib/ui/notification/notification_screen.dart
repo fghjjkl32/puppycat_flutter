@@ -170,6 +170,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                   buttons: const [
                     NotificationType.all,
                     NotificationType.activity,
+
                     ///NOTE
                     ///2023.11.14.
                     ///산책하기 보류로 주석 처리
@@ -185,12 +186,13 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                         itemTitle = '알림함.전체'.tr();
                       case NotificationType.activity:
                         itemTitle = '알림함.활동'.tr();
-                    ///NOTE
-                    ///2023.11.14.
-                    ///산책하기 보류로 주석 처리
-                    //   case NotificationType.walk:
-                    //     itemTitle = '알림함.산책'.tr();
-                    ///산책하기 보류로 주석 처리 완료
+
+                      ///NOTE
+                      ///2023.11.14.
+                      ///산책하기 보류로 주석 처리
+                      //   case NotificationType.walk:
+                      //     itemTitle = '알림함.산책'.tr();
+                      ///산책하기 보류로 주석 처리 완료
                       case NotificationType.notice:
                         itemTitle = '알림함.공지/이벤트'.tr();
                     }
