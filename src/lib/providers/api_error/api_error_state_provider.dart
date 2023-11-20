@@ -54,7 +54,6 @@ class APIErrorState extends _$APIErrorState {
       case 'ELGI-9999': //TODO 로그인 실패
       case 'EJOI-9999': //TODO 회원가입 실패
       default:
-        print('aaaaaaaaaaaaaaaaaaaaaaaaaa');
         final goRouter = ref.read(routerProvider);
         goRouter.pushNamed('error_dialog', extra: code);
     }
