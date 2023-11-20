@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_response_model.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
@@ -48,7 +50,10 @@ class CommentListState extends _$CommentListState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
+      var loginMemberIdx = ref
+          .read(userInfoProvider)
+          .userModel
+          ?.idx;
 
       final searchResult = await CommentRepository(dio: ref.read(dioProvider)).getComment(
         contentIdx: _contentsIdx,
@@ -74,6 +79,8 @@ class CommentListState extends _$CommentListState {
       }
       _apiStatus = ListAPIStatus.loaded;
       state.notifyListeners();
+    } on APIException catch(apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
       _apiStatus = ListAPIStatus.error;
       state.error = e;
@@ -119,6 +126,8 @@ class CommentListState extends _$CommentListState {
       state.notifyListeners();
 
       _apiStatus = ListAPIStatus.loaded;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
       _apiStatus = ListAPIStatus.error;
       state.error = e;
@@ -308,6 +317,8 @@ class CommentListState extends _$CommentListState {
       state.notifyListeners();
 
       state.addPageRequestListener(fetchPage);
+    } on APIException catch(apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
       print('eeeeeeeeee $e');
       _apiStatus = ListAPIStatus.error;
@@ -372,6 +383,8 @@ class CommentListState extends _$CommentListState {
       state.itemList = uniqueComments.values.toList();
       _isChildMore = true;
       state.notifyListeners();
+    } on APIException catch(apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
       print('error $e');
       _apiStatus = ListAPIStatus.error;

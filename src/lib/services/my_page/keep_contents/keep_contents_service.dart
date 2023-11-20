@@ -11,31 +11,31 @@ part 'keep_contents_service.g.dart';
 abstract class KeepContentsService {
   factory KeepContentsService(Dio dio, {String baseUrl}) = _KeepContentsService;
 
-  @GET('/my/keep/contents?memberIdx={memberIdx}&page={page}&limit=15')
-  Future<ContentResponseModel?> getKeepContents(
+  @GET('v1/my/keep/contents?memberIdx={memberIdx}&page={page}&limit=15')
+  Future<ContentResponseModel> getKeepContents(
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
   @GET(
-      '/my/keep/contents/{contentsIdx}?loginMemberIdx={loginMemberIdx}&imgLimit=12')
-  Future<FeedResponseModel?> getMyKeepContentDetail(
+      'v1/my/keep/contents/{contentsIdx}?loginMemberIdx={loginMemberIdx}&imgLimit=12')
+  Future<FeedResponseModel> getMyKeepContentDetail(
     @Path("contentsIdx") int contentsIdx,
     @Path("loginMemberIdx") int loginMemberIdx,
   );
 
-  @DELETE('/contents/keep?memberIdx={memberIdx}&{idx}')
-  Future<ResponseModel?> deleteKeepContents(
+  @DELETE('v1/contents/keep?memberIdx={memberIdx}&{idx}')
+  Future<ResponseModel> deleteKeepContents(
     @Path("memberIdx") int memberIdx,
     @Path("idx") String idx,
   );
 
-  @DELETE('/contents/keep?memberIdx={memberIdx}&idx={idx}')
-  Future<ResponseModel?> deleteOneKeepContents(
+  @DELETE('v1/contents/keep?memberIdx={memberIdx}&idx={idx}')
+  Future<ResponseModel> deleteOneKeepContents(
     @Path("memberIdx") int memberIdx,
     @Path("idx") int idx,
   );
 
-  @POST('/contents/keep')
-  Future<ResponseModel?> postKeepContents(@Body() Map<String, dynamic> body);
+  @POST('v1/contents/keep')
+  Future<ResponseModel> postKeepContents(@Body() Map<String, dynamic> body);
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -25,10 +26,15 @@ class RestrainRepository {
   }
 
   Future<RestrainWriteResponseModel> getWriteRestrain(memberIdx) async {
-    RestrainWriteResponseModel? responseModel = await _restrainService.getWriteRestrain(memberIdx);
+    RestrainWriteResponseModel responseModel = await _restrainService.getWriteRestrain(memberIdx);
 
-    if (responseModel == null) {
-      return RestrainWriteResponseModel(result: false, code: '', data: RestrainWriteListModel(restrain: RestrainWriteItemModel()));
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'RestrainRepository',
+        caller: 'getWriteRestrain',
+      );
     }
 
     return responseModel;

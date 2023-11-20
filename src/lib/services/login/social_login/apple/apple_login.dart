@@ -28,7 +28,7 @@ class AppleLoginService implements SocialLoginService {
     }
 
     UserModel? userModel = UserModel(
-      loginStatus: LoginStatus.none,
+      // loginStatus: LoginStatus.none,
       idx: 0,
       nick: "",
       id: email!,

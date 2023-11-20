@@ -10,16 +10,16 @@ part 'user_list_service.g.dart';
 abstract class UserListService {
   factory UserListService(Dio dio, {String baseUrl}) = _UserListService;
 
-  @GET('/main/favorite/{memberIdx}?limit=19')
-  Future<UserListResponseModel?> getFavoriteUserList(
+  @GET('v1/main/favorite/{memberIdx}?limit=19')
+  Future<UserListResponseModel> getFavoriteUserList(
     @Path("memberIdx") int memberIdx,
   );
 
-  @GET('/main/popular?loginMemberIdx={loginMemberIdx}')
-  Future<PopularUserListResponseModel?> getPopularUserList(
+  @GET('v1/main/popular?loginMemberIdx={loginMemberIdx}')
+  Future<PopularUserListResponseModel> getPopularUserList(
     @Path("loginMemberIdx") int loginMemberIdx,
   );
 
-  @GET('/main/popular')
-  Future<PopularUserListResponseModel?> getLogoutPopularUserList();
+  @GET('v1/main/popular')
+  Future<PopularUserListResponseModel> getLogoutPopularUserList();
 }

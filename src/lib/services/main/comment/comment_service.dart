@@ -10,69 +10,69 @@ part 'comment_service.g.dart';
 abstract class CommentService {
   factory CommentService(Dio dio, {String baseUrl}) = _CommentService;
 
-  @GET('/contents/{contentIdx}/comment?page={page}&memberIdx={memberIdx}')
-  Future<CommentResponseModel?> getComment(
+  @GET('v1/contents/{contentIdx}/comment?page={page}&memberIdx={memberIdx}')
+  Future<CommentResponseModel> getComment(
     @Path("contentIdx") int contentIdx,
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
-  @GET('/contents/{contentIdx}/comment')
-  Future<CommentResponseModel?> getLogoutComment(
+  @GET('v1/contents/{contentIdx}/comment')
+  Future<CommentResponseModel> getLogoutComment(
     @Path("contentIdx") int contentIdx,
     @Query("page") int page,
   );
 
-  @GET('/contents/{contentsIdx}/comment/{commentIdx}/child?memberIdx={memberIdx}&page={page}&limit=10')
-  Future<CommentResponseModel?> getReplyComment(
+  @GET('v1/contents/{contentsIdx}/comment/{commentIdx}/child?memberIdx={memberIdx}&page={page}&limit=10')
+  Future<CommentResponseModel> getReplyComment(
     @Path("contentsIdx") int contentsIdx,
     @Path("commentIdx") int commentIdx,
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
-  @GET('/contents/{contentsIdx}/comment/{commentIdx}/child?&page={page}&limit=10')
-  Future<CommentResponseModel?> getLogoutReplyComment(
+  @GET('v1/contents/{contentsIdx}/comment/{commentIdx}/child?&page={page}&limit=10')
+  Future<CommentResponseModel> getLogoutReplyComment(
     @Path("contentsIdx") int contentsIdx,
     @Path("commentIdx") int commentIdx,
     @Path("page") int page,
   );
 
-  @POST('/contents/{contentIdx}/comment')
-  Future<ResponseModel?> postComment(
+  @POST('v1/contents/{contentIdx}/comment')
+  Future<ResponseModel> postComment(
     @Path("contentIdx") int contentIdx,
     @Body() Map<String, dynamic> body,
   );
 
-  @PUT('/contents/{contentIdx}/comment/{commentIdx}')
-  Future<ResponseModel?> editComment(
+  @PUT('v1/contents/{contentIdx}/comment/{commentIdx}')
+  Future<ResponseModel> editComment(
     @Path("contentIdx") int contentIdx,
     @Path("commentIdx") int commentIdx,
     @Body() Map<String, dynamic> body,
   );
 
-  @DELETE('/contents/{contentsIdx}/comment/{commentIdx}?memberIdx={memberIdx}')
-  Future<ResponseModel?> deleteComment({
+  @DELETE('v1/contents/{contentsIdx}/comment/{commentIdx}?memberIdx={memberIdx}')
+  Future<ResponseModel> deleteComment({
     @Path("contentsIdx") required int contentsIdx,
     @Path("commentIdx") required int commentIdx,
     @Path("memberIdx") required int memberIdx,
     @Query('parentIdx') required int parentIdx,
   });
 
-  @POST('/comment/{commentIdx}/like')
-  Future<ResponseModel?> postCommentLike(
+  @POST('v1/comment/{commentIdx}/like')
+  Future<ResponseModel> postCommentLike(
     @Path("commentIdx") int commentIdx,
     @Body() Map<String, dynamic> body,
   );
 
-  @DELETE('/comment/{commentIdx}/like?memberIdx={memberIdx}')
-  Future<ResponseModel?> deleteCommentLike({
+  @DELETE('v1/comment/{commentIdx}/like?memberIdx={memberIdx}')
+  Future<ResponseModel> deleteCommentLike({
     @Path("commentIdx") required int commentIdx,
     @Path("memberIdx") required int memberIdx,
   });
 
-  @GET('/contents/{contentsIdx}/comment/{commentIdx}/focus')
-  Future<CommentResponseModel?> getFocusComments({
+  @GET('v1/contents/{contentsIdx}/comment/{commentIdx}/focus')
+  Future<CommentResponseModel> getFocusComments({
     @Path("contentsIdx") required int contentsIdx,
     @Path("commentIdx") required int commentIdx,
     @Queries() required Map<String, dynamic> queries,

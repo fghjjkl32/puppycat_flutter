@@ -9,6 +9,6 @@ part 'policy_service.g.dart';
 abstract class PolicyService {
   factory PolicyService(Dio dio, {String baseUrl}) = _PolicyService;
 
-  @GET('/policy')
-  Future<PolicyResponseModel?> getPolicies();
+  @GET('v1/policy')
+  Future<PolicyResponseModel> getPolicies();
 }

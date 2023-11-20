@@ -14,13 +14,13 @@ abstract class CustomerSupportService {
   factory CustomerSupportService(Dio dio, {String baseUrl}) =
       _CustomerSupportService;
 
-  @GET('/faq')
-  Future<CustomerSupportResponseModel?> getFaqList(
+  @GET('v1/faq')
+  Future<CustomerSupportResponseModel> getFaqList(
     @Query("page") int page,
   );
 
-  @GET('/faq/menu')
-  Future<MenuResponseModel?> getFaqMenuList();
+  @GET('v1/faq/menu')
+  Future<MenuResponseModel> getFaqMenuList();
 
   // @GET('/notice')
   // Future<CustomerSupportResponseModel?> getNoticeList(
@@ -28,11 +28,11 @@ abstract class CustomerSupportService {
   //   @Query("type") int type,
   // );
 
-  @GET('/notice')
-  Future<CustomerSupportResponseModel?> getNoticeList(
+  @GET('v1/notice')
+  Future<CustomerSupportResponseModel> getNoticeList(
     @Queries() Map<String, dynamic> queries,
   );
 
-  @GET('notice/menu')
-  Future<MenuResponseModel?> getNoticeMenuList();
+  @GET('v1/notice/menu')
+  Future<MenuResponseModel> getNoticeMenuList();
 }

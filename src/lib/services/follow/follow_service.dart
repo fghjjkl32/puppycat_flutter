@@ -12,8 +12,8 @@ abstract class FollowService {
   factory FollowService(Dio dio, {String baseUrl}) = _FollowService;
 
   @GET(
-      '/follower/{memberIdx}/search?page={page}&limit=30&searchWord={searchWord}&searchType=nick&loginMemberIdx={loginMemberIdx}')
-  Future<FollowResponseModel?> getFollowerSearchList(
+      'v1/follower/{memberIdx}/search?page={page}&limit=30&searchWord={searchWord}&searchType=nick&loginMemberIdx={loginMemberIdx}')
+  Future<FollowResponseModel> getFollowerSearchList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
@@ -21,8 +21,8 @@ abstract class FollowService {
   );
 
   @GET(
-      '/follow/{memberIdx}/search?page={page}&limit=30&searchWord={searchWord}&searchType=nick&loginMemberIdx={loginMemberIdx}')
-  Future<FollowResponseModel?> getFollowSearchList(
+      'v1/follow/{memberIdx}/search?page={page}&limit=30&searchWord={searchWord}&searchType=nick&loginMemberIdx={loginMemberIdx}')
+  Future<FollowResponseModel> getFollowSearchList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
@@ -30,35 +30,35 @@ abstract class FollowService {
   );
 
   @GET(
-      '/follower/{memberIdx}?page={page}&limit=30&loginMemberIdx={loginMemberIdx}')
-  Future<FollowResponseModel?> getFollowerList(
+      'v1/follower/{memberIdx}?page={page}&limit=30&loginMemberIdx={loginMemberIdx}')
+  Future<FollowResponseModel> getFollowerList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
   @GET(
-      '/follow/{memberIdx}?page={page}&limit=30&loginMemberIdx={loginMemberIdx}')
-  Future<FollowResponseModel?> getFollowList(
+      'v1/follow/{memberIdx}?page={page}&limit=30&loginMemberIdx={loginMemberIdx}')
+  Future<FollowResponseModel> getFollowList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
-  @POST('/follow/{followIdx}')
-  Future<ResponseModel?> postFollow(
+  @POST('v1/follow/{followIdx}')
+  Future<ResponseModel> postFollow(
     @Path("followIdx") int followIdx,
     @Body() Map<String, dynamic> body,
   );
 
-  @DELETE('/follow/{followIdx}?memberIdx={memberIdx}')
-  Future<ResponseModel?> deleteFollow(
+  @DELETE('v1/follow/{followIdx}?memberIdx={memberIdx}')
+  Future<ResponseModel> deleteFollow(
     @Path("followIdx") int followIdx,
     @Path("memberIdx") int memberIdx,
   );
 
-  @DELETE('/follower/{followIdx}?memberIdx={memberIdx}')
-  Future<ResponseModel?> deleteFollower(
+  @DELETE('v1/follower/{followIdx}?memberIdx={memberIdx}')
+  Future<ResponseModel> deleteFollower(
     @Path("followIdx") int followIdx,
     @Path("memberIdx") int memberIdx,
   );

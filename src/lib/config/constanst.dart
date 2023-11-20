@@ -26,17 +26,17 @@ final mentionListProvider = StateProvider<List<MentionListData>>((ref) => []);
 class Constants {
   static Future<String> getBaseUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedURL') ?? "https://api.pcstg.co.kr/v1";
+    return prefs.getString('selectedURL') ?? "https://api.pcstg.co.kr/";
   }
 
   static Future<String> getBaseWalkUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedWalkURL') ?? "https://walk-api.pcstg.co.kr/v1";
+    return prefs.getString('selectedWalkURL') ?? "https://walk-api.pcstg.co.kr/";
   }
 
   static Future<String> getBaseWalkGpsUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedWalkGpsURL') ?? "https://walk-gps.pcstg.co.kr/v1";
+    return prefs.getString('selectedWalkGpsURL') ?? "https://walk-gps.pcstg.co.kr/";
   }
 
   static Future<String> getThumborHostUrl() async {
@@ -60,9 +60,9 @@ class Constants {
   }
 }
 
-// String baseUrl = "https://sns-api.devlabs.co.kr:28080/v1";
-String baseUrl = "https://api.pcstg.co.kr/v1";
-// String baseUrl = "https://api.puppycat.co.kr/v1";
+// String baseUrl = "https://sns-api.devlabs.co.kr:28080";
+String baseUrl = "https://api.pcstg.co.kr/";
+// String baseUrl = "https://api.puppycat.co.kr";
 
 String thumborHostUrl = "https://tb.pcstg.co.kr/";
 
@@ -73,13 +73,13 @@ String firstInstallTime = "";
 String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
 
-// String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr/v1';
-String walkBaseUrl = 'https://walk-api.pcstg.co.kr/v1';
-// String walkBaseUrl = 'https://walk-api.puppycat.co.kr/v1';
+// String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
+String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
+// String walkBaseUrl = 'https://walk-api.puppycat.co.kr';
 
-// String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr/v1';
-String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/v1';
-// String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/v1';
+// String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr';
+String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
+// String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr';
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;

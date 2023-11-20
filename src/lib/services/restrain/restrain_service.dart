@@ -12,8 +12,8 @@ part 'restrain_service.g.dart';
 abstract class RestrainService {
   factory RestrainService(Dio dio, {String baseUrl}) = _RestrainService;
 
-  @GET('/restrain/write/{memberIdx}')
-  Future<RestrainWriteResponseModel?> getWriteRestrain(
+  @GET('v1/restrain/write/{memberIdx}')
+  Future<RestrainWriteResponseModel> getWriteRestrain(
     @Path("memberIdx") int memberIdx,
   );
 }

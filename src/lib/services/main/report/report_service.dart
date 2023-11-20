@@ -11,9 +11,9 @@ part 'report_service.g.dart';
 abstract class ReportService {
   factory ReportService(Dio dio, {String baseUrl}) = _ReportService;
 
-  @GET('/comment/report/code')
-  Future<SelectButtonResponseModel?> getCommentReportList();
+  @GET('v1/comment/report/code')
+  Future<SelectButtonResponseModel> getCommentReportList();
 
-  @GET('/contents/report/code')
-  Future<SelectButtonResponseModel?> getContentReportList();
+  @GET('v1/contents/report/code')
+  Future<SelectButtonResponseModel> getContentReportList();
 }

@@ -75,7 +75,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     getDevelopMode();
 
     devUrlController = TextEditingController(text: "https://sns-api.devlabs.co.kr:28080/v1");
-    stgUrlController = TextEditingController(text: "https://api.pcstg.co.kr/v1");
+    stgUrlController = TextEditingController(text: "https://api.pcstg.co.kr/");
     prdUrlController = TextEditingController(text: "https://api.puppycat.co.kr/v1");
 
     walkDevUrlController = TextEditingController(text: "https://pet-walk-dev-api.devlabs.co.kr/v1");

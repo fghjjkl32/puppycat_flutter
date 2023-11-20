@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
@@ -17,22 +18,32 @@ class LikeContentsRepository {
   }
 
   Future<ContentResponseModel> getLikeContents({required int memberIdx, required int page}) async {
-    ContentResponseModel? likeContentsResponseModel = await _likeContentsService.getLikeContents(memberIdx, page);
+    ContentResponseModel responseModel = await _likeContentsService.getLikeContents(memberIdx, page);
 
-    if (likeContentsResponseModel == null) {
-      return contentNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'LikeContentsRepository',
+        caller: 'getLikeContents',
+      );
     }
 
-    return likeContentsResponseModel;
+    return responseModel;
   }
 
   Future<FeedResponseModel> getLikeDetailContentList({required int loginMemberIdx, required int page}) async {
-    FeedResponseModel? likeContentsResponseModel = await _likeContentsService.getLikeDetailContentList(loginMemberIdx, page);
+    FeedResponseModel responseModel = await _likeContentsService.getLikeDetailContentList(loginMemberIdx, page);
 
-    if (likeContentsResponseModel == null) {
-      return feedNullResponseModel;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'LikeContentsRepository',
+        caller: 'getLikeDetailContentList',
+      );
     }
 
-    return likeContentsResponseModel;
+    return responseModel;
   }
 }

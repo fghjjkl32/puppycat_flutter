@@ -10,27 +10,27 @@ part 'block_service.g.dart';
 abstract class BlockService {
   factory BlockService(Dio dio, {String baseUrl}) = _BlockService;
 
-  @GET('/block/member/{memberIdx}?page={page}&limit=30')
-  Future<SearchResponseModel?> getBlockList(
+  @GET('v1/block/member/{memberIdx}?page={page}&limit=30')
+  Future<SearchResponseModel> getBlockList(
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
-  @GET('/block/member/{memberIdx}?page={page}&limit=30&searchWord={searchWord}')
-  Future<SearchResponseModel?> getBlockSearchList(
+  @GET('v1/block/member/{memberIdx}?page={page}&limit=30&searchWord={searchWord}')
+  Future<SearchResponseModel> getBlockSearchList(
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
     @Path("searchWord") String searchWord,
   );
 
-  @POST('/block/member/{blockIdx}')
-  Future<ResponseModel?> postBlock(
+  @POST('v1/block/member/{blockIdx}')
+  Future<ResponseModel> postBlock(
     @Path("blockIdx") int blockIdx,
     @Body() Map<String, dynamic> body,
   );
 
-  @DELETE('/block/member/{blockIdx}?memberIdx={memberIdx}')
-  Future<ResponseModel?> deleteBlock(
+  @DELETE('v1/block/member/{blockIdx}?memberIdx={memberIdx}')
+  Future<ResponseModel> deleteBlock(
     @Path("blockIdx") int blockIdx,
     @Path("memberIdx") int memberIdx,
   );

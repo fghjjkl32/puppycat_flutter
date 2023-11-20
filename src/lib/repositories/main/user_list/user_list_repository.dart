@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_response_model.dart';
@@ -19,30 +20,40 @@ class UserListRepository {
   Future<UserListResponseModel> getFavoriteUserList({
     required loginMemberIdx,
   }) async {
-    UserListResponseModel? contentsResponseModel = await _userListService.getFavoriteUserList(loginMemberIdx);
+    UserListResponseModel responseModel = await _userListService.getFavoriteUserList(loginMemberIdx);
 
-    if (contentsResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'UserListRepository',
+        caller: 'getFavoriteUserList',
+      );
     }
 
-    return contentsResponseModel;
+    return responseModel;
   }
 
   Future<PopularUserListResponseModel> getPopularUserList({
     required loginMemberIdx,
   }) async {
-    PopularUserListResponseModel? contentsResponseModel;
+    PopularUserListResponseModel responseModel;
 
     loginMemberIdx == null
-        ? contentsResponseModel =
+        ? responseModel =
             await _userListService.getLogoutPopularUserList()
-        : contentsResponseModel =
+        : responseModel =
             await _userListService.getPopularUserList(loginMemberIdx);
 
-    if (contentsResponseModel == null) {
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'UserListRepository',
+        caller: 'getPopularUserList',
+      );
     }
 
-    return contentsResponseModel;
+    return responseModel;
   }
 }

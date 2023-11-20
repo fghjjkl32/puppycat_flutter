@@ -1,14 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/my_post_state.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/select_post.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/keep_contents/keep_contents_repository.dart';
 
-final myPostStateProvider =
-    StateNotifierProvider<MyPostStateNotifier, MyPostState>((ref) {
+final myPostStateProvider = StateNotifierProvider<MyPostStateNotifier, MyPostState>((ref) {
   return MyPostStateNotifier(ref);
 });
 
@@ -29,25 +30,30 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
   initMyPosts([memberIdx, int? initPage]) async {
     myCurrentPage = 1;
 
-    final page = initPage ?? state.myPostState.page;
+    try {
+      final page = initPage ?? state.myPostState.page;
 
-    final lists = await FeedRepository(dio: ref.read(dioProvider))
-        .getMyContentList(loginMemberIdx: memberIdx, page: page);
+      final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(loginMemberIdx: memberIdx, page: page);
 
-    myPostMaxPages = lists.data.params!.pagination!.endPage!;
+      myPostMaxPages = lists.data.params!.pagination!.endPage!;
 
-    state = state.copyWith(myPostState: state.myPostState.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!));
+      state = state.copyWith(myPostState: state.myPostState.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!));
 
-    if (lists == null) {
-      state = state.copyWith(myPostState: state.myPostState.copyWith(page: page, isLoading: false));
-      return;
+      if (lists == null) {
+        state = state.copyWith(myPostState: state.myPostState.copyWith(page: page, isLoading: false));
+        return;
+      }
+
+      List<int> selectOrder = List.filled(lists.data.list.length, -1);
+
+      state = state.copyWith(
+        myPostState: state.myPostState.copyWith(page: page, isLoading: false, list: lists.data.list, selectOrder: selectOrder),
+      ); // Modify this line
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('initMyPosts error $e');
     }
-
-    List<int> selectOrder = List.filled(lists.data.list.length, -1);
-
-    state = state.copyWith(
-      myPostState: state.myPostState.copyWith(page: page, isLoading: false, list: lists.data.list, selectOrder: selectOrder),
-    ); // Modify this line
   }
 
   bool hasMyPostSelectedImage() {
@@ -93,32 +99,37 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
 
     StringBuffer bf = StringBuffer();
 
-    bf.write('try to request loading ${state.myPostState.isLoading} at ${state.myPostState.page + 1}');
-    if (state.myPostState.isLoading) {
-      bf.write(' fail');
-      return;
-    }
-    bf.write(' success');
+    try {
+      bf.write('try to request loading ${state.myPostState.isLoading} at ${state.myPostState.page + 1}');
+      if (state.myPostState.isLoading) {
+        bf.write(' fail');
+        return;
+      }
+      bf.write(' success');
 
-    state = state.copyWith(myPostState: state.myPostState.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
+      state = state.copyWith(myPostState: state.myPostState.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-    final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(
-        loginMemberIdx: memberIdx, page: state.myPostState.page + 1);
+      final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(loginMemberIdx: memberIdx, page: state.myPostState.page + 1);
 
-    if (lists == null) {
-      state = state.copyWith(myPostState: state.myPostState.copyWith(isLoadMoreError: true, isLoading: false));
-      return;
-    }
+      if (lists == null) {
+        state = state.copyWith(myPostState: state.myPostState.copyWith(isLoadMoreError: true, isLoading: false));
+        return;
+      }
 
-    if (lists.data.list.isNotEmpty) {
-      List<int> newSelectOrder = List.filled(lists.data.list.length, -1);
+      if (lists.data.list.isNotEmpty) {
+        List<int> newSelectOrder = List.filled(lists.data.list.length, -1);
 
-      state = state.copyWith(
-          myPostState: state.myPostState
-              .copyWith(page: state.myPostState.page + 1, isLoading: false, list: [...state.myPostState.list, ...lists.data.list], selectOrder: [...state.myPostState.selectOrder, ...newSelectOrder]));
-      myCurrentPage++;
-    } else {
-      state = state.copyWith(myPostState: state.myPostState.copyWith(isLoading: false));
+        state = state.copyWith(
+            myPostState: state.myPostState.copyWith(
+                page: state.myPostState.page + 1, isLoading: false, list: [...state.myPostState.list, ...lists.data.list], selectOrder: [...state.myPostState.selectOrder, ...newSelectOrder]));
+        myCurrentPage++;
+      } else {
+        state = state.copyWith(myPostState: state.myPostState.copyWith(isLoading: false));
+      }
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('loadMoreMyPost error $e');
     }
   }
 
@@ -131,40 +142,51 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     return List<int>.generate(state.myPostState.list.length, (i) => i).where((index) => state.myPostState.selectOrder[index] != -1).map((index) => state.myPostState.list[index].idx).toList();
   }
 
-  Future<ResponseModel> postKeepContents(
-      {required memberIdx, required idxList}) async {
-    final result = await KeepContentsRepository(dio: ref.read(dioProvider))
-        .postKeepContents(memberIdx: memberIdx, idxList: idxList);
+  Future<ResponseModel> postKeepContents({required memberIdx, required idxList}) async {
+    try {
+      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).postKeepContents(memberIdx: memberIdx, idxList: idxList);
 
-    await refreshMyKeeps(memberIdx);
-    await refreshMyPost(memberIdx);
+      await refreshMyKeeps(memberIdx);
+      await refreshMyPost(memberIdx);
 
-    resetMyPostSelection();
-    resetMyKeepSelection();
+      resetMyPostSelection();
+      resetMyKeepSelection();
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('postKeepContents error $e');
+      rethrow;
+    }
   }
 
   initMyKeeps([memberIdx, int? initPage]) async {
     myKeepCurrentPage = 1;
 
-    final page = initPage ?? state.myKeepState.page;
-    final lists = await KeepContentsRepository(dio: ref.read(dioProvider))
-        .getKeepContents(memberIdx: memberIdx, page: page);
+    try {
+      final page = initPage ?? state.myKeepState.page;
+      final lists = await KeepContentsRepository(dio: ref.read(dioProvider)).getKeepContents(memberIdx: memberIdx, page: page);
 
-    myKeepMaxPages = lists.data.params!.pagination!.endPage!;
+      myKeepMaxPages = lists.data.params!.pagination!.endPage!;
 
-    state = state.copyWith(myKeepState: state.myKeepState.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!));
+      state = state.copyWith(myKeepState: state.myKeepState.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!));
 
-    if (lists == null) {
-      state = state.copyWith(myKeepState: state.myKeepState.copyWith(page: page, isLoading: false));
-      return;
+      if (lists == null) {
+        state = state.copyWith(myKeepState: state.myKeepState.copyWith(page: page, isLoading: false));
+        return;
+      }
+
+      List<ContentImageData> images = lists.data.list;
+      List<int> selectOrder = List.filled(images.length, -1);
+
+      state = state.copyWith(myKeepState: state.myKeepState.copyWith(page: page, isLoading: false, list: images, selectOrder: selectOrder));
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('initMyKeeps error $e');
     }
-
-    List<ContentImageData> images = lists.data.list;
-    List<int> selectOrder = List.filled(images.length, -1);
-
-    state = state.copyWith(myKeepState: state.myKeepState.copyWith(page: page, isLoading: false, list: images, selectOrder: selectOrder));
   }
 
   bool hasMyKeepSelectedImage() {
@@ -209,34 +231,39 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
       return;
     }
 
-    StringBuffer bf = StringBuffer();
+    try {
+      StringBuffer bf = StringBuffer();
 
-    bf.write('try to request loading ${state.myKeepState.isLoading} at ${state.myKeepState.page + 1}');
-    if (state.myKeepState.isLoading) {
-      bf.write(' fail');
-      return;
-    }
-    bf.write(' success');
+      bf.write('try to request loading ${state.myKeepState.isLoading} at ${state.myKeepState.page + 1}');
+      if (state.myKeepState.isLoading) {
+        bf.write(' fail');
+        return;
+      }
+      bf.write(' success');
 
-    state = state.copyWith(myKeepState: state.myKeepState.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
+      state = state.copyWith(myKeepState: state.myKeepState.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-    final lists = await KeepContentsRepository(dio: ref.read(dioProvider)).getKeepContents(
-        memberIdx: memberIdx, page: state.myKeepState.page + 1);
+      final lists = await KeepContentsRepository(dio: ref.read(dioProvider)).getKeepContents(memberIdx: memberIdx, page: state.myKeepState.page + 1);
 
-    if (lists == null) {
-      state = state.copyWith(myKeepState: state.myKeepState.copyWith(isLoadMoreError: true, isLoading: false));
-      return;
-    }
+      if (lists == null) {
+        state = state.copyWith(myKeepState: state.myKeepState.copyWith(isLoadMoreError: true, isLoading: false));
+        return;
+      }
 
-    if (lists.data.list.isNotEmpty) {
-      List<int> newSelectOrder = List.filled(lists.data.list.length, -1);
+      if (lists.data.list.isNotEmpty) {
+        List<int> newSelectOrder = List.filled(lists.data.list.length, -1);
 
-      state = state.copyWith(
-          myKeepState: state.myKeepState
-              .copyWith(page: state.myKeepState.page + 1, isLoading: false, list: [...state.myKeepState.list, ...lists.data.list], selectOrder: [...state.myKeepState.selectOrder, ...newSelectOrder]));
-      myKeepCurrentPage++;
-    } else {
-      state = state.copyWith(myKeepState: state.myKeepState.copyWith(isLoading: false));
+        state = state.copyWith(
+            myKeepState: state.myKeepState.copyWith(
+                page: state.myKeepState.page + 1, isLoading: false, list: [...state.myKeepState.list, ...lists.data.list], selectOrder: [...state.myKeepState.selectOrder, ...newSelectOrder]));
+        myKeepCurrentPage++;
+      } else {
+        state = state.copyWith(myKeepState: state.myKeepState.copyWith(isLoading: false));
+      }
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('loadMoreMyKeeps error $e');
     }
   }
 
@@ -245,18 +272,24 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     myKeepCurrentPage = 1;
   }
 
-  Future<ResponseModel> deleteKeepContents(
-      {required memberIdx, required idx}) async {
-    final result = await KeepContentsRepository(dio: ref.read(dioProvider))
-        .deleteKeepContents(memberIdx: memberIdx, idx: idx);
+  Future<ResponseModel> deleteKeepContents({required memberIdx, required idx}) async {
+    try {
+      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).deleteKeepContents(memberIdx: memberIdx, idx: idx);
 
-    await refreshMyKeeps(memberIdx);
-    await refreshMyPost(memberIdx);
+      await refreshMyKeeps(memberIdx);
+      await refreshMyPost(memberIdx);
 
-    resetMyPostSelection();
-    resetMyKeepSelection();
+      resetMyPostSelection();
+      resetMyKeepSelection();
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('deleteKeepContents error $e');
+      rethrow;
+    }
   }
 
   String getSelectedImageIndices({required bool isKeepSelect}) {
@@ -278,17 +311,23 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     return indices.join('&');
   }
 
-  Future<ResponseModel> deleteContents(
-      {required memberIdx, required idx}) async {
-    final result =
-        await FeedRepository(dio: ref.read(dioProvider)).deleteContents(memberIdx: memberIdx, idx: idx);
+  Future<ResponseModel> deleteContents({required memberIdx, required idx}) async {
+    try {
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContents(memberIdx: memberIdx, idx: idx);
 
-    await refreshMyKeeps(memberIdx);
-    await refreshMyPost(memberIdx);
+      await refreshMyKeeps(memberIdx);
+      await refreshMyPost(memberIdx);
 
-    resetMyPostSelection();
-    resetMyKeepSelection();
+      resetMyPostSelection();
+      resetMyKeepSelection();
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('my post deleteContents error $e');
+      rethrow;
+    }
   }
 }
