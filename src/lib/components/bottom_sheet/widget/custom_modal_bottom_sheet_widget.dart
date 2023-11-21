@@ -20,14 +20,14 @@ class CustomModalBottomSheet extends StatelessWidget {
         topRight: Radius.circular(20),
       ),
       child: Container(
-        padding: EdgeInsets.only(bottom: 20.h, top: 10.h),
+        padding: const EdgeInsets.only(bottom: 20, top: 10),
         color: kNeutralColor100,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 70.w,
-              height: 6.h,
+              width: 70,
+              height: 6,
               decoration: const BoxDecoration(
                 color: kNeutralColor200,
                 borderRadius: BorderRadius.all(Radius.circular(7)),
