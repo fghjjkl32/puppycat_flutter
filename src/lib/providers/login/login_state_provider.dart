@@ -207,6 +207,7 @@ class LoginState extends _$LoginState {
     if (userModel == null) {
       print('AutoLogin Failed');
       state = LoginStatus.failure;
+      ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
       return;
     }
 

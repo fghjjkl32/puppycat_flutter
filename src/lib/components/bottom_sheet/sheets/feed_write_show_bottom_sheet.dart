@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/select_pet_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -105,6 +104,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                       ///산책하기 보류로 주석 처리 완료
                       ///여긴 UI가 바뀌어야함
                       // context.pushNamed('error_dialog');
+                      context.pushNamed('error_bottom_sheet');
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
