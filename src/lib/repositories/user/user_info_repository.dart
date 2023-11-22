@@ -1,18 +1,14 @@
 import 'package:dio/dio.dart';
-import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/services/user/user_info_service.dart';
-import 'package:http_parser/http_parser.dart';
 
 // final accountRepositoryProvider = Provider((ref) => AccountRepository());
 final userInfoRepositoryProvider = Provider.family<UserInfoRepository, Dio>((ref, dio) => UserInfoRepository(dio: dio));
@@ -59,16 +55,25 @@ class UserInfoRepository {
       );
     }
 
-    if (responseModel.data.info.isEmpty) {
+    if (responseModel.data == null) {
       throw APIException(
-        msg: 'data is null(or empty)',
+        msg: 'data is null',
         code: responseModel.code,
         refer: 'UserInfoRepository',
         caller: 'getMyInfo',
       );
     }
 
-    return responseModel.data.info.first;
+    if (responseModel.data!.info.isEmpty) {
+      throw APIException(
+        msg: 'data info is null(or empty)',
+        code: responseModel.code,
+        refer: 'UserInfoRepository',
+        caller: 'getMyInfo',
+      );
+    }
+
+    return responseModel.data!.info.first;
   }
 
   Future<ResponseModel> updateMyInfo(UserModel userInfoModel, XFile? file, String beforeNick, bool isProfileImageDelete, bool isPhoneNumberEdit) async {

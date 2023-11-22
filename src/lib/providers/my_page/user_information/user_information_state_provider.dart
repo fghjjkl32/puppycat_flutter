@@ -1,14 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
-
 // import 'package:pet_mobile_social_flutter/repositories/my_page/user_information/user_information_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -39,9 +37,9 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationListMode
         return;
       }
 
-      state = state.copyWith(isLoading: false, list: lists.data.info);
+      state = state.copyWith(isLoading: false, list: lists.data!.info);
 
-      userInformationStateMap[memberIdx] = state.copyWith(isLoading: false, list: lists.data.info);
+      userInformationStateMap[memberIdx] = state.copyWith(isLoading: false, list: lists.data!.info);
 
       ref.read(followUserStateProvider.notifier).setFollowState(memberIdx!, state.list[0].followState == 1);
     } on APIException catch (apiException) {
@@ -101,8 +99,8 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationListMode
       state = state.copyWith(list: [
         state.list[0].copyWith(
           blockedState: 0,
-          followerCnt: lists.data.info[0].followerCnt,
-          followCnt: lists.data.info[0].followCnt,
+          followerCnt: lists.data!.info[0].followerCnt,
+          followCnt: lists.data!.info[0].followCnt,
           followState: 0,
         )
       ]);

@@ -47,9 +47,9 @@ class APIErrorState extends _$APIErrorState {
       case 'SIJD-3999': //TODO 중복 가입 alert, 멤버 서버 나오면 다시 작업
         print('SIJD-3999 ${apiException.toString()}');
         break;
-      case 'ENSA-2999': // PASS 인증 URL 실패(AppKey)
-      case 'ELGI-9999': //TODO 로그인 실패
-      case 'EJOI-9999': //TODO 회원가입 실패
+      // case 'ENSA-2999': // PASS 인증 URL 실패(AppKey)
+      // case 'ELGI-9999': //TODO 로그인 실패
+      // case 'EJOI-9999': //TODO 회원가입 실패
       default:
         final goRouter = ref.read(routerProvider);
         goRouter.pushNamed('error_dialog', extra: code);

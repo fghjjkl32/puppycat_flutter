@@ -20,15 +20,15 @@ class MyInformationStateNotifier extends StateNotifier<UserInformationListModel>
     memberIdx,
   ]) async {
     try {
-    final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(memberIdx, memberIdx);
+      final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(memberIdx, memberIdx);
 
-    if (lists == null) {
-      state = state.copyWith(isLoading: false);
+      if (lists == null) {
+        state = state.copyWith(isLoading: false);
 
-      return;
-    }
+        return;
+      }
 
-    state = state.copyWith(isLoading: false, list: lists.data.info);
+      state = state.copyWith(isLoading: false, list: lists.data!.info);
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       state = state.copyWith(isLoading: false);

@@ -2,17 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/login/login_request_model.dart';
-import 'package:pet_mobile_social_flutter/models/login/login_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/services/login/login_service.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/apple/apple_login.dart';
@@ -33,7 +31,7 @@ class LoginRepository {
     required this.provider,
     required this.dio,
   }) {
-    _loginService = LoginService(dio, baseUrl: baseUrl);
+    _loginService = LoginService(dio, baseUrl: memberBaseUrl);
     _socialLoginService = _setSocialLoginService(provider);
   }
 
@@ -103,6 +101,18 @@ class LoginRepository {
       );
     }
 
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'LoginRepository',
+        caller: 'loginByUserModel',
+      );
+    }
+    final storage = FlutterSecureStorage();
+    await storage.write(key: 'ACCESS_TOKEN', value: responseModel.data!['accessToken']);
+    await storage.write(key: 'REFRESH_TOKEN', value: responseModel.data!['refreshToken']);
+
     userModel = userModel.copyWith(idx: int.parse(_getMemberIdx(responseModel) ?? '0'), appKey: appKey);
 
     return userModel;
@@ -143,15 +153,16 @@ class LoginRepository {
   }
 
   Future<bool> logout(String appKey) async {
-    if (appKey == '') {
-      return false;
-    }
+    // if (appKey == '') {
+    //   return false;
+    // }
+    //
+    // Map<String, dynamic> body = {
+    //   "appKey": appKey,
+    // };
 
-    Map<String, dynamic> body = {
-      "appKey": appKey,
-    };
-
-    var responseModel = await _loginService.logout(body);
+    // var responseModel = await _loginService.logout(body);
+    var responseModel = await _loginService.logout();
 
     if (!responseModel.result) {
       throw APIException(
