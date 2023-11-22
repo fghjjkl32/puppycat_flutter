@@ -17,7 +17,7 @@ import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_i
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 ///NOTE
@@ -85,7 +85,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     scrollController.addListener(_scrollListener);
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-    ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
 
     tabController = TabController(
       initialIndex: 0,
@@ -126,7 +126,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     return DefaultOnWillPopScope(
       onWillPop: () async {
         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
         return Future.value(true);
       },
       child: Material(
@@ -147,7 +147,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       leading: IconButton(
                         onPressed: () {
                           ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-                          ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                          ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                           Navigator.of(context).pop();
                         },
                         icon: const Icon(

@@ -17,6 +17,15 @@ final firstFeedEmptyProvider = StateProvider<bool>((ref) => true);
 
 final firstFeedStatusProvider = StateProvider<ListAPIStatus>((ref) => ListAPIStatus.idle);
 
+// final firstFeedDetailFutureStateProvider = FutureProvider<FeedData?>((ref){
+//   ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(contentType, contentIdx)
+// });
+
+// @Riverpod(keepAlive: true)
+// Future<FeedData?> fetchFirstFeedData(String contentType, int contentIdx) async {
+//   return await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(contentType, contentIdx);
+// }
+
 @Riverpod(keepAlive: true)
 class FirstFeedDetailState extends _$FirstFeedDetailState {
   String? feedImgDomain;
@@ -29,7 +38,7 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
     return null;
   }
 
-  Future fetchFirstFeedState(String contentType, int contentIdx) async {
+  Future<FeedData?> getFirstFeedState(String contentType, int contentIdx) async {
     // final userInfoModel = ref.read(userInfoProvider).userModel;
     int loginMemberIdx = 0;
     try {
@@ -37,10 +46,14 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
     } catch (e) {
       print('getFeedState Error $e');
       state = null;
-      return;
+      return null;
     }
 
     try {
+      Future(() {
+        ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.loading;
+      });
+
       FeedResponseModel searchResult = feedNullResponseModel;
 
       if (contentType == "myContent") {
@@ -74,19 +87,31 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
       memberInfo = searchResult.data.memberInfo?.first;
       feedImgDomain = searchResult.data.imgDomain;
 
+      Future(() {
+        ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.loaded;
+      });
       if (!isResponseDataEmpty) {
         FeedData firstFeed = searchResult.data.list.first;
         state = firstFeed;
+        return firstFeed;
       } else {
         state = null;
+        return null;
       }
     } on APIException catch (apiException) {
+      Future(() {
+        ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.error;
+      });
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       state = null;
     } catch (e) {
+      Future(() {
+        ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.error;
+      });
       print('fetchFirstFeedState error $e');
       state = null;
     }
+    return null;
   }
 
   void getStateForUser(int userId) {

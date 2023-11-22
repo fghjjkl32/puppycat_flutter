@@ -1,17 +1,12 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
@@ -28,17 +23,12 @@ import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_i
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
-
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -48,8 +38,6 @@ import 'package:pet_mobile_social_flutter/providers/my_page/user_information/use
 import 'package:screenshot/screenshot.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:thumbor/thumbor.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class MyPageMainScreen extends ConsumerStatefulWidget {
   const MyPageMainScreen({
@@ -94,10 +82,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
     scrollController.addListener(_scrollListener);
 
     feedListStateNotifier = ref.read(feedListStateProvider.notifier);
-    firstFeedStateNotifier = ref.read(firstFeedStateProvider.notifier);
+    firstFeedStateNotifier = ref.read(firstFeedDetailStateProvider.notifier);
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-    ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
 
     tabController = TabController(
       initialIndex: 0,
@@ -157,7 +145,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     title: const Text('마이페이지'),
                     leading: IconButton(
                       onPressed: () {
-                        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                         Navigator.of(context).pop();
                       },

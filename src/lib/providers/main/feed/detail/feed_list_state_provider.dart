@@ -9,7 +9,7 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/popular_week_feed_state_provider.dart';
@@ -49,7 +49,9 @@ class FeedListState extends _$FeedListState {
   ContentImageData? tempContentImageData;
 
   int? tempFeedDataIndex;
-  int? tempFirstFeedDataIndex;
+
+  // int? tempFirstFeedDataIndex;
+  bool isFirstFeedHidden = false;
   int? tempRecentFeedIndex;
   int? tempMyFeedDataIndex;
   int? tempFollowFeedDataIndex;
@@ -504,13 +506,15 @@ class FeedListState extends _$FeedListState {
 
       if (state.itemList != null) {
         if (idxToRemove == contentIdx) {
-          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
-
-          ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+          final firstFeedData = ref.read(firstFeedDetailStateProvider);
+          if (firstFeedData != null) {
+            if (firstFeedData.idx == contentIdx) {
+              ref.read(firstFeedDetailStateProvider.notifier).state = firstFeedData.copyWith(
                 likeState: 1,
-                likeCnt: ref.read(firstFeedStateProvider).itemList![targetIdx].likeCnt! + 1,
+                likeCnt: firstFeedData.likeCnt! + 1,
               );
-          ref.read(firstFeedStateProvider).notifyListeners();
+            }
+          }
         }
 
         targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -556,13 +560,15 @@ class FeedListState extends _$FeedListState {
 
       if (state.itemList != null) {
         if (idxToRemove == contentIdx) {
-          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
-
-          ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+          final firstFeedData = ref.read(firstFeedDetailStateProvider);
+          if (firstFeedData != null) {
+            if (firstFeedData.idx == contentIdx) {
+              ref.read(firstFeedDetailStateProvider.notifier).state = firstFeedData.copyWith(
                 likeState: 0,
-                likeCnt: ref.read(firstFeedStateProvider).itemList![targetIdx].likeCnt! - 1,
+                likeCnt: firstFeedData.likeCnt! - 1,
               );
-          ref.read(firstFeedStateProvider).notifyListeners();
+            }
+          }
         }
 
         targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -608,12 +614,14 @@ class FeedListState extends _$FeedListState {
 
       if (state.itemList != null) {
         if (idxToRemove == contentIdx) {
-          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
-
-          ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+          final firstFeedData = ref.read(firstFeedDetailStateProvider);
+          if (firstFeedData != null) {
+            if (firstFeedData.idx == contentIdx) {
+              ref.read(firstFeedDetailStateProvider.notifier).state = firstFeedData.copyWith(
                 saveState: 1,
               );
-          ref.read(firstFeedStateProvider).notifyListeners();
+            }
+          }
         }
 
         targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -658,12 +666,14 @@ class FeedListState extends _$FeedListState {
 
       if (state.itemList != null) {
         if (idxToRemove == contentIdx) {
-          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
-
-          ref.read(firstFeedStateProvider).itemList![targetIdx] = ref.read(firstFeedStateProvider).itemList![targetIdx].copyWith(
+          final firstFeedData = ref.read(firstFeedDetailStateProvider);
+          if (firstFeedData != null) {
+            if (firstFeedData.idx == contentIdx) {
+              ref.read(firstFeedDetailStateProvider.notifier).state = firstFeedData.copyWith(
                 saveState: 0,
               );
-          ref.read(firstFeedStateProvider).notifyListeners();
+            }
+          }
         }
 
         targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -705,11 +715,13 @@ class FeedListState extends _$FeedListState {
 
       if (state.itemList != null) {
         if (idxToRemove == contentIdxList[0]) {
-          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdxList[0]);
-
-          ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
-          ref.read(firstFeedEmptyProvider.notifier).state = true;
-          ref.read(firstFeedStateProvider).notifyListeners();
+          final firstFeedData = ref.read(firstFeedDetailStateProvider);
+          if (firstFeedData != null) {
+            if (firstFeedData.idx == contentIdxList[0]) {
+              ref.read(firstFeedDetailStateProvider.notifier).state = null;
+              ref.read(firstFeedEmptyProvider.notifier).state = true;
+            }
+          }
         }
 
         targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdxList[0]);
@@ -747,12 +759,13 @@ class FeedListState extends _$FeedListState {
 
       if (state.itemList != null) {
         if (idxToRemove == contentIdx) {
-          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
-
-          ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
-          ref.read(firstFeedEmptyProvider.notifier).state = true;
-
-          ref.read(firstFeedStateProvider).notifyListeners();
+          final firstFeedData = ref.read(firstFeedDetailStateProvider);
+          if (firstFeedData != null) {
+            if (firstFeedData.idx == contentIdx) {
+              ref.read(firstFeedDetailStateProvider.notifier).state = null;
+              ref.read(firstFeedEmptyProvider.notifier).state = true;
+            }
+          }
         }
 
         targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -790,12 +803,13 @@ class FeedListState extends _$FeedListState {
 
       if (state.itemList != null) {
         if (idxToRemove == contentIdx) {
-          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
-
-          ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
-          ref.read(firstFeedEmptyProvider.notifier).state = true;
-
-          ref.read(firstFeedStateProvider).notifyListeners();
+          final firstFeedData = ref.read(firstFeedDetailStateProvider);
+          if (firstFeedData != null) {
+            if (firstFeedData.idx == contentIdx) {
+              ref.read(firstFeedDetailStateProvider.notifier).state = null;
+              ref.read(firstFeedEmptyProvider.notifier).state = true;
+            }
+          }
         }
 
         targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -834,16 +848,15 @@ class FeedListState extends _$FeedListState {
 
       if (state.itemList != null) {
         if (idxToRemove == contentIdx) {
-          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
-
-          tempFirstFeedDataIndex = targetIdx;
-
-          tempFeedData = ref.read(firstFeedStateProvider).itemList![targetIdx];
-
-          ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
-          ref.read(firstFeedEmptyProvider.notifier).state = true;
-
-          ref.read(firstFeedStateProvider).notifyListeners();
+          final firstFeedData = ref.read(firstFeedDetailStateProvider);
+          if (firstFeedData != null) {
+            if (firstFeedData.idx == contentIdx) {
+              isFirstFeedHidden = true;
+              tempFeedData = firstFeedData;
+              ref.read(firstFeedDetailStateProvider.notifier).state = null;
+              ref.read(firstFeedEmptyProvider.notifier).state = true;
+            }
+          }
         }
 
         targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -883,10 +896,9 @@ class FeedListState extends _$FeedListState {
       final result = await FeedRepository(dio: ref.read(dioProvider)).deleteHide(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
 
       if (state.itemList != null) {
-        if (tempFirstFeedDataIndex != null) {
-          ref.read(firstFeedStateProvider).itemList!.insert(tempFirstFeedDataIndex!, tempFeedData!);
-          ref.read(firstFeedStateProvider).notifyListeners();
-          tempFirstFeedDataIndex = null;
+        if (isFirstFeedHidden) {
+          ref.read(firstFeedDetailStateProvider.notifier).state = tempFeedData;
+          isFirstFeedHidden = false;
         }
 
         if (tempFeedDataIndex != null && tempFeedDataIndex != -1) {
@@ -928,8 +940,13 @@ class FeedListState extends _$FeedListState {
         state.itemList!.removeWhere((element) => element.memberIdx == blockIdx);
         state.notifyListeners();
 
-        ref.read(firstFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == blockIdx);
-        ref.read(firstFeedStateProvider).notifyListeners();
+        final firstFeedData = ref.read(firstFeedDetailStateProvider);
+        if (firstFeedData != null) {
+          if (firstFeedData.idx == blockIdx) {
+            ref.read(firstFeedDetailStateProvider.notifier).state = null;
+            ref.read(firstFeedEmptyProvider.notifier).state = true;
+          }
+        }
       }
 
       feedRefresh(
@@ -967,16 +984,15 @@ class FeedListState extends _$FeedListState {
 
       if (state.itemList != null) {
         if (idxToRemove == contentIdx) {
-          targetIdx = ref.read(firstFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
-
-          tempFirstFeedDataIndex = targetIdx;
-
-          tempFeedData = ref.read(firstFeedStateProvider).itemList![targetIdx];
-
-          ref.read(firstFeedStateProvider).itemList!.removeAt(targetIdx);
-          ref.read(firstFeedEmptyProvider.notifier).state = true;
-
-          ref.read(firstFeedStateProvider).notifyListeners();
+          final firstFeedData = ref.read(firstFeedDetailStateProvider);
+          if (firstFeedData != null) {
+            if (firstFeedData.idx == contentIdx) {
+              isFirstFeedHidden = true;
+              tempFeedData = firstFeedData;
+              ref.read(firstFeedDetailStateProvider.notifier).state = null;
+              ref.read(firstFeedEmptyProvider.notifier).state = true;
+            }
+          }
         }
 
         targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -1019,10 +1035,9 @@ class FeedListState extends _$FeedListState {
       );
 
       if (state.itemList != null) {
-        if (tempFirstFeedDataIndex != null) {
-          ref.read(firstFeedStateProvider).itemList!.insert(tempFirstFeedDataIndex!, tempFeedData!);
-          ref.read(firstFeedStateProvider).notifyListeners();
-          tempFirstFeedDataIndex = null;
+        if (isFirstFeedHidden) {
+          ref.read(firstFeedDetailStateProvider.notifier).state = tempFeedData;
+          isFirstFeedHidden = false;
         }
 
         if (tempFeedDataIndex != null && tempFeedDataIndex != -1) {

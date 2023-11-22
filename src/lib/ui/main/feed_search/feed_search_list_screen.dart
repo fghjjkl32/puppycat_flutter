@@ -11,7 +11,7 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed_search/feed_search_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
@@ -38,7 +38,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
   @override
   void initState() {
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-    ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
 
     searchContentController.addListener(_searchScrollListener);
 
@@ -66,7 +66,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
     return DefaultOnWillPopScope(
       onWillPop: () async {
         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
         return Future.value(true);
       },
       child: Material(
@@ -79,7 +79,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
             leading: IconButton(
               onPressed: () {
                 ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-                ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                 Navigator.of(context).pop();
               },
               icon: const Icon(
