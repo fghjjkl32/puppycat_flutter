@@ -1,13 +1,10 @@
 import 'package:app_install_date/app_install_date.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
-import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
@@ -26,32 +23,32 @@ final mentionListProvider = StateProvider<List<MentionListData>>((ref) => []);
 class Constants {
   static Future<String> getBaseUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedURL') ?? "https://api.pcstg.co.kr/";
+    return prefs.getString('selectedURL') ?? baseUrl;
   }
 
   static Future<String> getBaseWalkUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedWalkURL') ?? "https://walk-api.pcstg.co.kr/";
+    return prefs.getString('selectedWalkURL') ?? walkBaseUrl;
   }
 
   static Future<String> getBaseWalkGpsUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedWalkGpsURL') ?? "https://walk-gps.pcstg.co.kr/";
+    return prefs.getString('selectedWalkGpsURL') ?? walkGpsBaseUrl;
   }
 
   static Future<String> getThumborHostUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborHostUrl') ?? "https://tb.pcstg.co.kr/";
+    return prefs.getString('thumborHostUrl') ?? thumborHostUrl;
   }
 
   static Future<String> getThumborKey() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborKey') ?? "Tjaqhvpt";
+    return prefs.getString('thumborKey') ?? thumborKey;
   }
 
   static Future<String> getThumborDomain() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborDomain') ?? "https://imgs.pcstg.co.kr";
+    return prefs.getString('thumborDomain') ?? imgDomain;
   }
 
   static Future<String> checkFirstInstall() async {
@@ -61,25 +58,31 @@ class Constants {
 }
 
 // String baseUrl = "https://sns-api.devlabs.co.kr:28080";
-String baseUrl = "https://api.pcstg.co.kr/";
-// String baseUrl = "https://api.puppycat.co.kr";
+// String baseUrl = "https://api.pcstg.co.kr/";
+String baseUrl = "https://api.puppycat.co.kr/";
 
-String thumborHostUrl = "https://tb.pcstg.co.kr/";
+// String thumborHostUrl = "https://tb.pcstg.co.kr/";
+// String thumborHostUrl = "https://tb.pcstg.co.kr/";
+String thumborHostUrl = "https://tb.puppycat.co.kr/";
 
-String thumborKey = "Tjaqhvpt";
-// String thumborKey = "vjvlzotvldkfel"; //prd
-String imgDomain = "https://imgs.pcstg.co.kr";
+// String thumborKey = "Tjaqhvpt";
+String thumborKey = "vjvlzotvldkfel"; //prd
+
+// String imgDomain = "https://imgs.pcstg.co.kr";
+// String imgDomain = "https://imgs.pcstg.co.kr";
+String imgDomain = "https://imgs.puppycat.co.kr";
+
 String firstInstallTime = "";
 String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
 
 // String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
-String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
-// String walkBaseUrl = 'https://walk-api.puppycat.co.kr';
+// String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
+String walkBaseUrl = 'https://walk-api.puppycat.co.kr/';
 
 // String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr';
-String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
-// String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr';
+// String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
+String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
@@ -339,6 +342,7 @@ enum PetGender {
   girlNeutering(4, "암컷 중성화", "");
 
   const PetGender(this.value, this.name, this.icon);
+
   final int value;
   final String name;
   final String icon;
@@ -350,6 +354,7 @@ enum PetSize {
   big(3, "큼", "");
 
   const PetSize(this.value, this.name, this.icon);
+
   final int value;
   final String name;
   final String icon;
@@ -361,6 +366,7 @@ enum PetAge {
   senior(3, "시니어", "");
 
   const PetAge(this.value, this.name, this.icon);
+
   final int value;
   final String name;
   final String icon;
@@ -376,6 +382,7 @@ enum PetCharacter {
   custom(7, '직접입력(최대 40자)');
 
   const PetCharacter(this.value, this.name);
+
   final int value;
   final String name;
 }
