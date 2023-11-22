@@ -2,11 +2,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/custom_modal_bottom_sheet_widget.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/dialog_page.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
-import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_page.dart';
-import 'package:pet_mobile_social_flutter/components/route_page/dialog_page.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
@@ -256,7 +253,7 @@ class AppRouter {
                     return FeedDetailScreen(
                       firstTitle: firstTitle,
                       secondTitle: secondTitle,
-                      memberIdx: int.parse(memberIdx),
+                      memberIdx: int.parse(memberIdx == "null" ? "0" : memberIdx),
                       contentIdx: int.parse(contentIdx),
                       contentType: contentType,
                       isRouteComment: isRouteComment,

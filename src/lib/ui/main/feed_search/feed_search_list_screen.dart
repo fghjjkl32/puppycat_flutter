@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -14,8 +13,6 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed_search/feed_search_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_save_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -34,7 +31,6 @@ class FeedSearchListScreen extends ConsumerStatefulWidget {
 }
 
 class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with SingleTickerProviderStateMixin {
-  late TabController tabController;
   ScrollController searchContentController = ScrollController();
 
   int searchOldLength = 0;
@@ -53,7 +49,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
   void _searchScrollListener() {
     if (searchContentController.position.pixels > searchContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (searchOldLength == ref.read(feedSearchStateProvider).list.length) {
-        ref.read(feedSearchStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx, widget.searchWord);
+        ref.read(feedSearchStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel?.idx, widget.searchWord);
       }
     }
   }
@@ -98,10 +94,6 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
             final isLoadMoreDone = feedSearchState.isLoadMoreDone;
             final isLoading = feedSearchState.isLoading;
             final lists = feedSearchState.list;
-
-            print(feedSearchState);
-            print(lists);
-            print(feedSearchState);
 
             searchOldLength = lists.length ?? 0;
             return searchOldLength == 0
@@ -182,7 +174,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                           padding: const EdgeInsets.all(12.0),
                           child: RefreshIndicator(
                             onRefresh: () {
-                              return ref.read(feedSearchStateProvider.notifier).refresh(ref.read(userInfoProvider).userModel!.idx, widget.searchWord);
+                              return ref.read(feedSearchStateProvider.notifier).refresh(ref.read(userInfoProvider).userModel?.idx, widget.searchWord);
                             },
                             child: GridView.builder(
                               controller: searchContentController,
@@ -222,7 +214,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
 
                                 return GestureDetector(
                                   onTap: () {
-                                    context.push("/home/myPage/detail/null/${widget.searchWord}/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/searchContent");
+                                    context.push("/home/myPage/detail/null/${widget.searchWord}/${ref.read(userInfoProvider).userModel?.idx}/${lists[index].idx}/searchContent");
                                   },
                                   child: Stack(
                                     children: [

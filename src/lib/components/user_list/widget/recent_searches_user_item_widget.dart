@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -9,12 +8,9 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_helper_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
-import 'package:widget_mask/widget_mask.dart';
-import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
 import 'package:pet_mobile_social_flutter/services/search/search_db_helper.dart';
+import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
 
 class RecentSearchesUserItemWidget extends ConsumerStatefulWidget {
   const RecentSearchesUserItemWidget({
@@ -37,6 +33,7 @@ class RecentSearchesUserItemWidget extends ConsumerStatefulWidget {
   final Searche search;
   final DateTime dateTime;
   final int oldMemberIdx;
+
   @override
   RecentSearchesUserItemWidgetState createState() => RecentSearchesUserItemWidgetState();
 }
@@ -56,48 +53,56 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    right: 10.w,
+            Expanded(
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10.w,
+                    ),
+                    child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
                   ),
-                  child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        widget.isSpecialUser
-                            ? Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/image/feed/icon/small_size/icon_special.png',
-                                    height: 13.h,
-                                  ),
-                                  SizedBox(
-                                    width: 4.w,
-                                  ),
-                                ],
-                              )
-                            : Container(),
+                        Row(
+                          children: [
+                            widget.isSpecialUser
+                                ? Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/image/feed/icon/small_size/icon_special.png',
+                                        height: 13.h,
+                                      ),
+                                      SizedBox(
+                                        width: 4.w,
+                                      ),
+                                    ],
+                                  )
+                                : Container(),
+                            Flexible(
+                              child: Text(
+                                widget.userName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4.h,
+                        ),
                         Text(
-                          widget.userName,
-                          style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                          widget.content,
+                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 4.h,
-                    ),
-                    Text(
-                      widget.content,
-                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
             Row(
               children: [

@@ -42,7 +42,7 @@ class UserContentsState extends _$UserContentsState {
       var loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
       var result = await FeedRepository(dio: ref.read(dioProvider)).getUserContentList(loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: pageKey);
 
-      ref.read(userContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination!.totalRecordCount!;
+      ref.read(userContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination?.totalRecordCount! ?? 0;
 
       List<ContentImageData> feedList = result.data.list
           .map(
@@ -57,7 +57,7 @@ class UserContentsState extends _$UserContentsState {
       userContentStateMap[memberIdx!] = feedList;
 
       try {
-        _lastPage = result.data.params!.pagination!.totalPageCount!;
+        _lastPage = result.data.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

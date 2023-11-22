@@ -4,23 +4,11 @@ import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
-import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_detail_state.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/popular_week_feed_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/keep_contents/keep_contents_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/like_contents/like_contents_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'first_feed_state_provider.g.dart';
@@ -68,7 +56,7 @@ class FirstFeedState extends _$FirstFeedState {
       } else if (contentType == "userContent" || contentType == "FollowCardContent") {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx, contentIdx: contentIdx!);
       } else if (contentType == "userTagContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx, contentIdx: contentIdx!);
       } else if (contentType == "myLikeContent") {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "mySaveContent") {
@@ -78,7 +66,7 @@ class FirstFeedState extends _$FirstFeedState {
       } else if (contentType == "myKeepContent") {
         searchResult = await KeepContentsRepository(dio: ref.read(dioProvider)).getMyKeepContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "searchContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx, contentIdx: contentIdx!);
       } else if (contentType == "popularWeekContent") {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       } else if (contentType == "popularHourContent") {
@@ -122,11 +110,7 @@ class FirstFeedState extends _$FirstFeedState {
           )
           .toList();
 
-      try {
-        _lastPage = searchResult.data.params!.pagination!.totalPageCount!;
-      } catch (_) {
-        _lastPage = 1;
-      }
+      _lastPage = 1;
 
       final nextPageKey = searchList.isEmpty ? null : pageKey + 1;
 

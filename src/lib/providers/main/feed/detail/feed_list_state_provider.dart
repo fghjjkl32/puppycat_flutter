@@ -6,25 +6,20 @@ import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_detail_state.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/popular_week_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/keep_contents/keep_contents_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/like_contents/like_contents_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
@@ -86,7 +81,7 @@ class FeedListState extends _$FeedListState {
       } else if (contentType == "userContent" || contentType == "FollowCardContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserContentsDetailList(loginMemberIdx: loginMemberIdx, page: pageKey, memberIdx: memberIdx);
       } else if (contentType == "userTagContent") {
-        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentDetail(loginMemberIdx: loginMemberIdx!, page: pageKey, memberIdx: memberIdx!);
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentDetail(loginMemberIdx: loginMemberIdx, page: pageKey, memberIdx: memberIdx!);
       } else if (contentType == "myLikeContent") {
         feedResult = await LikeContentsRepository(dio: ref.read(dioProvider)).getLikeDetailContentList(loginMemberIdx: loginMemberIdx!, page: pageKey);
       } else if (contentType == "mySaveContent") {
@@ -97,7 +92,7 @@ class FeedListState extends _$FeedListState {
         feedResult = await Future.value(feedNullResponseModel);
       } else if (contentType == "searchContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentDetailList(
-          loginMemberIdx: loginMemberIdx!,
+          loginMemberIdx: loginMemberIdx,
           searchWord: searchWord!,
           page: pageKey,
         );
@@ -153,7 +148,7 @@ class FeedListState extends _$FeedListState {
       searchList.removeWhere((element) => element.idx == idxToRemove);
 
       try {
-        _lastPage = feedResult.data.params!.pagination!.totalPageCount!;
+        _lastPage = feedResult.data.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

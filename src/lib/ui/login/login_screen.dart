@@ -1,23 +1,15 @@
-import 'dart:convert';
-
-import 'package:appspector/appspector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
-import 'package:pet_mobile_social_flutter/providers/user/user_restore_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
-import 'package:pet_mobile_social_flutter/services/login/social_login/kakao/kakao_login.dart';
+import 'package:pet_mobile_social_flutter/providers/user/user_restore_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/dialog/restriction_dialog.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({Key? key}) : super(key: key);

@@ -166,7 +166,7 @@
 //
 //     state = state.copyWith(
 //       feedListState: state.feedListState.copyWith(
-//           totalCount: lists.data.params!.pagination!.totalRecordCount!),
+//           totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0),
 //       firstFeedState: state.firstFeedState.copyWith(
 //         totalCount: 1,
 //       ),
