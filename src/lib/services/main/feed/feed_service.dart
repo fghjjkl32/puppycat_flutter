@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart' hide Headers;
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
@@ -53,8 +50,7 @@ abstract class FeedService {
   );
 
   //user page feed list - user
-  @GET(
-      'v1/member/{memberIdx}/contents?loginMemberIdx={loginMemberIdx}&page={page}&limit=15')
+  @GET('v1/member/{memberIdx}/contents?loginMemberIdx={loginMemberIdx}&page={page}&limit=15')
   Future<ContentResponseModel> getUserContentList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
@@ -67,8 +63,7 @@ abstract class FeedService {
     @Path("page") int page,
   );
 
-  @GET(
-      'v1/member/{memberIdx}/tag/contents?loginMemberIdx={loginMemberIdx}&page={page}&limit=15')
+  @GET('v1/member/{memberIdx}/tag/contents?loginMemberIdx={loginMemberIdx}&page={page}&limit=15')
   Future<ContentResponseModel> getUserTagContentList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
@@ -81,24 +76,21 @@ abstract class FeedService {
     @Path("page") int page,
   );
 
-  @GET(
-      'v1/search/tag/contents?memberIdx={memberIdx}&imgLimit=12&searchWord={searchWord}&page={page}&limit=15')
+  @GET('v1/search/tag/contents?memberIdx={memberIdx}&imgLimit=12&searchWord={searchWord}&page={page}&limit=15')
   Future<ContentResponseModel> getUserHashtagContentList(
     @Path("memberIdx") int memberIdx,
     @Path("searchWord") String searchWord,
     @Path("page") int page,
   );
 
-  @GET(
-      'v1/search/tag/contents?imgLimit=12&searchWord={searchWord}&page={page}&limit=15')
+  @GET('v1/search/tag/contents?imgLimit=12&searchWord={searchWord}&page={page}&limit=15')
   Future<ContentResponseModel> getLogoutUserHashtagContentList(
     @Path("searchWord") String searchWord,
     @Path("page") int page,
   );
 
   //user contents detail
-  @GET(
-      'v1/contents/member/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&memberIdx={memberIdx}&page={page}')
+  @GET('v1/contents/member/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&memberIdx={memberIdx}&page={page}')
   Future<FeedResponseModel> getUserContentDetailList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
@@ -111,32 +103,40 @@ abstract class FeedService {
     @Path("page") int page,
   );
 
-  @GET(
-      'v1/contents/tag/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&memberIdx={memberIdx}&page={page}')
+  @GET('v1/contents/tag/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&memberIdx={memberIdx}&page={page}')
   Future<FeedResponseModel> getUserTagContentDetail(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
     @Path("page") int page,
   );
 
-  @GET(
-      'v1/contents/hashtag/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&searchWord={searchWord}&page={page}')
+  @GET('v1/contents/tag/detail?imgLimit=12&memberIdx={memberIdx}&page={page}')
+  Future<FeedResponseModel> getLogoutUserTagContentDetail(
+    @Path("memberIdx") int memberIdx,
+    @Path("page") int page,
+  );
+
+  @GET('v1/contents/hashtag/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&searchWord={searchWord}&page={page}')
   Future<FeedResponseModel> getUserHashtagContentDetailList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("searchWord") String searchWord,
     @Path("page") int page,
   );
 
+  @GET('v1/contents/hashtag/detail?imgLimit=12&searchWord={searchWord}&page={page}')
+  Future<FeedResponseModel> getLogoutUserHashtagContentDetailList(
+    @Path("searchWord") String searchWord,
+    @Path("page") int page,
+  );
+
   //my contents
-  @GET(
-      'v1/my/normal/contents/{contentsIdx}?loginMemberIdx={loginMemberIdx}&imgLimit=12')
+  @GET('v1/my/normal/contents/{contentsIdx}?loginMemberIdx={loginMemberIdx}&imgLimit=12')
   Future<FeedResponseModel> getMyContentDetail(
     @Path("contentsIdx") int contentsIdx,
     @Path("loginMemberIdx") int loginMemberIdx,
   );
 
-  @GET(
-      'v1/my/normal/contents/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&memberIdx={memberIdx}&page={page}')
+  @GET('v1/my/normal/contents/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&memberIdx={memberIdx}&page={page}')
   Future<FeedResponseModel> getMyContentDetailList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("memberIdx") int memberIdx,
@@ -154,24 +154,21 @@ abstract class FeedService {
     @Path("contentsIdx") int contentsIdx,
   );
 
-  @GET(
-      'v1/my/tag/contents/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
+  @GET('v1/my/tag/contents/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
   Future<FeedResponseModel> getMyTagContentDetailList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("page") int page,
   );
 
   //PopularWeek
-  @GET(
-      'v1/contents/week/popular/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
+  @GET('v1/contents/week/popular/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
   Future<FeedResponseModel> getPopularWeekDetailList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("page") int page,
   );
 
   //PopularHour
-  @GET(
-      'v1/contents/hour/popular/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
+  @GET('v1/contents/hour/popular/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
   Future<FeedResponseModel> getPopularHourDetailList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("page") int page,
@@ -190,8 +187,7 @@ abstract class FeedService {
   );
 
   //recent
-  @GET(
-      'v1/contents/recent/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
+  @GET('v1/contents/recent/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
   Future<FeedResponseModel> getRecentDetailList(
     @Path("loginMemberIdx") int loginMemberIdx,
     @Path("page") int page,

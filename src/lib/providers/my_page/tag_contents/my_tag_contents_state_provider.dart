@@ -40,7 +40,7 @@ class MyTagContentsState extends _$MyTagContentsState {
       var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
       var result = await FeedRepository(dio: ref.read(dioProvider)).getMyTagContentList(loginMemberIdx: loginMemberIdx, page: pageKey);
 
-      ref.read(myTagContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination!.totalRecordCount!;
+      ref.read(myTagContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination?.totalRecordCount! ?? 0;
 
       List<ContentImageData> feedList = result.data.list
           .map(
@@ -53,7 +53,7 @@ class MyTagContentsState extends _$MyTagContentsState {
           .toList();
 
       try {
-        _lastPage = result.data.params!.pagination!.totalPageCount!;
+        _lastPage = result.data.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

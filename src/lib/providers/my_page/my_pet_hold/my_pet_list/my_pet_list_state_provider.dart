@@ -98,7 +98,7 @@
 //       ///산책하기 보류로 주석 처리 완료
 //
 //       try {
-//         _lastPage = result.data.params!.pagination!.totalPageCount!;
+//         _lastPage = result.data.params!.pagination?.totalPageCount! ?? 0;
 //       } catch (_) {
 //         _lastPage = 1;
 //       }

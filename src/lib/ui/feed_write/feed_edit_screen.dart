@@ -1,29 +1,22 @@
-import 'package:cupertino_will_pop_scope/cupertino_will_pop_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
+import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button_selected_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_content_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_search_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/edit_feed_view.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/post_feed_view.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_cropped_files_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_information_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/edit_feed_view.dart';
 
 class FeedEditScreen extends ConsumerWidget {
   const FeedEditScreen({super.key, required this.feedData, required this.contentIdx});
@@ -33,8 +26,7 @@ class FeedEditScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ConditionalWillPopScope(
-      shouldAddCallback: true,
+    return DefaultOnWillPopScope(
       onWillPop: () async {
         showDialog(
           context: context,

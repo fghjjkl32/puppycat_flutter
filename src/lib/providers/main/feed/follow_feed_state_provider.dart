@@ -81,7 +81,7 @@ class FollowFeedState extends _$FollowFeedState {
           .toList();
 
       try {
-        _lastPage = feedResult.data.params!.pagination!.totalPageCount!;
+        _lastPage = feedResult.data.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

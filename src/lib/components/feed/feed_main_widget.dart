@@ -47,6 +47,7 @@ class FeedMainWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
+        print("feedData.memberIdx ${feedData.memberIdx}");
         context.push("/home/myPage/detail/$firstTitle/$secondTitle/${feedData.memberIdx}/${feedData.idx}/$contentType");
       },
       child: Material(

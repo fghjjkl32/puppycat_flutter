@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter/material.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -12,7 +13,6 @@ import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart'
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
 import 'package:pet_mobile_social_flutter/services/main/feed/feed_service.dart';
-import 'package:http_parser/http_parser.dart';
 
 class FeedRepository {
   late final FeedService _feedService; // = FeedService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
@@ -157,9 +157,13 @@ class FeedRepository {
   Future<FeedResponseModel> getUserTagContentDetail({
     required int memberIdx,
     required int page,
-    required int loginMemberIdx,
+    required int? loginMemberIdx,
   }) async {
-    FeedResponseModel responseModel = await _feedService.getUserTagContentDetail(loginMemberIdx, memberIdx, page);
+    FeedResponseModel responseModel;
+
+    loginMemberIdx == null
+        ? responseModel = await _feedService.getLogoutUserTagContentDetail(memberIdx, page)
+        : responseModel = await _feedService.getUserTagContentDetail(loginMemberIdx, memberIdx, page);
 
     if (!responseModel.result) {
       throw APIException(
@@ -174,11 +178,15 @@ class FeedRepository {
   }
 
   Future<FeedResponseModel> getUserHashtagContentDetailList({
-    required int loginMemberIdx,
+    required int? loginMemberIdx,
     required String searchWord,
     required int page,
   }) async {
-    FeedResponseModel responseModel = await _feedService.getUserHashtagContentDetailList(loginMemberIdx, searchWord, page);
+    FeedResponseModel responseModel;
+
+    loginMemberIdx == null
+        ? responseModel = await _feedService.getLogoutUserHashtagContentDetailList(searchWord, page)
+        : responseModel = await _feedService.getUserHashtagContentDetailList(loginMemberIdx, searchWord, page);
 
     if (!responseModel.result) {
       throw APIException(

@@ -15,6 +15,7 @@ class NotificationNoticeItem extends StatelessWidget {
     required this.isRead,
     required this.profileImgUrl,
     this.onTap,
+    this.onTapProfileButton,
   }) : super(key: key);
 
   final String content;
@@ -22,12 +23,13 @@ class NotificationNoticeItem extends StatelessWidget {
   final bool isRead;
   final String profileImgUrl;
   final Function? onTap;
+  final Function? onTapProfileButton;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if(onTap != null) {
+        if (onTap != null) {
           onTap!();
         }
       },
@@ -48,7 +50,16 @@ class NotificationNoticeItem extends StatelessWidget {
                 ),
               ),
             ),
-            getProfileAvatar(profileImgUrl),
+            GestureDetector(
+              onTap: () {
+                if (onTapProfileButton != null) {
+                  onTapProfileButton!();
+                }
+              },
+              child: getProfileAvatar(
+                profileImgUrl,
+              ),
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: 10.0, right: 0),
@@ -63,13 +74,11 @@ class NotificationNoticeItem extends StatelessWidget {
                         children: [
                           Text(
                             "공지",
-                            style: kBody11SemiBoldStyle.copyWith(
-                                color: kTextBodyColor),
+                            style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
                           ),
                           Text(
                             regDate,
-                            style: kBadge10MediumStyle.copyWith(
-                                color: kTextBodyColor),
+                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
                           ),
                         ],
                       ),

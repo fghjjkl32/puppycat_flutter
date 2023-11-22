@@ -27,6 +27,7 @@ class NotificationCommentItem extends StatelessWidget {
     required this.mentionList,
     required this.profileImgUrl,
     required this.imgUrl,
+    this.onTapProfileButton,
     this.onTap,
   }) : super(key: key);
 
@@ -40,6 +41,7 @@ class NotificationCommentItem extends StatelessWidget {
   final String profileImgUrl;
   final String imgUrl;
   final Function? onTap;
+  final Function? onTapProfileButton;
 
   // final List<MentionListData> mentionList;
 
@@ -107,8 +109,15 @@ class NotificationCommentItem extends StatelessWidget {
                 ),
               ),
             ),
-            getProfileAvatar(
-              profileImgUrl,
+            GestureDetector(
+              onTap: () {
+                if (onTapProfileButton != null) {
+                  onTapProfileButton!();
+                }
+              },
+              child: getProfileAvatar(
+                profileImgUrl,
+              ),
             ),
             Expanded(
               child: Padding(

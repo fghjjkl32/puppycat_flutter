@@ -60,7 +60,7 @@ class ContentLikeUserListState extends _$ContentLikeUserListState {
           .toList();
 
       try {
-        _lastPage = result.data.params!.pagination!.totalPageCount!;
+        _lastPage = result.data.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

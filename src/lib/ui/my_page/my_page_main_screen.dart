@@ -809,91 +809,97 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                   padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                   child: getProfileAvatar(data.profileImgUrl! ?? "", 48.w, 48.h),
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        data.isBadge == 1
-                            ? Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/image/feed/icon/small_size/icon_special.png',
-                                    height: 13.h,
-                                  ),
-                                  SizedBox(
-                                    width: 4.w,
-                                  ),
-                                ],
-                              )
-                            : Container(),
-                        Text(
-                          "${data.nick}",
-                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            context.go("/home/myPage/profileEdit");
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: const Icon(
-                              Puppycat_social.icon_modify_small,
-                              color: kNeutralColor500,
-                              size: 22,
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          data.isBadge == 1
+                              ? Row(
+                                  children: [
+                                    Image.asset(
+                                      'assets/image/feed/icon/small_size/icon_special.png',
+                                      height: 13.h,
+                                    ),
+                                    SizedBox(
+                                      width: 4.w,
+                                    ),
+                                  ],
+                                )
+                              : Container(),
+                          Flexible(
+                            child: Text(
+                              "${data.nick}",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Visibility(
-                      visible: data.intro != "",
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(
-                            "${data.intro}",
-                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                          GestureDetector(
+                            onTap: () {
+                              context.go("/home/myPage/profileEdit");
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(5.0),
+                              child: const Icon(
+                                Puppycat_social.icon_modify_small,
+                                color: kNeutralColor500,
+                                size: 22,
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context.go("/home/myPage/followList/${ref.read(userInfoProvider).userModel!.idx}");
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 8.0.h),
-                        child: Row(
+                      Visibility(
+                        visible: data.intro != "",
+                        child: Column(
                           children: [
-                            Text(
-                              "팔로워 ",
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                            SizedBox(
+                              height: 3,
                             ),
                             Text(
-                              "${data.followerCnt}",
-                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
-                            ),
-                            Text(
-                              "  ·  ",
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                            ),
-                            Text(
-                              "팔로잉 ",
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                            ),
-                            Text(
-                              "${data.followCnt}",
-                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              "${data.intro}",
+                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                      GestureDetector(
+                        onTap: () {
+                          context.go("/home/myPage/followList/${ref.read(userInfoProvider).userModel!.idx}");
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 8.0.h),
+                          child: Row(
+                            children: [
+                              Text(
+                                "팔로워 ",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Text(
+                                "${data.followerCnt}",
+                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              ),
+                              Text(
+                                "  ·  ",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Text(
+                                "팔로잉 ",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Text(
+                                "${data.followCnt}",
+                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

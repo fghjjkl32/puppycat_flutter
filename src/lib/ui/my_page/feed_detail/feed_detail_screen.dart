@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
-import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_detail_state.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed_search/feed_search_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
@@ -115,8 +110,6 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
       },
       child: Consumer(builder: (ctx, ref, child) {
         var apiStatus = ref.watch(firstFeedStatusProvider);
-        print("${apiStatus}");
-        print(ref.watch(firstFeedStateProvider).itemList);
 
         AppBar appBarWidget() {
           if (apiStatus == ListAPIStatus.loading || apiStatus == ListAPIStatus.idle) {
@@ -339,7 +332,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                               ),
                             ],
                           )
-                        : widget.memberIdx != ref.read(userInfoProvider).userModel?.idx
+                        : widget.memberIdx != ref.read(userInfoProvider).userModel?.idx && widget.contentType != "searchContent"
                             ? Column(
                                 children: [
                                   SizedBox(
@@ -401,7 +394,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                             : Container();
                   },
                   noMoreItemsIndicatorBuilder: (context) {
-                    return widget.memberIdx != ref.read(userInfoProvider).userModel?.idx
+                    return widget.memberIdx != ref.read(userInfoProvider).userModel?.idx && widget.contentType != "searchContent"
                         ? Column(
                             children: [
                               SizedBox(

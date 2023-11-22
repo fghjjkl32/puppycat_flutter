@@ -256,7 +256,7 @@ class AppRouter {
                     return FeedDetailScreen(
                       firstTitle: firstTitle,
                       secondTitle: secondTitle,
-                      memberIdx: int.parse(memberIdx),
+                      memberIdx: int.parse(memberIdx == "null" ? "0" : memberIdx),
                       contentIdx: int.parse(contentIdx),
                       contentType: contentType,
                       isRouteComment: isRouteComment,
