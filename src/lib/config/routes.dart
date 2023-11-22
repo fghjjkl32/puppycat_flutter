@@ -1,41 +1,22 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:matrix/matrix.dart';
-import 'package:pet_mobile_social_flutter/components/comment/comment_deatil_list_widget.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/dialog_page.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
-import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
-import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
-import 'package:pet_mobile_social_flutter/main.dart';
-import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
-import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/chat/chat_main_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/chat/chat_search_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/chat/matrix_chat_room_screen.dart';
-
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_complete_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/comment/comment_detail_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/main/comment/main_comment_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/feed_search/feed_search_list_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/maintenance/maintenance_screen.dart';
-
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -47,7 +28,6 @@ import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_post_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
-
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -66,7 +46,6 @@ import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_scr
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_terms_of_service_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_unknown_screen.dart';
-
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -76,7 +55,6 @@ import 'package:pet_mobile_social_flutter/ui/my_page/user_unknown_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_select_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/notification/notification_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
@@ -275,7 +253,7 @@ class AppRouter {
                     return FeedDetailScreen(
                       firstTitle: firstTitle,
                       secondTitle: secondTitle,
-                      memberIdx: int.parse(memberIdx),
+                      memberIdx: int.parse(memberIdx == "null" ? "0" : memberIdx),
                       contentIdx: int.parse(contentIdx),
                       contentType: contentType,
                       isRouteComment: isRouteComment,

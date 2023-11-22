@@ -1,11 +1,8 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:linkfy_text/linkfy_text.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
@@ -16,15 +13,11 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class CommentDetailItemWidget extends ConsumerStatefulWidget {
   const CommentDetailItemWidget({
@@ -179,39 +172,45 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
-                                        ? Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => MyPageMainScreen(
-                                                oldMemberIdx: widget.oldMemberIdx,
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
+                                          ? Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => MyPageMainScreen(
+                                                  oldMemberIdx: widget.oldMemberIdx,
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                        : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.name}/${widget.memberIdx}/${widget.oldMemberIdx}");
-                                  },
-                                  child: Row(
-                                    children: [
-                                      widget.isSpecialUser
-                                          ? Row(
-                                              children: [
-                                                Image.asset(
-                                                  'assets/image/feed/icon/small_size/icon_special.png',
-                                                  height: 13.h,
-                                                ),
-                                                SizedBox(
-                                                  width: 4.w,
-                                                ),
-                                              ],
                                             )
-                                          : Container(),
-                                      Text(
-                                        widget.name,
-                                        style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
-                                      ),
-                                    ],
+                                          : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.name}/${widget.memberIdx}/${widget.oldMemberIdx}");
+                                    },
+                                    child: Row(
+                                      children: [
+                                        widget.isSpecialUser
+                                            ? Row(
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/image/feed/icon/small_size/icon_special.png',
+                                                    height: 13.h,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 4.w,
+                                                  ),
+                                                ],
+                                              )
+                                            : Container(),
+                                        Expanded(
+                                          child: Text(
+                                            widget.name,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Row(
@@ -257,8 +256,11 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                       title: '삭제하기',
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () async {
-                                                        final result = await ref.watch(commentListStateProvider.notifier).deleteContents(
-                                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                        int memberIdx = ref.read(userInfoProvider).userModel!.idx;
+                                                        final container = ProviderContainer();
+
+                                                        final result = await container.read(commentListStateProvider.notifier).deleteContents(
+                                                              memberIdx: memberIdx,
                                                               contentsIdx: widget.contentIdx,
                                                               commentIdx: widget.commentIdx,
                                                               parentIdx: widget.parentIdx,
@@ -328,12 +330,12 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                                               contentsIdx: widget.contentIdx,
                                                                             );
 
-                                                                        if (result.result) {
+                                                                        if (result.result && mounted) {
                                                                           context.pop();
 
                                                                           toast(
                                                                             context: context,
-                                                                            text: "‘${widget.name}’님을 차단하였습니다.",
+                                                                            text: "'${widget.name.length > 8 ? '${widget.name.substring(0, 8)}...' : widget.name}'님을 차단하였습니다.",
                                                                             type: ToastType.purple,
                                                                           );
                                                                         }

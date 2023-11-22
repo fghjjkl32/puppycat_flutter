@@ -37,7 +37,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
 
       myPostMaxPages = lists.data.params!.pagination!.endPage!;
 
-      state = state.copyWith(myPostState: state.myPostState.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!));
+      state = state.copyWith(myPostState: state.myPostState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
 
       if (lists == null) {
         state = state.copyWith(myPostState: state.myPostState.copyWith(page: page, isLoading: false));
@@ -171,7 +171,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
 
       myKeepMaxPages = lists.data.params!.pagination!.endPage!;
 
-      state = state.copyWith(myKeepState: state.myKeepState.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!));
+      state = state.copyWith(myKeepState: state.myKeepState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
 
       if (lists == null) {
         state = state.copyWith(myKeepState: state.myKeepState.copyWith(page: page, isLoading: false));

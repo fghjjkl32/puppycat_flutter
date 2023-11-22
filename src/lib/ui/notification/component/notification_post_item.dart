@@ -21,6 +21,7 @@ class NotificationPostItem extends StatelessWidget {
     required this.imgUrl,
     this.onLikeTap,
     this.onCommentTap,
+    this.onTapProfileButton,
     required this.isLiked,
     this.onTap,
   }) : super(key: key);
@@ -34,6 +35,7 @@ class NotificationPostItem extends StatelessWidget {
   final String imgUrl;
   final Function? onLikeTap;
   final Function? onCommentTap;
+  final Function? onTapProfileButton;
   final bool isLiked;
   final Function? onTap;
 
@@ -62,7 +64,16 @@ class NotificationPostItem extends StatelessWidget {
                 ),
               ),
             ),
-            getProfileAvatar(profileImgUrl),
+            GestureDetector(
+              onTap: () {
+                if (onTapProfileButton != null) {
+                  onTapProfileButton!();
+                }
+              },
+              child: getProfileAvatar(
+                profileImgUrl,
+              ),
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(left: 10.0, right: 0),

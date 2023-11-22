@@ -50,10 +50,7 @@ class CommentListState extends _$CommentListState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var loginMemberIdx = ref
-          .read(userInfoProvider)
-          .userModel
-          ?.idx;
+      var loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
 
       final searchResult = await CommentRepository(dio: ref.read(dioProvider)).getComment(
         contentIdx: _contentsIdx,
@@ -64,7 +61,7 @@ class CommentListState extends _$CommentListState {
       List<CommentData> commentList = _serializationComment(searchResult.data.list);
 
       try {
-        _lastPage = searchResult.data.params!.pagination!.totalPageCount!;
+        _lastPage = searchResult.data.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }
@@ -79,7 +76,7 @@ class CommentListState extends _$CommentListState {
       }
       _apiStatus = ListAPIStatus.loaded;
       state.notifyListeners();
-    } on APIException catch(apiException) {
+    } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
       _apiStatus = ListAPIStatus.error;
@@ -116,7 +113,7 @@ class CommentListState extends _$CommentListState {
       List<CommentData> commentList = _serializationComment(searchResult.data.list);
 
       try {
-        _lastPage = searchResult.data.params!.pagination!.totalPageCount!;
+        _lastPage = searchResult.data.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }
@@ -141,7 +138,7 @@ class CommentListState extends _$CommentListState {
       if (element.childCommentData != null) {
         if (element.childCommentData!.list.isNotEmpty) {
           int pageNumber = element.childCommentData!.params.page!;
-          int totalPageCount = element.childCommentData!.params.pagination!.totalPageCount!;
+          int totalPageCount = element.childCommentData!.params.pagination?.totalPageCount! ?? 0;
 
           ///NOTE
           ///아래 mapping은 나중에  API  수정되면 다시 원복
@@ -167,7 +164,7 @@ class CommentListState extends _$CommentListState {
     //   if (_childFocusListModel != null && !_isChildMore) {
     //     CommentData commentData = _childFocusListModel!.list.first;
     //     int pageNumber = _childFocusListModel!.params!.page!;
-    //     int totalPageCount = _childFocusListModel!.params!.pagination!.totalPageCount!;
+    //     int totalPageCount = _childFocusListModel!.params!.pagination?.totalPageCount! ?? 0;
     //
     //     int parentIdx = commentData.parentIdx;
     //     commentList.removeWhere((element) => element.parentIdx == parentIdx);
@@ -291,8 +288,8 @@ class CommentListState extends _$CommentListState {
         }
 
         int pageNumber = childPageResult.data.params!.page!;
-        int totalPageCount = childPageResult.data.params!.pagination!.totalPageCount!;
-        int totalRecordCount = childPageResult.data.params!.pagination!.totalRecordCount!;
+        int totalPageCount = childPageResult.data.params!.pagination?.totalPageCount! ?? 0;
+        int totalRecordCount = childPageResult.data.params!.pagination?.totalRecordCount! ?? 0;
 
         List<CommentData> childList = searchList.map((e) => e.copyWith(isReply: true)).toList();
         childList.first = childList.first.copyWith(isDisplayPreviousMore: pageNumber > 1, pageNumber: pageNumber - 1);
@@ -317,7 +314,7 @@ class CommentListState extends _$CommentListState {
       state.notifyListeners();
 
       state.addPageRequestListener(fetchPage);
-    } on APIException catch(apiException) {
+    } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
       print('eeeeeeeeee $e');
@@ -358,8 +355,8 @@ class CommentListState extends _$CommentListState {
       }
 
       int pageNumber = searchResult.data.params!.page!;
-      int totalPageCount = searchResult.data.params!.pagination!.totalPageCount!;
-      int totalRecordCount = searchResult.data.params!.pagination!.totalRecordCount!;
+      int totalPageCount = searchResult.data.params!.pagination?.totalPageCount! ?? 0;
+      int totalRecordCount = searchResult.data.params!.pagination?.totalRecordCount! ?? 0;
 
       List<CommentData> childList = searchList.map((e) => e.copyWith(isReply: true)).toList();
 
@@ -383,7 +380,7 @@ class CommentListState extends _$CommentListState {
       state.itemList = uniqueComments.values.toList();
       _isChildMore = true;
       state.notifyListeners();
-    } on APIException catch(apiException) {
+    } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
       print('error $e');

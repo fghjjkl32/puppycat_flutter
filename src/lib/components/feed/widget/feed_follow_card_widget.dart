@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:thumbor/thumbor.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class FeedFollowCardWidget extends ConsumerStatefulWidget {
   const FeedFollowCardWidget({
@@ -74,118 +69,133 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            InkWell(
-              onTap: () {
-                ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
-                    ? Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyPageMainScreen(
-                            oldMemberIdx: widget.oldMemberIdx,
+            Expanded(
+              child: InkWell(
+                onTap: () {
+                  ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyPageMainScreen(
+                              oldMemberIdx: widget.oldMemberIdx,
+                            ),
                           ),
-                        ),
-                      )
-                    : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
-              },
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 12.w,
-                      top: 12.h,
-                      bottom: 12.h,
-                      right: 8.w,
+                        )
+                      : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
+                },
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 12.w,
+                        top: 12.h,
+                        bottom: 12.h,
+                        right: 8.w,
+                      ),
+                      child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
                     ),
-                    child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          widget.isSpecialUser
-                              ? Row(
-                                  children: [
-                                    Image.asset(
-                                      'assets/image/feed/icon/small_size/icon_special.png',
-                                      height: 13.h,
-                                    ),
-                                    SizedBox(
-                                      width: 4.w,
-                                    ),
-                                  ],
-                                )
-                              : Container(),
-                          Text(
-                            widget.userName,
-                            style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
-                          ),
-                          Text(
-                            "  ·  ",
-                            style: kBody11RegularStyle.copyWith(color: kNeutralColor400),
-                          ),
-                          isFollow
-                              ? InkWell(
-                                  onTap: () async {
-                                    if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                      if (ref.read(userInfoProvider).userModel == null) {
-                                        context.pushReplacement("/loginScreen");
-                                      } else {
-                                        final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                              followIdx: widget.memberIdx,
-                                            );
-
-                                        if (result.result) {
-                                          setState(() {
-                                            ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
-                                          });
-                                        }
-                                        print(ref.read(followUserStateProvider));
-                                      }
-                                    }
-                                  },
-                                  child: Text(
-                                    "팔로잉",
-                                    style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor500),
-                                  ),
-                                )
-                              : InkWell(
-                                  onTap: () async {
-                                    if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                      if (ref.read(userInfoProvider).userModel == null) {
-                                        context.pushReplacement("/loginScreen");
-                                      } else {
-                                        final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                              followIdx: widget.memberIdx,
-                                            );
-
-                                        if (result.result) {
-                                          setState(() {
-                                            ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
-                                          });
-                                        }
-                                      }
-                                    }
-                                  },
-                                  child: Text(
-                                    "팔로우",
-                                    style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
-                                  ),
+                          Row(
+                            children: [
+                              widget.isSpecialUser
+                                  ? Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/image/feed/icon/small_size/icon_special.png',
+                                          height: 13.h,
+                                        ),
+                                        SizedBox(
+                                          width: 4.w,
+                                        ),
+                                      ],
+                                    )
+                                  : Container(),
+                              Flexible(
+                                child: Text(
+                                  widget.userName,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
                                 ),
+                              ),
+                              Text(
+                                "  ·  ",
+                                style: kBody11RegularStyle.copyWith(color: kNeutralColor400),
+                              ),
+                              isFollow
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(right: 8.0),
+                                      child: InkWell(
+                                        onTap: () async {
+                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                            if (ref.read(userInfoProvider).userModel == null) {
+                                              context.pushReplacement("/loginScreen");
+                                            } else {
+                                              final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                    followIdx: widget.memberIdx,
+                                                  );
+
+                                              if (result.result) {
+                                                setState(() {
+                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+                                                });
+                                              }
+                                              print(ref.read(followUserStateProvider));
+                                            }
+                                          }
+                                        },
+                                        child: Text(
+                                          "팔로잉",
+                                          style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor500),
+                                        ),
+                                      ),
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.only(right: 8.0),
+                                      child: InkWell(
+                                        onTap: () async {
+                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                            if (ref.read(userInfoProvider).userModel == null) {
+                                              context.pushReplacement("/loginScreen");
+                                            } else {
+                                              final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                    followIdx: widget.memberIdx,
+                                                  );
+
+                                              if (result.result) {
+                                                setState(() {
+                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
+                                                });
+                                              }
+                                            }
+                                          }
+                                        },
+                                        child: Text(
+                                          "팔로우",
+                                          style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                        ),
+                                      ),
+                                    ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 3.h,
+                          ),
+                          Text(
+                            "팔로워 ${NumberFormat('###,###,###,###').format(widget.followCount)}",
+                            style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                          ),
                         ],
                       ),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      Text(
-                        "팔로워 ${NumberFormat('###,###,###,###').format(widget.followCount)}",
-                        style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                      ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
             if (widget.imageList.length == 1) ...[
@@ -212,6 +222,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           ClipRRect(
                             borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(12.0),
+                              bottomRight: Radius.circular(12.0),
                             ),
                             child: Image.network(
                               Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[0].imgUrl!}").toUrl(),

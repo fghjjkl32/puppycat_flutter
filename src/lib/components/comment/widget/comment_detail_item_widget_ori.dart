@@ -575,12 +575,12 @@
 //                 //             ? 2
 //                 //             : 2 + (comment.loadMoreClickCount * 10);
 //                 //
-//                 //         return replies!.params.pagination!.totalRecordCount! -
+//                 //         return replies!.params.pagination?.totalRecordCount! ?? 0 -
 //                 //                     displayedReplies <=
 //                 //                 0
 //                 //             ? Container()
 //                 //             : Text(
-//                 //                 "답글 ${replies!.params.pagination!.totalRecordCount! - displayedReplies}개 더 보기",
+//                 //                 "답글 ${replies!.params.pagination?.totalRecordCount! ?? 0 - displayedReplies}개 더 보기",
 //                 //                 style: kBody12RegularStyle.copyWith(
 //                 //                     color: kTextBodyColor),
 //                 //               );

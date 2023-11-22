@@ -42,7 +42,7 @@ class FaqListState extends _$FaqListState {
       var searchList = searchResult!.data.list;
 
       try {
-        _lastPage = searchResult!.data.params!.pagination!.totalPageCount!;
+        _lastPage = searchResult!.data.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

@@ -1,19 +1,17 @@
 import 'dart:io';
 
-import 'package:cupertino_will_pop_scope/cupertino_will_pop_scope.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
@@ -22,11 +20,8 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
-import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/edit_my_information/edit_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
@@ -127,8 +122,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
     // FocusDetector와 ConditionalWillPopScope 모두 IOS 왼쪽으로 swipe할때 뒤로가기 동작하는 이유때문에 넣음
     // FocusDetector를 사용하면 완료하고 나서도 이벤트가 발생하는 문제 발생해서, showDialog를 사용하는곳에서 사용하지 못하기 떄문에 ConditionalWillPopScope 넣음
     // ConditionalWillPopScope 패키지를 사용하면 navigator error가 발생해서 showDialog 뜨는 페이지만 넣는 방향으로 결정
-    return ConditionalWillPopScope(
-      shouldAddCallback: true,
+    return DefaultOnWillPopScope(
       onWillPop: () async {
         showDialog(
           context: context,

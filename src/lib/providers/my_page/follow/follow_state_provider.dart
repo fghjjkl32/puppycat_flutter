@@ -80,7 +80,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
 
       followerMaxPages = lists.data.params!.pagination!.endPage!;
 
-      state = state.copyWith(followerListState: state.followerListState.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!));
+      state = state.copyWith(followerListState: state.followerListState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
 
       if (lists == null) {
         state = state.copyWith(followerListState: state.followerListState.copyWith(page: page, isLoading: false));
@@ -204,7 +204,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
 
       followMaxPages = lists.data.params!.pagination!.endPage!;
 
-      state = state.copyWith(followListState: state.followListState.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!));
+      state = state.copyWith(followListState: state.followListState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
 
       if (lists == null) {
         state = state.copyWith(followListState: state.followListState.copyWith(page: page, isLoading: false));

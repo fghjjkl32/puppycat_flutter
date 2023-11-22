@@ -248,6 +248,11 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   }
                                 }
                               },
+                              onTapProfileButton: () {
+                                ref.read(userInfoProvider).userModel?.idx == item.senderIdx
+                                    ? context.push("/home/myPage")
+                                    : context.push("/home/myPage/followList/${item.senderIdx}/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderIdx}/0");
+                              },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.new_contents) ||
                               item.subType == describeEnum(NotiSubType.mention_contents) ||
@@ -286,6 +291,11 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   "isRouteComment": true,
                                 });
                               },
+                              onTapProfileButton: () {
+                                ref.read(userInfoProvider).userModel?.idx == item.senderIdx
+                                    ? context.push("/home/myPage")
+                                    : context.push("/home/myPage/followList/${item.senderIdx}/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderIdx}/0");
+                              },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.new_comment) ||
                               item.subType == describeEnum(NotiSubType.new_reply) ||
@@ -309,6 +319,11 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   "focusIdx": item.commentIdx,
                                 });
                               },
+                              onTapProfileButton: () {
+                                ref.read(userInfoProvider).userModel?.idx == item.senderIdx
+                                    ? context.push("/home/myPage")
+                                    : context.push("/home/myPage/followList/${item.senderIdx}/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderIdx}/0");
+                              },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.notice) || item.subType == describeEnum(NotiSubType.event)) {
                             return NotificationNoticeItem(
@@ -323,6 +338,11 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                 context.push("/home/myPage/setting/notice", extra: {
                                   "contentsIdx": item.contentsIdx,
                                 });
+                              },
+                              onTapProfileButton: () {
+                                ref.read(userInfoProvider).userModel?.idx == item.senderIdx
+                                    ? context.push("/home/myPage")
+                                    : context.push("/home/myPage/followList/${item.senderIdx}/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderIdx}/0");
                               },
                             );
                           } else {
