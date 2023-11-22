@@ -518,6 +518,41 @@ class AppRouter {
           );
         },
       ),
+      GoRoute(
+        path: '/error_bottom_sheet',
+        name: 'error_bottom_sheet',
+        // builder: (BuildContext context, GoRouterState state) {
+        //   return const ErrorBottomSheetWidget();
+        // },
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          String errorCode = 'unknown';
+          if (state.extra != null) {
+            if (state.extra is String) {
+              errorCode = state.extra.toString();
+            }
+          }
+
+          return BottomSheetPage(
+            builder: (BuildContext context) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: SingleChildScrollView(
+                  child: CustomModalBottomSheet(
+                    widget: WithDrawalPendingSheetItem(),
+                    context: context,
+                  ),
+                ),
+              );
+            },
+            isScrollControlled: false,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(20.0),
+              ),
+            ),
+          );
+        },
+      ),
     ],
 
     redirect: (BuildContext context, GoRouterState state) {
