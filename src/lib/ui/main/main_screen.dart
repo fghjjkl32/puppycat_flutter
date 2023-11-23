@@ -814,13 +814,22 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: item.memberInfoList![0].nick!,
                   profileImage: item.memberInfoList?[0].profileImgUrl! ?? "",
-                  memberIdx: ref.read(userInfoProvider).userModel?.idx,
+                  oldMemberIdx: ref.read(userInfoProvider).userModel?.idx,
                   firstTitle: item.memberInfoList![0].nick!,
                   secondTitle: '피드',
                   imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'recent',
                   isSpecialUser: item.memberInfoList?[0].isBadge == 1,
+                  onTapHideButton: () async {
+                    onTapHide(
+                      context: context,
+                      ref: ref,
+                      contentType: 'userContent',
+                      contentIdx: item.idx,
+                      memberIdx: item.memberIdx,
+                    );
+                  },
                 );
               },
             ),
@@ -891,13 +900,22 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   profileImage: ref.read(followFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? item.memberInfoList![0].profileImgUrl! ?? "",
-                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                  oldMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                   firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   secondTitle: '피드',
                   imageDomain: ref.read(followFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'follow',
                   isSpecialUser: ref.read(followFeedStateProvider.notifier).memberInfo?[0].isBadge == 1,
+                  onTapHideButton: () async {
+                    onTapHide(
+                      context: context,
+                      ref: ref,
+                      contentType: 'userContent',
+                      contentIdx: item.idx,
+                      memberIdx: item.memberIdx,
+                    );
+                  },
                 );
               },
             ),
@@ -955,7 +973,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: item.memberInfoList![0].nick!,
                   profileImage: item.memberInfoList![0].profileImgUrl! ?? "",
-                  memberIdx: ref.read(userInfoProvider).userModel?.idx,
+                  oldMemberIdx: ref.read(userInfoProvider).userModel?.idx,
                   // firstTitle: "null",
                   firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   // secondTitle: '인기 급상승',
@@ -964,6 +982,15 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   index: index,
                   feedType: 'popular',
                   isSpecialUser: item.memberInfoList?[0].isBadge == 1,
+                  onTapHideButton: () async {
+                    onTapHide(
+                      context: context,
+                      ref: ref,
+                      contentType: 'userContent',
+                      contentIdx: item.idx,
+                      memberIdx: item.memberIdx,
+                    );
+                  },
                   // feedType: 'follow',
                 );
               },
@@ -1131,13 +1158,22 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'myContent',
                   userName: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
                   profileImage: ref.read(myFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
-                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                  oldMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                   firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
                   secondTitle: '피드',
                   imageDomain: ref.read(myFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'my',
                   isSpecialUser: ref.read(myFeedStateProvider.notifier).memberInfo![0].isBadge == 1,
+                  onTapHideButton: () async {
+                    onTapHide(
+                      context: context,
+                      ref: ref,
+                      contentType: 'myContent',
+                      contentIdx: item.idx,
+                      memberIdx: item.memberIdx,
+                    );
+                  },
                 );
               },
             ),

@@ -58,6 +58,8 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       state = state.copyWith(page: state.page, isLoading: false);
     } catch (e) {
+      userSearchQuery.add("");
+
       print('initImageTagUserList error $e');
       state = state.copyWith(page: state.page, isLoading: false);
     }

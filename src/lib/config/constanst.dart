@@ -1,20 +1,20 @@
 import 'package:app_install_date/app_install_date.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
+import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
-import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
+import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +26,7 @@ final mentionListProvider = StateProvider<List<MentionListData>>((ref) => []);
 class Constants {
   static Future<String> getBaseUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedURL') ?? "https://api.pcstg.co.kr/";
+    return prefs.getString('selectedURL') ?? "https://api.puppycat.co.kr/";
   }
 
   static Future<String> getBaseWalkUrl() async {
@@ -41,17 +41,17 @@ class Constants {
 
   static Future<String> getThumborHostUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborHostUrl') ?? "https://tb.pcstg.co.kr/";
+    return prefs.getString('thumborHostUrl') ?? "https://tb.puppycat.co.kr/";
   }
 
   static Future<String> getThumborKey() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborKey') ?? "Tjaqhvpt";
+    return prefs.getString('thumborKey') ?? "vjvlzotvldkfel";
   }
 
   static Future<String> getThumborDomain() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborDomain') ?? "https://imgs.pcstg.co.kr";
+    return prefs.getString('thumborDomain') ?? "https://imgs.puppycat.co.kr";
   }
 
   static Future<String> checkFirstInstall() async {
@@ -61,14 +61,14 @@ class Constants {
 }
 
 // String baseUrl = "https://sns-api.devlabs.co.kr:28080";
-String baseUrl = "https://api.pcstg.co.kr/";
+String baseUrl = "https://api.puppycat.co.kr/";
 // String baseUrl = "https://api.puppycat.co.kr";
 
-String thumborHostUrl = "https://tb.pcstg.co.kr/";
+String thumborHostUrl = "https://tb.puppycat.co.kr/";
 
-String thumborKey = "Tjaqhvpt";
+String thumborKey = "vjvlzotvldkfel";
 // String thumborKey = "vjvlzotvldkfel"; //prd
-String imgDomain = "https://imgs.pcstg.co.kr";
+String imgDomain = "https://imgs.puppycat.co.kr";
 String firstInstallTime = "";
 String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
@@ -339,6 +339,7 @@ enum PetGender {
   girlNeutering(4, "암컷 중성화", "");
 
   const PetGender(this.value, this.name, this.icon);
+
   final int value;
   final String name;
   final String icon;
@@ -350,6 +351,7 @@ enum PetSize {
   big(3, "큼", "");
 
   const PetSize(this.value, this.name, this.icon);
+
   final int value;
   final String name;
   final String icon;
@@ -361,6 +363,7 @@ enum PetAge {
   senior(3, "시니어", "");
 
   const PetAge(this.value, this.name, this.icon);
+
   final int value;
   final String name;
   final String icon;
@@ -376,6 +379,7 @@ enum PetCharacter {
   custom(7, '직접입력(최대 40자)');
 
   const PetCharacter(this.value, this.name);
+
   final int value;
   final String name;
 }
@@ -396,3 +400,85 @@ List<String> peeAmountList = ["적음", "중간", "많음", "잘모르겠음"];
 List<String> poopColorList = ["갈색", "흑색", "혈액", "흰색", "회색", "노랑"];
 List<String> poopAmountList = ["적음", "중간", "많음", "잘모르겠음"];
 List<String> poopFormList = ["정상", "연변", "설사", "단단", "토끼똥"];
+
+void onTapHide({
+  required BuildContext context,
+  required WidgetRef ref,
+  required String contentType,
+  required dynamic contentIdx,
+  required dynamic memberIdx,
+}) async {
+  if (ref.read(userInfoProvider).userModel == null) {
+    context.pushReplacement("/loginScreen");
+  } else {
+    final tempContentIdx = contentIdx;
+    context.pop();
+
+    final result = await ref.watch(feedListStateProvider.notifier).postHide(
+          loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+          contentType: contentType,
+          contentIdx: tempContentIdx,
+          memberIdx: memberIdx,
+        );
+
+    if (result.result && context.mounted) {
+      toast(
+        context: context,
+        text: '피드 숨기기를 완료하였습니다.',
+        type: ToastType.purple,
+        buttonText: "숨기기 취소",
+        buttonOnTap: () async {
+          final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
+                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                contentType: contentType,
+                contentIdx: tempContentIdx,
+                memberIdx: memberIdx,
+              );
+
+          if (result.result && context.mounted) {
+            toast(
+              context: context,
+              text: '피드 숨기기 취소',
+              type: ToastType.purple,
+            );
+          }
+        },
+      );
+    }
+  }
+}
+
+void onTapReport({
+  required BuildContext context,
+  required Ref<Object?> ref,
+  required dynamic contentIdx,
+  required bool reportType,
+}) async {
+  toast(
+    context: context,
+    text: '정상적으로 신고 접수가 되었습니다.',
+    type: ToastType.purple,
+    buttonText: "신고취소",
+    buttonOnTap: () async {
+      final result = reportType
+          ? await ref.read(commentListStateProvider.notifier).deleteCommentReport(
+                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                contentIdx: contentIdx,
+                reportType: reportType ? "comment" : "contents",
+              )
+          : await ref.read(feedListStateProvider.notifier).deleteContentReport(
+                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                contentIdx: contentIdx,
+                reportType: reportType ? "comment" : "contents",
+              );
+
+      if (result.result && context.mounted) {
+        toast(
+          context: context,
+          text: '신고 접수가 취소되었습니다.',
+          type: ToastType.grey,
+        );
+      }
+    },
+  );
+}

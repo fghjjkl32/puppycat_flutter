@@ -55,7 +55,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text(
-            "설정",
+            "알림",
           ),
           leading: IconButton(
             onPressed: () {
@@ -79,7 +79,100 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "활동 알림",
+                            "광고성 정보 수신 동의",
+                            style: kBody14BoldStyle.copyWith(
+                              color: kTextSubTitleColor,
+                            ),
+                          ),
+                          FlutterSwitch(
+                            padding: 4,
+                            width: 34.w,
+                            height: 16.h,
+                            activeColor: Theme.of(context).primaryColor,
+                            inactiveColor: kNeutralColor500,
+                            toggleSize: 12.0.w,
+                            value: switchState['main_2'] == 1,
+                            borderRadius: 50.0.w,
+                            onToggle: (value) async {
+                              onTap('main_2', value);
+
+                              if (value) {
+                                toast(context: context, text: '광고성 정보 수신을 ‘동의’했어요.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                              } else {
+                                toast(context: context, text: '광고성 정보 수신을 ‘거부’했어요.', type: ToastType.grey, secondText: "수신 거부일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      height: switchState['main_2'] == 1 ? 54 : 0,
+                      child: SingleChildScrollView(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 36.w, right: 20.w),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "야간 알림",
+                                      style: kBody13RegularStyle.copyWith(
+                                        color: kTextSubTitleColor,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 4,
+                                    ),
+                                    Text(
+                                      "밤 9시부터 아침 8시까지 알림 받기",
+                                      style: kBody11RegularStyle.copyWith(
+                                        color: kTextBodyColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                FlutterSwitch(
+                                  padding: 4,
+                                  width: 34.w,
+                                  height: 16.h,
+                                  activeColor: Theme.of(context).primaryColor,
+                                  inactiveColor: kNeutralColor500,
+                                  toggleSize: 12.0.w,
+                                  value: switchState['main_3'] == 1,
+                                  borderRadius: 50.0.w,
+                                  onToggle: (value) async {
+                                    onTap('main_3', value);
+                                    if (value) {
+                                      toast(context: context, text: '야간 알림을 ‘동의’했어요.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                    } else {
+                                      toast(context: context, text: '야간 알림을 ‘거부’했어요.', type: ToastType.grey, secondText: "수신 거부일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                      child: const Divider(),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "커뮤니티 알림",
                             style: kBody14BoldStyle.copyWith(
                               color: kTextSubTitleColor,
                             ),
@@ -102,7 +195,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                     ),
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
-                      height: switchState['main_1'] == 1 ? 150.h : 0,
+                      height: switchState['main_1'] == 1 ? 200 : 0,
                       child: SingleChildScrollView(
                           child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,112 +364,6 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                           ),
                         ],
                       )),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                      child: const Divider(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
-                      child: Text(
-                        "혜택 및 이벤트 알림",
-                        style: kBody14BoldStyle.copyWith(
-                          color: kTextSubTitleColor,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 36.w, right: 20.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "앱 PUSH",
-                            style: kBody13RegularStyle.copyWith(
-                              color: kTextSubTitleColor,
-                            ),
-                          ),
-                          FlutterSwitch(
-                            padding: 4,
-                            width: 34.w,
-                            height: 16.h,
-                            activeColor: Theme.of(context).primaryColor,
-                            inactiveColor: kNeutralColor500,
-                            toggleSize: 12.0.w,
-                            value: switchState['main_2'] == 1,
-                            borderRadius: 50.0.w,
-                            onToggle: (value) async {
-                              onTap('main_2', value);
-
-                              if (value) {
-                                toast(context: context, text: '광고성 정보 수신 여부가 ‘동의’로 변경되었습니다.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
-                              } else {
-                                toast(context: context, text: '광고성 정보 수신 여부가 ‘거부’로 변경되었습니다.', type: ToastType.grey, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                      child: const Divider(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
-                      child: Text(
-                        "야간 알림",
-                        style: kBody14BoldStyle.copyWith(
-                          color: kTextSubTitleColor,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 36.w, right: 20.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "매너 모드",
-                                style: kBody13RegularStyle.copyWith(
-                                  color: kTextSubTitleColor,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              Text(
-                                "밤 9시부터 아침 8시까지 알림을 받지 않습니다.",
-                                style: kBody11RegularStyle.copyWith(
-                                  color: kTextBodyColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                          FlutterSwitch(
-                            padding: 4,
-                            width: 34.w,
-                            height: 16.h,
-                            activeColor: Theme.of(context).primaryColor,
-                            inactiveColor: kNeutralColor500,
-                            toggleSize: 12.0.w,
-                            value: switchState['main_3'] == 1,
-                            borderRadius: 50.0.w,
-                            onToggle: (value) async {
-                              onTap('main_3', value);
-
-                              if (value) {
-                                toast(context: context, text: '야간에도 정보/활동 등 모든 알림이 발송됩니다.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
-                              } else {
-                                toast(context: context, text: '야간에는 정보/활동 등 모든 알림이 오지 않습니다.', type: ToastType.grey, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
-                              }
-                            },
-                          ),
-                        ],
-                      ),
                     ),
                   ],
                 );

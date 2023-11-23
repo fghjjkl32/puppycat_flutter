@@ -42,6 +42,8 @@ class CommentDetailItemWidget extends ConsumerStatefulWidget {
     required this.isDisplayPreviousMore,
     this.onPrevMoreChildComment,
     required this.oldMemberIdx,
+    this.onTapRemoveButton,
+    this.onTapEditButton,
     Key? key,
   }) : super(key: key);
 
@@ -68,6 +70,9 @@ class CommentDetailItemWidget extends ConsumerStatefulWidget {
   final int pageNumber;
   final bool isDisplayPreviousMore;
   final Function? onPrevMoreChildComment;
+
+  final Function? onTapRemoveButton;
+  final Function? onTapEditButton;
 
   @override
   CommentDetailItemWidgetState createState() => CommentDetailItemWidgetState();
@@ -233,19 +238,9 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                       title: '수정하기',
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () async {
-                                                        final commentHeaderState = ref.watch(commentHeaderProvider.notifier);
-
-                                                        // context.pop();
-
-                                                        commentHeaderState.addEditCommentHeader(widget.comment, widget.commentIdx);
-
-                                                        commentHeaderState.setHasInput(true);
-
-                                                        ref.read(hashtagListProvider.notifier).state = getHashtagList(widget.comment);
-                                                        ref.read(mentionListProvider.notifier).state = widget.mentionListData;
-
-                                                        commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(widget.comment, widget.mentionListData));
-                                                        context.pop();
+                                                        if (widget.onTapEditButton != null) {
+                                                          widget.onTapEditButton!();
+                                                        }
                                                       },
                                                     ),
                                                     BottomSheetButtonItem(
@@ -256,18 +251,8 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                       title: '삭제하기',
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () async {
-                                                        int memberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                                        final container = ProviderContainer();
-
-                                                        final result = await container.read(commentListStateProvider.notifier).deleteContents(
-                                                              memberIdx: memberIdx,
-                                                              contentsIdx: widget.contentIdx,
-                                                              commentIdx: widget.commentIdx,
-                                                              parentIdx: widget.parentIdx,
-                                                            );
-
-                                                        if (result.result) {
-                                                          context.pop();
+                                                        if (widget.onTapRemoveButton != null) {
+                                                          widget.onTapRemoveButton!();
                                                         }
                                                       },
                                                     ),

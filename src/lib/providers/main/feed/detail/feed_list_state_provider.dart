@@ -491,7 +491,6 @@ class FeedListState extends _$FeedListState {
 
   Future<ResponseModel> postLike({
     required loginMemberIdx,
-    required memberIdx,
     required contentIdx,
     required String contentType,
   }) async {
@@ -543,7 +542,6 @@ class FeedListState extends _$FeedListState {
 
   Future<ResponseModel> deleteLike({
     required loginMemberIdx,
-    required memberIdx,
     required contentIdx,
     required String contentType,
   }) async {
@@ -595,7 +593,6 @@ class FeedListState extends _$FeedListState {
 
   Future<ResponseModel> postSave({
     required loginMemberIdx,
-    required memberIdx,
     required contentIdx,
     required String contentType,
   }) async {
@@ -645,7 +642,6 @@ class FeedListState extends _$FeedListState {
 
   Future<ResponseModel> deleteSave({
     required loginMemberIdx,
-    required memberIdx,
     required contentIdx,
     required String contentType,
   }) async {

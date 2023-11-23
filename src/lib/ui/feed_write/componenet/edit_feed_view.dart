@@ -162,7 +162,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                                   color: kTextSubTitleColor,
                                 ),
                                 Text(
-                                  "사람 태그하기 ",
+                                  "유저 태그하기 ",
                                   style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                                 ),
                                 Text(

@@ -1,18 +1,14 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/login/login_request_model.dart';
-import 'package:pet_mobile_social_flutter/models/login/login_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/services/login/login_service.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/apple/apple_login.dart';
@@ -75,12 +71,14 @@ class LoginRepository {
   Future<UserModel> loginByUserModel({required UserModel userModel}) async {
     var appKey = await GetIt.I.get<UuidUtil>().getUUID();
     String fcmToken;
-    if (Platform.isIOS) {
-      ///TODO ios Push
-      fcmToken = '1234565';
-    } else {
-      fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';
-    }
+    // if (Platform.isIOS) {
+    //   ///TODO ios Push
+    //   fcmToken = '1234565';
+    // } else {
+    //   fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';
+    // }
+
+    fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';
 
     LoginRequestModel reqModel = LoginRequestModel(
       id: userModel.id,

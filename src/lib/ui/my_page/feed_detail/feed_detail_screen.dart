@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -292,6 +293,15 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                           imgDomain: ref.watch(firstFeedStateProvider.notifier).imgDomain!,
                           index: index,
                           isSpecialUser: item.memberInfoList != null ? item.memberInfoList![0].isBadge == 1 : ref.read(firstFeedStateProvider.notifier).memberInfo?[0].isBadge == 1,
+                          onTapHideButton: () async {
+                            onTapHide(
+                              context: context,
+                              ref: ref,
+                              contentType: widget.contentType,
+                              contentIdx: widget.contentIdx,
+                              memberIdx: item.memberInfoList != null ? item.memberInfoList![0].memberIdx : ref.read(firstFeedStateProvider.notifier).memberInfo?[0].memberIdx,
+                            );
+                          },
                         ),
                       ],
                     );
@@ -482,6 +492,15 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                           imgDomain: ref.watch(feedListStateProvider.notifier).imgDomain!,
                           index: index,
                           isSpecialUser: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].isBadge == 1 : ref.read(feedListStateProvider.notifier).memberInfo?[0].isBadge == 1,
+                          onTapHideButton: () async {
+                            onTapHide(
+                              context: context,
+                              ref: ref,
+                              contentType: widget.contentType,
+                              contentIdx: widget.contentIdx,
+                              memberIdx: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberIdx : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberIdx,
+                            );
+                          },
                         ),
                       ],
                     );

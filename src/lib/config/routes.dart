@@ -7,6 +7,7 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/custom_
 import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_page.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/dialog_page.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
@@ -123,6 +124,14 @@ class AppRouter {
                 return ReportScreen(
                   isComment: bool.parse(isComment),
                   contentIdx: int.parse(contentIdx),
+                  onTapReport: () {
+                    onTapReport(
+                      context: context,
+                      ref: ref,
+                      contentIdx: int.parse(contentIdx),
+                      reportType: bool.parse(isComment),
+                    );
+                  },
                 );
               },
             ),
@@ -249,7 +258,7 @@ class AppRouter {
                         isRouteComment = extraMap['isRouteComment'];
                       }
                       if (extraMap.keys.contains('focusIdx')) {
-                        commentFocusIndex = extraMap['focusIdx'];
+                        commentFocusIndex = int.parse(extraMap['focusIdx']);
                       }
                     }
 

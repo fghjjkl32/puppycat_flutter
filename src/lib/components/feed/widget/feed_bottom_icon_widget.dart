@@ -11,7 +11,6 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 
@@ -19,7 +18,6 @@ class FeedBottomIconWidget extends ConsumerStatefulWidget {
   const FeedBottomIconWidget({
     super.key,
     required this.contentIdx,
-    required this.memberIdx,
     required this.likeCount,
     required this.commentCount,
     required this.isLike,
@@ -29,7 +27,6 @@ class FeedBottomIconWidget extends ConsumerStatefulWidget {
   });
 
   final int contentIdx;
-  final int? memberIdx;
   final int likeCount;
   final int commentCount;
   final bool isLike;
@@ -83,7 +80,6 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                         if (!ref.watch(likeApiIsLoadingStateProvider)) {
                           ref.watch(feedListStateProvider.notifier).deleteLike(
                                 loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                memberIdx: widget.memberIdx,
                                 contentIdx: widget.contentIdx,
                                 contentType: widget.contentType,
                               );
@@ -186,7 +182,6 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                               ? context.pushReplacement("/loginScreen")
                               : await ref.watch(feedListStateProvider.notifier).postLike(
                                     loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                    memberIdx: widget.memberIdx,
                                     contentIdx: widget.contentIdx,
                                     contentType: widget.contentType,
                                   );
@@ -308,7 +303,6 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                           ? context.pushReplacement("/loginScreen")
                           : ref.watch(feedListStateProvider.notifier).deleteSave(
                                 loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                memberIdx: widget.memberIdx,
                                 contentIdx: widget.contentIdx,
                                 contentType: widget.contentType,
                               );
@@ -339,7 +333,6 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                           ? context.pushReplacement("/loginScreen")
                           : await ref.watch(feedListStateProvider.notifier).postSave(
                                 loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                memberIdx: widget.memberIdx,
                                 contentIdx: widget.contentIdx,
                                 contentType: widget.contentType,
                               );

@@ -43,6 +43,21 @@ class PolicyState extends _$PolicyState {
     }
   }
 
+  void getPoliciesDetail(String searchType, String date) async {
+    try {
+      final PolicyRepository policyRepository = PolicyRepository(dio: ref.read(dioProvider));
+      List<PolicyItemModel> result = await policyRepository.getPoliciesDetail(searchType, date);
+
+      state = result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      state = [];
+    } catch (e) {
+      print('get PoliciesDetail Error');
+      state = [];
+    }
+  }
+
   void toggle(int idx) {
     List<PolicyItemModel> policies = state;
     policies = policies.map((e) {

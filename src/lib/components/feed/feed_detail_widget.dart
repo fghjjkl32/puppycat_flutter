@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_bottom_icon_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_comment_widget.dart';
@@ -12,7 +11,6 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 
 class FeedDetailWidget extends ConsumerWidget {
@@ -25,6 +23,8 @@ class FeedDetailWidget extends ConsumerWidget {
   final String imgDomain;
   final int index;
 
+  final Function onTapHideButton;
+
   const FeedDetailWidget({
     required this.profileImage,
     required this.feedData,
@@ -34,6 +34,7 @@ class FeedDetailWidget extends ConsumerWidget {
     required this.imgDomain,
     required this.isSpecialUser,
     required this.index,
+    required this.onTapHideButton,
     Key? key,
   }) : super(key: key);
 
@@ -56,6 +57,9 @@ class FeedDetailWidget extends ConsumerWidget {
           contentIdx: feedData.idx,
           oldMemberIdx: memberIdx!,
           isDetailWidget: true,
+          onTapHideButton: () async {
+            onTapHideButton();
+          },
         ),
         //feed detail image
         FeedImageDetailWidget(
@@ -95,7 +99,6 @@ class FeedDetailWidget extends ConsumerWidget {
           likeCount: feedData.likeCnt!,
           commentCount: feedData.commentCnt!,
           contentIdx: feedData.idx,
-          memberIdx: memberIdx,
           isLike: feedData.likeState == 1,
           isSave: feedData.saveState == 1,
           contentType: contentType,
