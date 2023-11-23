@@ -25,7 +25,7 @@ import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_p
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
@@ -83,10 +83,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
     scrollController.addListener(_scrollListener);
 
     feedListStateNotifier = ref.read(feedListStateProvider.notifier);
-    firstFeedStateNotifier = ref.read(firstFeedStateProvider.notifier);
+    firstFeedStateNotifier = ref.read(firstFeedDetailStateProvider.notifier);
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-    ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
 
     tabController = TabController(
       initialIndex: 0,
@@ -146,7 +146,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     title: const Text('마이페이지'),
                     leading: IconButton(
                       onPressed: () {
-                        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                         Navigator.of(context).pop();
                       },
@@ -360,8 +360,22 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                   return Container(
                     margin: const EdgeInsets.all(10.0),
                     child: GestureDetector(
-                      onTap: () {
-                        context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/피드/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myContent");
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': '${ref.watch(myInformationStateProvider).list[0].nick}',
+                          'secondTitle': '피드',
+                          'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                          'contentIdx': '${item.idx}',
+                          'contentType': 'myContent',
+                        };
+
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myContent', item.idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/피드/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myContent");
+                          context.push('/home/myPage/detail', extra: extraMap);
+                        });
                       },
                       child: Center(
                         child: Stack(
@@ -761,8 +775,21 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                   return Container(
                     margin: const EdgeInsets.all(10.0),
                     child: GestureDetector(
-                      onTap: () {
-                        context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myTagContent");
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': '${ref.watch(myInformationStateProvider).list[0].nick}',
+                          'secondTitle': '태그됨',
+                          'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                          'contentIdx': '${item.idx}',
+                          'contentType': 'myTagContent',
+                        };
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myTagContent', item.idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myTagContent");
+                          context.push('/home/myPage/detail', extra: extraMap);
+                        });
                       },
                       child: Center(
                         child: Stack(

@@ -26,32 +26,32 @@ final mentionListProvider = StateProvider<List<MentionListData>>((ref) => []);
 class Constants {
   static Future<String> getBaseUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedURL') ?? "https://api.puppycat.co.kr/";
+    return prefs.getString('selectedURL') ?? baseUrl;
   }
 
   static Future<String> getBaseWalkUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedWalkURL') ?? "https://walk-api.pcstg.co.kr/";
+    return prefs.getString('selectedWalkURL') ?? walkBaseUrl;
   }
 
   static Future<String> getBaseWalkGpsUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedWalkGpsURL') ?? "https://walk-gps.pcstg.co.kr/";
+    return prefs.getString('selectedWalkGpsURL') ?? walkGpsBaseUrl;
   }
 
   static Future<String> getThumborHostUrl() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborHostUrl') ?? "https://tb.puppycat.co.kr/";
+    return prefs.getString('thumborHostUrl') ?? thumborHostUrl;
   }
 
   static Future<String> getThumborKey() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborKey') ?? "vjvlzotvldkfel";
+    return prefs.getString('thumborKey') ?? thumborKey;
   }
 
   static Future<String> getThumborDomain() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborDomain') ?? "https://imgs.puppycat.co.kr";
+    return prefs.getString('thumborDomain') ?? imgDomain;
   }
 
   static Future<String> checkFirstInstall() async {
@@ -61,25 +61,31 @@ class Constants {
 }
 
 // String baseUrl = "https://sns-api.devlabs.co.kr:28080";
+// String baseUrl = "https://api.pcstg.co.kr/";
 String baseUrl = "https://api.puppycat.co.kr/";
-// String baseUrl = "https://api.puppycat.co.kr";
 
+// String thumborHostUrl = "https://tb.pcstg.co.kr/";
+// String thumborHostUrl = "https://tb.pcstg.co.kr/";
 String thumborHostUrl = "https://tb.puppycat.co.kr/";
 
-String thumborKey = "vjvlzotvldkfel";
-// String thumborKey = "vjvlzotvldkfel"; //prd
+// String thumborKey = "Tjaqhvpt";
+String thumborKey = "vjvlzotvldkfel"; //prd
+
+// String imgDomain = "https://imgs.pcstg.co.kr";
+// String imgDomain = "https://imgs.pcstg.co.kr";
 String imgDomain = "https://imgs.puppycat.co.kr";
+
 String firstInstallTime = "";
 String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
 
 // String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
-String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
-// String walkBaseUrl = 'https://walk-api.puppycat.co.kr';
+// String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
+String walkBaseUrl = 'https://walk-api.puppycat.co.kr/';
 
 // String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr';
-String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
-// String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr';
+// String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
+String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
 
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;

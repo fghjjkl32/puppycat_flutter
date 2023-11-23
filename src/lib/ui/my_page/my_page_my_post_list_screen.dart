@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,13 +6,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/my_feed_delete_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/my_feed_keep_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
 
@@ -235,7 +234,15 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
 
                         return GestureDetector(
                           onTap: () async {
-                            final result = await context.push("/home/myPage/detail/null/일상글 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myDetailContent");
+                            Map<String, dynamic> extraMap = {
+                              'firstTitle': 'null',
+                              'secondTitle': '일상글 피드',
+                              'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                              'contentIdx': '${lists[index].idx}',
+                              'contentType': 'myDetailContent',
+                            };
+                            // final result = await context.push("/home/myPage/detail/null/일상글 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myDetailContent");
+                            final result = await context.push('/home/myPage/detail', extra: extraMap);
 
                             if (result == null) {
                               await ref.watch(myPostStateProvider.notifier).refreshMyKeeps(ref.read(userInfoProvider).userModel!.idx);
@@ -558,15 +565,28 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                         }
                         return GestureDetector(
                           onTap: () async {
-                            final result = await context.push("/home/myPage/detail/null/보관한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myKeepContent");
+                            Map<String, dynamic> extraMap = {
+                              'firstTitle': 'null',
+                              'secondTitle': '보관한 피드',
+                              'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                              'contentIdx': '${lists[index].idx}',
+                              'contentType': 'myKeepContent',
+                            };
+                            await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myKeepContent', lists[index].idx).then((value) async {
+                              if (value == null) {
+                                return;
+                              }
+                              // final result = await context.push("/home/myPage/detail/null/보관한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myKeepContent");
+                              final result = await context.push('/home/myPage/detail', extra: extraMap);
 
-                            if (result == null) {
-                              await ref.watch(myPostStateProvider.notifier).refreshMyKeeps(ref.read(userInfoProvider).userModel!.idx);
-                              await ref.watch(myPostStateProvider.notifier).refreshMyPost(ref.read(userInfoProvider).userModel!.idx);
+                              if (result == null) {
+                                await ref.watch(myPostStateProvider.notifier).refreshMyKeeps(ref.read(userInfoProvider).userModel!.idx);
+                                await ref.watch(myPostStateProvider.notifier).refreshMyPost(ref.read(userInfoProvider).userModel!.idx);
 
-                              ref.watch(myPostStateProvider.notifier).resetMyPostSelection();
-                              ref.watch(myPostStateProvider.notifier).resetMyKeepSelection();
-                            }
+                                ref.watch(myPostStateProvider.notifier).resetMyPostSelection();
+                                ref.watch(myPostStateProvider.notifier).resetMyKeepSelection();
+                              }
+                            });
                           },
                           child: Stack(
                             children: [

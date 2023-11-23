@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/popular_hour_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 
@@ -49,8 +50,23 @@ class FeedMainWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () {
-        context.push("/home/myPage/detail/$firstTitle/$secondTitle/${feedData.memberIdx}/${feedData.idx}/$contentType");
+      onTap: () async {
+        Map<String, dynamic> extraMap = {
+          'firstTitle': firstTitle,
+          'secondTitle': secondTitle,
+          'memberIdx': '${feedData.memberIdx}',
+          'contentIdx': '${feedData.idx}',
+          'contentType': contentType,
+        };
+
+        print("feedData.memberIdx ${feedData.memberIdx}");
+        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(contentType, feedData.idx).then((value) {
+          if (value == null) {
+            return;
+          }
+          // context.push("/home/myPage/detail/$firstTitle/$secondTitle/${feedData.memberIdx}/${feedData.idx}/$contentType");
+          context.push('/home/myPage/detail', extra: extraMap);
+        });
       },
       child: Material(
         child: Container(
