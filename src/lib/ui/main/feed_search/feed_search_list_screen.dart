@@ -213,8 +213,22 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                 }
 
                                 return GestureDetector(
-                                  onTap: () {
-                                    context.push("/home/myPage/detail/null/${widget.searchWord}/${ref.read(userInfoProvider).userModel?.idx}/${lists[index].idx}/searchContent");
+                                  onTap: () async {
+                                    Map<String, dynamic> extraMap = {
+                                      'firstTitle': 'null',
+                                      'secondTitle': widget.searchWord,
+                                      'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                                      'contentIdx': '${lists[index].idx}',
+                                      'contentType': 'searchContent',
+                                    };
+
+                                    await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('searchContent', lists[index].idx).then((value) {
+                                      if (value == null) {
+                                        return;
+                                      }
+                                      // context.push("/home/myPage/detail/null/${widget.searchWord}/${ref.read(userInfoProvider).userModel?.idx}/${lists[index].idx}/searchContent");
+                                      context.push('/home/myPage/detail', extra: extraMap);
+                                    });
                                   },
                                   child: Stack(
                                     children: [

@@ -359,8 +359,22 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                   return Container(
                     margin: const EdgeInsets.all(10.0),
                     child: GestureDetector(
-                      onTap: () {
-                        context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/피드/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myContent");
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': '${ref.watch(myInformationStateProvider).list[0].nick}',
+                          'secondTitle': '피드',
+                          'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                          'contentIdx': '${item.idx}',
+                          'contentType': 'myContent',
+                        };
+
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myContent', item.idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/피드/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myContent");
+                          context.push('/home/myPage/detail', extra: extraMap);
+                        });
                       },
                       child: Center(
                         child: Stack(
@@ -733,8 +747,21 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                   return Container(
                     margin: const EdgeInsets.all(10.0),
                     child: GestureDetector(
-                      onTap: () {
-                        context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myTagContent");
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': '${ref.watch(myInformationStateProvider).list[0].nick}',
+                          'secondTitle': '태그됨',
+                          'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                          'contentIdx': '${item.idx}',
+                          'contentType': 'myTagContent',
+                        };
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myTagContent', item.idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myTagContent");
+                          context.push('/home/myPage/detail', extra: extraMap);
+                        });
                       },
                       child: Center(
                         child: Stack(

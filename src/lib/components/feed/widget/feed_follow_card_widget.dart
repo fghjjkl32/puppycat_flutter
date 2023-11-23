@@ -9,6 +9,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
@@ -200,19 +201,24 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
             ),
             if (widget.imageList.length == 1) ...[
               GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => FeedDetailScreen(
-                              firstTitle: widget.userName,
-                              secondTitle: "피드",
-                              memberIdx: widget.memberIdx,
-                              contentIdx: widget.imageList[0].idx!,
-                              contentType: "FollowCardContent",
-                              oldMemberIdx: widget.oldMemberIdx,
-                            )),
-                  );
+                onTap: () async {
+                  await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!).then((value) {
+                    if (value == null) {
+                      return;
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FeedDetailScreen(
+                                firstTitle: widget.userName,
+                                secondTitle: "피드",
+                                memberIdx: widget.memberIdx,
+                                contentIdx: widget.imageList[0].idx!,
+                                contentType: "FollowCardContent",
+                                oldMemberIdx: widget.oldMemberIdx,
+                              )),
+                    );
+                  });
                 },
                 child: Row(
                   children: [
@@ -261,19 +267,24 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                   Flexible(
                     flex: 1,
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => FeedDetailScreen(
-                                    firstTitle: widget.userName,
-                                    secondTitle: "피드",
-                                    memberIdx: widget.memberIdx,
-                                    contentIdx: widget.imageList[0].idx!,
-                                    contentType: "FollowCardContent",
-                                    oldMemberIdx: widget.oldMemberIdx,
-                                  )),
-                        );
+                      onTap: () async {
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FeedDetailScreen(
+                                      firstTitle: widget.userName,
+                                      secondTitle: "피드",
+                                      memberIdx: widget.memberIdx,
+                                      contentIdx: widget.imageList[0].idx!,
+                                      contentType: "FollowCardContent",
+                                      oldMemberIdx: widget.oldMemberIdx,
+                                    )),
+                          );
+                        });
                       },
                       child: Stack(
                         children: [
@@ -316,19 +327,24 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                   Flexible(
                     flex: 1,
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => FeedDetailScreen(
-                                    firstTitle: widget.userName,
-                                    secondTitle: "피드",
-                                    memberIdx: widget.memberIdx,
-                                    contentIdx: widget.imageList[1].idx!,
-                                    contentType: "FollowCardContent",
-                                    oldMemberIdx: widget.oldMemberIdx,
-                                  )),
-                        );
+                      onTap: () async {
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[1].idx!).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FeedDetailScreen(
+                                      firstTitle: widget.userName,
+                                      secondTitle: "피드",
+                                      memberIdx: widget.memberIdx,
+                                      contentIdx: widget.imageList[1].idx!,
+                                      contentType: "FollowCardContent",
+                                      oldMemberIdx: widget.oldMemberIdx,
+                                    )),
+                          );
+                        });
                       },
                       child: Stack(
                         children: [
@@ -373,19 +389,24 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                   Flexible(
                     flex: 10,
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => FeedDetailScreen(
-                                    firstTitle: widget.userName,
-                                    secondTitle: "피드",
-                                    memberIdx: widget.memberIdx,
-                                    contentIdx: widget.imageList[0].idx!,
-                                    contentType: "FollowCardContent",
-                                    oldMemberIdx: widget.oldMemberIdx,
-                                  )),
-                        );
+                      onTap: () async {
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FeedDetailScreen(
+                                      firstTitle: widget.userName,
+                                      secondTitle: "피드",
+                                      memberIdx: widget.memberIdx,
+                                      contentIdx: widget.imageList[0].idx!,
+                                      contentType: "FollowCardContent",
+                                      oldMemberIdx: widget.oldMemberIdx,
+                                    )),
+                          );
+                        });
                       },
                       child: Stack(
                         children: [
@@ -430,19 +451,24 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     child: Column(
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => FeedDetailScreen(
-                                        firstTitle: widget.userName,
-                                        secondTitle: "피드",
-                                        memberIdx: widget.memberIdx,
-                                        contentIdx: widget.imageList[1].idx!,
-                                        contentType: "FollowCardContent",
-                                        oldMemberIdx: widget.oldMemberIdx,
-                                      )),
-                            );
+                          onTap: () async {
+                            await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[1].idx!).then((value) {
+                              if (value == null) {
+                                return;
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FeedDetailScreen(
+                                          firstTitle: widget.userName,
+                                          secondTitle: "피드",
+                                          memberIdx: widget.memberIdx,
+                                          contentIdx: widget.imageList[1].idx!,
+                                          contentType: "FollowCardContent",
+                                          oldMemberIdx: widget.oldMemberIdx,
+                                        )),
+                              );
+                            });
                           },
                           child: Stack(
                             children: [
@@ -477,19 +503,24 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           height: 1.h,
                         ),
                         GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => FeedDetailScreen(
-                                        firstTitle: widget.userName,
-                                        secondTitle: "피드",
-                                        memberIdx: widget.memberIdx,
-                                        contentIdx: widget.imageList[2].idx!,
-                                        contentType: "FollowCardContent",
-                                        oldMemberIdx: widget.oldMemberIdx,
-                                      )),
-                            );
+                          onTap: () async {
+                            await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[2].idx!).then((value) {
+                              if (value == null) {
+                                return;
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FeedDetailScreen(
+                                          firstTitle: widget.userName,
+                                          secondTitle: "피드",
+                                          memberIdx: widget.memberIdx,
+                                          contentIdx: widget.imageList[2].idx!,
+                                          contentType: "FollowCardContent",
+                                          oldMemberIdx: widget.oldMemberIdx,
+                                        )),
+                              );
+                            });
                           },
                           child: ClipRRect(
                             borderRadius: const BorderRadius.only(

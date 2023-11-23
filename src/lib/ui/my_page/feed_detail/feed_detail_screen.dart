@@ -76,12 +76,25 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    // Access context safely in didChangeDependencies
+    // ref.read(firstFeedDetailStateProvider.notifier).state = null;
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
+    ref.read(firstFeedDetailStateProvider.notifier).state = null;
     super.dispose();
   }
 
   Future<FeedData?> _fetchFirstFeedData() async {
-    return ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(widget.contentType, widget.contentIdx);
+    final firstFeedData = ref.read(firstFeedDetailStateProvider);
+    if (firstFeedData == null) {
+      return ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(widget.contentType, widget.contentIdx);
+    } else {
+      return firstFeedData;
+    }
   }
 
   @override

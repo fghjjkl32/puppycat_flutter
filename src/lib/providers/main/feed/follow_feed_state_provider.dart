@@ -4,12 +4,9 @@ import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'follow_feed_state_provider.g.dart';
@@ -45,10 +42,10 @@ class FollowFeedState extends _$FollowFeedState {
         page: pageKey,
       );
 
-      memberInfo = feedResult.data.memberInfo;
-      imgDomain = feedResult.data.imgDomain;
+      memberInfo = feedResult.data!.memberInfo;
+      imgDomain = feedResult.data!.imgDomain;
 
-      List<FeedData> feedList = feedResult.data.list
+      List<FeedData> feedList = feedResult.data!.list
           .map(
             (e) => FeedData(
               commentList: e.commentList,
@@ -81,7 +78,7 @@ class FollowFeedState extends _$FollowFeedState {
           .toList();
 
       try {
-        _lastPage = feedResult.data.params!.pagination?.totalPageCount! ?? 0;
+        _lastPage = feedResult.data!.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

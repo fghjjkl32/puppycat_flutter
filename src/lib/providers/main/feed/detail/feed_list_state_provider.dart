@@ -111,11 +111,11 @@ class FeedListState extends _$FeedListState {
       } else if (contentType == "notificationContent") {
         feedResult = await Future.value(feedNullResponseModel);
       }
-      memberInfo = feedResult.data.memberInfo;
+      memberInfo = feedResult.data!.memberInfo;
       print(memberInfo);
-      imgDomain = feedResult.data.imgDomain;
+      imgDomain = feedResult.data!.imgDomain;
 
-      List<FeedData> searchList = feedResult.data.list
+      List<FeedData> searchList = feedResult.data!.list
           .map(
             (e) => FeedData(
               commentList: e.commentList,
@@ -150,7 +150,7 @@ class FeedListState extends _$FeedListState {
       searchList.removeWhere((element) => element.idx == idxToRemove);
 
       try {
-        _lastPage = feedResult.data.params!.pagination?.totalPageCount! ?? 0;
+        _lastPage = feedResult.data!.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

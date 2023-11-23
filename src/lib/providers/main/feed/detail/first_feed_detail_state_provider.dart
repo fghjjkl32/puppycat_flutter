@@ -82,16 +82,16 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
       }
 
-      bool isResponseDataEmpty = searchResult.data.list.isEmpty;
+      bool isResponseDataEmpty = searchResult.data!.list.isEmpty;
       ref.read(firstFeedEmptyProvider.notifier).state = isResponseDataEmpty;
-      memberInfo = searchResult.data.memberInfo?.first;
-      feedImgDomain = searchResult.data.imgDomain;
+      memberInfo = searchResult.data!.memberInfo?.first;
+      feedImgDomain = searchResult.data!.imgDomain;
 
       Future(() {
         ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.loaded;
       });
       if (!isResponseDataEmpty) {
-        FeedData firstFeed = searchResult.data.list.first;
+        FeedData firstFeed = searchResult.data!.list.first;
         state = firstFeed;
         return firstFeed;
       } else {
