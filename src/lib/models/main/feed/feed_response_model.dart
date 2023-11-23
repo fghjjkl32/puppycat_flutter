@@ -9,10 +9,9 @@ class FeedResponseModel with _$FeedResponseModel {
   factory FeedResponseModel({
     required bool result,
     required String code,
-    required FeedDataListModel data,
+    required FeedDataListModel? data,
     String? message,
   }) = _FeedResponseModel;
 
-  factory FeedResponseModel.fromJson(Map<String, dynamic> json) =>
-      _$FeedResponseModelFromJson(json);
+  factory FeedResponseModel.fromJson(Map<String, dynamic> json) => _$FeedResponseModelFromJson(json);
 }

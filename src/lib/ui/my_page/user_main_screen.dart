@@ -17,7 +17,7 @@ import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_i
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 ///NOTE
@@ -85,7 +85,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     scrollController.addListener(_scrollListener);
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-    ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
 
     tabController = TabController(
       initialIndex: 0,
@@ -126,7 +126,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     return DefaultOnWillPopScope(
       onWillPop: () async {
         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
         return Future.value(true);
       },
       child: Material(
@@ -147,7 +147,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       leading: IconButton(
                         onPressed: () {
                           ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-                          ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                          ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                           Navigator.of(context).pop();
                         },
                         icon: const Icon(
@@ -454,9 +454,21 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                   return Container(
                     margin: const EdgeInsets.all(10.0),
                     child: GestureDetector(
-                      onTap: () {
-                        context.push(
-                            "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/피드/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userContent");
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': '${ref.watch(userInformationStateProvider).list[0].nick}',
+                          'secondTitle': '피드',
+                          'memberIdx': '${ref.watch(userInformationStateProvider).list[0].memberIdx}',
+                          'contentIdx': '${item.idx}',
+                          'contentType': 'userContent',
+                        };
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('userContent', item.idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push("/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/피드/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userContent");
+                          context.push('/home/myPage/detail', extra: extraMap);
+                        });
                       },
                       child: Center(
                         child: Stack(
@@ -609,9 +621,21 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                   return Container(
                     margin: const EdgeInsets.all(10.0),
                     child: GestureDetector(
-                      onTap: () {
-                        context.push(
-                            "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userTagContent");
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': '${ref.watch(userInformationStateProvider).list[0].nick}',
+                          'secondTitle': '태그됨',
+                          'memberIdx': '${ref.watch(userInformationStateProvider).list[0].memberIdx}',
+                          'contentIdx': '${item.idx}',
+                          'contentType': 'userTagContent',
+                        };
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('userTagContent', item.idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push('/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userTagContent");
+                          context.push('/home/myPage/detail', extra: extraMap);
+                        });
                       },
                       child: Center(
                         child: Stack(

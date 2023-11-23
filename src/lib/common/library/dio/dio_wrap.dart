@@ -1,19 +1,16 @@
-import 'dart:io';
-
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
-import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
-import 'package:pet_mobile_social_flutter/services/notification/notification_service.dart';
 import 'package:ua_client_hints/ua_client_hints.dart';
 
 final dioProvider = StateProvider<Dio>((ref) {
@@ -100,57 +97,57 @@ class DioWrap {
     ));
 
     dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          // This is where you call your specific API
-          try {
-            print('ref.read(userInfoProvider).userModel ${ref.read(userInfoProvider).userModel}');
-            final userModel = ref.read(userInfoProvider).userModel;
-            if (userModel != null) {
-              if (userModel.idx != 0) {
-                ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
-              }
+      InterceptorsWrapper(onRequest: (options, handler) async {
+        // This is where you call your specific API
+        try {
+          print('ref.read(userInfoProvider).userModel ${ref.read(userInfoProvider).userModel}');
+          final userModel = ref.read(userInfoProvider).userModel;
+          if (userModel != null) {
+            if (userModel.idx != 0) {
+              ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
             }
-
-            //Add user agent
-            options.headers.addAll(await userAgentClientHintsHeader());
-
-            //add referrer
-            //TODO
-            options.headers['referrer'] = ref.read(routerProvider).routeInformationProvider.value.location;
-
-            PackageInformationUtil pkgInfo = GetIt.I.get<PackageInformationUtil>();
-            // Map<String, dynamic> appInfo = {
-            //   'uid' : await GetIt.I.get<UuidUtil>().getUUID(),
-            //   'name' : pkgInfo.pkgName,
-            //   'version' : pkgInfo.appVersion,
-            //   'build' : pkgInfo.appBuildNumber,
-            // };
-
-            String uuid = await GetIt.I.get<UuidUtil>().getUUID();
-            String appInfo = 'uid=$uuid&name=${pkgInfo.pkgName}&version=${pkgInfo.appVersion}&build=${pkgInfo.appBuildNumber}';
-
-            options.headers['App-Info'] = appInfo;
-
-            print('options.headers ${options.headers}');
-
-            return handler.next(options);
-          } catch (e) {
-            print('noti error $e');
-            // Handle the error accordingly
-            // return handler.reject(DioError(
-            //   requestOptions: options,
-            //   error: 'Failed to call the specific API.',
-            // ));
-            return handler.next(options);
           }
+
+          //Add user agent
+          options.headers.addAll(await userAgentClientHintsHeader());
+
+          //add referrer
+          //TODO
+          options.headers['referrer'] = ref.read(routerProvider).routeInformationProvider.value.location;
+
+          PackageInformationUtil pkgInfo = GetIt.I.get<PackageInformationUtil>();
+          // Map<String, dynamic> appInfo = {
+          //   'uid' : await GetIt.I.get<UuidUtil>().getUUID(),
+          //   'name' : pkgInfo.pkgName,
+          //   'version' : pkgInfo.appVersion,
+          //   'build' : pkgInfo.appBuildNumber,
+          // };
+
+          String uuid = await GetIt.I.get<UuidUtil>().getUUID();
+          String appInfo = 'uid=$uuid&name=${pkgInfo.pkgName}&version=${pkgInfo.appVersion}&build=${pkgInfo.appBuildNumber}';
+
+          options.headers['App-Info'] = appInfo;
+
+          print('options.headers ${options.headers}');
+
           return handler.next(options);
-        },
-        onError: (error, handler) {
-          print('dio onerror : ${error.toString()}');
-          return handler.reject(error);
+        } catch (e) {
+          print('noti error $e');
+          // Handle the error accordingly
+          // return handler.reject(DioError(
+          //   requestOptions: options,
+          //   error: 'Failed to call the specific API.',
+          // ));
+          return handler.next(options);
         }
-      ),
+        return handler.next(options);
+      }, onError: (error, handler) {
+        print('dio onerror : ${error.toString()}');
+        int? errorCode = error.response?.statusCode;
+        APIException apiException = APIException(msg: 'unknown', code: errorCode.toString() ?? '400', refer: 'dio', caller: 'dio');
+        ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+        return handler.reject(error);
+      }),
     );
 
     return dio;

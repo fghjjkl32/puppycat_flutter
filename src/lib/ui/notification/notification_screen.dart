@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,17 +7,15 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:go_router/go_router.dart';
 import 'package:group_button/group_button.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:intl/intl.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
-import 'package:pet_mobile_social_flutter/models/main/comment/comment_focus_index.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/setting_state_provider.dart';
@@ -25,7 +24,6 @@ import 'package:pet_mobile_social_flutter/ui/notification/component/notification
 import 'package:pet_mobile_social_flutter/ui/notification/component/notification_follow_item.dart';
 import 'package:pet_mobile_social_flutter/ui/notification/component/notification_notice_item.dart';
 import 'package:pet_mobile_social_flutter/ui/notification/component/notification_post_item.dart';
-import 'package:flutter/foundation.dart';
 
 class NotificationScreen extends ConsumerStatefulWidget {
   const NotificationScreen({super.key});
@@ -267,11 +265,26 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
                               imgUrl: item.img ?? '',
                               isLiked: item.contentsLikeState == 1 ? true : false,
-                              onTap: () {
+                              onTap: () async {
                                 ///TODO
                                 ///route 정리 필요
                                 var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                context.push("/home/myPage/detail/testaaa/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent");
+
+                                Map<String, dynamic> extraMap = {
+                                  'firstTitle': 'null',
+                                  'secondTitle': '피드',
+                                  'memberIdx': loginMemberIdx,
+                                  'contentIdx': '${item.contentsIdx}',
+                                  'contentType': 'notificationContent',
+                                };
+
+                                await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('notificationContent', item.contentsIdx).then((value) {
+                                  if (value == null) {
+                                    return;
+                                  }
+                                  // context.push("/home/myPage/detail/null/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent");
+                                  context.push('/home/myPage/detail', extra: extraMap);
+                                });
                               },
                               onLikeTap: (isLiked) {
                                 if (!ref.watch(likeApiIsLoadingStateProvider)) {
@@ -283,12 +296,26 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   }
                                 }
                               },
-                              onCommentTap: () {
+                              onCommentTap: () async {
                                 ///TODO
                                 ///route 정리 필요
                                 var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                context.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
-                                  "isRouteComment": true,
+                                Map<String, dynamic> extraMap = {
+                                  'firstTitle': 'nickname',
+                                  'secondTitle': '피드',
+                                  'memberIdx': loginMemberIdx,
+                                  'contentIdx': '${item.contentsIdx}',
+                                  'contentType': 'notificationContent',
+                                  'isRouteComment': true,
+                                };
+                                await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('notificationContent', item.contentsIdx).then((value) {
+                                  if (value == null) {
+                                    return;
+                                  }
+                                  // context.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
+                                  //   "isRouteComment": true,
+                                  // });
+                                  context.push('/home/myPage/detail', extra: extraMap);
                                 });
                               },
                               onTapProfileButton: () {
@@ -311,12 +338,27 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               mentionList: (item.mentionMemberInfo?.isNotEmpty ?? false) ? item.mentionMemberInfo!.first : {},
                               profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
                               imgUrl: item.img ?? '',
-                              onTap: () {
+                              onTap: () async {
                                 print('item.commentIdx ${item.commentIdx} / ${item.contentsIdx}');
                                 var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-                                context.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
-                                  "isRouteComment": true,
-                                  "focusIdx": item.commentIdx,
+                                Map<String, dynamic> extraMap = {
+                                  'firstTitle': 'nickname',
+                                  'secondTitle': '피드',
+                                  'memberIdx': loginMemberIdx,
+                                  'contentIdx': '${item.contentsIdx}',
+                                  'contentType': 'notificationContent',
+                                  'isRouteComment': true,
+                                  'focusIdx': item.commentIdx,
+                                };
+                                await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('notificationContent', item.contentsIdx).then((value) {
+                                  // context.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
+                                  //   "isRouteComment": true,
+                                  //   "focusIdx": item.commentIdx,
+                                  // });
+                                  if (value == null) {
+                                    return;
+                                  }
+                                  context.push('/home/myPage/detail', extra: extraMap);
                                 });
                               },
                               onTapProfileButton: () {
