@@ -36,6 +36,7 @@ class FeedTitleWidget extends ConsumerStatefulWidget {
     required this.oldMemberIdx,
     required this.isDetailWidget,
     this.feedType = "recent",
+    required this.onTapHideButton,
     Key? key,
   }) : super(key: key);
 
@@ -53,6 +54,7 @@ class FeedTitleWidget extends ConsumerStatefulWidget {
   final int oldMemberIdx;
   final bool isDetailWidget;
   final String feedType;
+  final Function onTapHideButton;
 
   @override
   FeedTitleWidgetState createState() => FeedTitleWidgetState();
@@ -369,46 +371,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                 title: '숨기기',
                                 titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
                                 onTap: () async {
-                                  if (ref.read(userInfoProvider).userModel == null) {
-                                    context.pushReplacement("/loginScreen");
-                                  } else {
-                                    final tempContentIdx = widget.contentIdx;
-                                    context.pop();
-
-                                    final result = await ref.watch(feedListStateProvider.notifier).postHide(
-                                          loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                          contentType: widget.contentType,
-                                          contentIdx: tempContentIdx,
-                                          memberIdx: widget.memberIdx,
-                                        );
-
-                                    if (result.result && mounted) {
-                                      toast(
-                                        context: context,
-                                        text: '피드 숨기기를 완료하였습니다.',
-                                        type: ToastType.purple,
-                                        buttonText: "숨기기 취소",
-                                        buttonOnTap: () async {
-                                          if (!mounted) return;
-
-                                          final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
-                                                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                contentType: widget.contentType,
-                                                contentIdx: tempContentIdx,
-                                                memberIdx: widget.memberIdx,
-                                              );
-
-                                          if (result.result && mounted) {
-                                            toast(
-                                              context: context,
-                                              text: '피드 숨기기 취소',
-                                              type: ToastType.purple,
-                                            );
-                                          }
-                                        },
-                                      );
-                                    }
-                                  }
+                                  widget.onTapHideButton();
                                 },
                               ),
                               isFollow

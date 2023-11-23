@@ -138,9 +138,9 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               borderRadius: 50.0,
                               onToggle: (value) async {
                                 if (value) {
-                                  toast(context: context, text: '광고성 정보 수신 여부가 ‘동의’로 변경되었습니다.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                  toast(context: context, text: '광고성 정보 수신을 ‘동의’했어요.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
                                 } else {
-                                  toast(context: context, text: '광고성 정보 수신 여부가 ‘거부’로 변경되었습니다.', type: ToastType.grey, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                  toast(context: context, text: '광고성 정보 수신을 ‘거부’했어요.', type: ToastType.grey, secondText: "수신 거부일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
                                 }
 
                                 _onTap('main_2', value);

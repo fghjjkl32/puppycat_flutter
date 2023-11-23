@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -173,6 +175,34 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
                                   page,
                                   false,
                                 );
+                          },
+                          onTapRemoveButton: () async {
+                            final result = await ref.read(commentListStateProvider.notifier).deleteContents(
+                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                  contentsIdx: item.contentsIdx,
+                                  commentIdx: item.idx,
+                                  parentIdx: item.parentIdx,
+                                );
+
+                            if (result.result) {
+                              context.pop();
+                            }
+                          },
+
+                          onTapEditButton: () {
+                            final commentHeaderState = ref.watch(commentHeaderProvider.notifier);
+
+                            // context.pop();
+
+                            commentHeaderState.addEditCommentHeader(item.contents, item.idx);
+
+                            commentHeaderState.setHasInput(true);
+
+                            ref.read(hashtagListProvider.notifier).state = getHashtagList(item.contents);
+                            ref.read(mentionListProvider.notifier).state = item.mentionList ?? [];
+
+                            commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(item.contents, item.mentionList ?? []));
+                            context.pop();
                           },
                         ),
                       );

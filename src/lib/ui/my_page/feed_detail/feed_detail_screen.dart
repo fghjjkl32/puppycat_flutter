@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_detail_widget.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -84,7 +85,6 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
   @override
   void dispose() {
-    ref.read(firstFeedDetailStateProvider.notifier).state = null;
     super.dispose();
   }
 
@@ -103,6 +103,8 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
     return DefaultOnWillPopScope(
       onWillPop: () {
+        ref.read(firstFeedDetailStateProvider.notifier).state = null;
+
         ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");
 
         ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberIdx);
@@ -140,6 +142,8 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                     ),
               leading: IconButton(
                 onPressed: () {
+                  ref.read(firstFeedDetailStateProvider.notifier).state = null;
+
                   ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");
 
                   ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberIdx);
@@ -299,6 +303,15 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                         imgDomain: ref.read(firstFeedDetailStateProvider.notifier).feedImgDomain!,
                         index: 0,
                         isSpecialUser: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].isBadge == 1 : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
+                        onTapHideButton: () async {
+                          onTapHide(
+                            context: context,
+                            ref: ref,
+                            contentType: widget.contentType,
+                            contentIdx: widget.contentIdx,
+                            memberIdx: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].memberIdx : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberIdx,
+                          );
+                        },
                       ),
                       PagedListView<int, FeedData>(
                         // shrinkWrapFirstPageIndicators: true,
@@ -484,6 +497,15 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                   imgDomain: ref.watch(feedListStateProvider.notifier).imgDomain!,
                                   index: index,
                                   isSpecialUser: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].isBadge == 1 : ref.read(feedListStateProvider.notifier).memberInfo?[0].isBadge == 1,
+                                  onTapHideButton: () async {
+                                    onTapHide(
+                                      context: context,
+                                      ref: ref,
+                                      contentType: widget.contentType,
+                                      contentIdx: widget.contentIdx,
+                                      memberIdx: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberIdx : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberIdx,
+                                    );
+                                  },
                                 ),
                               ],
                             );

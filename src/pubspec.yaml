@@ -23,7 +23,7 @@ dependencies:
   flutter_dotenv: ^5.0.2
   carousel_slider: ^4.2.1
   smooth_page_indicator: ^1.1.0
-#  bubble: ^1.2.1
+  #  bubble: ^1.2.1
   linkfy_text: ^1.1.5
   intl: ^0.18.0
   flutter_svg: ^2.0.7
@@ -63,7 +63,7 @@ dependencies:
 
   flutter_staggered_grid_view: ^0.6.2
   flutter_cache_manager: ^3.3.0
-#  flutter_markdown: ^0.6.15
+  #  flutter_markdown: ^0.6.15
 
   #Utils
   get_it: ^7.6.0
@@ -107,7 +107,7 @@ dependencies:
   collection: ^1.17.1
   detectable_text_field: ^2.1.0
   bubble:
-#    path: "/Users/engine-thirdnsov/Projects/uxp_Projects/Github_Fork/bubble"
+    #    path: "/Users/engine-thirdnsov/Projects/uxp_Projects/Github_Fork/bubble"
     git:
       url: https://github.com/engine-smkang-uxplus/bubble
   flutter_spinkit: ^5.2.0
@@ -143,16 +143,16 @@ dependencies:
   uni_links: ^0.5.1
   numberpicker: ^2.1.2
 
-  #네이버 지도
-  flutter_naver_map: ^1.0.2
-  flutter_bottom_drawer: ^0.0.7
-  location: ^5.0.3
-  flutter_background_service: ^5.0.2
-  geolocator: ^10.1.0
-  pedometer: ^4.0.1
+  #  #네이버 지도
+  #  flutter_naver_map: ^1.0.2
+  #  flutter_bottom_drawer: ^0.0.7
+  #  location: ^5.0.3
+  #  flutter_background_service: ^5.0.2
+  #  geolocator: ^10.1.0
+  #  pedometer: ^4.0.1
 
   xml: ^6.3.0 # 버전 충돌로 이전 버전 사용
-#  xml_map_converter: ^1.0.0+1
+  #  xml_map_converter: ^1.0.0+1
   xml2json: ^6.2.0
 
 

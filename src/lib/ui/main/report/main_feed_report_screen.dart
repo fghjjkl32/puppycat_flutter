@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/select_button.dart';
-import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/report/report_state_provider.dart';
 
@@ -18,11 +15,14 @@ class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({
     required this.isComment,
     required this.contentIdx,
+    required this.onTapReport,
     super.key,
   });
 
   final bool isComment;
   final int contentIdx;
+
+  final Function onTapReport;
 
   @override
   ReportScreenState createState() => ReportScreenState();
@@ -148,33 +148,35 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                             if (result.result && mounted) {
                               context.pop();
 
-                              toast(
-                                context: context,
-                                text: '정상적으로 신고 접수가 되었습니다.',
-                                type: ToastType.purple,
-                                buttonText: "신고취소",
-                                buttonOnTap: () async {
-                                  final result = widget.isComment
-                                      ? await ref.read(commentListStateProvider.notifier).deleteCommentReport(
-                                            loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                            contentIdx: widget.contentIdx,
-                                            reportType: widget.isComment ? "comment" : "contents",
-                                          )
-                                      : await ref.read(feedListStateProvider.notifier).deleteContentReport(
-                                            loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                            contentIdx: widget.contentIdx,
-                                            reportType: widget.isComment ? "comment" : "contents",
-                                          );
+                              widget.onTapReport();
 
-                                  if (result.result && mounted) {
-                                    toast(
-                                      context: context,
-                                      text: '신고 접수가 취소되었습니다.',
-                                      type: ToastType.grey,
-                                    );
-                                  }
-                                },
-                              );
+                              // toast(
+                              //   context: context,
+                              //   text: '정상적으로 신고 접수가 되었습니다.',
+                              //   type: ToastType.purple,
+                              //   buttonText: "신고취소",
+                              //   buttonOnTap: () async {
+                              //     final result = widget.isComment
+                              //         ? await ref.read(commentListStateProvider.notifier).deleteCommentReport(
+                              //               loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                              //               contentIdx: widget.contentIdx,
+                              //               reportType: widget.isComment ? "comment" : "contents",
+                              //             )
+                              //         : await ref.read(feedListStateProvider.notifier).deleteContentReport(
+                              //               loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                              //               contentIdx: widget.contentIdx,
+                              //               reportType: widget.isComment ? "comment" : "contents",
+                              //             );
+                              //
+                              //     if (result.result && mounted) {
+                              //       toast(
+                              //         context: context,
+                              //         text: '신고 접수가 취소되었습니다.',
+                              //         type: ToastType.grey,
+                              //       );
+                              //     }
+                              //   },
+                              // );
                             }
                           },
                     child: Padding(

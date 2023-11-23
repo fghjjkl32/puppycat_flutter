@@ -38,7 +38,7 @@ class MyPageSettingNotifier extends StateNotifier<double> {
 
     toast(
       context: context,
-      text: '캐시 삭제가 완료되었습니다.',
+      text: '저장 공간 정리 완료!',
       type: ToastType.purple,
     );
 
@@ -46,7 +46,6 @@ class MyPageSettingNotifier extends StateNotifier<double> {
   }
 }
 
-final myPageSettingProvider =
-    StateNotifierProvider<MyPageSettingNotifier, double>(
+final myPageSettingProvider = StateNotifierProvider<MyPageSettingNotifier, double>(
   (ref) => MyPageSettingNotifier(),
 );

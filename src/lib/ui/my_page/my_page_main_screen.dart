@@ -23,6 +23,7 @@ import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_i
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
@@ -602,6 +603,33 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                           page,
                                                                           false,
                                                                         );
+                                                                  },
+                                                                  onTapRemoveButton: () async {
+                                                                    final result = await ref.read(commentListStateProvider.notifier).deleteContents(
+                                                                          memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                                          contentsIdx: item.contentsIdx,
+                                                                          commentIdx: item.idx,
+                                                                          parentIdx: item.parentIdx,
+                                                                        );
+
+                                                                    if (result.result) {
+                                                                      context.pop();
+                                                                    }
+                                                                  },
+                                                                  onTapEditButton: () {
+                                                                    final commentHeaderState = ref.watch(commentHeaderProvider.notifier);
+
+                                                                    // context.pop();
+
+                                                                    commentHeaderState.addEditCommentHeader(item.contents, item.idx);
+
+                                                                    commentHeaderState.setHasInput(true);
+
+                                                                    ref.read(hashtagListProvider.notifier).state = getHashtagList(item.contents);
+                                                                    ref.read(mentionListProvider.notifier).state = item.mentionList ?? [];
+
+                                                                    commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(item.contents, item.mentionList ?? []));
+                                                                    context.pop();
                                                                   },
                                                                 ),
                                                               );

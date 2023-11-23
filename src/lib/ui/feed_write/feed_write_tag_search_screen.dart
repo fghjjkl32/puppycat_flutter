@@ -40,7 +40,6 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
 
     Future(() {
       ref.watch(feedWriteImageTagSearchProvider.notifier).userMemberIdx = ref.watch(userInfoProvider).userModel!.idx;
-      ref.watch(feedWriteImageTagSearchProvider.notifier).userSearchQuery.add("");
       ref.read(feedWriteImageTagSearchProvider.notifier).initImageTagUserList(ref.watch(userInfoProvider).userModel!.idx, 1);
     });
 
@@ -71,7 +70,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(
+        title: const Text(
           "유저 태그하기",
         ),
         leading: IconButton(

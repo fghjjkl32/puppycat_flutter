@@ -1,9 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/setting/main_list_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/setting/setting_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/setting/sub_list_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/setting/setting_repository.dart';
 
@@ -63,7 +61,9 @@ class SettingStateNotifier extends StateNotifier<SettingDataListModel> {
       }
     } else if (key == 'main_2') {
       for (int i = 1; i <= 1; i++) {
+        newSwitchState['main_3'] = newSwitchState[key]!;
         newSwitchState['sub_2_$i'] = newSwitchState[key]!;
+        newSwitchState['sub_3_$i'] = newSwitchState[key]!;
       }
     } else if (key == 'main_3') {
       for (int i = 1; i <= 1; i++) {

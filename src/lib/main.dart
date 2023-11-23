@@ -1,48 +1,35 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:appspector/appspector.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
+// import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:location/location.dart';
+// import 'package:location/location.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
-import 'package:pet_mobile_social_flutter/common/util/location/geolocator_util.dart';
-import 'package:pet_mobile_social_flutter/common/util/location/location_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
-
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
-///NOTE
-///2023.11.14.
-///산책하기 보류로 주석 처리
-// import 'package:pet_mobile_social_flutter/controller/background_service/background_service_controller.dart';
-///산책하기 보류로 주석 처리 완료
-import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
 import 'package:uni_links/uni_links.dart';
 
 InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 9723);
@@ -50,6 +37,7 @@ final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 class ScrollBehaviorModified extends ScrollBehavior {
   const ScrollBehaviorModified();
+
   @override
   ScrollPhysics getScrollPhysics(BuildContext context) {
     switch (getPlatform(context)) {
@@ -100,7 +88,6 @@ void main() async {
 
   //TODO 11/8 Permission 작업때문에 주석 위치 가져오는 권한을 산책하기 할때로 이동
   // await GeolocatorUtil.checkLocationPermission();
-
 
   ///NOTE
   ///2023.11.14.
@@ -200,11 +187,14 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
   }
 
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
+    print("payload ::: ${payload}");
     // context.push('/home/notification');
     final router = ref.watch(routerProvider);
     // router.go('/home/notification');
 
     PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
+
+    print("pushType : ${pushType}");
 
     switch (pushType) {
       case PushType.follow:

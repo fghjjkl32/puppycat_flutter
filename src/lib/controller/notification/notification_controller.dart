@@ -1,17 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
+import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
 
 class NotificationController {
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -24,6 +19,9 @@ class NotificationController {
   }
 
   void initNotification(Function pushHandler) async {
+    print("pushHandler : ${pushHandler}");
+    print("pushHandler : pushHandler : pushHandler : pushHandler : ");
+
     // flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     // NotificationAppLaunchDetails? details = await NotificationController().pushController.getNotificationAppLaunchDetails();
     // if (details != null) {
@@ -44,6 +42,8 @@ class NotificationController {
         iOS: DarwinInitializationSettings(),
       ),
       onDidReceiveNotificationResponse: (response) {
+        print("responseresponse ${response}");
+
         try {
           if (response.payload != null) {
             print('response.payload ${response.payload}');
@@ -109,6 +109,11 @@ class NotificationController {
       payload.title,
       body,
       NotificationDetails(
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
         android: AndroidNotificationDetails(
           channel.id,
           channel.name,
@@ -209,27 +214,27 @@ class NotificationController {
     return pushType;
   }
 
-  // void navigatorHandler(BuildContext context, PushType pushType, FirebaseCloudMessagePayload payload) {
-  //   switch (pushType) {
-  //     case PushType.follow:
-  //       print('adsasdadads');
-  //       context.go('/home/notification');
-  //     case PushType.new_contents:
-  //     case PushType.metion_contents:
-  //     case PushType.img_tag:
-  //     case PushType.like_contents:
-  //
-  //     case PushType.new_comment:
-  //     case PushType.new_reply:
-  //
-  //     case PushType.mention_comment:
-  //     case PushType.like_comment:
-  //       print('adsasdadads22222');
-  //       context.go('/home/notification');
-  //     case PushType.notice:
-  //     case PushType.event:
-  //     case PushType.unknown:
-  //       return ;
-  //   }
-  // }
+// void navigatorHandler(BuildContext context, PushType pushType, FirebaseCloudMessagePayload payload) {
+//   switch (pushType) {
+//     case PushType.follow:
+//       print('adsasdadads');
+//       context.go('/home/notification');
+//     case PushType.new_contents:
+//     case PushType.metion_contents:
+//     case PushType.img_tag:
+//     case PushType.like_contents:
+//
+//     case PushType.new_comment:
+//     case PushType.new_reply:
+//
+//     case PushType.mention_comment:
+//     case PushType.like_comment:
+//       print('adsasdadads22222');
+//       context.go('/home/notification');
+//     case PushType.notice:
+//     case PushType.event:
+//     case PushType.unknown:
+//       return ;
+//   }
+// }
 }
