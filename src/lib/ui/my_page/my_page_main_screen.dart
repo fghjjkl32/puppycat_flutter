@@ -783,7 +783,13 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                           'contentIdx': '${item.idx}',
                           'contentType': 'myTagContent',
                         };
-                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myTagContent', item.idx).then((value) {
+                        await ref
+                            .read(firstFeedDetailStateProvider.notifier)
+                            .getFirstFeedState(
+                              'myTagContent',
+                              item.idx,
+                            )
+                            .then((value) {
                           if (value == null) {
                             return;
                           }

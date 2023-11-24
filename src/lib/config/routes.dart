@@ -2,16 +2,20 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_block_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/custom_modal_bottom_sheet_widget.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_page.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/dialog_page.dart';
+import 'package:pet_mobile_social_flutter/components/toast/error_toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/error/feed_not_follow_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/error/feed_not_found_screen.dart';
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_complete_screen.dart';
@@ -613,6 +617,68 @@ class AppRouter {
                 top: Radius.circular(20.0),
               ),
             ),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/error_block_bottom_sheet',
+        name: 'error_block_bottom_sheet',
+        // builder: (BuildContext context, GoRouterState state) {
+        //   return const ErrorBottomSheetWidget();
+        // },
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          String name = 'unknown';
+          int memberIdx = 0;
+
+          return BottomSheetPage(
+            builder: (BuildContext context) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: SingleChildScrollView(
+                  child: CustomModalBottomSheet(
+                    widget: FeedBlockSheetItem(),
+                    context: context,
+                  ),
+                ),
+              );
+            },
+            isScrollControlled: false,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(20.0),
+              ),
+            ),
+          );
+        },
+      ),
+
+      GoRoute(
+        path: '/error_toast',
+        name: 'error_toast',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return CustomTransitionPage(
+            fullscreenDialog: true,
+            opaque: false,
+            barrierDismissible: true,
+            transitionsBuilder: (_, __, ___, child) => child,
+            child: ErrorToast(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/feed_not_found_screen',
+        name: 'feed_not_found_screen',
+        builder: (BuildContext context, GoRouterState state) {
+          return const FeedNotFoundScreen();
+        },
+      ),
+      GoRoute(
+        path: '/feed_not_follow_screen',
+        name: 'feed_not_follow_screen',
+        builder: (BuildContext context, GoRouterState state) {
+          return const FeedNotFollowScreen(
+            name: '',
+            memberidx: 1,
           );
         },
       ),
