@@ -537,8 +537,12 @@ class FeedListState extends _$FeedListState {
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+
       throw apiException.toString();
     } catch (e) {
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+
       print('postLike error $e');
       rethrow;
     }
@@ -590,8 +594,12 @@ class FeedListState extends _$FeedListState {
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+
       throw apiException.toString();
     } catch (e) {
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
+
       print('deleteLike error $e');
       rethrow;
     }
@@ -641,8 +649,10 @@ class FeedListState extends _$FeedListState {
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
       throw apiException.toString();
     } catch (e) {
+      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
       print('postSave error $e');
       rethrow;
     }
@@ -692,8 +702,11 @@ class FeedListState extends _$FeedListState {
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
       throw apiException.toString();
     } catch (e) {
+      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
+
       print('delete save error $e');
       rethrow;
     }

@@ -144,7 +144,7 @@ class DioWrap {
       }, onError: (error, handler) {
         print('dio onerror : ${error.toString()}');
         int? errorCode = error.response?.statusCode;
-        APIException apiException = APIException(msg: 'unknown', code: errorCode.toString() ?? '400', refer: 'dio', caller: 'dio');
+        APIException apiException = APIException(msg: error.toString(), code: errorCode.toString() ?? '400', refer: 'dio', caller: 'dio');
         ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
         return handler.reject(error);
       }),

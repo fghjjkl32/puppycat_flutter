@@ -376,6 +376,8 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
+
       throw apiException.toString();
     } catch (e) {
       print('postFollow error $e');
@@ -395,6 +397,8 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
+
       throw apiException.toString();
     } catch (e) {
       print('deleteFollow error $e');
@@ -414,6 +418,8 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
+
       throw apiException.toString();
     } catch (e) {
       print('deleteFollower error $e');
