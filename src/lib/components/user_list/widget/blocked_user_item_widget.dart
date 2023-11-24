@@ -93,7 +93,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
                 if (mounted) {
                   toast(
                     context: context,
-                    text: "‘${widget.userName}’님을 차단해제하였습니다.",
+                    text: "'${widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName}'님을 차단해제하였습니다.",
                     type: ToastType.grey,
                   );
                 }

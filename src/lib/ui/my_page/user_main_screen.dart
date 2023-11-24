@@ -1,38 +1,24 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:collection/collection.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
-import 'package:matrix/matrix.dart' hide Visibility;
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
-import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/controller/chat/chat_controller.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
-import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 ///NOTE
 ///2023.11.16.
@@ -42,15 +28,12 @@ import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
-
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
 // import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/user_pet_detail_screen.dart';
 ///산책하기 보류로 주석 처리 완료
 import 'package:thumbor/thumbor.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class UserMainScreen extends ConsumerStatefulWidget {
   const UserMainScreen({
@@ -63,6 +46,7 @@ class UserMainScreen extends ConsumerStatefulWidget {
   final int memberIdx;
   final String nick;
   final int oldMemberIdx;
+
   @override
   UserMainScreenState createState() => UserMainScreenState();
 }
@@ -95,14 +79,13 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     // _myPetListPagingController.refresh(); //이건 ref.read(userTagContentsStateProvider.notifier).memberIdx = widget.memberIdx; 아래에 있었음
     ///산책하기 보류로 주석 처리 완료
     ref.read(userContentsStateProvider.notifier).memberIdx = widget.memberIdx;
-
-
+    ref.read(userTagContentsStateProvider.notifier).memberIdx = widget.memberIdx;
 
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-    ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
 
     tabController = TabController(
       initialIndex: 0,
@@ -143,7 +126,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     return DefaultOnWillPopScope(
       onWillPop: () async {
         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
         return Future.value(true);
       },
       child: Material(
@@ -164,7 +147,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       leading: IconButton(
                         onPressed: () {
                           ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-                          ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                          ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                           Navigator.of(context).pop();
                         },
                         icon: const Icon(
@@ -246,7 +229,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                     context.pop();
                                                     toast(
                                                       context: context,
-                                                      text: "‘${widget.nick}’님을 차단하였습니다.",
+                                                      text: "'${widget.nick.length > 8 ? '${widget.nick.substring(0, 8)}...' : widget.nick}'님을 차단하였습니다.",
                                                       type: ToastType.purple,
                                                     );
                                                     final result = await ref.read(userInformationStateProvider.notifier).postBlock(
@@ -301,11 +284,13 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     );
                         }),
                       ],
+
                       ///NOTE
                       ///2023.11.16.
                       ///산책하기 보류로 주석 처리
                       // expandedHeight: ref.watch(expandedHeightProvider),
                       expandedHeight: 210,
+
                       ///산책하기 보류로 주석 처리 완료
                       flexibleSpace: Consumer(builder: (context, ref, _) {
                         final userInformationState = ref.watch(userInformationStateProvider);
@@ -387,8 +372,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
-          print(widget.oldMemberIdx);
           if (widget.oldMemberIdx != ref.watch(userInfoProvider).userModel?.idx) {
+            if (widget.oldMemberIdx == 0) return;
             ref.read(userContentsStateProvider.notifier).memberIdx = widget.oldMemberIdx;
           }
 
@@ -469,9 +454,21 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                   return Container(
                     margin: const EdgeInsets.all(10.0),
                     child: GestureDetector(
-                      onTap: () {
-                        context.push(
-                            "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/피드/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userContent");
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': '${ref.watch(userInformationStateProvider).list[0].nick}',
+                          'secondTitle': '피드',
+                          'memberIdx': '${ref.watch(userInformationStateProvider).list[0].memberIdx}',
+                          'contentIdx': '${item.idx}',
+                          'contentType': 'userContent',
+                        };
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('userContent', item.idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push("/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/피드/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userContent");
+                          context.push('/home/myPage/detail', extra: extraMap);
+                        });
                       },
                       child: Center(
                         child: Stack(
@@ -544,6 +541,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
       onRefresh: () {
         return Future(() {
           if (widget.oldMemberIdx != ref.watch(userInfoProvider).userModel?.idx) {
+            if (widget.oldMemberIdx == 0) return;
             ref.read(userTagContentsStateProvider.notifier).memberIdx = widget.oldMemberIdx;
           }
           _userTagContentsListPagingController.refresh();
@@ -623,9 +621,21 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                   return Container(
                     margin: const EdgeInsets.all(10.0),
                     child: GestureDetector(
-                      onTap: () {
-                        context.push(
-                            "/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userTagContent");
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': '${ref.watch(userInformationStateProvider).list[0].nick}',
+                          'secondTitle': '태그됨',
+                          'memberIdx': '${ref.watch(userInformationStateProvider).list[0].memberIdx}',
+                          'contentIdx': '${item.idx}',
+                          'contentType': 'userTagContent',
+                        };
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('userTagContent', item.idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push('/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userTagContent");
+                          context.push('/home/myPage/detail', extra: extraMap);
+                        });
                       },
                       child: Center(
                         child: Stack(
@@ -688,78 +698,84 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                   padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                   child: getProfileAvatar(data.profileImgUrl ?? "", 48.w, 48.h),
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        data.isBadge == 1
-                            ? Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/image/feed/icon/small_size/icon_special.png',
-                                    height: 13.h,
-                                  ),
-                                  SizedBox(
-                                    width: 4.w,
-                                  ),
-                                ],
-                              )
-                            : Container(),
-                        Text(
-                          "${data.nick}",
-                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
-                        ),
-                      ],
-                    ),
-                    Visibility(
-                      visible: data.intro != "",
-                      child: Column(
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(
-                            "${data.intro}",
-                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                          data.isBadge == 1
+                              ? Row(
+                                  children: [
+                                    Image.asset(
+                                      'assets/image/feed/icon/small_size/icon_special.png',
+                                      height: 13.h,
+                                    ),
+                                    SizedBox(
+                                      width: 4.w,
+                                    ),
+                                  ],
+                                )
+                              : Container(),
+                          Expanded(
+                            child: Text(
+                              "${data.nick}",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/followList/${widget.memberIdx}");
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 8.0.h),
-                        child: Row(
+                      Visibility(
+                        visible: data.intro != "",
+                        child: Column(
                           children: [
-                            Text(
-                              "팔로워 ",
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                            SizedBox(
+                              height: 3,
                             ),
                             Text(
-                              "${data.followerCnt}",
-                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
-                            ),
-                            Text(
-                              "  ·  ",
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                            ),
-                            Text(
-                              "팔로잉 ",
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                            ),
-                            Text(
-                              "${data.followCnt}",
-                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              "${data.intro}",
+                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                      GestureDetector(
+                        onTap: () {
+                          ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/followList/${widget.memberIdx}");
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 8.0.h),
+                          child: Row(
+                            children: [
+                              Text(
+                                "팔로워 ",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Text(
+                                "${data.followerCnt}",
+                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              ),
+                              Text(
+                                "  ·  ",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Text(
+                                "팔로잉 ",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Text(
+                                "${data.followCnt}",
+                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -804,7 +820,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         if (mounted) {
                                           toast(
                                             context: context,
-                                            text: "‘${data.nick}’님을 차단해제하였습니다.",
+                                            text: "'${data.nick!.length > 8 ? '${data.nick!.substring(0, 8)}...' : data.nick}'님을 차단해제하였습니다.",
                                             type: ToastType.grey,
                                           );
                                         }
@@ -959,6 +975,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       ],
                     ),
             ),
+
             ///NOTE
             ///2023.11.16.
             ///산책하기 보류로 주석 처리
@@ -1109,6 +1126,7 @@ PopupMenuItem diaryPopUpMenuItem(
 
 class TabBarDelegate extends SliverPersistentHeaderDelegate {
   final double tabBarHeight;
+
   const TabBarDelegate({this.tabBarHeight = 48});
 
   @override

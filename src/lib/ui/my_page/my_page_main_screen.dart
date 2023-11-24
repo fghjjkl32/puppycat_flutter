@@ -1,17 +1,12 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
@@ -28,17 +23,13 @@ import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_i
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
-
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -48,8 +39,6 @@ import 'package:pet_mobile_social_flutter/providers/my_page/user_information/use
 import 'package:screenshot/screenshot.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:thumbor/thumbor.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class MyPageMainScreen extends ConsumerStatefulWidget {
   const MyPageMainScreen({
@@ -94,10 +83,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
     scrollController.addListener(_scrollListener);
 
     feedListStateNotifier = ref.read(feedListStateProvider.notifier);
-    firstFeedStateNotifier = ref.read(firstFeedStateProvider.notifier);
+    firstFeedStateNotifier = ref.read(firstFeedDetailStateProvider.notifier);
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-    ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
 
     tabController = TabController(
       initialIndex: 0,
@@ -157,7 +146,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     title: const Text('마이페이지'),
                     leading: IconButton(
                       onPressed: () {
-                        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                         Navigator.of(context).pop();
                       },
@@ -371,8 +360,22 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                   return Container(
                     margin: const EdgeInsets.all(10.0),
                     child: GestureDetector(
-                      onTap: () {
-                        context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/피드/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myContent");
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': '${ref.watch(myInformationStateProvider).list[0].nick}',
+                          'secondTitle': '피드',
+                          'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                          'contentIdx': '${item.idx}',
+                          'contentType': 'myContent',
+                        };
+
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myContent', item.idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/피드/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myContent");
+                          context.push('/home/myPage/detail', extra: extraMap);
+                        });
                       },
                       child: Center(
                         child: Stack(
@@ -601,6 +604,33 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                           false,
                                                                         );
                                                                   },
+                                                                  onTapRemoveButton: () async {
+                                                                    final result = await ref.read(commentListStateProvider.notifier).deleteContents(
+                                                                          memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                                          contentsIdx: item.contentsIdx,
+                                                                          commentIdx: item.idx,
+                                                                          parentIdx: item.parentIdx,
+                                                                        );
+
+                                                                    if (result.result) {
+                                                                      context.pop();
+                                                                    }
+                                                                  },
+                                                                  onTapEditButton: () {
+                                                                    final commentHeaderState = ref.watch(commentHeaderProvider.notifier);
+
+                                                                    // context.pop();
+
+                                                                    commentHeaderState.addEditCommentHeader(item.contents, item.idx);
+
+                                                                    commentHeaderState.setHasInput(true);
+
+                                                                    ref.read(hashtagListProvider.notifier).state = getHashtagList(item.contents);
+                                                                    ref.read(mentionListProvider.notifier).state = item.mentionList ?? [];
+
+                                                                    commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(item.contents, item.mentionList ?? []));
+                                                                    context.pop();
+                                                                  },
                                                                 ),
                                                               );
                                                             },
@@ -745,8 +775,21 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                   return Container(
                     margin: const EdgeInsets.all(10.0),
                     child: GestureDetector(
-                      onTap: () {
-                        context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myTagContent");
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': '${ref.watch(myInformationStateProvider).list[0].nick}',
+                          'secondTitle': '태그됨',
+                          'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                          'contentIdx': '${item.idx}',
+                          'contentType': 'myTagContent',
+                        };
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myTagContent', item.idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myTagContent");
+                          context.push('/home/myPage/detail', extra: extraMap);
+                        });
                       },
                       child: Center(
                         child: Stack(
@@ -809,91 +852,97 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                   padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                   child: getProfileAvatar(data.profileImgUrl! ?? "", 48.w, 48.h),
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        data.isBadge == 1
-                            ? Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/image/feed/icon/small_size/icon_special.png',
-                                    height: 13.h,
-                                  ),
-                                  SizedBox(
-                                    width: 4.w,
-                                  ),
-                                ],
-                              )
-                            : Container(),
-                        Text(
-                          "${data.nick}",
-                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            context.go("/home/myPage/profileEdit");
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.all(5.0),
-                            child: const Icon(
-                              Puppycat_social.icon_modify_small,
-                              color: kNeutralColor500,
-                              size: 22,
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          data.isBadge == 1
+                              ? Row(
+                                  children: [
+                                    Image.asset(
+                                      'assets/image/feed/icon/small_size/icon_special.png',
+                                      height: 13.h,
+                                    ),
+                                    SizedBox(
+                                      width: 4.w,
+                                    ),
+                                  ],
+                                )
+                              : Container(),
+                          Flexible(
+                            child: Text(
+                              "${data.nick}",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Visibility(
-                      visible: data.intro != "",
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(
-                            "${data.intro}",
-                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                          GestureDetector(
+                            onTap: () {
+                              context.go("/home/myPage/profileEdit");
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.all(5.0),
+                              child: const Icon(
+                                Puppycat_social.icon_modify_small,
+                                color: kNeutralColor500,
+                                size: 22,
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context.go("/home/myPage/followList/${ref.read(userInfoProvider).userModel!.idx}");
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 8.0.h),
-                        child: Row(
+                      Visibility(
+                        visible: data.intro != "",
+                        child: Column(
                           children: [
-                            Text(
-                              "팔로워 ",
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                            SizedBox(
+                              height: 3,
                             ),
                             Text(
-                              "${data.followerCnt}",
-                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
-                            ),
-                            Text(
-                              "  ·  ",
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                            ),
-                            Text(
-                              "팔로잉 ",
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                            ),
-                            Text(
-                              "${data.followCnt}",
-                              style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              "${data.intro}",
+                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                      GestureDetector(
+                        onTap: () {
+                          context.go("/home/myPage/followList/${ref.read(userInfoProvider).userModel!.idx}");
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 8.0.h),
+                          child: Row(
+                            children: [
+                              Text(
+                                "팔로워 ",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Text(
+                                "${data.followerCnt}",
+                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              ),
+                              Text(
+                                "  ·  ",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Text(
+                                "팔로잉 ",
+                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              ),
+                              Text(
+                                "${data.followCnt}",
+                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

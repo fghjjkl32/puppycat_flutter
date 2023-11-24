@@ -47,9 +47,19 @@ class APIErrorState extends _$APIErrorState {
       case 'SIJD-3999': //TODO 중복 가입 alert, 멤버 서버 나오면 다시 작업
         print('SIJD-3999 ${apiException.toString()}');
         break;
-      // case 'ENSA-2999': // PASS 인증 URL 실패(AppKey)
-      // case 'ELGI-9999': //TODO 로그인 실패
-      // case 'EJOI-9999': //TODO 회원가입 실패
+      case 'ECON-3994': //존재하지 않는 게시물, 페이지 이동
+        break;
+      case 'ECON-3986': //팔로우 공개 게시물, 페이지 이동
+        break;
+      case 'ECON-3982': //팔로우 공개 게시물, 페이지 이동, 미로그인 시 로그인 화면으로
+        break;
+      case 'ECON-3993': //상대가 나를 차단, 피드를 찾을 수 없어요 스낵바
+      case 'ECON-3987': //신고 게시글, 피드를 찾을 수 없어요 스낵바
+        break;
+      case 'ECON-3992': //내가 상대를 차단, bottom sheet
+        break;
+      case 'ECON-3989': //숨김 게시물, bottom sheet
+        break;
       default:
         final goRouter = ref.read(routerProvider);
         goRouter.pushNamed('error_dialog', extra: code);

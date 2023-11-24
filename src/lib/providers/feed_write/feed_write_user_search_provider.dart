@@ -46,7 +46,7 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
 
       imageTagMaxPages = lists.data.params!.pagination!.endPage!;
 
-      state = state.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!);
+      state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
 
       if (lists == null) {
         state = state.copyWith(page: page, isLoading: false);
@@ -58,6 +58,8 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       state = state.copyWith(page: state.page, isLoading: false);
     } catch (e) {
+      userSearchQuery.add("");
+
       print('initImageTagUserList error $e');
       state = state.copyWith(page: state.page, isLoading: false);
     }

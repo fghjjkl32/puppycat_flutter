@@ -12,12 +12,12 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_tag_search_screen.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_carousel_controller_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_cropped_files_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_view_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_tag_search_screen.dart';
 
 class TagScreen extends ConsumerWidget {
   TagScreen({
@@ -49,7 +49,7 @@ class TagScreen extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  "사람 태그하기",
+                  "유저 태그하기",
                   style: kTitle18BoldStyle.copyWith(color: kNeutralColor100),
                 ),
                 // "등록" 버튼을 정의합니다. 사용자가 이 버튼을 누르면 태그를 저장하고,

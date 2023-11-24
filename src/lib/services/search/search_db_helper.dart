@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_table.dart';
 
 part 'search_db_helper.g.dart';
@@ -19,8 +19,10 @@ class SearchDbHelper extends _$SearchDbHelper {
 
   Future insertSearch(SearchesCompanion search) async {
     final existingSearches = await getAllSearches();
+
+    //프로필 검색 일때는 contentId, name이 같다면 검색어에 제외 그게 아닌 다른 검색이라면 name만 같으면 제외
     final existingSearch = existingSearches.firstWhere(
-      (e) => e.name == search.name.value,
+      (e) => (search.content.value == 'profile' && (e.id == search.contentId.value || e.name == search.name.value)) || e.name == search.name.value,
       orElse: () => Searche(id: 0),
     );
 

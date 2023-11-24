@@ -41,7 +41,7 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
 
     maxPages = lists.data.params!.pagination!.endPage!;
 
-    state = state.copyWith(totalCount: lists.data.params!.pagination!.totalRecordCount!);
+    state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
 
     if (lists == null) {
       state = state.copyWith(page: page, isLoading: false);

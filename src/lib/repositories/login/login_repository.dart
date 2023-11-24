@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -73,12 +72,14 @@ class LoginRepository {
   Future<UserModel> loginByUserModel({required UserModel userModel}) async {
     var appKey = await GetIt.I.get<UuidUtil>().getUUID();
     String fcmToken;
-    if (Platform.isIOS) {
-      ///TODO ios Push
-      fcmToken = '1234565';
-    } else {
-      fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';
-    }
+    // if (Platform.isIOS) {
+    //   ///TODO ios Push
+    //   fcmToken = '1234565';
+    // } else {
+    //   fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';
+    // }
+
+    fcmToken = GetIt.I.get<FireBaseMessageController>().fcmToken ?? '';
 
     LoginRequestModel reqModel = LoginRequestModel(
       id: userModel.id,

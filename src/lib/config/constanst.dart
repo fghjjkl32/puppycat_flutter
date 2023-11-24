@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
@@ -11,7 +12,9 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.d
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
+import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,7 +51,7 @@ class Constants {
 
   static Future<String> getThumborDomain() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborDomain') ?? "https://imgs.pcstg.co.kr";
+    return prefs.getString('thumborDomain') ?? imgDomain;
   }
 
   static Future<String> checkFirstInstall() async {
@@ -401,3 +404,85 @@ List<String> peeAmountList = ["적음", "중간", "많음", "잘모르겠음"];
 List<String> poopColorList = ["갈색", "흑색", "혈액", "흰색", "회색", "노랑"];
 List<String> poopAmountList = ["적음", "중간", "많음", "잘모르겠음"];
 List<String> poopFormList = ["정상", "연변", "설사", "단단", "토끼똥"];
+
+void onTapHide({
+  required BuildContext context,
+  required WidgetRef ref,
+  required String contentType,
+  required dynamic contentIdx,
+  required dynamic memberIdx,
+}) async {
+  if (ref.read(userInfoProvider).userModel == null) {
+    context.pushReplacement("/loginScreen");
+  } else {
+    final tempContentIdx = contentIdx;
+    context.pop();
+
+    final result = await ref.watch(feedListStateProvider.notifier).postHide(
+          loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+          contentType: contentType,
+          contentIdx: tempContentIdx,
+          memberIdx: memberIdx,
+        );
+
+    if (result.result && context.mounted) {
+      toast(
+        context: context,
+        text: '피드 숨기기를 완료하였습니다.',
+        type: ToastType.purple,
+        buttonText: "숨기기 취소",
+        buttonOnTap: () async {
+          final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
+                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                contentType: contentType,
+                contentIdx: tempContentIdx,
+                memberIdx: memberIdx,
+              );
+
+          if (result.result && context.mounted) {
+            toast(
+              context: context,
+              text: '피드 숨기기 취소',
+              type: ToastType.purple,
+            );
+          }
+        },
+      );
+    }
+  }
+}
+
+void onTapReport({
+  required BuildContext context,
+  required Ref<Object?> ref,
+  required dynamic contentIdx,
+  required bool reportType,
+}) async {
+  toast(
+    context: context,
+    text: '정상적으로 신고 접수가 되었습니다.',
+    type: ToastType.purple,
+    buttonText: "신고취소",
+    buttonOnTap: () async {
+      final result = reportType
+          ? await ref.read(commentListStateProvider.notifier).deleteCommentReport(
+                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                contentIdx: contentIdx,
+                reportType: reportType ? "comment" : "contents",
+              )
+          : await ref.read(feedListStateProvider.notifier).deleteContentReport(
+                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                contentIdx: contentIdx,
+                reportType: reportType ? "comment" : "contents",
+              );
+
+      if (result.result && context.mounted) {
+        toast(
+          context: context,
+          text: '신고 접수가 취소되었습니다.',
+          type: ToastType.grey,
+        );
+      }
+    },
+  );
+}

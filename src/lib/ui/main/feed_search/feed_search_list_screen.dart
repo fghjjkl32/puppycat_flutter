@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:focus_detector/focus_detector.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -12,10 +11,8 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed_search/feed_search_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_save_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -34,7 +31,6 @@ class FeedSearchListScreen extends ConsumerStatefulWidget {
 }
 
 class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with SingleTickerProviderStateMixin {
-  late TabController tabController;
   ScrollController searchContentController = ScrollController();
 
   int searchOldLength = 0;
@@ -42,7 +38,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
   @override
   void initState() {
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-    ref.read(firstFeedStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
 
     searchContentController.addListener(_searchScrollListener);
 
@@ -53,7 +49,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
   void _searchScrollListener() {
     if (searchContentController.position.pixels > searchContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (searchOldLength == ref.read(feedSearchStateProvider).list.length) {
-        ref.read(feedSearchStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx, widget.searchWord);
+        ref.read(feedSearchStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel?.idx, widget.searchWord);
       }
     }
   }
@@ -70,7 +66,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
     return DefaultOnWillPopScope(
       onWillPop: () async {
         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-        ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
         return Future.value(true);
       },
       child: Material(
@@ -83,7 +79,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
             leading: IconButton(
               onPressed: () {
                 ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-                ref.read(firstFeedStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
                 Navigator.of(context).pop();
               },
               icon: const Icon(
@@ -98,10 +94,6 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
             final isLoadMoreDone = feedSearchState.isLoadMoreDone;
             final isLoading = feedSearchState.isLoading;
             final lists = feedSearchState.list;
-
-            print(feedSearchState);
-            print(lists);
-            print(feedSearchState);
 
             searchOldLength = lists.length ?? 0;
             return searchOldLength == 0
@@ -182,7 +174,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                           padding: const EdgeInsets.all(12.0),
                           child: RefreshIndicator(
                             onRefresh: () {
-                              return ref.read(feedSearchStateProvider.notifier).refresh(ref.read(userInfoProvider).userModel!.idx, widget.searchWord);
+                              return ref.read(feedSearchStateProvider.notifier).refresh(ref.read(userInfoProvider).userModel?.idx, widget.searchWord);
                             },
                             child: GridView.builder(
                               controller: searchContentController,
@@ -221,8 +213,22 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                 }
 
                                 return GestureDetector(
-                                  onTap: () {
-                                    context.push("/home/myPage/detail/null/${widget.searchWord}/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/searchContent");
+                                  onTap: () async {
+                                    Map<String, dynamic> extraMap = {
+                                      'firstTitle': 'null',
+                                      'secondTitle': widget.searchWord,
+                                      'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                                      'contentIdx': '${lists[index].idx}',
+                                      'contentType': 'searchContent',
+                                    };
+
+                                    await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('searchContent', lists[index].idx).then((value) {
+                                      if (value == null) {
+                                        return;
+                                      }
+                                      // context.push("/home/myPage/detail/null/${widget.searchWord}/${ref.read(userInfoProvider).userModel?.idx}/${lists[index].idx}/searchContent");
+                                      context.push('/home/myPage/detail', extra: extraMap);
+                                    });
                                   },
                                   child: Stack(
                                     children: [

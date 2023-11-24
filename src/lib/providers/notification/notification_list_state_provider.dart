@@ -98,7 +98,7 @@ class NotificationListState extends _$NotificationListState {
         print('resultList $resultList');
         //result.list.first.mentionMemberInfo.first['ko10bd036fcdcb4aad9989296f340f54cc1688623039'].first['nick']
         try {
-          _lastPage = result.params!.pagination!.totalPageCount!;
+          _lastPage = result.params!.pagination?.totalPageCount! ?? 0;
         } catch (_) {
           _lastPage = 1;
         }

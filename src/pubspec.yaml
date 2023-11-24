@@ -143,13 +143,13 @@ dependencies:
   uni_links: ^0.5.1
   numberpicker: ^2.1.2
 
-  #네이버 지도
-  flutter_naver_map: ^1.0.2
-  flutter_bottom_drawer: ^0.0.7
-  location: ^5.0.3
-  flutter_background_service: ^5.0.2
-  geolocator: ^10.1.0
-  pedometer: ^4.0.1
+  #  #네이버 지도
+  #  flutter_naver_map: ^1.0.2
+  #  flutter_bottom_drawer: ^0.0.7
+  #  location: ^5.0.3
+  #  flutter_background_service: ^5.0.2
+  #  geolocator: ^10.1.0
+  #  pedometer: ^4.0.1
 
   xml: ^6.3.0 # 버전 충돌로 이전 버전 사용
   #  xml_map_converter: ^1.0.0+1

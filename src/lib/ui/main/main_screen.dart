@@ -2,22 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_write_show_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
-import 'package:pet_mobile_social_flutter/components/feed/feed_best_post_widget.dart';
-import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
-import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -45,14 +38,8 @@ import 'package:pet_mobile_social_flutter/providers/restrain/restrain_write_prov
 import 'package:pet_mobile_social_flutter/ui/dialog/restriction_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/popupmenu_with_reddot_widget.dart';
-///NOTE
-///2023.11.14.
-///산책하기 보류로 주석 처리
-// import 'package:pet_mobile_social_flutter/ui/map/walk_info_widget.dart';
-///산책하기 보류로 주석 처리 완료
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
-import 'package:widget_mask/widget_mask.dart';
 import 'package:thumbor/thumbor.dart';
+import 'package:widget_mask/widget_mask.dart';
 
 class PuppyCatMain extends ConsumerStatefulWidget {
   final int initialTabIndex;
@@ -441,6 +428,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                               ],
                             ],
                           ),
+
                           ///NOTE
                           ///2023.11.14.
                           ///산책하기 보류로 주석 처리
@@ -467,6 +455,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 );
               }),
             ),
+
             ///NOTE
             ///2023.11.14.
             ///산책하기 보류로 주석 처리
@@ -520,6 +509,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             if (ref.read(userInfoProvider).userModel != null) {
               await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
             }
+
             ///위 코드로 변경
             ///산책하기 보류로 주석 처리 완료
 
@@ -528,6 +518,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 context.pushReplacement("/loginScreen");
               }
             }
+
             ///NOTE
             ///2023.11.14.
             ///산책하기 보류로 주석 처리
@@ -587,12 +578,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           child: Consumer(builder: (context, ref, _) {
             return const Icon(
               Puppycat_social.icon_camera,
+
               ///NOTE
               ///2023.11.14.
               ///산책하기 보류로 주석 처리
               // color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
               ///산책하기 보류로 주석 처리 완료
               color: kNeutralColor600,
+
               ///주석 대신 위 코드로 변경
               ///const도 추가
               size: 40,
@@ -611,40 +604,43 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             if (ref.read(userInfoProvider).userModel != null) {
               await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
             }
+
             ///위 코드로 변경
             ///산책하기 보류로 주석 처리 완료
             if (mounted) {
               ref.read(userInfoProvider).userModel == null
                   ? context.pushReplacement("/loginScreen")
-              ///NOTE
-              ///2023.11.14.
-              ///산책하기 보류로 주석 처리
-              //     : ref.read(walkStatusStateProvider) == WalkStatus.walking
-              //         ? null
-              //         : ref.watch(restrainWriteStateProvider).restrain.state == null
-              ///
+
+                  ///NOTE
+                  ///2023.11.14.
+                  ///산책하기 보류로 주석 처리
+                  //     : ref.read(walkStatusStateProvider) == WalkStatus.walking
+                  //         ? null
+                  //         : ref.watch(restrainWriteStateProvider).restrain.state == null
+                  ///
                   : ref.watch(restrainWriteStateProvider).restrain.state == null
-              ///위 코드로 변경
-              ///산책하기 보류로 주석 처리 완료
-                          ? feedWriteShowBottomSheet(
-                              context: context,
-                              onClose: () {
-                                setState(() {
-                                  showLottieAnimation = false;
-                                });
-                              },
-                            )
-                          : showDialog(
-                              barrierDismissible: false,
-                              context: context,
-                              builder: (context) => RestrictionDialog(
-                                isForever: false,
-                                date: ref.watch(restrainWriteStateProvider).restrain.date,
-                                restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-                                startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-                                endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-                              ),
-                            );
+
+                      ///위 코드로 변경
+                      ///산책하기 보류로 주석 처리 완료
+                      ? feedWriteShowBottomSheet(
+                          context: context,
+                          onClose: () {
+                            setState(() {
+                              showLottieAnimation = false;
+                            });
+                          },
+                        )
+                      : showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) => RestrictionDialog(
+                            isForever: false,
+                            date: ref.watch(restrainWriteStateProvider).restrain.date,
+                            restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
+                            startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
+                            endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
+                          ),
+                        );
             }
 
             setState(() {
@@ -659,12 +655,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
               : Consumer(builder: (context, ref, _) {
                   return const Icon(
                     Puppycat_social.icon_feed,
+
                     ///NOTE
                     ///2023.11.14.
                     ///산책하기 보류로 주석 처리
                     // color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
                     ///
                     color: kNeutralColor600,
+
                     ///위 코드로 변경
                     ///const 추가
                     ///산책하기 보류로 주석 처리 완료
@@ -816,13 +814,22 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: item.memberInfoList![0].nick!,
                   profileImage: item.memberInfoList?[0].profileImgUrl! ?? "",
-                  memberIdx: ref.read(userInfoProvider).userModel?.idx,
+                  oldMemberIdx: ref.read(userInfoProvider).userModel?.idx,
                   firstTitle: item.memberInfoList![0].nick!,
                   secondTitle: '피드',
                   imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'recent',
                   isSpecialUser: item.memberInfoList?[0].isBadge == 1,
+                  onTapHideButton: () async {
+                    onTapHide(
+                      context: context,
+                      ref: ref,
+                      contentType: 'userContent',
+                      contentIdx: item.idx,
+                      memberIdx: item.memberIdx,
+                    );
+                  },
                 );
               },
             ),
@@ -893,13 +900,22 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   profileImage: ref.read(followFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? item.memberInfoList![0].profileImgUrl! ?? "",
-                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                  oldMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                   firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   secondTitle: '피드',
                   imageDomain: ref.read(followFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'follow',
                   isSpecialUser: ref.read(followFeedStateProvider.notifier).memberInfo?[0].isBadge == 1,
+                  onTapHideButton: () async {
+                    onTapHide(
+                      context: context,
+                      ref: ref,
+                      contentType: 'userContent',
+                      contentIdx: item.idx,
+                      memberIdx: item.memberIdx,
+                    );
+                  },
                 );
               },
             ),
@@ -957,7 +973,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: item.memberInfoList![0].nick!,
                   profileImage: item.memberInfoList![0].profileImgUrl! ?? "",
-                  memberIdx: ref.read(userInfoProvider).userModel?.idx,
+                  oldMemberIdx: ref.read(userInfoProvider).userModel?.idx,
                   // firstTitle: "null",
                   firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   // secondTitle: '인기 급상승',
@@ -966,6 +982,15 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   index: index,
                   feedType: 'popular',
                   isSpecialUser: item.memberInfoList?[0].isBadge == 1,
+                  onTapHideButton: () async {
+                    onTapHide(
+                      context: context,
+                      ref: ref,
+                      contentType: 'userContent',
+                      contentIdx: item.idx,
+                      memberIdx: item.memberIdx,
+                    );
+                  },
                   // feedType: 'follow',
                 );
               },
@@ -1133,13 +1158,22 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'myContent',
                   userName: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
                   profileImage: ref.read(myFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
-                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                  oldMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                   firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
                   secondTitle: '피드',
                   imageDomain: ref.read(myFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'my',
                   isSpecialUser: ref.read(myFeedStateProvider.notifier).memberInfo![0].isBadge == 1,
+                  onTapHideButton: () async {
+                    onTapHide(
+                      context: context,
+                      ref: ref,
+                      contentType: 'myContent',
+                      contentIdx: item.idx,
+                      memberIdx: item.memberIdx,
+                    );
+                  },
                 );
               },
             ),
@@ -1174,7 +1208,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       },
                       child: Column(
                         children: [
-                          buildWidgetMask(ref.read(userInfoProvider).userModel?.profileImgUrl ?? "", ref.read(userInfoProvider).userModel?.isBadge),
+                          buildWidgetMask(ref.read(userInfoProvider).userModel?.profileImgUrl ?? "", ref.read(userInfoProvider).userModel?.isBadge, null),
                           const SizedBox(height: 4.0),
                           Text(
                             "my",
@@ -1199,11 +1233,32 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             },
                             child: Column(
                               children: [
-                                buildWidgetMask(userListLists[index].profileImgUrl, userListLists[index].isBadge),
+                                buildWidgetMask(userListLists[index].profileImgUrl, userListLists[index].isBadge, userListLists[index].redDotState),
                                 const SizedBox(height: 4.0),
-                                Text(
-                                  userListLists[index].nick!,
-                                  style: kBody12RegularStyle.copyWith(color: kTextTitleColor),
+                                Stack(
+                                  children: [
+                                    userListLists[index].redDotState == 1
+                                        ? const Positioned(
+                                            top: 0,
+                                            right: 0,
+                                            child: Icon(
+                                              Icons.circle,
+                                              color: Colors.red,
+                                              size: 6,
+                                            ),
+                                          )
+                                        : SizedBox.shrink(),
+                                    SizedBox(
+                                      width: 60,
+                                      child: Text(
+                                        userListLists[index].nick!,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                        style: kBody12RegularStyle.copyWith(color: kTextTitleColor),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -1242,7 +1297,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     );
   }
 
-  Widget buildWidgetMask(String? profileImgUrl, int? isBadge) {
+  Widget buildWidgetMask(String? profileImgUrl, int? isBadge, int? isRedDot) {
     return profileImgUrl == null || profileImgUrl == ""
         ? Stack(
             children: [
@@ -1268,6 +1323,16 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       top: 0,
                       child: Image.asset(
                         'assets/image/feed/icon/small_size/icon_special.png',
+                        height: 13.h,
+                      ),
+                    )
+                  : Container(),
+              isRedDot != null
+                  ? Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Image.asset(
+                        'assets/image/feed/icon/small_size/icon_manage_special.png',
                         height: 13.h,
                       ),
                     )

@@ -3,8 +3,6 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -42,7 +40,7 @@ class MyContentsState extends _$MyContentsState {
         page: pageKey,
       );
 
-      ref.read(myContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination!.totalRecordCount!;
+      ref.read(myContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination?.totalRecordCount! ?? 0;
 
       List<ContentImageData> feedList = result.data.list
           .map(
@@ -58,7 +56,7 @@ class MyContentsState extends _$MyContentsState {
           .toList();
 
       try {
-        _lastPage = result.data.params!.pagination!.totalPageCount!;
+        _lastPage = result.data.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

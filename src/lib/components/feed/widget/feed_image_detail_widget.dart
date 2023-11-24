@@ -99,7 +99,6 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                   ? null
                   : ref.watch(feedListStateProvider.notifier).postLike(
                         loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                        memberIdx: widget.memberIdx,
                         contentIdx: widget.contentIdx,
                         contentType: widget.contentType,
                       );

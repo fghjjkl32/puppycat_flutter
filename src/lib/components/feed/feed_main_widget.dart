@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/popular_hour_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 
@@ -21,19 +22,20 @@ class FeedMainWidget extends ConsumerWidget {
       required this.contentType,
       required this.userName,
       required this.profileImage,
-      required this.memberIdx,
+      required this.oldMemberIdx,
       required this.firstTitle,
       required this.secondTitle,
       required this.imageDomain,
       required this.index,
       required this.feedType,
       required this.isSpecialUser,
+      required this.onTapHideButton,
       Key? key})
       : super(key: key);
 
   final FeedData feedData;
   final String contentType;
-  final int? memberIdx;
+  final int? oldMemberIdx;
   final String userName;
   final String profileImage;
   final String firstTitle;
@@ -43,11 +45,28 @@ class FeedMainWidget extends ConsumerWidget {
   final String feedType;
   final bool isSpecialUser;
 
+  final Function onTapHideButton;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () {
-        context.push("/home/myPage/detail/$firstTitle/$secondTitle/${feedData.memberIdx}/${feedData.idx}/$contentType");
+      onTap: () async {
+        Map<String, dynamic> extraMap = {
+          'firstTitle': firstTitle,
+          'secondTitle': secondTitle,
+          'memberIdx': '${feedData.memberIdx}',
+          'contentIdx': '${feedData.idx}',
+          'contentType': contentType,
+        };
+
+        print("feedData.memberIdx ${feedData.memberIdx}");
+        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(contentType, feedData.idx).then((value) {
+          if (value == null) {
+            return;
+          }
+          // context.push("/home/myPage/detail/$firstTitle/$secondTitle/${feedData.memberIdx}/${feedData.idx}/$contentType");
+          context.push('/home/myPage/detail', extra: extraMap);
+        });
       },
       child: Material(
         child: Container(
@@ -69,7 +88,7 @@ class FeedMainWidget extends ConsumerWidget {
                     ),
                     FeedFollowWidget(
                       popularUserListData: ref.watch(popularUserListStateProvider).list,
-                      oldMemberIdx: memberIdx ?? 0,
+                      oldMemberIdx: oldMemberIdx ?? 0,
                     ),
                   ],
                 ),
@@ -84,7 +103,7 @@ class FeedMainWidget extends ConsumerWidget {
               if (index == 4 && feedType == "recent")
                 FeedFollowWidget(
                   popularUserListData: ref.watch(popularUserListStateProvider).list,
-                  oldMemberIdx: memberIdx ?? 0,
+                  oldMemberIdx: oldMemberIdx ?? 0,
                 ),
               if (index != 0 && index % 10 == 0 && feedType == "recent")
                 FeedBestPostWidget(
@@ -106,10 +125,13 @@ class FeedMainWidget extends ConsumerWidget {
                 contentIdx: feedData.idx,
                 contentType: contentType,
                 feedData: feedData,
-                oldMemberIdx: memberIdx ?? 0,
+                oldMemberIdx: oldMemberIdx ?? 0,
                 isDetailWidget: false,
                 feedType: feedType,
                 isSpecialUser: isSpecialUser,
+                onTapHideButton: () async {
+                  onTapHideButton();
+                },
               ),
               FeedImageMainWidget(
                 imageList: feedData.imgList!,
@@ -149,7 +171,7 @@ class FeedMainWidget extends ConsumerWidget {
                                     context,
                                     kBody13RegularStyle.copyWith(color: kSecondaryColor),
                                     ref,
-                                    memberIdx ?? 0,
+                                    oldMemberIdx ?? 0,
                                   ),
                                   style: style,
                                 ),
@@ -178,7 +200,7 @@ class FeedMainWidget extends ConsumerWidget {
                               context,
                               kBody13RegularStyle.copyWith(color: kSecondaryColor),
                               ref,
-                              memberIdx ?? 0,
+                              oldMemberIdx ?? 0,
                             ),
                             style: style,
                           ),
@@ -192,11 +214,10 @@ class FeedMainWidget extends ConsumerWidget {
                 likeCount: feedData.likeCnt!,
                 commentCount: feedData.commentCnt!,
                 contentIdx: feedData.idx,
-                memberIdx: memberIdx,
                 isLike: feedData.likeState == 1,
                 isSave: feedData.saveState == 1,
                 contentType: contentType,
-                oldMemberIdx: memberIdx ?? 0,
+                oldMemberIdx: oldMemberIdx ?? 0,
               ),
               Padding(
                 padding: EdgeInsets.all(12.0.h),

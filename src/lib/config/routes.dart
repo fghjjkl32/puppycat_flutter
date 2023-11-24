@@ -7,6 +7,7 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/custom_
 import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_page.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/dialog_page.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
@@ -123,6 +124,14 @@ class AppRouter {
                 return ReportScreen(
                   isComment: bool.parse(isComment),
                   contentIdx: int.parse(contentIdx),
+                  onTapReport: () {
+                    onTapReport(
+                      context: context,
+                      ref: ref,
+                      contentIdx: int.parse(contentIdx),
+                      reportType: bool.parse(isComment),
+                    );
+                  },
                 );
               },
             ),
@@ -230,15 +239,51 @@ class AppRouter {
                     return const UserUnknownScreen();
                   },
                 ),
+                // GoRoute(
+                //   path: 'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
+                //   name: 'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
+                //   builder: (BuildContext context, GoRouterState state) {
+                //     final firstTitle = state.pathParameters['firstTitle']!;
+                //     final secondTitle = state.pathParameters['secondTitle']!;
+                //     final memberIdx = state.pathParameters['memberIdx']!;
+                //     final contentIdx = state.pathParameters['contentIdx']!;
+                //     final contentType = state.pathParameters['contentType']!;
+                //
+                //     bool isRouteComment = false;
+                //     int? commentFocusIndex;
+                //     final extraData = state.extra;
+                //     if (extraData != null) {
+                //       Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
+                //       if (extraMap.keys.contains('isRouteComment')) {
+                //         isRouteComment = extraMap['isRouteComment'];
+                //       }
+                //       if (extraMap.keys.contains('focusIdx')) {
+                //         commentFocusIndex = extraMap['focusIdx'];
+                //       }
+                //     }
+                //
+                //
+                //     return FeedDetailScreen(
+                //       firstTitle: firstTitle,
+                //       secondTitle: secondTitle,
+                //       memberIdx: int.parse(memberIdx == "null" ? "0" : memberIdx),
+                //       contentIdx: int.parse(contentIdx),
+                //       contentType: contentType,
+                //       isRouteComment: isRouteComment,
+                //       commentFocusIndex: commentFocusIndex,
+                //       oldMemberIdx: 0,
+                //     );
+                //   },
+                // ),
                 GoRoute(
-                  path: 'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
-                  name: 'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
+                  path: 'detail',
+                  name: 'detail',
                   builder: (BuildContext context, GoRouterState state) {
-                    final firstTitle = state.pathParameters['firstTitle']!;
-                    final secondTitle = state.pathParameters['secondTitle']!;
-                    final memberIdx = state.pathParameters['memberIdx']!;
-                    final contentIdx = state.pathParameters['contentIdx']!;
-                    final contentType = state.pathParameters['contentType']!;
+                    String firstTitle = '';
+                    String secondTitle = '';
+                    String memberIdx = '0';
+                    String contentIdx = '0';
+                    String contentType = '';
 
                     bool isRouteComment = false;
                     int? commentFocusIndex;
@@ -249,14 +294,29 @@ class AppRouter {
                         isRouteComment = extraMap['isRouteComment'];
                       }
                       if (extraMap.keys.contains('focusIdx')) {
-                        commentFocusIndex = extraMap['focusIdx'];
+                        commentFocusIndex = int.parse(extraMap['focusIdx']);
+                      }
+                      if (extraMap.keys.contains('firstTitle')) {
+                        firstTitle = extraMap['firstTitle'];
+                      }
+                      if (extraMap.keys.contains('secondTitle')) {
+                        secondTitle = extraMap['secondTitle'];
+                      }
+                      if (extraMap.keys.contains('memberIdx')) {
+                        memberIdx = extraMap['memberIdx'];
+                      }
+                      if (extraMap.keys.contains('contentIdx')) {
+                        contentIdx = extraMap['contentIdx'];
+                      }
+                      if (extraMap.keys.contains('contentType')) {
+                        contentType = extraMap['contentType'];
                       }
                     }
 
                     return FeedDetailScreen(
                       firstTitle: firstTitle,
                       secondTitle: secondTitle,
-                      memberIdx: int.parse(memberIdx),
+                      memberIdx: int.parse(memberIdx.isEmpty ? "0" : memberIdx),
                       contentIdx: int.parse(contentIdx),
                       contentType: contentType,
                       isRouteComment: isRouteComment,

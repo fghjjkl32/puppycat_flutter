@@ -1,26 +1,22 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_social_textfield/flutter_social_textfield.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autocomplete_options.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button_selected_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_content_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/cropped_images_list_view.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_location_search_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/kpostal_view.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/tag_screen.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_information_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/cropped_images_list_view.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/kpostal_view.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/tag_screen.dart';
 
 class PostFeedView extends ConsumerStatefulWidget {
   const PostFeedView({
@@ -107,7 +103,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                                   color: kTextSubTitleColor,
                                 ),
                                 Text(
-                                  "사람 태그하기 ",
+                                  "유저 태그하기 ",
                                   style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
                                 ),
                                 Text(

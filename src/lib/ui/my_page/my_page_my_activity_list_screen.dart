@@ -9,6 +9,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_save_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
@@ -252,8 +253,21 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       }
 
                       return GestureDetector(
-                        onTap: () {
-                          context.push("/home/myPage/detail/null/좋아요한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myLikeContent");
+                        onTap: () async {
+                          Map<String, dynamic> extraMap = {
+                            'firstTitle': 'null',
+                            'secondTitle': '좋아요한 피드',
+                            'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                            'contentIdx': '${lists[index].idx}',
+                            'contentType': 'myLikeContent',
+                          };
+                          await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myLikeContent', lists[index].idx).then((value) {
+                            if (value == null) {
+                              return;
+                            }
+                            // context.push("/home/myPage/detail/null/좋아요한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myLikeContent");
+                            context.push('/home/myPage/detail', extra: extraMap);
+                          });
                         },
                         child: Stack(
                           children: [
@@ -386,8 +400,21 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       }
 
                       return GestureDetector(
-                        onTap: () {
-                          context.push("/home/myPage/detail/null/저장한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/mySaveContent");
+                        onTap: () async {
+                          Map<String, dynamic> extraMap = {
+                            'firstTitle': 'null',
+                            'secondTitle': '저장한 피드',
+                            'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                            'contentIdx': '${lists[index].idx}',
+                            'contentType': 'mySaveContent',
+                          };
+                          await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('mySaveContent', lists[index].idx).then((value) {
+                            if (value == null) {
+                              return;
+                            }
+                            // context.push("/home/myPage/detail/null/저장한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/mySaveContent");
+                            context.push('/home/myPage/detail', extra: extraMap);
+                          });
                         },
                         child: Stack(
                           children: [

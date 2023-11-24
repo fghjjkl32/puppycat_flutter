@@ -64,7 +64,7 @@
 //
 //
 //       try {
-//         _lastPage = searchResult.params!.pagination!.totalPageCount!;
+//         _lastPage = searchResult.params!.pagination?.totalPageCount! ?? 0;
 //       } catch (_) {
 //         _lastPage = 1;
 //       }

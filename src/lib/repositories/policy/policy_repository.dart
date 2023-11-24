@@ -1,8 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_response_model.dart';
@@ -11,7 +8,7 @@ import 'package:pet_mobile_social_flutter/services/policy/policy_service.dart';
 // final policyRepositoryProvider = Provider.autoDispose((ref) => PolicyRepository());
 
 class PolicyRepository {
-  late final PolicyService _policyService;// = PolicyService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+  late final PolicyService _policyService; // = PolicyService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
 
   final Dio dio;
 
@@ -30,6 +27,21 @@ class PolicyRepository {
         code: responseModel.code,
         refer: 'PolicyRepository',
         caller: 'getPolicies',
+      );
+    }
+
+    return responseModel.data.list;
+  }
+
+  Future<List<PolicyItemModel>> getPoliciesDetail(String searchType, String date) async {
+    PolicyResponseModel responseModel = await _policyService.getPoliciesDetail(searchType, date);
+
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'PolicyRepository',
+        caller: 'getPoliciesDetail',
       );
     }
 
