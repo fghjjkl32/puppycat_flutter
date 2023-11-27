@@ -60,9 +60,12 @@ class APIErrorState extends _$APIErrorState {
       case 'ECON-3986': //팔로우 공개 게시물, 페이지 이동
         //TODO 테스트 필요
         final goRouter = ref.read(routerProvider);
-        goRouter.pushNamed('feed_not_found_screen');
+        goRouter.pushNamed('error_toast');
+        // goRouter.pushNamed('feed_not_found_screen');
         break;
       case 'ECON-3982': //팔로우 공개 게시물, 페이지 이동, 미로그인 시 로그인 화면으로
+        final goRouter = ref.read(routerProvider);
+        goRouter.pushReplacement("/loginScreen");
         break;
       case 'ECON-3993': //상대가 나를 차단, 피드를 찾을 수 없어요 스낵바
       case 'ECON-3987': //신고 게시글, 피드를 찾을 수 없어요 스낵바

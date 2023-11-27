@@ -254,7 +254,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         },
                       ),
                     ],
-                    expandedHeight: 200.h,
+                    expandedHeight: 120.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
                       final userInformationState = ref.watch(myInformationStateProvider);
                       final lists = userInformationState.list;
