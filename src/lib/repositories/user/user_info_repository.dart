@@ -21,7 +21,7 @@ class UserInfoRepository {
   UserInfoRepository({
     required this.dio,
   }) {
-    _userInfoService = UserInfoService(dio, baseUrl: baseUrl);
+    _userInfoService = UserInfoService(dio, baseUrl: memberBaseUrl);
   }
 
   Future<bool> restoreAccount(String simpleId) async {

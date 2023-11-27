@@ -6,7 +6,6 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -457,7 +456,6 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                         } else {
                           ref.read(loginStateProvider.notifier).logout(
                                 ref.read(userInfoProvider).userModel!.simpleType,
-                                ref.read(userInfoProvider).userModel!.appKey,
                               );
                         }
                       }

@@ -9,7 +9,6 @@ import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart'
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
@@ -107,9 +106,7 @@ class DioWrap {
           print('ref.read(userInfoProvider).userModel ${ref.read(userInfoProvider).userModel}');
           final userModel = ref.read(userInfoProvider).userModel;
           if (userModel != null) {
-            if (userModel.idx != 0) {
-              ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
-            }
+            ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
           }
         } catch (e) {
           print('New Noti API Error $e');
@@ -135,9 +132,6 @@ class DioWrap {
           return handler.next(options);
         }
         return handler.next(options);
-      }, onError: (error, handler) {
-        print('dio onerror : ${error.toString()}');
-        return handler.reject(error);
       }, onResponse: (response, handler) async {
         print('onResponse dio response : ${response.toString()}');
 
@@ -184,28 +178,25 @@ class DioWrap {
               await storage.deleteAll();
 
               ///TODO
-              ///
-              ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
+              ///logout
+              // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
+              // ref.read(loginStateProvider.notifier).logout(provider, appKey)
             }
             return handler.next(response);
+          }, onError: (error, handler) {
+            print('refresh dio onerror : ${error.toString()}');
+            int? errorCode = error.response?.statusCode;
+            APIException apiException = APIException(msg: 'Refresh Error', code: errorCode.toString() ?? '400', refer: 'dio', caller: 'dio');
+            // ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+            //TODO
+            //logout
+            return handler.reject(error);
           }));
 
           print('access token error');
         }
 
         return handler.next(response);
-      }),
-          return handler.next(options);
-        } catch (e) {
-          print('noti error $e');
-          // Handle the error accordingly
-          // return handler.reject(DioError(
-          //   requestOptions: options,
-          //   error: 'Failed to call the specific API.',
-          // ));
-          return handler.next(options);
-        }
-        return handler.next(options);
       }, onError: (error, handler) {
         print('dio onerror : ${error.toString()}');
         int? errorCode = error.response?.statusCode;

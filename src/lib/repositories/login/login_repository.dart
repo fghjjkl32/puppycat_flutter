@@ -153,16 +153,7 @@ class LoginRepository {
     }
   }
 
-  Future<bool> logout(String appKey) async {
-    // if (appKey == '') {
-    //   return false;
-    // }
-    //
-    // Map<String, dynamic> body = {
-    //   "appKey": appKey,
-    // };
-
-    // var responseModel = await _loginService.logout(body);
+  Future<bool> logout() async {
     var responseModel = await _loginService.logout();
 
     if (!responseModel.result) {

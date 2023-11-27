@@ -1,34 +1,21 @@
 import 'dart:convert';
 
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:pet_mobile_social_flutter/models/chat/chat_user_model.dart';
-import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/chat/chat_login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'login_state_provider.g.dart';
 
 final userInfoProvider = StateProvider<UserInfoModel>((ref) => UserInfoModel());
-// final cookieProvider = StateProvider<CookieJar?>((ref) => null);
-
-// final accountRestoreProvider = StateProvider.family<Future<bool>, (String, String)>((ref, restoreInfo) {
-//   return ref.read(accountRepositoryProvider).restoreAccount(restoreInfo.$1, restoreInfo.$2);
-// });
 
 @Riverpod(keepAlive: true)
 class LoginState extends _$LoginState {
@@ -60,8 +47,6 @@ class LoginState extends _$LoginState {
     }
   }
 
-  ///NOTE
-  ///이미 Social(Naver, kakao ...) Login은 완료된 상태에서 로그인 진행 시키기 위한 함수
   void loginByUserModel({
     required UserModel userModel,
   }) async {
@@ -148,11 +133,11 @@ class LoginState extends _$LoginState {
     state = LoginStatus.success;
   }
 
-  void logout(String provider, String appKey) async {
+  void logout(String provider) async {
     final loginRepository = LoginRepository(provider: provider, dio: ref.read(dioProvider));
 
     try {
-      var result = await loginRepository.logout(appKey);
+      var result = await loginRepository.logout();
       if (result) {
         var userInfoModel = ref.read(userInfoProvider);
 
