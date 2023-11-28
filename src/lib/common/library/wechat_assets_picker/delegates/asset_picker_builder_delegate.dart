@@ -12,22 +12,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/constants.dart';
 import '../constants/enums.dart';
 import '../constants/extensions.dart';
 import '../constants/typedefs.dart';
-import 'asset_picker_text_delegate.dart';
 import '../internal/singleton.dart';
 import '../models/path_wrapper.dart';
 import '../provider/asset_picker_provider.dart';
@@ -39,6 +35,7 @@ import '../widget/builder/value_listenable_builder_2.dart';
 import '../widget/gaps.dart';
 import '../widget/platform_progress_indicator.dart';
 import '../widget/scale_text.dart';
+import 'asset_picker_text_delegate.dart';
 
 /// The delegate to build the whole picker's components.
 ///
