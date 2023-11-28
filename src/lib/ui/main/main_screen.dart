@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_write_show_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -29,6 +28,7 @@ import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_write_provider.dart';
+
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -60,7 +60,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   late final PagingController<int, FeedData> _followFeedListPagingController = ref.read(followFeedStateProvider);
   late final PagingController<int, FeedData> _popularWeekFeedListPagingController = ref.read(popularWeekFeedStateProvider);
 
-  bool showLottieAnimation = false;
+  // bool showLottieAnimation = false;
   bool _isWidgetVisible = true;
 
   List<Widget> getTabs() {
@@ -601,74 +601,121 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
             // }
             ///
+            // if (ref.read(userInfoProvider).userModel != null) {
+            //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
+            // }
+            //
+            // ///위 코드로 변경
+            // ///산책하기 보류로 주석 처리 완료
+            // if (mounted) {
+            //   ref.read(userInfoProvider).userModel == null
+            //       ? context.pushReplacement("/loginScreen")
+            //
+            //       ///NOTE
+            //       ///2023.11.14.
+            //       ///산책하기 보류로 주석 처리
+            //       //     : ref.read(walkStatusStateProvider) == WalkStatus.walking
+            //       //         ? null
+            //       //         : ref.watch(restrainWriteStateProvider).restrain.state == null
+            //       ///
+            //       : ref.watch(restrainWriteStateProvider).restrain.state == null
+            //
+            //           ///위 코드로 변경
+            //           ///산책하기 보류로 주석 처리 완료
+            //           ? feedWriteShowBottomSheet(
+            //               context: context,
+            //               onClose: () {
+            //                 setState(() {
+            //                   showLottieAnimation = false;
+            //                 });
+            //               },
+            //             )
+            //           : showDialog(
+            //               barrierDismissible: false,
+            //               context: context,
+            //               builder: (context) => RestrictionDialog(
+            //                 isForever: false,
+            //                 date: ref.watch(restrainWriteStateProvider).restrain.date,
+            //                 restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
+            //                 startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
+            //                 endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
+            //               ),
+            //             );
+            // }
             if (ref.read(userInfoProvider).userModel != null) {
               await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
             }
 
-            ///위 코드로 변경
-            ///산책하기 보류로 주석 처리 완료
             if (mounted) {
-              ref.read(userInfoProvider).userModel == null
-                  ? context.pushReplacement("/loginScreen")
+              if (ref.read(userInfoProvider).userModel == null) {
+                context.pushReplacement("/loginScreen");
+              } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
+                final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
 
-                  ///NOTE
-                  ///2023.11.14.
-                  ///산책하기 보류로 주석 처리
-                  //     : ref.read(walkStatusStateProvider) == WalkStatus.walking
-                  //         ? null
-                  //         : ref.watch(restrainWriteStateProvider).restrain.state == null
-                  ///
-                  : ref.watch(restrainWriteStateProvider).restrain.state == null
-
-                      ///위 코드로 변경
-                      ///산책하기 보류로 주석 처리 완료
-                      ? feedWriteShowBottomSheet(
-                          context: context,
-                          onClose: () {
-                            setState(() {
-                              showLottieAnimation = false;
-                            });
-                          },
-                        )
-                      : showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (context) => RestrictionDialog(
-                            isForever: false,
-                            date: ref.watch(restrainWriteStateProvider).restrain.date,
-                            restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-                            startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-                            endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-                          ),
-                        );
+                InstaAssetPicker.pickAssets(
+                  context,
+                  maxAssets: 12,
+                  pickerTheme: themeData(context).copyWith(
+                    canvasColor: kNeutralColor100,
+                    colorScheme: theme.colorScheme.copyWith(
+                      background: kNeutralColor100,
+                    ),
+                    appBarTheme: theme.appBarTheme.copyWith(
+                      backgroundColor: kNeutralColor100,
+                    ),
+                  ),
+                  onCompleted: (cropStream) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => FeedWriteScreen(
+                          cropStream: cropStream,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              } else {
+                showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (context) => RestrictionDialog(
+                    isForever: false,
+                    date: ref.watch(restrainWriteStateProvider).restrain.date,
+                    restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
+                    startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
+                    endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
+                  ),
+                );
+              }
             }
-
-            setState(() {
-              showLottieAnimation = true;
-            });
+            // setState(() {
+            //   showLottieAnimation = true;
+            // });
           },
-          child: showLottieAnimation
-              ? Lottie.asset(
-                  'assets/lottie/icon_feed.json',
-                  repeat: false,
-                )
-              : Consumer(builder: (context, ref, _) {
-                  return const Icon(
-                    Puppycat_social.icon_feed,
+          child:
+              // showLottieAnimation
+              //     ? Lottie.asset(
+              //         'assets/lottie/icon_feed.json',
+              //         repeat: false,
+              //       )
+              //     :
+              Consumer(builder: (context, ref, _) {
+            return const Icon(
+              Puppycat_social.icon_feed,
 
-                    ///NOTE
-                    ///2023.11.14.
-                    ///산책하기 보류로 주석 처리
-                    // color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
-                    ///
-                    color: kNeutralColor600,
+              ///NOTE
+              ///2023.11.14.
+              ///산책하기 보류로 주석 처리
+              // color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
+              ///
+              color: kNeutralColor600,
 
-                    ///위 코드로 변경
-                    ///const 추가
-                    ///산책하기 보류로 주석 처리 완료
-                    size: 40,
-                  );
-                }),
+              ///위 코드로 변경
+              ///const 추가
+              ///산책하기 보류로 주석 처리 완료
+              size: 40,
+            );
+          }),
         ),
         const PopupMenuWithReddot(),
         GestureDetector(

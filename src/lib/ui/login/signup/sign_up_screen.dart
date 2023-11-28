@@ -2,9 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -47,30 +45,6 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     super.initState();
 
     ref.read(policyStateProvider.notifier).getPolicies();
-    dd();
-  }
-
-  void dd() {
-    if (widget.authType == "toss") {
-      String sessionId = generateSessionId();
-      String secretKey = generateRandomBytes(16);
-      String iv = generateRandomBytes(12);
-      String base64PublicKey =
-          'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAoVdxG0Qi9pip46Jw9ImSlPVD8+L2mM47ey6EZna7D7utgNdh8Tzkjrm1Yl4h6kPJrhdWvMIJGS51+6dh041IXcJEoUquNblUEqAUXBYwQM8PdfnS12SjlvZrP4q6whBE7IV1SEIBJP0gSK5/8Iu+uld2ctJiU4p8uswL2bCPGWdvVPltxAg6hfAG/ImRUKPRewQsFhkFvqIDCpO6aeaR10q6wwENZltlJeeRnl02VWSneRmPqqypqCxz0Y+yWCYtsA+ngfZmwRMaFkXcWjaWnvSqqV33OAsrQkvuBHWoEEkvQ0P08+h9Fy2+FhY9TeuukQ2CVFz5YyOhp25QtWyQI+IaDKk+hLxJ1APR0c3tmV0ANEIjO6HhJIdu2KQKtgFppvqSrZp2OKtI8EZgVbWuho50xvlaPGzWoMi9HSCb+8ARamlOpesxHH3O0cTRUnft2Zk1FHQb2Pidb2z5onMEnzP2xpTqAIVQyb6nMac9tof5NFxwR/c4pmci+1n8GFJIFN18j2XGad1mNyio/R8LabqnzNwJC6VPnZJz5/pDUIk9yKNOY0KJe64SRiL0a4SNMohtyj6QlA/3SGxaEXb8UHpophv4G9wN1CgfyUamsRqp8zo5qDxBvlaIlfkqJvYPkltj7/23FHDjPi8q8UkSiAeu7IV5FTfB5KsiN8+sGSMCAwEAAQ=='; // 여기에 실제 Base64 인코딩된 공개키를 추가하세요
-      String dataToEncrypt = 'Hello, Flutter!';
-
-      String sessionKey = generateSessionKey(sessionId, secretKey, iv, base64PublicKey);
-      String encryptedData = encryptData(sessionId, secretKey, iv, dataToEncrypt);
-
-      print('Session ID: $sessionId');
-      print('Secret Key: $secretKey');
-      print('IV: $iv');
-      print('Session Key: $sessionKey');
-      print('Encrypted Data: $encryptedData');
-
-      String decryptedData = decryptData(secretKey, iv, encryptedData);
-      print('Decrypted Data: $decryptedData');
-    }
   }
 
   @override
@@ -81,7 +55,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   Widget _buildTop() {
     return Padding(
-      padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 20.h),
+      padding: EdgeInsets.fromLTRB(24, 20, 24, 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -92,7 +66,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 '회원가입.퍼피캣에 오신 걸 환영합니다'.tr(),
                 style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8),
               Text(
                 '회원가입.환영문구부제'.tr(),
                 style: kBody12RegularStyle400.copyWith(color: kTextBodyColor, height: 1.3),
@@ -122,33 +96,33 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
             ),
           ],
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 8),
         Stack(
           children: [
             Visibility(
               visible: !isAuth,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    width: 100.w,
-                    height: 40.h,
-                    child: ElevatedButton.icon(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                        ),
-                        backgroundColor: MaterialStateProperty.all<Color>(kKakaoLoginColor),
-                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
-                      ),
-                      onPressed: () {},
-                      label: Text(
-                        '회원가입.카카오 인증'.tr(),
-                        style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
-                      ),
-                      icon: Image.asset('assets/image/signUpScreen/kakao_icon.png'),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   width: 100.w,
+                  //   height: 40.h,
+                  //   child: ElevatedButton.icon(
+                  //     style: ButtonStyle(
+                  //       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                  //       ),
+                  //       backgroundColor: MaterialStateProperty.all<Color>(kKakaoLoginColor),
+                  //       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
+                  //     ),
+                  //     onPressed: () {},
+                  //     label: Text(
+                  //       '회원가입.카카오 인증'.tr(),
+                  //       style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                  //     ),
+                  //     icon: Image.asset('assets/image/signUpScreen/kakao_icon.png'),
+                  //   ),
+                  // ),
                   // SizedBox(
                   //   width: 100.w,
                   //   height: 40.h,
@@ -183,25 +157,26 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   //     icon: Image.asset('assets/image/signUpScreen/naver_icon.png'),
                   //   ),
                   // ),
-                  SizedBox(
-                    width: 100.w,
-                    height: 40.h,
-                    child: ElevatedButton.icon(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: ElevatedButton.icon(
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                          ),
+                          backgroundColor: MaterialStateProperty.all<Color>(kSignUpPassColor),
+                          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5, right: 5)),
                         ),
-                        backgroundColor: MaterialStateProperty.all<Color>(kSignUpPassColor),
-                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
+                        onPressed: () {
+                          ref.read(authStateProvider.notifier).getPassAuthUrl();
+                        },
+                        label: Text(
+                          '회원가입.휴대폰 인증'.tr(),
+                          style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
+                        ),
+                        icon: Image.asset('assets/image/signUpScreen/pass_icon.png'),
                       ),
-                      onPressed: () {
-                        ref.read(authStateProvider.notifier).getPassAuthUrl();
-                      },
-                      label: Text(
-                        '회원가입.휴대폰 인증'.tr(),
-                        style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
-                      ),
-                      icon: Image.asset('assets/image/signUpScreen/pass_icon.png'),
                     ),
                   ),
                 ],
@@ -210,8 +185,8 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
             Visibility(
               visible: isAuth,
               child: SizedBox(
-                width: 320.w,
-                height: 48.h,
+                width: 320,
+                height: 48,
                 child: ElevatedButton(
                   onPressed: null,
                   style: ElevatedButton.styleFrom(
@@ -251,7 +226,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
             ),
           ],
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,7 +252,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                           errorMaxLines: 2,
                           counterText: '',
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 13.0.h, horizontal: 16.0.w), //Vertical 이 13인 이유는 정확하진 않은데 border까지 고려해야할듯
+                          contentPadding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0), //Vertical 이 13인 이유는 정확하진 않은데 border까지 고려해야할듯
                         )
                       : InputDecoration(
                           hintText: '회원가입.닉네임을 입력해주세요'.tr(),
@@ -298,7 +273,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                           errorMaxLines: 2,
                           counterText: '',
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 13.0.h, horizontal: 16.0.w),
+                          contentPadding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0),
                         ),
                   maxLength: 20,
                   autovalidateMode: AutovalidateMode.always,
@@ -337,11 +312,11 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 ),
               ),
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: 8),
             // Spacer(),
             SizedBox(
-              width: 66.w,
-              height: 44.h,
+              width: 66,
+              height: 44,
               child: ElevatedButton(
                 onPressed: ref.watch(checkButtonProvider)
                     ? () {
@@ -352,7 +327,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                       }
                     : null,
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.only(left: 5.w, right: 5.w),
+                  padding: EdgeInsets.only(left: 5, right: 5),
                   backgroundColor: kPrimaryLightColor,
                   disabledBackgroundColor: kNeutralColor300,
                   disabledForegroundColor: kTextBodyColor,
@@ -445,13 +420,13 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
             ],
           ),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(24.w, 32.h, 24.w, 0),
+            padding: EdgeInsets.fromLTRB(24, 32, 24, 0),
             child: Column(
               children: [
                 _buildAuthBody(),
-                SizedBox(height: 8.h),
+                SizedBox(height: 8),
                 _buildNickBody(),
-                SizedBox(height: 24.h),
+                SizedBox(height: 24),
                 const Divider(),
                 // SizedBox(height: 24.h),
                 _buildPolicyBody(),
@@ -486,7 +461,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
           builder: (context) {
             return CustomDialog(
                 content: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                  padding: EdgeInsets.symmetric(vertical: 24.0),
                   child: Text(
                     "본인 인증에 실패하였습니다.",
                     style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
@@ -512,7 +487,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
           builder: (context) {
             return CustomDialog(
                 content: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                  padding: EdgeInsets.symmetric(vertical: 24.0),
                   child: Text(
                     "이미 퍼피캣에 가입된 계정이 있습니다.",
                     style: kBody16BoldStyle.copyWith(color: kTextTitleColor),

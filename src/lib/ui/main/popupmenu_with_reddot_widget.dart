@@ -118,16 +118,16 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
             height: 5,
           ),
         );
-        list.add(
-          diaryPopUpMenuItem(
-            'message',
-            '메시지',
-            const Icon(
-              Puppycat_social.icon_chat,
-            ),
-            false,
-          ),
-        );
+        // list.add(
+        //   diaryPopUpMenuItem(
+        //     'message',
+        //     '메시지',
+        //     const Icon(
+        //       Puppycat_social.icon_chat,
+        //     ),
+        //     false,
+        //   ),
+        // );
         list.add(
           const PopupMenuDivider(
             height: 5,
