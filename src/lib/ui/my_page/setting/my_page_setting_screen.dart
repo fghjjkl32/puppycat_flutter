@@ -1,10 +1,5 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:channel_talk_flutter/channel_talk_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
@@ -12,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
-import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -20,15 +14,11 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
-import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/my_page_setting_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/policy/policy_menu_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/Admin/password_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/web_view/channel_talk_webview_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/web_view/webview_widget.dart';
-import 'package:tosspayments_sdk_flutter/model/tosspayments_url.dart';
 import 'package:uni_links/uni_links.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MyPageSettingScreen extends ConsumerStatefulWidget {
   const MyPageSettingScreen({super.key});
@@ -43,6 +33,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
     super.initState();
     Future(() {
       ref.watch(myPageSettingProvider.notifier).getCacheSizeInMB();
+      ref.read(policyMenuStateProvider.notifier).getPoliciesMenu();
     });
     initUniLinks();
   }
@@ -186,14 +177,26 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               height: 30.h,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                child: ListView(
+                child: ListView.builder(
+                  itemCount: ref.watch(policyMenuStateProvider).length,
                   scrollDirection: Axis.horizontal,
-                  children: [
-                    GestureDetector(
+                  itemBuilder: (BuildContext context, int index) {
+                    final data = ref.watch(policyMenuStateProvider)[index];
+
+                    bool isLastItem = index == ref.watch(policyMenuStateProvider).length - 1;
+
+                    return GestureDetector(
                       onTap: () {
-                        context.go("/home/myPage/setting/TermsOfService");
+                        Map<String, dynamic> extraMap = {
+                          'dateList': data.dateList,
+                          'idx': data.idx,
+                          'menuName': data.menuName!,
+                        };
+
+                        context.push("/home/myPage/setting/policy", extra: extraMap);
                       },
                       child: Container(
+                        margin: EdgeInsets.only(right: isLastItem ? 0 : 12),
                         decoration: const BoxDecoration(
                           color: kNeutralColor300,
                           borderRadius: BorderRadius.all(
@@ -204,64 +207,14 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                             child: Text(
-                              "서비스 이용약관",
+                              data.menuName!,
                               style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 12.w,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context.go("/home/myPage/setting/PrivacyPolicy");
-                      },
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: kNeutralColor300,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
-                        ),
-                        child: Center(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                            child: Text(
-                              "개인정보 처리 방침",
-                              style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 12.w,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context.go("/home/myPage/setting/PrivacyPolicyAccepted");
-                      },
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: kNeutralColor300,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
-                        ),
-                        child: Center(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                            child: Text(
-                              "개인정보 수집/이용 동의",
-                              style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -347,21 +300,21 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       SizedBox(
                         height: 10.h,
                       ),
-                      Text(
-                        "위치 서비스 (필수)",
-                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                      ),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      Text(
-                        "맵 서비스 등 이용하실 때 가까운 정보 및\n장소를 찾으실 수 있도록 도와줍니다.",
-                        style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(
-                        height: 10.h,
-                      ),
+                      // Text(
+                      //   "위치 서비스 (필수)",
+                      //   style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                      // ),
+                      // SizedBox(
+                      //   height: 3.h,
+                      // ),
+                      // Text(
+                      //   "맵 서비스 등 이용하실 때 가까운 정보 및\n장소를 찾으실 수 있도록 도와줍니다.",
+                      //   style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                      //   textAlign: TextAlign.center,
+                      // ),
+                      // SizedBox(
+                      //   height: 10.h,
+                      // ),
                       GestureDetector(
                         onTap: () {
                           openAppSettings();

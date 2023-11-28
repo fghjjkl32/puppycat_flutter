@@ -1,19 +1,14 @@
-import 'dart:convert';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
-import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
@@ -23,8 +18,6 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/policy_checkbox_widget.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:tosspayments_sdk_flutter/model/tosspayments_url.dart';
 
 final _formKey = GlobalKey<FormState>();
 
@@ -415,6 +408,8 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   isEssential: policyProvider[idx].required == 'Y' ? true : false,
                   title: policyProvider[idx].title ?? 'unknown title.',
                   detail: policyProvider[idx].detail ?? 'unknown detail.',
+                  menuIdx: policyProvider[idx].menuIdx ?? 0,
+                  menuName: policyProvider[idx].menuName ?? 'unknown detail.',
                   onChanged: (value) {
                     _nickFocusNode.unfocus();
                     ref.read(policyStateProvider.notifier).toggle(policyProvider[idx].idx);

@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 
 final policyCheckProvider = StateProvider.autoDispose<bool>((ref) => false);
 
@@ -16,12 +16,18 @@ class PolicyCheckBoxWidget extends ConsumerWidget {
   final Function? onViewDetail;
   final bool isAgreed;
 
+  final int menuIdx;
+
+  final String menuName;
+
   const PolicyCheckBoxWidget({
     Key? key,
     required this.idx,
     required this.isEssential,
     required this.title,
     required this.detail,
+    required this.menuIdx,
+    required this.menuName,
     this.onChanged,
     this.onViewDetail,
     this.isAgreed = false,
@@ -69,7 +75,15 @@ class PolicyCheckBoxWidget extends ConsumerWidget {
         ),
         const Spacer(),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            Map<String, dynamic> extraMap = {
+              'dateList': null,
+              'idx': menuIdx,
+              'menuName': menuName,
+            };
+
+            context.push("/home/myPage/setting/policy", extra: extraMap);
+          },
           child: Text(
             '회원가입.보기'.tr(),
             style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
