@@ -4,7 +4,7 @@
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 
 import '../../internal/singleton.dart';
 import '../scale_text.dart';
@@ -20,8 +20,7 @@ class AssetEntityGridItemBuilder extends StatefulWidget {
   final WidgetBuilder failedItemBuilder;
 
   @override
-  AssetEntityGridItemWidgetState createState() =>
-      AssetEntityGridItemWidgetState();
+  AssetEntityGridItemWidgetState createState() => AssetEntityGridItemWidgetState();
 }
 
 class AssetEntityGridItemWidgetState extends State<AssetEntityGridItemBuilder> {

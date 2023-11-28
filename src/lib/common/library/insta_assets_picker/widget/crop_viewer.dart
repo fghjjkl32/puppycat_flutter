@@ -5,6 +5,7 @@ import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/ins
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/delegates/asset_picker_text_delegate.dart';
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/provider/asset_picker_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:provider/provider.dart';
 
 class CropViewer extends StatefulWidget {

@@ -11,13 +11,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/custom_scroll_physics.dart';
 import '../constants/enums.dart';
 import '../constants/extensions.dart';
 import '../constants/typedefs.dart';
-import 'asset_picker_text_delegate.dart';
 import '../internal/singleton.dart';
 import '../provider/asset_picker_provider.dart';
 import '../provider/asset_picker_viewer_provider.dart';
@@ -28,6 +28,7 @@ import '../widget/builder/image_page_builder.dart';
 import '../widget/builder/value_listenable_builder_2.dart';
 import '../widget/builder/video_page_builder.dart';
 import '../widget/scale_text.dart';
+import 'asset_picker_text_delegate.dart';
 
 abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   AssetPickerViewerBuilderDelegate({
@@ -81,8 +82,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   /// prevent widely [State.setState] and causing other widgets rebuild.
   /// 使用 [StreamController] 的主要目的是缩小页码变化时构建组件的范围，
   /// 防止滥用 [State.setState] 导致其他部件重新构建。
-  final StreamController<int> pageStreamController =
-      StreamController<int>.broadcast();
+  final StreamController<int> pageStreamController = StreamController<int>.broadcast();
 
   /// The [ScrollController] for the previewing assets list.
   /// 正在预览的资源的 [ScrollController]
@@ -151,8 +151,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
 
   AssetPickerTextDelegate get textDelegate => Singleton.textDelegate;
 
-  AssetPickerTextDelegate get semanticsTextDelegate =>
-      Singleton.textDelegate.semanticsTextDelegate;
+  AssetPickerTextDelegate get semanticsTextDelegate => Singleton.textDelegate.semanticsTextDelegate;
 
   /// Call when viewer is calling [State.initState].
   /// 当预览器调用 [State.initState] 时注册 [State]。
@@ -246,14 +245,12 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   int get selectedCount => selectedAssets?.length ?? 0;
 
   /// 是否已经选择了最大数量的资源
-  bool get selectedMaximumAssets =>
-      selectedAssets != null && selectedAssets!.length == maxAssets;
+  bool get selectedMaximumAssets => selectedAssets != null && selectedAssets!.length == maxAssets;
 
   /// Construct a notifier to notify
   /// whether if a new asset is selected or unselected.
   /// 构造一个通知器，在新资源选中或取消选中时通知。
-  late final ValueNotifier<int> selectedNotifier =
-      ValueNotifier<int>(selectedCount);
+  late final ValueNotifier<int> selectedNotifier = ValueNotifier<int>(selectedCount);
 
   void unSelectAsset(Asset entity) {
     provider?.unSelectAsset(entity);
@@ -372,8 +369,7 @@ abstract class AssetPickerViewerBuilderDelegate<Asset, Path> {
   Widget build(BuildContext context);
 }
 
-class DefaultAssetPickerViewerBuilderDelegate
-    extends AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> {
+class DefaultAssetPickerViewerBuilderDelegate extends AssetPickerViewerBuilderDelegate<AssetEntity, AssetPathEntity> {
   DefaultAssetPickerViewerBuilderDelegate({
     required super.currentIndex,
     required super.previewAssets,
@@ -401,15 +397,11 @@ class DefaultAssetPickerViewerBuilderDelegate
 
   /// Whether the [SpecialPickerType.wechatMoment] is enabled.
   /// 当前是否为微信朋友圈选择模式
-  bool get isWeChatMoment =>
-      specialPickerType == SpecialPickerType.wechatMoment;
+  bool get isWeChatMoment => specialPickerType == SpecialPickerType.wechatMoment;
 
   /// Whether there are videos in preview/selected assets.
   /// 当前正在预览或已选的资源是否有视频
-  bool get hasVideo =>
-      previewAssets.any((AssetEntity e) => e.type == AssetType.video) ||
-      (selectedAssets?.any((AssetEntity e) => e.type == AssetType.video) ??
-          false);
+  bool get hasVideo => previewAssets.any((AssetEntity e) => e.type == AssetType.video) || (selectedAssets?.any((AssetEntity e) => e.type == AssetType.video) ?? false);
 
   @override
   Widget assetPageBuilder(BuildContext context, int index) {
@@ -449,9 +441,7 @@ class DefaultAssetPickerViewerBuilderDelegate
           AssetPickerViewerProvider<AssetEntity>? p,
           Widget? w,
         ) {
-          final bool isSelected =
-              (p?.currentlySelectedAssets ?? selectedAssets)?.contains(asset) ??
-                  false;
+          final bool isSelected = (p?.currentlySelectedAssets ?? selectedAssets)?.contains(asset) ?? false;
           String hint = '';
           if (asset.type == AssetType.audio || asset.type == AssetType.video) {
             hint += '${semanticsTextDelegate.sNameDurationLabel}: ';
@@ -466,8 +456,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 '${asset.createDateTime.toString().replaceAll('.000', '')}',
             selected: isSelected,
             hint: hint,
-            image:
-                asset.type == AssetType.image || asset.type == AssetType.video,
+            image: asset.type == AssetType.image || asset.type == AssetType.video,
             child: w,
           );
         },
@@ -586,8 +575,7 @@ class DefaultAssetPickerViewerBuilderDelegate
               ),
             Container(
               height: bottomBarHeight + context.bottomPadding,
-              padding: const EdgeInsets.symmetric(horizontal: 20.0)
-                  .copyWith(bottom: context.bottomPadding),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(bottom: context.bottomPadding),
               decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: themeData.canvasColor)),
                 color: backgroundColor,
@@ -596,10 +584,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   const Spacer(),
-                  if (isAppleOS && (provider != null || isWeChatMoment))
-                    confirmButton(context)
-                  else
-                    selectButton(context),
+                  if (isAppleOS && (provider != null || isWeChatMoment)) confirmButton(context) else selectButton(context),
                 ],
               ),
             ),
@@ -624,9 +609,7 @@ class DefaultAssetPickerViewerBuilderDelegate
         return;
       }
       pageController.jumpToPage(page);
-      final double offset =
-          (index - 0.5) * (bottomPreviewHeight - padding * 3) -
-              context.mediaQuery.size.width / 4;
+      final double offset = (index - 0.5) * (bottomPreviewHeight - padding * 3) - context.mediaQuery.size.width / 4;
       previewingListController.animateTo(
         math.max(0, offset),
         curve: Curves.ease,
@@ -668,18 +651,15 @@ class DefaultAssetPickerViewerBuilderDelegate
               excludeSemantics: true,
               child: GestureDetector(
                 onTap: () => onTap(asset),
-                child: Selector<AssetPickerViewerProvider<AssetEntity>?,
-                    List<AssetEntity>?>(
-                  selector: (_, AssetPickerViewerProvider<AssetEntity>? p) =>
-                      p?.currentlySelectedAssets,
+                child: Selector<AssetPickerViewerProvider<AssetEntity>?, List<AssetEntity>?>(
+                  selector: (_, AssetPickerViewerProvider<AssetEntity>? p) => p?.currentlySelectedAssets,
                   child: item,
                   builder: (
                     _,
                     List<AssetEntity>? currentlySelectedAssets,
                     Widget? w,
                   ) {
-                    final bool isSelected =
-                        currentlySelectedAssets?.contains(asset) ?? false;
+                    final bool isSelected = currentlySelectedAssets?.contains(asset) ?? false;
                     return Stack(
                       children: <Widget>[
                         w!,
@@ -693,10 +673,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                                     width: 3,
                                   )
                                 : null,
-                            color: isSelected
-                                ? null
-                                : themeData.colorScheme.surface
-                                    .withOpacity(0.54),
+                            color: isSelected ? null : themeData.colorScheme.surface.withOpacity(0.54),
                           ),
                         ),
                       ],
@@ -842,15 +819,9 @@ class DefaultAssetPickerViewerBuilderDelegate
             return textDelegate.confirm;
           }
 
-          final bool isButtonEnabled = provider == null ||
-              provider.currentlySelectedAssets.isNotEmpty ||
-              previewAssets.isEmpty ||
-              selectedNotifier.value == 0;
+          final bool isButtonEnabled = provider == null || provider.currentlySelectedAssets.isNotEmpty || previewAssets.isEmpty || selectedNotifier.value == 0;
           return MaterialButton(
-            minWidth:
-                (isWeChatMoment && hasVideo) || provider!.isSelectedNotEmpty
-                    ? 48
-                    : 20,
+            minWidth: (isWeChatMoment && hasVideo) || provider!.isSelectedNotEmpty ? 48 : 20,
             height: 32,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             color: themeData.colorScheme.secondary,
@@ -910,9 +881,7 @@ class DefaultAssetPickerViewerBuilderDelegate
           duration: kThemeAnimationDuration,
           width: 28.0,
           decoration: BoxDecoration(
-            border: !isSelected
-                ? Border.all(color: themeData.iconTheme.color!)
-                : null,
+            border: !isSelected ? Border.all(color: themeData.iconTheme.color!) : null,
             color: isSelected ? themeData.colorScheme.secondary : null,
             shape: BoxShape.circle,
           ),
@@ -948,10 +917,8 @@ class DefaultAssetPickerViewerBuilderDelegate
         stream: pageStreamController.stream,
         builder: (BuildContext _, AsyncSnapshot<int> s) {
           final AssetEntity asset = previewAssets.elementAt(s.data!);
-          return Selector<AssetPickerViewerProvider<AssetEntity>,
-              List<AssetEntity>>(
-            selector: (_, AssetPickerViewerProvider<AssetEntity> p) =>
-                p.currentlySelectedAssets,
+          return Selector<AssetPickerViewerProvider<AssetEntity>, List<AssetEntity>>(
+            selector: (_, AssetPickerViewerProvider<AssetEntity> p) => p.currentlySelectedAssets,
             builder: (BuildContext c, List<AssetEntity> assets, _) {
               final bool isSelected = assets.contains(asset);
               return Semantics(
@@ -963,10 +930,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    if (isAppleOS)
-                      _appleOSSelectButton(c, isSelected, asset)
-                    else
-                      _androidSelectButton(c, isSelected, asset),
+                    if (isAppleOS) _appleOSSelectButton(c, isSelected, asset) else _androidSelectButton(c, isSelected, asset),
                     if (!isAppleOS)
                       ScaleText(
                         textDelegate.select,
@@ -987,9 +951,7 @@ class DefaultAssetPickerViewerBuilderDelegate
     return Semantics(
       sortKey: ordinalSortKey(1),
       child: ExtendedImageGesturePageView.builder(
-        physics: previewAssets.length == 1
-            ? const CustomClampingScrollPhysics()
-            : const CustomBouncingScrollPhysics(),
+        physics: previewAssets.length == 1 ? const CustomClampingScrollPhysics() : const CustomBouncingScrollPhysics(),
         controller: pageController,
         itemCount: previewAssets.length,
         itemBuilder: assetPageBuilder,
@@ -1007,10 +969,7 @@ class DefaultAssetPickerViewerBuilderDelegate
     return Theme(
       data: themeData,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: themeData.appBarTheme.systemOverlayStyle ??
-            (themeData.effectiveBrightness.isDark
-                ? SystemUiOverlayStyle.light
-                : SystemUiOverlayStyle.dark),
+        value: themeData.appBarTheme.systemOverlayStyle ?? (themeData.effectiveBrightness.isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark),
         child: Material(
           color: themeData.colorScheme.onSecondary,
           child: Stack(
@@ -1025,9 +984,7 @@ class DefaultAssetPickerViewerBuilderDelegate
                 ),
               ] else ...<Widget>[
                 appBar(context),
-                if (selectedAssets != null ||
-                    (isWeChatMoment && hasVideo && isAppleOS))
-                  bottomDetailBuilder(context),
+                if (selectedAssets != null || (isWeChatMoment && hasVideo && isAppleOS)) bottomDetailBuilder(context),
               ],
             ],
           ),
