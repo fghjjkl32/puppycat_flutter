@@ -48,10 +48,8 @@ import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_ala
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_blocked_user_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_faq_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_notice_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_privacy_policy_accepted_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_privacy_policy_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_policy_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_terms_of_service_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_unknown_screen.dart';
 ///NOTE
@@ -421,24 +419,28 @@ class AppRouter {
                       },
                     ),
                     GoRoute(
-                      path: 'TermsOfService',
-                      name: 'TermsOfService',
+                      path: 'policy',
+                      name: 'policy',
                       builder: (BuildContext context, GoRouterState state) {
-                        return const MyPageSettingTermsOfServiceScreen();
-                      },
-                    ),
-                    GoRoute(
-                      path: 'PrivacyPolicy',
-                      name: 'PrivacyPolicy',
-                      builder: (BuildContext context, GoRouterState state) {
-                        return const MyPageSettingPrivacyPolicyScreen();
-                      },
-                    ),
-                    GoRoute(
-                      path: 'PrivacyPolicyAccepted',
-                      name: 'PrivacyPolicyAccepted',
-                      builder: (BuildContext context, GoRouterState state) {
-                        return const MyPageSettingPrivacyPolicyAcceptedScreen();
+                        List<String>? dateList = [];
+                        int idx = 0;
+                        String menuName = "";
+
+                        final extraData = state.extra;
+                        if (extraData != null) {
+                          Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
+                          if (extraMap.keys.contains('dateList')) {
+                            dateList = extraMap['dateList'];
+                          }
+                          if (extraMap.keys.contains('idx')) {
+                            idx = extraMap['idx'];
+                          }
+                          if (extraMap.keys.contains('menuName')) {
+                            menuName = extraMap['menuName'];
+                          }
+                        }
+
+                        return MyPageSettingPolicyScreen(idx: idx, dateList: dateList, menuName: menuName);
                       },
                     ),
                     GoRoute(

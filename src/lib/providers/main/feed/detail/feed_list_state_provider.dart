@@ -9,11 +9,14 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/feed/popular_hour_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/popular_week_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
@@ -855,6 +858,14 @@ class FeedListState extends _$FeedListState {
 
       int targetIdx = -1;
 
+      ref.read(popularUserListStateProvider.notifier).getInitUserList(
+            ref.read(userInfoProvider).userModel?.idx,
+          );
+
+      ref.read(popularHourFeedStateProvider.notifier).initPosts(
+            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
+          );
+
       if (state.itemList != null) {
         if (idxToRemove == contentIdx) {
           final firstFeedData = ref.read(firstFeedDetailStateProvider);
@@ -862,6 +873,7 @@ class FeedListState extends _$FeedListState {
             if (firstFeedData.idx == contentIdx) {
               isFirstFeedHidden = true;
               tempFeedData = firstFeedData;
+
               ref.read(firstFeedDetailStateProvider.notifier).state = null;
               ref.read(firstFeedEmptyProvider.notifier).state = true;
             }
@@ -876,6 +888,7 @@ class FeedListState extends _$FeedListState {
           tempFeedData = state.itemList![targetIdx];
 
           state.itemList!.removeAt(targetIdx);
+
           state.notifyListeners();
         }
       }
@@ -903,6 +916,14 @@ class FeedListState extends _$FeedListState {
   }) async {
     try {
       final result = await FeedRepository(dio: ref.read(dioProvider)).deleteHide(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
+
+      ref.read(popularUserListStateProvider.notifier).getInitUserList(
+            ref.read(userInfoProvider).userModel?.idx,
+          );
+
+      ref.read(popularHourFeedStateProvider.notifier).initPosts(
+            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
+          );
 
       if (state.itemList != null) {
         if (isFirstFeedHidden) {
@@ -944,6 +965,14 @@ class FeedListState extends _$FeedListState {
         memberIdx: memberIdx,
         blockIdx: blockIdx,
       );
+
+      ref.read(popularUserListStateProvider.notifier).getInitUserList(
+            ref.read(userInfoProvider).userModel?.idx,
+          );
+
+      ref.read(popularHourFeedStateProvider.notifier).initPosts(
+            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
+          );
 
       if (state.itemList != null) {
         state.itemList!.removeWhere((element) => element.memberIdx == blockIdx);
@@ -988,6 +1017,14 @@ class FeedListState extends _$FeedListState {
         reportCode: reportCode,
         reason: reason,
       );
+
+      ref.read(popularUserListStateProvider.notifier).getInitUserList(
+            ref.read(userInfoProvider).userModel?.idx,
+          );
+
+      ref.read(popularHourFeedStateProvider.notifier).initPosts(
+            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
+          );
 
       int targetIdx = -1;
 
@@ -1042,6 +1079,14 @@ class FeedListState extends _$FeedListState {
         memberIdx: loginMemberIdx,
         contentsIdx: contentIdx,
       );
+
+      ref.read(popularUserListStateProvider.notifier).getInitUserList(
+            ref.read(userInfoProvider).userModel?.idx,
+          );
+
+      ref.read(popularHourFeedStateProvider.notifier).initPosts(
+            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
+          );
 
       if (state.itemList != null) {
         if (isFirstFeedHidden) {

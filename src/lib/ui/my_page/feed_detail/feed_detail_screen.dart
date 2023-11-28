@@ -286,33 +286,35 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
                 final firstFeedData = ref.watch(firstFeedDetailStateProvider);
 
-                if (firstFeedData == null) {
-                  return const Text('error2');
-                }
+                // if (firstFeedData == null) {
+                //   return const Text('error2');
+                // }
 
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      FeedDetailWidget(
-                        feedData: firstFeedData,
-                        nick: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].nick : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick,
-                        profileImage:
-                            firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].profileImgUrl : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
-                        memberIdx: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].memberIdx : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberIdx,
-                        contentType: widget.contentType,
-                        imgDomain: ref.read(firstFeedDetailStateProvider.notifier).feedImgDomain!,
-                        index: 0,
-                        isSpecialUser: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].isBadge == 1 : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
-                        onTapHideButton: () async {
-                          onTapHide(
-                            context: context,
-                            ref: ref,
-                            contentType: widget.contentType,
-                            contentIdx: widget.contentIdx,
-                            memberIdx: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].memberIdx : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberIdx,
-                          );
-                        },
-                      ),
+                      if (firstFeedData != null)
+                        FeedDetailWidget(
+                          feedData: firstFeedData,
+                          nick: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].nick : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick,
+                          profileImage:
+                              firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].profileImgUrl : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
+                          memberIdx: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].memberIdx : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberIdx,
+                          contentType: widget.contentType,
+                          imgDomain: ref.read(firstFeedDetailStateProvider.notifier).feedImgDomain!,
+                          index: 0,
+                          isSpecialUser:
+                              firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].isBadge == 1 : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
+                          onTapHideButton: () async {
+                            onTapHide(
+                              context: context,
+                              ref: ref,
+                              contentType: widget.contentType,
+                              contentIdx: widget.contentIdx,
+                              memberIdx: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].memberIdx : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberIdx,
+                            );
+                          },
+                        ),
                       PagedListView<int, FeedData>(
                         // shrinkWrapFirstPageIndicators: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -502,7 +504,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                       context: context,
                                       ref: ref,
                                       contentType: widget.contentType,
-                                      contentIdx: widget.contentIdx,
+                                      contentIdx: item.idx,
                                       memberIdx: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberIdx : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberIdx,
                                     );
                                   },
