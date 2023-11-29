@@ -12,7 +12,6 @@ import 'package:pet_mobile_social_flutter/components/toast/error_toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/error/feed_not_follow_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/error/feed_not_found_screen.dart';
@@ -82,7 +81,8 @@ class AppRouter {
   var _loginRouteState = LoginRoute.none;
   var _signUpState = SignUpRoute.none;
   bool _splashState = false;
-  var _pushPayloadState = null;
+
+  // var _pushPayloadState = null;
   bool _maintenanceState = false;
 
   final Ref ref;
@@ -91,11 +91,11 @@ class AppRouter {
   AppRouter({
     required this.ref,
   }) {
-    _loginRouteState = ref.watch(loginRouteStateProvider);
-    _signUpState = ref.watch(signUpRouteStateProvider);
+    // _loginRouteState = ref.watch(loginRouteStateProvider);
+    // _signUpState = ref.watch(signUpRouteStateProvider);
     _splashState = ref.watch(splashStateProvider);
-    _pushPayloadState = ref.watch(pushPayloadStateProvider);
-    _maintenanceState = ref.watch(isMaintenanceProvider);
+    // _pushPayloadState = ref.watch(pushPayloadStateProvider);
+    // _maintenanceState = ref.watch(isMaintenanceProvider);
     // _pushPayloadState = ref.watch(pushPayloadNotifierProvider);
     // _walkState = ref.watch(walkStatusStateProvider);
   }
@@ -699,6 +699,10 @@ class AppRouter {
       bool isSplashPage = state.matchedLocation == splashLocation;
       if (isSplashPage) {
         if (_splashState) {
+          _loginRouteState = ref.watch(loginRouteStateProvider);
+          _signUpState = ref.watch(signUpRouteStateProvider);
+          _maintenanceState = ref.watch(isMaintenanceProvider);
+
           if (_maintenanceState) {
             return maintenanceLocation;
           } else if (_loginRouteState == LoginRoute.success) {

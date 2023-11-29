@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
@@ -8,13 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
-import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
@@ -127,7 +124,7 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
 
-    _splashTimer = Timer(const Duration(milliseconds: 2500), () {
+    _splashTimer = Timer(const Duration(milliseconds: 3000), () {
       if (ref.read(_initStateProvider)) {
         checkPushAppLaunch();
         ref.read(splashStateProvider.notifier).state = true;
@@ -206,7 +203,6 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
     //     ref.read(splashStateProvider.notifier).state = true;
     //   }
     // });
-
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
