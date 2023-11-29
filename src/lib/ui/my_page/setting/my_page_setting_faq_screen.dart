@@ -6,18 +6,13 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/customer_support/customer_support_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/faq_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/web_view/channel_talk_webview_screen.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 class MyPageSettingFaqScreen extends ConsumerStatefulWidget {
   const MyPageSettingFaqScreen({super.key});
@@ -39,6 +34,10 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
       length: 4,
       vsync: this,
     );
+
+    tabController.addListener(() {
+      ref.read(faqListStateProvider.notifier).setFaqType(FaqType.values[tabController.index]);
+    });
 
     _faqPagingController = ref.read(faqListStateProvider);
     super.initState();
@@ -206,60 +205,34 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
         body: TabBarView(
           controller: tabController,
           children: [
-            PagedListView<int, CustomerSupportItemModel>(
-              pagingController: _faqPagingController,
-              builderDelegate: PagedChildBuilderDelegate<CustomerSupportItemModel>(
-                // animateTransitions: true,
-                noItemsFoundIndicatorBuilder: (context) {
-                  // return const Text('No Comments');
-                  return const SizedBox.shrink();
-                },
-                firstPageProgressIndicatorBuilder: (context) {
-                  // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
-                  return const Center(child: CircularProgressIndicator());
-                },
-                itemBuilder: (context, item, index) {
-                  return _noticeItem(item);
-                },
-              ),
-            ),
-            Column(
-              children: [
-                const Text('a'),
-                // _noticeItem(),
-                // _noticeItem(),
-                // _noticeItem(),
-                // _noticeItem(),
-                // _noticeItem(),
-              ],
-            ),
-            Column(
-              children: [
-                const Text('b'),
-                // _noticeItem(),
-                // _noticeItem(),
-                // _noticeItem(),
-                // _noticeItem(),
-                // _noticeItem(),
-              ],
-            ),
-            Column(
-              children: [
-                const Text('c'),
-                // _noticeItem(),
-                // _noticeItem(),
-                // _noticeItem(),
-                // _noticeItem(),
-                // _noticeItem(),
-              ],
-            ),
+            _buildListView(),
+            _buildListView(),
+            _buildListView(),
+            _buildListView(),
           ],
         ),
       ),
     );
   }
 
-  Widget _noticeItem(CustomerSupportItemModel itemModel) {
+  Widget _buildListView() {
+    return PagedListView<int, CustomerSupportItemModel>(
+      pagingController: _faqPagingController,
+      builderDelegate: PagedChildBuilderDelegate<CustomerSupportItemModel>(
+        noItemsFoundIndicatorBuilder: (context) {
+          return const SizedBox.shrink();
+        },
+        firstPageProgressIndicatorBuilder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        },
+        itemBuilder: (context, item, index) {
+          return _faqItem(item);
+        },
+      ),
+    );
+  }
+
+  Widget _faqItem(CustomerSupportItemModel itemModel) {
     return Column(
       children: [
         Theme(

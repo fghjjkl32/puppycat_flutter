@@ -44,7 +44,7 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
         page: page,
       );
 
-      imageTagMaxPages = lists.data.params!.pagination!.endPage!;
+      imageTagMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
       state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
 
@@ -159,7 +159,7 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
         searchWord: searchWord,
       );
 
-      searchUserMaxPages = lists.data.params!.pagination!.endPage!;
+      searchUserMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
       if (lists == null) {
         state = state.copyWith(page: 1, isLoading: false, list: []);

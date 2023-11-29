@@ -80,6 +80,10 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
               itemBuilder: (context, i) {
                 final user = users[i];
                 return ListTile(
+                  shape: Border(
+                    bottom: BorderSide(color: kNeutralColor500, width: 1),
+                  ),
+                  tileColor: kNeutralColor100,
                   dense: true,
                   leading: user.profileImgUrl == null || user.profileImgUrl == ""
                       ? WidgetMask(

@@ -4,13 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_state.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 final blockStateProvider = StateNotifierProvider<BlockStateNotifier, SearchDataListModel>((ref) {
@@ -49,7 +46,7 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
         page: page,
       );
 
-      blockMaxPages = lists.data.params!.pagination!.endPage!;
+      blockMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
       state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
 
@@ -166,7 +163,7 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
         searchWord: searchWord,
       );
 
-      searchBlockMaxPages = lists.data.params!.pagination!.endPage!;
+      searchBlockMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
       if (lists == null) {
         state = state.copyWith(page: 1, isLoading: false, list: []);

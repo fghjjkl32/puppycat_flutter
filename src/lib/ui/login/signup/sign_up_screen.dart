@@ -73,7 +73,11 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
               ),
             ],
           ),
-          Image.asset('assets/image/signUpScreen/right_top.png'),
+          Image.asset(
+            'assets/image/character/character_00_agree.png',
+            width: 88,
+            height: 88,
+          ),
         ],
       ),
     );

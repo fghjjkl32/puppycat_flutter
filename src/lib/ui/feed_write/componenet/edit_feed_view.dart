@@ -1,34 +1,27 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_social_textfield/flutter_social_textfield.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autocomplete_options.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button_selected_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_content_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/cropped_images_list_view.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/edit_cropped_images_list_view.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/edit_tag_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_location_search_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/kpostal_view.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/tag_screen.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_information_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/edit_cropped_images_list_view.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/edit_tag_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/kpostal_view.dart';
 
 class EditFeedView extends ConsumerStatefulWidget {
   const EditFeedView({
@@ -347,7 +340,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0.w),
+            padding: EdgeInsets.symmetric(horizontal: 12.0),
             child: Row(
               children: [
                 Expanded(
@@ -365,21 +358,21 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(color: kNeutralColor400),
                             ),
-                      height: 44.h,
+                      height: 44,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
                             Puppycat_social.icon_view_all,
-                            size: 26,
+                            size: 20,
                             color: buttonSelected == 1 ? kPrimaryColor : kTextBodyColor,
                           ),
                           SizedBox(
-                            width: 9.w,
+                            width: 9,
                           ),
                           Text(
                             "전체 공개",
-                            style: kButton14BoldStyle.copyWith(color: buttonSelected == 1 ? kPrimaryColor : kTextBodyColor),
+                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 1 ? kPrimaryColor : kTextBodyColor),
                           ),
                         ],
                       ),
@@ -404,21 +397,21 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(color: kNeutralColor400),
                             ),
-                      height: 44.h,
+                      height: 44,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
                             Puppycat_social.icon_view_follow,
-                            size: 26,
+                            size: 20,
                             color: buttonSelected == 2 ? kPrimaryColor : kTextBodyColor,
                           ),
                           SizedBox(
-                            width: 9.w,
+                            width: 9,
                           ),
                           Text(
                             "팔로우 공개",
-                            style: kButton14BoldStyle.copyWith(color: buttonSelected == 2 ? kPrimaryColor : kTextBodyColor),
+                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 2 ? kPrimaryColor : kTextBodyColor),
                           ),
                         ],
                       ),
@@ -448,15 +441,15 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Puppycat_social.icon_view_all,
-                            size: 14,
+                            Puppycat_social.icon_keep,
+                            size: 20,
                             color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor,
                           ),
                           SizedBox(
                             width: 9,
                           ),
                           Text(
-                            "비공개",
+                            "피드 보관",
                             style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor),
                           ),
                         ],

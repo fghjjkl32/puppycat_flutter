@@ -180,79 +180,79 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "우리 아이들과 산책한",
-                                    style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
-                                  ),
-                                  Text(
-                                    "589시간",
-                                    style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "즐거움을 공유한 친구들",
-                                    style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
-                                  ),
-                                  Text(
-                                    "5,890명",
-                                    style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10.0.h),
-                              child: const Divider(
-                                color: kNeutralColor300,
-                              ),
-                            ),
-                            Text(
-                              "참여 중인 대화방에서 모두 나가게 되고",
-                              style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "대화 내용은 즉시 삭제",
-                                  style: kBody14BoldStyle.copyWith(color: kPrimaryColor),
-                                ),
-                                Text(
-                                  "됩니다.",
-                                  style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 4.h,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "참여 중인 대화방",
-                                    style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
-                                  ),
-                                  Text(
-                                    "23개",
-                                    style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // Padding(
+                            //   padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //     children: [
+                            //       Text(
+                            //         "우리 아이들과 산책한",
+                            //         style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                            //       ),
+                            //       Text(
+                            //         "589시간",
+                            //         style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                            // Padding(
+                            //   padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //     children: [
+                            //       Text(
+                            //         "즐거움을 공유한 친구들",
+                            //         style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                            //       ),
+                            //       Text(
+                            //         "5,890명",
+                            //         style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                            // Padding(
+                            //   padding: EdgeInsets.symmetric(vertical: 10.0.h),
+                            //   child: const Divider(
+                            //     color: kNeutralColor300,
+                            //   ),
+                            // ),
+                            // Text(
+                            //   "참여 중인 대화방에서 모두 나가게 되고",
+                            //   style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
+                            // ),
+                            // Row(
+                            //   children: [
+                            //     Text(
+                            //       "대화 내용은 즉시 삭제",
+                            //       style: kBody14BoldStyle.copyWith(color: kPrimaryColor),
+                            //     ),
+                            //     Text(
+                            //       "됩니다.",
+                            //       style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
+                            //     ),
+                            //   ],
+                            // ),
+                            // SizedBox(
+                            //   height: 4.h,
+                            // ),
+                            // Padding(
+                            //   padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
+                            //   child: Row(
+                            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //     children: [
+                            //       Text(
+                            //         "참여 중인 대화방",
+                            //         style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                            //       ),
+                            //       Text(
+                            //         "23개",
+                            //         style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
@@ -10,10 +9,20 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'faq_list_state_provider.g.dart';
 
+enum FaqType {
+  all,
+  account,
+  service,
+  event,
+}
+
 @Riverpod(keepAlive: true)
 class FaqListState extends _$FaqListState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
+  FaqType _faqType = FaqType.all;
+
+  String? searchWord;
 
   @override
   PagingController<int, CustomerSupportItemModel> build() {
@@ -24,16 +33,17 @@ class FaqListState extends _$FaqListState {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      if(_apiStatus == ListAPIStatus.loading) {
+      if (_apiStatus == ListAPIStatus.loading) {
         return;
       }
 
       _apiStatus = ListAPIStatus.loading;
 
       CustomerSupportRepository customerSupportRepository = CustomerSupportRepository(dio: ref.read(dioProvider));
-      var searchResult = await customerSupportRepository.getFaqList(page:pageKey);
 
-      if(searchResult == null) {
+      var searchResult = await customerSupportRepository.getFaqList(pageKey, _faqType == FaqType.all ? null : _faqType.index, searchWord);
+
+      if (searchResult == null) {
         _apiStatus = ListAPIStatus.loaded;
         state.appendPage([], 0);
         return;
@@ -64,29 +74,40 @@ class FaqListState extends _$FaqListState {
       state.error = e;
     }
   }
-  
+
   void search(String keyword) {
-    if(keyword.isEmpty) {
+    if (keyword.isEmpty) {
       state.refresh();
       return;
     }
-    
-    List<CustomerSupportItemModel> currentList = state.itemList ?? [];
-    List<CustomerSupportItemModel> filterList = [];
+    searchWord = keyword;
 
-    for (var element in currentList) {
-      if(element.title != null) {
-        print('keyword $keyword');
-        if (element.title!.contains(keyword)) {
-          filterList.add(element);
-        }
-      }
-    }
+    print("searchWord ${searchWord}");
+    state.refresh();
 
-    print('filterList $filterList');
-    _apiStatus = ListAPIStatus.loaded;
-    state.itemList = [];
-    state.appendLastPage(filterList);
-    print('state ${state.itemList!.length} / ${currentList.length}');
+    // print("keywordkeyword ${keyword}");
+
+    // List<CustomerSupportItemModel> currentList = state.itemList ?? [];
+    // List<CustomerSupportItemModel> filterList = [];
+    //
+    // for (var element in currentList) {
+    //   if (element.title != null) {
+    //     print('keyword $keyword');
+    //     if (element.title!.contains(keyword)) {
+    //       filterList.add(element);
+    //     }
+    //   }
+    // }
+    //
+    // print('filterList $filterList');
+    // _apiStatus = ListAPIStatus.loaded;
+    // state.itemList = [];
+    // state.appendLastPage(filterList);
+    // print('state ${state.itemList!.length} / ${currentList.length}');
+  }
+
+  void setFaqType(FaqType type) {
+    _faqType = type;
+    state.refresh();
   }
 }
