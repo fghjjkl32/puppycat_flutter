@@ -28,7 +28,7 @@ class MySaveStateNotifier extends StateNotifier<ContentDataListModel> {
       final page = initPage ?? state.page;
       final lists = await SaveContentsRepository(dio: ref.read(dioProvider)).getSaveContents(memberIdx: memberIdx, page: page);
 
-      maxPages = lists.data.params!.pagination!.endPage!;
+      maxPages = lists.data.params!.pagination?.endPage ?? 0;
 
       state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
 

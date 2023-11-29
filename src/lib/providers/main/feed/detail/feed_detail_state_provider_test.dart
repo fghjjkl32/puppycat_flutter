@@ -160,7 +160,7 @@
 //     final firstLists = results[0];
 //     final lists = results[1];
 //
-//     maxPages = lists.data.params!.pagination!.endPage!;
+//     maxPages = lists.data.params!.pagination?.endPage ?? 0;
 //
 //     state = state.copyWith(
 //       feedListState: state.feedListState.copyWith(

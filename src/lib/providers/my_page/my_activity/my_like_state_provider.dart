@@ -28,7 +28,7 @@ class MyLikeStateNotifier extends StateNotifier<ContentDataListModel> {
       final page = initPage ?? state.page;
       final lists = await LikeContentsRepository(dio: ref.read(dioProvider)).getLikeContents(memberIdx: memberIdx, page: page);
 
-      maxPages = lists.data.params!.pagination!.endPage!;
+      maxPages = lists.data.params!.pagination?.endPage ?? 0;
 
       state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
 

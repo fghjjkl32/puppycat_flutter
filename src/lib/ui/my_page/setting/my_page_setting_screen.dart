@@ -263,10 +263,13 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      Text(
-                        '선택적 접근 권한은 해당 기능 이용 시 동의를 받고 있습니다.\n허용하지 않으셔도 포레스트 앱의 서비스를 이용 가능하며,\n일부 관련 서비스 이용 시 사용제 제한이 있을 수 있습니다.',
-                        style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
-                        textAlign: TextAlign.center,
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          '선택적 접근 권한은 해당 기능 이용 시 동의를 받고 있습니다.\n허용하지 않으셔도 포레스트 앱의 서비스를 이용 가능하며,\n일부 관련 서비스 이용 시 사용제 제한이 있을 수 있습니다.',
+                          style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 4.h),
@@ -287,7 +290,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         height: 10.h,
                       ),
                       Text(
-                        "전화 (필수)",
+                        "알림 (필수)",
                         style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
                       ),
                       SizedBox(

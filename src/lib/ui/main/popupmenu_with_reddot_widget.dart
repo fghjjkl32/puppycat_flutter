@@ -128,11 +128,11 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
         //     false,
         //   ),
         // );
-        list.add(
-          const PopupMenuDivider(
-            height: 5,
-          ),
-        );
+        // list.add(
+        //   const PopupMenuDivider(
+        //     height: 5,
+        //   ),
+        // );
         list.add(
           diaryPopUpMenuItem(
             'setting',

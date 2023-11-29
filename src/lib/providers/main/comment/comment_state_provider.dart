@@ -31,7 +31,7 @@
 //     final page = initPage ?? state.page;
 //     final lists = await CommentRepository(dio: ref.read(dioProvider)).getComment(page: page, memberIdx: memberIdx, contentIdx: contentIdx);
 //
-//     maxPages = lists.data.params!.pagination!.endPage!;
+//     maxPages = lists.data.params!.pagination?.endPage ?? 0;
 //
 //     state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
 //
@@ -217,7 +217,7 @@
 //     final page = initPage ?? state.page;
 //     final lists = await CommentRepository(dio: ref.read(dioProvider)).getReplyComment(page: page, memberIdx: memberIdx, contentIdx: contentIdx, commentIdx: commentIdx);
 //
-//     repliesMaxPages = lists.data.params!.pagination!.endPage!;
+//     repliesMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 //
 //     if (lists == null) {
 //       state = state.copyWith(page: page, isLoading: false);

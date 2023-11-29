@@ -94,7 +94,7 @@ class FeedMainWidget extends ConsumerWidget {
                 ),
               if (index == 0 && feedType == "popular")
                 Padding(
-                  padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h),
+                  padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h, top: 24),
                   child: Text(
                     "인기 게시글",
                     style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
