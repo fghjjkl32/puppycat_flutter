@@ -34,8 +34,8 @@ class InitializationApp {
           if (await getSinglePage(ref)) {
             ref.read(_initStateProvider.notifier).state = true;
           } else {
-            ref.read(_initStateProvider.notifier).state = true;
             await ref.read(loginStateProvider.notifier).autoLogin();
+            ref.read(_initStateProvider.notifier).state = true;
           }
         }
       }
@@ -56,7 +56,7 @@ class InitializationApp {
   }
 
   static Future<bool> _checkNetwork() async {
-    var result = Future.delayed(Duration(milliseconds: 300), () {
+    var result = Future.delayed(Duration(milliseconds: 100), () {
       print('net');
       return true;
     });
@@ -65,7 +65,7 @@ class InitializationApp {
   }
 
   static Future<bool> _checkServers() async {
-    var result = Future.delayed(Duration(milliseconds: 300), () {
+    var result = Future.delayed(Duration(milliseconds: 100), () {
       print('ser');
       return true;
     });
@@ -90,9 +90,7 @@ class InitializationApp {
         lastestBuildVersion = remoteConfig.getString("lastest_build_version");
 
         if (remoteConfig.getBool("is_all_service_maintenance")) {
-          Future.delayed(Duration(milliseconds: 1000), () {
-            ref.read(isMaintenanceProvider.notifier).state = true;
-          });
+          ref.read(isMaintenanceProvider.notifier).state = true;
           return true;
         }
         return false;
@@ -119,15 +117,31 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class SplashScreenState extends ConsumerState<SplashScreen> {
   late Timer _splashTimer;
+  int _splashTimerTick = 0;
 
   @override
   void initState() {
     super.initState();
 
-    _splashTimer = Timer(const Duration(milliseconds: 3000), () {
+    // _splashTimer = Timer(const Duration(milliseconds: 3000), () {
+    //   if (ref.read(_initStateProvider)) {
+    //     checkPushAppLaunch();
+    //     print('77777777');
+    //     ref.read(splashStateProvider.notifier).state = true;
+    //   }
+    // });
+    _splashTimer = Timer.periodic(const Duration(milliseconds: 1000), (timer) {
+      if (_splashTimerTick < 3) {
+        _splashTimerTick++;
+        return;
+      }
+
       if (ref.read(_initStateProvider)) {
         checkPushAppLaunch();
+        _splashTimer.cancel();
         ref.read(splashStateProvider.notifier).state = true;
+      } else {
+        _splashTimerTick = 0;
       }
     });
   }
@@ -214,6 +228,7 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
             // 'assets/lottie/character_00_AppSplash.json',
             'assets/lottie/character_00_AppSplash_231113.json',
             // fit: BoxFit.fill,
+            // repeat: false,
           ),
         ),
       ),

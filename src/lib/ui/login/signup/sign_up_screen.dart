@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -40,17 +41,24 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
   bool isCheckableNickName = false;
   bool isValidNickName = false;
 
+  late Future _getPolicyListFuture;
+
   @override
   void initState() {
     super.initState();
 
-    ref.read(policyStateProvider.notifier).getPolicies();
+    // ref.read(policyStateProvider.notifier).getPolicies();
+    _getPolicyListFuture = _getPolicyList();
   }
 
   @override
   void dispose() {
     nickController.dispose();
     super.dispose();
+  }
+
+  Future _getPolicyList() async {
+    await ref.read(policyStateProvider.notifier).getPolicies();
   }
 
   Widget _buildTop() {
@@ -351,7 +359,6 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
   }
 
   Widget _buildPolicyBody() {
-    final policyProvider = ref.watch(policyStateProvider);
     return Expanded(
       child: Column(
         children: [
@@ -372,27 +379,33 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
             ],
           ),
           Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              // physics: const NeverScrollableScrollPhysics(),
-              itemCount: policyProvider.length,
-              itemBuilder: (context, idx) {
-                return PolicyCheckBoxWidget(
-                  idx: policyProvider[idx].idx,
-                  isAgreed: policyProvider[idx].isAgreed,
-                  isEssential: policyProvider[idx].required == 'Y' ? true : false,
-                  title: policyProvider[idx].title ?? 'unknown title.',
-                  detail: policyProvider[idx].detail ?? 'unknown detail.',
-                  menuIdx: policyProvider[idx].menuIdx ?? 0,
-                  menuName: policyProvider[idx].menuName ?? 'unknown detail.',
-                  onChanged: (value) {
-                    _nickFocusNode.unfocus();
-                    ref.read(policyStateProvider.notifier).toggle(policyProvider[idx].idx);
-                  },
-                );
-              },
-            ),
-          ),
+              child: FutureBuilder(
+            future: _getPolicyListFuture, //ref.read(policyStateProvider.notifier).getPolicies(),
+            builder: (context, snapshot) {
+              final policyProvider = ref.watch(policyStateProvider);
+              print('policyProvider $policyProvider');
+              return ListView.builder(
+                shrinkWrap: true,
+                // physics: const NeverScrollableScrollPhysics(),
+                itemCount: policyProvider.length,
+                itemBuilder: (context, idx) {
+                  return PolicyCheckBoxWidget(
+                    idx: policyProvider[idx].idx,
+                    isAgreed: policyProvider[idx].isAgreed,
+                    isEssential: policyProvider[idx].required == 'Y' ? true : false,
+                    title: policyProvider[idx].title ?? 'unknown title.',
+                    detail: policyProvider[idx].detail ?? 'unknown detail.',
+                    menuIdx: policyProvider[idx].menuIdx ?? 0,
+                    menuName: policyProvider[idx].menuName ?? 'unknown detail.',
+                    onChanged: (value) {
+                      _nickFocusNode.unfocus();
+                      ref.read(policyStateProvider.notifier).toggle(policyProvider[idx].idx);
+                    },
+                  );
+                },
+              );
+            },
+          )),
         ],
       ),
     );
@@ -508,60 +521,66 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
       }
     });
 
-    return GestureDetector(
-      onTap: () {
-        _nickFocusNode.unfocus();
-        // FocusScope.of(context).unfocus();
+    return DefaultOnWillPopScope(
+      onWillPop: () async {
+        ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+        return true;
       },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        // bottomSheet: const Text('aaa'),
-        body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildTop(),
-              Expanded(child: _buildBody()),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SizedBox(
-                  width: 320,
-                  height: 48,
-                  child: ElevatedButton(
-                    onPressed: essentialAgreeProvider && isValidNickName && ref.watch(authStateProvider)
-                        ? () {
-                            var userModel = ref.read(userInfoProvider).userModel;
-                            if (userModel == null) {
-                              throw 'usermodel is null';
+      child: GestureDetector(
+        onTap: () {
+          _nickFocusNode.unfocus();
+          // FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          // bottomSheet: const Text('aaa'),
+          body: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildTop(),
+                Expanded(child: _buildBody()),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: SizedBox(
+                    width: 320,
+                    height: 48,
+                    child: ElevatedButton(
+                      onPressed: essentialAgreeProvider && isValidNickName && ref.watch(authStateProvider)
+                          ? () {
+                              var userModel = ref.read(userInfoProvider).userModel;
+                              if (userModel == null) {
+                                throw 'usermodel is null';
+                              }
+                              userModel = userModel.copyWith(
+                                nick: nickController.text,
+                                ci: signUpAuthModel?.ci ?? '',
+                                di: signUpAuthModel?.di ?? '',
+                                name: signUpAuthModel?.name ?? '',
+                                phone: signUpAuthModel?.phone ?? '',
+                                gender: signUpAuthModel?.gender ?? '',
+                                birth: signUpAuthModel?.birth ?? '',
+                              );
+                              ref.read(userInfoProvider.notifier).state = UserInfoModel(userModel: userModel);
+                              ref.read(signUpStateProvider.notifier).socialSignUp(userModel); // ㅇㅇㅇ
+                              // chatClientController.changeDisplayName(userModel.id, userModel.nick);
                             }
-                            userModel = userModel.copyWith(
-                              nick: nickController.text,
-                              ci: signUpAuthModel?.ci ?? '',
-                              di: signUpAuthModel?.di ?? '',
-                              name: signUpAuthModel?.name ?? '',
-                              phone: signUpAuthModel?.phone ?? '',
-                              gender: signUpAuthModel?.gender ?? '',
-                              birth: signUpAuthModel?.birth ?? '',
-                            );
-                            ref.read(userInfoProvider.notifier).state = UserInfoModel(userModel: userModel);
-                            ref.read(signUpStateProvider.notifier).socialSignUp(userModel); // ㅇㅇㅇ
-                            // chatClientController.changeDisplayName(userModel.id, userModel.nick);
-                          }
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: kPrimaryColor,
-                      disabledBackgroundColor: kNeutralColor400,
-                      disabledForegroundColor: kTextBodyColor,
-                      elevation: 0,
-                    ),
-                    child: Text(
-                      '확인'.tr(),
-                      style: kButton14BoldStyle,
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kPrimaryColor,
+                        disabledBackgroundColor: kNeutralColor400,
+                        disabledForegroundColor: kTextBodyColor,
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        '확인'.tr(),
+                        style: kButton14BoldStyle,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

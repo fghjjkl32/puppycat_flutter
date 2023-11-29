@@ -78,6 +78,9 @@ class APIErrorState extends _$APIErrorState {
         final goRouter = ref.read(routerProvider);
         goRouter.pushNamed('error_toast');
         break;
+      case 'ASL-9998':
+        //사용자가 로그인 취소했을 때, 아무 동작 안시키기 위함
+        break;
       default:
         final goRouter = ref.read(routerProvider);
         goRouter.pushNamed('error_dialog', extra: code);
