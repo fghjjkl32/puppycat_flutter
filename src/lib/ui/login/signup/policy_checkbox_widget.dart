@@ -74,19 +74,22 @@ class PolicyCheckBoxWidget extends ConsumerWidget {
           style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
         ),
         const Spacer(),
-        TextButton(
-          onPressed: () {
-            Map<String, dynamic> extraMap = {
-              'dateList': null,
-              'idx': menuIdx,
-              'menuName': menuName,
-            };
+        Visibility(
+          visible: idx != 0,
+          child: TextButton(
+            onPressed: () {
+              Map<String, dynamic> extraMap = {
+                'dateList': null,
+                'idx': menuIdx,
+                'menuName': menuName,
+              };
 
-            context.push("/home/myPage/setting/policy", extra: extraMap);
-          },
-          child: Text(
-            '회원가입.보기'.tr(),
-            style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+              context.push("/home/myPage/setting/policy", extra: extraMap);
+            },
+            child: Text(
+              '회원가입.보기'.tr(),
+              style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+            ),
           ),
         ),
       ],

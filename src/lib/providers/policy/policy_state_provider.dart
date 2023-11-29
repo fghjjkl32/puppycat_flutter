@@ -28,17 +28,23 @@ class PolicyState extends _$PolicyState {
     return [];
   }
 
-  void getPolicies() async {
+  Future getPolicies() async {
     try {
       final PolicyRepository policyRepository = PolicyRepository(dio: ref.read(dioProvider));
-      List<PolicyItemModel> result = await policyRepository.getPolicies();
+      List<PolicyItemModel> result = [];
+
+      PolicyItemModel firstPolicy = PolicyItemModel(idx: 0, required: 'Y', title: '만 14세 이상');
+      result.insert(0, firstPolicy);
+
+      final policies = await policyRepository.getPolicies();
+      result.addAll(policies);
 
       state = result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       state = [];
     } catch (e) {
-      print('get Policy Error');
+      print('get Policy Error $e');
       state = [];
     }
   }
