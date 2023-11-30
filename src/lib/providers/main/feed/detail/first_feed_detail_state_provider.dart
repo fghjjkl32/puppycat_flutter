@@ -40,9 +40,9 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
 
   Future<FeedData?> getFirstFeedState(String contentType, int contentIdx) async {
     // final userInfoModel = ref.read(userInfoProvider).userModel;
-    int loginMemberIdx = 0;
+    int? loginMemberIdx = 0;
     try {
-      loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
+      loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
     } catch (e) {
       print('getFeedState Error $e');
       state = null;

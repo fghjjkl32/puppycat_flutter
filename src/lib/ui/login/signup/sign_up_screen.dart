@@ -528,6 +528,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     return DefaultOnWillPopScope(
       onWillPop: () async {
         ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+        ref.read(userInfoProvider.notifier).state = UserInfoModel();
         return true;
       },
       child: GestureDetector(
