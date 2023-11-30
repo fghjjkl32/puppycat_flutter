@@ -182,7 +182,7 @@ class FeedMainWidget extends ConsumerWidget {
                           ),
                           SizedBox(width: 8.0.w),
                           Text(
-                            "더보기",
+                            "...더보기",
                             style: kBody13RegularStyle.copyWith(
                               color: kTextBodyColor,
                             ),
