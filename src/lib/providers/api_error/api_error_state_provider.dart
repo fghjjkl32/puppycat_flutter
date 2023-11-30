@@ -22,7 +22,12 @@ class APIErrorState extends _$APIErrorState {
     String msg = apiException.getExceptionMsg();
     String code = apiException.getExceptionCode();
     String refer = apiException.getExceptionRefer();
+    String caller = apiException.getExceptionCaller();
+
     print('apiException2 $apiException');
+
+    print("refer ${refer}");
+    print("caller ${caller}");
 
     switch (code) {
       case 'EJOI-7777':
@@ -48,17 +53,33 @@ class APIErrorState extends _$APIErrorState {
         print('SIJD-3999 ${apiException.toString()}');
         break;
       case 'ECON-3994': //존재하지 않는 게시물, 페이지 이동
+        //TODO 피드 상세보기 오류시 해당 게시글 숨기거나 새로고침 기능 추가 해야함
+        final goRouter = ref.read(routerProvider);
+        caller == "getContentDetail" ? goRouter.pushNamed('feed_not_found_screen') : goRouter.pushNamed('error_toast');
         break;
       case 'ECON-3986': //팔로우 공개 게시물, 페이지 이동
+        //TODO 테스트 필요
+        final goRouter = ref.read(routerProvider);
+        goRouter.pushNamed('error_toast');
+        // goRouter.pushNamed('feed_not_found_screen');
         break;
       case 'ECON-3982': //팔로우 공개 게시물, 페이지 이동, 미로그인 시 로그인 화면으로
+        final goRouter = ref.read(routerProvider);
+        goRouter.pushReplacement("/loginScreen");
         break;
       case 'ECON-3993': //상대가 나를 차단, 피드를 찾을 수 없어요 스낵바
       case 'ECON-3987': //신고 게시글, 피드를 찾을 수 없어요 스낵바
+      case 'ECON-3989': //숨김 게시물
+        final goRouter = ref.read(routerProvider);
+        goRouter.pushNamed('error_toast');
         break;
       case 'ECON-3992': //내가 상대를 차단, bottom sheet
+        //TODO bottom sheet를 띄우려면 name, memberidx를 알아야하는데, 얻기가 힘든 케이스가 있어서(해시태그 검색) 임시 보류
+        final goRouter = ref.read(routerProvider);
+        goRouter.pushNamed('error_toast');
         break;
-      case 'ECON-3989': //숨김 게시물, bottom sheet
+      case 'ASL-9998':
+        //사용자가 로그인 취소했을 때, 아무 동작 안시키기 위함
         break;
       default:
         final goRouter = ref.read(routerProvider);

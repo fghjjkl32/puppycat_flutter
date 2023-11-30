@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart' hide Headers;
+import 'package:pet_mobile_social_flutter/models/policy/policy_menu_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_response_model.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -13,7 +14,10 @@ abstract class PolicyService {
 
   @GET('v1/policy')
   Future<PolicyResponseModel> getPoliciesDetail(
-    @Query("searchType") String searchType,
+    @Query("type") int type,
     @Query("date") String date,
   );
+
+  @GET('v1/policy/menu')
+  Future<PolicyMenuResponseModel> getPoliciesMenu();
 }

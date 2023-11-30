@@ -2,16 +2,19 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_block_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/custom_modal_bottom_sheet_widget.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_page.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/dialog_page.dart';
+import 'package:pet_mobile_social_flutter/components/toast/error_toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/push/push_payload_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/error/feed_not_follow_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/error/feed_not_found_screen.dart';
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_complete_screen.dart';
@@ -44,10 +47,8 @@ import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_ala
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_blocked_user_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_faq_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_notice_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_privacy_policy_accepted_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_privacy_policy_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_policy_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_terms_of_service_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/user_unknown_screen.dart';
 ///NOTE
@@ -80,7 +81,8 @@ class AppRouter {
   var _loginRouteState = LoginRoute.none;
   var _signUpState = SignUpRoute.none;
   bool _splashState = false;
-  var _pushPayloadState = null;
+
+  // var _pushPayloadState = null;
   bool _maintenanceState = false;
 
   final Ref ref;
@@ -89,11 +91,11 @@ class AppRouter {
   AppRouter({
     required this.ref,
   }) {
-    _loginRouteState = ref.watch(loginRouteStateProvider);
-    _signUpState = ref.watch(signUpRouteStateProvider);
+    // _loginRouteState = ref.watch(loginRouteStateProvider);
+    // _signUpState = ref.watch(signUpRouteStateProvider);
     _splashState = ref.watch(splashStateProvider);
-    _pushPayloadState = ref.watch(pushPayloadStateProvider);
-    _maintenanceState = ref.watch(isMaintenanceProvider);
+    // _pushPayloadState = ref.watch(pushPayloadStateProvider);
+    // _maintenanceState = ref.watch(isMaintenanceProvider);
     // _pushPayloadState = ref.watch(pushPayloadNotifierProvider);
     // _walkState = ref.watch(walkStatusStateProvider);
   }
@@ -417,24 +419,28 @@ class AppRouter {
                       },
                     ),
                     GoRoute(
-                      path: 'TermsOfService',
-                      name: 'TermsOfService',
+                      path: 'policy',
+                      name: 'policy',
                       builder: (BuildContext context, GoRouterState state) {
-                        return const MyPageSettingTermsOfServiceScreen();
-                      },
-                    ),
-                    GoRoute(
-                      path: 'PrivacyPolicy',
-                      name: 'PrivacyPolicy',
-                      builder: (BuildContext context, GoRouterState state) {
-                        return const MyPageSettingPrivacyPolicyScreen();
-                      },
-                    ),
-                    GoRoute(
-                      path: 'PrivacyPolicyAccepted',
-                      name: 'PrivacyPolicyAccepted',
-                      builder: (BuildContext context, GoRouterState state) {
-                        return const MyPageSettingPrivacyPolicyAcceptedScreen();
+                        List<String>? dateList = [];
+                        int idx = 0;
+                        String menuName = "";
+
+                        final extraData = state.extra;
+                        if (extraData != null) {
+                          Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
+                          if (extraMap.keys.contains('dateList')) {
+                            dateList = extraMap['dateList'];
+                          }
+                          if (extraMap.keys.contains('idx')) {
+                            idx = extraMap['idx'];
+                          }
+                          if (extraMap.keys.contains('menuName')) {
+                            menuName = extraMap['menuName'];
+                          }
+                        }
+
+                        return MyPageSettingPolicyScreen(idx: idx, dateList: dateList, menuName: menuName);
                       },
                     ),
                     GoRoute(
@@ -616,6 +622,68 @@ class AppRouter {
           );
         },
       ),
+      GoRoute(
+        path: '/error_block_bottom_sheet',
+        name: 'error_block_bottom_sheet',
+        // builder: (BuildContext context, GoRouterState state) {
+        //   return const ErrorBottomSheetWidget();
+        // },
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          String name = 'unknown';
+          int memberIdx = 0;
+
+          return BottomSheetPage(
+            builder: (BuildContext context) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: SingleChildScrollView(
+                  child: CustomModalBottomSheet(
+                    widget: FeedBlockSheetItem(),
+                    context: context,
+                  ),
+                ),
+              );
+            },
+            isScrollControlled: false,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(20.0),
+              ),
+            ),
+          );
+        },
+      ),
+
+      GoRoute(
+        path: '/error_toast',
+        name: 'error_toast',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return CustomTransitionPage(
+            fullscreenDialog: true,
+            opaque: false,
+            barrierDismissible: true,
+            transitionsBuilder: (_, __, ___, child) => child,
+            child: ErrorToast(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/feed_not_found_screen',
+        name: 'feed_not_found_screen',
+        builder: (BuildContext context, GoRouterState state) {
+          return const FeedNotFoundScreen();
+        },
+      ),
+      GoRoute(
+        path: '/feed_not_follow_screen',
+        name: 'feed_not_follow_screen',
+        builder: (BuildContext context, GoRouterState state) {
+          return const FeedNotFollowScreen(
+            name: '',
+            memberidx: 1,
+          );
+        },
+      ),
     ],
 
     redirect: (BuildContext context, GoRouterState state) {
@@ -631,6 +699,10 @@ class AppRouter {
       bool isSplashPage = state.matchedLocation == splashLocation;
       if (isSplashPage) {
         if (_splashState) {
+          _loginRouteState = ref.watch(loginRouteStateProvider);
+          _signUpState = ref.watch(signUpRouteStateProvider);
+          _maintenanceState = ref.watch(isMaintenanceProvider);
+
           if (_maintenanceState) {
             return maintenanceLocation;
           } else if (_loginRouteState == LoginRoute.success) {

@@ -35,7 +35,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
 
       final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(loginMemberIdx: memberIdx, page: page);
 
-      myPostMaxPages = lists.data.params!.pagination!.endPage!;
+      myPostMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
       state = state.copyWith(myPostState: state.myPostState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
 
@@ -169,7 +169,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
       final page = initPage ?? state.myKeepState.page;
       final lists = await KeepContentsRepository(dio: ref.read(dioProvider)).getKeepContents(memberIdx: memberIdx, page: page);
 
-      myKeepMaxPages = lists.data.params!.pagination!.endPage!;
+      myKeepMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
       state = state.copyWith(myKeepState: state.myKeepState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
 

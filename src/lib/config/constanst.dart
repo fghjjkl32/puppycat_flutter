@@ -416,6 +416,10 @@ void onTapHide({
     context.pushReplacement("/loginScreen");
   } else {
     final tempContentIdx = contentIdx;
+
+    print(tempContentIdx);
+    print(contentIdx);
+
     context.pop();
 
     final result = await ref.watch(feedListStateProvider.notifier).postHide(

@@ -42,7 +42,7 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
       page: page,
     );
 
-    recommendMaxPages = lists.data.params!.pagination!.endPage!;
+    recommendMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
     state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
 
@@ -139,7 +139,7 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
       searchWord: searchSearchWord,
     );
 
-    searchMentionMaxPages = lists.data.params!.pagination!.endPage!;
+    searchMentionMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
     if (lists == null) {
       state = state.copyWith(page: 1, isLoading: false, list: []);

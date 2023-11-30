@@ -8,10 +8,13 @@ import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/models/jwt/jwt_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
+import 'package:pet_mobile_social_flutter/services/jwt/jwt_service.dart';
 import 'package:ua_client_hints/ua_client_hints.dart';
 
 final dioProvider = StateProvider<Dio>((ref) {
@@ -149,58 +152,62 @@ class DioWrap {
           }
         }
 
+        //Access Token이 유효하지 않을 때
         if (code == 'ECOM-9999') {
-          //TODO
-          // JWT
           final accessToken = await storage.read(key: 'ACCESS_TOKEN');
           final refreshToken = await storage.read(key: 'REFRESH_TOKEN');
 
+          ///NOTE
+          ///refresh Token 검증 로직
+          ///Access Token 재발행 시 사용
+
           var refreshDio = Dio();
+          // JWTResponseModel jwtResponseModel = await refreshDio.post('$memberBaseUrl/v1/oauth/token', queryParameters: {
+          JWTResponseModel jwtResponseModel = await JWTService(refreshDio, baseUrl: memberBaseUrl).getAccessToken({
+            'refreshToken': refreshToken,
+          });
 
-          refreshDio.interceptors.clear();
-
-          refreshDio.interceptors.add(InterceptorsWrapper(onResponse: (response, handler) async {
-            Map<String, dynamic> resMap = response.data;
-
-            bool isResult = true;
-            if (resMap.containsKey('result')) {
-              isResult = resMap['result'];
-            }
-
-            String code = '1000';
-            if (!isResult) {
-              if (resMap.containsKey('code')) {
-                code = resMap['code'];
-              }
-            }
-
-            if (code == 'ERTE-9998') {
-              await storage.deleteAll();
-
+          if (!jwtResponseModel.result) {
+            if (jwtResponseModel.code == 'ERTE-9998') {
               ///TODO
-              ///logout
-              // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
-              // ref.read(loginStateProvider.notifier).logout(provider, appKey)
+              ///Refresh Token이 유효하지 않음
+              ///유효하지 않으면 로그인 페이지 이동
+              ///로그인 프로바이더 상태 초기화 필요
             }
-            return handler.next(response);
-          }, onError: (error, handler) {
-            print('refresh dio onerror : ${error.toString()}');
-            int? errorCode = error.response?.statusCode;
-            APIException apiException = APIException(msg: 'Refresh Error', code: errorCode.toString() ?? '400', refer: 'dio', caller: 'dio');
-            // ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-            //TODO
-            //logout
-            return handler.reject(error);
-          }));
+          }
 
-          print('access token error');
+          if (jwtResponseModel.data == null) {
+            APIException apiException = APIException(
+              msg: jwtResponseModel.message ?? 'getAccessToken Data is null',
+              code: jwtResponseModel.code ?? '400',
+              refer: 'dio',
+              caller: 'dio',
+            );
+            ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+          }
+
+          final newAccessToken = jwtResponseModel.data!['accessToken'];
+          await storage.write(key: 'ACCESS_TOKEN', value: newAccessToken);
+
+          // AccessToken의 만료로 수행하지 못했던 API 요청에 담겼던 AccessToken 갱신
+          response.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+
+          // 수행하지 못했던 API 요청 복사본 생성
+          final clonedRequest = await dio.request(response.requestOptions.path,
+              options: Options(method: response.requestOptions.method, headers: response.requestOptions.headers),
+              data: response.requestOptions.data,
+              queryParameters: response.requestOptions.queryParameters);
+
+          // API 복사본으로 재요청
+          return handler.resolve(clonedRequest);
+          // return handler.next(response);
         }
 
         return handler.next(response);
       }, onError: (error, handler) {
         print('dio onerror : ${error.toString()}');
         int? errorCode = error.response?.statusCode;
-        APIException apiException = APIException(msg: 'unknown', code: errorCode.toString() ?? '400', refer: 'dio', caller: 'dio');
+        APIException apiException = APIException(msg: error.toString(), code: errorCode.toString() ?? '400', refer: 'dio', caller: 'dio');
         ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
         return handler.reject(error);
       }),

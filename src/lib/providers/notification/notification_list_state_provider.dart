@@ -1,11 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:matrix/matrix.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
-import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
@@ -14,7 +12,6 @@ import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repo
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/notification/notification_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/policy/policy_repository.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -141,7 +138,9 @@ class NotificationListState extends _$NotificationListState {
       ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
     } catch (e) {
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
       print('notification setFeedLike error $e');
     }
   }
@@ -157,8 +156,10 @@ class NotificationListState extends _$NotificationListState {
       ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
     } catch (e) {
       print('notification unSetFeedLike error $e');
+      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
     }
   }
 

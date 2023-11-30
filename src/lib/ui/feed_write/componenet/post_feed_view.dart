@@ -288,7 +288,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0.w),
+            padding: EdgeInsets.symmetric(horizontal: 12.0),
             child: Row(
               children: [
                 Expanded(
@@ -306,21 +306,21 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(color: kNeutralColor400),
                             ),
-                      height: 44.h,
+                      height: 44,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
                             Puppycat_social.icon_view_all,
-                            size: 26,
+                            size: 20,
                             color: buttonSelected == 1 ? kPrimaryColor : kTextBodyColor,
                           ),
                           SizedBox(
-                            width: 9.w,
+                            width: 9,
                           ),
                           Text(
                             "전체 공개",
-                            style: kButton14BoldStyle.copyWith(color: buttonSelected == 1 ? kPrimaryColor : kTextBodyColor),
+                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 1 ? kPrimaryColor : kTextBodyColor),
                           ),
                         ],
                       ),
@@ -345,21 +345,21 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(color: kNeutralColor400),
                             ),
-                      height: 44.h,
+                      height: 44,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
                             Puppycat_social.icon_view_follow,
-                            size: 26,
+                            size: 20,
                             color: buttonSelected == 2 ? kPrimaryColor : kTextBodyColor,
                           ),
                           SizedBox(
-                            width: 9.w,
+                            width: 9,
                           ),
                           Text(
                             "팔로우 공개",
-                            style: kButton14BoldStyle.copyWith(color: buttonSelected == 2 ? kPrimaryColor : kTextBodyColor),
+                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 2 ? kPrimaryColor : kTextBodyColor),
                           ),
                         ],
                       ),
@@ -389,15 +389,15 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Puppycat_social.icon_view_all,
-                            size: 14,
+                            Puppycat_social.icon_keep,
+                            size: 20,
                             color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor,
                           ),
                           SizedBox(
                             width: 9,
                           ),
                           Text(
-                            "비공개",
+                            "피드 보관",
                             style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor),
                           ),
                         ],

@@ -933,45 +933,45 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         ),
                                       ),
                               ),
-                        SizedBox(
-                          width: 8.w,
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () async {
-                              ///NOTE
-                              ///2023.11.17.
-                              ///채팅 교체 예정으로 일단 주석 처리
-                              // if (data.chatMemberId != null) {
-                              //   ChatController chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${data.memberIdx}')));
-                              //
-                              //   var roomId = await chatController.client.startDirectChat(data.chatMemberId!, enableEncryption: false);
-                              //
-                              //   Room? room = chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
-                              //
-                              //   if (mounted) {
-                              //     ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain/chatRoom', extra: room);
-                              //   }
-                              // }
-                              ///여기까지 채팅 교체 주석
-                            },
-                            child: Container(
-                              height: 30.h,
-                              decoration: const BoxDecoration(
-                                color: kPrimaryLightColor,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(8.0),
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "메시지",
-                                  style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                        // SizedBox(
+                        //   width: 8.w,
+                        // ),
+                        // Expanded(
+                        //   child: GestureDetector(
+                        //     onTap: () async {
+                        //       ///NOTE
+                        //       ///2023.11.17.
+                        //       ///채팅 교체 예정으로 일단 주석 처리
+                        //       // if (data.chatMemberId != null) {
+                        //       //   ChatController chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${data.memberIdx}')));
+                        //       //
+                        //       //   var roomId = await chatController.client.startDirectChat(data.chatMemberId!, enableEncryption: false);
+                        //       //
+                        //       //   Room? room = chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
+                        //       //
+                        //       //   if (mounted) {
+                        //       //     ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain/chatRoom', extra: room);
+                        //       //   }
+                        //       // }
+                        //       ///여기까지 채팅 교체 주석
+                        //     },
+                        //     child: Container(
+                        //       height: 30.h,
+                        //       decoration: const BoxDecoration(
+                        //         color: kPrimaryLightColor,
+                        //         borderRadius: BorderRadius.all(
+                        //           Radius.circular(8.0),
+                        //         ),
+                        //       ),
+                        //       child: Center(
+                        //         child: Text(
+                        //           "메시지",
+                        //           style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
             ),

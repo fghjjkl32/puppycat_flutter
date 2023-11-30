@@ -92,15 +92,16 @@ class LoginScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/image/loginScreen/login_intro.png',
-              width: 157,
-              height: 116,
+              'assets/image/character/character_00_login.png',
+              width: 156,
+              height: 156,
             ),
             Padding(
               padding: const EdgeInsets.only(top: 12.0, bottom: 94),
               child: Text(
-                '소중한 내 아이의 추억을\n기록하고 공유해보세요!',
+                '퍼피캣과 함께하는\n반려동물 Life Care!',
                 style: kTitle18BoldStyle.copyWith(color: kTextTitleColor, height: 1.4),
+                textAlign: TextAlign.center,
               ),
             ),
             Wrap(
@@ -122,10 +123,14 @@ class LoginScreen extends ConsumerWidget {
                       ref.read(loginStateProvider.notifier).login(provider: 'kakao');
                     },
                     label: Text(
-                      "카카오로 시작하기",
+                      "카카오로 계속하기",
                       style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
                     ),
-                    icon: Image.asset('assets/image/loginScreen/kakao_icon.png'),
+                    icon: Image.asset(
+                      'assets/image/loginScreen/kakao_icon.png',
+                      height: 20,
+                      width: 20,
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -142,10 +147,14 @@ class LoginScreen extends ConsumerWidget {
                       ref.read(loginStateProvider.notifier).login(provider: 'naver');
                     },
                     label: Text(
-                      "네이버로 시작하기",
+                      "네이버로 계속하기",
                       style: kButton14MediumStyle.copyWith(color: kNeutralColor100),
                     ),
-                    icon: Image.asset('assets/image/loginScreen/naver_icon.png'),
+                    icon: Image.asset(
+                      'assets/image/loginScreen/naver_icon.png',
+                      height: 20,
+                      width: 20,
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -168,10 +177,14 @@ class LoginScreen extends ConsumerWidget {
                       ref.read(loginStateProvider.notifier).login(provider: 'google');
                     },
                     label: Text(
-                      "구글로 시작하기",
+                      "구글로 계속하기",
                       style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
                     ),
-                    icon: Image.asset('assets/image/loginScreen/google_icon.png'),
+                    icon: Image.asset(
+                      'assets/image/loginScreen/google_icon.png',
+                      height: 20,
+                      width: 20,
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -188,10 +201,14 @@ class LoginScreen extends ConsumerWidget {
                       ref.read(loginStateProvider.notifier).login(provider: 'apple');
                     },
                     label: Text(
-                      "애플로 시작하기",
+                      "애플로 계속하기",
                       style: kButton14MediumStyle.copyWith(color: kNeutralColor100),
                     ),
-                    icon: Image.asset('assets/image/loginScreen/apple_icon.png'),
+                    icon: Image.asset(
+                      'assets/image/loginScreen/apple_icon.png',
+                      height: 20,
+                      width: 20,
+                    ),
                   ),
                 ),
               ],

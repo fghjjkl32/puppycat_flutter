@@ -78,7 +78,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     try {
       final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowerList(memberIdx: memberIdx, page: page, loginMemberIdx: loginMemberIdx);
 
-      followerMaxPages = lists.data.params!.pagination!.endPage!;
+      followerMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
       state = state.copyWith(followerListState: state.followerListState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
 
@@ -202,7 +202,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
         loginMemberIdx: loginMemberIdx,
       );
 
-      followMaxPages = lists.data.params!.pagination!.endPage!;
+      followMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
       state = state.copyWith(followListState: state.followListState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
 
@@ -376,6 +376,8 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
+
       throw apiException.toString();
     } catch (e) {
       print('postFollow error $e');
@@ -395,6 +397,8 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
+
       throw apiException.toString();
     } catch (e) {
       print('deleteFollow error $e');
@@ -414,6 +418,8 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
+
       throw apiException.toString();
     } catch (e) {
       print('deleteFollower error $e');

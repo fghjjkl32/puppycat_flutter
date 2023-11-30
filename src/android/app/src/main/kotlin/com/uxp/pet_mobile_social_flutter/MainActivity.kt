@@ -1,4 +1,4 @@
-package com.uxp.pet_mobile_social_flutter
+package com.uxp.puppycat
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -14,7 +14,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import java.net.URISyntaxException
 import android.view.WindowManager.LayoutParams
 
-class MainActivity: FlutterFragmentActivity() {
+class MainActivity : FlutterFragmentActivity() {
     private val CHANNEL = "puppycat-ch"
     var methodChannelResult: MethodChannel.Result? = null
 
@@ -22,12 +22,13 @@ class MainActivity: FlutterFragmentActivity() {
         intent.putExtra("background_mode", "transparent")
         super.onCreate(savedInstanceState)
     }
+
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
 //        window.addFlags(LayoutParams.FLAG_SECURE)
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger,
-            CHANNEL
+                flutterEngine.dartExecutor.binaryMessenger,
+                CHANNEL
         ).setMethodCallHandler { call, result ->
             methodChannelResult = result;
             if (call.method == "getAppUrl") {
@@ -43,7 +44,7 @@ class MainActivity: FlutterFragmentActivity() {
                 } catch (e: ActivityNotFoundException) {
                     result.notImplemented()
                 }
-            } else if(call.method == "getMarketUrl") {
+            } else if (call.method == "getMarketUrl") {
                 try {
                     val url: String? = call.argument("url")
                     Log.i("url", url!!)

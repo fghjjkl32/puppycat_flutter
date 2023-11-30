@@ -16,6 +16,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/my_page_setting_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/policy/policy_menu_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/Admin/password_screen.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -32,6 +33,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
     super.initState();
     Future(() {
       ref.watch(myPageSettingProvider.notifier).getCacheSizeInMB();
+      ref.read(policyMenuStateProvider.notifier).getPoliciesMenu();
     });
     initUniLinks();
   }
@@ -175,14 +177,26 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               height: 30.h,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                child: ListView(
+                child: ListView.builder(
+                  itemCount: ref.watch(policyMenuStateProvider).length,
                   scrollDirection: Axis.horizontal,
-                  children: [
-                    GestureDetector(
+                  itemBuilder: (BuildContext context, int index) {
+                    final data = ref.watch(policyMenuStateProvider)[index];
+
+                    bool isLastItem = index == ref.watch(policyMenuStateProvider).length - 1;
+
+                    return GestureDetector(
                       onTap: () {
-                        context.go("/home/myPage/setting/TermsOfService");
+                        Map<String, dynamic> extraMap = {
+                          'dateList': data.dateList,
+                          'idx': data.idx,
+                          'menuName': data.menuName!,
+                        };
+
+                        context.push("/home/myPage/setting/policy", extra: extraMap);
                       },
                       child: Container(
+                        margin: EdgeInsets.only(right: isLastItem ? 0 : 12),
                         decoration: const BoxDecoration(
                           color: kNeutralColor300,
                           borderRadius: BorderRadius.all(
@@ -193,64 +207,14 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                             child: Text(
-                              "서비스 이용약관",
+                              data.menuName!,
                               style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 12.w,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context.go("/home/myPage/setting/PrivacyPolicy");
-                      },
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: kNeutralColor300,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
-                        ),
-                        child: Center(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                            child: Text(
-                              "개인정보 처리 방침",
-                              style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 12.w,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context.go("/home/myPage/setting/PrivacyPolicyAccepted");
-                      },
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: kNeutralColor300,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
-                        ),
-                        child: Center(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                            child: Text(
-                              "개인정보 수집/이용 동의",
-                              style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -299,10 +263,13 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      Text(
-                        '선택적 접근 권한은 해당 기능 이용 시 동의를 받고 있습니다.\n허용하지 않으셔도 포레스트 앱의 서비스를 이용 가능하며,\n일부 관련 서비스 이용 시 사용제 제한이 있을 수 있습니다.',
-                        style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
-                        textAlign: TextAlign.center,
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          '선택적 접근 권한은 해당 기능 이용 시 동의를 받고 있습니다.\n허용하지 않으셔도 포레스트 앱의 서비스를 이용 가능하며,\n일부 관련 서비스 이용 시 사용제 제한이 있을 수 있습니다.',
+                          style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 4.h),
@@ -323,7 +290,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         height: 10.h,
                       ),
                       Text(
-                        "전화 (필수)",
+                        "알림 (필수)",
                         style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
                       ),
                       SizedBox(
@@ -336,21 +303,21 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       SizedBox(
                         height: 10.h,
                       ),
-                      Text(
-                        "위치 서비스 (필수)",
-                        style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                      ),
-                      SizedBox(
-                        height: 3.h,
-                      ),
-                      Text(
-                        "맵 서비스 등 이용하실 때 가까운 정보 및\n장소를 찾으실 수 있도록 도와줍니다.",
-                        style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(
-                        height: 10.h,
-                      ),
+                      // Text(
+                      //   "위치 서비스 (필수)",
+                      //   style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                      // ),
+                      // SizedBox(
+                      //   height: 3.h,
+                      // ),
+                      // Text(
+                      //   "맵 서비스 등 이용하실 때 가까운 정보 및\n장소를 찾으실 수 있도록 도와줍니다.",
+                      //   style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                      //   textAlign: TextAlign.center,
+                      // ),
+                      // SizedBox(
+                      //   height: 10.h,
+                      // ),
                       GestureDetector(
                         onTap: () {
                           openAppSettings();

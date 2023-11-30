@@ -11,12 +11,11 @@ part 'customer_support_service.g.dart';
 
 @RestApi()
 abstract class CustomerSupportService {
-  factory CustomerSupportService(Dio dio, {String baseUrl}) =
-      _CustomerSupportService;
+  factory CustomerSupportService(Dio dio, {String baseUrl}) = _CustomerSupportService;
 
   @GET('v1/faq')
   Future<CustomerSupportResponseModel> getFaqList(
-    @Query("page") int page,
+    @Queries() Map<String, dynamic> queries,
   );
 
   @GET('v1/faq/menu')

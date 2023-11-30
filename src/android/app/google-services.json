@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:14263543464:android:b52833d47506d509a9c49d",
+        "mobilesdk_app_id": "1:14263543464:android:730fbbe502ab4493a9c49d",
         "android_client_info": {
-          "package_name": "com.uxplus.test.puppycat"
+          "package_name": "com.uxp.puppycat"
         }
       },
       "oauth_client": [
@@ -17,8 +17,8 @@
           "client_id": "14263543464-775u5si0ocp1mest7qch552uak2rj7g1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.uxplus.test.puppycat",
-            "certificate_hash": "8254a8e63cf377867f575dd08b66e87e266b7ff5"
+            "package_name": "com.uxp.puppycat",
+            "certificate_hash": "a757c1e0403aeb9ab6336a6fcbb6627b771d6a96"
           }
         },
         {
@@ -42,7 +42,43 @@
               "client_id": "14263543464-a7s7l6h3d68vatmij33ddooqn8qt26pl.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.uxplus.test.puppycat"
+                "bundle_id": "com.uxp.puppycat"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:14263543464:android:b52833d47506d509a9c49d",
+        "android_client_info": {
+          "package_name": "com.uxplus.test.puppycat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "14263543464-sb2ls92uee2aq8ud47eov46ah48cqplp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmdFKCBhurDbjj5p6wA6eAQBskNjDmIAg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "14263543464-sb2ls92uee2aq8ud47eov46ah48cqplp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "14263543464-a7s7l6h3d68vatmij33ddooqn8qt26pl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.uxp.puppycat"
               }
             }
           ]
@@ -50,5 +86,12 @@
       }
     }
   ],
+  "installed": {
+    "client_id": "14263543464-775u5si0ocp1mest7qch552uak2rj7g1.apps.googleusercontent.com",
+    "project_id": "prd-puppycat",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs"
+  },
   "configuration_version": "1"
 }

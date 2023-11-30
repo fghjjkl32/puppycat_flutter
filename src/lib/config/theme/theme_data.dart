@@ -4,6 +4,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
 ThemeData themeData(context) => ThemeData(
+      useMaterial3: false,
       disabledColor: kNeutralColor300,
       checkboxTheme: CheckboxThemeData(
         shape: RoundedRectangleBorder(

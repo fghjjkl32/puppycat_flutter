@@ -254,7 +254,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         },
                       ),
                     ],
-                    expandedHeight: 200.h,
+                    expandedHeight: 120.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
                       final userInformationState = ref.watch(myInformationStateProvider);
                       final lists = userInformationState.list;
@@ -783,7 +783,13 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                           'contentIdx': '${item.idx}',
                           'contentType': 'myTagContent',
                         };
-                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myTagContent', item.idx).then((value) {
+                        await ref
+                            .read(firstFeedDetailStateProvider.notifier)
+                            .getFirstFeedState(
+                              'myTagContent',
+                              item.idx,
+                            )
+                            .then((value) {
                           if (value == null) {
                             return;
                           }

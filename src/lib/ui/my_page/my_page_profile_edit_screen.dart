@@ -745,31 +745,33 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             initialValue: "${ref.watch(editStateProvider).userInfoModel!.userModel!.id}",
                             enabled: false,
                             decoration: InputDecoration(
-                              prefixIcon: ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "kakao"
-                                  ? Image.asset(
-                                      'assets/image/loginScreen/kakao_icon.png',
-                                      width: 16,
-                                      height: 16,
-                                    )
-                                  : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "naver"
-                                      ? Image.asset(
-                                          'assets/image/loginScreen/naver_icon.png',
-                                          width: 16,
-                                          height: 16,
-                                        )
-                                      : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "google"
-                                          ? Image.asset(
-                                              'assets/image/loginScreen/google_icon.png',
-                                              width: 16,
-                                              height: 16,
-                                            )
-                                          : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "apple"
-                                              ? Image.asset(
-                                                  'assets/image/loginScreen/apple_icon.png',
-                                                  width: 16,
-                                                  height: 16,
-                                                )
-                                              : SizedBox.shrink(),
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "kakao"
+                                    ? Image.asset(
+                                        'assets/image/loginScreen/kakao_icon.png',
+                                        height: 20,
+                                        width: 20,
+                                      )
+                                    : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "naver"
+                                        ? Image.asset(
+                                            'assets/image/loginScreen/naver_icon.png',
+                                            color: Color(0xff03CF5D),
+                                          )
+                                        : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "google"
+                                            ? Image.asset(
+                                                'assets/image/loginScreen/google_icon.png',
+                                                height: 20,
+                                                width: 20,
+                                              )
+                                            : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "apple"
+                                                ? Image.asset(
+                                                    'assets/image/loginScreen/apple_icon.png',
+                                                    height: 20,
+                                                    width: 20,
+                                                  )
+                                                : SizedBox.shrink(),
+                              ),
                               filled: true,
                               fillColor: kNeutralColor300,
                               counterText: "",
@@ -929,65 +931,67 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 24.0.w, vertical: 10),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SizedBox(
-                                width: 100.w,
-                                height: 40.h,
-                                child: ElevatedButton.icon(
-                                  style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                              // SizedBox(
+                              //   width: 100.w,
+                              //   height: 40.h,
+                              //   child: ElevatedButton.icon(
+                              //     style: ButtonStyle(
+                              //       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                              //       ),
+                              //       backgroundColor: MaterialStateProperty.all<Color>(kKakaoLoginColor),
+                              //       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
+                              //     ),
+                              //     onPressed: () {},
+                              //     label: Text(
+                              //       '회원가입.카카오 인증'.tr(),
+                              //       style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              //     ),
+                              //     icon: Image.asset('assets/image/signUpScreen/kakao_icon.png'),
+                              //   ),
+                              // ),
+                              // SizedBox(
+                              //   width: 100.w,
+                              //   height: 40.h,
+                              //   child: ElevatedButton.icon(
+                              //     style: ButtonStyle(
+                              //       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                              //       ),
+                              //       backgroundColor: MaterialStateProperty.all<Color>(kNaverLoginColor),
+                              //       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
+                              //     ),
+                              //     onPressed: () {},
+                              //     label: Text(
+                              //       '회원가입.네이버 인증'.tr(),
+                              //       style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
+                              //     ),
+                              //     icon: Image.asset('assets/image/signUpScreen/naver_icon.png'),
+                              //   ),
+                              // ),
+                              Expanded(
+                                child: SizedBox(
+                                  // width: 100.w,
+                                  height: 40.h,
+                                  child: ElevatedButton.icon(
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                                      ),
+                                      backgroundColor: MaterialStateProperty.all<Color>(kSignUpPassColor),
+                                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
                                     ),
-                                    backgroundColor: MaterialStateProperty.all<Color>(kKakaoLoginColor),
-                                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
-                                  ),
-                                  onPressed: () {},
-                                  label: Text(
-                                    '회원가입.카카오 인증'.tr(),
-                                    style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
-                                  ),
-                                  icon: Image.asset('assets/image/signUpScreen/kakao_icon.png'),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 100.w,
-                                height: 40.h,
-                                child: ElevatedButton.icon(
-                                  style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                                    onPressed: () {
+                                      ref.read(authStateProvider.notifier).getPassAuthUrl();
+                                    },
+                                    label: Text(
+                                      '회원가입.휴대폰 인증'.tr(),
+                                      style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
                                     ),
-                                    backgroundColor: MaterialStateProperty.all<Color>(kNaverLoginColor),
-                                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
+                                    icon: Image.asset('assets/image/signUpScreen/pass_icon.png'),
                                   ),
-                                  onPressed: () {},
-                                  label: Text(
-                                    '회원가입.네이버 인증'.tr(),
-                                    style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
-                                  ),
-                                  icon: Image.asset('assets/image/signUpScreen/naver_icon.png'),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 100.w,
-                                height: 40.h,
-                                child: ElevatedButton.icon(
-                                  style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-                                    ),
-                                    backgroundColor: MaterialStateProperty.all<Color>(kSignUpPassColor),
-                                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
-                                  ),
-                                  onPressed: () {
-                                    ref.read(authStateProvider.notifier).getPassAuthUrl();
-                                  },
-                                  label: Text(
-                                    '회원가입.휴대폰 인증'.tr(),
-                                    style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
-                                  ),
-                                  icon: Image.asset('assets/image/signUpScreen/pass_icon.png'),
                                 ),
                               ),
                             ],

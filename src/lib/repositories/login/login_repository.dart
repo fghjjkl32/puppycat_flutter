@@ -57,15 +57,22 @@ class LoginRepository {
       UserModel? userModel = await _socialLoginService?.getUserInfo();
 
       if (userModel == null) {
-        // return null;
-        ///TODO exception 고도화 필요
-        throw 'Failed Social Login.(1)';
+        throw APIException(
+          msg: 'Failed Social Login.(1)',
+          code: 'ASL-9999', //App Social Login = ASL
+          refer: 'LoginRepository',
+          caller: 'socialLogin',
+        );
       }
 
       return userModel;
     } else {
-      ///TODO exception 고도화 필요
-      throw 'Failed Social Login.(2)';
+      throw APIException(
+        msg: 'Failed Social Login.(2)',
+        code: 'ASL-9998', //App Social Login = ASL
+        refer: 'LoginRepository',
+        caller: 'socialLogin',
+      );
     }
   }
 

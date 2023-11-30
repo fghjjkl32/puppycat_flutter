@@ -2,7 +2,7 @@ name: pet_mobile_social_flutter
 description: pet_mobile_social_flutter
 publish_to: 'none'
 
-version: 0.0.6+7
+version: 0.1.0+9
 scripts:
   codegen: flutter pub run build_runner build
 
@@ -40,7 +40,9 @@ dependencies:
   fraction: ^5.0.0 # to show crop ratio in crop view
   provider: ^6.0.5 # match with wechat_assets_picker package
   extended_image: ^8.1.1 # match with wechat_assets_picker package
-  photo_manager: ^2.6.0
+  #  photo_manager: ^2.8.1
+  photo_manager: ^3.0.0-dev.2
+  photo_manager_image_provider: ^2.1.0
   video_player: ^2.6.0
   image_picker: ^0.8.7+5
   flutter_form_builder: ^9.0.0
@@ -125,7 +127,7 @@ dependencies:
   flutter_html: ^3.0.0-beta.2
   ua_client_hints: ^1.1.3
   firebase_remote_config: ^4.2.5
-  cached_network_image: ^3.2.3
+  cached_network_image: ^3.3.0
   app_install_date: ^0.1.2
   focus_detector: ^2.0.1
   cupertino_will_pop_scope: ^1.2.1
@@ -155,8 +157,8 @@ dependencies:
   #  xml_map_converter: ^1.0.0+1
   xml2json: ^6.2.0
 
-  flutter_secure_storage: ^9.0.0
   flutter_launcher_icons: ^0.13.1
+  flutter_secure_storage: ^9.0.0
 
 dev_dependencies:
   flutter_test:
