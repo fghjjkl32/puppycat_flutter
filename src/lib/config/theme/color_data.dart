@@ -13,7 +13,7 @@ const kPrimaryColor = Color(0xff6d5de1);
 const kPrimaryLightColor = Color(0xffe7e5f4);
 
 //Secondary Color
-const kSecondaryColor = Color(0xff497af6);
+const kSecondaryColor = Color(0xff5de1e1);
 const kSecondaryLightColor = Color(0xffeef3ff);
 
 //Badge Color

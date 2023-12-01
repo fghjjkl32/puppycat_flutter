@@ -82,7 +82,7 @@ class FeedMainWidget extends ConsumerWidget {
                     Padding(
                       padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h, top: 24),
                       child: Text(
-                        "인기있는 펫 집사들",
+                        "요즘 인기 퍼플루언서",
                         style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                       ),
                     ),
@@ -94,9 +94,9 @@ class FeedMainWidget extends ConsumerWidget {
                 ),
               if (index == 0 && feedType == "popular")
                 Padding(
-                  padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h, top: 24),
+                  padding: EdgeInsets.only(left: 16.0.w, right: 10.w),
                   child: Text(
-                    "인기 게시글",
+                    "베스트 댕냥 피드",
                     style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                   ),
                 ),

@@ -7,11 +7,11 @@ import 'package:pet_mobile_social_flutter/components/user_list/widget/following_
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 
 class MyPageFollowListScreen extends ConsumerStatefulWidget {
   const MyPageFollowListScreen({super.key, required this.memberIdx});
+
   final int memberIdx;
 
   @override
@@ -104,11 +104,11 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
           ),
           bottom: TabBar(
               controller: tabController,
-              indicatorWeight: 3,
+              indicatorWeight: 2.4,
               labelColor: kPrimaryColor,
               indicatorColor: kPrimaryColor,
               unselectedLabelColor: kNeutralColor500,
-              indicatorSize: TabBarIndicatorSize.tab,
+              indicatorSize: TabBarIndicatorSize.label,
               labelPadding: EdgeInsets.only(
                 top: 10.h,
                 bottom: 10.h,

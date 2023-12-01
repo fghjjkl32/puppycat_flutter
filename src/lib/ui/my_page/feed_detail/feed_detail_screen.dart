@@ -339,7 +339,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                               height: 12,
                                             ),
                                             Text(
-                                              '등록된 피드가 없습니다.',
+                                              '피드가 없어요.',
                                               textAlign: TextAlign.center,
                                               style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                             ),

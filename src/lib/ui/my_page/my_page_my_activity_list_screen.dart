@@ -89,11 +89,11 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
           ),
           bottom: TabBar(
               controller: tabController,
-              indicatorWeight: 3,
+              indicatorWeight: 2.4,
               labelColor: kPrimaryColor,
               indicatorColor: kPrimaryColor,
               unselectedLabelColor: kNeutralColor500,
-              indicatorSize: TabBarIndicatorSize.tab,
+              indicatorSize: TabBarIndicatorSize.label,
               labelPadding: EdgeInsets.only(
                 top: 10.h,
                 bottom: 10.h,

@@ -158,6 +158,8 @@ dependencies:
   xml2json: ^6.2.0
 
   flutter_launcher_icons: ^0.13.1
+  custom_refresh_indicator: ^3.0.0
+  easy_refresh: ^3.3.2+4
 
 dev_dependencies:
   flutter_test:
@@ -195,6 +197,7 @@ flutter:
     - assets/image/loginScreen/
     - assets/image/signUpScreen/
     - assets/image/common/
+    - assets/image/logo/
     - assets/translations/
     - assets/image/chat/
     - assets/image/character/

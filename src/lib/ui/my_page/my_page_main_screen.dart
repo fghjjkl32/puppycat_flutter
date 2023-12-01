@@ -1142,52 +1142,58 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
         children: [
           Expanded(
             child: TabBar(
-                indicatorWeight: 3,
-                labelColor: kPrimaryColor,
-                indicatorColor: kPrimaryColor,
+                indicatorWeight: 2.4,
+                labelColor: kNeutralColor600,
+                indicatorColor: kNeutralColor600,
                 unselectedLabelColor: kNeutralColor500,
-                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorSize: TabBarIndicatorSize.label,
                 labelPadding: EdgeInsets.only(
                   top: 10.h,
                   bottom: 10.h,
                 ),
                 tabs: [
-                  Consumer(builder: (context, ref, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "일상글",
-                          style: kBody14BoldStyle,
-                        ),
-                        const SizedBox(
-                          width: 6,
-                        ),
-                        Text(
-                          "${ref.watch(myContentsFeedTotalCountProvider)}",
-                          style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                        ),
-                      ],
-                    );
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "태그됨",
-                          style: kBody14BoldStyle,
-                        ),
-                        const SizedBox(
-                          width: 6,
-                        ),
-                        Text(
-                          "${ref.watch(myTagContentsFeedTotalCountProvider)}",
-                          style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                        ),
-                      ],
-                    );
-                  }),
+                  Tab(
+                    child: Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "일상글",
+                            style: kBody14BoldStyle,
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            "${ref.watch(myContentsFeedTotalCountProvider)}",
+                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
+                  Tab(
+                    child: Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "태그됨",
+                            style: kBody14BoldStyle,
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            "${ref.watch(myTagContentsFeedTotalCountProvider)}",
+                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
                 ]),
           ),
         ],
@@ -2283,11 +2289,11 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
 //         children: [
 //           Expanded(
 //             child: TabBar(
-//                 indicatorWeight: 3,
+//                 indicatorWeight: 2.4,
 //                 labelColor: kPrimaryColor,
 //                 indicatorColor: kPrimaryColor,
 //                 unselectedLabelColor: kNeutralColor500,
-//                 indicatorSize: TabBarIndicatorSize.tab,
+//                 indicatorSize: TabBarIndicatorSize.label,
 //                 labelPadding: EdgeInsets.only(
 //                   top: 10.h,
 //                   bottom: 10.h,

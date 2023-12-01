@@ -6,12 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/hashtag_item_widget.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/widget/recent_searches_hashtag_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/recent_searches_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -184,11 +180,11 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
           children: [
             if (_showTabs)
               TabBar(
-                indicatorWeight: 3,
+                indicatorWeight: 2.4,
                 labelColor: kNeutralColor600,
                 indicatorColor: kNeutralColor600,
                 unselectedLabelColor: kNeutralColor500,
-                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorSize: TabBarIndicatorSize.label,
                 labelPadding: EdgeInsets.only(
                   top: 10.h,
                   bottom: 10.h,
