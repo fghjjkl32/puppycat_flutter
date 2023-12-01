@@ -2,7 +2,7 @@ name: pet_mobile_social_flutter
 description: pet_mobile_social_flutter
 publish_to: 'none'
 
-version: 0.1.0+9
+version: 0.1.0+10
 scripts:
   codegen: flutter pub run build_runner build
 
