@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-
 // import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -121,7 +120,7 @@ class MyPageSettingPolicyScreenState extends ConsumerState<MyPageSettingPolicySc
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: kNeutralColor100,
+                          color: kPreviousNeutralColor100,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.grey.withOpacity(0.5),
@@ -140,7 +139,7 @@ class MyPageSettingPolicyScreenState extends ConsumerState<MyPageSettingPolicySc
                             ),
                             isExpanded: true,
                             iconSize: 24,
-                            style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                            style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                             onChanged: (String? newValue) {
                               if (newValue != null) {
                                 // dropdownValue를 업데이트
@@ -165,7 +164,7 @@ class MyPageSettingPolicyScreenState extends ConsumerState<MyPageSettingPolicySc
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     value,
-                                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                                    style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ),
                                 ),
                               );

@@ -100,7 +100,7 @@ class LoginScreen extends ConsumerWidget {
               padding: const EdgeInsets.only(top: 12.0, bottom: 94),
               child: Text(
                 '퍼피캣과 함께하는\n반려동물 Life Care!',
-                style: kTitle18BoldStyle.copyWith(color: kTextTitleColor, height: 1.4),
+                style: kTitle18BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -124,7 +124,7 @@ class LoginScreen extends ConsumerWidget {
                     },
                     label: Text(
                       "카카오로 계속하기",
-                      style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                      style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                     ),
                     icon: Image.asset(
                       'assets/image/loginScreen/kakao_icon.png',
@@ -148,7 +148,7 @@ class LoginScreen extends ConsumerWidget {
                     },
                     label: Text(
                       "네이버로 계속하기",
-                      style: kButton14MediumStyle.copyWith(color: kNeutralColor100),
+                      style: kButton14MediumStyle.copyWith(color: kPreviousNeutralColor100),
                     ),
                     icon: Image.asset(
                       'assets/image/loginScreen/naver_icon.png',
@@ -169,7 +169,7 @@ class LoginScreen extends ConsumerWidget {
                       side: MaterialStateProperty.all<BorderSide>(
                         const BorderSide(
                           width: 1,
-                          color: kNeutralColor400,
+                          color: kPreviousNeutralColor400,
                         ),
                       ),
                     ),
@@ -178,7 +178,7 @@ class LoginScreen extends ConsumerWidget {
                     },
                     label: Text(
                       "구글로 계속하기",
-                      style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                      style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                     ),
                     icon: Image.asset(
                       'assets/image/loginScreen/google_icon.png',
@@ -202,7 +202,7 @@ class LoginScreen extends ConsumerWidget {
                     },
                     label: Text(
                       "애플로 계속하기",
-                      style: kButton14MediumStyle.copyWith(color: kNeutralColor100),
+                      style: kButton14MediumStyle.copyWith(color: kPreviousNeutralColor100),
                     ),
                     icon: Image.asset(
                       'assets/image/loginScreen/apple_icon.png',

@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
-import 'package:pet_mobile_social_flutter/providers/user/user_restore_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/user_restore_state_provider.dart';
 
 class WithDrawalPendingSheetItem extends ConsumerWidget {
   const WithDrawalPendingSheetItem({Key? key}) : super(key: key);
@@ -14,17 +14,10 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 32.0),
+          padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
           child: Text(
-            '가입 제한 안내',
-            style: kBody16BoldStyle.copyWith(color: kTextTitleColor, height: 1.4),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 12.0, bottom: 32.0),
-          child: Text(
-            '퍼피캣 탈퇴 7일 이후 재가입 가능합니다.\n기존 활동 내역으로 이어서 이용하시겠습니까?',
-            style: kBody12RegularStyle400.copyWith(color: kTextBodyColor, height: 1.3),
+            '다시 만나 반가워요!\n이전 활동을 이어서 할까요?',
+            style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4),
             textAlign: TextAlign.center,
           ),
         ),
@@ -46,12 +39,12 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
               ),
-              backgroundColor: MaterialStateProperty.all<Color>(kPrimaryColor),
+              backgroundColor: MaterialStateProperty.all<Color>(kPreviousPrimaryColor),
             ),
             child: Text(
-              '기존 계정으로 로그인',
+              '이어서 하기',
               style: kBody14BoldStyle.copyWith(
-                color: kNeutralColor100,
+                color: kPreviousNeutralColor100,
               ),
             ),
           ),
@@ -67,9 +60,9 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
                 Navigator.pop(context);
               },
               child: Text(
-                '7일 후 회원가입',
+                '다른 계정으로 로그인하기',
                 style: kBody12SemiBoldStyle.copyWith(
-                  color: kTextBodyColor,
+                  color: kPreviousTextBodyColor,
                 ),
               ),
             ),

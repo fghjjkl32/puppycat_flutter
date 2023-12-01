@@ -33,7 +33,7 @@ Widget getProfileAvatar(
           return const Icon(
             Puppycat_social.icon_profile_small,
             size: 30,
-            color: kNeutralColor400,
+            color: kPreviousNeutralColor400,
           );
         },
       ),
@@ -68,16 +68,19 @@ Widget getSquircleImage(
               return Icon(
                 Puppycat_social.icon_profile_small,
                 size: 30,
-                color: colorFilter == kPrimaryColor ? colorFilter : kNeutralColor400,
+                color: colorFilter == kPreviousPrimaryColor ? colorFilter : kPreviousNeutralColor400,
               );
             },
           ),
           Visibility(
-            visible: colorFilter == kPrimaryColor,
+            visible: colorFilter == kPreviousPrimaryColor,
             child: const Positioned.fill(
               child: Align(
                 alignment: Alignment.center,
-                child: Icon(Icons.check, color: kNeutralColor100,),
+                child: Icon(
+                  Icons.check,
+                  color: kPreviousNeutralColor100,
+                ),
               ),
             ),
           ),
@@ -89,7 +92,7 @@ Widget getSquircleImage(
       width: width,
       height: height,
       fit: BoxFit.fill,
-      colorFilter: colorFilter == kPrimaryColor ? ColorFilter.mode(colorFilter.withAlpha(50), BlendMode.srcATop) : null,
+      colorFilter: colorFilter == kPreviousPrimaryColor ? ColorFilter.mode(colorFilter.withAlpha(50), BlendMode.srcATop) : null,
     ),
   );
 }

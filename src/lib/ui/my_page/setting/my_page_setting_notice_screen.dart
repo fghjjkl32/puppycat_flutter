@@ -103,14 +103,14 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
                   padding: EdgeInsets.only(right: 8.0.w),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: kPrimaryLightColor,
+                      color: kPreviousPrimaryLightColor,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 12.0.w),
                       child: Text(
                         "1:1채널톡",
-                        style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                        style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                       ),
                     ),
                   ),
@@ -121,9 +121,9 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
           bottom: TabBar(
               controller: tabController,
               indicatorWeight: 2.4,
-              labelColor: kPrimaryColor,
-              indicatorColor: kPrimaryColor,
-              unselectedLabelColor: kNeutralColor500,
+              labelColor: kPreviousPrimaryColor,
+              indicatorColor: kPreviousPrimaryColor,
+              unselectedLabelColor: kPreviousNeutralColor500,
               indicatorSize: TabBarIndicatorSize.label,
               labelPadding: EdgeInsets.only(
                 top: 10.h,
@@ -203,14 +203,14 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: kNeutralColor300,
+                    color: kPreviousNeutralColor300,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 14.0.w),
                     child: Text(
                       itemModel.menuName ?? 'unknown',
-                      style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ),
                 ),
@@ -222,11 +222,11 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
                   children: [
                     Text(
                       itemModel.title ?? 'unknown',
-                      style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                      style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                     ),
                     Text(
                       DateFormat('yyyy-MM-dd').format(itemModel.regDate != null ? DateTime.parse(itemModel.regDate!) : DateTime.now()),
-                      style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                      style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],
                 ),
@@ -238,7 +238,7 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: kNeutralColor200,
+                    color: kPreviousNeutralColor200,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(

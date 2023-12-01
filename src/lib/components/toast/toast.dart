@@ -22,18 +22,18 @@ void toast({
   fToast.removeCustomToast();
 
   Widget iconImage = Container();
-  Color color = kPrimaryColor.withOpacity(0.8);
+  Color color = kPreviousPrimaryColor.withOpacity(0.8);
 
   if (ToastType.red == type) {
     iconImage = Image.asset(
       'assets/image/toast/icon/Layer_1-2.png',
     );
-    color = kBadgeColor.withOpacity(0.8);
+    color = kPreviousErrorColor.withOpacity(0.8);
   } else if (ToastType.purple == type) {
     iconImage = Image.asset(
       'assets/image/toast/icon/Layer_1.png',
     );
-    color = kPrimaryColor.withOpacity(0.8);
+    color = kPreviousPrimaryColor.withOpacity(0.8);
   } else if (ToastType.grey == type) {
     iconImage = Image.asset(
       'assets/image/toast/icon/Layer_1-1.png',
@@ -61,7 +61,7 @@ void toast({
                   height: 20.h,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
-                    color: kNeutralColor100,
+                    color: kPreviousNeutralColor100,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(4),
@@ -76,7 +76,7 @@ void toast({
                   children: [
                     Text(
                       text,
-                      style: kBody13BoldStyle.copyWith(color: kNeutralColor100),
+                      style: kBody13BoldStyle.copyWith(color: kPreviousNeutralColor100),
                     ),
                     secondText == null
                         ? Container()
@@ -84,7 +84,7 @@ void toast({
                             padding: const EdgeInsets.only(top: 2.0),
                             child: Text(
                               secondText,
-                              style: kBody11RegularStyle.copyWith(color: kNeutralColor100),
+                              style: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
                             ),
                           ),
                   ],
@@ -101,11 +101,11 @@ void toast({
                         children: [
                           Text(
                             buttonText,
-                            style: kBody11SemiBoldStyle.copyWith(color: kNeutralColor100),
+                            style: kBody11SemiBoldStyle.copyWith(color: kPreviousNeutralColor100),
                           ),
                           const Icon(
                             Puppycat_social.icon_take_back,
-                            color: kNeutralColor100,
+                            color: kPreviousNeutralColor100,
                           ),
                         ],
                       ),

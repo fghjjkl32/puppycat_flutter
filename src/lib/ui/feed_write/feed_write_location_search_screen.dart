@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/location_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -48,11 +48,11 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                         initialValue: ref.watch(feedWriteLocationSearchProvider),
                         // controller: locationSearchController,
                         onChanged: (value) => ref.read(feedWriteLocationSearchProvider.notifier).onTextChanged(value!),
-                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                        style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: kNeutralColor200,
+                          fillColor: kPreviousNeutralColor200,
                           contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
@@ -78,7 +78,7 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                   child: Icon(
                                     Puppycat_social.icon_search_medium,
-                                    color: kNeutralColor600,
+                                    color: kPreviousNeutralColor600,
                                   ),
                                 )
                               : GestureDetector(
@@ -89,12 +89,12 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                     child: Icon(
                                       Puppycat_social.icon_close_large,
-                                      color: kNeutralColor600,
+                                      color: kPreviousNeutralColor600,
                                     ),
                                   ),
                                 ),
                           hintText: "장소를 입력해 주세요.",
-                          hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                          hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                         ),
                       ),
                     ),
@@ -112,11 +112,11 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                   children: [
                                     Text(
                                       "최근 검색어",
-                                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                                      style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                                     ),
                                     Text(
                                       "전체 삭제",
-                                      style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+                                      style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
                                   ],
                                 ),
@@ -130,7 +130,7 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                     Expanded(
                       child: ref.watch(feedWriteLocationSearchProvider.notifier).searchResult.isEmpty
                           ? Container(
-                              color: kNeutralColor100,
+                              color: kPreviousNeutralColor100,
                               child: Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -146,7 +146,7 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                     Text(
                                       '장소를 찾을 수 없습니다.',
                                       textAlign: TextAlign.center,
-                                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                      style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                     ),
                                   ],
                                 ),

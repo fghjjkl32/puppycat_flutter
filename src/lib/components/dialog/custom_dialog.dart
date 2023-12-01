@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
@@ -43,7 +41,7 @@ class CustomDialog extends StatelessWidget {
               height: 54,
               decoration: const BoxDecoration(
                 border: Border(
-                  top: BorderSide(width: 1.0, color: kNeutralColor300),
+                  top: BorderSide(width: 1.0, color: kPreviousNeutralColor300),
                 ),
               ),
               child: Row(
@@ -58,7 +56,7 @@ class CustomDialog extends StatelessWidget {
                             child: Container(
                               decoration: const BoxDecoration(
                                 border: Border(
-                                  right: BorderSide(width: 1.0, color: kNeutralColor300),
+                                  right: BorderSide(width: 1.0, color: kPreviousNeutralColor300),
                                 ),
                               ),
                               child: Center(child: cancelWidget),
@@ -74,13 +72,13 @@ class CustomDialog extends StatelessWidget {
                               child: Container(
                                 decoration: const BoxDecoration(
                                   border: Border(
-                                    right: BorderSide(width: 1.0, color: kNeutralColor300),
+                                    right: BorderSide(width: 1.0, color: kPreviousNeutralColor300),
                                   ),
                                 ),
                                 child: Center(
                                   child: Text(
                                     "취소",
-                                    style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                                    style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ),
                                 ),
                               ),

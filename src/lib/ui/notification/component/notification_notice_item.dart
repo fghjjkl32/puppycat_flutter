@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class NotificationNoticeItem extends StatelessWidget {
   const NotificationNoticeItem({
@@ -45,7 +41,7 @@ class NotificationNoticeItem extends StatelessWidget {
                 width: 8.0,
                 height: 8.0,
                 decoration: BoxDecoration(
-                  color: isRead ? kPrimaryLightColor : kBadgeColor,
+                  color: isRead ? kPreviousPrimaryLightColor : kPreviousErrorColor,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -74,18 +70,18 @@ class NotificationNoticeItem extends StatelessWidget {
                         children: [
                           Text(
                             "공지",
-                            style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+                            style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                           Text(
                             regDate,
-                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ],
                       ),
                     ),
                     Text(
                       content,
-                      style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
+                      style: kBody13RegularStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
                   ],
                 ),

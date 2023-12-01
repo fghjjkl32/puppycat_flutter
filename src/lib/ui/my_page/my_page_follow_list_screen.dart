@@ -105,9 +105,9 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
           bottom: TabBar(
               controller: tabController,
               indicatorWeight: 2.4,
-              labelColor: kPrimaryColor,
-              indicatorColor: kPrimaryColor,
-              unselectedLabelColor: kNeutralColor500,
+              labelColor: kPreviousPrimaryColor,
+              indicatorColor: kPreviousPrimaryColor,
+              unselectedLabelColor: kPreviousNeutralColor500,
               indicatorSize: TabBarIndicatorSize.label,
               labelPadding: EdgeInsets.only(
                 top: 10.h,
@@ -127,7 +127,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                       ),
                       Text(
                         "${ref.watch(followStateProvider).followerListState.totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                        style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ],
                   );
@@ -145,7 +145,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                       ),
                       Text(
                         "${ref.watch(followStateProvider).followListState.totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                        style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ],
                   );
@@ -184,11 +184,11 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                   child: FormBuilderTextField(
                     name: 'follower',
                     controller: followerSearchController,
-                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: kNeutralColor200,
+                      fillColor: kPreviousNeutralColor200,
                       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
@@ -215,7 +215,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Icon(
                                 Puppycat_social.icon_search_medium,
-                                color: kNeutralColor600,
+                                color: kPreviousNeutralColor600,
                               ),
                             )
                           : GestureDetector(
@@ -226,12 +226,12 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                 child: Icon(
                                   Puppycat_social.icon_close_large,
-                                  color: kNeutralColor600,
+                                  color: kPreviousNeutralColor600,
                                 ),
                               ),
                             ),
                       hintText: "닉네임을 입력해 주세요.",
-                      hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                      hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                     ),
                   ),
                 ),
@@ -241,7 +241,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                 Expanded(
                   child: lists.isEmpty
                       ? Container(
-                          color: kNeutralColor100,
+                          color: kPreviousNeutralColor100,
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -257,7 +257,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                                 Text(
                                   '유저를 찾을 수 없습니다.',
                                   textAlign: TextAlign.center,
-                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
@@ -315,12 +315,12 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                   padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                   child: FormBuilderTextField(
                     name: 'follower',
-                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                     controller: followSearchController,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: kNeutralColor200,
+                      fillColor: kPreviousNeutralColor200,
                       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
@@ -347,7 +347,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Icon(
                                 Puppycat_social.icon_search_medium,
-                                color: kNeutralColor600,
+                                color: kPreviousNeutralColor600,
                               ),
                             )
                           : GestureDetector(
@@ -358,12 +358,12 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                 child: Icon(
                                   Puppycat_social.icon_close_large,
-                                  color: kNeutralColor600,
+                                  color: kPreviousNeutralColor600,
                                 ),
                               ),
                             ),
                       hintText: "닉네임을 입력해 주세요.",
-                      hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                      hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                     ),
                   ),
                 ),
@@ -373,7 +373,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                 Expanded(
                   child: lists.isEmpty
                       ? Container(
-                          color: kNeutralColor100,
+                          color: kPreviousNeutralColor100,
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -389,7 +389,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                                 Text(
                                   '유저를 찾을 수 없습니다.',
                                   textAlign: TextAlign.center,
-                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),

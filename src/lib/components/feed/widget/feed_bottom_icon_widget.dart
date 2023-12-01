@@ -98,7 +98,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                 )
                               : const Icon(
                                   Puppycat_social.icon_like_ac,
-                                  color: kPrimaryColor,
+                                  color: kPreviousPrimaryColor,
                                   size: 32,
                                 ),
                           InkWell(
@@ -135,9 +135,9 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                                       height: 12,
                                                     ),
                                                     Text(
-                                                      '좋아요 한 유저가 없습니다.',
+                                                      "아직 ‘좋아요'가 없어요.",
                                                       textAlign: TextAlign.center,
-                                                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                      style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                                     ),
                                                   ],
                                                 ),
@@ -169,7 +169,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                             },
                             child: Text(
                               '${widget.likeCount}',
-                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                              style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                             ),
                           ),
                         ],
@@ -197,7 +197,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                         children: [
                           const Icon(
                             Puppycat_social.icon_like_de,
-                            color: kTextBodyColor,
+                            color: kPreviousTextBodyColor,
                             size: 32,
                           ),
                           InkWell(
@@ -234,9 +234,9 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                                       height: 12,
                                                     ),
                                                     Text(
-                                                      '좋아요 한 유저가 없습니다.',
+                                                      "아직 ‘좋아요'가 없어요.",
                                                       textAlign: TextAlign.center,
-                                                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                      style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                                     ),
                                                   ],
                                                 ),
@@ -268,7 +268,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                             },
                             child: Text(
                               '${widget.likeCount}',
-                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                              style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                             ),
                           ),
                         ],
@@ -283,12 +283,12 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                   children: [
                     const Icon(
                       Puppycat_social.icon_comment,
-                      color: kTextBodyColor,
+                      color: kPreviousTextBodyColor,
                       size: 32,
                     ),
                     Text(
                       '${widget.commentCount}',
-                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],
                 ),
@@ -347,7 +347,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                   child: const Icon(
                     Puppycat_social.icon_bookmark,
                     size: 32,
-                    color: kTextBodyColor,
+                    color: kPreviousTextBodyColor,
                   ),
                 ),
         ],

@@ -1,19 +1,11 @@
 import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
-import 'package:detectable_text_field/functions.dart';
 import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
-import 'package:linkfy_text/linkfy_text.dart';
-import 'package:matrix/matrix.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:thumbor/thumbor.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class NotificationCommentItem extends StatelessWidget {
   NotificationCommentItem({
@@ -104,7 +96,7 @@ class NotificationCommentItem extends StatelessWidget {
                 width: 8.0,
                 height: 8.0,
                 decoration: BoxDecoration(
-                  color: isRead ? kPrimaryLightColor : kBadgeColor,
+                  color: isRead ? kPreviousPrimaryLightColor : kPreviousErrorColor,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -132,11 +124,11 @@ class NotificationCommentItem extends StatelessWidget {
                         children: [
                           Text(
                             notificationType,
-                            style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+                            style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                           Text(
                             regDate,
-                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ],
                       ),
@@ -151,11 +143,11 @@ class NotificationCommentItem extends StatelessWidget {
                             children: [
                               RichText(
                                 text: TextSpan(
-                                  style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextTitleColor),
                                   children: <TextSpan>[
                                     TextSpan(
                                       text: name.length > 13 ? '${name.substring(0, 13)}...' : name,
-                                      style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                                      style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                     ),
                                     TextSpan(text: content),
                                   ],
@@ -172,8 +164,8 @@ class NotificationCommentItem extends StatelessWidget {
                                         "(?!\\n)(?:^|\\s)([#]([$detectionContentLetters]+))|$urlRegexContent",
                                         multiLine: true,
                                       ),
-                                  detectedStyle: kBody12RegularStyle.copyWith(color: kSecondaryColor),
-                                  basicStyle: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                  detectedStyle: kBody12RegularStyle.copyWith(color: kPreviousSecondaryColor),
+                                  basicStyle: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                   onTap: (tappedText) {
                                     ///TODO
                                     /// 해시태그 검색 페이지 이동

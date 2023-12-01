@@ -315,7 +315,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
             child: isLoaded
                 ? Text(
                     "다음",
-                    style: kBody14BoldStyle.copyWith(color: p.isSelectedNotEmpty && !isSingleAssetMode ? kPrimaryColor : kNeutralColor500),
+                    style: kBody14BoldStyle.copyWith(color: p.isSelectedNotEmpty && !isSingleAssetMode ? kPreviousPrimaryColor : kPreviousNeutralColor500),
                   )
                 // Text(p.isSelectedNotEmpty && !isSingleAssetMode
                 //         ? '다음'
@@ -482,7 +482,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                                                     ),
                                                     Text(
                                                       "프레임 비율을 선택해 주세요!",
-                                                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
+                                                      style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                     ),
                                                   ],
                                                 ),
@@ -655,13 +655,13 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       width: _kIndicatorSize,
       height: _kIndicatorSize,
       decoration: BoxDecoration(
-        border: isSelected ? Border.all(color: kPrimaryColor.withOpacity(0.7), width: 2.w) : Border.all(color: kNeutralColor100.withOpacity(0.7), width: 2.w),
+        border: isSelected ? Border.all(color: kPreviousPrimaryColor.withOpacity(0.7), width: 2.w) : Border.all(color: kPreviousNeutralColor100.withOpacity(0.7), width: 2.w),
         shape: BoxShape.circle,
       ),
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isSelected ? kPrimaryColor : kNeutralColor100,
+          color: isSelected ? kPreviousPrimaryColor : kPreviousNeutralColor100,
         ),
         child: FittedBox(
           child: AnimatedSwitcher(
@@ -671,7 +671,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 ? Center(
                     child: Text(
                       (indexSelected + 1).toString(),
-                      style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                      style: kBadge10MediumStyle.copyWith(color: kPreviousNeutralColor100),
                     ),
                   )
                 : const SizedBox.shrink(),
@@ -694,7 +694,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 color: isPreview ? theme.unselectedWidgetColor.withOpacity(.5) : theme.colorScheme.background.withOpacity(.1),
                 border: isSelected && !isSingleAssetMode
                     ? Border.all(
-                        color: kPrimaryColor.withOpacity(0.7),
+                        color: kPreviousPrimaryColor.withOpacity(0.7),
                         width: 3.0.w,
                       )
                     : null,

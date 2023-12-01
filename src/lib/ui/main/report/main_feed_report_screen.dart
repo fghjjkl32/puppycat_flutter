@@ -70,7 +70,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                   children: [
                     Text(
                       "어떤 점이 불편하셨나요?",
-                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                      style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
                     SizedBox(
                       height: 14.h,
@@ -120,8 +120,8 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      disabledBackgroundColor: kNeutralColor400,
-                      backgroundColor: kPrimaryColor,
+                      disabledBackgroundColor: kPreviousNeutralColor400,
+                      backgroundColor: kPreviousPrimaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -183,7 +183,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
                         '신고하기',
-                        style: kBody14BoldStyle.copyWith(color: code == 0 || (code == 8 && directInputText!.isEmpty) ? kTextBodyColor : kNeutralColor100),
+                        style: kBody14BoldStyle.copyWith(color: code == 0 || (code == 8 && directInputText!.isEmpty) ? kPreviousTextBodyColor : kPreviousNeutralColor100),
                       ),
                     ),
                   ),

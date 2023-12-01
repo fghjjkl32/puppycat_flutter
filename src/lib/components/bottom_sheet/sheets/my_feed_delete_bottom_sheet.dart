@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lottie/lottie.dart';
-import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/select_pet_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 
 void myFeedDeleteBottomSheet({required BuildContext context, required VoidCallback onTap}) {
   showCustomModalBottomSheet(
@@ -21,19 +16,19 @@ void myFeedDeleteBottomSheet({required BuildContext context, required VoidCallba
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "피드를 삭제하시겠어요?",
-                style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                "피드를 삭제할까요?",
+                style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
               ),
             ],
           ),
         ),
         Text(
           "삭제한 피드는",
-          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
         ),
         Text(
-          "복구할 수 없습니다.",
-          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+          "삭제된 피드는 되돌릴 수 없어요.",
+          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
         ),
         SizedBox(height: 20.h),
         Row(
@@ -47,7 +42,7 @@ void myFeedDeleteBottomSheet({required BuildContext context, required VoidCallba
                 width: 152.w,
                 height: 36.h,
                 decoration: const BoxDecoration(
-                  color: kPrimaryLightColor,
+                  color: kPreviousPrimaryLightColor,
                   borderRadius: BorderRadius.all(
                     Radius.circular(8.0),
                   ),
@@ -55,7 +50,7 @@ void myFeedDeleteBottomSheet({required BuildContext context, required VoidCallba
                 child: Center(
                   child: Text(
                     "취소",
-                    style: kButton14BoldStyle.copyWith(color: kPrimaryColor),
+                    style: kButton14BoldStyle.copyWith(color: kPreviousPrimaryColor),
                   ),
                 ),
               ),
@@ -69,7 +64,7 @@ void myFeedDeleteBottomSheet({required BuildContext context, required VoidCallba
                 width: 152.w,
                 height: 36.h,
                 decoration: const BoxDecoration(
-                  color: kBadgeColor,
+                  color: kPreviousErrorColor,
                   borderRadius: BorderRadius.all(
                     Radius.circular(8.0),
                   ),
@@ -77,7 +72,7 @@ void myFeedDeleteBottomSheet({required BuildContext context, required VoidCallba
                 child: Center(
                   child: Text(
                     "삭제",
-                    style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
+                    style: kButton14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                   ),
                 ),
               ),

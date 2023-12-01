@@ -61,7 +61,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
         decoration: BoxDecoration(
           border: Border.all(
             width: 1,
-            color: kNeutralColor300,
+            color: kPreviousNeutralColor300,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(12.0)),
         ),
@@ -120,12 +120,12 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                   widget.userName,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                                  style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                 ),
                               ),
                               Text(
                                 "  ·  ",
-                                style: kBody11RegularStyle.copyWith(color: kNeutralColor400),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor400),
                               ),
                               isFollow
                                   ? Padding(
@@ -152,7 +152,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                         },
                                         child: Text(
                                           "팔로잉",
-                                          style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor500),
+                                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor500),
                                         ),
                                       ),
                                     )
@@ -179,7 +179,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                         },
                                         child: Text(
                                           "팔로우",
-                                          style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
                                         ),
                                       ),
                                     ),
@@ -190,7 +190,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           ),
                           Text(
                             "팔로워 ${NumberFormat('###,###,###,###').format(widget.followCount)}",
-                            style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                            style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ],
                       ),
@@ -250,7 +250,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[0].imageCnt}",
-                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                 ),
                               ),
                             ),
@@ -312,7 +312,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[0].imageCnt}",
-                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                 ),
                               ),
                             ),
@@ -372,7 +372,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[1].imageCnt}",
-                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                 ),
                               ),
                             ),
@@ -434,7 +434,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[0].imageCnt}",
-                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                 ),
                               ),
                             ),
@@ -491,7 +491,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                   child: Center(
                                     child: Text(
                                       "${widget.imageList[1].imageCnt}",
-                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                      style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                     ),
                                   ),
                                 ),
@@ -547,7 +547,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                     child: Center(
                                       child: Text(
                                         "${widget.imageList[2].imageCnt}",
-                                        style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                        style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                       ),
                                     ),
                                   ),

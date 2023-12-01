@@ -91,11 +91,11 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                       child: FormBuilderTextField(
                         name: 'search',
                         controller: blockSearchController,
-                        style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                        style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: kNeutralColor200,
+                          fillColor: kPreviousNeutralColor200,
                           contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
@@ -121,7 +121,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                   child: Icon(
                                     Puppycat_social.icon_search_medium,
-                                    color: kNeutralColor600,
+                                    color: kPreviousNeutralColor600,
                                   ),
                                 )
                               : GestureDetector(
@@ -132,12 +132,12 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                     child: Icon(
                                       Puppycat_social.icon_close_large,
-                                      color: kNeutralColor600,
+                                      color: kPreviousNeutralColor600,
                                     ),
                                   ),
                                 ),
                           hintText: "검색어를 입력해 주세요.",
-                          hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                          hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                         ),
                       ),
                     ),
@@ -147,7 +147,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                     Expanded(
                       child: lists.isEmpty
                           ? Container(
-                              color: kNeutralColor100,
+                              color: kPreviousNeutralColor100,
                               child: Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -163,7 +163,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                     Text(
                                       '유저를 찾을 수 없습니다.',
                                       textAlign: TextAlign.center,
-                                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                      style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                     ),
                                   ],
                                 ),

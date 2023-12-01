@@ -31,7 +31,7 @@ class SelectButton extends StatelessWidget {
       child: Container(
         decoration: isSelected
             ? const BoxDecoration(
-                color: kPrimaryLightColor,
+                color: kPreviousPrimaryLightColor,
                 borderRadius: BorderRadius.all(
                   Radius.circular(8.0),
                 ),
@@ -46,10 +46,7 @@ class SelectButton extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: isSelected
-                        ? kBody14BoldStyle.copyWith(color: kPrimaryColor)
-                        : kBody14RegularStyle.copyWith(
-                            color: kTextSubTitleColor),
+                    style: isSelected ? kBody14BoldStyle.copyWith(color: kPreviousPrimaryColor) : kBody14RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                   ),
                   Row(
                     children: [
@@ -58,15 +55,14 @@ class SelectButton extends StatelessWidget {
                               padding: EdgeInsets.only(right: 8.0.w),
                               child: Text(
                                 "최대 200자",
-                                style: kBody11RegularStyle.copyWith(
-                                    color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             )
                           : Container(),
                       Icon(
                         Puppycat_social.icon_check_single,
                         size: 28,
-                        color: isSelected ? kPrimaryColor : kNeutralColor400,
+                        color: isSelected ? kPreviousPrimaryColor : kPreviousNeutralColor400,
                       ),
                     ],
                   ),
@@ -74,8 +70,7 @@ class SelectButton extends StatelessWidget {
               ),
               if (isDirectInput && isSelected)
                 Padding(
-                  padding: EdgeInsets.only(
-                      top: 8.h, left: 4.w, right: 4.w, bottom: 4.h),
+                  padding: EdgeInsets.only(top: 8.h, left: 4.w, right: 4.w, bottom: 4.h),
                   child: FormBuilderTextField(
                     onChanged: onTextChanged,
                     scrollPhysics: const ClampingScrollPhysics(),
@@ -83,12 +78,11 @@ class SelectButton extends StatelessWidget {
                     scrollPadding: EdgeInsets.only(bottom: 500.h),
                     maxLines: 6,
                     decoration: InputDecoration(
-                      fillColor: kNeutralColor100,
+                      fillColor: kPreviousNeutralColor100,
                       border: InputBorder.none,
                       counterText: "",
                       hintText: '이유를 입력해주세요',
-                      hintStyle:
-                          kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                      hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                       contentPadding: const EdgeInsets.all(16),
                       enabledBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.zero,
@@ -100,8 +94,7 @@ class SelectButton extends StatelessWidget {
                       ),
                     ),
                     name: 'isDirectInput',
-                    style:
-                        kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                     keyboardType: TextInputType.multiline,
                     textAlignVertical: TextAlignVertical.center,
                   ),

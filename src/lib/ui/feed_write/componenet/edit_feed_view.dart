@@ -131,7 +131,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                       height: 36.h,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(Radius.circular(100)),
-                        color: kNeutralColor100,
+                        color: kPreviousNeutralColor100,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.5),
@@ -152,23 +152,23 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                                 const Icon(
                                   Puppycat_social.icon_add_small,
                                   size: 20,
-                                  color: kTextSubTitleColor,
+                                  color: kPreviousTextSubTitleColor,
                                 ),
                                 Text(
                                   "유저 태그하기 ",
-                                  style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                 ),
                                 Text(
                                   "(",
-                                  style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
+                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                                 ),
                                 Text(
                                   "${ref.watch(feedWriteCurrentTagCountProvider)}",
-                                  style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                 ),
                                 Text(
                                   "/10)",
-                                  style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
+                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                                 ),
                               ],
                             ),
@@ -242,10 +242,10 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                     decoration: InputDecoration(
                         counterText: "",
                         hintText: '내용을 입력해 주세요.\n\n작성한 글에 대한 책임은 본인에게 있습니다.\n운영 정책에 위반되는(폭력성, 선정성, 욕설 등) 피드는 당사자의 동의 없이 삭제될 수 있습니다.',
-                        hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                        hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                         contentPadding: const EdgeInsets.all(16)),
                     name: 'content',
-                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                     keyboardType: TextInputType.multiline,
                     textAlignVertical: TextAlignVertical.center,
                   ),
@@ -257,7 +257,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
             padding: EdgeInsets.only(top: 20.0.h, bottom: 8.0.h, left: 12.w),
             child: Text(
               "위치정보",
-              style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
+              style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
             ),
           ),
           Padding(
@@ -288,7 +288,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: kNeutralColor400),
+                  border: Border.all(color: kPreviousNeutralColor400),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -298,14 +298,14 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                             padding: EdgeInsets.only(left: 16.0.w),
                             child: Text(
                               "위치를 선택해주세요.",
-                              style: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                              style: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                             ),
                           )
                         : Padding(
                             padding: EdgeInsets.only(left: 16.0.w),
                             child: Text(
                               ref.watch(feedWriteLocationInformationProvider),
-                              style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                              style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
                           ),
                     ref.watch(feedWriteLocationInformationProvider) == ""
@@ -314,7 +314,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                             icon: const Icon(
                               Puppycat_social.icon_next_small,
                               size: 22,
-                              color: kNeutralColor500,
+                              color: kPreviousNeutralColor500,
                             ),
                           )
                         : IconButton(
@@ -324,7 +324,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                             icon: const Icon(
                               Icons.close, // X 아이콘
                               size: 22,
-                              color: kNeutralColor500,
+                              color: kPreviousNeutralColor500,
                             ),
                           ),
                   ],
@@ -336,7 +336,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
             padding: EdgeInsets.only(top: 20.0.h, bottom: 8.0.h, left: 12.w),
             child: Text(
               "공개 범위",
-              style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
+              style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
             ),
           ),
           Padding(
@@ -352,11 +352,11 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                       decoration: buttonSelected == 1
                           ? BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: kPrimaryLightColor,
+                              color: kPreviousPrimaryLightColor,
                             )
                           : BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: kNeutralColor400),
+                              border: Border.all(color: kPreviousNeutralColor400),
                             ),
                       height: 44,
                       child: Row(
@@ -365,14 +365,14 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                           Icon(
                             Puppycat_social.icon_view_all,
                             size: 20,
-                            color: buttonSelected == 1 ? kPrimaryColor : kTextBodyColor,
+                            color: buttonSelected == 1 ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                           ),
                           SizedBox(
                             width: 9,
                           ),
                           Text(
                             "전체 공개",
-                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 1 ? kPrimaryColor : kTextBodyColor),
+                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 1 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
                           ),
                         ],
                       ),
@@ -391,11 +391,11 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                       decoration: buttonSelected == 2
                           ? BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: kPrimaryLightColor,
+                              color: kPreviousPrimaryLightColor,
                             )
                           : BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: kNeutralColor400),
+                              border: Border.all(color: kPreviousNeutralColor400),
                             ),
                       height: 44,
                       child: Row(
@@ -404,14 +404,14 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                           Icon(
                             Puppycat_social.icon_view_follow,
                             size: 20,
-                            color: buttonSelected == 2 ? kPrimaryColor : kTextBodyColor,
+                            color: buttonSelected == 2 ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                           ),
                           SizedBox(
                             width: 9,
                           ),
                           Text(
                             "팔로우 공개",
-                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 2 ? kPrimaryColor : kTextBodyColor),
+                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 2 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
                           ),
                         ],
                       ),
@@ -430,11 +430,11 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                       decoration: buttonSelected == 0
                           ? BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: kPrimaryLightColor,
+                              color: kPreviousPrimaryLightColor,
                             )
                           : BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: kNeutralColor400),
+                              border: Border.all(color: kPreviousNeutralColor400),
                             ),
                       height: 44,
                       child: Row(
@@ -443,14 +443,14 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                           Icon(
                             Puppycat_social.icon_keep,
                             size: 20,
-                            color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor,
+                            color: buttonSelected == 0 ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                           ),
                           SizedBox(
                             width: 9,
                           ),
                           Text(
                             "피드 보관",
-                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 0 ? kPrimaryColor : kTextBodyColor),
+                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 0 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
                           ),
                         ],
                       ),

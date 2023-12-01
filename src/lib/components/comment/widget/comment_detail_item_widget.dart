@@ -144,7 +144,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                         child: Center(
                           child: Text(
                             "이전 답글 10개씩 더 보기",
-                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ),
                       ),
@@ -169,7 +169,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                         alignment: Alignment.topLeft,
                         nip: BubbleNip.leftTop,
                         nipOffset: 15.h,
-                        color: kNeutralColor200,
+                        color: kPreviousNeutralColor200,
                         padding: BubbleEdges.only(left: 12.w, right: 12.w, top: 10.h, bottom: 12.h),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,7 +211,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                             widget.name,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                                            style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                           ),
                                         ),
                                       ],
@@ -222,7 +222,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                   children: [
                                     Text(
                                       displayedAt(widget.time),
-                                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                      style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
                                     GestureDetector(
                                       onTap: () {
@@ -236,7 +236,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                         Puppycat_social.icon_modify,
                                                       ),
                                                       title: '수정하기',
-                                                      titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
+                                                      titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                                       onTap: () async {
                                                         if (widget.onTapEditButton != null) {
                                                           widget.onTapEditButton!();
@@ -246,10 +246,10 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                     BottomSheetButtonItem(
                                                       icon: const Icon(
                                                         Puppycat_social.icon_delete_small,
-                                                        color: kBadgeColor,
+                                                        color: kPreviousErrorColor,
                                                       ),
                                                       title: '삭제하기',
-                                                      titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
+                                                      titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                                       onTap: () async {
                                                         if (widget.onTapRemoveButton != null) {
                                                           widget.onTapRemoveButton!();
@@ -268,7 +268,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                         Puppycat_social.icon_user_block_ac,
                                                       ),
                                                       title: '차단하기',
-                                                      titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                                      titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                                       onTap: () async {
                                                         context.pop();
 
@@ -278,60 +278,53 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                                 context: context,
                                                                 builder: (BuildContext context) {
                                                                   return CustomDialog(
-                                                                      content: Padding(
-                                                                        padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                                                                        child: Column(
-                                                                          children: [
-                                                                            Text(
-                                                                              "‘${widget.name}’님을\n차단하시겠어요?",
-                                                                              style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                                                                              textAlign: TextAlign.center,
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 8.h,
-                                                                            ),
-                                                                            Text(
-                                                                              "‘${widget.name}’님은 더 이상 회원님의\n피드를 보거나 메시지 등을 보낼 수 없습니다.",
-                                                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                                                              textAlign: TextAlign.center,
-                                                                            ),
-                                                                            SizedBox(
-                                                                              height: 8.h,
-                                                                            ),
-                                                                            Text(
-                                                                              " ‘${widget.name}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
-                                                                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                                                              textAlign: TextAlign.center,
-                                                                            ),
-                                                                          ],
-                                                                        ),
+                                                                    content: Padding(
+                                                                      padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                                      child: Column(
+                                                                        children: [
+                                                                          Text(
+                                                                            "‘${widget.name}’님을\n차단할까요?",
+                                                                            style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                                                            textAlign: TextAlign.center,
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height: 8.h,
+                                                                          ),
+                                                                          Text(
+                                                                            "차단하게 되면 더 이상 서로의 피드를 보거나\n메시지 등을 보낼 수 없어요.\n차단 여부는 상대방에게 알리지 않아요.\n차단 풀기는 [마이페이지→설정→차단 유저 관리]에서\n얼마든지 가능해요.",
+                                                                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                                                            textAlign: TextAlign.center,
+                                                                          ),
+                                                                        ],
                                                                       ),
-                                                                      confirmTap: () async {
-                                                                        context.pop();
+                                                                    ),
+                                                                    confirmTap: () async {
+                                                                      context.pop();
 
-                                                                        final result = await ref.read(commentListStateProvider.notifier).postBlock(
-                                                                              memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                                                                              blockIdx: widget.memberIdx,
-                                                                              contentsIdx: widget.contentIdx,
-                                                                            );
-
-                                                                        if (result.result && mounted) {
-                                                                          context.pop();
-
-                                                                          toast(
-                                                                            context: context,
-                                                                            text: "'${widget.name.length > 8 ? '${widget.name.substring(0, 8)}...' : widget.name}'님을 차단하였습니다.",
-                                                                            type: ToastType.purple,
+                                                                      final result = await ref.read(commentListStateProvider.notifier).postBlock(
+                                                                            memberIdx: ref.watch(userInfoProvider).userModel!.idx,
+                                                                            blockIdx: widget.memberIdx,
+                                                                            contentsIdx: widget.contentIdx,
                                                                           );
-                                                                        }
-                                                                      },
-                                                                      cancelTap: () {
+
+                                                                      if (result.result && mounted) {
                                                                         context.pop();
-                                                                      },
-                                                                      confirmWidget: Text(
-                                                                        "유저 차단",
-                                                                        style: kButton14MediumStyle.copyWith(color: kBadgeColor),
-                                                                      ));
+
+                                                                        toast(
+                                                                          context: context,
+                                                                          text: "'${widget.name.length > 8 ? '${widget.name.substring(0, 8)}...' : widget.name}'님을 차단했어요.",
+                                                                          type: ToastType.purple,
+                                                                        );
+                                                                      }
+                                                                    },
+                                                                    cancelTap: () {
+                                                                      context.pop();
+                                                                    },
+                                                                    confirmWidget: Text(
+                                                                      "차단하기",
+                                                                      style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
+                                                                    ),
+                                                                  );
                                                                 },
                                                               );
                                                       },
@@ -339,10 +332,10 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                     BottomSheetButtonItem(
                                                       icon: const Icon(
                                                         Puppycat_social.icon_report1,
-                                                        color: kBadgeColor,
+                                                        color: kPreviousErrorColor,
                                                       ),
                                                       title: '신고하기',
-                                                      titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
+                                                      titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                                       onTap: () {
                                                         context.pop();
                                                         ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/report/true/${widget.commentIdx}");
@@ -354,7 +347,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                       },
                                       child: const Icon(
                                         Puppycat_social.icon_more,
-                                        color: kTextBodyColor,
+                                        color: kPreviousTextBodyColor,
                                       ),
                                     ),
                                   ],
@@ -372,11 +365,11 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                     widget.comment,
                                     widget.mentionListData,
                                     context,
-                                    kBody11RegularStyle.copyWith(color: kSecondaryColor),
+                                    kBody11RegularStyle.copyWith(color: kPreviousSecondaryColor),
                                     ref,
                                     widget.oldMemberIdx,
                                   ),
-                                  style: kBody11RegularStyle.copyWith(color: kTextTitleColor),
+                                  style: kBody11RegularStyle.copyWith(color: kPreviousTextTitleColor),
                                 ),
                               ),
                             ),
@@ -412,7 +405,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                         )
                                       : Icon(
                                           Puppycat_social.icon_comment_like_ac,
-                                          color: kPrimaryColor,
+                                          color: kPreviousPrimaryColor,
                                         ),
                                 )
                               : InkWell(
@@ -437,13 +430,13 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                   },
                                   child: const Icon(
                                     Puppycat_social.icon_comment_like_de,
-                                    color: kTextBodyColor,
+                                    color: kPreviousTextBodyColor,
                                   ),
                                 ),
                         ),
                         Text(
                           '${widget.likeCount}',
-                          style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+                          style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -464,12 +457,12 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                 padding: EdgeInsets.only(left: 12.0.w, right: 2.w),
                                 child: const Icon(
                                   Puppycat_social.icon_comment_comment,
-                                  color: kTextBodyColor,
+                                  color: kPreviousTextBodyColor,
                                 ),
                               ),
                               Text(
                                 '답글쓰기',
-                                style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+                                style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ],
                           ),
@@ -486,7 +479,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                         child: Center(
                           child: Text(
                             "답글 10개씩 더 보기",
-                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ),
                       ),

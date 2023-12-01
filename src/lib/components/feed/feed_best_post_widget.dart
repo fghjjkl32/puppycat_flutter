@@ -23,13 +23,13 @@ class FeedBestPostWidget extends ConsumerWidget {
               Padding(
                 padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h),
                 child: Text(
-                  "인기 급상승 게시글",
-                  style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                  "인기 급상승",
+                  style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                 ),
               ),
               SizedBox(
                 width: double.infinity,
-                height: 112.h,
+                height: 112,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 6.0.w),
                   child: ListView.builder(

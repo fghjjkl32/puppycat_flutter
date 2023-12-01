@@ -81,9 +81,9 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
                 final user = users[i];
                 return ListTile(
                   shape: Border(
-                    bottom: BorderSide(color: kNeutralColor500, width: 1),
+                    bottom: BorderSide(color: kPreviousNeutralColor500, width: 1),
                   ),
-                  tileColor: kNeutralColor100,
+                  tileColor: kPreviousNeutralColor100,
                   dense: true,
                   leading: user.profileImgUrl == null || user.profileImgUrl == ""
                       ? WidgetMask(
@@ -93,7 +93,7 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
                             child: Icon(
                               Puppycat_social.icon_profile_small,
                               size: 42,
-                              color: kNeutralColor400,
+                              color: kPreviousNeutralColor400,
                             ),
                           ),
                           child: SvgPicture.asset(
@@ -120,7 +120,7 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
                           ),
                         ),
                   title: Text(user.nick ?? ''),
-                  subtitle: user.intro == null || user.intro == "" ? Text('소개 글이 없습니다.') : Text('${user.intro}'),
+                  subtitle: user.intro == null || user.intro == "" ? Text('소개 글이 없어요.') : Text('${user.intro}'),
                   onTap: () => widget.onMentionUserTap(user),
                 );
               },

@@ -97,9 +97,9 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
           bottom: TabBar(
               controller: tabController,
               indicatorWeight: 2.4,
-              labelColor: kPrimaryColor,
-              indicatorColor: kPrimaryColor,
-              unselectedLabelColor: kNeutralColor500,
+              labelColor: kPreviousPrimaryColor,
+              indicatorColor: kPreviousPrimaryColor,
+              unselectedLabelColor: kPreviousNeutralColor500,
               indicatorSize: TabBarIndicatorSize.label,
               labelPadding: EdgeInsets.only(
                 top: 10.h,
@@ -119,7 +119,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                       ),
                       Text(
                         "${ref.watch(myPostStateProvider).myPostState.totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                        style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ],
                   );
@@ -137,7 +137,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                       ),
                       Text(
                         "${ref.watch(myPostStateProvider).myKeepState.totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                        style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ],
                   );
@@ -170,7 +170,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
 
         return lists.isEmpty
             ? Container(
-                color: kNeutralColor100,
+                color: kPreviousNeutralColor100,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -186,7 +186,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                       Text(
                         '피드가 없습니다.',
                         textAlign: TextAlign.center,
-                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                        style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
                     ],
                   ),
@@ -270,7 +270,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                   ),
                                 ),
                                 placeholder: (context, url) => Container(
-                                  color: kNeutralColor300,
+                                  color: kPreviousNeutralColor300,
                                 ),
                                 errorWidget: (context, url, error) => Icon(Icons.error),
                               ),
@@ -287,7 +287,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                   child: Center(
                                     child: Text(
                                       '${lists[index].imageCnt}',
-                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                      style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                     ),
                                   ),
                                 ),
@@ -306,14 +306,14 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                         height: 20,
                                         decoration: BoxDecoration(
                                           border: myPageMyPostState.myPostState.selectOrder[index] != -1
-                                              ? Border.all(color: kPrimaryColor.withOpacity(0.7), width: 2.w)
-                                              : Border.all(color: kNeutralColor100.withOpacity(0.7), width: 2.w),
+                                              ? Border.all(color: kPreviousPrimaryColor.withOpacity(0.7), width: 2.w)
+                                              : Border.all(color: kPreviousNeutralColor100.withOpacity(0.7), width: 2.w),
                                           shape: BoxShape.circle,
                                         ),
                                         child: Container(
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: myPageMyPostState.myPostState.selectOrder[index] != -1 ? kPrimaryColor : kNeutralColor100,
+                                            color: myPageMyPostState.myPostState.selectOrder[index] != -1 ? kPreviousPrimaryColor : kPreviousNeutralColor100,
                                           ),
                                           child: FittedBox(
                                             child: AnimatedSwitcher(
@@ -323,7 +323,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                                   ? Center(
                                                       child: Text(
                                                         (myPageMyPostState.myPostState.selectOrder[index]).toString(),
-                                                        style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                                                        style: kBadge10MediumStyle.copyWith(color: kPreviousNeutralColor100),
                                                       ),
                                                     )
                                                   : const SizedBox.shrink(),
@@ -351,11 +351,11 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: <Color>[
-                            kNeutralColor100.withOpacity(0.0),
-                            kNeutralColor100.withOpacity(0.7),
-                            kNeutralColor100.withOpacity(1.0),
-                            kNeutralColor100.withOpacity(1.0),
-                            kNeutralColor100.withOpacity(1.0),
+                            kPreviousNeutralColor100.withOpacity(0.0),
+                            kPreviousNeutralColor100.withOpacity(0.7),
+                            kPreviousNeutralColor100.withOpacity(1.0),
+                            kPreviousNeutralColor100.withOpacity(1.0),
+                            kPreviousNeutralColor100.withOpacity(1.0),
                           ],
                         ),
                       ),
@@ -369,7 +369,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 width: 152.w,
                                 height: 36.h,
                                 decoration: BoxDecoration(
-                                  color: myPageMyPostController.hasMyPostSelectedImage() ? kPrimaryLightColor : kNeutralColor400,
+                                  color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousPrimaryLightColor : kPreviousNeutralColor400,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(8.0),
                                   ),
@@ -378,7 +378,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                   child: Text(
                                     '보관하기',
                                     style: kButton14BoldStyle.copyWith(
-                                      color: myPageMyPostController.hasMyPostSelectedImage() ? kPrimaryColor : kTextBodyColor,
+                                      color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                                     ),
                                   ),
                                 ),
@@ -415,7 +415,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 width: 152.w,
                                 height: 36.h,
                                 decoration: BoxDecoration(
-                                  color: myPageMyPostController.hasMyPostSelectedImage() ? kBadgeColor : kNeutralColor400,
+                                  color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousErrorColor : kPreviousNeutralColor400,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(8.0),
                                   ),
@@ -424,7 +424,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                   child: Text(
                                     '삭제하기',
                                     style: kButton14BoldStyle.copyWith(
-                                      color: myPageMyPostController.hasMyPostSelectedImage() ? kNeutralColor100 : kTextBodyColor,
+                                      color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousNeutralColor100 : kPreviousTextBodyColor,
                                     ),
                                   ),
                                 ),
@@ -502,7 +502,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
 
         return lists.isEmpty
             ? Container(
-                color: kNeutralColor100,
+                color: kPreviousNeutralColor100,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -518,7 +518,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                       Text(
                         '피드가 없습니다.\n보관한 피드가 여기에 표시됩니다.',
                         textAlign: TextAlign.center,
-                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                        style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
                     ],
                   ),
@@ -606,7 +606,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                   ),
                                 ),
                                 placeholder: (context, url) => Container(
-                                  color: kNeutralColor300,
+                                  color: kPreviousNeutralColor300,
                                 ),
                                 errorWidget: (context, url, error) => Icon(Icons.error),
                               ),
@@ -623,7 +623,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                   child: Center(
                                     child: Text(
                                       "${lists[index].imageCnt}",
-                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                      style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                     ),
                                   ),
                                 ),
@@ -642,14 +642,14 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                         height: 20,
                                         decoration: BoxDecoration(
                                           border: myKeepState.myKeepState.selectOrder[index] != -1
-                                              ? Border.all(color: kPrimaryColor.withOpacity(0.7), width: 2.w)
-                                              : Border.all(color: kNeutralColor100.withOpacity(0.7), width: 2.w),
+                                              ? Border.all(color: kPreviousPrimaryColor.withOpacity(0.7), width: 2.w)
+                                              : Border.all(color: kPreviousNeutralColor100.withOpacity(0.7), width: 2.w),
                                           shape: BoxShape.circle,
                                         ),
                                         child: Container(
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: myKeepState.myKeepState.selectOrder[index] != -1 ? kPrimaryColor : kNeutralColor100,
+                                            color: myKeepState.myKeepState.selectOrder[index] != -1 ? kPreviousPrimaryColor : kPreviousNeutralColor100,
                                           ),
                                           child: FittedBox(
                                             child: AnimatedSwitcher(
@@ -659,7 +659,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                                   ? Center(
                                                       child: Text(
                                                         (myKeepState.myKeepState.selectOrder[index]).toString(),
-                                                        style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                                                        style: kBadge10MediumStyle.copyWith(color: kPreviousNeutralColor100),
                                                       ),
                                                     )
                                                   : const SizedBox.shrink(),
@@ -687,11 +687,11 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: <Color>[
-                            kNeutralColor100.withOpacity(0.0),
-                            kNeutralColor100.withOpacity(0.7),
-                            kNeutralColor100.withOpacity(1.0),
-                            kNeutralColor100.withOpacity(1.0),
-                            kNeutralColor100.withOpacity(1.0),
+                            kPreviousNeutralColor100.withOpacity(0.0),
+                            kPreviousNeutralColor100.withOpacity(0.7),
+                            kPreviousNeutralColor100.withOpacity(1.0),
+                            kPreviousNeutralColor100.withOpacity(1.0),
+                            kPreviousNeutralColor100.withOpacity(1.0),
                           ],
                         ),
                       ),
@@ -705,7 +705,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 width: 152.w,
                                 height: 36.h,
                                 decoration: BoxDecoration(
-                                  color: myKeepController.hasMyKeepSelectedImage() ? kPrimaryLightColor : kNeutralColor400,
+                                  color: myKeepController.hasMyKeepSelectedImage() ? kPreviousPrimaryLightColor : kPreviousNeutralColor400,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(8.0),
                                   ),
@@ -714,7 +714,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                   child: Text(
                                     '프로필 표시',
                                     style: kButton14BoldStyle.copyWith(
-                                      color: myKeepController.hasMyKeepSelectedImage() ? kPrimaryColor : kTextBodyColor,
+                                      color: myKeepController.hasMyKeepSelectedImage() ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                                     ),
                                   ),
                                 ),
@@ -742,7 +742,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 width: 152.w,
                                 height: 36.h,
                                 decoration: BoxDecoration(
-                                  color: myKeepController.hasMyKeepSelectedImage() ? kBadgeColor : kNeutralColor400,
+                                  color: myKeepController.hasMyKeepSelectedImage() ? kPreviousErrorColor : kPreviousNeutralColor400,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(8.0),
                                   ),
@@ -751,7 +751,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                   child: Text(
                                     '삭제하기',
                                     style: kButton14BoldStyle.copyWith(
-                                      color: myKeepController.hasMyKeepSelectedImage() ? kNeutralColor100 : kTextBodyColor,
+                                      color: myKeepController.hasMyKeepSelectedImage() ? kPreviousNeutralColor100 : kPreviousTextBodyColor,
                                     ),
                                   ),
                                 ),

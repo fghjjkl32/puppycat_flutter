@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class FavoriteItemWidget extends ConsumerStatefulWidget {
   const FavoriteItemWidget({
@@ -35,6 +31,7 @@ class FavoriteItemWidget extends ConsumerStatefulWidget {
   final int contentsIdx;
   final String? contentType;
   final int oldMemberIdx;
+
   @override
   FavoriteItemWidgetState createState() => FavoriteItemWidgetState();
 }
@@ -96,7 +93,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             : Container(),
                         Text(
                           widget.userName,
-                          style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ],
                     ),
@@ -105,7 +102,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                     ),
                     Text(
                       widget.content,
-                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],
                 ),
@@ -157,7 +154,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             width: 56.w,
                             height: 32.h,
                             decoration: const BoxDecoration(
-                              color: kNeutralColor300,
+                              color: kPreviousNeutralColor300,
                               borderRadius: BorderRadius.all(
                                 Radius.circular(8.0),
                               ),
@@ -165,7 +162,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             child: Center(
                               child: Text(
                                 "팔로잉",
-                                style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                                style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ),
                           ),
@@ -215,7 +212,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             width: 56.w,
                             height: 32.h,
                             decoration: const BoxDecoration(
-                              color: kPrimaryColor,
+                              color: kPreviousPrimaryColor,
                               borderRadius: BorderRadius.all(
                                 Radius.circular(8.0),
                               ),
@@ -223,7 +220,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             child: Center(
                               child: Text(
                                 "팔로우",
-                                style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
+                                style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                               ),
                             ),
                           ),

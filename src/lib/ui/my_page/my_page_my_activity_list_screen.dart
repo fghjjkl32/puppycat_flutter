@@ -90,9 +90,9 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
           bottom: TabBar(
               controller: tabController,
               indicatorWeight: 2.4,
-              labelColor: kPrimaryColor,
-              indicatorColor: kPrimaryColor,
-              unselectedLabelColor: kNeutralColor500,
+              labelColor: kPreviousPrimaryColor,
+              indicatorColor: kPreviousPrimaryColor,
+              unselectedLabelColor: kPreviousNeutralColor500,
               indicatorSize: TabBarIndicatorSize.label,
               labelPadding: EdgeInsets.only(
                 top: 10.h,
@@ -112,7 +112,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       ),
                       Text(
                         "${ref.watch(myLikeStateProvider).totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                        style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ],
                   );
@@ -130,7 +130,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       ),
                       Text(
                         "${ref.watch(mySaveStateProvider).totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                        style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ],
                   );
@@ -184,7 +184,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
         return lists.isEmpty
             ? Container(
-                color: kNeutralColor100,
+                color: kPreviousNeutralColor100,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -200,7 +200,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       Text(
                         '피드가 없습니다.\n좋아요한 피드가 여기에 표시됩니다.',
                         textAlign: TextAlign.center,
-                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                        style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
                     ],
                   ),
@@ -287,7 +287,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                                 ),
                               ),
                               placeholder: (context, url) => Container(
-                                color: kNeutralColor300,
+                                color: kPreviousNeutralColor300,
                               ),
                               errorWidget: (context, url, error) => Icon(Icons.error),
                             ),
@@ -304,7 +304,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                                 child: Center(
                                   child: Text(
                                     "${lists[index].imageCnt}",
-                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                   ),
                                 ),
                               ),
@@ -333,7 +333,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
         return lists.isEmpty
             ? Container(
-                color: kNeutralColor100,
+                color: kPreviousNeutralColor100,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -349,7 +349,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       Text(
                         '피드가 없습니다.\n저장한 피드가 여기에 표시됩니다.',
                         textAlign: TextAlign.center,
-                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                        style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
                     ],
                   ),
@@ -434,7 +434,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                                 ),
                               ),
                               placeholder: (context, url) => Container(
-                                color: kNeutralColor300,
+                                color: kPreviousNeutralColor300,
                               ),
                               errorWidget: (context, url, error) => Icon(Icons.error),
                             ),
@@ -451,7 +451,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                                 child: Center(
                                   child: Text(
                                     "${lists[index].imageCnt}",
-                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                   ),
                                 ),
                               ),

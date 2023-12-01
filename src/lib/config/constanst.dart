@@ -329,7 +329,7 @@ bool onBackPressed() {
     Fluttertoast.showToast(
       msg: "한번 더 누르시면 종료됩니다.",
       gravity: ToastGravity.BOTTOM,
-      backgroundColor: kNeutralColor500,
+      backgroundColor: kPreviousNeutralColor500,
       fontSize: 14,
       toastLength: Toast.LENGTH_SHORT,
     );
@@ -434,9 +434,9 @@ void onTapHide({
     if (result.result && context.mounted) {
       toast(
         context: context,
-        text: '피드 숨기기를 완료하였습니다.',
+        text: '피드를 숨겼어요.',
         type: ToastType.purple,
-        buttonText: "숨기기 취소",
+        buttonText: "되돌리기",
         buttonOnTap: () async {
           final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
                 loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
@@ -448,7 +448,7 @@ void onTapHide({
           if (result.result && context.mounted) {
             toast(
               context: context,
-              text: '피드 숨기기 취소',
+              text: '피드를 되돌렸어요.',
               type: ToastType.purple,
             );
           }
@@ -466,9 +466,9 @@ void onTapReport({
 }) async {
   toast(
     context: context,
-    text: '정상적으로 신고 접수가 되었습니다.',
+    text: '신고 접수 완료!',
     type: ToastType.purple,
-    buttonText: "신고취소",
+    buttonText: "되돌리기",
     buttonOnTap: () async {
       final result = reportType
           ? await ref.read(commentListStateProvider.notifier).deleteCommentReport(
@@ -485,7 +485,7 @@ void onTapReport({
       if (result.result && context.mounted) {
         toast(
           context: context,
-          text: '신고 접수가 취소되었습니다.',
+          text: '신고 접수를 취소했어요.',
           type: ToastType.grey,
         );
       }

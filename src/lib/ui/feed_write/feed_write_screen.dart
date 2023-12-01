@@ -36,14 +36,14 @@ class FeedWriteScreen extends ConsumerWidget {
                   children: [
                     Text(
                       "이전으로 돌아가시겠어요?",
-                      style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                      style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
                     SizedBox(
                       height: 4.h,
                     ),
                     Text(
                       "지금 돌아가시면\n입력한 내용이 모두 삭제됩니다.",
-                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -63,7 +63,7 @@ class FeedWriteScreen extends ConsumerWidget {
               },
               confirmWidget: Text(
                 "삭제",
-                style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+                style: kButton14MediumStyle.copyWith(color: kPreviousErrorColor),
               ),
             );
           },
@@ -74,7 +74,7 @@ class FeedWriteScreen extends ConsumerWidget {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('새 피드'),
+          title: const Text('새로운 피드'),
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -92,7 +92,7 @@ class FeedWriteScreen extends ConsumerWidget {
             TextButton(
               child: Text(
                 '등록',
-                style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
               ),
               onPressed: () async {
                 showDialog(
@@ -151,14 +151,14 @@ class FeedWriteScreen extends ConsumerWidget {
                               children: [
                                 Text(
                                   "피드를 등록할 수 없습니다.",
-                                  style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                  style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                 ),
                                 SizedBox(
                                   height: 4.h,
                                 ),
                                 Text(
                                   "죄송합니다.\n피드 등록 중 오류가 발생하였습니다.\n다시 시도해 주세요.",
-                                  style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                  style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -169,7 +169,7 @@ class FeedWriteScreen extends ConsumerWidget {
                           },
                           confirmWidget: Text(
                             "확인",
-                            style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                            style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                           ));
                     },
                   );
