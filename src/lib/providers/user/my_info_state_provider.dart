@@ -23,6 +23,7 @@ class MyInfoState extends _$MyInfoState {
       state = userInfoModel;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      state = UserInformationItemModel();
     } catch (e) {
       print('getMyInfo error $e');
       state = UserInformationItemModel();

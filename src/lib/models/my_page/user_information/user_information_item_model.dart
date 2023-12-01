@@ -22,11 +22,6 @@ class UserInformationItemModel with _$UserInformationItemModel {
     int? blockedMeState,
     int? followState,
     int? isBadge,
-    //ChatInfo
-    String? chatAccessToken,
-    String? chatMemberId,
-    String? chatHomeServer,
-    String? chatDeviceId,
 
     //img host
     String? imgDomain,
