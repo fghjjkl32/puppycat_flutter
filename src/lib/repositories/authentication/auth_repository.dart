@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -20,7 +16,7 @@ class AuthRepository {
   AuthRepository({
     required this.dio,
   }) {
-    _authService = AuthService(dio, baseUrl: baseUrl);
+    _authService = AuthService(dio, baseUrl: memberBaseUrl);
   }
 
   Future<String> getPassAuthUrl() async {

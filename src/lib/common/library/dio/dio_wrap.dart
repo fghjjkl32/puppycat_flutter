@@ -109,7 +109,9 @@ class DioWrap {
           print('ref.read(userInfoProvider).userModel ${ref.read(userInfoProvider).userModel}');
           final userModel = ref.read(userInfoProvider).userModel;
           if (userModel != null) {
-            ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
+            if (userModel.idx != 0) {
+              ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
+            }
           }
         } catch (e) {
           print('New Noti API Error $e');
@@ -153,7 +155,7 @@ class DioWrap {
         }
 
         //Access Token이 유효하지 않을 때
-        if (code == 'ECOM-9999') {
+        if (code == 'ERTE-9999') {
           final accessToken = await storage.read(key: 'ACCESS_TOKEN');
           final refreshToken = await storage.read(key: 'REFRESH_TOKEN');
 
@@ -168,11 +170,20 @@ class DioWrap {
           });
 
           if (!jwtResponseModel.result) {
-            if (jwtResponseModel.code == 'ERTE-9998') {
+            if (jwtResponseModel.code == 'ECOM-9999') {
               ///TODO
               ///Refresh Token이 유효하지 않음
               ///유효하지 않으면 로그인 페이지 이동
               ///로그인 프로바이더 상태 초기화 필요
+              await storage.delete(key: 'ACCESS_TOKEN');
+              await storage.delete(key: 'REFRESH_TOKEN');
+
+              // ref.read(loginStateProvider.notifier).state = LoginStatus.none;
+              // ref.read(userInfoProvider.notifier).state = UserInfoModel();
+              // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
+              APIException apiException = APIException(msg: jwtResponseModel.message ?? 'unknown', code: jwtResponseModel.code ?? '400', refer: 'Dio Refresh', caller: 'getAccessToken');
+              ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+              return handler.next(response);
             }
           }
 
@@ -193,10 +204,11 @@ class DioWrap {
           response.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
 
           // 수행하지 못했던 API 요청 복사본 생성
-          final clonedRequest = await dio.request(response.requestOptions.path,
-              options: Options(method: response.requestOptions.method, headers: response.requestOptions.headers),
-              data: response.requestOptions.data,
-              queryParameters: response.requestOptions.queryParameters);
+          final clonedRequest = await dio.fetch(response.requestOptions);
+          // final clonedRequest = await dio.request(response.requestOptions.path,
+          // options: Options(method: response.requestOptions.method, headers: response.requestOptions.headers),
+          // data: response.requestOptions.data,
+          // queryParameters: response.requestOptions.queryParameters);
 
           // API 복사본으로 재요청
           return handler.resolve(clonedRequest);

@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart' hide Headers;
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_response_model.dart';
 import 'package:retrofit/retrofit.dart';
@@ -18,10 +17,7 @@ abstract class UserInfoService {
   Future<ResponseModel> restoreAccount(@Body() Map<String, dynamic> body);
 
   @GET('v1/my/info')
-  @Headers(<String, dynamic>{
-    "Content-Type": "application/json",
-  })
-  Future<UserInformationResponseModel> getMyInfo(@Query("memberIdx") String memberIdx);
+  Future<UserInformationResponseModel> getMyInfo();
 
   @PUT('v1/my/info')
   Future<ResponseModel> updateMyInfo(

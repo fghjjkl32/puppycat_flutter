@@ -75,7 +75,7 @@ class LoginState extends _$LoginState {
     UserInfoModel userInfoModel = UserInfoModel(userModel: userModel);
 
     ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
-    ref.read(myInfoStateProvider.notifier).getMyInfo(userModel.idx.toString());
+    ref.read(myInfoStateProvider.notifier).getMyInfo();
 
     ref.listen(myInfoStateProvider, (previous, next) {
       print('next $next');

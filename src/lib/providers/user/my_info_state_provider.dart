@@ -17,9 +17,9 @@ class MyInfoState extends _$MyInfoState {
     return UserInformationItemModel();
   }
 
-  void getMyInfo(String memberIdx) async {
+  void getMyInfo() async {
     try {
-      UserInformationItemModel userInfoModel = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).getMyInfo(memberIdx);
+      UserInformationItemModel userInfoModel = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).getMyInfo();
       state = userInfoModel;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);

@@ -43,8 +43,8 @@ class UserInfoRepository {
     return responseModel.result;
   }
 
-  Future<UserInformationItemModel> getMyInfo(String memberIdx) async {
-    UserInformationResponseModel responseModel = await _userInfoService.getMyInfo(memberIdx);
+  Future<UserInformationItemModel> getMyInfo() async {
+    UserInformationResponseModel responseModel = await _userInfoService.getMyInfo();
 
     if (!responseModel.result) {
       throw APIException(

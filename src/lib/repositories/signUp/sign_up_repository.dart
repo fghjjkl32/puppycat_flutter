@@ -1,13 +1,6 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
-import 'package:pet_mobile_social_flutter/controller/chat/matrix_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
@@ -24,7 +17,7 @@ class SignUpRepository {
   SignUpRepository({
     required this.dio,
   }) {
-    _signUpService = SignUpService(dio, baseUrl: baseUrl);
+    _signUpService = SignUpService(dio, baseUrl: memberBaseUrl);
   }
 
   Future<SignUpStatus> socialSignUp(UserModel userModel, List<PolicyItemModel> policyIdxList) async {
