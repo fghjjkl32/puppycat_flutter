@@ -4,11 +4,9 @@ import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/main/select_button/select_button_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/withdrawal/withdrawal_repository.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 enum WithdrawalStatus {
   none,
@@ -68,7 +66,7 @@ class WithdrawalStateNotifier extends StateNotifier<SelectButtonListModel> {
           chatUserModel: null,
         );
 
-        ref.read(loginStateProvider.notifier).saveUserModel(null);
+        // ref.read(loginStateProvider.notifier).saveUserModel(null);
 
         return true;
       } else {

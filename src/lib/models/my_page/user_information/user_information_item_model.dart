@@ -9,6 +9,7 @@ class UserInformationItemModel with _$UserInformationItemModel {
     int? memberIdx,
     String? nick,
     String? simpleType,
+    String? simpleId,
     String? name,
     String? phone,
     String? intro,

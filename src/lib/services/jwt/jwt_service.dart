@@ -13,4 +13,10 @@ abstract class JWTService {
     "Content-Type": "application/json",
   })
   Future<JWTResponseModel> getAccessToken(@Body() Map<String, dynamic> queries);
+
+  @POST('/v1/oauth/check/token')
+  @Headers(<String, dynamic>{
+    "Content-Type": "application/json",
+  })
+  Future<JWTResponseModel> checkRefreshToken(@Body() Map<String, dynamic> queries);
 }

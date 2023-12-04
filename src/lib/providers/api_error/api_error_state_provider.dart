@@ -1,5 +1,6 @@
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
@@ -81,8 +82,11 @@ class APIErrorState extends _$APIErrorState {
         break;
       case 'ASL-9998': //사용자가 로그인 취소했을 때, 아무 동작 안시키기 위함
       case 'ERTE-9999': //Access Token 오류일 때, 아무 동작 하지 않기 위함
+      case 'ATK-9999': //App Token, Access Token 재발행 시 Refresh Token 이 null 일 때, 따로 로직 추가해야할거 같긴함
         break;
       case 'ECOM-9999':
+        await TokenController.clearTokens();
+
         ref.read(loginStateProvider.notifier).state = LoginStatus.none;
         ref.read(userInfoProvider.notifier).state = UserInfoModel();
         ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;

@@ -3,18 +3,16 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
-import 'package:pet_mobile_social_flutter/models/jwt/jwt_response_model.dart';
+import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
-import 'package:pet_mobile_social_flutter/services/jwt/jwt_service.dart';
+import 'package:pet_mobile_social_flutter/repositories/jwt/jwt_repository.dart';
 import 'package:ua_client_hints/ua_client_hints.dart';
 
 final dioProvider = StateProvider<Dio>((ref) {
@@ -24,8 +22,6 @@ final dioProvider = StateProvider<Dio>((ref) {
 
 class DioWrap {
   static Dio dio = Dio();
-
-  static const storage = FlutterSecureStorage();
 
   static Dio getDioWithCookie() {
     // final dio = Dio();
@@ -128,7 +124,7 @@ class DioWrap {
           String appInfo = 'uid=$uuid&name=${pkgInfo.pkgName}&version=${pkgInfo.appVersion}&build=${pkgInfo.appBuildNumber}';
           options.headers['App-Info'] = appInfo;
 
-          final accessToken = await storage.read(key: 'ACCESS_TOKEN');
+          final accessToken = await TokenController.readAccessToken();
           options.headers['Authorization'] = 'Bearer $accessToken';
 
           return handler.next(options);
@@ -156,61 +152,26 @@ class DioWrap {
 
         //Access Token이 유효하지 않을 때
         if (code == 'ERTE-9999') {
-          final accessToken = await storage.read(key: 'ACCESS_TOKEN');
-          final refreshToken = await storage.read(key: 'REFRESH_TOKEN');
-
-          ///NOTE
-          ///refresh Token 검증 로직
-          ///Access Token 재발행 시 사용
+          final refreshToken = await TokenController.readRefreshToken();
 
           var refreshDio = Dio();
-          // JWTResponseModel jwtResponseModel = await refreshDio.post('$memberBaseUrl/v1/oauth/token', queryParameters: {
-          JWTResponseModel jwtResponseModel = await JWTService(refreshDio, baseUrl: memberBaseUrl).getAccessToken({
-            'refreshToken': refreshToken,
-          });
-
-          if (!jwtResponseModel.result) {
-            if (jwtResponseModel.code == 'ECOM-9999') {
-              ///TODO
-              ///Refresh Token이 유효하지 않음
-              ///유효하지 않으면 로그인 페이지 이동
-              ///로그인 프로바이더 상태 초기화 필요
-              await storage.delete(key: 'ACCESS_TOKEN');
-              await storage.delete(key: 'REFRESH_TOKEN');
-
-              // ref.read(loginStateProvider.notifier).state = LoginStatus.none;
-              // ref.read(userInfoProvider.notifier).state = UserInfoModel();
-              // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
-              APIException apiException = APIException(msg: jwtResponseModel.message ?? 'unknown', code: jwtResponseModel.code ?? '400', refer: 'Dio Refresh', caller: 'getAccessToken');
-              ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-              return handler.next(response);
-            }
-          }
-
-          if (jwtResponseModel.data == null) {
-            APIException apiException = APIException(
-              msg: jwtResponseModel.message ?? 'getAccessToken Data is null',
-              code: jwtResponseModel.code ?? '400',
-              refer: 'dio',
-              caller: 'dio',
-            );
+          try {
+            JWTRepository jwtRepository = JWTRepository(dio: refreshDio);
+            final newAccessToken = await jwtRepository.getAccessToken(refreshToken);
+            await TokenController.writeAccessToken(newAccessToken);
+            response.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+          } on APIException catch (apiException) {
+            ///getAccessToken 응답으로 받을 수 있는 오류라면  ECOM-9999 밖에 없음
+            ///즉, Refresh Token이 유효하지 않을 때뿐
             ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+          } catch (e) {
+            print('dio - getAccessToken error $e');
           }
-
-          final newAccessToken = jwtResponseModel.data!['accessToken'];
-          await storage.write(key: 'ACCESS_TOKEN', value: newAccessToken);
 
           // AccessToken의 만료로 수행하지 못했던 API 요청에 담겼던 AccessToken 갱신
-          response.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
 
           // 수행하지 못했던 API 요청 복사본 생성
           final clonedRequest = await dio.fetch(response.requestOptions);
-          // final clonedRequest = await dio.request(response.requestOptions.path,
-          // options: Options(method: response.requestOptions.method, headers: response.requestOptions.headers),
-          // data: response.requestOptions.data,
-          // queryParameters: response.requestOptions.queryParameters);
-
-          // API 복사본으로 재요청
           return handler.resolve(clonedRequest);
           // return handler.next(response);
         }
