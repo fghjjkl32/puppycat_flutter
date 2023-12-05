@@ -1,10 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/params_model.dart';
-import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/block/block_service.dart';
 
@@ -20,11 +17,11 @@ class BlockRepository {
   }
 
   Future<SearchResponseModel> getBlockSearchList({
-    required int memberIdx,
     required int page,
     required String searchWord,
+    int limit = 30,
   }) async {
-    SearchResponseModel responseModel = await _blockService.getBlockSearchList(memberIdx, page, searchWord);
+    SearchResponseModel responseModel = await _blockService.getBlockList(searchWord, page, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -39,10 +36,10 @@ class BlockRepository {
   }
 
   Future<SearchResponseModel> getBlockList({
-    required int memberIdx,
     required int page,
+    int limit = 30,
   }) async {
-    SearchResponseModel responseModel = await _blockService.getBlockList(memberIdx, page);
+    SearchResponseModel responseModel = await _blockService.getBlockList(null, page, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -57,10 +54,9 @@ class BlockRepository {
   }
 
   Future<ResponseModel> deleteBlock({
-    required int blockIdx,
-    required int memberIdx,
+    required String blockUuid,
   }) async {
-    ResponseModel responseModel = await _blockService.deleteBlock(blockIdx, memberIdx);
+    ResponseModel responseModel = await _blockService.deleteBlock(blockUuid);
 
     if (!responseModel.result) {
       throw APIException(
@@ -74,15 +70,8 @@ class BlockRepository {
     return responseModel;
   }
 
-  Future<ResponseModel> postBlock({
-    required int blockIdx,
-    required int memberIdx,
-  }) async {
-    final Map<String, dynamic> body = {
-      "memberIdx": memberIdx,
-    };
-
-    ResponseModel responseModel = await _blockService.postBlock(blockIdx, body);
+  Future<ResponseModel> postBlock({required String blockUuid}) async {
+    ResponseModel responseModel = await _blockService.postBlock(blockUuid);
 
     if (!responseModel.result) {
       throw APIException(

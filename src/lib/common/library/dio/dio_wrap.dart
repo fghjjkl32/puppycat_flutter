@@ -102,12 +102,9 @@ class DioWrap {
       InterceptorsWrapper(onRequest: (options, handler) async {
         // This is where you call your specific API
         try {
-          print('ref.read(userInfoProvider).userModel ${ref.read(userInfoProvider).userModel}');
-          final userModel = ref.read(userInfoProvider).userModel;
-          if (userModel != null) {
-            if (userModel.idx != 0) {
-              ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
-            }
+          final isLogined = ref.read(loginStatementProvider);
+          if (isLogined) {
+            ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
           }
         } catch (e) {
           print('New Noti API Error $e');

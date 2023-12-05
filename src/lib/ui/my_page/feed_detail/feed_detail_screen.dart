@@ -19,27 +19,28 @@ import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
 
 class FeedDetailScreen extends ConsumerStatefulWidget {
   final String firstTitle;
   final String secondTitle;
-  final int memberIdx;
+  final String memberUuid;
   final int contentIdx;
   final String contentType;
   bool isRouteComment;
   int? commentFocusIndex;
-  int oldMemberIdx;
+  String oldMemberUuid;
 
   FeedDetailScreen({
     required this.firstTitle,
     required this.secondTitle,
-    required this.memberIdx,
+    required this.memberUuid,
     required this.contentIdx,
     required this.contentType,
     this.isRouteComment = false,
     this.commentFocusIndex,
-    this.oldMemberIdx = 0,
+    this.oldMemberUuid = '',
     super.key,
   });
 
@@ -53,10 +54,8 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
   @override
   void initState() {
-    ref.read(feedListStateProvider.notifier).loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
-
     ref.read(feedListStateProvider.notifier).contentType = widget.contentType;
-    ref.read(feedListStateProvider.notifier).memberIdx = widget.memberIdx;
+    ref.read(feedListStateProvider.notifier).memberUuid = widget.memberUuid;
     ref.read(feedListStateProvider.notifier).searchWord = widget.secondTitle;
     ref.read(feedListStateProvider.notifier).idxToRemove = widget.contentIdx;
 
@@ -68,7 +67,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
     if (widget.isRouteComment) {
       Future(() {
-        context.push("/home/commentDetail/${widget.contentIdx}/${widget.memberIdx}", extra: {
+        context.push("/home/commentDetail/${widget.contentIdx}/${widget.memberUuid}", extra: {
           "focusIndex": widget.commentFocusIndex,
         });
       });
@@ -99,7 +98,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isFollow = ref.watch(followUserStateProvider)[widget.memberIdx] ?? false;
+    final isFollow = ref.watch(followUserStateProvider)[widget.memberUuid] ?? false;
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
 
     return DefaultOnWillPopScope(
       onWillPop: () {
@@ -107,15 +108,15 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
         ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");
 
-        ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberIdx);
+        ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberUuid);
 
-        ref.read(userContentsStateProvider.notifier).getStateForUserContent(widget.memberIdx);
+        ref.read(userContentsStateProvider.notifier).getStateForUserContent(widget.memberUuid);
 
-        ref.read(userTagContentsStateProvider.notifier).getStateForUserTagContent(widget.memberIdx);
+        ref.read(userTagContentsStateProvider.notifier).getStateForUserTagContent(widget.memberUuid);
 
         if (widget.contentType == "FollowCardContent") {
-          ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx);
-          ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx);
+          ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+          ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
         }
 
         return Future.value(true);
@@ -146,15 +147,15 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
                   ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");
 
-                  ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberIdx);
+                  ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberUuid);
 
-                  ref.read(userContentsStateProvider.notifier).getStateForUserContent(widget.memberIdx);
+                  ref.read(userContentsStateProvider.notifier).getStateForUserContent(widget.memberUuid);
 
-                  ref.read(userTagContentsStateProvider.notifier).getStateForUserTagContent(widget.memberIdx);
+                  ref.read(userTagContentsStateProvider.notifier).getStateForUserTagContent(widget.memberUuid);
 
                   if (widget.contentType == "FollowCardContent") {
-                    ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx);
-                    ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx);
+                    ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                    ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                   }
 
                   Navigator.of(context).pop();
@@ -169,22 +170,21 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
             return AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               actions: [
-                widget.contentType == "userContent" || widget.contentType == "FollowCardContent" && ref.read(firstFeedDetailStateProvider)?.memberIdx != ref.read(userInfoProvider).userModel?.idx
+                widget.contentType == "userContent" || widget.contentType == "FollowCardContent" && ref.read(firstFeedDetailStateProvider)?.memberUuid != myInfo.uuid
                     ? isFollow
                         ? InkWell(
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                if (ref.read(userInfoProvider).userModel == null) {
+                                if (!isLogined) {
                                   context.pushReplacement("/loginScreen");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        followIdx: widget.memberIdx,
+                                        followUuid: widget.memberUuid,
                                       );
 
                                   if (result.result) {
                                     setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
                                     });
                                   }
                                 }
@@ -201,17 +201,16 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                         : InkWell(
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                if (ref.read(userInfoProvider).userModel == null) {
+                                if (!isLogined) {
                                   context.pushReplacement("/loginScreen");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        followIdx: widget.memberIdx,
+                                        followUuid: widget.memberUuid,
                                       );
 
                                   if (result.result) {
                                     setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
+                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
                                     });
                                   }
                                 }
@@ -244,15 +243,15 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                 onPressed: () {
                   ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");
 
-                  ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberIdx);
+                  ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberUuid);
 
-                  ref.read(userContentsStateProvider.notifier).getStateForUserContent(widget.memberIdx);
+                  ref.read(userContentsStateProvider.notifier).getStateForUserContent(widget.memberUuid);
 
-                  ref.read(userTagContentsStateProvider.notifier).getStateForUserTagContent(widget.memberIdx);
+                  ref.read(userTagContentsStateProvider.notifier).getStateForUserTagContent(widget.memberUuid);
 
                   if (widget.contentType == "FollowCardContent") {
-                    ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx);
-                    ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx);
+                    ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                    ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                   }
 
                   Navigator.of(context).pop();
@@ -299,7 +298,8 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                           nick: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].nick : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick,
                           profileImage:
                               firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].profileImgUrl : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
-                          memberIdx: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].memberIdx : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberIdx,
+                          memberUuid:
+                              firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].memberUuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberUuid ?? '',
                           contentType: widget.contentType,
                           imgDomain: ref.read(firstFeedDetailStateProvider.notifier).feedImgDomain!,
                           index: 0,
@@ -311,7 +311,8 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                               ref: ref,
                               contentType: widget.contentType,
                               contentIdx: widget.contentIdx,
-                              memberIdx: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].memberIdx : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberIdx,
+                              memberUuid:
+                                  firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].memberUuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberUuid ?? '',
                             );
                           },
                         ),
@@ -348,10 +349,10 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                       ),
                                     ],
                                   )
-                                : widget.memberIdx != ref.read(userInfoProvider).userModel?.idx && widget.contentType != "searchContent"
+                                : widget.memberUuid != myInfo.uuid && widget.contentType != "searchContent"
                                     ? Column(
                                         children: [
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 12,
                                           ),
                                           Lottie.asset(
@@ -361,7 +362,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                             fit: BoxFit.fill,
                                             repeat: false,
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 12,
                                           ),
                                           Text(
@@ -369,7 +370,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                             textAlign: TextAlign.center,
                                             style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 8,
                                           ),
                                           Text(
@@ -377,7 +378,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                             textAlign: TextAlign.center,
                                             style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
                                           ),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 12,
                                           ),
                                           Material(
@@ -389,7 +390,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (_) => PuppyCatMain(
-                                                        initialTabIndex: ref.read(userInfoProvider).userModel == null ? 0 : 1,
+                                                        initialTabIndex: !isLogined ? 0 : 1,
                                                       ),
                                                     ),
                                                   );
@@ -410,7 +411,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                     : Container();
                           },
                           noMoreItemsIndicatorBuilder: (context) {
-                            return widget.memberIdx != ref.read(userInfoProvider).userModel?.idx && widget.contentType != "searchContent"
+                            return widget.memberUuid != myInfo.uuid && widget.contentType != "searchContent"
                                 ? Column(
                                     children: [
                                       SizedBox(
@@ -451,7 +452,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (_) => PuppyCatMain(
-                                                    initialTabIndex: ref.read(userInfoProvider).userModel == null ? 0 : 1,
+                                                    initialTabIndex: !isLogined ? 0 : 1,
                                                   ),
                                                 ),
                                               );
@@ -494,7 +495,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                   nick: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].nick : ref.read(feedListStateProvider.notifier).memberInfo?[0].nick,
                                   profileImage:
                                       (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].profileImgUrl : ref.watch(feedListStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
-                                  memberIdx: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberIdx : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberIdx,
+                                  memberUuid: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberUuid! : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberUuid ?? '',
                                   contentType: widget.contentType,
                                   imgDomain: ref.watch(feedListStateProvider.notifier).imgDomain!,
                                   index: index,
@@ -505,7 +506,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                       ref: ref,
                                       contentType: widget.contentType,
                                       contentIdx: item.idx,
-                                      memberIdx: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberIdx : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberIdx,
+                                      memberUuid: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberUuid! : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberUuid ?? '',
                                     );
                                   },
                                 ),

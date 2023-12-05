@@ -17,6 +17,7 @@ import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/my_page_setting_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_menu_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/Admin/password_screen.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -61,6 +62,9 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return Material(
       child: Scaffold(
         appBar: AppBar(
@@ -88,7 +92,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               title: '알림',
               onPressed: () async {
                 if (await Permissions.getNotificationPermissionState()) {
-                  ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingAlarm");
+                  !isLogined ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingAlarm");
                 } else {
                   if (mounted) {
                     showDialog(
@@ -146,7 +150,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
               title: '차단 유저 관리',
               onPressed: () {
-                ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingBlockedUser");
+                !isLogined ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingBlockedUser");
               },
             ),
             Padding(
@@ -565,17 +569,17 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          ref.read(userInfoProvider).userModel == null
+                          !isLogined
                               ? await ChannelTalk.boot(
                                   pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
                                 )
                               : await ChannelTalk.boot(
                                   pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
-                                  memberId: ref.read(userInfoProvider).userModel!.uuid,
-                                  email: ref.read(userInfoProvider).userModel!.id,
-                                  name: '${ref.read(userInfoProvider).userModel!.name}',
-                                  memberHash: ref.read(userInfoProvider).userModel!.channelTalkHash,
-                                  mobileNumber: '${ref.read(userInfoProvider).userModel!.phone}',
+                                  memberId: myInfo.uuid,
+                                  email: myInfo.email,
+                                  name: myInfo.name,
+                                  memberHash: myInfo.channelTalkHash,
+                                  mobileNumber: myInfo.phone,
                                 );
                           await ChannelTalk.showMessenger();
                         },
@@ -622,12 +626,12 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 ),
               ),
             ),
-            ref.read(userInfoProvider).userModel == null
+            !isLogined
                 ? Container()
                 : GestureDetector(
                     onTap: () {
                       ref.read(loginStateProvider.notifier).logout(
-                            ref.read(userInfoProvider).userModel!.simpleType,
+                            myInfo.simpleType ?? '',
                           );
                     },
                     child: Padding(

@@ -6,7 +6,6 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/keep_contents/keep_contents_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,21 +16,12 @@ final firstFeedEmptyProvider = StateProvider<bool>((ref) => true);
 
 final firstFeedStatusProvider = StateProvider<ListAPIStatus>((ref) => ListAPIStatus.idle);
 
-// final firstFeedDetailFutureStateProvider = FutureProvider<FeedData?>((ref){
-//   ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(contentType, contentIdx)
-// });
-
-// @Riverpod(keepAlive: true)
-// Future<FeedData?> fetchFirstFeedData(String contentType, int contentIdx) async {
-//   return await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(contentType, contentIdx);
-// }
-
 @Riverpod(keepAlive: true)
 class FirstFeedDetailState extends _$FirstFeedDetailState {
   String? feedImgDomain;
   MemberInfoListData? memberInfo;
-  final Map<int, FeedData?> firstFeedStateMap = {};
-  final Map<int, MemberInfoListData?> firstFeedMemberInfoStateMap = {};
+  final Map<String, FeedData?> firstFeedStateMap = {};
+  final Map<String, MemberInfoListData?> firstFeedMemberInfoStateMap = {};
 
   @override
   FeedData? build() {
@@ -39,16 +29,6 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
   }
 
   Future<FeedData?> getFirstFeedState(String contentType, int contentIdx) async {
-    // final userInfoModel = ref.read(userInfoProvider).userModel;
-    int? loginMemberIdx = 0;
-    try {
-      loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
-    } catch (e) {
-      print('getFeedState Error $e');
-      state = null;
-      return null;
-    }
-
     try {
       Future(() {
         ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.loading;
@@ -56,30 +36,21 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
 
       FeedResponseModel searchResult = feedNullResponseModel;
 
-      if (contentType == "myContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
-      } else if (contentType == "myTagContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
-      } else if (contentType == "userContent" || contentType == "FollowCardContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx, contentIdx: contentIdx!);
-      } else if (contentType == "userTagContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
-      } else if (contentType == "myLikeContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
-      } else if (contentType == "mySaveContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
-      } else if (contentType == "myDetailContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+      if (contentType == "myContent" || contentType == "myDetailContent") {
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(contentIdx: contentIdx);
+      } else if (contentType == "myTagContent" ||
+          contentType == "userTagContent" ||
+          contentType == "userContent" ||
+          contentType == "FollowCardContent" ||
+          contentType == "myLikeContent" ||
+          contentType == "mySaveContent" ||
+          contentType == "searchContent" ||
+          contentType == "popularWeekContent" ||
+          contentType == "popularHourContent" ||
+          contentType == "notificationContent") {
+        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(contentIdx: contentIdx);
       } else if (contentType == "myKeepContent") {
-        searchResult = await KeepContentsRepository(dio: ref.read(dioProvider)).getMyKeepContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
-      } else if (contentType == "searchContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
-      } else if (contentType == "popularWeekContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
-      } else if (contentType == "popularHourContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
-      } else if (contentType == "notificationContent") {
-        searchResult = await FeedRepository(dio: ref.read(dioProvider)).getContentDetail(loginMemberIdx: loginMemberIdx!, contentIdx: contentIdx!);
+        searchResult = await KeepContentsRepository(dio: ref.read(dioProvider)).getMyKeepContentDetail(contentIdx: contentIdx);
       }
 
       bool isResponseDataEmpty = searchResult.data!.list.isEmpty;
@@ -114,14 +85,14 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
     return null;
   }
 
-  void getStateForUser(int userId) {
-    memberInfo = firstFeedMemberInfoStateMap[userId] ?? MemberInfoListData();
+  void getStateForUser(String memberUuid) {
+    memberInfo = firstFeedMemberInfoStateMap[memberUuid] ?? MemberInfoListData();
 
-    state = firstFeedStateMap[userId] ?? FeedData(idx: 0);
+    state = firstFeedStateMap[memberUuid] ?? FeedData(idx: 0);
   }
 
-  void saveStateForUser(int userId) {
-    firstFeedStateMap[userId] = state;
-    firstFeedMemberInfoStateMap[userId] = memberInfo;
+  void saveStateForUser(String memberUuid) {
+    firstFeedStateMap[memberUuid] = state;
+    firstFeedMemberInfoStateMap[memberUuid] = memberInfo;
   }
 }

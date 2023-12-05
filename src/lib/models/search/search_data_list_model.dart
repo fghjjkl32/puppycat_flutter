@@ -23,28 +23,22 @@ class SearchDataListModel with _$SearchDataListModel {
     @Default([]) List<BestListData>? best_list,
   }) = _SearchDataListModel;
 
-  factory SearchDataListModel.fromJson(Map<String, dynamic> json) =>
-      _$SearchDataListModelFromJson(json);
+  factory SearchDataListModel.fromJson(Map<String, dynamic> json) => _$SearchDataListModelFromJson(json);
 }
 
 @freezed
 class NickListData with _$NickListData {
   factory NickListData({
     String? nick,
-    int? memberIdx,
+    String? memberUuid,
     String? intro,
     String? profileImgUrl,
     int? isBadge,
     int? followerCnt,
-    String? chatMemberId,
-    String? chatHomeServer,
-    String? chatAccessToken,
-    String? chatDeviceId,
     int? favoriteState,
   }) = _NickListData;
 
-  factory NickListData.fromJson(Map<String, dynamic> json) =>
-      _$NickListDataFromJson(json);
+  factory NickListData.fromJson(Map<String, dynamic> json) => _$NickListDataFromJson(json);
 }
 
 @freezed
@@ -55,8 +49,7 @@ class TagListData with _$TagListData {
     String? hashTag,
   }) = _TagListData;
 
-  factory TagListData.fromJson(Map<String, dynamic> json) =>
-      _$TagListDataFromJson(json);
+  factory TagListData.fromJson(Map<String, dynamic> json) => _$TagListDataFromJson(json);
 }
 
 @freezed
@@ -66,6 +59,5 @@ class BestListData with _$BestListData {
     String? searchCnt,
   }) = _BestListData;
 
-  factory BestListData.fromJson(Map<String, dynamic> json) =>
-      _$BestListDataFromJson(json);
+  factory BestListData.fromJson(Map<String, dynamic> json) => _$BestListDataFromJson(json);
 }

@@ -19,18 +19,17 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationListMode
 
   final Ref ref;
 
-  final Map<int, UserInformationListModel> userInformationStateMap = {};
+  final Map<String, UserInformationListModel> userInformationStateMap = {};
 
-  void getStateForUserInformation(int userIdx) {
-    state = userInformationStateMap[userIdx] ?? const UserInformationListModel();
+  void getStateForUserInformation(String memberUuid) {
+    state = userInformationStateMap[memberUuid] ?? const UserInformationListModel();
   }
 
-  getInitUserInformation([
-    loginMemberIdx,
-    memberIdx,
-  ]) async {
+  getInitUserInformation({
+    required String memberUuid,
+  }) async {
     try {
-      final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(loginMemberIdx, memberIdx);
+      final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(memberUuid);
 
       if (lists == null) {
         state = state.copyWith(isLoading: false);
@@ -39,9 +38,9 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationListMode
 
       state = state.copyWith(isLoading: false, list: lists.data!.info);
 
-      userInformationStateMap[memberIdx] = state.copyWith(isLoading: false, list: lists.data!.info);
+      userInformationStateMap[memberUuid] = state.copyWith(isLoading: false, list: lists.data!.info);
 
-      ref.read(followUserStateProvider.notifier).setFollowState(memberIdx!, state.list[0].followState == 1);
+      ref.read(followUserStateProvider.notifier).setFollowState(memberUuid, state.list[0].followState == 1);
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       state = state.copyWith(isLoading: false);
@@ -52,13 +51,11 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationListMode
   }
 
   Future<ResponseModel> postBlock({
-    required memberIdx,
-    required blockIdx,
+    required String blockUuid,
   }) async {
     try {
       final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
-        memberIdx: memberIdx,
-        blockIdx: blockIdx,
+        blockUuid: blockUuid,
       );
 
       return result;
@@ -83,7 +80,7 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationListMode
     state = state.copyWith(list: [state.list[0].copyWith(blockedState: 1, followerCnt: 0, followCnt: 0)]);
   }
 
-  Future<void> updateUnBlockState(loginMemberIdx, memberIdx) async {
+  Future<void> updateUnBlockState(String memberUuid) async {
     state = state.copyWith(list: [
       state.list[0].copyWith(
         blockedState: 0,
@@ -94,7 +91,7 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationListMode
     ]);
 
     try {
-      final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(loginMemberIdx, memberIdx);
+      final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(memberUuid);
 
       state = state.copyWith(list: [
         state.list[0].copyWith(

@@ -1,22 +1,12 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:matrix/matrix.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/edit_my_information/edit_my_information_state.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
-import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/chat/chat_register_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
-import 'package:pet_mobile_social_flutter/repositories/authentication/auth_repository.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'edit_state_provider.g.dart';
@@ -27,7 +17,7 @@ class EditState extends _$EditState {
   EditMyInformationState build() {
     return EditMyInformationState(
       authModel: null,
-      userInfoModel: ref.read(userInfoProvider),
+      myInfoModel: ref.read(myInfoStateProvider),
     );
   }
 
@@ -36,22 +26,19 @@ class EditState extends _$EditState {
   }
 
   void resetState() {
-    state = state.copyWith(
-      authModel: null,
-      userInfoModel: ref.read(userInfoProvider),
-    );
+    state = state.copyWith(authModel: null, myInfoModel: ref.read(myInfoStateProvider));
 
     ref.watch(nickNameProvider.notifier).state = NickNameStatus.none;
   }
 
   Future<ResponseModel> putMyInfo({
-    required UserModel userInfoModel,
+    required UserInformationItemModel myInfoModel,
     required XFile? file,
     required String beforeNick,
     required bool isProfileImageDelete,
     required bool isPhoneNumberEdit,
   }) async {
-    final result = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).updateMyInfo(userInfoModel, file, beforeNick, isProfileImageDelete, isPhoneNumberEdit);
+    final result = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).updateMyInfo(myInfoModel, file, beforeNick, isProfileImageDelete, isPhoneNumberEdit);
 
     return result;
   }

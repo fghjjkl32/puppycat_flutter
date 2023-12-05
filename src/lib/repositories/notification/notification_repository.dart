@@ -19,9 +19,8 @@ class NotificationRepository {
 
   late final NotificationService _notificationService; // = NotificationService(dio, baseUrl: baseUrl);
 
-  Future<NotificationDataListModel> getNotifications(int memberIdx, [int page = 1, int? type, int limit = 10]) async {
+  Future<NotificationDataListModel> getNotifications([int page = 1, int? type, int limit = 10]) async {
     Map<String, dynamic> queries = {
-      'memberIdx': memberIdx,
       'page': page,
       'limit': limit,
     };

@@ -8,12 +8,10 @@ class NotificationSenderInfoModel with _$NotificationSenderInfoModel {
   factory NotificationSenderInfoModel({
     required String nick,
     required int isBadge,
-    required int memberIdx,
+    required String memberUuid,
     required int followerCnt,
     required String profileImgUrl,
-
   }) = _NotificationSenderInfoModel;
 
-  factory NotificationSenderInfoModel.fromJson(Map<String, dynamic> json) =>
-      _$NotificationSenderInfoModelFromJson(json);
+  factory NotificationSenderInfoModel.fromJson(Map<String, dynamic> json) => _$NotificationSenderInfoModelFromJson(json);
 }

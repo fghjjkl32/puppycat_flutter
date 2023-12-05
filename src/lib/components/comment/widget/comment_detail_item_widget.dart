@@ -17,6 +17,7 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 
 class CommentDetailItemWidget extends ConsumerStatefulWidget {
@@ -32,7 +33,7 @@ class CommentDetailItemWidget extends ConsumerStatefulWidget {
     required this.isReply,
     required this.likeCount,
     required this.isLike,
-    required this.memberIdx,
+    required this.memberUuid,
     required this.mentionListData,
     // this.replies,
     required this.isLastDisPlayChild,
@@ -41,7 +42,7 @@ class CommentDetailItemWidget extends ConsumerStatefulWidget {
     required this.pageNumber,
     required this.isDisplayPreviousMore,
     this.onPrevMoreChildComment,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
     this.onTapRemoveButton,
     this.onTapEditButton,
     Key? key,
@@ -60,9 +61,9 @@ class CommentDetailItemWidget extends ConsumerStatefulWidget {
   final bool isLike;
 
   // final ChildCommentData? replies;
-  final int memberIdx;
+  final String memberUuid;
   final List<MentionListData> mentionListData;
-  final int oldMemberIdx;
+  final String oldMemberUuid;
   final bool isLastDisPlayChild;
 
   // final int remainChildCount;
@@ -100,6 +101,9 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
 
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 12.h),
       child: Column(
@@ -114,16 +118,18 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                   : Container(),
               GestureDetector(
                 onTap: () {
-                  ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
+                  myInfo.uuid == widget.memberUuid
                       ? Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => MyPageMainScreen(
-                              oldMemberIdx: widget.oldMemberIdx,
+                              oldMemberUuid: widget.oldMemberUuid,
                             ),
                           ),
                         )
-                      : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.name}/${widget.memberIdx}/${widget.oldMemberIdx}");
+                      //TODO
+                      //Route 다시
+                      : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.name}/${widget.memberUuid}/${widget.oldMemberUuid}");
                 },
                 child: getProfileAvatar(widget.profileImage!, 30.w, 30.h),
               ),
@@ -150,14 +156,12 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                       ),
                     GestureDetector(
                       onDoubleTap: () {
-                        if (ref.read(userInfoProvider).userModel == null) {
+                        if (!isLogined) {
                           context.pushReplacement("/loginScreen");
                         } else {
                           if (!ref.watch(commentLikeApiIsLoadingStateProvider) && widget.isLike) {
                             ref.watch(commentListStateProvider.notifier).postCommentLike(
                                   commentIdx: widget.commentIdx,
-                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                  contentsIdx: widget.contentIdx,
                                 );
                           }
                         }
@@ -180,16 +184,18 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
-                                      ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
+                                      myInfo.uuid == widget.memberUuid
                                           ? Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) => MyPageMainScreen(
-                                                  oldMemberIdx: widget.oldMemberIdx,
+                                                  oldMemberUuid: widget.oldMemberUuid,
                                                 ),
                                               ),
                                             )
-                                          : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.name}/${widget.memberIdx}/${widget.oldMemberIdx}");
+                                          //TODO
+                                          //Route 다시
+                                          : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.name}/${widget.memberUuid}/${widget.oldMemberUuid}");
                                     },
                                     child: Row(
                                       children: [
@@ -226,7 +232,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        widget.memberIdx == ref.read(userInfoProvider).userModel?.idx
+                                        widget.memberUuid == myInfo.uuid
                                             ? showCustomModalBottomSheet(
                                                 context: context,
                                                 widget: Column(
@@ -272,7 +278,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                       onTap: () async {
                                                         context.pop();
 
-                                                        ref.read(userInfoProvider).userModel == null
+                                                        isLogined == false
                                                             ? context.pushReplacement("/loginScreen")
                                                             : showDialog(
                                                                 context: context,
@@ -310,9 +316,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                                         context.pop();
 
                                                                         final result = await ref.read(commentListStateProvider.notifier).postBlock(
-                                                                              memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                                                                              blockIdx: widget.memberIdx,
-                                                                              contentsIdx: widget.contentIdx,
+                                                                              blockUuid: widget.memberUuid,
                                                                             );
 
                                                                         if (result.result && mounted) {
@@ -345,7 +349,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
                                                       onTap: () {
                                                         context.pop();
-                                                        ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/report/true/${widget.commentIdx}");
+                                                        isLogined == false ? context.pushReplacement("/loginScreen") : context.push("/home/report/true/${widget.commentIdx}");
                                                       },
                                                     ),
                                                   ],
@@ -374,7 +378,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                     context,
                                     kBody11RegularStyle.copyWith(color: kSecondaryColor),
                                     ref,
-                                    widget.oldMemberIdx,
+                                    widget.oldMemberUuid,
                                   ),
                                   style: kBody11RegularStyle.copyWith(color: kTextTitleColor),
                                 ),
@@ -394,8 +398,6 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                     if (!ref.watch(commentLikeApiIsLoadingStateProvider)) {
                                       ref.watch(commentListStateProvider.notifier).deleteCommentLike(
                                             commentIdx: widget.commentIdx,
-                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                            contentsIdx: widget.contentIdx,
                                           );
                                     }
                                   },
@@ -417,14 +419,12 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                 )
                               : InkWell(
                                   onTap: () {
-                                    if (ref.read(userInfoProvider).userModel == null) {
+                                    if (!isLogined) {
                                       context.pushReplacement("/loginScreen");
                                     } else {
                                       if (!ref.watch(commentLikeApiIsLoadingStateProvider)) {
                                         ref.watch(commentListStateProvider.notifier).postCommentLike(
                                               commentIdx: widget.commentIdx,
-                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                              contentsIdx: widget.contentIdx,
                                             );
 
                                         setState(() {
@@ -447,7 +447,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                         ),
                         GestureDetector(
                           onTap: () {
-                            if (ref.read(userInfoProvider).userModel == null) {
+                            if (!isLogined) {
                               context.pushReplacement("/loginScreen");
                             } else {
                               if (!widget.isReply) {

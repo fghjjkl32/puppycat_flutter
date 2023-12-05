@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,12 +19,11 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/edit_my_information/edit_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
@@ -52,7 +50,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
   void initState() {
     Future(() {
       ref.watch(editStateProvider.notifier).resetState();
-      introController.text = ref.read(userInfoProvider).userModel!.introText ?? "";
+      introController.text = ref.read(myInfoStateProvider).intro ?? "";
     });
 
     super.initState();
@@ -85,15 +83,15 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
   bool isTotalNextStep = false;
 
   void checkNextStep() {
-    if (ref.watch(nickNameProvider) == NickNameStatus.valid || nickController.text == ref.watch(editStateProvider).userInfoModel!.userModel!.nick) {
+    if (ref.read(nickNameProvider) == NickNameStatus.valid || nickController.text == ref.read(editStateProvider).myInfoModel!.nick) {
       // 닉네임 상태가 valid이거나 닉네임이 기존과 같을 때
       setState(() {
         isTotalNextStep = true;
       });
-    } else if (ref.watch(nickNameProvider) == NickNameStatus.none) {
+    } else if (ref.read(nickNameProvider) == NickNameStatus.none) {
       // 닉네임 상태가 valid가 아니고 none 상태일 때
 
-      if (ref.watch(editStateProvider).authModel != null || isNextStep) {
+      if (ref.read(editStateProvider).authModel != null || isNextStep) {
         setState(() {
           isTotalNextStep = true;
         });
@@ -117,6 +115,9 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
     });
 
     final nickProvider = ref.watch(nickNameProvider);
+    final myInfo = ref.watch(myInfoStateProvider);
+    final UserInformationItemModel editMyInfoModel = ref.watch(editStateProvider).myInfoModel!;
+    final authModel = ref.watch(editStateProvider).authModel;
 
     checkNextStep();
     // FocusDetector와 ConditionalWillPopScope 모두 IOS 왼쪽으로 swipe할때 뒤로가기 동작하는 이유때문에 넣음
@@ -129,15 +130,15 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
           builder: (BuildContext context) {
             return CustomDialog(
                 content: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                  padding: const EdgeInsets.symmetric(vertical: 24.0),
                   child: Column(
                     children: [
                       Text(
                         "이전으로 돌아가시겠어요?",
                         style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                       ),
-                      SizedBox(
-                        height: 4.h,
+                      const SizedBox(
+                        height: 4,
                       ),
                       Text(
                         "지금 돌아가시면 수정사항은\n저장되지 않습니다.",
@@ -177,15 +178,15 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                   builder: (BuildContext context) {
                     return CustomDialog(
                         content: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
                           child: Column(
                             children: [
                               Text(
                                 "이전으로 돌아가시겠어요?",
                                 style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                               ),
-                              SizedBox(
-                                height: 4.h,
+                              const SizedBox(
+                                height: 4,
                               ),
                               Text(
                                 "지금 돌아가시면 수정사항은\n저장되지 않습니다.",
@@ -247,22 +248,19 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                           },
                         );
 
-                        UserModel userModel = ref.watch(editStateProvider).userInfoModel!.userModel!;
-
-                        UserModel editUserModel = userModel.copyWith(
+                        UserInformationItemModel editUserModel = editMyInfoModel.copyWith(
                           profileImgUrl: selectedImage == null ? null : selectedImage!.path,
-                          idx: ref.watch(editStateProvider).userInfoModel!.userModel!.idx,
-                          nick: nickController.text == "" ? ref.watch(editStateProvider).userInfoModel!.userModel!.nick : nickController.text,
-                          introText: introController.text,
-                          phone: ref.watch(editStateProvider).authModel == null ? ref.watch(editStateProvider).userInfoModel!.userModel!.phone : ref.watch(editStateProvider).authModel?.phone,
-                          ci: ref.watch(editStateProvider).authModel == null ? ref.watch(editStateProvider).userInfoModel!.userModel!.ci : ref.watch(editStateProvider).authModel?.ci,
-                          di: ref.watch(editStateProvider).authModel == null ? ref.watch(editStateProvider).userInfoModel!.userModel!.di : ref.watch(editStateProvider).authModel?.di,
+                          nick: nickController.text == "" ? editMyInfoModel.nick : nickController.text,
+                          intro: introController.text,
+                          phone: authModel == null ? editMyInfoModel.phone : authModel.phone,
+                          ci: authModel == null ? editMyInfoModel.ci : authModel.ci,
+                          di: authModel == null ? editMyInfoModel.di : authModel.di,
                         );
 
                         final result = await ref.watch(editStateProvider.notifier).putMyInfo(
-                              userInfoModel: editUserModel,
+                              myInfoModel: editUserModel,
                               file: selectedImage,
-                              beforeNick: ref.read(userInfoProvider).userModel!.nick,
+                              beforeNick: myInfo.nick ?? 'unknown',
                               isProfileImageDelete: isProfileImageDelete,
                               isPhoneNumberEdit: isPhoneNumberEdit,
                             );
@@ -270,20 +268,25 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         context.pop();
 
                         if (result.result) {
-                          await ref.read(myInformationStateProvider.notifier).getInitUserInformation(ref.read(userInfoProvider).userModel!.idx);
-                          final userInformationState = ref.watch(myInformationStateProvider);
-                          final lists = userInformationState.list;
-
-                          ref.read(userInfoProvider.notifier).state = ref.read(userInfoProvider.notifier).state.copyWith(
-                                userModel: editUserModel.copyWith(
-                                  nick: editUserModel.nick,
-                                  introText: editUserModel.introText,
-                                  phone: editUserModel.phone,
-                                  ci: editUserModel.ci,
-                                  di: editUserModel.di,
-                                  profileImgUrl: lists[0].profileImgUrl,
-                                ),
-                              );
+                          // await ref.read(myInformationStateProvider.notifier).getInitUserInformation(memberUuid: myInfo.uuid?? '');
+                          ref.read(myInfoStateProvider.notifier).getMyInfo();
+                          // final userInformationState = ref.watch(myInformationStateProvider);
+                          // final lists = userInformationState.list;
+                          //
+                          // // ref.read(userInfoProvider.notifier).state = ref.read(userInfoProvider.notifier).state.copyWith(
+                          // //       userModel: editUserModel.copyWith(
+                          // //         nick: editUserModel.nick,
+                          // //         introText: editUserModel.introText,
+                          // //         phone: editUserModel.phone,
+                          // //         ci: editUserModel.ci,
+                          // //         di: editUserModel.di,
+                          // //         profileImgUrl: lists[0].profileImgUrl,
+                          // //       ),
+                          // //     );
+                          //
+                          // ref.read(myInfoStateProvider.notifier).state = editUserModel.copyWith(
+                          //   profileImgUrl: lists[0].profileImgUrl,
+                          // );
 
                           ///NOTE
                           ///2023.11.17.
@@ -316,17 +319,17 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
             child: ListView(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 20.0.h, bottom: 30.h),
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 30),
                   child: Center(
                     child: Stack(
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: WidgetMask(
                             blendMode: BlendMode.srcATop,
                             childSaveLayer: true,
                             mask: Center(
-                                child: "${ref.watch(editStateProvider).userInfoModel!.userModel!.profileImgUrl}" == ""
+                                child: "${editMyInfoModel.profileImgUrl}" == ""
                                     ? selectedImage == null
                                         ? const Icon(
                                             Puppycat_social.icon_profile_large,
@@ -347,7 +350,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                 color: kNeutralColor500,
                                               )
                                             : Image.network(
-                                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${ref.read(userInfoProvider).userModel!.profileImgUrl}").toUrl(),
+                                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${myInfo.profileImgUrl}").toUrl(),
                                                 width: 135,
                                                 height: 135,
                                                 fit: BoxFit.cover,
@@ -360,7 +363,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           )),
                             child: SvgPicture.asset(
                               'assets/image/feed/image/squircle.svg',
-                              height: 84.h,
+                              height: 84,
                             ),
                           ),
                         ),
@@ -391,15 +394,15 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                               builder: (BuildContext context) {
                                                 return CustomDialog(
                                                     content: Padding(
-                                                      padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                      padding: const EdgeInsets.symmetric(vertical: 24.0),
                                                       child: Column(
                                                         children: [
                                                           Text(
                                                             "퍼피캣 접근 권한 허용",
                                                             style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
                                                           ),
-                                                          SizedBox(
-                                                            height: 4.h,
+                                                          const SizedBox(
+                                                            height: 4,
                                                           ),
                                                           Text(
                                                             "프로필 사진 등록을 위해\n사진 접근을 허용해 주세요.",
@@ -451,8 +454,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               );
                             },
                             child: Container(
-                              width: 32.w,
-                              height: 32.h,
+                              width: 32,
+                              height: 32,
                               decoration: BoxDecoration(
                                 color: kNeutralColor100,
                                 shape: BoxShape.circle,
@@ -465,7 +468,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                   ),
                                 ],
                               ),
-                              child: Icon(
+                              child: const Icon(
                                 Puppycat_social.icon_modify_medium,
                                 color: kTextBodyColor,
                               ),
@@ -496,21 +499,21 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: 32.h, left: 12.0.w, bottom: 8.h),
+                        padding: const EdgeInsets.only(top: 32, left: 12.0, bottom: 8),
                         child: Text(
                           "프로필 정보",
                           style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 24.0.w, bottom: 8.h),
+                        padding: const EdgeInsets.only(left: 24.0, bottom: 8),
                         child: Text(
                           "닉네임",
                           style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -577,7 +580,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                   isNextStep = true;
                                                 });
                                               }
-                                              if (value == ref.watch(editStateProvider).userInfoModel!.userModel!.nick) {
+                                              if (value == editMyInfoModel.nick) {
                                                 setState(() {
                                                   ref.read(checkButtonProvider.notifier).state = false;
                                                 });
@@ -609,6 +612,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                 }
                                               }
                                             }
+                                            return null;
                                           },
                                           onSaved: (val) {
                                             if (isCheckableNickName) {
@@ -621,7 +625,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                   )
                                 : Expanded(
                                     child: SizedBox(
-                                      height: 32.h,
+                                      height: 32,
                                       child: Container(
                                         decoration: BoxDecoration(color: kNeutralColor300, borderRadius: BorderRadius.circular(10)),
                                         child: Align(
@@ -629,7 +633,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           child: Padding(
                                             padding: const EdgeInsets.only(left: 16.0),
                                             child: Text(
-                                              ref.watch(editStateProvider).userInfoModel!.userModel!.nick,
+                                              editMyInfoModel.nick ?? 'unknown',
                                               style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
                                             ),
                                           ),
@@ -637,7 +641,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       ),
                                     ),
                                   ),
-                            SizedBox(width: 8.w),
+                            const SizedBox(width: 8),
                             isProfileEdit
                                 ? Consumer(builder: (context, ref, widget) {
                                     return GestureDetector(
@@ -650,8 +654,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                             }
                                           : null,
                                       child: Container(
-                                        width: 56.w,
-                                        height: 32.h,
+                                        width: 56,
+                                        height: 32,
                                         decoration: BoxDecoration(
                                           color: ref.watch(checkButtonProvider) ? kPrimaryLightColor : kNeutralColor300,
                                           borderRadius: const BorderRadius.all(
@@ -677,8 +681,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       });
                                     },
                                     child: Container(
-                                      width: 56.w,
-                                      height: 32.h,
+                                      width: 56,
+                                      height: 32,
                                       decoration: const BoxDecoration(
                                         color: kPrimaryLightColor,
                                         borderRadius: BorderRadius.all(
@@ -697,20 +701,20 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 24.0.w, bottom: 8.h, top: 8.h),
+                        padding: const EdgeInsets.only(left: 24.0, bottom: 8, top: 8),
                         child: Text(
                           "한 줄 소개",
                           style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
                         child: TextField(
                           controller: introController,
                           maxLength: 30,
                           decoration: InputDecoration(
                             counterText: "",
-                            hintText: "${ref.watch(editStateProvider).userInfoModel!.userModel!.introText == "" ? '소개 글을 입력해 주세요.' : ref.watch(editStateProvider).userInfoModel!.userModel!.introText}",
+                            hintText: "${editMyInfoModel.intro == "" ? '소개 글을 입력해 주세요.' : editMyInfoModel.intro}",
                             hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
                             contentPadding: const EdgeInsets.all(16),
                           ),
@@ -724,53 +728,53 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 16.h, left: 12.0.w, bottom: 8.h),
+                        padding: const EdgeInsets.only(top: 16, left: 12.0, bottom: 8),
                         child: Text(
                           "로그인 정보",
                           style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 24.0.w, bottom: 8.h),
+                        padding: const EdgeInsets.only(left: 24.0, bottom: 8),
                         child: Text(
                           "이메일",
                           style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
                         child: SizedBox(
-                          height: 32.h,
+                          height: 32,
                           child: FormBuilderTextField(
-                            initialValue: "${ref.watch(editStateProvider).userInfoModel!.userModel!.id}",
+                            initialValue: "${editMyInfoModel.email}",
                             enabled: false,
                             decoration: InputDecoration(
                               prefixIcon: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "kakao"
+                                child: editMyInfoModel.simpleType == "kakao"
                                     ? Image.asset(
                                         'assets/image/loginScreen/kakao_icon.png',
                                         height: 20,
                                         width: 20,
                                       )
-                                    : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "naver"
+                                    : editMyInfoModel.simpleType == "naver"
                                         ? Image.asset(
                                             'assets/image/loginScreen/naver_icon.png',
-                                            color: Color(0xff03CF5D),
+                                            color: const Color(0xff03CF5D),
                                           )
-                                        : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "google"
+                                        : editMyInfoModel.simpleType == "google"
                                             ? Image.asset(
                                                 'assets/image/loginScreen/google_icon.png',
                                                 height: 20,
                                                 width: 20,
                                               )
-                                            : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "apple"
+                                            : editMyInfoModel.simpleType == "apple"
                                                 ? Image.asset(
                                                     'assets/image/loginScreen/apple_icon.png',
                                                     height: 20,
                                                     width: 20,
                                                   )
-                                                : SizedBox.shrink(),
+                                                : const SizedBox.shrink(),
                               ),
                               filled: true,
                               fillColor: kNeutralColor300,
@@ -785,19 +789,19 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 24.0.w, bottom: 8.h, top: 8.h),
+                        padding: const EdgeInsets.only(left: 24.0, bottom: 8, top: 8),
                         child: Text(
                           "이름",
                           style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
                         child: SizedBox(
-                          height: 32.h,
+                          height: 32,
                           child: FormBuilderTextField(
                             enabled: false,
-                            initialValue: "${ref.watch(editStateProvider).userInfoModel!.userModel!.name}",
+                            initialValue: "${editMyInfoModel.name}",
                             decoration: InputDecoration(
                                 counterText: "", hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500), filled: true, fillColor: kNeutralColor300, contentPadding: const EdgeInsets.all(16)),
                             name: 'content',
@@ -807,14 +811,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 24.0.w, bottom: 8.h, top: 8.h),
+                        padding: const EdgeInsets.only(left: 24.0, bottom: 8, top: 8),
                         child: Text(
                           "휴대폰 번호",
                           style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -823,7 +827,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               return ref.watch(editStateProvider).authModel == null
                                   ? Expanded(
                                       child: SizedBox(
-                                        height: 32.h,
+                                        height: 32,
                                         child: Container(
                                           decoration: BoxDecoration(color: kNeutralColor300, borderRadius: BorderRadius.circular(10)),
                                           child: Align(
@@ -831,7 +835,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                             child: Padding(
                                               padding: const EdgeInsets.only(left: 16.0),
                                               child: Text(
-                                                "${ref.watch(editStateProvider).userInfoModel!.userModel!.phone}",
+                                                "${editMyInfoModel.phone}",
                                                 style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
                                               ),
                                             ),
@@ -841,7 +845,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                     )
                                   : Expanded(
                                       child: SizedBox(
-                                        height: 32.h,
+                                        height: 32,
                                         child: Container(
                                           decoration: BoxDecoration(color: kNeutralColor300, borderRadius: BorderRadius.circular(10)),
                                           child: Align(
@@ -858,7 +862,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       ),
                                     );
                             }),
-                            SizedBox(width: 8.w),
+                            const SizedBox(width: 8),
                             ref.watch(editStateProvider).authModel == null
                                 ? isPhoneNumberEdit
                                     ? GestureDetector(
@@ -868,8 +872,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           });
                                         },
                                         child: Container(
-                                          width: 56.w,
-                                          height: 32.h,
+                                          width: 56,
+                                          height: 32,
                                           decoration: const BoxDecoration(
                                             color: kPrimaryLightColor,
                                             borderRadius: BorderRadius.all(
@@ -891,8 +895,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           });
                                         },
                                         child: Container(
-                                          width: 56.w,
-                                          height: 32.h,
+                                          width: 56,
+                                          height: 32,
                                           decoration: const BoxDecoration(
                                             color: kPrimaryLightColor,
                                             borderRadius: BorderRadius.all(
@@ -908,8 +912,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                         ),
                                       )
                                 : Container(
-                                    width: 56.w,
-                                    height: 32.h,
+                                    width: 56,
+                                    height: 32,
                                     decoration: const BoxDecoration(
                                       color: kNeutralColor300,
                                       borderRadius: BorderRadius.all(
@@ -929,7 +933,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Visibility(
                         visible: isPhoneNumberEdit && ref.watch(editStateProvider).authModel == null,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 24.0.w, vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10),
                           child: Row(
                             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -974,14 +978,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               Expanded(
                                 child: SizedBox(
                                   // width: 100.w,
-                                  height: 40.h,
+                                  height: 40,
                                   child: ElevatedButton.icon(
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                                       ),
                                       backgroundColor: MaterialStateProperty.all<Color>(kSignUpPassColor),
-                                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5.w, right: 5.w)),
+                                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.only(left: 5, right: 5)),
                                     ),
                                     onPressed: () {
                                       ref.read(authStateProvider.notifier).getPassAuthUrl();
@@ -999,7 +1003,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 30.0.h),
+                        padding: const EdgeInsets.only(top: 30.0),
                         child: Center(
                           child: TextButton(
                             onPressed: () {

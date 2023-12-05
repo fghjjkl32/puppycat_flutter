@@ -106,6 +106,9 @@ class LoginRepository {
         code: responseModel.code,
         refer: 'LoginRepository',
         caller: 'loginByUserModel',
+        arguments: [
+          userModel,
+        ],
       );
     }
 

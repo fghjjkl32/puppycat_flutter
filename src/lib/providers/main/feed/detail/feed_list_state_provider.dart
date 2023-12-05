@@ -9,7 +9,6 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
@@ -43,10 +42,9 @@ class FeedListState extends _$FeedListState {
   String? contentType;
   String? searchWord;
   int? idxToRemove;
-  int? memberIdx;
+  String? memberUuid;
   List<MemberInfoListData>? memberInfo;
   String? imgDomain;
-  int? loginMemberIdx;
 
   FeedData? tempFeedData;
   ContentImageData? tempContentImageData;
@@ -80,35 +78,32 @@ class FeedListState extends _$FeedListState {
       FeedResponseModel feedResult = feedNullResponseModel;
 
       if (contentType == "myContent") {
-        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: pageKey);
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(page: pageKey);
       } else if (contentType == "myTagContent") {
-        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyTagContentsDetailList(loginMemberIdx: loginMemberIdx, page: pageKey);
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyTagContentsDetailList(page: pageKey);
       } else if (contentType == "userContent" || contentType == "FollowCardContent") {
-        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserContentsDetailList(loginMemberIdx: loginMemberIdx, page: pageKey, memberIdx: memberIdx);
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserContentsDetailList(memberUuid: memberUuid!, page: pageKey);
       } else if (contentType == "userTagContent") {
-        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentDetail(loginMemberIdx: loginMemberIdx, page: pageKey, memberIdx: memberIdx!);
+        feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentDetail(memberUuid: memberUuid!, page: pageKey);
       } else if (contentType == "myLikeContent") {
-        feedResult = await LikeContentsRepository(dio: ref.read(dioProvider)).getLikeDetailContentList(loginMemberIdx: loginMemberIdx!, page: pageKey);
+        feedResult = await LikeContentsRepository(dio: ref.read(dioProvider)).getLikeDetailContentList(page: pageKey);
       } else if (contentType == "mySaveContent") {
-        feedResult = await SaveContentsRepository(dio: ref.read(dioProvider)).getSaveDetailContentList(loginMemberIdx: loginMemberIdx!, page: pageKey);
+        feedResult = await SaveContentsRepository(dio: ref.read(dioProvider)).getSaveDetailContentList(page: pageKey);
       } else if (contentType == "myDetailContent") {
         feedResult = await Future.value(feedNullResponseModel);
       } else if (contentType == "myKeepContent") {
         feedResult = await Future.value(feedNullResponseModel);
       } else if (contentType == "searchContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentDetailList(
-          loginMemberIdx: loginMemberIdx,
           searchWord: searchWord!,
           page: pageKey,
         );
       } else if (contentType == "popularWeekContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getPopularWeekDetailList(
-          loginMemberIdx: loginMemberIdx,
           page: pageKey,
         );
       } else if (contentType == "popularHourContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getPopularHourDetailList(
-          loginMemberIdx: loginMemberIdx,
           page: pageKey,
         );
       } else if (contentType == "notificationContent") {
@@ -125,7 +120,6 @@ class FeedListState extends _$FeedListState {
               keepState: e.keepState,
               followState: e.followState,
               isComment: e.isComment,
-              memberIdx: e.memberIdx,
               isLike: e.isLike,
               saveState: e.saveState,
               likeState: e.likeState,
@@ -187,7 +181,7 @@ class FeedListState extends _$FeedListState {
           tempMyFeedDataIndex = null;
         }
       } else if (type == "postBlock") {
-        ref.read(myFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == contentIdx);
+        ref.read(myFeedStateProvider).itemList!.removeWhere((element) => element.memberUuid == contentIdx);
       }
 
       targetIdx = ref.read(myFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -244,7 +238,7 @@ class FeedListState extends _$FeedListState {
           tempRecentFeedIndex = null;
         }
       } else if (type == "postBlock") {
-        ref.read(recentFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == contentIdx);
+        ref.read(recentFeedStateProvider).itemList!.removeWhere((element) => element.memberUuid == contentIdx);
       }
 
       targetIdx = ref.read(recentFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -301,7 +295,7 @@ class FeedListState extends _$FeedListState {
           tempFollowFeedDataIndex = null;
         }
       } else if (type == "postBlock") {
-        ref.read(followFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == contentIdx);
+        ref.read(followFeedStateProvider).itemList!.removeWhere((element) => element.memberUuid == contentIdx);
       }
 
       targetIdx = ref.read(followFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -358,7 +352,7 @@ class FeedListState extends _$FeedListState {
           tempPopularWeekFeedDataIndex = null;
         }
       } else if (type == "postBlock") {
-        ref.read(popularWeekFeedStateProvider).itemList!.removeWhere((element) => element.memberIdx == contentIdx);
+        ref.read(popularWeekFeedStateProvider).itemList!.removeWhere((element) => element.memberUuid == contentIdx);
       }
 
       targetIdx = ref.read(popularWeekFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
@@ -495,14 +489,13 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> postLike({
-    required loginMemberIdx,
     required contentIdx,
     required String contentType,
   }) async {
     ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
 
     try {
-      final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(memberIdx: loginMemberIdx, contentIdx: contentIdx);
+      final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(contentIdx: contentIdx);
 
       int targetIdx = -1;
 
@@ -552,14 +545,13 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> deleteLike({
-    required loginMemberIdx,
     required contentIdx,
     required String contentType,
   }) async {
     ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
 
     try {
-      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(contentsIdx: contentIdx);
 
       int targetIdx = -1;
 
@@ -609,14 +601,13 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> postSave({
-    required loginMemberIdx,
     required contentIdx,
     required String contentType,
   }) async {
     ref.read(saveApiIsLoadingStateProvider.notifier).state = true;
 
     try {
-      final result = await FeedRepository(dio: ref.read(dioProvider)).postSave(memberIdx: loginMemberIdx, contentIdx: contentIdx);
+      final result = await FeedRepository(dio: ref.read(dioProvider)).postSave(contentIdx: contentIdx);
 
       int targetIdx = -1;
 
@@ -662,14 +653,13 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> deleteSave({
-    required loginMemberIdx,
     required contentIdx,
     required String contentType,
   }) async {
     ref.read(saveApiIsLoadingStateProvider.notifier).state = true;
 
     try {
-      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteSave(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteSave(contentsIdx: contentIdx);
 
       int targetIdx = -1;
 
@@ -716,12 +706,11 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> postKeepContents({
-    required loginMemberIdx,
     required List<int> contentIdxList,
     required contentType,
   }) async {
     try {
-      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).postKeepContents(memberIdx: loginMemberIdx, idxList: contentIdxList);
+      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).postKeepContents(idxList: contentIdxList);
 
       int targetIdx = -1;
 
@@ -760,12 +749,11 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> deleteOneKeepContents({
-    required loginMemberIdx,
     required contentIdx,
     required contentType,
   }) async {
     try {
-      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).deleteOneKeepContents(memberIdx: loginMemberIdx, idx: contentIdx);
+      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).deleteOneKeepContents(idx: contentIdx);
 
       int targetIdx = -1;
 
@@ -804,12 +792,11 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> deleteOneContents({
-    required loginMemberIdx,
     required int contentIdx,
     required contentType,
   }) async {
     try {
-      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteOneContents(memberIdx: loginMemberIdx, idx: contentIdx);
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteOneContents(idx: contentIdx);
 
       int targetIdx = -1;
 
@@ -848,23 +835,17 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> postHide({
-    required loginMemberIdx,
-    required memberIdx,
     required contentIdx,
     required String contentType,
   }) async {
     try {
-      final result = await FeedRepository(dio: ref.read(dioProvider)).postHide(memberIdx: loginMemberIdx, contentIdx: contentIdx);
+      final result = await FeedRepository(dio: ref.read(dioProvider)).postHide(contentIdx: contentIdx);
 
       int targetIdx = -1;
 
-      ref.read(popularUserListStateProvider.notifier).getInitUserList(
-            ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularUserListStateProvider.notifier).getInitUserList();
 
-      ref.read(popularHourFeedStateProvider.notifier).initPosts(
-            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
       if (state.itemList != null) {
         if (idxToRemove == contentIdx) {
@@ -909,21 +890,15 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> deleteHide({
-    required loginMemberIdx,
-    required memberIdx,
     required contentIdx,
     required String contentType,
   }) async {
     try {
-      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteHide(memberIdx: loginMemberIdx, contentsIdx: contentIdx);
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteHide(contentsIdx: contentIdx);
 
-      ref.read(popularUserListStateProvider.notifier).getInitUserList(
-            ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularUserListStateProvider.notifier).getInitUserList();
 
-      ref.read(popularHourFeedStateProvider.notifier).initPosts(
-            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
       if (state.itemList != null) {
         if (isFirstFeedHidden) {
@@ -956,31 +931,25 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> postBlock({
-    required memberIdx,
-    required blockIdx,
-    required contentType,
+    required String blockUuid,
+    String contentType = '',
   }) async {
     try {
       final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
-        memberIdx: memberIdx,
-        blockIdx: blockIdx,
+        blockUuid: blockUuid,
       );
 
-      ref.read(popularUserListStateProvider.notifier).getInitUserList(
-            ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularUserListStateProvider.notifier).getInitUserList();
 
-      ref.read(popularHourFeedStateProvider.notifier).initPosts(
-            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
       if (state.itemList != null) {
-        state.itemList!.removeWhere((element) => element.memberIdx == blockIdx);
+        state.itemList!.removeWhere((element) => element.memberUuid == blockUuid);
         state.notifyListeners();
 
         final firstFeedData = ref.read(firstFeedDetailStateProvider);
         if (firstFeedData != null) {
-          if (firstFeedData.idx == blockIdx) {
+          if (firstFeedData.memberUuid == blockUuid) {
             ref.read(firstFeedDetailStateProvider.notifier).state = null;
             ref.read(firstFeedEmptyProvider.notifier).state = true;
           }
@@ -988,7 +957,7 @@ class FeedListState extends _$FeedListState {
       }
 
       feedRefresh(
-        blockIdx,
+        blockUuid,
         "postBlock",
       );
 
@@ -1003,7 +972,6 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> postContentReport({
-    required int loginMemberIdx,
     required int contentIdx,
     required int reportCode,
     required String? reason,
@@ -1012,19 +980,14 @@ class FeedListState extends _$FeedListState {
     try {
       final result = await FeedRepository(dio: ref.read(dioProvider)).postContentReport(
         reportType: reportType,
-        memberIdx: loginMemberIdx,
         contentIdx: contentIdx,
         reportCode: reportCode,
         reason: reason,
       );
 
-      ref.read(popularUserListStateProvider.notifier).getInitUserList(
-            ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularUserListStateProvider.notifier).getInitUserList();
 
-      ref.read(popularHourFeedStateProvider.notifier).initPosts(
-            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
       int targetIdx = -1;
 
@@ -1070,23 +1033,17 @@ class FeedListState extends _$FeedListState {
 
   Future<ResponseModel> deleteContentReport({
     required String reportType,
-    required int loginMemberIdx,
     required int contentIdx,
   }) async {
     try {
       final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContentReport(
         reportType: reportType,
-        memberIdx: loginMemberIdx,
         contentsIdx: contentIdx,
       );
 
-      ref.read(popularUserListStateProvider.notifier).getInitUserList(
-            ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularUserListStateProvider.notifier).getInitUserList();
 
-      ref.read(popularHourFeedStateProvider.notifier).initPosts(
-            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
       if (state.itemList != null) {
         if (isFirstFeedHidden) {
@@ -1118,18 +1075,18 @@ class FeedListState extends _$FeedListState {
     }
   }
 
-  final Map<int, List<FeedData>?> feedStateMap = {};
-  final Map<int, List<MemberInfoListData>?> feedMemberInfoStateMap = {};
+  final Map<String, List<FeedData>?> feedStateMap = {};
+  final Map<String, List<MemberInfoListData>?> feedMemberInfoStateMap = {};
 
-  void getStateForUser(int? userId) {
-    state.itemList = feedStateMap[userId ?? 0] ?? [FeedData(idx: 0)];
-    memberInfo = feedMemberInfoStateMap[userId ?? 0] ?? [MemberInfoListData()];
+  void getStateForUser(String memberUuid) {
+    state.itemList = feedStateMap[memberUuid] ?? [FeedData(idx: 0)];
+    memberInfo = feedMemberInfoStateMap[memberUuid] ?? [MemberInfoListData()];
 
     state.notifyListeners();
   }
 
-  void saveStateForUser(int? userId) {
-    feedStateMap[userId ?? 0] = state.itemList;
-    feedMemberInfoStateMap[userId ?? 0] = memberInfo;
+  void saveStateForUser(String memberUuid) {
+    feedStateMap[memberUuid] = state.itemList;
+    feedMemberInfoStateMap[memberUuid] = memberInfo;
   }
 }

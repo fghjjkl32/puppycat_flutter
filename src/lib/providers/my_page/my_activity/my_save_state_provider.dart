@@ -19,14 +19,13 @@ class MySaveStateNotifier extends StateNotifier<ContentDataListModel> {
   final Ref ref;
 
   initPosts([
-    memberIdx,
     int? initPage,
   ]) async {
     currentPage = 1;
 
     try {
       final page = initPage ?? state.page;
-      final lists = await SaveContentsRepository(dio: ref.read(dioProvider)).getSaveContents(memberIdx: memberIdx, page: page);
+      final lists = await SaveContentsRepository(dio: ref.read(dioProvider)).getSaveContents(page: page);
 
       maxPages = lists.data.params!.pagination?.endPage ?? 0;
 
@@ -45,7 +44,7 @@ class MySaveStateNotifier extends StateNotifier<ContentDataListModel> {
     }
   }
 
-  loadMorePost(memberIdx) async {
+  loadMorePost() async {
     if (currentPage >= maxPages) {
       state = state.copyWith(isLoadMoreDone: true);
       return;
@@ -62,7 +61,7 @@ class MySaveStateNotifier extends StateNotifier<ContentDataListModel> {
       bf.write(' success');
       state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-      final lists = await SaveContentsRepository(dio: ref.read(dioProvider)).getSaveContents(memberIdx: memberIdx, page: state.page + 1);
+      final lists = await SaveContentsRepository(dio: ref.read(dioProvider)).getSaveContents(page: state.page + 1);
 
       if (lists == null) {
         state = state.copyWith(isLoadMoreError: true, isLoading: false);
@@ -84,8 +83,8 @@ class MySaveStateNotifier extends StateNotifier<ContentDataListModel> {
     }
   }
 
-  Future<void> refresh(memberIdx) async {
-    initPosts(memberIdx, 1);
+  Future<void> refresh() async {
+    initPosts(1);
     currentPage = 1;
   }
 }

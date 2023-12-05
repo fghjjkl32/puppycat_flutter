@@ -3,28 +3,23 @@ import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart'
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 final feedWriteImageTagSearchProvider = StateNotifierProvider<FeedWriteImageTagSearchNotifier, SearchDataListModel>((ref) {
-  final loginMemberIdx = ref.watch(userInfoProvider).userModel!.idx;
-  return FeedWriteImageTagSearchNotifier(loginMemberIdx, ref);
+  return FeedWriteImageTagSearchNotifier(ref);
 });
 
 class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel> {
-  final int loginMemberIdx;
   final Ref ref;
 
-  FeedWriteImageTagSearchNotifier(this.loginMemberIdx, this.ref) : super(const SearchDataListModel()) {
+  FeedWriteImageTagSearchNotifier(this.ref) : super(const SearchDataListModel()) {
     userSearchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
       await searchUserList(query);
     });
   }
 
   final userSearchQuery = PublishSubject<String>();
-
-  int userMemberIdx = 0;
 
   int imageTagMaxPages = 1;
   int imageTagCurrentPage = 1;
@@ -34,13 +29,12 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
   int searchUserMaxPages = 1;
   int searchUserCurrentPage = 1;
 
-  initImageTagUserList([memberIdx, int? initPage]) async {
+  initImageTagUserList([int? initPage]) async {
     imageTagCurrentPage = 1;
 
     try {
       final page = initPage ?? state.page;
       final lists = await SearchRepository(dio: ref.read(dioProvider)).getImageTagRecommendList(
-        memberIdx: memberIdx,
         page: page,
       );
 
@@ -65,7 +59,7 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
     }
   }
 
-  loadMoreUserList(memberIdx) async {
+  loadMoreUserList() async {
     try {
       if (isSearching) {
         if (searchUserCurrentPage >= imageTagMaxPages) {
@@ -85,7 +79,6 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
         state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
         final lists = await SearchRepository(dio: ref.read(dioProvider)).getNickSearchList(
-          memberIdx: memberIdx,
           page: searchUserCurrentPage + 1,
           searchWord: userSearchWord,
         );
@@ -122,7 +115,6 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
         state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
         final lists = await SearchRepository(dio: ref.read(dioProvider)).getMentionRecommendList(
-          memberIdx: memberIdx,
           page: state.page + 1,
         );
 
@@ -154,7 +146,6 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
 
     try {
       final lists = await SearchRepository(dio: ref.read(dioProvider)).getNickSearchList(
-        memberIdx: userMemberIdx,
         page: 1,
         searchWord: searchWord,
       );

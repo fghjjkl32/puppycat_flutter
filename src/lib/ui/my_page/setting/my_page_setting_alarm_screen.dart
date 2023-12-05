@@ -10,6 +10,7 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/setting_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 class MyPageSettingAlarmScreen extends ConsumerStatefulWidget {
   const MyPageSettingAlarmScreen({super.key});
@@ -22,7 +23,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
   @override
   void initState() {
     Future(() {
-      ref.read(settingStateProvider.notifier).initSetting(ref.watch(userInfoProvider).userModel!.idx);
+      ref.read(settingStateProvider.notifier).initSetting();
     });
     super.initState();
   }
@@ -30,22 +31,21 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
   @override
   Widget build(BuildContext context) {
     final switchState = ref.watch(settingStateProvider).switchState;
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
 
     Future<void> onTap(String key, bool value) async {
       int newValue = value ? 1 : 0;
 
       ref.read(settingStateProvider.notifier).updateSwitchState(key, newValue);
 
-      Map<String, dynamic> data = {
-        "memberIdx": "${ref.read(userInfoProvider).userModel!.idx}",
-      };
+      Map<String, dynamic> data = {};
 
       Map<String, int> newSwitchState = Map.from(ref.watch(settingStateProvider).switchState);
 
       data.addAll(newSwitchState);
 
       await ref.read(settingStateProvider.notifier).putSetting(
-            memberIdx: ref.read(userInfoProvider).userModel!.idx,
             body: data,
           );
     }

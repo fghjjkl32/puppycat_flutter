@@ -10,7 +10,6 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_user_search_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 
 class FeedWriteTagSearchScreen extends ConsumerStatefulWidget {
   final Offset offset;
@@ -39,8 +38,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
     super.initState();
 
     Future(() {
-      ref.watch(feedWriteImageTagSearchProvider.notifier).userMemberIdx = ref.watch(userInfoProvider).userModel!.idx;
-      ref.read(feedWriteImageTagSearchProvider.notifier).initImageTagUserList(ref.watch(userInfoProvider).userModel!.idx, 1);
+      ref.read(feedWriteImageTagSearchProvider.notifier).initImageTagUserList(1);
     });
 
     userScrollController.addListener(_scrollListener);
@@ -52,7 +50,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
   void _scrollListener() {
     if (userScrollController.position.pixels > userScrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (userOldLength == ref.read(feedWriteImageTagSearchProvider).list.length) {
-        ref.read(feedWriteImageTagSearchProvider.notifier).loadMoreUserList(ref.watch(userInfoProvider).userModel!.idx);
+        ref.read(feedWriteImageTagSearchProvider.notifier).loadMoreUserList();
       }
     }
   }
@@ -216,7 +214,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                                         Tag(
                                           username: lists[index].nick!,
                                           position: widget.offset,
-                                          memberIdx: lists[index].memberIdx!,
+                                          memberUuid: lists[index].memberUuid!,
                                           imageIndex: widget.imageIdx,
                                         ),
                                         widget.imagePositionIndex,

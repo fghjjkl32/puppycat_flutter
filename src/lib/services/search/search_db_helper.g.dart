@@ -20,9 +20,9 @@ class $SearchesTable extends Searches with TableInfo<$SearchesTable, Searche> {
   static const VerificationMeta _contentIdMeta =
       const VerificationMeta('contentId');
   @override
-  late final GeneratedColumn<int> contentId = GeneratedColumn<int>(
+  late final GeneratedColumn<String> contentId = GeneratedColumn<String>(
       'content_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -141,7 +141,7 @@ class $SearchesTable extends Searches with TableInfo<$SearchesTable, Searche> {
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       contentId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}content_id']),
+          .read(DriftSqlType.string, data['${effectivePrefix}content_id']),
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name']),
       date: attachedDatabase.typeMapping
@@ -167,7 +167,7 @@ class $SearchesTable extends Searches with TableInfo<$SearchesTable, Searche> {
 
 class Searche extends DataClass implements Insertable<Searche> {
   final int id;
-  final int? contentId;
+  final String? contentId;
   final String? name;
   final String? date;
   final String? content;
@@ -190,7 +190,7 @@ class Searche extends DataClass implements Insertable<Searche> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     if (!nullToAbsent || contentId != null) {
-      map['content_id'] = Variable<int>(contentId);
+      map['content_id'] = Variable<String>(contentId);
     }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
@@ -245,7 +245,7 @@ class Searche extends DataClass implements Insertable<Searche> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Searche(
       id: serializer.fromJson<int>(json['id']),
-      contentId: serializer.fromJson<int?>(json['contentId']),
+      contentId: serializer.fromJson<String?>(json['contentId']),
       name: serializer.fromJson<String?>(json['name']),
       date: serializer.fromJson<String?>(json['date']),
       content: serializer.fromJson<String?>(json['content']),
@@ -260,7 +260,7 @@ class Searche extends DataClass implements Insertable<Searche> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'contentId': serializer.toJson<int?>(contentId),
+      'contentId': serializer.toJson<String?>(contentId),
       'name': serializer.toJson<String?>(name),
       'date': serializer.toJson<String?>(date),
       'content': serializer.toJson<String?>(content),
@@ -273,7 +273,7 @@ class Searche extends DataClass implements Insertable<Searche> {
 
   Searche copyWith(
           {int? id,
-          Value<int?> contentId = const Value.absent(),
+          Value<String?> contentId = const Value.absent(),
           Value<String?> name = const Value.absent(),
           Value<String?> date = const Value.absent(),
           Value<String?> content = const Value.absent(),
@@ -328,7 +328,7 @@ class Searche extends DataClass implements Insertable<Searche> {
 
 class SearchesCompanion extends UpdateCompanion<Searche> {
   final Value<int> id;
-  final Value<int?> contentId;
+  final Value<String?> contentId;
   final Value<String?> name;
   final Value<String?> date;
   final Value<String?> content;
@@ -360,7 +360,7 @@ class SearchesCompanion extends UpdateCompanion<Searche> {
   });
   static Insertable<Searche> custom({
     Expression<int>? id,
-    Expression<int>? contentId,
+    Expression<String>? contentId,
     Expression<String>? name,
     Expression<String>? date,
     Expression<String>? content,
@@ -384,7 +384,7 @@ class SearchesCompanion extends UpdateCompanion<Searche> {
 
   SearchesCompanion copyWith(
       {Value<int>? id,
-      Value<int?>? contentId,
+      Value<String?>? contentId,
       Value<String?>? name,
       Value<String?>? date,
       Value<String?>? content,
@@ -412,7 +412,7 @@ class SearchesCompanion extends UpdateCompanion<Searche> {
       map['id'] = Variable<int>(id.value);
     }
     if (contentId.present) {
-      map['content_id'] = Variable<int>(contentId.value);
+      map['content_id'] = Variable<String>(contentId.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);

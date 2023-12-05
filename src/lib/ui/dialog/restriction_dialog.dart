@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/web_view/channel_talk_webview_screen.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 class RestrictionDialog extends ConsumerWidget {
   final bool isForever;
@@ -32,6 +32,9 @@ class RestrictionDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return AlertDialog(
       titlePadding: EdgeInsets.zero,
       insetPadding: const EdgeInsets.symmetric(
@@ -179,17 +182,17 @@ class RestrictionDialog extends ConsumerWidget {
                     child: InkWell(
                       borderRadius: const BorderRadius.only(bottomRight: Radius.circular(20)),
                       onTap: () async {
-                        ref.read(userInfoProvider).userModel == null
+                        isLogined == false
                             ? await ChannelTalk.boot(
                                 pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
                               )
                             : await ChannelTalk.boot(
                                 pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
-                                memberId: ref.read(userInfoProvider).userModel!.uuid,
-                                email: ref.read(userInfoProvider).userModel!.id,
-                                name: '${ref.read(userInfoProvider).userModel!.name}',
-                                memberHash: ref.read(userInfoProvider).userModel!.channelTalkHash,
-                                mobileNumber: '${ref.read(userInfoProvider).userModel!.phone}',
+                                memberId: myInfo.uuid,
+                                email: myInfo.email,
+                                name: myInfo.name,
+                                memberHash: myInfo.channelTalkHash,
+                                mobileNumber: myInfo.phone,
                               );
                         await ChannelTalk.showMessenger();
                       },

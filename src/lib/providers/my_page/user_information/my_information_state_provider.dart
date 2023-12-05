@@ -16,11 +16,11 @@ class MyInformationStateNotifier extends StateNotifier<UserInformationListModel>
 
   final Ref ref;
 
-  getInitUserInformation([
-    memberIdx,
-  ]) async {
+  getInitUserInformation({
+    required String memberUuid,
+  }) async {
     try {
-      final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(memberIdx, memberIdx);
+      final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(memberUuid);
 
       if (lists == null) {
         state = state.copyWith(isLoading: false);

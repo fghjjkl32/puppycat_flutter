@@ -14,11 +14,9 @@ class SettingStateNotifier extends StateNotifier<SettingDataListModel> {
 
   final Ref ref;
 
-  initSetting(
-    memberIdx,
-  ) async {
+  initSetting() async {
     try {
-      final lists = await SettingRepository(dio: ref.read(dioProvider)).getSetting(memberIdx: memberIdx);
+      final lists = await SettingRepository(dio: ref.read(dioProvider)).getSetting();
 
       if (lists == null) {
         return null;
@@ -75,12 +73,11 @@ class SettingStateNotifier extends StateNotifier<SettingDataListModel> {
   }
 
   putSetting({
-    required int memberIdx,
     required Map<String, dynamic> body,
   }) async {
     try {
-      await SettingRepository(dio: ref.read(dioProvider)).putSetting(memberIdx: memberIdx, body: body);
-      await initSetting(memberIdx);
+      await SettingRepository(dio: ref.read(dioProvider)).putSetting(body: body);
+      await initSetting();
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {

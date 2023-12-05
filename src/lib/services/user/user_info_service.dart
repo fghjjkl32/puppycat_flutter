@@ -25,14 +25,8 @@ abstract class UserInfoService {
   );
 
   //User Info
-  @GET('v1/member/info/{memberIdx}?loginMemberIdx={loginMemberIdx}')
+  @GET('v1/member/info/{memberUuid}')
   Future<UserInformationResponseModel> getUserInformation(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("memberIdx") int memberIdx,
-  );
-
-  @GET('v1/member/info/{memberIdx}')
-  Future<UserInformationResponseModel> getLogoutUserInformation(
-    @Path("memberIdx") int memberIdx,
+    @Path("memberUuid") String memberUuid,
   );
 }

@@ -17,7 +17,7 @@ class FeedDetailWidget extends ConsumerWidget {
   final String? profileImage;
   final String? nick;
   final FeedData feedData;
-  final int? memberIdx;
+  final String memberUuid;
   final String contentType;
   final bool isSpecialUser;
   final String imgDomain;
@@ -29,7 +29,7 @@ class FeedDetailWidget extends ConsumerWidget {
     required this.profileImage,
     required this.feedData,
     required this.nick,
-    required this.memberIdx,
+    required this.memberUuid,
     required this.contentType,
     required this.imgDomain,
     required this.isSpecialUser,
@@ -51,11 +51,11 @@ class FeedDetailWidget extends ConsumerWidget {
           address: feedData.location ?? "",
           time: feedData.regDate!,
           isEdit: feedData.modifyState == 1,
-          memberIdx: memberIdx,
+          memberUuid: memberUuid,
           isKeep: feedData.keepState == 1,
           contentType: contentType,
           contentIdx: feedData.idx,
-          oldMemberIdx: memberIdx!,
+          oldMemberUuid: memberUuid,
           isDetailWidget: true,
           onTapHideButton: () async {
             onTapHideButton();
@@ -66,7 +66,7 @@ class FeedDetailWidget extends ConsumerWidget {
           imageList: feedData.imgList!,
           contentIdx: feedData.idx,
           contentType: contentType,
-          memberIdx: memberIdx,
+          memberUuid: memberUuid,
           isLike: feedData.likeState == 1,
           imgDomain: imgDomain,
         ),
@@ -88,7 +88,7 @@ class FeedDetailWidget extends ConsumerWidget {
                   context,
                   kBody13RegularStyle.copyWith(color: kSecondaryColor),
                   ref,
-                  memberIdx,
+                  memberUuid,
                 ),
                 style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
               ),
@@ -102,19 +102,19 @@ class FeedDetailWidget extends ConsumerWidget {
           isLike: feedData.likeState == 1,
           isSave: feedData.saveState == 1,
           contentType: contentType,
-          oldMemberIdx: memberIdx!,
+          oldMemberUuid: memberUuid,
         ),
         feedData.commentList!.isEmpty
             ? Container()
             : FeedCommentWidget(
-                userMemberIdx: feedData.commentList![0].memberIdx!,
+                memberUuid: feedData.commentList![0].memberUuid!,
                 profileImage: feedData.commentList![0].profileImgUrl,
                 name: feedData.commentList![0].nick!,
                 comment: feedData.commentList![0].contents!,
                 isSpecialUser: feedData.commentList![0].isBadge! == 1,
                 mentionListData: feedData.commentList![0].mentionList ?? [],
                 contentIdx: feedData.idx,
-                oldMemberIdx: memberIdx!,
+                oldMemberUuid: memberUuid,
               ),
         Padding(
           padding: EdgeInsets.all(12.0.h),
@@ -123,7 +123,7 @@ class FeedDetailWidget extends ConsumerWidget {
         if (index != 0 && index == 4)
           FeedFollowWidget(
             popularUserListData: ref.watch(popularUserListStateProvider).list,
-            oldMemberIdx: memberIdx!,
+            oldMemberUuid: memberUuid,
           ),
       ],
     );

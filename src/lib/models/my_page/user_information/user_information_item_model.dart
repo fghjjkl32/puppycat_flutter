@@ -6,7 +6,6 @@ part 'user_information_item_model.g.dart';
 @freezed
 class UserInformationItemModel with _$UserInformationItemModel {
   factory UserInformationItemModel({
-    int? memberIdx,
     String? nick,
     String? simpleType,
     String? simpleId,
@@ -23,6 +22,8 @@ class UserInformationItemModel with _$UserInformationItemModel {
     int? blockedMeState,
     int? followState,
     int? isBadge,
+    String? ci,
+    String? di,
 
     //img host
     String? imgDomain,

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -9,12 +8,10 @@ import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart'
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 part 'comment_list_state_provider.g.dart';
 
@@ -50,12 +47,9 @@ class CommentListState extends _$CommentListState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
-
       final searchResult = await CommentRepository(dio: ref.read(dioProvider)).getComment(
         contentIdx: _contentsIdx,
         page: pageKey,
-        memberIdx: loginMemberIdx,
       );
 
       List<CommentData> commentList = _serializationComment(searchResult.data.list);
@@ -92,8 +86,6 @@ class CommentListState extends _$CommentListState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
-
       var currentPageKey = state.nextPageKey!.toInt() - 1;
       var previousPageKey = 0;
       if (currentPageKey != null && currentPageKey > 1) {
@@ -106,7 +98,6 @@ class CommentListState extends _$CommentListState {
       final searchResult = await CommentRepository(dio: ref.read(dioProvider)).getComment(
         contentIdx: _contentsIdx,
         page: previousPageKey,
-        memberIdx: loginMemberIdx,
       );
 
       // var searchList = searchResult.data.list;
@@ -159,34 +150,6 @@ class CommentListState extends _$CommentListState {
         }
       }
     }
-
-    // try {
-    //   if (_childFocusListModel != null && !_isChildMore) {
-    //     CommentData commentData = _childFocusListModel!.list.first;
-    //     int pageNumber = _childFocusListModel!.params!.page!;
-    //     int totalPageCount = _childFocusListModel!.params!.pagination?.totalPageCount! ?? 0;
-    //
-    //     int parentIdx = commentData.parentIdx;
-    //     commentList.removeWhere((element) => element.parentIdx == parentIdx);
-    //     int insertIdx = commentList.indexWhere((element) => element.idx == parentIdx);
-    //     if (insertIdx < 0) {
-    //       return commentList;
-    //     }
-    //
-    //     print('parentIdx $parentIdx / insertIdx $insertIdx');
-    //     commentData = commentData.copyWith(
-    //       isLastDisPlayChild: pageNumber != totalPageCount,
-    //       pageNumber: pageNumber + 1,
-    //       isReply: true,
-    //       isDisplayPreviousMore: pageNumber > 1,
-    //     );
-    //     commentList.insert(insertIdx + 1, commentData);
-    //     // _childFocusListModel = null;
-    //   }
-    // } catch (e) {
-    //   return commentList;
-    // }
-
     return commentList;
   }
 
@@ -226,10 +189,8 @@ class CommentListState extends _$CommentListState {
 
       // _apiStatus = ListAPIStatus.loading;
       _isChildMore = false;
-      var loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
 
       CommentResponseModel searchResult = await CommentRepository(dio: ref.read(dioProvider)).getFocusComments(
-        loginMemberIdx!,
         contentsIdx,
         commentIdx,
       );
@@ -245,7 +206,6 @@ class CommentListState extends _$CommentListState {
           childPage = searchResult.data.params?.page;
 
           searchResult = await CommentRepository(dio: ref.read(dioProvider)).getFocusComments(
-            loginMemberIdx,
             contentsIdx,
             parentIdx,
           );
@@ -264,7 +224,6 @@ class CommentListState extends _$CommentListState {
       final parentPageResult = await CommentRepository(dio: ref.read(dioProvider)).getComment(
         contentIdx: _contentsIdx,
         page: currentPage,
-        memberIdx: loginMemberIdx,
       );
 
       List<CommentData> commentList = _serializationComment(parentPageResult.data.list);
@@ -273,7 +232,6 @@ class CommentListState extends _$CommentListState {
         final childPageResult = await CommentRepository(dio: ref.read(dioProvider)).getReplyComment(
           contentIdx: contentsIdx,
           commentIdx: parentIdx,
-          memberIdx: loginMemberIdx,
           page: childPage,
         );
 
@@ -335,12 +293,9 @@ class CommentListState extends _$CommentListState {
     }
 
     try {
-      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-
       final searchResult = await CommentRepository(dio: ref.read(dioProvider)).getReplyComment(
         contentIdx: contentsIdx,
         commentIdx: commentIdx,
-        memberIdx: loginMemberIdx,
         page: page,
       );
 
@@ -389,14 +344,14 @@ class CommentListState extends _$CommentListState {
     }
   }
 
+  ///TODO
+  ///함수명이랑 기능이랑 안맞음
   Future<ResponseModel> deleteContents({
-    required memberIdx,
     required contentsIdx,
     required commentIdx,
     required parentIdx,
   }) async {
     final result = await CommentRepository(dio: ref.read(dioProvider)).deleteComment(
-      memberIdx: memberIdx,
       contentsIdx: contentsIdx,
       commentIdx: commentIdx,
       parentIdx: parentIdx,
@@ -418,24 +373,21 @@ class CommentListState extends _$CommentListState {
   }
 
   Future<ResponseModel> postContents({
-    required memberIdx,
     required contents,
     required contentIdx,
     int? parentIdx,
   }) async {
-    final result = await CommentRepository(dio: ref.read(dioProvider)).postComment(memberIdx: memberIdx, contents: contents, parentIdx: parentIdx, contentIdx: contentIdx);
+    final result = await CommentRepository(dio: ref.read(dioProvider)).postComment(contents: contents, parentIdx: parentIdx, contentIdx: contentIdx);
 
     return result;
   }
 
   Future<ResponseModel> editContents({
-    required int memberIdx,
     required int commentIdx,
     required String contents,
     required int contentIdx,
   }) async {
     final result = await CommentRepository(dio: ref.read(dioProvider)).editComment(
-      memberIdx: memberIdx,
       contents: contents,
       contentIdx: contentIdx,
       commentIdx: commentIdx,
@@ -445,13 +397,11 @@ class CommentListState extends _$CommentListState {
   }
 
   Future<ResponseModel> postCommentLike({
-    required memberIdx,
     required commentIdx,
-    required contentsIdx,
   }) async {
     ref.read(commentLikeApiIsLoadingStateProvider.notifier).state = true;
 
-    final result = await CommentRepository(dio: ref.read(dioProvider)).postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+    final result = await CommentRepository(dio: ref.read(dioProvider)).postCommentLike(commentIdx: commentIdx);
 
     int targetIdx = -1;
 
@@ -473,13 +423,11 @@ class CommentListState extends _$CommentListState {
   }
 
   Future<ResponseModel> deleteCommentLike({
-    required memberIdx,
     required commentIdx,
-    required contentsIdx,
   }) async {
     ref.read(commentLikeApiIsLoadingStateProvider.notifier).state = true;
 
-    final result = await CommentRepository(dio: ref.read(dioProvider)).deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+    final result = await CommentRepository(dio: ref.read(dioProvider)).deleteCommentLike(commentIdx: commentIdx);
 
     int targetIdx = -1;
 
@@ -501,17 +449,14 @@ class CommentListState extends _$CommentListState {
   }
 
   Future<ResponseModel> postBlock({
-    required contentsIdx,
-    required memberIdx,
-    required blockIdx,
+    required String blockUuid,
   }) async {
     final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
-      memberIdx: memberIdx,
-      blockIdx: blockIdx,
+      blockUuid: blockUuid,
     );
 
     if (state.itemList != null) {
-      state.itemList!.removeWhere((element) => element.memberIdx == blockIdx);
+      state.itemList!.removeWhere((element) => element.uuid == blockUuid);
       state.notifyListeners();
     }
 
@@ -519,7 +464,6 @@ class CommentListState extends _$CommentListState {
   }
 
   Future<ResponseModel> postCommentReport({
-    required int loginMemberIdx,
     required int contentIdx,
     required int reportCode,
     required String? reason,
@@ -527,7 +471,6 @@ class CommentListState extends _$CommentListState {
   }) async {
     final result = await FeedRepository(dio: ref.read(dioProvider)).postContentReport(
       reportType: reportType,
-      memberIdx: loginMemberIdx,
       contentIdx: contentIdx,
       reportCode: reportCode,
       reason: reason,
@@ -553,12 +496,10 @@ class CommentListState extends _$CommentListState {
 
   Future<ResponseModel> deleteCommentReport({
     required String reportType,
-    required int loginMemberIdx,
     required int contentIdx,
   }) async {
     final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContentReport(
       reportType: reportType,
-      memberIdx: loginMemberIdx,
       contentsIdx: contentIdx,
     );
 

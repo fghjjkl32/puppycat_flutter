@@ -10,16 +10,15 @@ part 'feed_service.g.dart';
 abstract class FeedService {
   factory FeedService(Dio dio, {String baseUrl}) = _FeedService;
 
-  @DELETE('v1/contents?memberIdx={memberIdx}&{idx}')
-  Future<ResponseModel> deleteContents(
-    @Path("memberIdx") int memberIdx,
-    @Path("idx") String idx,
-  );
+  // @DELETE('v1/contents?memberIdx={memberIdx}&{idx}')
+  // Future<ResponseModel> deleteContents(
+  //   @Path("memberIdx") int memberIdx,
+  //   @Path("idx") String idx,
+  // );
 
-  @DELETE('v1/contents?memberIdx={memberIdx}&idx={idx}')
+  @DELETE('v1/contents')
   Future<ResponseModel> deleteOneContents(
-    @Path("memberIdx") int memberIdx,
-    @Path("idx") int idx,
+    @Query("idx") int idx,
   );
 
   @POST('v1/{reportType}/{contentsIdx}/report')
@@ -29,58 +28,45 @@ abstract class FeedService {
     @Body() Map<String, dynamic> body,
   );
 
-  @DELETE('v1/{reportType}/{contentsIdx}/report?memberIdx={memberIdx}')
+  @DELETE('v1/{reportType}/{contentsIdx}/report')
   Future<ResponseModel> deleteContentReport(
     @Path("reportType") String reportType,
     @Path("contentsIdx") int contentsIdx,
-    @Path("memberIdx") int memberIdx,
   );
 
   //user page feed list - my
-  @GET('v1/my/contents?memberIdx={memberIdx}&page={page}&limit=15')
+  @GET('v1/my/contents')
   Future<ContentResponseModel> getMyContentList(
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
+    @Query("page") int page,
+    @Query("limit") int limit,
   );
 
-  @GET('v1/my/tag/contents?memberIdx={memberIdx}&page={page}&limit=15')
+  @GET('v1/my/tag/contents')
   Future<ContentResponseModel> getMyTagContentList(
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
+    @Query("page") int page,
+    @Query("limit") int limit,
   );
 
   //user page feed list - user
-  @GET('v1/member/{memberIdx}/contents?loginMemberIdx={loginMemberIdx}&page={page}&limit=15')
+  @GET('v1/member/{memberIdx}/contents')
   Future<ContentResponseModel> getUserContentList(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
+    @Path("memberUuid") String memberUuid,
+    @Query("page") int page,
+    @Query("limit") int limit,
   );
 
-  @GET('v1/member/{memberIdx}/contents?&page={page}&limit=15')
-  Future<ContentResponseModel> getLogoutUserContentList(
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
-  );
-
-  @GET('v1/member/{memberIdx}/tag/contents?loginMemberIdx={loginMemberIdx}&page={page}&limit=15')
+  @GET('v1/member/{memberIdx}/tag/contents')
   Future<ContentResponseModel> getUserTagContentList(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
+    @Path("memberIdx") String memberUuid,
+    @Query("page") int page,
+    @Query("limit") int limit,
   );
 
-  @GET('v1/member/{memberIdx}/tag/contents?&page={page}&limit=15')
-  Future<ContentResponseModel> getLogoutUserTagContentList(
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
-  );
-
-  @GET('v1/search/tag/contents?memberIdx={memberIdx}&imgLimit=12&searchWord={searchWord}&page={page}&limit=15')
+  @GET('v1/search/tag/contents')
   Future<ContentResponseModel> getUserHashtagContentList(
-    @Path("memberIdx") int memberIdx,
     @Path("searchWord") String searchWord,
-    @Path("page") int page,
+    @Query("page") int page,
+    @Query("limit") int limit,
   );
 
   @GET('v1/search/tag/contents?imgLimit=12&searchWord={searchWord}&page={page}&limit=15')
@@ -90,24 +76,20 @@ abstract class FeedService {
   );
 
   //user contents detail
-  @GET('v1/contents/member/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&memberIdx={memberIdx}&page={page}')
+  @GET('v1/contents/member/detail')
   Future<FeedResponseModel> getUserContentDetailList(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
+    @Query("memberUuid") String memberUuid,
+    @Query("page") int page,
+    @Query("limit") int limit,
+    @Query("imgLimit") int imgLimit,
   );
 
-  @GET('v1/contents/member/detail?imgLimit=12&memberIdx={memberIdx}&page={page}')
-  Future<FeedResponseModel> getLogoutUserContentDetailList(
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
-  );
-
-  @GET('v1/contents/tag/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&memberIdx={memberIdx}&page={page}')
+  @GET('v1/contents/tag/detail')
   Future<FeedResponseModel> getUserTagContentDetail(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
+    @Query("memberUuid") String memberUuid,
+    @Query("page") int page,
+    @Query("limit") int limit,
+    @Query("imgLimit") int imgLimit,
   );
 
   @GET('v1/contents/tag/detail?imgLimit=12&memberIdx={memberIdx}&page={page}')
@@ -116,81 +98,70 @@ abstract class FeedService {
     @Path("page") int page,
   );
 
-  @GET('v1/contents/hashtag/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&searchWord={searchWord}&page={page}')
+  @GET('v1/contents/hashtag/detail')
   Future<FeedResponseModel> getUserHashtagContentDetailList(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("searchWord") String searchWord,
-    @Path("page") int page,
-  );
-
-  @GET('v1/contents/hashtag/detail?imgLimit=12&searchWord={searchWord}&page={page}')
-  Future<FeedResponseModel> getLogoutUserHashtagContentDetailList(
-    @Path("searchWord") String searchWord,
-    @Path("page") int page,
+    @Query("searchWord") String searchWord,
+    @Query("page") int page,
+    @Query("limit") int limit,
+    @Query("imgLimit") int imgLimit,
   );
 
   //my contents
-  @GET('v1/my/normal/contents/{contentsIdx}?loginMemberIdx={loginMemberIdx}&imgLimit=12')
+  @GET('v1/my/normal/contents/{contentsIdx}')
   Future<FeedResponseModel> getMyContentDetail(
     @Path("contentsIdx") int contentsIdx,
-    @Path("loginMemberIdx") int loginMemberIdx,
+    @Query('imgLimit') int imgLimit,
   );
 
-  @GET('v1/my/normal/contents/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&memberIdx={memberIdx}&page={page}')
+  @GET('v1/my/normal/contents/detail')
   Future<FeedResponseModel> getMyContentDetailList(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
+    @Query("page") int page,
+    @Query("limit") int limit,
+    @Query("imgLimit") int imgLimit,
   );
 
-  @GET('v1/contents/{contentsIdx}?loginMemberIdx={loginMemberIdx}&imgLimit=12')
+  @GET('v1/contents/{contentsIdx}')
   Future<FeedResponseModel> getContentDetail(
     @Path("contentsIdx") int contentsIdx,
-    @Path("loginMemberIdx") int loginMemberIdx,
+    @Query('imgLimit') int imgLimit,
   );
 
-  @GET('v1/contents/{contentsIdx}?imgLimit=12')
-  Future<FeedResponseModel> getLogoutContentDetail(
-    @Path("contentsIdx") int contentsIdx,
-  );
-
-  @GET('v1/my/tag/contents/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
+  @GET('v1/my/tag/contents/detail')
   Future<FeedResponseModel> getMyTagContentDetailList(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("page") int page,
+    @Query("page") int page,
+    @Query("limit") int limit,
+    @Query("imgLimit") int imgLimit,
   );
 
   //PopularWeek
-  @GET('v1/contents/week/popular/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
+  @GET('v1/contents/week/popular/detail')
   Future<FeedResponseModel> getPopularWeekDetailList(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("page") int page,
+    @Query("page") int page,
+    @Query("limit") int limit,
+    @Query("imgLimit") int imgLimit,
   );
 
   //PopularHour
-  @GET('v1/contents/hour/popular/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
+  @GET('v1/contents/hour/popular/detail')
   Future<FeedResponseModel> getPopularHourDetailList(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("page") int page,
-  );
-
-  @GET('v1/contents/hour/popular/detail?imgLimit=12&&page={page}')
-  Future<FeedResponseModel> getLogoutPopularHourDetailList(
-    @Path("page") int page,
+    @Query("page") int page,
+    @Query("limit") int limit,
+    @Query("imgLimit") int imgLimit,
   );
 
   //follow
-  @GET('v1/main/follow/{loginMemberIdx}?page={page}')
+  @GET('v1/main/follow')
   Future<FeedResponseModel> getFollowDetailList(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("page") int page,
+    @Query("page") int page,
+    @Query("limit") int limit,
   );
 
   //recent
-  @GET('v1/contents/recent/detail?loginMemberIdx={loginMemberIdx}&imgLimit=12&&page={page}')
+  @GET('v1/contents/recent/detail')
   Future<FeedResponseModel> getRecentDetailList(
-    @Path("loginMemberIdx") int loginMemberIdx,
-    @Path("page") int page,
+    @Query("page") int page,
+    @Query("limit") int limit,
+    @Query("imgLimit") int imgLimit,
   );
 
   @GET('v1/contents/recent/detail?imgLimit=12&&page={page}')
@@ -201,37 +172,31 @@ abstract class FeedService {
   @POST('v1/contents/{contentsIdx}/like')
   Future<ResponseModel> postLike(
     @Path("contentsIdx") int contentsIdx,
-    @Body() Map<String, dynamic> body,
   );
 
-  @DELETE('v1/contents/{contentsIdx}/like?memberIdx={memberIdx}')
+  @DELETE('v1/contents/{contentsIdx}/like')
   Future<ResponseModel> deleteLike({
     @Path("contentsIdx") required int contentsIdx,
-    @Path("memberIdx") required int memberIdx,
   });
 
   @POST('v1/contents/{contentsIdx}/save')
   Future<ResponseModel> postSave(
     @Path("contentsIdx") int contentsIdx,
-    @Body() Map<String, dynamic> body,
   );
 
-  @DELETE('v1/contents/{contentsIdx}/save?memberIdx={memberIdx}')
+  @DELETE('v1/contents/{contentsIdx}/save')
   Future<ResponseModel> deleteSave({
     @Path("contentsIdx") required int contentsIdx,
-    @Path("memberIdx") required int memberIdx,
   });
 
   @POST('v1/contents/{contentsIdx}/hide')
   Future<ResponseModel> postHide(
     @Path("contentsIdx") int contentsIdx,
-    @Body() Map<String, dynamic> body,
   );
 
-  @DELETE('v1/contents/{contentsIdx}/hide?memberIdx={memberIdx}')
+  @DELETE('v1/contents/{contentsIdx}/hide')
   Future<ResponseModel> deleteHide({
     @Path("contentsIdx") required int contentsIdx,
-    @Path("memberIdx") required int memberIdx,
   });
 
   @POST("v1/contents")

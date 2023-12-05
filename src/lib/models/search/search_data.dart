@@ -7,20 +7,15 @@ part 'search_data.g.dart';
 class SearchData with _$SearchData {
   factory SearchData({
     String? nick,
-    int? memberIdx,
+    String? memberUuid,
     String? intro,
     String? profileImgUrl,
     int? isBadge,
     int? followerCnt,
-    String? chatMemberId,
-    String? chatHomeServer,
-    String? chatAccessToken,
-    String? chatDeviceId,
     int? favoriteState,
     String? hashTagContentsCnt,
     String? hashTag,
   }) = _SearchData;
 
-  factory SearchData.fromJson(Map<String, dynamic> json) =>
-      _$SearchDataFromJson(json);
+  factory SearchData.fromJson(Map<String, dynamic> json) => _$SearchDataFromJson(json);
 }

@@ -28,6 +28,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -38,14 +39,14 @@ import 'package:thumbor/thumbor.dart';
 class UserMainScreen extends ConsumerStatefulWidget {
   const UserMainScreen({
     super.key,
-    required this.memberIdx,
+    required this.memberUuid,
     required this.nick,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
   });
 
-  final int memberIdx;
+  final String memberUuid;
   final String nick;
-  final int oldMemberIdx;
+  final String oldMemberUuid;
 
   @override
   UserMainScreenState createState() => UserMainScreenState();
@@ -78,14 +79,14 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     // ref.read(myPetListStateProvider.notifier).memberIdx = widget.memberIdx;
     // _myPetListPagingController.refresh(); //이건 ref.read(userTagContentsStateProvider.notifier).memberIdx = widget.memberIdx; 아래에 있었음
     ///산책하기 보류로 주석 처리 완료
-    ref.read(userContentsStateProvider.notifier).memberIdx = widget.memberIdx;
-    ref.read(userTagContentsStateProvider.notifier).memberIdx = widget.memberIdx;
+    ref.read(userContentsStateProvider.notifier).memberUuid = widget.memberUuid;
+    ref.read(userTagContentsStateProvider.notifier).memberUuid = widget.memberUuid;
 
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
 
-    ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
 
     tabController = TabController(
       initialIndex: 0,
@@ -94,7 +95,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     );
 
     Future(() async {
-      ref.watch(userInformationStateProvider.notifier).getInitUserInformation(ref.watch(userInfoProvider).userModel?.idx, widget.memberIdx);
+      ref.watch(userInformationStateProvider.notifier).getInitUserInformation(memberUuid: widget.memberUuid);
       _userContentsListPagingController.refresh();
       _userTagContentsListPagingController.refresh();
     });
@@ -103,11 +104,11 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   }
 
   void _scrollListener() {
-    if (scrollController.offset >= 128.h && appBarColor != kNeutralColor100) {
+    if (scrollController.offset >= 128 && appBarColor != kNeutralColor100) {
       setState(() {
         appBarColor = kNeutralColor100;
       });
-    } else if (scrollController.offset < 128.h && appBarColor != Colors.transparent) {
+    } else if (scrollController.offset < 128 && appBarColor != Colors.transparent) {
       setState(() {
         appBarColor = Colors.transparent;
       });
@@ -123,10 +124,13 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return DefaultOnWillPopScope(
       onWillPop: () async {
-        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
         return Future.value(true);
       },
       child: Material(
@@ -146,8 +150,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       title: Text(widget.nick),
                       leading: IconButton(
                         onPressed: () {
-                          ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-                          ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                          ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                          ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                           Navigator.of(context).pop();
                         },
                         icon: const Icon(
@@ -173,9 +177,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                               'assets/lottie/icon_more_header.json',
                                               repeat: false,
                                             )
-                                          : Padding(
-                                              padding: const EdgeInsets.only(right: 8.0),
-                                              child: const Icon(
+                                          : const Padding(
+                                              padding: EdgeInsets.only(right: 8.0),
+                                              child: Icon(
                                                 Puppycat_social.icon_more_header,
                                                 size: 40,
                                               ),
@@ -190,7 +194,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           showLottieAnimation = false;
                                         });
                                         if (id == 'block') {
-                                          if (ref.read(userInfoProvider).userModel == null) {
+                                          if (!isLogined) {
                                             context.pushReplacement("/loginScreen");
                                           } else {
                                             showDialog(
@@ -233,8 +237,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                       type: ToastType.purple,
                                                     );
                                                     final result = await ref.read(userInformationStateProvider.notifier).postBlock(
-                                                          memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                                                          blockIdx: widget.memberIdx,
+                                                          blockUuid: widget.memberUuid,
                                                         );
 
                                                     if (result.result) {
@@ -296,7 +299,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         final userInformationState = ref.watch(userInformationStateProvider);
                         final lists = userInformationState.list;
 
-                        final isFollow = ref.watch(followUserStateProvider)[widget.memberIdx] ?? false;
+                        final isFollow = ref.watch(followUserStateProvider)[widget.memberUuid] ?? false;
 
                         return lists.isEmpty ? Container() : _myPageSuccessProfile(lists[0], isFollow);
                       }));
@@ -369,12 +372,15 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   }
 
   Widget _firstTabBody() {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
-          if (widget.oldMemberIdx != ref.watch(userInfoProvider).userModel?.idx) {
-            if (widget.oldMemberIdx == 0) return;
-            ref.read(userContentsStateProvider.notifier).memberIdx = widget.oldMemberIdx;
+          if (widget.oldMemberUuid != myInfo.uuid) {
+            if (widget.oldMemberUuid == '') return;
+            ref.read(userContentsStateProvider.notifier).memberUuid = widget.oldMemberUuid;
           }
 
           _userContentsListPagingController.refresh();
@@ -458,7 +464,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         Map<String, dynamic> extraMap = {
                           'firstTitle': '${ref.watch(userInformationStateProvider).list[0].nick}',
                           'secondTitle': '피드',
-                          'memberIdx': '${ref.watch(userInformationStateProvider).list[0].memberIdx}',
+                          'memberUuid': ref.watch(userInformationStateProvider).list[0].uuid,
                           'contentIdx': '${item.idx}',
                           'contentType': 'userContent',
                         };
@@ -537,12 +543,14 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   }
 
   Widget _secondTabBody() {
+    final myInfo = ref.read(myInfoStateProvider);
+
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
-          if (widget.oldMemberIdx != ref.watch(userInfoProvider).userModel?.idx) {
-            if (widget.oldMemberIdx == 0) return;
-            ref.read(userTagContentsStateProvider.notifier).memberIdx = widget.oldMemberIdx;
+          if (widget.oldMemberUuid != myInfo.uuid) {
+            if (widget.oldMemberUuid == '') return;
+            ref.read(userTagContentsStateProvider.notifier).memberUuid = widget.oldMemberUuid;
           }
           _userTagContentsListPagingController.refresh();
         });
@@ -625,7 +633,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         Map<String, dynamic> extraMap = {
                           'firstTitle': '${ref.watch(userInformationStateProvider).list[0].nick}',
                           'secondTitle': '태그됨',
-                          'memberIdx': '${ref.watch(userInformationStateProvider).list[0].memberIdx}',
+                          'memberUuid': ref.watch(userInformationStateProvider).list[0].uuid,
                           'contentIdx': '${item.idx}',
                           'contentType': 'userTagContent',
                         };
@@ -685,6 +693,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   }
 
   Widget _myPageSuccessProfile(UserInformationItemModel data, bool isFollow) {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return FlexibleSpaceBar(
       centerTitle: true,
       expandedTitleScale: 1.0,
@@ -744,7 +755,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       ),
                       GestureDetector(
                         onTap: () {
-                          ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/followList/${widget.memberIdx}");
+                          !isLogined ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/followList/${widget.memberUuid}");
                         },
                         child: Padding(
                           padding: EdgeInsets.only(top: 8.0.h),
@@ -806,14 +817,13 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                             ? Expanded(
                                 child: GestureDetector(
                                   onTap: () async {
-                                    if (ref.read(userInfoProvider).userModel == null) {
+                                    if (!isLogined) {
                                       context.pushReplacement("/loginScreen");
                                     } else {
-                                      ref.watch(userInformationStateProvider.notifier).updateUnBlockState(ref.watch(userInfoProvider).userModel!.idx, widget.memberIdx);
+                                      ref.watch(userInformationStateProvider.notifier).updateUnBlockState(widget.memberUuid);
 
                                       final result = await ref.read(blockStateProvider.notifier).deleteBlock(
-                                            memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                                            blockIdx: widget.memberIdx,
+                                            blockUuid: widget.memberUuid,
                                           );
 
                                       if (result.result) {
@@ -856,18 +866,17 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     ? GestureDetector(
                                         onTap: () async {
                                           if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                            if (ref.read(userInfoProvider).userModel == null) {
+                                            if (!isLogined) {
                                               context.pushReplacement("/loginScreen");
                                             } else {
                                               final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                    followIdx: widget.memberIdx,
+                                                    followUuid: widget.memberUuid,
                                                   );
                                               ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
 
                                               if (result.result) {
                                                 setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
                                                 });
                                               }
                                             }
@@ -892,18 +901,17 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     : GestureDetector(
                                         onTap: () async {
                                           if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                            if (ref.read(userInfoProvider).userModel == null) {
+                                            if (!isLogined) {
                                               context.pushReplacement("/loginScreen");
                                             } else {
                                               final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                    followIdx: widget.memberIdx,
+                                                    followUuid: widget.memberUuid,
                                                   );
                                               ref.watch(userInformationStateProvider.notifier).updateFollowState();
 
                                               if (result.result) {
                                                 setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
+                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
                                                 });
                                               }
                                             }

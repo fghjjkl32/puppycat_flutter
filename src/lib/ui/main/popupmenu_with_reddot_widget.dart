@@ -47,6 +47,8 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
 
   @override
   Widget build(BuildContext context) {
+    final isLogined = ref.read(loginStatementProvider);
+
     return PopupMenuButton(
       offset: Offset(0, 40),
       padding: EdgeInsets.zero,
@@ -55,13 +57,13 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
           showLottieAnimation = false;
         });
         if (id == 'notification') {
-          ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.go("/home/notification");
+          !isLogined ? context.pushReplacement("/loginScreen") : context.go("/home/notification");
         }
         if (id == 'search') {
           context.go("/home/search");
         }
         if (id == 'message') {
-          ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain');
+          !isLogined ? context.pushReplacement("/loginScreen") : context.push('/chatMain');
         }
         if (id == 'setting') {
           context.push("/home/myPage/setting");

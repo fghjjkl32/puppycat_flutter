@@ -48,7 +48,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
       for (var tagData in imgData.imgMemberTagList!) {
         tags.add(Tag(
           username: tagData.nick!,
-          memberIdx: tagData.memberIdx!,
+          memberUuid: tagData.memberUuid!,
           position: Offset(tagData.width!, tagData.height!),
           imageIndex: tagData.imgIdx!,
         ));

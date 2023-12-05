@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
@@ -15,7 +14,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'login_state_provider.g.dart';
 
-final userInfoProvider = StateProvider<UserInfoModel>((ref) => UserInfoModel());
+// final userInfoProvider = StateProvider<UserInfoModel>((ref) => UserInfoModel());
+final signUpUserInfoProvider = StateProvider<UserModel?>((ref) => null);
 final loginStatementProvider = StateProvider<bool>((ref) => ref.read(loginStateProvider) == LoginStatus.success);
 
 @Riverpod(keepAlive: true)
@@ -48,8 +48,19 @@ class LoginState extends _$LoginState {
   }
 
   void loginByUserModel({
-    required UserModel userModel,
+    required UserModel? userModel,
   }) async {
+    //
+    userModel = userModel ?? ref.read(signUpUserInfoProvider);
+    if (userModel == null) {
+      throw APIException(
+        msg: 'userModel is null',
+        code: 'ASP-9999',
+        refer: 'LoginStateProvider',
+        caller: 'loginByUserModel',
+      );
+    }
+
     final loginRepository = LoginRepository(provider: userModel.simpleType, dio: _dioProvider);
 
     try {
@@ -67,6 +78,7 @@ class LoginState extends _$LoginState {
   Future<void> _procLogin(UserModel userModel, [bool isAutoLogin = false]) async {
     ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
     ref.read(myInfoStateProvider.notifier).getMyInfo();
+    ref.read(signUpUserInfoProvider.notifier).state = null;
 
     state = LoginStatus.success;
   }
@@ -79,7 +91,6 @@ class LoginState extends _$LoginState {
       if (result) {
         ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
         ref.read(followUserStateProvider.notifier).resetState();
-        ref.read(userInfoProvider.notifier).state = UserInfoModel();
 
         await TokenController.clearTokens();
 

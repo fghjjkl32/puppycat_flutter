@@ -10,7 +10,6 @@ class FeedData with _$FeedData {
     int? keepState,
     int? followState,
     int? isComment,
-    int? memberIdx,
     int? isLike,
     int? saveState,
     int? isView,
@@ -42,7 +41,7 @@ class FeedCommentData with _$FeedCommentData {
     String? nick,
     int? likeCnt,
     int? isBadge,
-    int? memberIdx,
+    String? memberUuid,
     String? contents,
     String? regDate,
     int? likeState,
@@ -57,7 +56,7 @@ class FeedCommentData with _$FeedCommentData {
 @freezed
 class MentionListData with _$MentionListData {
   factory MentionListData({
-    int? memberIdx,
+    String? memberUuid,
     String? uuid,
     String? nick,
     int? memberState,
@@ -95,7 +94,7 @@ class ImgMemberTagListData with _$ImgMemberTagListData {
   factory ImgMemberTagListData({
     String? nick,
     int? imgIdx,
-    int? memberIdx,
+    String? memberUuid,
     int? isBadge,
     String? profileImgUrl,
     int? followState,
@@ -113,7 +112,7 @@ class MemberInfoListData with _$MemberInfoListData {
     String? simpleType,
     String? nick,
     int? isBadge,
-    int? memberIdx,
+    String? memberUuid,
     int? followerCnt,
     String? intro,
     String? profileImgUrl,

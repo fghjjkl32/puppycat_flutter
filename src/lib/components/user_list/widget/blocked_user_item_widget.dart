@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class BlockUserItemWidget extends ConsumerStatefulWidget {
   const BlockUserItemWidget({
@@ -16,7 +13,7 @@ class BlockUserItemWidget extends ConsumerStatefulWidget {
     required this.userName,
     required this.content,
     required this.isSpecialUser,
-    required this.memberIdx,
+    required this.memberUuid,
     Key? key,
   }) : super(key: key);
 
@@ -24,7 +21,7 @@ class BlockUserItemWidget extends ConsumerStatefulWidget {
   final String userName;
   final String content;
   final bool isSpecialUser;
-  final int memberIdx;
+  final String memberUuid;
 
   @override
   BlockUserItemWidgetState createState() => BlockUserItemWidgetState();
@@ -85,8 +82,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
           GestureDetector(
             onTap: () async {
               final result = await ref.read(blockStateProvider.notifier).deleteBlock(
-                    memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                    blockIdx: widget.memberIdx,
+                    blockUuid: widget.memberUuid,
                   );
 
               if (result.result) {

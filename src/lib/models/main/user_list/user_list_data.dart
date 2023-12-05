@@ -8,7 +8,7 @@ class UserListData with _$UserListData {
   factory UserListData({
     String? nick,
     int? redDotState,
-    int? memberIdx,
+    String? memberUuid,
     String? profileImgUrl,
     String? intro,
     String? regDate,
@@ -16,6 +16,5 @@ class UserListData with _$UserListData {
     int? followerCnt,
   }) = _UserListData;
 
-  factory UserListData.fromJson(Map<String, dynamic> json) =>
-      _$UserListDataFromJson(json);
+  factory UserListData.fromJson(Map<String, dynamic> json) => _$UserListDataFromJson(json);
 }

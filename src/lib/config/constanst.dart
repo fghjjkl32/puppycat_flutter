@@ -16,6 +16,7 @@ import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_p
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -191,7 +192,7 @@ Future<String> processMentionEditedText(String editedText, List<MentionListData>
   return Future.value(editedText);
 }
 
-List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int? oldMemberIdx) {
+List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, String? oldMemberUuid) {
   List<InlineSpan> spans = [];
 
   // Combining both mention and hashtag patterns
@@ -214,18 +215,20 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
         spans.add(WidgetSpan(
           child: GestureDetector(
             onTap: () {
-              ref.read(userInfoProvider).userModel?.idx == mention.memberIdx
+              ref.read(myInfoStateProvider).uuid == mention.uuid
                   ? Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => MyPageMainScreen(
-                          oldMemberIdx: oldMemberIdx!,
+                          oldMemberUuid: oldMemberUuid!,
                         ),
                       ),
                     )
+                  //TODO
+                  //Route 다시
                   : mention.memberState == 0
                       ? context.push("/home/myPage/userUnknown")
-                      : context.push("/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}/${oldMemberIdx}");
+                      : context.push("/home/myPage/followList/${mention.memberUuid}/userPage/${mention.nick}/${mention.memberUuid}/${oldMemberUuid}");
             },
             child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
           ),
@@ -240,7 +243,9 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
         spans.add(WidgetSpan(
           child: GestureDetector(
             onTap: () {
-              context.push("/home/search/$hashtagMatched/$oldMemberIdx");
+              //TODO
+              //Route 다시
+              context.push("/home/search/$hashtagMatched/$oldMemberUuid");
             },
             child: Text('#' + hashtagMatched, style: tagStyle),
           ),
@@ -410,9 +415,9 @@ void onTapHide({
   required WidgetRef ref,
   required String contentType,
   required dynamic contentIdx,
-  required dynamic memberIdx,
+  required String memberUuid,
 }) async {
-  if (ref.read(userInfoProvider).userModel == null) {
+  if (!ref.read(loginStatementProvider)) {
     context.pushReplacement("/loginScreen");
   } else {
     final tempContentIdx = contentIdx;
@@ -423,10 +428,8 @@ void onTapHide({
     context.pop();
 
     final result = await ref.watch(feedListStateProvider.notifier).postHide(
-          loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
           contentType: contentType,
           contentIdx: tempContentIdx,
-          memberIdx: memberIdx,
         );
 
     if (result.result && context.mounted) {
@@ -437,10 +440,8 @@ void onTapHide({
         buttonText: "숨기기 취소",
         buttonOnTap: () async {
           final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
-                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                 contentType: contentType,
                 contentIdx: tempContentIdx,
-                memberIdx: memberIdx,
               );
 
           if (result.result && context.mounted) {
@@ -470,12 +471,10 @@ void onTapReport({
     buttonOnTap: () async {
       final result = reportType
           ? await ref.read(commentListStateProvider.notifier).deleteCommentReport(
-                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                 contentIdx: contentIdx,
                 reportType: reportType ? "comment" : "contents",
               )
           : await ref.read(feedListStateProvider.notifier).deleteContentReport(
-                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                 contentIdx: contentIdx,
                 reportType: reportType ? "comment" : "contents",
               );

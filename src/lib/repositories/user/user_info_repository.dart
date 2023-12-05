@@ -7,7 +7,6 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/services/user/user_info_service.dart';
 
 // final accountRepositoryProvider = Provider((ref) => AccountRepository());
@@ -24,7 +23,16 @@ class UserInfoRepository {
     _userInfoService = UserInfoService(dio, baseUrl: memberBaseUrl);
   }
 
-  Future<bool> restoreAccount(String simpleId) async {
+  Future<bool> restoreAccount(String? simpleId) async {
+    if (simpleId == null || simpleId.isEmpty) {
+      throw APIException(
+        msg: 'ID is Null(or empty).',
+        code: 'ASL-9998',
+        refer: 'UserInfoRepository',
+        caller: 'restoreAccount',
+      );
+    }
+
     Map<String, dynamic> body = {
       "simpleId": simpleId,
     };
@@ -76,25 +84,24 @@ class UserInfoRepository {
     return responseModel.data!.info.first;
   }
 
-  Future<ResponseModel> updateMyInfo(UserModel userInfoModel, XFile? file, String beforeNick, bool isProfileImageDelete, bool isPhoneNumberEdit) async {
+  Future<ResponseModel> updateMyInfo(UserInformationItemModel myInfoModel, XFile? file, String beforeNick, bool isProfileImageDelete, bool isPhoneNumberEdit) async {
     // 기본 파라미터 설정
     Map<String, dynamic> baseParams = {
-      "intro": userInfoModel.introText,
-      "memberIdx": userInfoModel.idx,
-      "name": userInfoModel.name,
+      "intro": myInfoModel.intro,
+      "name": myInfoModel.name,
       "resetState": isProfileImageDelete ? 1 : 0,
     };
 
     // nick 변경이 있는 경우에만 추가
-    if (beforeNick != userInfoModel.nick) {
-      baseParams["nick"] = userInfoModel.nick;
+    if (beforeNick != myInfoModel.nick) {
+      baseParams["nick"] = myInfoModel.nick;
     }
 
     // 본인인증 한 경우에만 추가
     if (isPhoneNumberEdit) {
-      baseParams["phone"] = userInfoModel.phone;
-      baseParams["ci"] = userInfoModel.ci;
-      baseParams["di"] = userInfoModel.di;
+      baseParams["phone"] = myInfoModel.phone;
+      baseParams["ci"] = myInfoModel.ci;
+      baseParams["di"] = myInfoModel.di;
     }
 
     // 파일이 있는 경우에만 추가
@@ -149,17 +156,10 @@ class UserInfoRepository {
   ///여기까지 채팅 교체 주석
 
   //User Info
-  Future<UserInformationResponseModel> getUserInformation(int? loginMemberIdx, int memberIdx) async {
-    UserInformationResponseModel responseModel;
-
-    loginMemberIdx == null
-        ? responseModel = await _userInfoService.getLogoutUserInformation(
-            memberIdx,
-          )
-        : responseModel = await _userInfoService.getUserInformation(
-            loginMemberIdx,
-            memberIdx,
-          );
+  Future<UserInformationResponseModel> getUserInformation(String memberUuid) async {
+    UserInformationResponseModel responseModel = await _userInfoService.getUserInformation(
+      memberUuid,
+    );
 
     if (!responseModel.result) {
       throw APIException(

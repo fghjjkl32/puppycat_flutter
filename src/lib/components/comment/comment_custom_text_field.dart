@@ -1,24 +1,17 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_social_textfield/flutter_social_textfield.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autocomplete_options.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/search/search_data.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/main/comment/comment_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
-import 'package:pet_mobile_social_flutter/ui/main/comment/comment_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 class CommentCustomTextField extends ConsumerStatefulWidget {
   const CommentCustomTextField({required this.contentIdx, super.key});
@@ -36,6 +29,9 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
 
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return Material(
       child: Container(
         color: kNeutralColor100,
@@ -164,7 +160,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                           borderRadius: BorderRadius.all(lineCount <= 2 ? const Radius.circular(50) : const Radius.circular(10)),
                         ),
                         child: TextField(
-                          readOnly: ref.read(userInfoProvider).userModel == null ? true : false,
+                          readOnly: !isLogined ? true : false,
                           focusNode: focusNode,
                           controller: ref.watch(commentValueProvider),
                           onChanged: (text) {
@@ -207,7 +203,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                             fillColor: Colors.transparent,
                             border: InputBorder.none,
                             counterText: "",
-                            hintText: ref.read(userInfoProvider).userModel == null ? "로그인 하면 쓸 수 있어요." : '댓글을 입력해주세요.',
+                            hintText: !isLogined ? "로그인 하면 쓸 수 있어요." : '댓글을 입력해주세요.',
                             hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
                             contentPadding: const EdgeInsets.all(16),
                             suffixIcon: ref.read(commentHeaderProvider).hasInput
@@ -226,14 +222,12 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                                         );
 
                                         await ref.watch(commentListStateProvider.notifier).editContents(
-                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                               contents: tempContents,
                                               contentIdx: widget.contentIdx,
                                               commentIdx: ref.watch(commentHeaderProvider).commentIdx!,
                                             );
                                       } else {
                                         await ref.watch(commentListStateProvider.notifier).postContents(
-                                              memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                               contents: ref.watch(commentValueProvider).value.text,
                                               contentIdx: widget.contentIdx,
                                               parentIdx: ref.watch(commentHeaderProvider).isReply ? ref.watch(commentHeaderProvider).commentIdx : null,

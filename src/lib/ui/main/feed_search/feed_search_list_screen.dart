@@ -9,22 +9,22 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed_search/feed_search_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class FeedSearchListScreen extends ConsumerStatefulWidget {
   const FeedSearchListScreen({
     required this.searchWord,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
     super.key,
   });
 
   final String searchWord;
-  final int oldMemberIdx;
+  final String oldMemberUuid;
 
   @override
   FeedSearchListScreenState createState() => FeedSearchListScreenState();
@@ -37,19 +37,19 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
 
   @override
   void initState() {
-    ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
 
     searchContentController.addListener(_searchScrollListener);
 
-    ref.read(feedSearchStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel?.idx, 1, widget.searchWord);
+    ref.read(feedSearchStateProvider.notifier).initPosts(1, widget.searchWord);
     super.initState();
   }
 
   void _searchScrollListener() {
     if (searchContentController.position.pixels > searchContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (searchOldLength == ref.read(feedSearchStateProvider).list.length) {
-        ref.read(feedSearchStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel?.idx, widget.searchWord);
+        ref.read(feedSearchStateProvider.notifier).loadMorePost(widget.searchWord);
       }
     }
   }
@@ -63,10 +63,12 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
 
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+
     return DefaultOnWillPopScope(
       onWillPop: () async {
-        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
         return Future.value(true);
       },
       child: Material(
@@ -78,8 +80,8 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
             ),
             leading: IconButton(
               onPressed: () {
-                ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-                ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                 Navigator.of(context).pop();
               },
               icon: const Icon(
@@ -174,7 +176,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                           padding: const EdgeInsets.all(12.0),
                           child: RefreshIndicator(
                             onRefresh: () {
-                              return ref.read(feedSearchStateProvider.notifier).refresh(ref.read(userInfoProvider).userModel?.idx, widget.searchWord);
+                              return ref.read(feedSearchStateProvider.notifier).refresh(widget.searchWord);
                             },
                             child: GridView.builder(
                               controller: searchContentController,
@@ -217,7 +219,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                     Map<String, dynamic> extraMap = {
                                       'firstTitle': 'null',
                                       'secondTitle': widget.searchWord,
-                                      'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                                      'memberUuid': myInfo.uuid,
                                       'contentIdx': '${lists[index].idx}',
                                       'contentType': 'searchContent',
                                     };

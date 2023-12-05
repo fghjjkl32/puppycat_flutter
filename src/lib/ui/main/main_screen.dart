@@ -27,15 +27,7 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_
 import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/restrain/restrain_write_provider.dart';
-
-///NOTE
-///2023.11.14.
-///산책하기 보류로 주석 처리
-// import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
-// import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
-///산책하기 보류로 주석 처리 완료
-import 'package:pet_mobile_social_flutter/ui/dialog/restriction_dialog.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/popupmenu_with_reddot_widget.dart';
 import 'package:thumbor/thumbor.dart';
@@ -107,8 +99,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
     Permissions.requestNotificationPermission();
 
-    ref.read(recentFeedStateProvider.notifier).loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
-
     tabController = TabController(vsync: this, length: getTabs().length);
     tabController.index = widget.initialTabIndex;
 
@@ -119,13 +109,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
       _recentFeedListPagingController.refresh();
 
-      ref.read(popularUserListStateProvider.notifier).getInitUserList(
-            ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularUserListStateProvider.notifier).getInitUserList();
 
-      ref.read(popularHourFeedStateProvider.notifier).initPosts(
-            loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
-          );
+      ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
       scrollController.addListener(_myPostScrollListener);
 
@@ -142,7 +128,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
         _followFeedListPagingController.refresh();
 
-        ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
+        ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
       }
 
       ///NOTE
@@ -272,7 +258,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
   void _myPostScrollListener() {
     setState(() {
-      ref.read(userInfoProvider).userModel == null ? _showIcon = false : _showIcon = scrollController.offset > 100.h;
+      ref.read(loginStatementProvider) == false ? _showIcon = false : _showIcon = scrollController.offset > 100.h;
     });
     if (scrollController.position.userScrollDirection != ScrollDirection.idle) {
       setState(() {
@@ -493,6 +479,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   Widget _buttonWidget() {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -505,15 +494,17 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             // if (ref.read(userInfoProvider).userModel != null && !(ref.read(walkStatusStateProvider) == WalkStatus.walking)) {
             //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
             // }
-            ///
-            if (ref.read(userInfoProvider).userModel != null) {
-              await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
-            }
+            ///TODO
+            ///제재 상태 체크
+            ///로직 변경으로 수정 필요
+            // if (!isLogined) {
+            //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
+            // }
 
             ///위 코드로 변경
             ///산책하기 보류로 주석 처리 완료
 
-            if (ref.read(userInfoProvider).userModel == null) {
+            if (!isLogined) {
               if (mounted) {
                 context.pushReplacement("/loginScreen");
               }
@@ -526,7 +517,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             //   return;
             // }
             ///산책하기 보류로 주석 처리 완료
-            else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
+            // else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
+            else {
               final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
 
               final ImagePicker picker = ImagePicker();
@@ -561,19 +553,20 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   },
                 );
               }
-            } else {
-              showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (context) => RestrictionDialog(
-                  isForever: false,
-                  date: ref.watch(restrainWriteStateProvider).restrain.date,
-                  restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-                  startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-                  endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-                ),
-              );
             }
+            // else {
+            //   showDialog(
+            //     barrierDismissible: false,
+            //     context: context,
+            //     builder: (context) => RestrictionDialog(
+            //       isForever: false,
+            //       date: ref.watch(restrainWriteStateProvider).restrain.date,
+            //       restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
+            //       startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
+            //       endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
+            //     ),
+            //   );
+            // }
           },
           child: Consumer(builder: (context, ref, _) {
             return const Icon(
@@ -642,14 +635,18 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             //               ),
             //             );
             // }
-            if (ref.read(userInfoProvider).userModel != null) {
-              await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
-            }
+            ///TODO
+            ///제재 상태 체크
+            ///로직 변경으로 수정 필요
+            // if (ref.read(userInfoProvider).userModel != null) {
+            //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
+            // }
 
             if (mounted) {
-              if (ref.read(userInfoProvider).userModel == null) {
+              if (!isLogined) {
                 context.pushReplacement("/loginScreen");
-              } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
+                // } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
+              } else {
                 final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
 
                 InstaAssetPicker.pickAssets(
@@ -674,19 +671,20 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                     );
                   },
                 );
-              } else {
-                showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) => RestrictionDialog(
-                    isForever: false,
-                    date: ref.watch(restrainWriteStateProvider).restrain.date,
-                    restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-                    startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-                    endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-                  ),
-                );
               }
+              // else {
+              //   showDialog(
+              //     barrierDismissible: false,
+              //     context: context,
+              //     builder: (context) => RestrictionDialog(
+              //       isForever: false,
+              //       date: ref.watch(restrainWriteStateProvider).restrain.date,
+              //       restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
+              //       startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
+              //       endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
+              //     ),
+              //   );
+              // }
             }
             // setState(() {
             //   showLottieAnimation = true;
@@ -727,11 +725,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             width: _showIcon ? 36.0 : 0.0,
             child: Opacity(
               opacity: _showIcon ? 1.0 : 0.0,
-              child: ref.read(userInfoProvider).userModel?.profileImgUrl == null || ref.read(userInfoProvider).userModel?.profileImgUrl == ""
+              child: myInfo.profileImgUrl == null || myInfo.profileImgUrl!.isEmpty
                   ? WidgetMask(
                       blendMode: BlendMode.srcATop,
                       childSaveLayer: true,
-                      mask: Center(
+                      mask: const Center(
                         child: Icon(
                           Puppycat_social.icon_profile_small,
                           size: 22,
@@ -748,7 +746,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       childSaveLayer: true,
                       mask: Center(
                         child: Image.network(
-                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${ref.read(userInfoProvider).userModel!.profileImgUrl}").toUrl(),
+                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${myInfo.profileImgUrl}").toUrl(),
                           height: 22.h,
                           width: double.infinity,
                           fit: BoxFit.cover,
@@ -767,6 +765,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   Widget _firstTab() {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
@@ -776,13 +777,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
           _recentFeedListPagingController.refresh();
 
-          ref.read(popularUserListStateProvider.notifier).getInitUserList(
-                ref.read(userInfoProvider).userModel?.idx,
-              );
+          ref.read(popularUserListStateProvider.notifier).getInitUserList();
 
-          ref.read(popularHourFeedStateProvider.notifier).initPosts(
-                loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
-              );
+          ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
           scrollController.addListener(_myPostScrollListener);
 
@@ -793,7 +790,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             _followFeedListPagingController.refresh();
 
-            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
+            ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
           }
         });
       },
@@ -861,7 +858,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: item.memberInfoList![0].nick!,
                   profileImage: item.memberInfoList?[0].profileImgUrl! ?? "",
-                  oldMemberIdx: ref.read(userInfoProvider).userModel?.idx,
+                  oldMemberUuid: myInfo.uuid ?? '',
                   firstTitle: item.memberInfoList![0].nick!,
                   secondTitle: '피드',
                   imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
@@ -874,7 +871,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       ref: ref,
                       contentType: 'userContent',
                       contentIdx: item.idx,
-                      memberIdx: item.memberIdx,
+                      memberUuid: item.memberUuid!,
                     );
                   },
                 );
@@ -887,6 +884,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   Widget _thirdTab() {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
@@ -896,13 +896,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
           _recentFeedListPagingController.refresh();
 
-          ref.read(popularUserListStateProvider.notifier).getInitUserList(
-                ref.read(userInfoProvider).userModel?.idx,
-              );
+          ref.read(popularUserListStateProvider.notifier).getInitUserList();
 
-          ref.read(popularHourFeedStateProvider.notifier).initPosts(
-                loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
-              );
+          ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
           scrollController.addListener(_myPostScrollListener);
 
@@ -913,7 +909,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             _followFeedListPagingController.refresh();
 
-            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
+            ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
           }
         });
       },
@@ -947,7 +943,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   profileImage: ref.read(followFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? item.memberInfoList![0].profileImgUrl! ?? "",
-                  oldMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                  oldMemberUuid: myInfo.uuid ?? '',
                   firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   secondTitle: '피드',
                   imageDomain: ref.read(followFeedStateProvider.notifier).imgDomain!,
@@ -960,7 +956,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       ref: ref,
                       contentType: 'userContent',
                       contentIdx: item.idx,
-                      memberIdx: item.memberIdx,
+                      memberUuid: item.memberUuid!,
                     );
                   },
                 );
@@ -1020,7 +1016,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'userContent',
                   userName: item.memberInfoList![0].nick!,
                   profileImage: item.memberInfoList![0].profileImgUrl! ?? "",
-                  oldMemberIdx: ref.read(userInfoProvider).userModel?.idx,
+                  oldMemberUuid: myInfo.uuid ?? '',
                   // firstTitle: "null",
                   firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
                   // secondTitle: '인기 급상승',
@@ -1035,7 +1031,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       ref: ref,
                       contentType: 'userContent',
                       contentIdx: item.idx,
-                      memberIdx: item.memberIdx,
+                      memberUuid: item.memberUuid!,
                     );
                   },
                   // feedType: 'follow',
@@ -1049,6 +1045,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   Widget _fourthTab() {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
@@ -1058,13 +1057,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
           _recentFeedListPagingController.refresh();
 
-          ref.read(popularUserListStateProvider.notifier).getInitUserList(
-                ref.read(userInfoProvider).userModel?.idx,
-              );
+          ref.read(popularUserListStateProvider.notifier).getInitUserList();
 
-          ref.read(popularHourFeedStateProvider.notifier).initPosts(
-                loginMemberIdx: ref.read(userInfoProvider).userModel?.idx,
-              );
+          ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
           scrollController.addListener(_myPostScrollListener);
 
@@ -1075,7 +1070,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             _followFeedListPagingController.refresh();
 
-            ref.read(favoriteUserListStateProvider.notifier).getInitUserList(ref.read(userInfoProvider).userModel!.idx);
+            ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
           }
         });
       },
@@ -1121,42 +1116,41 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                           height: 48,
                           child: ElevatedButton(
                             onPressed: () {
-                              ref.read(userInfoProvider).userModel == null
+                              !isLogined
                                   ? context.pushReplacement("/loginScreen")
-                                  : ref.watch(restrainWriteStateProvider).restrain.state == null
-                                      ? InstaAssetPicker.pickAssets(
-                                          context,
-                                          maxAssets: 12,
-                                          pickerTheme: themeData(context).copyWith(
-                                            canvasColor: kNeutralColor100,
-                                            colorScheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).colorScheme.copyWith(
-                                                  background: kNeutralColor100,
-                                                ),
-                                            appBarTheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).appBarTheme.copyWith(
-                                                  backgroundColor: kNeutralColor100,
-                                                ),
-                                          ),
-                                          onCompleted: (cropStream) {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) => FeedWriteScreen(
-                                                  cropStream: cropStream,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        )
-                                      : showDialog(
-                                          barrierDismissible: false,
-                                          context: context,
-                                          builder: (context) => RestrictionDialog(
-                                            isForever: false,
-                                            date: ref.watch(restrainWriteStateProvider).restrain.date,
-                                            restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-                                            startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-                                            endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
+                                  : InstaAssetPicker.pickAssets(
+                                      context,
+                                      maxAssets: 12,
+                                      pickerTheme: themeData(context).copyWith(
+                                        canvasColor: kNeutralColor100,
+                                        colorScheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).colorScheme.copyWith(
+                                              background: kNeutralColor100,
+                                            ),
+                                        appBarTheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).appBarTheme.copyWith(
+                                              backgroundColor: kNeutralColor100,
+                                            ),
+                                      ),
+                                      onCompleted: (cropStream) {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => FeedWriteScreen(
+                                              cropStream: cropStream,
+                                            ),
                                           ),
                                         );
+                                      },
+                                    );
+                              // : showDialog(
+                              //     barrierDismissible: false,
+                              //     context: context,
+                              //     builder: (context) => RestrictionDialog(
+                              //       isForever: false,
+                              //       date: ref.watch(restrainWriteStateProvider).restrain.date,
+                              //       restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
+                              //       startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
+                              //       endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
+                              //     ),
+                              //   );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: kPrimaryColor,
@@ -1205,7 +1199,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   contentType: 'myContent',
                   userName: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
                   profileImage: ref.read(myFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
-                  oldMemberIdx: ref.read(userInfoProvider).userModel!.idx,
+                  oldMemberUuid: myInfo.uuid ?? '',
                   firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
                   secondTitle: '피드',
                   imageDomain: ref.read(myFeedStateProvider.notifier).imgDomain!,
@@ -1218,7 +1212,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       ref: ref,
                       contentType: 'myContent',
                       contentIdx: item.idx,
-                      memberIdx: item.memberIdx,
+                      memberUuid: item.memberUuid!,
                     );
                   },
                 );
@@ -1234,12 +1228,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
 
     final loginState = ref.watch(loginStateProvider);
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.watch(loginStatementProvider);
 
     return Padding(
       padding: EdgeInsets.only(
         top: isBigDevice ? 50 : 5,
       ),
-      child: loginState == LoginStatus.success
+      child: isLogined
           ? Consumer(builder: (context, ref, child) {
               final userListState = ref.watch(favoriteUserListStateProvider);
               final userListLists = userListState.memberList;
@@ -1247,7 +1243,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
               return Row(
                 children: [
                   Padding(
-                    key: ValueKey(ref.watch(userInfoProvider).userModel?.profileImgUrl),
+                    key: ValueKey(myInfo.profileImgUrl),
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: () {
@@ -1255,7 +1251,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       },
                       child: Column(
                         children: [
-                          buildWidgetMask(ref.read(userInfoProvider).userModel?.profileImgUrl ?? "", ref.read(userInfoProvider).userModel?.isBadge, null),
+                          buildWidgetMask(myInfo.profileImgUrl ?? "", myInfo.isBadge, null),
                           const SizedBox(height: 4.0),
                           Text(
                             "my",
@@ -1274,9 +1270,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              ref.read(userInfoProvider).userModel?.idx == userListLists[index].memberIdx
+                              myInfo.uuid == userListLists[index].memberUuid
                                   ? context.push("/home/myPage")
-                                  : context.push("/home/myPage/followList/${userListLists[index].memberIdx}/userPage/${userListLists[index].nick}/${userListLists[index].memberIdx}/0");
+                                  : context.push("/home/myPage/followList/${userListLists[index].memberUuid}/userPage/${userListLists[index].nick}/${userListLists[index].memberUuid}/0");
                             },
                             child: Column(
                               children: [

@@ -19,7 +19,6 @@ class RecentFeedState extends _$RecentFeedState {
 
   List<MemberInfoListData>? memberInfo;
   String? imgDomain;
-  int? loginMemberIdx;
 
   @override
   PagingController<int, FeedData> build() {
@@ -37,7 +36,6 @@ class RecentFeedState extends _$RecentFeedState {
       _apiStatus = ListAPIStatus.loading;
 
       var feedResult = await FeedRepository(dio: ref.read(dioProvider)).getRecentDetailList(
-        loginMemberIdx: loginMemberIdx,
         page: pageKey,
       );
 
@@ -51,7 +49,6 @@ class RecentFeedState extends _$RecentFeedState {
               keepState: e.keepState,
               followState: e.followState,
               isComment: e.isComment,
-              memberIdx: e.memberIdx,
               isLike: e.isLike,
               saveState: e.saveState,
               likeState: e.likeState,

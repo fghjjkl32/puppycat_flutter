@@ -11,18 +11,12 @@ import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 
-final feedWriteProvider =
-    StateNotifierProvider<PostFeedWriteNotifier, PostFeedState>((ref) {
+final feedWriteProvider = StateNotifierProvider<PostFeedWriteNotifier, PostFeedState>((ref) {
   return PostFeedWriteNotifier([], ref);
 });
 
 class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
-  PostFeedWriteNotifier(List<TagImages> initialTags, this.ref)
-      : super(PostFeedState(
-            initialTagList: initialTags,
-            tagList: [],
-            tagImage: [],
-            offsetCount: 0));
+  PostFeedWriteNotifier(List<TagImages> initialTags, this.ref) : super(PostFeedState(initialTagList: initialTags, tagList: [], tagImage: [], offsetCount: 0));
 
   final Ref ref;
 
@@ -58,15 +52,13 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
       }
 
       newTags.add(tag);
-      newTagImage[existingImageIndex] =
-          newTagImage[existingImageIndex].copyWith(tag: newTags);
+      newTagImage[existingImageIndex] = newTagImage[existingImageIndex].copyWith(tag: newTags);
     } else {
       newTagImage.add(TagImages(index: imageIndex, tag: [tag]));
     }
 
     // 새로운 태그 이미지로 상태를 업데이트하고, offsetCount를 1 증가시킵니다.
-    state = state.copyWith(
-        tagImage: newTagImage, offsetCount: state.offsetCount + 1);
+    state = state.copyWith(tagImage: newTagImage, offsetCount: state.offsetCount + 1);
   }
 
   // 태그를 저장하는 함수입니다. 현재 상태를 그대로 저장합니다.
@@ -92,8 +84,7 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     }
 
     // 새로운 태그 이미지로 상태를 업데이트하고, offsetCount를 1개 감소시킵니다.
-    state = state.copyWith(
-        tagImage: newTagImage, offsetCount: state.offsetCount - 1);
+    state = state.copyWith(tagImage: newTagImage, offsetCount: state.offsetCount - 1);
   }
 
   //이미지를 삭제하면서 해당 이미지에 연결된 모든 태그를 함께 삭제
@@ -104,8 +95,7 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     // 이미지 인덱스보다 큰 모든 태그 이미지의 인덱스를 1 감소시킵니다.
     for (var i = 0; i < newTagImage.length; i++) {
       if (newTagImage[i].index > imageIndex) {
-        newTagImage[i] =
-            newTagImage[i].copyWith(index: newTagImage[i].index - 1);
+        newTagImage[i] = newTagImage[i].copyWith(index: newTagImage[i].index - 1);
       }
     }
 
@@ -135,23 +125,21 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
 
   Future<ResponseModel> postFeed({
     required List<File> files,
-    required int memberIdx,
     required int isView,
     String? location,
     String? contents,
     required PostFeedState feedState,
   }) async {
     try {
-    final result = await FeedRepository(dio: ref.read(dioProvider)).postFeed(
-      files: files,
-      memberIdx: memberIdx,
-      isView: isView,
-      location: location,
-      contents: contents,
-      feedState: feedState,
-    );
+      final result = await FeedRepository(dio: ref.read(dioProvider)).postFeed(
+        files: files,
+        isView: isView,
+        location: location,
+        contents: contents,
+        feedState: feedState,
+      );
 
-    return result;
+      return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       throw apiException.toString();
@@ -162,7 +150,6 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
   }
 
   Future<ResponseModel> putFeed({
-    required int memberIdx,
     required int isView,
     String? location,
     String? contents,
@@ -171,17 +158,16 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
     required List<TagImages> initialTagList,
   }) async {
     try {
-    final result = await FeedRepository(dio: ref.read(dioProvider)).putFeed(
-      memberIdx: memberIdx,
-      isView: isView,
-      location: location,
-      contents: contents,
-      feedState: feedState,
-      contentIdx: contentIdx,
-      initialTagList: initialTagList,
-    );
+      final result = await FeedRepository(dio: ref.read(dioProvider)).putFeed(
+        isView: isView,
+        location: location,
+        contents: contents,
+        feedState: feedState,
+        contentIdx: contentIdx,
+        initialTagList: initialTagList,
+      );
 
-    return result;
+      return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       throw apiException.toString();

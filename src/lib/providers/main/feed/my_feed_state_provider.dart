@@ -5,7 +5,6 @@ import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart'
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -37,10 +36,7 @@ class MyFeedState extends _$MyFeedState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
       var feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(
-        loginMemberIdx: loginMemberIdx,
-        memberIdx: loginMemberIdx,
         page: pageKey,
       );
       memberInfo = feedResult.data!.memberInfo;
@@ -53,7 +49,6 @@ class MyFeedState extends _$MyFeedState {
               keepState: e.keepState,
               followState: e.followState,
               isComment: e.isComment,
-              memberIdx: e.memberIdx,
               isLike: e.isLike,
               saveState: e.saveState,
               likeState: e.likeState,

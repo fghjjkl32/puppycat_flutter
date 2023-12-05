@@ -53,8 +53,8 @@ class SignUpCompleteScreen extends ConsumerWidget {
                   height: 48.h,
                   child: ElevatedButton(
                     onPressed: () {
-                      var userModel = ref.read(userInfoProvider).userModel;
-                      ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel!);
+                      final userModel = ref.read(signUpUserInfoProvider);
+                      ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kPrimaryColor,

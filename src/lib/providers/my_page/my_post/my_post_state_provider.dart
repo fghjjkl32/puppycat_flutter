@@ -27,13 +27,13 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
 
   final Ref ref;
 
-  initMyPosts([memberIdx, int? initPage]) async {
+  initMyPosts([int? initPage]) async {
     myCurrentPage = 1;
 
     try {
       final page = initPage ?? state.myPostState.page;
 
-      final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(loginMemberIdx: memberIdx, page: page);
+      final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(page: page);
 
       myPostMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
@@ -91,7 +91,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     }
   }
 
-  loadMoreMyPost(memberIdx) async {
+  loadMoreMyPost() async {
     if (myCurrentPage >= myPostMaxPages) {
       state = state.copyWith(myPostState: state.myPostState.copyWith(isLoadMoreDone: true));
       return;
@@ -109,7 +109,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
 
       state = state.copyWith(myPostState: state.myPostState.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-      final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(loginMemberIdx: memberIdx, page: state.myPostState.page + 1);
+      final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(page: state.myPostState.page + 1);
 
       if (lists == null) {
         state = state.copyWith(myPostState: state.myPostState.copyWith(isLoadMoreError: true, isLoading: false));
@@ -133,8 +133,8 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     }
   }
 
-  Future<void> refreshMyPost(memberIdx) async {
-    initMyPosts(memberIdx, 1);
+  Future<void> refreshMyPost() async {
+    initMyPosts(1);
     myCurrentPage = 1;
   }
 
@@ -142,12 +142,12 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     return List<int>.generate(state.myPostState.list.length, (i) => i).where((index) => state.myPostState.selectOrder[index] != -1).map((index) => state.myPostState.list[index].idx).toList();
   }
 
-  Future<ResponseModel> postKeepContents({required memberIdx, required idxList}) async {
+  Future<ResponseModel> postKeepContents({required List<int> idxList}) async {
     try {
-      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).postKeepContents(memberIdx: memberIdx, idxList: idxList);
+      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).postKeepContents(idxList: idxList);
 
-      await refreshMyKeeps(memberIdx);
-      await refreshMyPost(memberIdx);
+      await refreshMyKeeps();
+      await refreshMyPost();
 
       resetMyPostSelection();
       resetMyKeepSelection();
@@ -162,12 +162,12 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     }
   }
 
-  initMyKeeps([memberIdx, int? initPage]) async {
+  initMyKeeps([int? initPage]) async {
     myKeepCurrentPage = 1;
 
     try {
       final page = initPage ?? state.myKeepState.page;
-      final lists = await KeepContentsRepository(dio: ref.read(dioProvider)).getKeepContents(memberIdx: memberIdx, page: page);
+      final lists = await KeepContentsRepository(dio: ref.read(dioProvider)).getKeepContents(page: page);
 
       myKeepMaxPages = lists.data.params!.pagination?.endPage ?? 0;
 
@@ -225,7 +225,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     }
   }
 
-  loadMoreMyKeeps(memberIdx) async {
+  loadMoreMyKeeps() async {
     if (myKeepCurrentPage >= myKeepMaxPages) {
       state = state.copyWith(myKeepState: state.myKeepState.copyWith(isLoadMoreDone: true));
       return;
@@ -243,7 +243,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
 
       state = state.copyWith(myKeepState: state.myKeepState.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false));
 
-      final lists = await KeepContentsRepository(dio: ref.read(dioProvider)).getKeepContents(memberIdx: memberIdx, page: state.myKeepState.page + 1);
+      final lists = await KeepContentsRepository(dio: ref.read(dioProvider)).getKeepContents(page: state.myKeepState.page + 1);
 
       if (lists == null) {
         state = state.copyWith(myKeepState: state.myKeepState.copyWith(isLoadMoreError: true, isLoading: false));
@@ -267,17 +267,17 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     }
   }
 
-  Future<void> refreshMyKeeps(memberIdx) async {
-    initMyKeeps(memberIdx, 1);
+  Future<void> refreshMyKeeps() async {
+    initMyKeeps(1);
     myKeepCurrentPage = 1;
   }
 
-  Future<ResponseModel> deleteKeepContents({required memberIdx, required idx}) async {
+  Future<ResponseModel> deleteKeepContents({required idx}) async {
     try {
-      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).deleteKeepContents(memberIdx: memberIdx, idx: idx);
+      final result = await KeepContentsRepository(dio: ref.read(dioProvider)).deleteKeepContents(idx: idx);
 
-      await refreshMyKeeps(memberIdx);
-      await refreshMyPost(memberIdx);
+      await refreshMyKeeps();
+      await refreshMyPost();
 
       resetMyPostSelection();
       resetMyKeepSelection();
@@ -311,12 +311,12 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     return indices.join('&');
   }
 
-  Future<ResponseModel> deleteContents({required memberIdx, required idx}) async {
+  Future<ResponseModel> deleteContents({required idx}) async {
     try {
-      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContents(memberIdx: memberIdx, idx: idx);
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteContents(idx: idx);
 
-      await refreshMyKeeps(memberIdx);
-      await refreshMyPost(memberIdx);
+      await refreshMyKeeps();
+      await refreshMyPost();
 
       resetMyPostSelection();
       resetMyKeepSelection();

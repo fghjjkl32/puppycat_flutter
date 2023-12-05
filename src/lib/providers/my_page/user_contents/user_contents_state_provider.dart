@@ -3,11 +3,8 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -20,9 +17,9 @@ final userContentsFeedTotalCountProvider = StateProvider<int>((ref) => 0);
 class UserContentsState extends _$UserContentsState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
-  int? memberIdx;
+  String? memberUuid;
 
-  final Map<int, List<ContentImageData>> userContentStateMap = {};
+  final Map<String, List<ContentImageData>> userContentStateMap = {};
 
   @override
   PagingController<int, ContentImageData> build() {
@@ -39,8 +36,7 @@ class UserContentsState extends _$UserContentsState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var loginMemberIdx = ref.read(userInfoProvider).userModel?.idx;
-      var result = await FeedRepository(dio: ref.read(dioProvider)).getUserContentList(loginMemberIdx: loginMemberIdx, memberIdx: memberIdx, page: pageKey);
+      var result = await FeedRepository(dio: ref.read(dioProvider)).getUserContentList(memberUuid: memberUuid!, page: pageKey);
 
       ref.read(userContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination?.totalRecordCount! ?? 0;
 
@@ -54,7 +50,7 @@ class UserContentsState extends _$UserContentsState {
           )
           .toList();
 
-      userContentStateMap[memberIdx!] = feedList;
+      userContentStateMap[memberUuid!] = feedList;
 
       try {
         _lastPage = result.data.params!.pagination?.totalPageCount! ?? 0;
@@ -81,7 +77,7 @@ class UserContentsState extends _$UserContentsState {
     }
   }
 
-  void getStateForUserContent(int userIdx) {
-    state.itemList = userContentStateMap[userIdx] ?? [const ContentImageData(idx: 0, imgUrl: '', imageCnt: 0)];
+  void getStateForUserContent(String memberUuid) {
+    state.itemList = userContentStateMap[memberUuid] ?? [const ContentImageData(idx: 0, imgUrl: '', imageCnt: 0)];
   }
 }

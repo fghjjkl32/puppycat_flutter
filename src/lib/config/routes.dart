@@ -138,23 +138,23 @@ class AppRouter {
               },
             ),
             GoRoute(
-              path: 'search/:searchWord/:oldMemberIdx',
-              name: 'search/:searchWord/:oldMemberIdx',
+              path: 'search/:searchWord/:oldMemberUuid',
+              name: 'search/:searchWord/:oldMemberUuid',
               builder: (BuildContext context, GoRouterState state) {
                 final searchWord = state.pathParameters['searchWord']!;
-                final oldMemberIdx = state.pathParameters['oldMemberIdx']!;
+                final oldMemberUuid = state.pathParameters['oldMemberUuid']!;
                 return FeedSearchListScreen(
                   searchWord: searchWord,
-                  oldMemberIdx: int.parse(oldMemberIdx),
+                  oldMemberUuid: oldMemberUuid,
                 );
               },
             ),
             GoRoute(
-              path: 'commentDetail/:contentIdx/:oldMemberIdx',
-              name: 'commentDetail/:contentIdx/:oldMemberIdx',
+              path: 'commentDetail/:contentIdx/:oldMemberUuid',
+              name: 'commentDetail/:contentIdx/:oldMemberUuid',
               builder: (BuildContext context, GoRouterState state) {
                 final contentIdx = state.pathParameters['contentIdx']!;
-                final oldMemberIdx = state.pathParameters['oldMemberIdx']!;
+                final oldMemberUuid = state.pathParameters['oldMemberUuid']!;
 
                 final extraData = state.extra;
                 int? commentFocusIndex;
@@ -168,7 +168,7 @@ class AppRouter {
                 return CommentDetailScreen(
                   contentsIdx: int.parse(contentIdx),
                   commentFocusIndex: commentFocusIndex,
-                  oldMemberIdx: int.parse(oldMemberIdx),
+                  oldMemberUuid: oldMemberUuid,
                 );
               },
             ),
@@ -184,7 +184,7 @@ class AppRouter {
               name: 'myPage',
               builder: (BuildContext context, GoRouterState state) {
                 return const MyPageMainScreen(
-                  oldMemberIdx: 0,
+                  oldMemberUuid: '',
                 );
               },
               routes: [
@@ -283,7 +283,7 @@ class AppRouter {
                   builder: (BuildContext context, GoRouterState state) {
                     String firstTitle = '';
                     String secondTitle = '';
-                    String memberIdx = '0';
+                    String memberUuid = '';
                     String contentIdx = '0';
                     String contentType = '';
 
@@ -304,8 +304,8 @@ class AppRouter {
                       if (extraMap.keys.contains('secondTitle')) {
                         secondTitle = extraMap['secondTitle'];
                       }
-                      if (extraMap.keys.contains('memberIdx')) {
-                        memberIdx = extraMap['memberIdx'];
+                      if (extraMap.keys.contains('memberUuid')) {
+                        memberUuid = extraMap['memberUuid'];
                       }
                       if (extraMap.keys.contains('contentIdx')) {
                         contentIdx = extraMap['contentIdx'];
@@ -318,12 +318,12 @@ class AppRouter {
                     return FeedDetailScreen(
                       firstTitle: firstTitle,
                       secondTitle: secondTitle,
-                      memberIdx: int.parse(memberIdx.isEmpty ? "0" : memberIdx),
+                      memberUuid: memberUuid,
                       contentIdx: int.parse(contentIdx),
                       contentType: contentType,
                       isRouteComment: isRouteComment,
                       commentFocusIndex: commentFocusIndex,
-                      oldMemberIdx: 0,
+                      oldMemberUuid: '',
                     );
                   },
                 ),
@@ -359,26 +359,26 @@ class AppRouter {
                           ]),
                     ]),
                 GoRoute(
-                    path: 'followList/:memberIdx',
-                    name: 'followList/:memberIdx',
+                    path: 'followList/:memberUuid',
+                    name: 'followList/:memberUuid',
                     builder: (BuildContext context, GoRouterState state) {
-                      final memberIdx = state.pathParameters['memberIdx']!;
+                      final memberUuid = state.pathParameters['memberUuid']!;
                       return MyPageFollowListScreen(
-                        memberIdx: int.parse(memberIdx),
+                        memberUuid: memberUuid,
                       );
                     },
                     routes: [
                       GoRoute(
-                        path: 'userPage/:nick/:userIdx/:oldMemberIdx',
-                        name: 'userPage/:nick/:userIdx/:oldMemberIdx',
+                        path: 'userPage/:nick/:memberUuid/:oldMemberUuid',
+                        name: 'userPage/:nick/:memberUuid/:oldMemberUuid',
                         builder: (BuildContext context, GoRouterState state) {
-                          final memberIdx = state.pathParameters['userIdx']!;
+                          final memberUuid = state.pathParameters['memberUuid']!;
                           final nick = state.pathParameters['nick']!;
-                          final oldMemberIdx = state.pathParameters['oldMemberIdx']!;
+                          final oldMemberUuid = state.pathParameters['oldMemberUuid']!;
                           return UserMainScreen(
-                            memberIdx: int.parse(memberIdx),
+                            memberUuid: memberUuid,
                             nick: nick,
-                            oldMemberIdx: int.parse(oldMemberIdx),
+                            oldMemberUuid: oldMemberUuid,
                           );
                         },
                       )

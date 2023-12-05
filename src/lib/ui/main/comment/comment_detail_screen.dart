@@ -8,19 +8,18 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class CommentDetailScreen extends ConsumerStatefulWidget {
   final int contentsIdx;
   final int? commentFocusIndex;
-  final int oldMemberIdx;
+  final String oldMemberUuid;
 
   const CommentDetailScreen({
     required this.contentsIdx,
     this.commentFocusIndex,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
     super.key,
   });
 
@@ -149,9 +148,9 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
                           // replies: item.childCommentData,
                           contentIdx: item.contentsIdx,
                           isLike: item.likeState == 1,
-                          memberIdx: item.memberIdx,
+                          memberUuid: item.memberUuid,
                           mentionListData: item.mentionList ?? [],
-                          oldMemberIdx: widget.oldMemberIdx,
+                          oldMemberUuid: widget.oldMemberUuid,
                           isLastDisPlayChild: item.isLastDisPlayChild,
                           // remainChildCount: item.remainChildCount,
                           onMoreChildComment: (page) {
@@ -178,7 +177,6 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
                           },
                           onTapRemoveButton: () async {
                             final result = await ref.read(commentListStateProvider.notifier).deleteContents(
-                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                   contentsIdx: item.contentsIdx,
                                   commentIdx: item.idx,
                                   parentIdx: item.parentIdx,

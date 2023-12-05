@@ -1,7 +1,6 @@
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -33,12 +32,24 @@ class APIErrorState extends _$APIErrorState {
 
     switch (code) {
       case 'EJOI-7777':
+        final loginData = apiException.arguments?.first;
+        if (loginData != null) {
+          if (loginData is UserModel) {
+            ref.read(signUpUserInfoProvider.notifier).state = loginData;
+          }
+        }
         ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.signUpScreen);
         break;
       case 'ERES-9999': // 제재 상태
         ref.read(loginStateProvider.notifier).state = LoginStatus.restriction;
         break;
       case 'EOUT-7777': // 탈퇴 대기
+        final loginData = apiException.arguments?.first;
+        if (loginData != null) {
+          if (loginData is UserModel) {
+            ref.read(signUpUserInfoProvider.notifier).state = loginData;
+          }
+        }
         ref.read(loginStateProvider.notifier).state = LoginStatus.withdrawalPending;
         break;
       case 'ENIC-3998': // 유효하지 않은 문자
@@ -85,12 +96,14 @@ class APIErrorState extends _$APIErrorState {
       case 'ATK-9999': //App Token, Access Token 재발행 시 Refresh Token 이 null 일 때, 따로 로직 추가해야할거 같긴함
         break;
       case 'ECOM-9999':
+      case 'ASL-9998':
         await TokenController.clearTokens();
 
         ref.read(loginStateProvider.notifier).state = LoginStatus.none;
-        ref.read(userInfoProvider.notifier).state = UserInfoModel();
         ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
+        ref.read(signUpUserInfoProvider.notifier).state = null;
         break;
+      // case 'ASP-9999': //회원가입 후 바로 로그인했는데  userModel이  null일 때
       default:
         final goRouter = ref.read(routerProvider);
         goRouter.pushNamed('error_dialog', extra: code);

@@ -28,8 +28,8 @@ import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_c
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:uni_links/uni_links.dart';
 
 InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 9723);
@@ -190,6 +190,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
     print("payload ::: ${payload}");
     // context.push('/home/notification');
     final router = ref.watch(routerProvider);
+    final myInfo = ref.read(myInfoStateProvider);
     // router.go('/home/notification');
 
     PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
@@ -204,16 +205,14 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
       case PushType.metion_contents:
       case PushType.like_contents:
       case PushType.img_tag:
-        var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-        router.push("/home/myPage/detail/Contents/피드/$loginMemberIdx/${payload.contentsIdx}/notificationContent");
+        router.push("/home/myPage/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
         break;
 
       case PushType.new_comment:
       case PushType.new_reply:
       case PushType.mention_comment:
       case PushType.like_comment:
-        var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-        router.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${payload.contentsIdx}/notificationContent", extra: {
+        router.push("/home/myPage/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
           "isRouteComment": true,
           "focusIdx": payload.commentIdx,
         });
@@ -258,7 +257,9 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
 
   @override
   Widget build(BuildContext context) {
-    final router = ref.watch(routerProvider);
+    print('asdasdasd2222222');
+    final router = ref.read(routerProvider);
+    print('asdasdasd');
     return ScreenUtilInit(
       designSize: const Size(360, 640),
       // scaleByHeight: true,

@@ -3,12 +3,9 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_data.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/content_like_user_list/content_like_user_list_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -21,7 +18,6 @@ class ContentLikeUserListState extends _$ContentLikeUserListState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
 
-  int? memberIdx;
   int? contentsIdx;
 
   @override
@@ -41,7 +37,6 @@ class ContentLikeUserListState extends _$ContentLikeUserListState {
 
       var result = await ContentLikeUserListRepository(dio: ref.read(dioProvider)).getContentLikeUserList(
         contentsIdx: contentsIdx!,
-        memberIdx: memberIdx,
         page: pageKey,
       );
 
@@ -51,7 +46,7 @@ class ContentLikeUserListState extends _$ContentLikeUserListState {
               nick: e.nick,
               followState: e.followState,
               isBadge: e.isBadge,
-              memberIdx: e.memberIdx,
+              memberUuid: e.memberUuid,
               followerCnt: e.followerCnt,
               intro: e.intro,
               profileImgUrl: e.profileImgUrl,

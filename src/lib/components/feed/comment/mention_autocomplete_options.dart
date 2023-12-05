@@ -5,7 +5,6 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
@@ -38,7 +37,7 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
   void _commentScrollListener() {
     if (mentionController.position.pixels > mentionController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (mentionOldLength == ref.read(searchStateProvider).list.length) {
-        ref.read(searchStateProvider.notifier).loadMoreMentionSearchList(ref.read(userInfoProvider).userModel!.idx);
+        ref.read(searchStateProvider.notifier).loadMoreMentionSearchList();
       }
     }
   }

@@ -15,12 +15,9 @@ class PopularHourFeedStateNotifier extends StateNotifier<FeedDataListModel> {
 
   final Ref ref;
 
-  initPosts({
-    required loginMemberIdx,
-  }) async {
+  initPosts() async {
     try {
       final lists = await FeedRepository(dio: ref.read(dioProvider)).getPopularHourDetailList(
-        loginMemberIdx: loginMemberIdx,
         page: 1,
       );
       state = state.copyWith(totalCount: lists.data!.params!.pagination?.totalRecordCount! ?? 0);
