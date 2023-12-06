@@ -16,15 +16,6 @@ class JWTRepository {
   }
 
   Future<String> getAccessToken(String? refreshToken) async {
-    if (refreshToken == null) {
-      throw APIException(
-        msg: 'Refresh Token is Null.',
-        code: 'ECOM-9999',
-        refer: 'JWTRepository',
-        caller: 'getAccessToken',
-      );
-    }
-
     JWTResponseModel responseModel = await _jwtService.getAccessToken({
       'refreshToken': refreshToken,
     });
@@ -59,7 +50,7 @@ class JWTRepository {
     return responseModel.data!['accessToken'];
   }
 
-  Future<void> checkRefreshToken(String? refreshToken) async {
+  Future<bool> checkRefreshToken(String? refreshToken) async {
     if (refreshToken == null) {
       throw APIException(
         msg: 'Refresh Token is Null.',
@@ -81,5 +72,7 @@ class JWTRepository {
         caller: 'checkRefreshToken',
       );
     }
+
+    return responseModel.result;
   }
 }

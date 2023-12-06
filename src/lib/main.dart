@@ -30,7 +30,6 @@ import 'package:pet_mobile_social_flutter/controller/notification/notification_c
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:uni_links/uni_links.dart';
 
 InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 9723);
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -160,30 +159,25 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
   void initLocalNotification() {
     NotificationController notificationController = NotificationController();
     notificationController.initNotification(navigatorHandler);
-
-    print(isAppLinkHandled);
-    print(isAppLinkHandled);
-    print(isAppLinkHandled);
-    print(isAppLinkHandled);
-    print(isAppLinkHandled);
-
-    getInitialLink().then((link) {
-      // if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
-      //   isAppLinkHandled = true;
-      //   final router = ref.watch(routerProvider);
-      //   router.push("/loginScreen/signupScreen/toss");
-      // }
-    });
-
-    linkStream.listen((String? link) {
-      if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
-        isAppLinkHandled = true;
-        final router = ref.watch(routerProvider);
-        router.push("/loginScreen/signupScreen/toss");
-      }
-    }, onError: (err) {
-      // Handle the error here
-    });
+    //
+    //
+    // getInitialLink().then((link) {
+    //   // if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
+    //   //   isAppLinkHandled = true;
+    //   //   final router = ref.watch(routerProvider);
+    //   //   router.push("/loginScreen/signupScreen/toss");
+    //   // }
+    // });
+    //
+    // linkStream.listen((String? link) {
+    //   if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
+    //     isAppLinkHandled = true;
+    //     final router = ref.watch(routerProvider);
+    //     router.push("/loginScreen/signupScreen/toss");
+    //   }
+    // }, onError: (err) {
+    //   // Handle the error here
+    // });
   }
 
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
@@ -257,9 +251,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
 
   @override
   Widget build(BuildContext context) {
-    print('asdasdasd2222222');
-    final router = ref.read(routerProvider);
-    print('asdasdasd');
+    final router = ref.watch(routerProvider);
     return ScreenUtilInit(
       designSize: const Size(360, 640),
       // scaleByHeight: true,

@@ -6,6 +6,7 @@ class TokenController {
   static const storage = FlutterSecureStorage();
   static const String refreshTokenName = 'REFRESH_TOKEN';
   static const String accessTokenName = 'ACCESS_TOKEN';
+  static String? _refreshToken;
 
   static Future<bool> checkRefreshToken() async {
     if (await readRefreshToken() == null) {
@@ -28,7 +29,14 @@ class TokenController {
   }
 
   static Future<String?> readRefreshToken() async {
-    String? token = await readStorage(key: refreshTokenName);
+    String? token = _refreshToken;
+
+    token ??= await readStorage(key: refreshTokenName);
+
+    if (token != null) {
+      _refreshToken = token;
+    }
+
     return token;
   }
 

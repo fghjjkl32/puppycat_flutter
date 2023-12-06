@@ -856,7 +856,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 return FeedMainWidget(
                   feedData: item,
                   contentType: 'userContent',
-                  userName: item.memberInfoList![0].nick!,
+                  userName: item.memberInfoList![0].nick ?? '',
                   profileImage: item.memberInfoList?[0].profileImgUrl! ?? "",
                   oldMemberUuid: myInfo.uuid ?? '',
                   firstTitle: item.memberInfoList![0].nick!,
@@ -1230,7 +1230,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     final loginState = ref.watch(loginStateProvider);
     final myInfo = ref.read(myInfoStateProvider);
     final isLogined = ref.watch(loginStatementProvider);
-
+    print('main isLogined $isLogined');
     return Padding(
       padding: EdgeInsets.only(
         top: isBigDevice ? 50 : 5,

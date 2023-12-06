@@ -132,14 +132,19 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
     //   }
     // });
     _splashTimer = Timer.periodic(const Duration(milliseconds: 1000), (timer) {
+      print('splash tick ${timer.tick} / $_splashTimerTick');
+
       if (_splashTimerTick < 3) {
         _splashTimerTick++;
         return;
       }
 
       if (ref.read(_initStateProvider)) {
+        print('splash timer 1');
         checkPushAppLaunch();
+        print('splash timer 2');
         _splashTimer.cancel();
+        print('splash timer 3');
         ref.read(splashStateProvider.notifier).state = true;
       } else {
         _splashTimerTick = 0;

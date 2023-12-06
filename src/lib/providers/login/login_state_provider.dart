@@ -16,7 +16,7 @@ part 'login_state_provider.g.dart';
 
 // final userInfoProvider = StateProvider<UserInfoModel>((ref) => UserInfoModel());
 final signUpUserInfoProvider = StateProvider<UserModel?>((ref) => null);
-final loginStatementProvider = StateProvider<bool>((ref) => ref.read(loginStateProvider) == LoginStatus.success);
+final loginStatementProvider = StateProvider<bool>((ref) => ref.watch(loginStateProvider) == LoginStatus.success);
 
 @Riverpod(keepAlive: true)
 class LoginState extends _$LoginState {
@@ -109,7 +109,16 @@ class LoginState extends _$LoginState {
       final refreshToken = await TokenController.readRefreshToken();
       try {
         JWTRepository jwtRepository = JWTRepository(dio: _dioProvider);
-        await jwtRepository.checkRefreshToken(refreshToken);
+        final isValid = await jwtRepository.checkRefreshToken(refreshToken);
+        if (isValid) {
+          print('auto login 1');
+          state = LoginStatus.success;
+          ref.read(loginRouteStateProvider.notifier).state = LoginRoute.success;
+        } else {
+          print('auto login 2');
+          state = LoginStatus.none;
+          ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
+        }
       } on APIException catch (apiException) {
         ///checkRefreshToken 응답으로 받을 수 있는 오류라면  ECOM-9999 밖에 없음
         ///즉, Refresh Token이 유효하지 않을 때뿐

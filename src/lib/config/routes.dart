@@ -369,19 +369,19 @@ class AppRouter {
                     },
                     routes: [
                       GoRoute(
-                        path: 'userPage/:nick/:memberUuid/:oldMemberUuid',
-                        name: 'userPage/:nick/:memberUuid/:oldMemberUuid',
+                        path: 'userPage/:nick/:memUuid/:oldMemberUuid',
+                        name: 'userPage/:nick/:memUuid/:oldMemberUuid',
                         builder: (BuildContext context, GoRouterState state) {
-                          final memberUuid = state.pathParameters['memberUuid']!;
-                          final nick = state.pathParameters['nick']!;
-                          final oldMemberUuid = state.pathParameters['oldMemberUuid']!;
+                          final memberUuid = state.pathParameters['memUuid'];
+                          final nick = state.pathParameters['nick'];
+                          final oldMemberUuid = state.pathParameters['oldMemberUuid'];
                           return UserMainScreen(
-                            memberUuid: memberUuid,
-                            nick: nick,
-                            oldMemberUuid: oldMemberUuid,
+                            memberUuid: memberUuid ?? '',
+                            nick: nick ?? '',
+                            oldMemberUuid: oldMemberUuid ?? '',
                           );
                         },
-                      )
+                      ),
                     ]),
                 GoRoute(
                   path: 'myActivity',
