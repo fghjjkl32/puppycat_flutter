@@ -11,7 +11,6 @@ import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_i
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
-import 'package:pet_mobile_social_flutter/config/theme/size_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -61,17 +60,6 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
         }
       }
     });
-
-    if (widget.imageList[0].imgWidth! > widget.imageList[0].imgHeight!) {
-      width = 336.0;
-      height = 251.7;
-    } else if (widget.imageList[0].imgWidth! < widget.imageList[0].imgHeight!) {
-      width = 273.2;
-      height = 364.0;
-    } else {
-      width = 336.0;
-      height = 336.0;
-    }
   }
 
   @override
@@ -82,6 +70,18 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
 
   @override
   Widget build(BuildContext context) {
+    // if (widget.imageList[0].imgWidth! > widget.imageList[0].imgHeight!) {
+    //   //가로가 더 길때
+    //   width = MediaQuery.of(context).size.width * (4 / 3);
+    //   height = MediaQuery.of(context).size.width;
+    // } else if (widget.imageList[0].imgWidth! < widget.imageList[0].imgHeight!) {
+    //   //세로가 더 길때
+    //   width = MediaQuery.of(context).size.width;
+    //   height = MediaQuery.of(context).size.width * (4 / 3);
+    // } else {
+    //   width = MediaQuery.of(context).size.width;
+    //   height = MediaQuery.of(context).size.width;
+    // }
     return Column(
       children: [
         GestureDetector(
@@ -106,7 +106,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
           },
           child: CarouselSlider(
             options: CarouselOptions(
-              height: height,
+              height: MediaQuery.of(context).size.width,
               enableInfiniteScroll: false,
               viewportFraction: 1.0,
               onPageChanged: (index, reason) {
@@ -117,17 +117,22 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
               return Stack(
                 children: [
                   Padding(
-                    padding: kPrimarySideFeedImagePadding,
+                    padding: EdgeInsets.all(12.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
-                      child: CachedNetworkImage(
-                        placeholder: (context, url) => Container(
-                          color: kPreviousNeutralColor300,
+                      child: Container(
+                        color: kBlackColor,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width,
+                        child: CachedNetworkImage(
+                          placeholder: (context, url) => Container(
+                            color: kPreviousNeutralColor300,
+                          ),
+                          imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${i.url}").toUrl(),
+                          // fit: BoxFit.cover,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.width,
                         ),
-                        imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${i.url}").toUrl(),
-                        fit: BoxFit.cover,
-                        width: width,
-                        height: height,
                       ),
                       // ZoomOverlay(
                       //   modalBarrierColor: Colors.black12, // Optional
@@ -255,7 +260,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
         ),
         if (widget.imageList.length != 1)
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0.h),
+            padding: EdgeInsets.symmetric(vertical: 8.0),
             child: DotIndicator(
               counter: _counter,
               imageListLength: widget.imageList.length,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
-import 'package:pet_mobile_social_flutter/config/theme/size_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:thumbor/thumbor.dart';
@@ -25,22 +24,19 @@ class FeedImageMainWidget extends StatelessWidget {
       child: Column(
         children: [
           if (imageList.length == 1) ...[
-            Container(
-              height: 266.h,
-              child: Padding(
-                padding: kPrimarySideFeedImagePadding,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: CachedNetworkImage(
-                    imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
-                    placeholder: (context, url) => Container(
-                      color: kPreviousNeutralColor300,
-                    ),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                    fit: BoxFit.cover,
-                    height: 266.h,
-                    width: double.infinity,
+            AspectRatio(
+              aspectRatio: 1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: CachedNetworkImage(
+                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
+                  placeholder: (context, url) => Container(
+                    color: kPreviousNeutralColor300,
                   ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  fit: BoxFit.cover,
+                  height: 266.h,
+                  width: double.infinity,
                 ),
               ),
             ),
@@ -60,7 +56,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       ),
                       errorWidget: (context, url, error) => Icon(Icons.error),
                       fit: BoxFit.cover,
-                      height: 266.h,
+                      height: MediaQuery.of(context).size.width.floor().toDouble(),
                       width: double.infinity,
                     ),
                   ),
@@ -81,7 +77,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].url!}").toUrl(),
                       errorWidget: (context, url, error) => Icon(Icons.error),
                       fit: BoxFit.cover,
-                      height: 266.h,
+                      height: MediaQuery.of(context).size.width.floor().toDouble(),
                       width: double.infinity,
                     ),
                   ),
@@ -103,7 +99,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       ),
                       imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
                       fit: BoxFit.cover,
-                      height: 266.h,
+                      height: MediaQuery.of(context).size.width.floor().toDouble(),
                       width: double.infinity,
                     ),
                   ),
@@ -124,7 +120,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           ),
                           imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].url!}").toUrl(),
                           fit: BoxFit.cover,
-                          height: 132.h,
+                          height: (MediaQuery.of(context).size.width / 2).floor().toDouble() - 1,
                           width: double.infinity,
                         ),
                       ),
@@ -141,7 +137,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           ),
                           imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[2].url!}").toUrl(),
                           fit: BoxFit.cover,
-                          height: 132.h,
+                          height: (MediaQuery.of(context).size.width / 2).floor().toDouble() - 1,
                           width: double.infinity,
                         ),
                       ),
@@ -165,7 +161,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       ),
                       imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
                       fit: BoxFit.cover,
-                      height: 266.h,
+                      height: MediaQuery.of(context).size.width.floor().toDouble(),
                       width: double.infinity,
                     ),
                   ),
@@ -187,7 +183,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].url!}").toUrl(),
                           fit: BoxFit.cover,
                           width: double.infinity,
-                          height: 132.h,
+                          height: (MediaQuery.of(context).size.width / 2).floor().toDouble() - 1,
                         ),
                       ),
                       SizedBox(
@@ -205,15 +201,20 @@ class FeedImageMainWidget extends StatelessWidget {
                               ),
                               imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[2].url!}").toUrl(),
                               fit: BoxFit.cover,
-                              height: 132.h,
+                              height: (MediaQuery.of(context).size.width / 2).floor().toDouble() - 1,
                               width: double.infinity,
                             ),
                           ),
                           Positioned.fill(
                             child: Opacity(
                               opacity: 0.5,
-                              child: Container(
-                                color: Colors.black,
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  bottomRight: Radius.circular(12.0),
+                                ),
+                                child: Container(
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ),

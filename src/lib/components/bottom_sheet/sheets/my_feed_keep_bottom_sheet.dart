@@ -82,7 +82,7 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
                 ),
                 child: Center(
                   child: Text(
-                    "보관",
+                    "보관하기",
                     style: kButton14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                   ),
                 ),

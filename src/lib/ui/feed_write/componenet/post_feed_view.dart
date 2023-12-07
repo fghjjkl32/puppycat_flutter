@@ -49,8 +49,8 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
           AnimatedContainer(
             duration: kThemeChangeDuration,
             curve: Curves.easeInOut,
-            height: 250.h,
-            width: 270.w,
+            height: 290,
+            width: 290,
             child: Column(
               children: <Widget>[
                 CroppedImagesListView(
