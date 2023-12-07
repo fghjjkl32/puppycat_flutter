@@ -144,7 +144,7 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                       height: 12,
                                     ),
                                     Text(
-                                      '장소를 찾을 수 없습니다.',
+                                      '장소를 찾을 수 없어요.',
                                       textAlign: TextAlign.center,
                                       style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                     ),

@@ -18,6 +18,7 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_conten
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_information_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/edit_cropped_images_list_view.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/edit_tag_screen.dart';
@@ -241,7 +242,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                     maxLines: 6,
                     decoration: InputDecoration(
                         counterText: "",
-                        hintText: '내용을 입력해 주세요.\n\n작성한 글에 대한 책임은 본인에게 있습니다.\n운영 정책에 위반되는(폭력성, 선정성, 욕설 등) 피드는 당사자의 동의 없이 삭제될 수 있습니다.',
+                        hintText: "내용을 입력해 주세요. (최대 500자)\n\n운영 정책에 위반되는 폭력/선정/욕설 등은\n'${ref.read(userInfoProvider).userModel!.nick}'님에게 책임이 있으며 동의 없이 삭제될 수 있어요.",
                         hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                         contentPadding: const EdgeInsets.all(16)),
                     name: 'content',
@@ -297,7 +298,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                         ? Padding(
                             padding: EdgeInsets.only(left: 16.0.w),
                             child: Text(
-                              "위치를 선택해주세요.",
+                              "위치를 추가해 주세요.",
                               style: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                             ),
                           )

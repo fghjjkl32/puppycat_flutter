@@ -89,7 +89,7 @@ class NotificationFollowItem extends StatelessWidget {
                                 text: name.length > 13 ? '${name.substring(0, 13)}...' : name,
                                 style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                               ),
-                              const TextSpan(text: '님이 나를 팔로우하기 시작했습니다.'),
+                              const TextSpan(text: '님이 나를 팔로우했어요.'),
                             ],
                           ),
                         ),

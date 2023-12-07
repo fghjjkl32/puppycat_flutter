@@ -97,51 +97,53 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
           bottom: TabBar(
               controller: tabController,
               indicatorWeight: 2.4,
-              labelColor: kPreviousPrimaryColor,
-              indicatorColor: kPreviousPrimaryColor,
+              labelColor: kPreviousNeutralColor600,
+              indicatorColor: kPreviousNeutralColor600,
               unselectedLabelColor: kPreviousNeutralColor500,
               indicatorSize: TabBarIndicatorSize.label,
-              labelPadding: EdgeInsets.only(
-                top: 10.h,
-                bottom: 10.h,
-              ),
               tabs: [
-                Consumer(builder: (context, ref, child) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "일상글",
-                        style: kBody14BoldStyle,
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      Text(
-                        "${ref.watch(myPostStateProvider).myPostState.totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
-                      ),
-                    ],
-                  );
-                }),
-                Consumer(builder: (context, ref, child) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "보관글",
-                        style: kBody14BoldStyle,
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      Text(
-                        "${ref.watch(myPostStateProvider).myKeepState.totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
-                      ),
-                    ],
-                  );
-                }),
+                Tab(
+                  child: Consumer(builder: (context, ref, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "일상글",
+                          style: kBody14BoldStyle,
+                        ),
+                        SizedBox(
+                          width: 6.w,
+                        ),
+                        Text(
+                          "${ref.watch(myPostStateProvider).myPostState.totalCount}",
+                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                        ),
+                      ],
+                    );
+                  }),
+                ),
+                Tab(
+                  child: Consumer(builder: (context, ref, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "보관글",
+                          style: kBody14BoldStyle,
+                        ),
+                        SizedBox(
+                          width: 6.w,
+                        ),
+                        Text(
+                          "${ref.watch(myPostStateProvider).myKeepState.totalCount}",
+                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                        ),
+                      ],
+                    );
+                  }),
+                ),
               ]),
         ),
         body: TabBarView(
@@ -184,7 +186,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                         height: 12,
                       ),
                       Text(
-                        '피드가 없습니다.',
+                        '피드가 없어요.',
                         textAlign: TextAlign.center,
                         style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
@@ -398,7 +400,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                           if (result.result && mounted) {
                                             toast(
                                               context: context,
-                                              text: '피드 보관이 완료되었습니다.',
+                                              text: '피드 보관 완료!',
                                               type: ToastType.purple,
                                             );
                                           }
@@ -444,7 +446,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                           if (result.result && mounted) {
                                             toast(
                                               context: context,
-                                              text: '피드 삭제가 완료되었습니다.',
+                                              text: '피드 삭제 완료!',
                                               type: ToastType.purple,
                                             );
                                           }
@@ -516,7 +518,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                         height: 12,
                       ),
                       Text(
-                        '피드가 없습니다.\n보관한 피드가 여기에 표시됩니다.',
+                        '피드가 없어요.\n보관한 피드가 여기에 표시됩니다.',
                         textAlign: TextAlign.center,
                         style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
@@ -712,7 +714,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 ),
                                 child: Center(
                                   child: Text(
-                                    '프로필 표시',
+                                    '전체 공개',
                                     style: kButton14BoldStyle.copyWith(
                                       color: myKeepController.hasMyKeepSelectedImage() ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                                     ),
@@ -728,7 +730,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 if (result.result) {
                                   toast(
                                     context: context,
-                                    text: '프로필 표시가 완료되었습니다.',
+                                    text: '전체 공개가 완료되었어요.',
                                     type: ToastType.purple,
                                   );
                                 }
@@ -771,7 +773,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                           if (result.result && mounted) {
                                             toast(
                                               context: context,
-                                              text: '피드 삭제가 완료되었습니다.',
+                                              text: '피드 삭제 완료!',
                                               type: ToastType.purple,
                                             );
                                           }

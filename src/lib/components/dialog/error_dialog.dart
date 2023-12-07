@@ -42,7 +42,7 @@ class ErrorDialog extends StatelessWidget {
         },
         confirmWidget: Text(
           "확인",
-          style: kButton14MediumStyle.copyWith(color: kPreviousErrorColor),
+          style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
         ));
   }
 }

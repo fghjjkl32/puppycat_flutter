@@ -67,12 +67,10 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                     width: 20.w,
                   ),
                   Text(
-                    '''회원 탈퇴 후 7일 동안 활동 정보가 유지됩니다.
-7일 이후 모든 활동 정보가 삭제되며,
-삭제된 데이터는 복구되지 않습니다.
-회원 탈퇴 후 7일 동안 재가입이 불가하니
-중요한 정보가 있는지 탈퇴 전 확인해 주세요.''',
-                    style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                    '''활동한 정보는 돌아오실 경우를 위해 
+                    7일간 유지하고 그 이후엔 전부 삭제돼요.
+                    ''',
+                    style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   ),
                 ],
               ),
@@ -98,17 +96,21 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "일상 공유 글, 산책 일지, 내 프로필 등",
+                              "${ref.read(userInfoProvider).userModel!.nick}님이",
                               style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
                             Row(
                               children: [
                                 Text(
-                                  "활동했던 기록이 삭제",
+                                  "퍼피캣과 함께한 ",
+                                  style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                ),
+                                Text(
+                                  "활동 정보",
                                   style: kBody14BoldStyle.copyWith(color: kPreviousPrimaryColor),
                                 ),
                                 Text(
-                                  "됩니다.",
+                                  "예요.",
                                   style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                 ),
                               ],
@@ -286,7 +288,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                         },
                       ),
                       Text(
-                        "모든 정보를 삭제하는 것에 동의합니다",
+                        "모든 정보 삭제 동의하기",
                         style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ],
@@ -325,7 +327,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
-                        '회원 탈퇴',
+                        '탈퇴하기',
                         style: kBody14BoldStyle.copyWith(color: isAgree ? kPreviousNeutralColor100 : kPreviousTextSubTitleColor),
                       ),
                     ),

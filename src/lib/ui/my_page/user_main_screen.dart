@@ -319,7 +319,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 height: 10,
                               ),
                               Text(
-                                "차단한 유저의 정보는 확인할 수 없습니다.\n정보를 보시려면 차단을 해제해 주세요.",
+                                "차단한 유저의 정보는 볼 수 없어요.\n정보를 보려면 차단을 풀어 주세요.",
                                 textAlign: TextAlign.center,
                                 style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
@@ -340,7 +340,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     height: 10,
                                   ),
                                   Text(
-                                    "정보를 확인할 수 없습니다.",
+                                    "정보를 볼 수 없어요.",
                                     textAlign: TextAlign.center,
                                     style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                   ),
@@ -406,7 +406,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없습니다.',
+                                  '피드가 없어요.',
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -573,7 +573,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없습니다.',
+                                  '피드가 없어요.',
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -785,7 +785,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         ),
                         child: Center(
                           child: Text(
-                            "유저를 찾을 수 없습니다.",
+                            "유저를 찾을 수 없어요.",
                             style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ),
@@ -812,7 +812,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         if (mounted) {
                                           toast(
                                             context: context,
-                                            text: "'${data.nick!.length > 8 ? '${data.nick!.substring(0, 8)}...' : data.nick}'님을 차단해제하였습니다.",
+                                            text: "'${data.nick!.length > 8 ? '${data.nick!.substring(0, 8)}...' : data.nick}'님 차단을 풀었어요.",
                                             type: ToastType.grey,
                                           );
                                         }
@@ -836,7 +836,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     ),
                                     child: Center(
                                       child: Text(
-                                        "차단 해제",
+                                        "차단 풀기",
                                         style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                       ),
                                     ),
@@ -1132,18 +1132,17 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
           : Container(
               height: tabBarHeight,
               decoration: shrinkOffset == 0
-                  ? BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.only(
+                  ? const BoxDecoration(
+                      color: kWhiteColor,
+                      borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20.0),
                         topRight: Radius.circular(20.0),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.4),
-                          spreadRadius: -5,
-                          blurRadius: 7,
-                          offset: const Offset(0, -6),
+                          color: Color(0x0A000000),
+                          offset: Offset(0, -6),
+                          blurRadius: 10.0,
                         ),
                       ],
                     )

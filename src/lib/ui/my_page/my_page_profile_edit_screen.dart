@@ -128,37 +128,35 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
           context: context,
           builder: (BuildContext context) {
             return CustomDialog(
-                content: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                  child: Column(
-                    children: [
-                      Text(
-                        "이전으로 돌아가시겠어요?",
-                        style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
-                      ),
-                      SizedBox(
-                        height: 4.h,
-                      ),
-                      Text(
-                        "지금 돌아가시면 수정사항은\n저장되지 않습니다.",
-                        style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+              content: Padding(
+                padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                child: Column(
+                  children: [
+                    Text(
+                      "잠깐! 지금 나가면\n수정한 내용이 저장되지 않아요.",
+                      textAlign: TextAlign.center,
+                      style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                    ),
+                  ],
                 ),
-                confirmTap: () {
-                  context.pop();
-                  context.pop();
-                  ref.watch(editStateProvider.notifier).resetState();
-                },
-                cancelTap: () {
-                  context.pop();
-                },
-                confirmWidget: Text(
-                  "확인",
-                  style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
-                ));
+              ),
+              confirmTap: () {
+                context.pop();
+              },
+              cancelTap: () {
+                context.pop();
+                context.pop();
+                ref.watch(editStateProvider.notifier).resetState();
+              },
+              confirmWidget: Text(
+                "이어서 하기",
+                style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
+              ),
+              cancelWidget: Text(
+                "닫기",
+                style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
+              ),
+            );
           },
         );
         return false;
@@ -176,37 +174,35 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                   context: context,
                   builder: (BuildContext context) {
                     return CustomDialog(
-                        content: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                          child: Column(
-                            children: [
-                              Text(
-                                "이전으로 돌아가시겠어요?",
-                                style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
-                              ),
-                              SizedBox(
-                                height: 4.h,
-                              ),
-                              Text(
-                                "지금 돌아가시면 수정사항은\n저장되지 않습니다.",
-                                style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
+                      content: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                        child: Column(
+                          children: [
+                            Text(
+                              "잠깐! 지금 나가면\n수정한 내용이 저장되지 않아요.",
+                              textAlign: TextAlign.center,
+                              style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                            ),
+                          ],
                         ),
-                        confirmTap: () {
-                          context.pop();
-                          context.pop();
-                          ref.watch(editStateProvider.notifier).resetState();
-                        },
-                        cancelTap: () {
-                          context.pop();
-                        },
-                        confirmWidget: Text(
-                          "확인",
-                          style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
-                        ));
+                      ),
+                      confirmTap: () {
+                        context.pop();
+                      },
+                      cancelTap: () {
+                        context.pop();
+                        context.pop();
+                        ref.watch(editStateProvider.notifier).resetState();
+                      },
+                      confirmWidget: Text(
+                        "이어서 하기",
+                        style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
+                      ),
+                      cancelWidget: Text(
+                        "닫기",
+                        style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
+                      ),
+                    );
                   },
                 );
               },
@@ -377,7 +373,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       icon: const Icon(
                                         Puppycat_social.icon_photo,
                                       ),
-                                      title: '앨범에서 선택',
+                                      title: '앨범에서 선택하기',
                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                       onTap: () async {
                                         context.pop();
@@ -436,7 +432,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                         Puppycat_social.icon_delete_small,
                                         color: kPreviousErrorColor,
                                       ),
-                                      title: '프로필 사진 삭제',
+                                      title: '프로필 사진 삭제하기',
                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                       onTap: () {
                                         setState(() {
@@ -478,18 +474,17 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.only(
+                  decoration: const BoxDecoration(
+                    color: kWhiteColor,
+                    borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20.0),
                       topRight: Radius.circular(20.0),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.4),
-                        spreadRadius: -5,
-                        blurRadius: 7,
-                        offset: const Offset(0, -6),
+                        color: Color(0x0A000000),
+                        offset: Offset(0, -6),
+                        blurRadius: 10.0,
                       ),
                     ],
                   ),
@@ -526,7 +521,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           focusNode: _nickFocusNode,
                                           decoration: nickProvider != NickNameStatus.valid
                                               ? InputDecoration(
-                                                  hintText: '회원가입.닉네임을 입력해주세요'.tr(),
+                                                  hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
                                                   hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                                                   errorStyle: kBody11RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
                                                   errorText: getNickDescription(nickProvider),
@@ -542,7 +537,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                   contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                                                 )
                                               : InputDecoration(
-                                                  hintText: '회원가입.닉네임을 입력해주세요'.tr(),
+                                                  hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
                                                   hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                                                   errorText: '회원가입.사용 가능한 닉네임입니다'.tr(),
                                                   errorStyle: kBody11RegularStyle.copyWith(color: kPreviousPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
@@ -711,7 +706,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                           maxLength: 30,
                           decoration: InputDecoration(
                             counterText: "",
-                            hintText: "${ref.watch(editStateProvider).userInfoModel!.userModel!.introText == "" ? '소개 글을 입력해 주세요.' : ref.watch(editStateProvider).userInfoModel!.userModel!.introText}",
+                            hintText:
+                                "${ref.watch(editStateProvider).userInfoModel!.userModel!.introText == "" ? '나를 간단하게 소개해 주세요.' : ref.watch(editStateProvider).userInfoModel!.userModel!.introText}",
                             hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                             contentPadding: const EdgeInsets.all(16),
                           ),
@@ -747,29 +743,31 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             enabled: false,
                             decoration: InputDecoration(
                               prefixIcon: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(12.0),
                                 child: ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "kakao"
                                     ? Image.asset(
                                         'assets/image/loginScreen/kakao_icon.png',
-                                        height: 20,
-                                        width: 20,
+                                        height: 16,
+                                        width: 16,
                                       )
                                     : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "naver"
                                         ? Image.asset(
                                             'assets/image/loginScreen/naver_icon.png',
+                                            height: 16,
+                                            width: 16,
                                             color: Color(0xff03CF5D),
                                           )
                                         : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "google"
                                             ? Image.asset(
                                                 'assets/image/loginScreen/google_icon.png',
-                                                height: 20,
-                                                width: 20,
+                                                height: 16,
+                                                width: 16,
                                               )
                                             : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "apple"
                                                 ? Image.asset(
                                                     'assets/image/loginScreen/apple_icon.png',
-                                                    height: 20,
-                                                    width: 20,
+                                                    height: 16,
+                                                    width: 16,
                                                   )
                                                 : SizedBox.shrink(),
                               ),

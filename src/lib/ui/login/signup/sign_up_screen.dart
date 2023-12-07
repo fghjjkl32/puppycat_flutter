@@ -261,7 +261,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                           contentPadding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0), //Vertical 이 13인 이유는 정확하진 않은데 border까지 고려해야할듯
                         )
                       : InputDecoration(
-                          hintText: '회원가입.닉네임을 입력해주세요'.tr(),
+                          hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
                           errorText: '회원가입.사용 가능한 닉네임입니다'.tr(),
                           errorStyle: kBody11RegularStyle.copyWith(color: kPreviousPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
                           errorBorder: const OutlineInputBorder(
@@ -415,18 +415,17 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     return SizedBox(
       width: double.infinity,
       child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: const BorderRadius.only(
+          decoration: const BoxDecoration(
+            color: kWhiteColor,
+            borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20.0),
               topRight: Radius.circular(20.0),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: -5,
-                blurRadius: 7,
-                offset: const Offset(0, -6), // 그림자의 위치 조정 (x, y)
+                color: Color(0x0A000000),
+                offset: Offset(0, -6),
+                blurRadius: 10.0,
               ),
             ],
           ),

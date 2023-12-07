@@ -91,7 +91,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text(
-            "친구",
+            "팔로우",
           ),
           leading: IconButton(
             onPressed: () {
@@ -105,51 +105,53 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
           bottom: TabBar(
               controller: tabController,
               indicatorWeight: 2.4,
-              labelColor: kPreviousPrimaryColor,
-              indicatorColor: kPreviousPrimaryColor,
+              labelColor: kPreviousNeutralColor600,
+              indicatorColor: kPreviousNeutralColor600,
               unselectedLabelColor: kPreviousNeutralColor500,
               indicatorSize: TabBarIndicatorSize.label,
-              labelPadding: EdgeInsets.only(
-                top: 10.h,
-                bottom: 10.h,
-              ),
               tabs: [
-                Consumer(builder: (context, ref, child) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "팔로워",
-                        style: kBody14BoldStyle,
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      Text(
-                        "${ref.watch(followStateProvider).followerListState.totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
-                      ),
-                    ],
-                  );
-                }),
-                Consumer(builder: (context, ref, child) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "팔로잉",
-                        style: kBody14BoldStyle,
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      Text(
-                        "${ref.watch(followStateProvider).followListState.totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
-                      ),
-                    ],
-                  );
-                }),
+                Tab(
+                  child: Consumer(builder: (context, ref, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "팔로워",
+                          style: kBody14BoldStyle,
+                        ),
+                        SizedBox(
+                          width: 6.w,
+                        ),
+                        Text(
+                          "${ref.watch(followStateProvider).followerListState.totalCount}",
+                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                        ),
+                      ],
+                    );
+                  }),
+                ),
+                Tab(
+                  child: Consumer(builder: (context, ref, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "팔로잉",
+                          style: kBody14BoldStyle,
+                        ),
+                        SizedBox(
+                          width: 6.w,
+                        ),
+                        Text(
+                          "${ref.watch(followStateProvider).followListState.totalCount}",
+                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                        ),
+                      ],
+                    );
+                  }),
+                ),
               ]),
         ),
         body: TabBarView(
@@ -230,7 +232,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                                 ),
                               ),
                             ),
-                      hintText: "닉네임을 입력해 주세요.",
+                      hintText: "닉네임으로 검색해 보세요.",
                       hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                     ),
                   ),
@@ -246,16 +248,22 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.asset(
-                                  'assets/image/character/character_08_user_notfound_100.png',
-                                  width: 88,
-                                  height: 88,
-                                ),
+                                followerSearchController.text == ""
+                                    ? Image.asset(
+                                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                        width: 88,
+                                        height: 88,
+                                      )
+                                    : Image.asset(
+                                        'assets/image/character/character_08_user_notfound_100.png',
+                                        width: 88,
+                                        height: 88,
+                                      ),
                                 const SizedBox(
                                   height: 12,
                                 ),
                                 Text(
-                                  '유저를 찾을 수 없습니다.',
+                                  followerSearchController.text == "" ? '팔로워가 없어요.' : '유저를 찾을 수 없어요.\n닉네임을 다시 확인해 주세요.',
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -280,7 +288,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                             return FollowerItemWidget(
                               profileImage: "${lists[index].url}",
                               userName: lists[index].followerNick!,
-                              content: lists[index].intro == "" ? '소개글이 없습니다.' : lists[index].intro!,
+                              content: lists[index].intro == "" ? '소개글이 없어요.' : lists[index].intro!,
                               isSpecialUser: lists[index].isBadge! == 1,
                               isFollow: lists[index].isFollow == 1,
                               followerIdx: lists[index].followerIdx!,
@@ -362,7 +370,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                                 ),
                               ),
                             ),
-                      hintText: "닉네임을 입력해 주세요.",
+                      hintText: "닉네임으로 검색해 보세요.",
                       hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                     ),
                   ),
@@ -378,16 +386,22 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.asset(
-                                  'assets/image/character/character_08_user_notfound_100.png',
-                                  width: 88,
-                                  height: 88,
-                                ),
+                                followSearchController.text == ""
+                                    ? Image.asset(
+                                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                        width: 88,
+                                        height: 88,
+                                      )
+                                    : Image.asset(
+                                        'assets/image/character/character_08_user_notfound_100.png',
+                                        width: 88,
+                                        height: 88,
+                                      ),
                                 const SizedBox(
                                   height: 12,
                                 ),
                                 Text(
-                                  '유저를 찾을 수 없습니다.',
+                                  followSearchController.text == "" ? '팔로잉이 없어요.' : '유저를 찾을 수 없어요.\n닉네임을 다시 확인해 주세요.',
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -412,7 +426,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                             return FollowingItemWidget(
                               profileImage: "${lists[index].url}",
                               userName: lists[index].followNick!,
-                              content: lists[index].intro == "" || lists[index].intro == null ? '소개글이 없습니다.' : lists[index].intro!,
+                              content: lists[index].intro == "" || lists[index].intro == null ? '소개글이 없어요.' : lists[index].intro!,
                               isSpecialUser: lists[index].isBadge! == 1,
                               isFollow: lists[index].isFollow == 1,
                               isNewUser: lists[index].newState! == 1,

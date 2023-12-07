@@ -56,14 +56,14 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "탈퇴하시려는 이유를 알려주세요!",
+                      "혹시 서비스에 불편함이 있으셨나요?",
                       style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
                     SizedBox(
                       height: 2.h,
                     ),
                     Text(
-                      "더 발전하는 포레스트의 중요한 자료로 활용하겠습니다.",
+                      "탈퇴 사유를 남겨 주시면 더 발전하는 퍼피캣이 되겠습니다.",
                       style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                     SizedBox(
@@ -123,7 +123,7 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                                 width: 40,
                               ),
                               Text(
-                                "정말 탈퇴하시겠어요?",
+                                "너무 아쉬워요... 정말 탈퇴하시나요?",
                                 style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextTitleColor),
                               ),
                             ],

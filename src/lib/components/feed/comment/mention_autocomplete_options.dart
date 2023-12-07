@@ -53,7 +53,7 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
 
     return Card(
       margin: const EdgeInsets.all(8),
-      elevation: 2,
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -61,14 +61,14 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            color: const Color(0xFFF7F7F8),
-            child: ListTile(
-              dense: true,
-              horizontalTitleGap: 0,
-              title: Text("Users matching '${widget.query}'"),
-            ),
-          ),
+          // Container(
+          //   color: const Color(0xFFF7F7F8),
+          //   child: ListTile(
+          //     dense: true,
+          //     horizontalTitleGap: 0,
+          //     title: Text("Users matching '${widget.query}'"),
+          //   ),
+          // ),
           LimitedBox(
             maxHeight: MediaQuery.of(context).size.height * 0.3,
             child: ListView.separated(
@@ -76,13 +76,13 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               itemCount: users.length,
-              separatorBuilder: (_, __) => const Divider(height: 0),
+              separatorBuilder: (_, __) => Container(),
               itemBuilder: (context, i) {
                 final user = users[i];
                 return ListTile(
-                  shape: Border(
-                    bottom: BorderSide(color: kPreviousNeutralColor500, width: 1),
-                  ),
+                  // shape: Border(
+                  //   bottom: BorderSide(color: kWhiteColor, width: 1),
+                  // ),
                   tileColor: kPreviousNeutralColor100,
                   dense: true,
                   leading: user.profileImgUrl == null || user.profileImgUrl == ""

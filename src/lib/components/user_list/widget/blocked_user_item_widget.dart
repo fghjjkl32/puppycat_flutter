@@ -108,7 +108,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
               ),
               child: Center(
                 child: Text(
-                  "차단 해제",
+                  "차단 풀기",
                   style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                 ),
               ),

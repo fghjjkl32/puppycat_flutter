@@ -1,6 +1,6 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/social_login_service.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleLoginService implements SocialLoginService {
   late GoogleSignIn _googleSignIn;
@@ -9,6 +9,8 @@ class GoogleLoginService implements SocialLoginService {
 
   GoogleLoginService() {
     _googleSignIn = GoogleSignIn(
+      // forceCodeForRefreshToken: true,
+      clientId: "14263543464-mt3majukl2io6fqllr24eh6egoc1fv5a.apps.googleusercontent.com",
       scopes: [
         'email',
         'https://www.googleapis.com/auth/contacts.readonly',
@@ -35,7 +37,8 @@ class GoogleLoginService implements SocialLoginService {
       simpleType: 'google',
       accessToken: _authentication!.accessToken ?? '',
       password: _accountResult!.id,
-      passwordConfirm: _accountResult!.id, isBadge: 0,
+      passwordConfirm: _accountResult!.id,
+      isBadge: 0,
       uuid: "",
       channelTalkHash: '',
     );
@@ -47,6 +50,7 @@ class GoogleLoginService implements SocialLoginService {
   Future<bool> login() async {
     try {
       _accountResult = await _googleSignIn.signIn();
+      print("_authentication!.idToken ${_accountResult!.serverAuthCode}");
       if (_accountResult == null) {
         return false;
       }

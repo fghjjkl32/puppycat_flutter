@@ -164,7 +164,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                                 ),
                               ),
                             ),
-                      hintText: "검색어를 입력해 주세요.",
+                      hintText: "궁금한 내용을 검색해 보세요.",
                       hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                     ),
                   ),

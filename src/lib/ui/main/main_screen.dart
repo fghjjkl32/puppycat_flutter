@@ -1444,17 +1444,16 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
               color: Colors.white,
             )
           : BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
+              color: kWhiteColor,
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  spreadRadius: -5,
-                  blurRadius: 7,
-                  offset: const Offset(0, -6),
+                  color: Color(0x0A000000),
+                  offset: Offset(0, -6),
+                  blurRadius: 10.0,
                 ),
               ],
             ),

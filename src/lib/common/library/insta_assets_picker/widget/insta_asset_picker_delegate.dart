@@ -481,7 +481,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                                                       width: 5,
                                                     ),
                                                     Text(
-                                                      "프레임 비율을 선택해 주세요!",
+                                                      "사진 비율을 선택해 주세요.",
                                                       style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                     ),
                                                   ],

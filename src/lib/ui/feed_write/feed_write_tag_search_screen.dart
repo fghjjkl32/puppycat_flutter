@@ -159,11 +159,17 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset(
-                                    'assets/image/character/character_08_user_notfound_100.png',
-                                    width: 88,
-                                    height: 88,
-                                  ),
+                                  userSearchController.text == ""
+                                      ? Image.asset(
+                                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                          width: 88,
+                                          height: 88,
+                                        )
+                                      : Image.asset(
+                                          'assets/image/character/character_08_user_notfound_100.png',
+                                          width: 88,
+                                          height: 88,
+                                        ),
                                   const SizedBox(
                                     height: 12,
                                   ),
@@ -198,7 +204,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                                 child: TagUserItemWidget(
                                   profileImage: lists[index].profileImgUrl!,
                                   userName: lists[index].nick!,
-                                  content: lists[index].intro! == "" ? "소개글이 없습니다." : lists[index].intro!,
+                                  content: lists[index].intro! == "" ? "소개글이 없어요." : lists[index].intro!,
                                   isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
                                 ),
                               );

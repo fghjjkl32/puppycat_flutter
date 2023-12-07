@@ -48,7 +48,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                   height: 10.h,
                 ),
                 Text(
-                  "그동안 퍼피캣을\n이용해 주셔서 감사합니다.",
+                  "지금은 퍼피캣을 떠나시지만,\n다시 만나길 바랄게요!",
                   style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   textAlign: TextAlign.center,
                 ),
@@ -66,17 +66,17 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "새 계정을 원하시면",
+                          "새 계정은 ",
                           style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          " 7일 이후 ",
+                          "7일이 지나면",
                           style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          "가능합니다!",
+                          " 만들 수 있어요.",
                           style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                           textAlign: TextAlign.center,
                         ),
@@ -88,7 +88,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                   height: 12,
                 ),
                 Text(
-                  "회원 탈퇴가 완료되었습니다.\n보다 나은 서비스로 다시 만나길 바랍니다.",
+                  "더 나은 퍼피캣을 위해 의견을 남겨 주셔서 감사해요.\n모든 기기에서 안전하게 로그아웃 처리할게요.",
                   style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   textAlign: TextAlign.center,
                 ),

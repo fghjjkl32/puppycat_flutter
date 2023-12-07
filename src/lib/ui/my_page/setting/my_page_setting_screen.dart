@@ -259,7 +259,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       Padding(
                         padding: EdgeInsets.only(top: 10.0.h, bottom: 4.0.h),
                         child: Text(
-                          '편리한 퍼피캣 앱 사용을 위해 접근 권한을 허용해 주세요.',
+                          '원활한 퍼피캣 앱 이용을 위해 접근 권한을 허용해 주세요.',
                           style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                           textAlign: TextAlign.center,
                         ),
@@ -267,7 +267,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       Padding(
                         padding: EdgeInsets.only(bottom: 10.0),
                         child: Text(
-                          '선택적 접근 권한은 해당 기능 이용 시 동의를 받고 있습니다.\n허용하지 않으셔도 포레스트 앱의 서비스를 이용 가능하며,\n일부 관련 서비스 이용 시 사용제 제한이 있을 수 있습니다.',
+                          '퍼피캣 이용에 꼭 필요한 접근 권한은\n해당 기능을 이용하시는 순간에 요청을 드리고 있어요.\n허용하지 않아도 퍼피캣을 이용하실 수 있지만,\n일부 서비스는 이용이 어려울 수 있어요.',
                           style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                           textAlign: TextAlign.center,
                         ),
@@ -284,7 +284,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         height: 3.h,
                       ),
                       Text(
-                        "사진, 미디어, 파일 등의 이용 및 로그를 저장합니다.",
+                        "사진, 미디어, 파일 등의 이용 및 로그를 저장해요.",
                         style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       SizedBox(
@@ -298,7 +298,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         height: 3.h,
                       ),
                       Text(
-                        "PUSH 알림 발송을 위한 기기 ID를 확인합니다.",
+                        "푸시 알림 발송을 위해 기기 ID를 확인해요.",
                         style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       SizedBox(
@@ -377,7 +377,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       content: Padding(
                         padding: EdgeInsets.symmetric(vertical: 24.0.h),
                         child: Text(
-                          "캐시를 삭제하시겠습니까?",
+                          "저장 공간을 정리할까요?",
                           style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ),
@@ -389,8 +389,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         context.pop();
                       },
                       confirmWidget: Text(
-                        "삭제",
-                        style: kButton14MediumStyle.copyWith(color: kPreviousErrorColor),
+                        "정리하기",
+                        style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                       ),
                     );
                   },
@@ -402,7 +402,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "캐시 삭제",
+                      "저장 공간 정리",
                       style: kBody13RegularStyle.copyWith(
                         color: kPreviousTextSubTitleColor,
                       ),
@@ -473,7 +473,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       children: [
                         lastestBuildVersion == GetIt.I<PackageInformationUtil>().appVersion
                             ? Text(
-                                "최신 버전 사용 중",
+                                "최신 버전",
                                 style: kBadge10MediumStyle.copyWith(
                                   color: kPreviousTextBodyColor,
                                 ),

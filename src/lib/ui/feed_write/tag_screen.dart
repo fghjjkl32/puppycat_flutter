@@ -175,7 +175,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
           if (newTagImage[existingIndex].tag.length >= 10) {
             toast(
               context: context,
-              text: '한 이미지에는 태그를 10개까지만 할 수 있습니다.',
+              text: '사진 당 태그는 10명까지 가능해요.',
               type: ToastType.red,
             );
             return;

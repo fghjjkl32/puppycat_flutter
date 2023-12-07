@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_data.dart';
 
 import 'widget/feed_follow_card_widget.dart';
@@ -23,8 +22,9 @@ class FeedFollowWidget extends StatelessWidget {
             children: [
               SizedBox(
                 width: double.infinity,
-                height: 205.h,
+                height: 222.h,
                 child: ListView.builder(
+                  padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
                   itemCount: popularUserListData.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index) {

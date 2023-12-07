@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/hashtag_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/recent_searches_user_item_widget.dart';
@@ -162,7 +163,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                         ),
                       ),
                     ),
-              hintText: "검색어를 입력해 주세요.",
+              hintText: "프로필이나 피드를 검색해 보세요.",
               hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
             ),
           ),
@@ -228,7 +229,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 80.0),
                                     child: Text(
-                                      "'${_searchController.text}'에 대한\n검색 내용이 없습니다.",
+                                      "'${_searchController.text}'에 대한\n검색 결과가 없어요.",
                                       textAlign: TextAlign.center,
                                       style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
@@ -462,7 +463,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 80.0),
                                     child: Text(
-                                      "'${_searchController.text}'에 대한\n검색 내용이 없습니다.",
+                                      "'${_searchController.text}'에 대한\n검색 결과가 없어요.",
                                       textAlign: TextAlign.center,
                                       style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
@@ -583,7 +584,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 80.0),
                                     child: Text(
-                                      "'${_searchController.text}'에 대한\n검색 내용이 없습니다.",
+                                      "'${_searchController.text}'에 대한\n검색 결과가 없어요.",
                                       textAlign: TextAlign.center,
                                       style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
@@ -703,7 +704,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                     height: 12,
                                   ),
                                   Text(
-                                    '최근 검색어가 없습니다.',
+                                    '최근 검색어가 없어요.',
                                     textAlign: TextAlign.center,
                                     style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                   ),
@@ -741,12 +742,22 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                               widget: Column(
                                                 children: [
                                                   Padding(
-                                                    padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
+                                                    padding: const EdgeInsets.only(top: 10),
+                                                    child: Lottie.asset(
+                                                      'assets/lottie/feed_end.json',
+                                                      width: 50,
+                                                      height: 50,
+                                                      fit: BoxFit.fill,
+                                                      repeat: false,
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(top: 10, bottom: 10),
                                                     child: Row(
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         Text(
-                                                          "최근 검색어를 모두\n삭제하시겠습니까?",
+                                                          "최근 검색어를\n모두 삭제할까요?",
                                                           style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                                         ),
                                                       ],
@@ -771,7 +782,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                           ),
                                                           child: Center(
                                                             child: Text(
-                                                              "취소",
+                                                              "닫기",
                                                               style: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                                             ),
                                                           ),
@@ -800,7 +811,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                           ),
                                                           child: Center(
                                                             child: Text(
-                                                              "삭제",
+                                                              "삭제하기",
                                                               style: kButton14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                                             ),
                                                           ),

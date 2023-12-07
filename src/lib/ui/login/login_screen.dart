@@ -99,7 +99,7 @@ class LoginScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(top: 12.0, bottom: 94),
               child: Text(
-                '퍼피캣과 함께하는\n반려동물 Life Care!',
+                'Close to you PUPPCAT\n더 가깝고🐱 더 사랑스럽개🐶',
                 style: kTitle18BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4),
                 textAlign: TextAlign.center,
               ),

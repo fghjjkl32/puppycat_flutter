@@ -69,7 +69,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "어떤 점이 불편하셨나요?",
+                      "어떤 점이 불편하신가요?",
                       style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
                     SizedBox(

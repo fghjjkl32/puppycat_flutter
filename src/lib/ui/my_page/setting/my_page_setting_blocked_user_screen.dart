@@ -136,7 +136,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                     ),
                                   ),
                                 ),
-                          hintText: "검색어를 입력해 주세요.",
+                          hintText: "닉네임으로 검색해 보세요.",
                           hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                         ),
                       ),
@@ -152,16 +152,22 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset(
-                                      'assets/image/character/character_08_user_notfound_100.png',
-                                      width: 88,
-                                      height: 88,
-                                    ),
+                                    blockSearchController.text == ""
+                                        ? Image.asset(
+                                            'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                            width: 88,
+                                            height: 88,
+                                          )
+                                        : Image.asset(
+                                            'assets/image/character/character_08_user_notfound_100.png',
+                                            width: 88,
+                                            height: 88,
+                                          ),
                                     const SizedBox(
                                       height: 12,
                                     ),
                                     Text(
-                                      '유저를 찾을 수 없습니다.',
+                                      blockSearchController.text == "" ? '차단한 유저가 없어요.' : '유저를 찾을 수 없어요.\n닉네임을 다시 확인해 주세요.',
                                       textAlign: TextAlign.center,
                                       style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                     ),
@@ -187,7 +193,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                 return BlockUserItemWidget(
                                   profileImage: lists[index].profileImgUrl,
                                   userName: lists[index].nick!,
-                                  content: lists[index].intro! == "" ? "소개글이 없습니다." : lists[index].intro!,
+                                  content: lists[index].intro! == "" ? "소개글이 없어요." : lists[index].intro!,
                                   isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
                                   memberIdx: lists[index].memberIdx!,
                                 );

@@ -13,6 +13,7 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_content_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_information_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/cropped_images_list_view.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/kpostal_view.dart';
@@ -189,7 +190,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                     maxLines: 6,
                     decoration: InputDecoration(
                         counterText: "",
-                        hintText: '내용을 입력해 주세요.\n\n작성한 글에 대한 책임은 본인에게 있습니다.\n운영 정책에 위반되는(폭력성, 선정성, 욕설 등) 피드는 당사자의 동의 없이 삭제될 수 있습니다.',
+                        hintText: "내용을 입력해 주세요. (최대 500자)\n\n운영 정책에 위반되는 폭력/선정/욕설 등은\n'${ref.read(userInfoProvider).userModel!.nick}'님에게 책임이 있으며 동의 없이 삭제될 수 있어요.",
                         hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                         contentPadding: const EdgeInsets.all(16)),
                     name: 'content',
@@ -203,9 +204,26 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
           ),
           Padding(
             padding: EdgeInsets.only(top: 20.0.h, bottom: 8.0.h, left: 12.w),
-            child: Text(
-              "위치정보",
-              style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "위치정보",
+                  style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 12, bottom: 8, top: 12, left: 12),
+                    child: Text(
+                      "삭제",
+                      style: kBadge10MediumStyle.copyWith(color: kTextTertiary),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Padding(
@@ -245,7 +263,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                         ? Padding(
                             padding: EdgeInsets.only(left: 16.0.w),
                             child: Text(
-                              "위치를 선택해주세요.",
+                              "위치를 추가해 주세요.",
                               style: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                             ),
                           )
@@ -256,25 +274,14 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                               style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
                           ),
-                    ref.watch(feedWriteLocationInformationProvider) == ""
-                        ? IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Puppycat_social.icon_next_small,
-                              size: 22,
-                              color: kPreviousNeutralColor500,
-                            ),
-                          )
-                        : IconButton(
-                            onPressed: () {
-                              ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
-                            },
-                            icon: const Icon(
-                              Icons.close, // X 아이콘
-                              size: 22,
-                              color: kPreviousNeutralColor500,
-                            ),
-                          ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Puppycat_social.icon_next_small,
+                        size: 22,
+                        color: kPreviousNeutralColor500,
+                      ),
+                    ),
                   ],
                 ),
               ),

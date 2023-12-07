@@ -263,7 +263,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                           icon: const Icon(
                                             Puppycat_social.icon_user_ac,
                                           ),
-                                          title: '프로필 표시하기',
+                                          title: '전체 공개하기',
                                           titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                           onTap: () async {
                                             context.pop();
@@ -385,7 +385,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                           icon: const Icon(
                                             Puppycat_social.icon_follow_cancel,
                                           ),
-                                          title: '팔로우 취소',
+                                          title: '팔로우 취소하기',
                                           titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                           onTap: () async {
                                             if (!ref.watch(followApiIsLoadingStateProvider)) {

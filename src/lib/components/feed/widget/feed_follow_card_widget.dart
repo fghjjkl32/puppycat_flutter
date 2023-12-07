@@ -63,7 +63,22 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
             width: 1,
             color: kPreviousNeutralColor300,
           ),
+          color: kWhiteColor,
           borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, -4),
+              blurRadius: 6,
+              spreadRadius: 0,
+              color: Color(0x0A000000),
+            ),
+            BoxShadow(
+              offset: Offset(0, 4),
+              blurRadius: 6,
+              spreadRadius: 0,
+              color: Color(0x1F000000),
+            ),
+          ],
         ),
         width: 230.w,
         height: 202.h,
@@ -84,118 +99,120 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                         )
                       : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
                 },
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 12.w,
-                        top: 12.h,
-                        bottom: 12.h,
-                        right: 8.w,
+                child: Container(
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: 12.w,
+                          top: 12.h,
+                          bottom: 12.h,
+                          right: 8.w,
+                        ),
+                        child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
                       ),
-                      child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              widget.isSpecialUser
-                                  ? Row(
-                                      children: [
-                                        Image.asset(
-                                          'assets/image/feed/icon/small_size/icon_special.png',
-                                          height: 13.h,
-                                        ),
-                                        SizedBox(
-                                          width: 4.w,
-                                        ),
-                                      ],
-                                    )
-                                  : Container(),
-                              Flexible(
-                                child: Text(
-                                  widget.userName,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                widget.isSpecialUser
+                                    ? Row(
+                                        children: [
+                                          Image.asset(
+                                            'assets/image/feed/icon/small_size/icon_special.png',
+                                            height: 13.h,
+                                          ),
+                                          SizedBox(
+                                            width: 4.w,
+                                          ),
+                                        ],
+                                      )
+                                    : Container(),
+                                Flexible(
+                                  child: Text(
+                                    widget.userName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                "  ·  ",
-                                style: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor400),
-                              ),
-                              isFollow
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(right: 8.0),
-                                      child: InkWell(
-                                        onTap: () async {
-                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                            if (ref.read(userInfoProvider).userModel == null) {
-                                              context.pushReplacement("/loginScreen");
-                                            } else {
-                                              final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                    followIdx: widget.memberIdx,
-                                                  );
+                                Text(
+                                  "  ·  ",
+                                  style: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor400),
+                                ),
+                                isFollow
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(right: 8.0),
+                                        child: InkWell(
+                                          onTap: () async {
+                                            if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                              if (ref.read(userInfoProvider).userModel == null) {
+                                                context.pushReplacement("/loginScreen");
+                                              } else {
+                                                final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                      followIdx: widget.memberIdx,
+                                                    );
 
-                                              if (result.result) {
-                                                setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
-                                                });
-                                              }
-                                              print(ref.read(followUserStateProvider));
-                                            }
-                                          }
-                                        },
-                                        child: Text(
-                                          "팔로잉",
-                                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor500),
-                                        ),
-                                      ),
-                                    )
-                                  : Padding(
-                                      padding: const EdgeInsets.only(right: 8.0),
-                                      child: InkWell(
-                                        onTap: () async {
-                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                            if (ref.read(userInfoProvider).userModel == null) {
-                                              context.pushReplacement("/loginScreen");
-                                            } else {
-                                              final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                    followIdx: widget.memberIdx,
-                                                  );
-
-                                              if (result.result) {
-                                                setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
-                                                });
+                                                if (result.result) {
+                                                  setState(() {
+                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+                                                  });
+                                                }
+                                                print(ref.read(followUserStateProvider));
                                               }
                                             }
-                                          }
-                                        },
-                                        child: Text(
-                                          "팔로우",
-                                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
+                                          },
+                                          child: Text(
+                                            "팔로잉",
+                                            style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor500),
+                                          ),
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.only(right: 8.0),
+                                        child: InkWell(
+                                          onTap: () async {
+                                            if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                              if (ref.read(userInfoProvider).userModel == null) {
+                                                context.pushReplacement("/loginScreen");
+                                              } else {
+                                                final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
+                                                      followIdx: widget.memberIdx,
+                                                    );
+
+                                                if (result.result) {
+                                                  setState(() {
+                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
+                                                  });
+                                                }
+                                              }
+                                            }
+                                          },
+                                          child: Text(
+                                            "팔로우",
+                                            style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 3.h,
-                          ),
-                          Text(
-                            "팔로워 ${NumberFormat('###,###,###,###').format(widget.followCount)}",
-                            style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
-                          ),
-                        ],
+                              ],
+                            ),
+                            SizedBox(
+                              height: 3.h,
+                            ),
+                            Text(
+                              "팔로워 ${NumberFormat('###,###,###,###').format(widget.followCount)}",
+                              style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

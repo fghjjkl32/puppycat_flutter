@@ -320,7 +320,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없습니다.',
+                                  '피드가 없어요.',
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -453,7 +453,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                 height: 12,
                                                               ),
                                                               Text(
-                                                                '좋아요 한 유저가 없습니다.',
+                                                                "아직 '좋아요'가 없어요.",
                                                                 textAlign: TextAlign.center,
                                                                 style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                                               ),
@@ -544,7 +544,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                           height: 12,
                                                                         ),
                                                                         Text(
-                                                                          '등록된 댓글이 없습니다.',
+                                                                          '아직 댓글이 없어요.\n피드에 댓글을 남겨 보세요.',
                                                                           textAlign: TextAlign.center,
                                                                           style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                                                         ),
@@ -735,7 +735,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없습니다.',
+                                  '피드가 없어요.',
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -1121,17 +1121,16 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
       height: tabBarHeight,
       decoration: shrinkOffset == 0
           ? BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
+              color: kWhiteColor,
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  spreadRadius: -5,
-                  blurRadius: 7,
-                  offset: const Offset(0, -6),
+                  color: Color(0x0A000000),
+                  offset: Offset(0, -6),
+                  blurRadius: 10.0,
                 ),
               ],
             )
