@@ -25,7 +25,7 @@ Widget getProfileAvatar(
     childSaveLayer: true,
     mask: Center(
       child: Image.network(
-        Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain$avatarUrl").toUrl(),
+        Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$avatarUrl").toUrl(),
         width: double.infinity,
         height: height,
         fit: BoxFit.cover,
@@ -60,7 +60,7 @@ Widget getSquircleImage(
       child: Stack(
         children: [
           Image.network(
-            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain$avatarUrl").toUrl(),
+            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$avatarUrl").toUrl(),
             width: double.infinity,
             height: height,
             fit: BoxFit.cover,
@@ -77,7 +77,10 @@ Widget getSquircleImage(
             child: const Positioned.fill(
               child: Align(
                 alignment: Alignment.center,
-                child: Icon(Icons.check, color: kNeutralColor100,),
+                child: Icon(
+                  Icons.check,
+                  color: kNeutralColor100,
+                ),
               ),
             ),
           ),

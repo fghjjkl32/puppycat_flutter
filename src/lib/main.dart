@@ -57,7 +57,6 @@ void main() async {
   baseUrl = await Constants.getBaseUrl();
   thumborHostUrl = await Constants.getThumborHostUrl();
   thumborKey = await Constants.getThumborKey();
-  imgDomain = await Constants.getThumborDomain();
   firstInstallTime = await Constants.checkFirstInstall();
 
   await EasyLocalization.ensureInitialized();

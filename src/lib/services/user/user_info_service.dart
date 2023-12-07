@@ -9,21 +9,6 @@ part 'user_info_service.g.dart';
 abstract class UserInfoService {
   factory UserInfoService(Dio dio, {String baseUrl}) = _UserInfoService;
 
-  //My Info
-  @PATCH('v1/member/restore')
-  @Headers(<String, dynamic>{
-    "Content-Type": "application/json",
-  })
-  Future<ResponseModel> restoreAccount(@Body() Map<String, dynamic> body);
-
-  @GET('v1/my/info')
-  Future<UserInformationResponseModel> getMyInfo();
-
-  @PUT('v1/my/info')
-  Future<ResponseModel> updateMyInfo(
-    @Body() FormData formData,
-  );
-
   //User Info
   @GET('v1/member/info/{memberUuid}')
   Future<UserInformationResponseModel> getUserInformation(

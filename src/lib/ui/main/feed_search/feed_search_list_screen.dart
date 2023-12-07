@@ -243,7 +243,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                                   : BorderRadius.circular(0),
                                           image: DecorationImage(
                                               image: NetworkImage(
-                                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
                                               ),
                                               fit: BoxFit.cover),
                                         ),

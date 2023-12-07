@@ -746,7 +746,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       childSaveLayer: true,
                       mask: Center(
                         child: Image.network(
-                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${myInfo.profileImgUrl}").toUrl(),
+                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${myInfo.profileImgUrl}").toUrl(),
                           height: 22.h,
                           width: double.infinity,
                           fit: BoxFit.cover,
@@ -856,15 +856,15 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 return FeedMainWidget(
                   feedData: item,
                   contentType: 'userContent',
-                  userName: item.memberInfoList![0].nick ?? '',
-                  profileImage: item.memberInfoList?[0].profileImgUrl! ?? "",
+                  userName: item.memberInfo!.nick ?? '',
+                  profileImage: item.memberInfo!.profileImgUrl! ?? "",
                   oldMemberUuid: myInfo.uuid ?? '',
-                  firstTitle: item.memberInfoList![0].nick!,
+                  firstTitle: item.memberInfo!.nick!,
                   secondTitle: '피드',
-                  imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
+                  // imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'recent',
-                  isSpecialUser: item.memberInfoList?[0].isBadge == 1,
+                  isSpecialUser: item.memberInfo!.isBadge == 1,
                   onTapHideButton: () async {
                     onTapHide(
                       context: context,
@@ -941,15 +941,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 return FeedMainWidget(
                   feedData: item,
                   contentType: 'userContent',
-                  userName: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
-                  profileImage: ref.read(followFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? item.memberInfoList![0].profileImgUrl! ?? "",
+                  userName: ref.read(followFeedStateProvider.notifier).memberInfo!.nick ?? item.memberInfo!.nick!,
+                  profileImage: ref.read(followFeedStateProvider.notifier).memberInfo!.profileImgUrl ?? item.memberInfo!.profileImgUrl! ?? "",
                   oldMemberUuid: myInfo.uuid ?? '',
-                  firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
+                  firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo!.nick ?? item.memberInfo!.nick!,
                   secondTitle: '피드',
-                  imageDomain: ref.read(followFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'follow',
-                  isSpecialUser: ref.read(followFeedStateProvider.notifier).memberInfo?[0].isBadge == 1,
+                  isSpecialUser: ref.read(followFeedStateProvider.notifier).memberInfo!.isBadge == 1,
                   onTapHideButton: () async {
                     onTapHide(
                       context: context,
@@ -1014,17 +1013,16 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   feedData: item,
                   // contentType: 'popularWeekContent',
                   contentType: 'userContent',
-                  userName: item.memberInfoList![0].nick!,
-                  profileImage: item.memberInfoList![0].profileImgUrl! ?? "",
+                  userName: item.memberInfo!.nick!,
+                  profileImage: item.memberInfo!.profileImgUrl! ?? "",
                   oldMemberUuid: myInfo.uuid ?? '',
                   // firstTitle: "null",
-                  firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?[0].nick ?? item.memberInfoList![0].nick!,
+                  firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?.nick ?? item.memberInfo!.nick!,
                   // secondTitle: '인기 급상승',
                   secondTitle: '피드',
-                  imageDomain: ref.read(popularWeekFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'popular',
-                  isSpecialUser: item.memberInfoList?[0].isBadge == 1,
+                  isSpecialUser: item.memberInfo?.isBadge == 1,
                   onTapHideButton: () async {
                     onTapHide(
                       context: context,
@@ -1197,15 +1195,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 return FeedMainWidget(
                   feedData: item,
                   contentType: 'myContent',
-                  userName: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
-                  profileImage: ref.read(myFeedStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
+                  userName: ref.read(myFeedStateProvider.notifier).memberInfo!.nick!,
+                  profileImage: ref.read(myFeedStateProvider.notifier).memberInfo!.profileImgUrl ?? "",
                   oldMemberUuid: myInfo.uuid ?? '',
-                  firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo![0].nick!,
+                  firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo!.nick!,
                   secondTitle: '피드',
-                  imageDomain: ref.read(myFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'my',
-                  isSpecialUser: ref.read(myFeedStateProvider.notifier).memberInfo![0].isBadge == 1,
+                  isSpecialUser: ref.read(myFeedStateProvider.notifier).memberInfo!.isBadge == 1,
                   onTapHideButton: () async {
                     onTapHide(
                       context: context,
@@ -1389,7 +1386,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 childSaveLayer: true,
                 mask: Center(
                   child: Image.network(
-                    Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain$profileImgUrl").toUrl(),
+                    Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$profileImgUrl").toUrl(),
                     height: 46.h,
                     fit: BoxFit.cover,
                     width: double.infinity,

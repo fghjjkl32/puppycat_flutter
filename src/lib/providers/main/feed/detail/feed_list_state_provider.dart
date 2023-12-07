@@ -43,8 +43,7 @@ class FeedListState extends _$FeedListState {
   String? searchWord;
   int? idxToRemove;
   String? memberUuid;
-  List<MemberInfoListData>? memberInfo;
-  String? imgDomain;
+  MemberInfoData? memberInfo;
 
   FeedData? tempFeedData;
   ContentImageData? tempContentImageData;
@@ -111,12 +110,11 @@ class FeedListState extends _$FeedListState {
       }
       memberInfo = feedResult.data!.memberInfo;
       print(memberInfo);
-      imgDomain = feedResult.data!.imgDomain;
 
       List<FeedData> searchList = feedResult.data!.list
           .map(
             (e) => FeedData(
-              commentList: e.commentList,
+              comment: e.comment,
               keepState: e.keepState,
               followState: e.followState,
               isComment: e.isComment,
@@ -129,7 +127,7 @@ class FeedListState extends _$FeedListState {
               uuid: e.uuid,
               memberUuid: e.memberUuid,
               workUuid: e.workUuid,
-              walkResultList: e.walkResultList,
+              // walkResultList: e.walkResultList,
               likeCnt: e.likeCnt,
               contents: e.contents,
               location: e.location,
@@ -138,7 +136,7 @@ class FeedListState extends _$FeedListState {
               mentionList: e.mentionList,
               commentCnt: e.commentCnt,
               hashTagList: e.hashTagList,
-              memberInfoList: e.memberInfoList,
+              memberInfo: e.memberInfo,
               imgList: e.imgList,
             ),
           )
@@ -1076,11 +1074,11 @@ class FeedListState extends _$FeedListState {
   }
 
   final Map<String, List<FeedData>?> feedStateMap = {};
-  final Map<String, List<MemberInfoListData>?> feedMemberInfoStateMap = {};
+  final Map<String, MemberInfoData?> feedMemberInfoStateMap = {};
 
   void getStateForUser(String memberUuid) {
     state.itemList = feedStateMap[memberUuid] ?? [FeedData(idx: 0)];
-    memberInfo = feedMemberInfoStateMap[memberUuid] ?? [MemberInfoListData()];
+    memberInfo = feedMemberInfoStateMap[memberUuid] ?? MemberInfoData();
 
     state.notifyListeners();
   }

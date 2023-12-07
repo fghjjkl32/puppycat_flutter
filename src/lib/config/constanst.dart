@@ -52,7 +52,7 @@ class Constants {
 
   static Future<String> getThumborDomain() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborDomain') ?? imgDomain;
+    return prefs.getString('thumborDomain') ?? '';
   }
 
   static Future<String> checkFirstInstall() async {
@@ -69,7 +69,7 @@ String thumborHostUrl = "https://tb.pcstg.co.kr/";
 
 String thumborKey = "Tjaqhvpt";
 // String thumborKey = "vjvlzotvldkfel"; //prd
-String imgDomain = "https://imgs.pcstg.co.kr";
+// String imgDomain = "https://imgs.pcstg.co.kr";
 String firstInstallTime = "";
 String lastestBuildVersion = "";
 bool isAppLinkHandled = false;

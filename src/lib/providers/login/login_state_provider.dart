@@ -80,6 +80,8 @@ class LoginState extends _$LoginState {
     ref.read(myInfoStateProvider.notifier).getMyInfo();
     ref.read(signUpUserInfoProvider.notifier).state = null;
 
+    print('ref.read(myInfoStateProvider ${ref.read(myInfoStateProvider)}');
+
     state = LoginStatus.success;
   }
 
@@ -112,6 +114,10 @@ class LoginState extends _$LoginState {
         final isValid = await jwtRepository.checkRefreshToken(refreshToken);
         if (isValid) {
           print('auto login 1');
+          ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
+          ref.read(myInfoStateProvider.notifier).getMyInfo();
+          ref.read(signUpUserInfoProvider.notifier).state = null;
+
           state = LoginStatus.success;
           ref.read(loginRouteStateProvider.notifier).state = LoginRoute.success;
         } else {

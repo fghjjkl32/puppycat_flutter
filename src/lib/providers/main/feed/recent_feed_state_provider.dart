@@ -17,8 +17,9 @@ class RecentFeedState extends _$RecentFeedState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
 
-  List<MemberInfoListData>? memberInfo;
-  String? imgDomain;
+  MemberInfoData? memberInfo;
+
+  // String? imgDomain;
 
   @override
   PagingController<int, FeedData> build() {
@@ -40,12 +41,11 @@ class RecentFeedState extends _$RecentFeedState {
       );
 
       memberInfo = feedResult.data!.memberInfo;
-      imgDomain = feedResult.data!.imgDomain;
 
       List<FeedData> feedList = feedResult.data!.list
           .map(
             (e) => FeedData(
-              commentList: e.commentList,
+              comment: e.comment,
               keepState: e.keepState,
               followState: e.followState,
               isComment: e.isComment,
@@ -58,7 +58,7 @@ class RecentFeedState extends _$RecentFeedState {
               uuid: e.uuid,
               memberUuid: e.memberUuid,
               workUuid: e.workUuid,
-              walkResultList: e.walkResultList,
+              // walkResultList: e.walkResultLisst,
               likeCnt: e.likeCnt,
               contents: e.contents,
               location: e.location,
@@ -67,7 +67,7 @@ class RecentFeedState extends _$RecentFeedState {
               mentionList: e.mentionList,
               commentCnt: e.commentCnt,
               hashTagList: e.hashTagList,
-              memberInfoList: e.memberInfoList,
+              memberInfo: e.memberInfo,
               imgList: e.imgList,
             ),
           )

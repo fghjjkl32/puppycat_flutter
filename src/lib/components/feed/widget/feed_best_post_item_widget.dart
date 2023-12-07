@@ -26,9 +26,7 @@ class FeedBestPostItemWidget extends StatelessWidget {
               Radius.circular(10),
             ),
             child: Image.network(
-              Thumbor(host: thumborHostUrl, key: thumborKey)
-                  .buildImage("$imgDomain$image")
-                  .toUrl(),
+              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$image").toUrl(),
               fit: BoxFit.cover,
               height: 112.h,
             ),

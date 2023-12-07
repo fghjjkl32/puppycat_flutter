@@ -106,7 +106,7 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
                           childSaveLayer: true,
                           mask: Center(
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${user.profileImgUrl!}").toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${user.profileImgUrl!}").toUrl(),
                               height: 42,
                               fit: BoxFit.cover,
                               width: double.infinity,

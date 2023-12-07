@@ -234,7 +234,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomRight: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[0].imgUrl!}").toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[0].imgUrl!}").toUrl(),
                               fit: BoxFit.cover,
                               height: 147.h,
                               width: double.infinity,
@@ -296,7 +296,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomLeft: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[0].imgUrl!}").toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[0].imgUrl!}").toUrl(),
                               fit: BoxFit.cover,
                               height: 147.h,
                               width: double.infinity,
@@ -356,7 +356,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomRight: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[1].imgUrl!}").toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[1].imgUrl!}").toUrl(),
                               fit: BoxFit.cover,
                               height: 147.h,
                               width: double.infinity,
@@ -418,7 +418,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomLeft: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[0].imgUrl!}").toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[0].imgUrl!}").toUrl(),
                               fit: BoxFit.cover,
                               height: 147.h,
                               width: double.infinity,
@@ -476,7 +476,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           child: Stack(
                             children: [
                               Image.network(
-                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[1].imgUrl!}").toUrl(),
+                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[1].imgUrl!}").toUrl(),
                                 fit: BoxFit.cover,
                                 height: 73.h,
                                 width: double.infinity,
@@ -532,7 +532,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                             child: Stack(
                               children: [
                                 Image.network(
-                                  Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[2].imgUrl!}").toUrl(),
+                                  Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[2].imgUrl!}").toUrl(),
                                   fit: BoxFit.cover,
                                   height: 73.h,
                                   width: double.infinity,

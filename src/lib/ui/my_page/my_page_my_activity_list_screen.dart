@@ -274,7 +274,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         child: Stack(
                           children: [
                             CachedNetworkImage(
-                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
                               imageBuilder: (context, imageProvider) => Container(
                                 decoration: BoxDecoration(
                                   borderRadius: (index == 0)
@@ -421,7 +421,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         child: Stack(
                           children: [
                             CachedNetworkImage(
-                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
                               imageBuilder: (context, imageProvider) => Container(
                                 decoration: BoxDecoration(
                                   borderRadius: (index == 0)

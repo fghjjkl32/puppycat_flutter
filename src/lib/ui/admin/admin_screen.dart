@@ -210,7 +210,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
 
     await prefs.setString('thumborDomain', selThumborDomainController.text);
 
-    imgDomain = await Constants.getThumborDomain();
+    // imgDomain = await Constants.getThumborDomain();
   }
 
   @override

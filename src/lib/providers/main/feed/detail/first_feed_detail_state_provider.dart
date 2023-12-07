@@ -18,10 +18,9 @@ final firstFeedStatusProvider = StateProvider<ListAPIStatus>((ref) => ListAPISta
 
 @Riverpod(keepAlive: true)
 class FirstFeedDetailState extends _$FirstFeedDetailState {
-  String? feedImgDomain;
-  MemberInfoListData? memberInfo;
+  MemberInfoData? memberInfo;
   final Map<String, FeedData?> firstFeedStateMap = {};
-  final Map<String, MemberInfoListData?> firstFeedMemberInfoStateMap = {};
+  final Map<String, MemberInfoData?> firstFeedMemberInfoStateMap = {};
 
   @override
   FeedData? build() {
@@ -55,8 +54,7 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
 
       bool isResponseDataEmpty = searchResult.data!.list.isEmpty;
       ref.read(firstFeedEmptyProvider.notifier).state = isResponseDataEmpty;
-      memberInfo = searchResult.data!.memberInfo?.first;
-      feedImgDomain = searchResult.data!.imgDomain;
+      memberInfo = searchResult.data!.memberInfo;
 
       Future(() {
         ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.loaded;
@@ -86,7 +84,7 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
   }
 
   void getStateForUser(String memberUuid) {
-    memberInfo = firstFeedMemberInfoStateMap[memberUuid] ?? MemberInfoListData();
+    memberInfo = firstFeedMemberInfoStateMap[memberUuid] ?? MemberInfoData();
 
     state = firstFeedStateMap[memberUuid] ?? FeedData(idx: 0);
   }

@@ -6,7 +6,6 @@ import 'package:pet_mobile_social_flutter/components/feed/widget/feed_bottom_ico
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_comment_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_image_detail_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_title_widget.dart';
-import 'package:pet_mobile_social_flutter/components/feed/widget/feed_walk_info_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -20,7 +19,6 @@ class FeedDetailWidget extends ConsumerWidget {
   final String memberUuid;
   final String contentType;
   final bool isSpecialUser;
-  final String imgDomain;
   final int index;
 
   final Function onTapHideButton;
@@ -31,7 +29,6 @@ class FeedDetailWidget extends ConsumerWidget {
     required this.nick,
     required this.memberUuid,
     required this.contentType,
-    required this.imgDomain,
     required this.isSpecialUser,
     required this.index,
     required this.onTapHideButton,
@@ -68,11 +65,10 @@ class FeedDetailWidget extends ConsumerWidget {
           contentType: contentType,
           memberUuid: memberUuid,
           isLike: feedData.likeState == 1,
-          imgDomain: imgDomain,
         ),
-        FeedWalkInfoWidget(
-          walkData: feedData.walkResultList,
-        ),
+        // FeedWalkInfoWidget(
+        //   walkData: feedData.walkResultList,
+        // ),
         const SizedBox(
           height: 10,
         ),
@@ -104,15 +100,15 @@ class FeedDetailWidget extends ConsumerWidget {
           contentType: contentType,
           oldMemberUuid: memberUuid,
         ),
-        feedData.commentList!.isEmpty
+        feedData.comment == null
             ? Container()
             : FeedCommentWidget(
-                memberUuid: feedData.commentList![0].memberUuid!,
-                profileImage: feedData.commentList![0].profileImgUrl,
-                name: feedData.commentList![0].nick!,
-                comment: feedData.commentList![0].contents!,
-                isSpecialUser: feedData.commentList![0].isBadge! == 1,
-                mentionListData: feedData.commentList![0].mentionList ?? [],
+                memberUuid: feedData.comment!.memberUuid!,
+                profileImage: feedData.comment!.profileImgUrl,
+                name: feedData.comment!.nick!,
+                comment: feedData.comment!.contents!,
+                isSpecialUser: feedData.comment!.isBadge! == 1,
+                mentionListData: feedData.comment!.mentionList ?? [],
                 contentIdx: feedData.idx,
                 oldMemberUuid: memberUuid,
               ),

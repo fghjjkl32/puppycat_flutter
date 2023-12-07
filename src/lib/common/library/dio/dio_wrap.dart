@@ -22,6 +22,7 @@ final dioProvider = StateProvider<Dio>((ref) {
 
 class DioWrap {
   static Dio dio = Dio();
+  static bool _isAccessTokenReissue = false;
 
   static Dio getDioWithCookie() {
     // final dio = Dio();
@@ -101,6 +102,11 @@ class DioWrap {
     dio.interceptors.add(
       InterceptorsWrapper(onRequest: (options, handler) async {
         // This is where you call your specific API
+        if (_isAccessTokenReissue) {
+          print('reject accesstoken reissue.');
+          return handler.reject(DioException(requestOptions: options));
+        }
+
         try {
           final isLogined = ref.read(loginStatementProvider);
           if (isLogined) {
@@ -122,6 +128,7 @@ class DioWrap {
           options.headers['App-Info'] = appInfo;
 
           final accessToken = await TokenController.readAccessToken();
+
           options.headers['Authorization'] = 'Bearer $accessToken';
 
           return handler.next(options);
@@ -149,6 +156,9 @@ class DioWrap {
 
         //Access Token이 유효하지 않을 때
         if (code == 'ERTE-9999') {
+          _isAccessTokenReissue = true;
+          await TokenController.clearAccessToken();
+
           final refreshToken = await TokenController.readRefreshToken();
 
           var refreshDio = Dio();
@@ -157,11 +167,14 @@ class DioWrap {
             final newAccessToken = await jwtRepository.getAccessToken(refreshToken);
             await TokenController.writeAccessToken(newAccessToken);
             response.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+            _isAccessTokenReissue = false;
           } on APIException catch (apiException) {
             ///getAccessToken 응답으로 받을 수 있는 오류라면  ECOM-9999 밖에 없음
             ///즉, Refresh Token이 유효하지 않을 때뿐
+            _isAccessTokenReissue = false;
             ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
           } catch (e) {
+            _isAccessTokenReissue = false;
             print('dio - getAccessToken error $e');
           }
 

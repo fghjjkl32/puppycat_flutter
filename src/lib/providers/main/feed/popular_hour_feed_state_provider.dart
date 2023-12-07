@@ -32,7 +32,6 @@ class PopularHourFeedStateNotifier extends StateNotifier<FeedDataListModel> {
         isLoading: false,
         list: lists.data!.list,
         memberInfo: lists.data!.memberInfo,
-        imgDomain: lists.data!.imgDomain,
       );
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);

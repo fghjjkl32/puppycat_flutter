@@ -6,7 +6,7 @@ part 'feed_data.g.dart';
 @freezed
 class FeedData with _$FeedData {
   factory FeedData({
-    List<FeedCommentData>? commentList,
+    FeedCommentData? comment,
     int? keepState,
     int? followState,
     int? isComment,
@@ -27,9 +27,9 @@ class FeedData with _$FeedData {
     List<MentionListData>? mentionList,
     int? commentCnt,
     List<FeedHashTagListData>? hashTagList,
-    List<MemberInfoListData>? memberInfoList,
+    MemberInfoData? memberInfo,
     List<FeedImgListData>? imgList,
-    List<WalkResultListData>? walkResultList,
+    // List<WalkResultListData>? walkResultList,
   }) = _FeedData;
 
   factory FeedData.fromJson(Map<String, dynamic> json) => _$FeedDataFromJson(json);
@@ -107,8 +107,8 @@ class ImgMemberTagListData with _$ImgMemberTagListData {
 }
 
 @freezed
-class MemberInfoListData with _$MemberInfoListData {
-  factory MemberInfoListData({
+class MemberInfoData with _$MemberInfoData {
+  factory MemberInfoData({
     String? simpleType,
     String? nick,
     int? isBadge,
@@ -118,25 +118,25 @@ class MemberInfoListData with _$MemberInfoListData {
     String? profileImgUrl,
     int? followCnt,
     String? email,
-  }) = _MemberInfoListData;
+  }) = _MemberInfoData;
 
-  factory MemberInfoListData.fromJson(Map<String, dynamic> json) => _$MemberInfoListDataFromJson(json);
+  factory MemberInfoData.fromJson(Map<String, dynamic> json) => _$MemberInfoDataFromJson(json);
 }
 
-@freezed
-class WalkResultListData with _$WalkResultListData {
-  factory WalkResultListData({
-    double? distance,
-    String? memberUuid,
-    String? endDate,
-    double? calorie,
-    String? walkTime,
-    int? step,
-    String? walkUuid,
-    String? startDate,
-    int? together,
-    List<MemberInfoListData>? walkMemberList,
-  }) = _WalkResultListData;
-
-  factory WalkResultListData.fromJson(Map<String, dynamic> json) => _$WalkResultListDataFromJson(json);
-}
+// @freezed
+// class WalkResultListData with _$WalkResultListData {
+//   factory WalkResultListData({
+//     double? distance,
+//     String? memberUuid,
+//     String? endDate,
+//     double? calorie,
+//     String? walkTime,
+//     int? step,
+//     String? walkUuid,
+//     String? startDate,
+//     int? together,
+//     List<MemberInfoData>? walkMemberList,
+//   }) = _WalkResultListData;
+//
+//   factory WalkResultListData.fromJson(Map<String, dynamic> json) => _$WalkResultListDataFromJson(json);
+// }

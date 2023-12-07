@@ -1,19 +1,11 @@
 import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
-import 'package:detectable_text_field/functions.dart';
 import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
-import 'package:linkfy_text/linkfy_text.dart';
-import 'package:matrix/matrix.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:thumbor/thumbor.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class NotificationCommentItem extends StatelessWidget {
   NotificationCommentItem({
@@ -189,7 +181,7 @@ class NotificationCommentItem extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: const BorderRadius.all(Radius.circular(8)),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imgUrl}").toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imgUrl}").toUrl(),
                               fit: BoxFit.cover,
                               height: 52,
                               width: 52,

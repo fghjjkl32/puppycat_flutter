@@ -256,10 +256,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     ],
                     expandedHeight: 120.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
-                      final userInformationState = ref.watch(myInformationStateProvider);
-                      final lists = userInformationState.list;
+                      final userInformationItemModel = ref.watch(myInformationStateProvider);
 
-                      return lists.isEmpty ? Container() : _myPageSuccessProfile(lists[0]);
+                      return _myPageSuccessProfile(userInformationItemModel);
                     })),
                 SliverPersistentHeader(
                   delegate: TabBarDelegate(),
@@ -362,7 +361,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     child: GestureDetector(
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
-                          'firstTitle': '${ref.watch(myInformationStateProvider).list[0].nick}',
+                          'firstTitle': '${ref.watch(myInformationStateProvider).nick}',
                           'secondTitle': '피드',
                           'memberUuid': ref.read(myInfoStateProvider).uuid ?? '',
                           'contentIdx': '${item.idx}',
@@ -387,7 +386,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   placeholder: (context, url) => Container(
                                     color: kNeutralColor300,
                                   ),
-                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.imgUrl}").toUrl(),
+                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${item.imgUrl}").toUrl(),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -805,7 +804,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   placeholder: (context, url) => Container(
                                     color: kNeutralColor300,
                                   ),
-                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.imgUrl}").toUrl(),
+                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${item.imgUrl}").toUrl(),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -856,7 +855,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                  child: getProfileAvatar(data.profileImgUrl! ?? "", 48.w, 48.h),
+                  child: getProfileAvatar(data.profileImgUrl ?? "", 48.w, 48.h),
                 ),
                 Expanded(
                   child: Column(

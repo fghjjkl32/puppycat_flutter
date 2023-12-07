@@ -295,24 +295,19 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                       if (firstFeedData != null)
                         FeedDetailWidget(
                           feedData: firstFeedData,
-                          nick: firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].nick : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick,
-                          profileImage:
-                              firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].profileImgUrl : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
-                          memberUuid:
-                              firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].memberUuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberUuid ?? '',
+                          nick: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.nick : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick,
+                          profileImage: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.profileImgUrl : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
+                          memberUuid: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.memberUuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberUuid ?? '',
                           contentType: widget.contentType,
-                          imgDomain: ref.read(firstFeedDetailStateProvider.notifier).feedImgDomain!,
                           index: 0,
-                          isSpecialUser:
-                              firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].isBadge == 1 : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
+                          isSpecialUser: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.isBadge == 1 : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
                           onTapHideButton: () async {
                             onTapHide(
                               context: context,
                               ref: ref,
                               contentType: widget.contentType,
                               contentIdx: widget.contentIdx,
-                              memberUuid:
-                                  firstFeedData.memberInfoList != null ? firstFeedData.memberInfoList![0].memberUuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberUuid ?? '',
+                              memberUuid: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.memberUuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberUuid ?? '',
                             );
                           },
                         ),
@@ -492,21 +487,19 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                               children: [
                                 FeedDetailWidget(
                                   feedData: item,
-                                  nick: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].nick : ref.read(feedListStateProvider.notifier).memberInfo?[0].nick,
-                                  profileImage:
-                                      (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].profileImgUrl : ref.watch(feedListStateProvider.notifier).memberInfo?[0].profileImgUrl ?? "",
-                                  memberUuid: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberUuid! : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberUuid ?? '',
+                                  nick: (item.memberInfo != null) ? item.memberInfo!.nick : ref.read(feedListStateProvider.notifier).memberInfo?.nick,
+                                  profileImage: (item.memberInfo != null) ? item.memberInfo!.profileImgUrl : ref.watch(feedListStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
+                                  memberUuid: (item.memberInfo != null) ? item.memberInfo!.memberUuid! : ref.read(feedListStateProvider.notifier).memberInfo?.memberUuid ?? '',
                                   contentType: widget.contentType,
-                                  imgDomain: ref.watch(feedListStateProvider.notifier).imgDomain!,
                                   index: index,
-                                  isSpecialUser: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].isBadge == 1 : ref.read(feedListStateProvider.notifier).memberInfo?[0].isBadge == 1,
+                                  isSpecialUser: (item.memberInfo != null) ? item.memberInfo!.isBadge == 1 : ref.read(feedListStateProvider.notifier).memberInfo?.isBadge == 1,
                                   onTapHideButton: () async {
                                     onTapHide(
                                       context: context,
                                       ref: ref,
                                       contentType: widget.contentType,
                                       contentIdx: item.idx,
-                                      memberUuid: (item.memberInfoList!.isNotEmpty) ? item.memberInfoList![0].memberUuid! : ref.read(feedListStateProvider.notifier).memberInfo?[0].memberUuid ?? '',
+                                      memberUuid: (item.memberInfo != null) ? item.memberInfo!.memberUuid! : ref.read(feedListStateProvider.notifier).memberInfo?.memberUuid ?? '',
                                     );
                                   },
                                 ),

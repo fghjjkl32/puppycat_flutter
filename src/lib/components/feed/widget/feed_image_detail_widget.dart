@@ -26,7 +26,7 @@ class FeedImageDetailWidget extends ConsumerStatefulWidget {
     required this.contentType,
     required this.isLike,
     required this.memberUuid,
-    required this.imgDomain,
+    // required this.imgDomain,
     Key? key,
   }) : super(key: key);
 
@@ -35,7 +35,8 @@ class FeedImageDetailWidget extends ConsumerStatefulWidget {
   final String contentType;
   final bool isLike;
   final String memberUuid;
-  final String imgDomain;
+
+  // final String imgDomain;
 
   @override
   FeedImageDetailWidgetState createState() => FeedImageDetailWidgetState();
@@ -127,7 +128,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                         placeholder: (context, url) => Container(
                           color: kNeutralColor300,
                         ),
-                        imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${i.url}").toUrl(),
+                        imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${i.url}").toUrl(),
                         fit: BoxFit.cover,
                         width: width,
                         height: height,

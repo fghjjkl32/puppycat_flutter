@@ -17,8 +17,7 @@ class FollowFeedState extends _$FollowFeedState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
 
-  List<MemberInfoListData>? memberInfo;
-  String? imgDomain;
+  MemberInfoData? memberInfo;
 
   @override
   PagingController<int, FeedData> build() {
@@ -40,12 +39,11 @@ class FollowFeedState extends _$FollowFeedState {
       );
 
       memberInfo = feedResult.data!.memberInfo;
-      imgDomain = feedResult.data!.imgDomain;
 
       List<FeedData> feedList = feedResult.data!.list
           .map(
             (e) => FeedData(
-              commentList: e.commentList,
+              comment: e.comment,
               keepState: e.keepState,
               followState: e.followState,
               isComment: e.isComment,
@@ -58,7 +56,7 @@ class FollowFeedState extends _$FollowFeedState {
               uuid: e.uuid,
               memberUuid: e.memberUuid,
               workUuid: e.workUuid,
-              walkResultList: e.walkResultList,
+              // walkResultList: e.walkResultList,
               likeCnt: e.likeCnt,
               contents: e.contents,
               location: e.location,
@@ -67,7 +65,7 @@ class FollowFeedState extends _$FollowFeedState {
               mentionList: e.mentionList,
               commentCnt: e.commentCnt,
               hashTagList: e.hashTagList,
-              memberInfoList: e.memberInfoList,
+              memberInfo: e.memberInfo,
               imgList: e.imgList,
             ),
           )

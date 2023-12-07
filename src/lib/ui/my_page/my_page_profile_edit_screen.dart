@@ -350,7 +350,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                 color: kNeutralColor500,
                                               )
                                             : Image.network(
-                                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${myInfo.profileImgUrl}").toUrl(),
+                                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${myInfo.profileImgUrl}").toUrl(),
                                                 width: 135,
                                                 height: 135,
                                                 fit: BoxFit.cover,

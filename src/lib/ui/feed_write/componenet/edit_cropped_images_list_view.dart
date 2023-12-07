@@ -1,20 +1,15 @@
-import 'dart:io';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
-import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_carousel_controller_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_cropped_files_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_view_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
@@ -79,7 +74,7 @@ class CroppedImagesListViewState extends ConsumerState<EditCroppedImagesListView
                         child: Image.network(
                           width: 300.w,
                           height: 225.h,
-                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.feedData.imgList![index].url!}").toUrl(),
+                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.feedData.imgList![index].url!}").toUrl(),
                           fit: BoxFit.cover,
                         ),
                       ),
