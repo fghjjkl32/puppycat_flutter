@@ -42,15 +42,15 @@ class UserUnknownScreen extends StatelessWidget {
               height: 12,
             ),
             Text(
-              "유저를 찾을 수 없습니다.",
-              style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+              "유저를 찾을 수 없어요.",
+              style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
             ),
             SizedBox(
               height: 8,
             ),
             Text(
-              "클릭하신 링크가 잘못되었거나\n페이지가 삭제되었습니다.",
-              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+              "닉네임이 바뀌었거나 탈퇴한 유저일 수 있어요.",
+              style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
               textAlign: TextAlign.center,
             ),
           ],
@@ -72,7 +72,7 @@ class UserUnknownScreen extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: kPrimaryLightColor,
+                      backgroundColor: kPreviousPrimaryLightColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -83,9 +83,9 @@ class UserUnknownScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
-                        '홈으로 이동',
+                        '홈으로 가기',
                         style: kBody14BoldStyle.copyWith(
-                          color: kPrimaryColor,
+                          color: kPreviousPrimaryColor,
                         ),
                       ),
                     ),

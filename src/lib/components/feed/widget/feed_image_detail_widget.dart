@@ -122,7 +122,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                       borderRadius: BorderRadius.circular(12.0),
                       child: CachedNetworkImage(
                         placeholder: (context, url) => Container(
-                          color: kNeutralColor300,
+                          color: kPreviousNeutralColor300,
                         ),
                         imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${i.url}").toUrl(),
                         fit: BoxFit.cover,
@@ -170,8 +170,8 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                     },
                                     child: MentionTagWidget(
                                       isCanClose: false,
-                                      color: kTextSubTitleColor.withOpacity(0.8),
-                                      textStyle: kBody11RegularStyle.copyWith(color: kNeutralColor100),
+                                      color: kPreviousTextSubTitleColor.withOpacity(0.8),
+                                      textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                       text: tag.nick!,
                                       onDelete: () {},
                                     ),
@@ -203,7 +203,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                         ),
                                         child: Text(
                                           "태그된 대상",
-                                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextSubTitleColor),
+                                          style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                         ),
                                       ),
                                       Expanded(
@@ -242,7 +242,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                             child: Icon(
                               Puppycat_social.icon_taguser,
                               size: 24,
-                              color: kNeutralColor100,
+                              color: kPreviousNeutralColor100,
                             ),
                           ),
                         ),

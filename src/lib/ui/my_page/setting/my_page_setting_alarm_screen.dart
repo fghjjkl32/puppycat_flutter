@@ -81,7 +81,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                           Text(
                             "광고성 정보 수신 동의",
                             style: kBody14BoldStyle.copyWith(
-                              color: kTextSubTitleColor,
+                              color: kPreviousTextSubTitleColor,
                             ),
                           ),
                           FlutterSwitch(
@@ -89,7 +89,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                             width: 34.w,
                             height: 16.h,
                             activeColor: Theme.of(context).primaryColor,
-                            inactiveColor: kNeutralColor500,
+                            inactiveColor: kPreviousNeutralColor500,
                             toggleSize: 12.0.w,
                             value: switchState['main_2'] == 1,
                             borderRadius: 50.0.w,
@@ -124,7 +124,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                     Text(
                                       "야간 알림",
                                       style: kBody13RegularStyle.copyWith(
-                                        color: kTextSubTitleColor,
+                                        color: kPreviousTextSubTitleColor,
                                       ),
                                     ),
                                     const SizedBox(
@@ -133,7 +133,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                     Text(
                                       "밤 9시부터 아침 8시까지 알림 받기",
                                       style: kBody11RegularStyle.copyWith(
-                                        color: kTextBodyColor,
+                                        color: kPreviousTextBodyColor,
                                       ),
                                     ),
                                   ],
@@ -143,7 +143,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                   width: 34.w,
                                   height: 16.h,
                                   activeColor: Theme.of(context).primaryColor,
-                                  inactiveColor: kNeutralColor500,
+                                  inactiveColor: kPreviousNeutralColor500,
                                   toggleSize: 12.0.w,
                                   value: switchState['main_3'] == 1,
                                   borderRadius: 50.0.w,
@@ -174,7 +174,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                           Text(
                             "커뮤니티 알림",
                             style: kBody14BoldStyle.copyWith(
-                              color: kTextSubTitleColor,
+                              color: kPreviousTextSubTitleColor,
                             ),
                           ),
                           FlutterSwitch(
@@ -182,7 +182,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                             width: 34.w,
                             height: 16.h,
                             activeColor: Theme.of(context).primaryColor,
-                            inactiveColor: kNeutralColor500,
+                            inactiveColor: kPreviousNeutralColor500,
                             toggleSize: 12.0.w,
                             value: switchState['main_1'] == 1,
                             borderRadius: 50.0.w,
@@ -208,7 +208,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 Text(
                                   "새로운 팔로워",
                                   style: kBody13RegularStyle.copyWith(
-                                    color: kTextSubTitleColor,
+                                    color: kPreviousTextSubTitleColor,
                                   ),
                                 ),
                                 FlutterSwitch(
@@ -216,7 +216,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                   width: 34.w,
                                   height: 16.h,
                                   activeColor: Theme.of(context).primaryColor,
-                                  inactiveColor: kNeutralColor500,
+                                  inactiveColor: kPreviousNeutralColor500,
                                   toggleSize: 12.0.w,
                                   value: switchState['sub_1_1'] == 1,
                                   borderRadius: 50.0.w,
@@ -235,7 +235,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 Text(
                                   "내 글(댓글) 좋아요",
                                   style: kBody13RegularStyle.copyWith(
-                                    color: kTextSubTitleColor,
+                                    color: kPreviousTextSubTitleColor,
                                   ),
                                 ),
                                 FlutterSwitch(
@@ -243,7 +243,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                   width: 34.w,
                                   height: 16.h,
                                   activeColor: Theme.of(context).primaryColor,
-                                  inactiveColor: kNeutralColor500,
+                                  inactiveColor: kPreviousNeutralColor500,
                                   toggleSize: 12.0.w,
                                   value: switchState['sub_1_2'] == 1,
                                   borderRadius: 50.0.w,
@@ -262,7 +262,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 Text(
                                   "멘션(태그)",
                                   style: kBody13RegularStyle.copyWith(
-                                    color: kTextSubTitleColor,
+                                    color: kPreviousTextSubTitleColor,
                                   ),
                                 ),
                                 FlutterSwitch(
@@ -270,7 +270,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                   width: 34.w,
                                   height: 16.h,
                                   activeColor: Theme.of(context).primaryColor,
-                                  inactiveColor: kNeutralColor500,
+                                  inactiveColor: kPreviousNeutralColor500,
                                   toggleSize: 12.0.w,
                                   value: switchState['sub_1_3'] == 1,
                                   borderRadius: 50.0.w,
@@ -289,7 +289,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 Text(
                                   "댓글",
                                   style: kBody13RegularStyle.copyWith(
-                                    color: kTextSubTitleColor,
+                                    color: kPreviousTextSubTitleColor,
                                   ),
                                 ),
                                 FlutterSwitch(
@@ -297,7 +297,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                   width: 34.w,
                                   height: 16.h,
                                   activeColor: Theme.of(context).primaryColor,
-                                  inactiveColor: kNeutralColor500,
+                                  inactiveColor: kPreviousNeutralColor500,
                                   toggleSize: 12.0.w,
                                   value: switchState['sub_1_4'] == 1,
                                   borderRadius: 50.0.w,
@@ -316,7 +316,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 Text(
                                   "팔로잉 새 글 알림",
                                   style: kBody13RegularStyle.copyWith(
-                                    color: kTextSubTitleColor,
+                                    color: kPreviousTextSubTitleColor,
                                   ),
                                 ),
                                 FlutterSwitch(
@@ -324,7 +324,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                   width: 34.w,
                                   height: 16.h,
                                   activeColor: Theme.of(context).primaryColor,
-                                  inactiveColor: kNeutralColor500,
+                                  inactiveColor: kPreviousNeutralColor500,
                                   toggleSize: 12.0.w,
                                   value: switchState['sub_1_5'] == 1,
                                   borderRadius: 50.0.w,
@@ -343,7 +343,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 Text(
                                   "채팅 알림",
                                   style: kBody13RegularStyle.copyWith(
-                                    color: kTextSubTitleColor,
+                                    color: kPreviousTextSubTitleColor,
                                   ),
                                 ),
                                 FlutterSwitch(
@@ -351,7 +351,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                   width: 34.w,
                                   height: 16.h,
                                   activeColor: Theme.of(context).primaryColor,
-                                  inactiveColor: kNeutralColor500,
+                                  inactiveColor: kPreviousNeutralColor500,
                                   toggleSize: 12.0.w,
                                   value: switchState['sub_1_6'] == 1,
                                   borderRadius: 50.0.w,

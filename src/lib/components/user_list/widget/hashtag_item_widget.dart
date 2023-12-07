@@ -20,6 +20,7 @@ class HashTagItemWidget extends ConsumerStatefulWidget {
 
   final String hashTag;
   final String hashTagCnt;
+
   @override
   HashTagItemWidgetState createState() => HashTagItemWidgetState();
 }
@@ -75,14 +76,14 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
                   children: [
                     Text(
                       widget.hashTag,
-                      style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                      style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
                     SizedBox(
                       height: 4.h,
                     ),
                     Text(
                       "${widget.hashTagCnt}+",
-                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],
                 ),

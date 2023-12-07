@@ -84,14 +84,14 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                   padding: EdgeInsets.only(right: 8.0.w),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: kPrimaryLightColor,
+                      color: kPreviousPrimaryLightColor,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 12.0.w),
                       child: Text(
                         "1:1채널톡",
-                        style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                        style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                       ),
                     ),
                   ),
@@ -119,11 +119,11 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                         ref.read(faqListStateProvider.notifier).search(searchController.text);
                       });
                     },
-                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: kNeutralColor200,
+                      fillColor: kPreviousNeutralColor200,
                       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
@@ -164,18 +164,18 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                                 ),
                               ),
                             ),
-                      hintText: "검색어를 입력해 주세요.",
-                      hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                      hintText: "궁금한 내용을 검색해 보세요.",
+                      hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                     ),
                   ),
                 ),
                 TabBar(
                     controller: tabController,
                     indicatorWeight: 4,
-                    labelColor: kPrimaryColor,
-                    indicatorColor: kPrimaryColor,
-                    unselectedLabelColor: kNeutralColor500,
-                    indicatorSize: TabBarIndicatorSize.tab,
+                    labelColor: kPreviousPrimaryColor,
+                    indicatorColor: kPreviousPrimaryColor,
+                    unselectedLabelColor: kPreviousNeutralColor500,
+                    indicatorSize: TabBarIndicatorSize.label,
                     labelPadding: EdgeInsets.only(
                       top: 10.h,
                       bottom: 10.h,
@@ -242,14 +242,14 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: kNeutralColor300,
+                      color: kPreviousNeutralColor300,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 14.0.w),
                       child: Text(
                         itemModel.menuName ?? 'unknown',
-                        style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+                        style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ),
                   ),
@@ -259,7 +259,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                   Expanded(
                     child: Text(
                       itemModel.title ?? 'unknown',
-                      style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                      style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -272,7 +272,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: kNeutralColor200,
+                      color: kPreviousNeutralColor200,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
@@ -457,11 +457,11 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
 //                   ),
 //                   TabBar(
 //                       controller: tabController,
-//                       indicatorWeight: 3,
+//                       indicatorWeight: 2.4,
 //                       labelColor: kPrimaryColor,
 //                       indicatorColor: kPrimaryColor,
 //                       unselectedLabelColor: kNeutralColor500,
-//                       indicatorSize: TabBarIndicatorSize.tab,
+//                       indicatorSize: TabBarIndicatorSize.label,
 //                       labelPadding: EdgeInsets.only(
 //                         top: 10.h,
 //                         bottom: 10.h,

@@ -128,37 +128,35 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
           context: context,
           builder: (BuildContext context) {
             return CustomDialog(
-                content: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                  child: Column(
-                    children: [
-                      Text(
-                        "이전으로 돌아가시겠어요?",
-                        style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                      ),
-                      SizedBox(
-                        height: 4.h,
-                      ),
-                      Text(
-                        "지금 돌아가시면 수정사항은\n저장되지 않습니다.",
-                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+              content: Padding(
+                padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                child: Column(
+                  children: [
+                    Text(
+                      "잠깐! 지금 나가면\n수정한 내용이 저장되지 않아요.",
+                      textAlign: TextAlign.center,
+                      style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                    ),
+                  ],
                 ),
-                confirmTap: () {
-                  context.pop();
-                  context.pop();
-                  ref.watch(editStateProvider.notifier).resetState();
-                },
-                cancelTap: () {
-                  context.pop();
-                },
-                confirmWidget: Text(
-                  "확인",
-                  style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
-                ));
+              ),
+              confirmTap: () {
+                context.pop();
+              },
+              cancelTap: () {
+                context.pop();
+                context.pop();
+                ref.watch(editStateProvider.notifier).resetState();
+              },
+              confirmWidget: Text(
+                "이어서 하기",
+                style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
+              ),
+              cancelWidget: Text(
+                "닫기",
+                style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
+              ),
+            );
           },
         );
         return false;
@@ -176,37 +174,35 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                   context: context,
                   builder: (BuildContext context) {
                     return CustomDialog(
-                        content: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                          child: Column(
-                            children: [
-                              Text(
-                                "이전으로 돌아가시겠어요?",
-                                style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                              ),
-                              SizedBox(
-                                height: 4.h,
-                              ),
-                              Text(
-                                "지금 돌아가시면 수정사항은\n저장되지 않습니다.",
-                                style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
+                      content: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                        child: Column(
+                          children: [
+                            Text(
+                              "잠깐! 지금 나가면\n수정한 내용이 저장되지 않아요.",
+                              textAlign: TextAlign.center,
+                              style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                            ),
+                          ],
                         ),
-                        confirmTap: () {
-                          context.pop();
-                          context.pop();
-                          ref.watch(editStateProvider.notifier).resetState();
-                        },
-                        cancelTap: () {
-                          context.pop();
-                        },
-                        confirmWidget: Text(
-                          "확인",
-                          style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
-                        ));
+                      ),
+                      confirmTap: () {
+                        context.pop();
+                      },
+                      cancelTap: () {
+                        context.pop();
+                        context.pop();
+                        ref.watch(editStateProvider.notifier).resetState();
+                      },
+                      confirmWidget: Text(
+                        "이어서 하기",
+                        style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
+                      ),
+                      cancelWidget: Text(
+                        "닫기",
+                        style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
+                      ),
+                    );
                   },
                 );
               },
@@ -303,7 +299,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                 child: Text(
                   '완료',
                   style: kButton12BoldStyle.copyWith(
-                    color: isTotalNextStep ? kPrimaryColor : kTextBodyColor,
+                    color: isTotalNextStep ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                   ),
                 ),
               ),
@@ -331,7 +327,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                         ? const Icon(
                                             Puppycat_social.icon_profile_large,
                                             size: 92,
-                                            color: kNeutralColor500,
+                                            color: kPreviousNeutralColor500,
                                           )
                                         : Image.file(
                                             File(selectedImage!.path),
@@ -344,7 +340,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                             ? const Icon(
                                                 Puppycat_social.icon_profile_large,
                                                 size: 92,
-                                                color: kNeutralColor500,
+                                                color: kPreviousNeutralColor500,
                                               )
                                             : Image.network(
                                                 Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${ref.read(userInfoProvider).userModel!.profileImgUrl}").toUrl(),
@@ -377,8 +373,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       icon: const Icon(
                                         Puppycat_social.icon_photo,
                                       ),
-                                      title: '앨범에서 선택',
-                                      titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                      title: '앨범에서 선택하기',
+                                      titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                       onTap: () async {
                                         context.pop();
 
@@ -395,15 +391,16 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                       child: Column(
                                                         children: [
                                                           Text(
-                                                            "퍼피캣 접근 권한 허용",
-                                                            style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                            "피드를 올리거나 프로필을 설정하려면\n사진 권한이 필요해요.",
+                                                            style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                                            textAlign: TextAlign.center,
                                                           ),
                                                           SizedBox(
                                                             height: 4.h,
                                                           ),
                                                           Text(
-                                                            "프로필 사진 등록을 위해\n사진 접근을 허용해 주세요.",
-                                                            style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                            "언제든지 설정을 바꿀 수 있어요.",
+                                                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                             textAlign: TextAlign.center,
                                                           ),
                                                         ],
@@ -417,12 +414,12 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                       context.pop();
                                                     },
                                                     confirmWidget: Text(
-                                                      "허용",
-                                                      style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                                                      "설정 열기",
+                                                      style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                                                     ),
                                                     cancelWidget: Text(
-                                                      "허용 안 함",
-                                                      style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                                                      "닫기",
+                                                      style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                                                     ));
                                               },
                                             );
@@ -433,10 +430,10 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                     BottomSheetButtonItem(
                                       icon: const Icon(
                                         Puppycat_social.icon_delete_small,
-                                        color: kBadgeColor,
+                                        color: kPreviousErrorColor,
                                       ),
-                                      title: '프로필 사진 삭제',
-                                      titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
+                                      title: '프로필 사진 삭제하기',
+                                      titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                       onTap: () {
                                         setState(() {
                                           selectedImage = null;
@@ -454,7 +451,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               width: 32.w,
                               height: 32.h,
                               decoration: BoxDecoration(
-                                color: kNeutralColor100,
+                                color: kPreviousNeutralColor100,
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
@@ -467,7 +464,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               ),
                               child: Icon(
                                 Puppycat_social.icon_modify_medium,
-                                color: kTextBodyColor,
+                                color: kPreviousTextBodyColor,
                               ),
                             ),
                           ),
@@ -477,18 +474,17 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.only(
+                  decoration: const BoxDecoration(
+                    color: kWhiteColor,
+                    borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20.0),
                       topRight: Radius.circular(20.0),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.4),
-                        spreadRadius: -5,
-                        blurRadius: 7,
-                        offset: const Offset(0, -6),
+                        color: Color(0x0A000000),
+                        offset: Offset(0, -6),
+                        blurRadius: 10.0,
                       ),
                     ],
                   ),
@@ -499,14 +495,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         padding: EdgeInsets.only(top: 32.h, left: 12.0.w, bottom: 8.h),
                         child: Text(
                           "프로필 정보",
-                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                          style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 24.0.w, bottom: 8.h),
                         child: Text(
                           "닉네임",
-                          style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
                       Padding(
@@ -525,14 +521,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           focusNode: _nickFocusNode,
                                           decoration: nickProvider != NickNameStatus.valid
                                               ? InputDecoration(
-                                                  hintText: '회원가입.닉네임을 입력해주세요'.tr(),
-                                                  hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
-                                                  errorStyle: kBody11RegularStyle.copyWith(color: kBadgeColor, fontWeight: FontWeight.w400, height: 1.2),
+                                                  hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
+                                                  hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                                                  errorStyle: kBody11RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
                                                   errorText: getNickDescription(nickProvider),
                                                   errorBorder: const OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 1,
-                                                      color: kBadgeColor,
+                                                      color: kPreviousErrorColor,
                                                     ),
                                                   ),
                                                   errorMaxLines: 2,
@@ -541,20 +537,20 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                   contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                                                 )
                                               : InputDecoration(
-                                                  hintText: '회원가입.닉네임을 입력해주세요'.tr(),
-                                                  hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                                                  hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
+                                                  hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                                                   errorText: '회원가입.사용 가능한 닉네임입니다'.tr(),
-                                                  errorStyle: kBody11RegularStyle.copyWith(color: kPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
+                                                  errorStyle: kBody11RegularStyle.copyWith(color: kPreviousPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
                                                   errorBorder: const OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 1,
-                                                      color: kPrimaryColor,
+                                                      color: kPreviousPrimaryColor,
                                                     ),
                                                   ),
                                                   focusedErrorBorder: const OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                       width: 1,
-                                                      color: kPrimaryColor,
+                                                      color: kPreviousPrimaryColor,
                                                     ),
                                                   ),
                                                   errorMaxLines: 2,
@@ -562,7 +558,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                   isDense: true,
                                                   contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                                                 ),
-                                          style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                                          style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                           maxLength: 20,
                                           autovalidateMode: AutovalidateMode.always,
                                           inputFormatters: [
@@ -623,14 +619,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                     child: SizedBox(
                                       height: 32.h,
                                       child: Container(
-                                        decoration: BoxDecoration(color: kNeutralColor300, borderRadius: BorderRadius.circular(10)),
+                                        decoration: BoxDecoration(color: kPreviousNeutralColor300, borderRadius: BorderRadius.circular(10)),
                                         child: Align(
                                           alignment: Alignment.centerLeft,
                                           child: Padding(
                                             padding: const EdgeInsets.only(left: 16.0),
                                             child: Text(
                                               ref.watch(editStateProvider).userInfoModel!.userModel!.nick,
-                                              style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
+                                              style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                             ),
                                           ),
                                         ),
@@ -653,7 +649,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                         width: 56.w,
                                         height: 32.h,
                                         decoration: BoxDecoration(
-                                          color: ref.watch(checkButtonProvider) ? kPrimaryLightColor : kNeutralColor300,
+                                          color: ref.watch(checkButtonProvider) ? kPreviousPrimaryLightColor : kPreviousNeutralColor300,
                                           borderRadius: const BorderRadius.all(
                                             Radius.circular(8.0),
                                           ),
@@ -662,7 +658,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           child: Text(
                                             "중복확인",
                                             style: kButton12BoldStyle.copyWith(
-                                              color: ref.watch(checkButtonProvider) ? kPrimaryColor : kTextBodyColor,
+                                              color: ref.watch(checkButtonProvider) ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                                             ),
                                           ),
                                         ),
@@ -680,7 +676,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       width: 56.w,
                                       height: 32.h,
                                       decoration: const BoxDecoration(
-                                        color: kPrimaryLightColor,
+                                        color: kPreviousPrimaryLightColor,
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(8.0),
                                         ),
@@ -688,7 +684,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       child: Center(
                                         child: Text(
                                           "변경",
-                                          style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                                          style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                                         ),
                                       ),
                                     ),
@@ -700,7 +696,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         padding: EdgeInsets.only(left: 24.0.w, bottom: 8.h, top: 8.h),
                         child: Text(
                           "한 줄 소개",
-                          style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
                       Padding(
@@ -710,8 +706,9 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                           maxLength: 30,
                           decoration: InputDecoration(
                             counterText: "",
-                            hintText: "${ref.watch(editStateProvider).userInfoModel!.userModel!.introText == "" ? '소개 글을 입력해 주세요.' : ref.watch(editStateProvider).userInfoModel!.userModel!.introText}",
-                            hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                            hintText:
+                                "${ref.watch(editStateProvider).userInfoModel!.userModel!.introText == "" ? '나를 간단하게 소개해 주세요.' : ref.watch(editStateProvider).userInfoModel!.userModel!.introText}",
+                            hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                             contentPadding: const EdgeInsets.all(16),
                           ),
                           onChanged: (value) {
@@ -719,7 +716,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               isNextStep = true;
                             });
                           },
-                          style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                          style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                           textAlignVertical: TextAlignVertical.center,
                         ),
                       ),
@@ -727,14 +724,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         padding: EdgeInsets.only(top: 16.h, left: 12.0.w, bottom: 8.h),
                         child: Text(
                           "로그인 정보",
-                          style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                          style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 24.0.w, bottom: 8.h),
                         child: Text(
                           "이메일",
-                          style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
                       Padding(
@@ -746,40 +743,42 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             enabled: false,
                             decoration: InputDecoration(
                               prefixIcon: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(12.0),
                                 child: ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "kakao"
                                     ? Image.asset(
                                         'assets/image/loginScreen/kakao_icon.png',
-                                        height: 20,
-                                        width: 20,
+                                        height: 16,
+                                        width: 16,
                                       )
                                     : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "naver"
                                         ? Image.asset(
                                             'assets/image/loginScreen/naver_icon.png',
+                                            height: 16,
+                                            width: 16,
                                             color: Color(0xff03CF5D),
                                           )
                                         : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "google"
                                             ? Image.asset(
                                                 'assets/image/loginScreen/google_icon.png',
-                                                height: 20,
-                                                width: 20,
+                                                height: 16,
+                                                width: 16,
                                               )
                                             : ref.watch(editStateProvider).userInfoModel!.userModel!.simpleType == "apple"
                                                 ? Image.asset(
                                                     'assets/image/loginScreen/apple_icon.png',
-                                                    height: 20,
-                                                    width: 20,
+                                                    height: 16,
+                                                    width: 16,
                                                   )
                                                 : SizedBox.shrink(),
                               ),
                               filled: true,
-                              fillColor: kNeutralColor300,
+                              fillColor: kPreviousNeutralColor300,
                               counterText: "",
-                              hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                              hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                               contentPadding: const EdgeInsets.all(16),
                             ),
                             name: 'content',
-                            style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
+                            style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                             textAlignVertical: TextAlignVertical.center,
                           ),
                         ),
@@ -788,7 +787,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         padding: EdgeInsets.only(left: 24.0.w, bottom: 8.h, top: 8.h),
                         child: Text(
                           "이름",
-                          style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
                       Padding(
@@ -799,9 +798,13 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             enabled: false,
                             initialValue: "${ref.watch(editStateProvider).userInfoModel!.userModel!.name}",
                             decoration: InputDecoration(
-                                counterText: "", hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500), filled: true, fillColor: kNeutralColor300, contentPadding: const EdgeInsets.all(16)),
+                                counterText: "",
+                                hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                                filled: true,
+                                fillColor: kPreviousNeutralColor300,
+                                contentPadding: const EdgeInsets.all(16)),
                             name: 'content',
-                            style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
+                            style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                             textAlignVertical: TextAlignVertical.center,
                           ),
                         ),
@@ -810,7 +813,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         padding: EdgeInsets.only(left: 24.0.w, bottom: 8.h, top: 8.h),
                         child: Text(
                           "휴대폰 번호",
-                          style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
                       Padding(
@@ -825,14 +828,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       child: SizedBox(
                                         height: 32.h,
                                         child: Container(
-                                          decoration: BoxDecoration(color: kNeutralColor300, borderRadius: BorderRadius.circular(10)),
+                                          decoration: BoxDecoration(color: kPreviousNeutralColor300, borderRadius: BorderRadius.circular(10)),
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Padding(
                                               padding: const EdgeInsets.only(left: 16.0),
                                               child: Text(
                                                 "${ref.watch(editStateProvider).userInfoModel!.userModel!.phone}",
-                                                style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
+                                                style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                               ),
                                             ),
                                           ),
@@ -843,14 +846,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       child: SizedBox(
                                         height: 32.h,
                                         child: Container(
-                                          decoration: BoxDecoration(color: kNeutralColor300, borderRadius: BorderRadius.circular(10)),
+                                          decoration: BoxDecoration(color: kPreviousNeutralColor300, borderRadius: BorderRadius.circular(10)),
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Padding(
                                               padding: const EdgeInsets.only(left: 16.0),
                                               child: Text(
                                                 "${ref.watch(editStateProvider).authModel!.phone}",
-                                                style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
+                                                style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                               ),
                                             ),
                                           ),
@@ -871,7 +874,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           width: 56.w,
                                           height: 32.h,
                                           decoration: const BoxDecoration(
-                                            color: kPrimaryLightColor,
+                                            color: kPreviousPrimaryLightColor,
                                             borderRadius: BorderRadius.all(
                                               Radius.circular(8.0),
                                             ),
@@ -879,7 +882,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           child: Center(
                                             child: Text(
                                               "취소",
-                                              style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                                              style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                                             ),
                                           ),
                                         ),
@@ -894,7 +897,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           width: 56.w,
                                           height: 32.h,
                                           decoration: const BoxDecoration(
-                                            color: kPrimaryLightColor,
+                                            color: kPreviousPrimaryLightColor,
                                             borderRadius: BorderRadius.all(
                                               Radius.circular(8.0),
                                             ),
@@ -902,7 +905,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           child: Center(
                                             child: Text(
                                               "변경",
-                                              style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                                              style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                                             ),
                                           ),
                                         ),
@@ -911,7 +914,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                     width: 56.w,
                                     height: 32.h,
                                     decoration: const BoxDecoration(
-                                      color: kNeutralColor300,
+                                      color: kPreviousNeutralColor300,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(8.0),
                                       ),
@@ -919,7 +922,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                     child: Center(
                                       child: Text(
                                         "인증완료",
-                                        style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                                        style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                                       ),
                                     ),
                                   ),
@@ -988,7 +991,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                     },
                                     label: Text(
                                       '회원가입.휴대폰 인증'.tr(),
-                                      style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
+                                      style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor100),
                                     ),
                                     icon: Image.asset('assets/image/signUpScreen/pass_icon.png'),
                                   ),
@@ -1007,7 +1010,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             },
                             child: Text(
                               "회원 탈퇴",
-                              style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                              style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                             ),
                           ),
                         ),

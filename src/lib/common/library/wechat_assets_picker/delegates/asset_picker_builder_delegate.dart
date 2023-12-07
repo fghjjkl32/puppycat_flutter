@@ -1164,7 +1164,7 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                       },
                       child: Container(
                         decoration: const BoxDecoration(
-                          color: kNeutralColor300,
+                          color: kPreviousNeutralColor300,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(10),
                           ),
@@ -1929,7 +1929,7 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                                         padding: EdgeInsets.only(bottom: 4.0.h),
                                         child: ScaleText(
                                           name,
-                                          style: kBody14BoldStyle.copyWith(color: kTextTitleColor),
+                                          style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -1937,7 +1937,7 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                                       if (semanticsCount != null)
                                         ScaleText(
                                           semanticsCount,
-                                          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -1953,7 +1953,7 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                     if (isSelected)
                       const AspectRatio(
                         aspectRatio: 1,
-                        child: Icon(Icons.check, color: kPrimaryColor, size: 29),
+                        child: Icon(Icons.check, color: kPreviousPrimaryColor, size: 29),
                       ),
                   ],
                 ),

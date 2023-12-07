@@ -28,7 +28,6 @@ import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_write_provider.dart';
-
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -68,7 +67,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
     List<Widget> tabs = [
       Text(
-        "최신",
+        "전체",
         style: kBody16MediumStyle,
       ),
       // Text(
@@ -84,13 +83,27 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           style: kBody16MediumStyle,
         ),
         Text(
-          "작성글",
+          "내 피드",
           style: kBody16MediumStyle,
         ),
       ]);
     }
 
     return tabs;
+  }
+
+  List<Widget> getTabSpacer() {
+    final loginState = ref.read(loginStateProvider);
+
+    if (loginState == LoginStatus.success) {
+      return [const SizedBox.shrink()];
+    } else {
+      return [
+        const Spacer(),
+        const Spacer(),
+        const Spacer(),
+      ];
+    }
   }
 
   void _handleStatusBarTap() {
@@ -311,9 +324,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "PUPPYCAT",
-                            style: kTitle18BoldStyle,
+                          Image.asset(
+                            'assets/image/logo/logo.png',
+                            width: 107,
+                            height: 39,
                           ),
                           _buttonWidget(),
                         ],
@@ -335,11 +349,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                 pinned: true,
                                 snap: false,
                                 floating: true,
-                                expandedHeight: 220.0,
+                                expandedHeight: 200.0,
                                 centerTitle: false,
                                 leading: null,
                                 titleSpacing: 0,
-                                backgroundColor: kNeutralColor100,
+                                backgroundColor: kPreviousNeutralColor100,
                                 automaticallyImplyLeading: false,
                                 title: Row(
                                   children: [
@@ -357,17 +371,18 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                   collapseMode: CollapseMode.pin,
                                   title: _buildTabbar(innerBoxIsScrolled),
                                   background: Container(
-                                    color: kNeutralColor100,
+                                    color: kPreviousNeutralColor100,
                                     child: Stack(
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
-                                            top: 16.0.h,
-                                            left: 10.w,
+                                            top: 12,
+                                            left: 16,
                                           ),
-                                          child: Text(
-                                            "PUPPYCAT",
-                                            style: kTitle18BoldStyle,
+                                          child: Image.asset(
+                                            'assets/image/logo/logo.png',
+                                            width: 107,
+                                            height: 39,
                                           ),
                                         ),
                                         _buildBackGround(),
@@ -380,11 +395,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                 pinned: true,
                                 snap: false,
                                 floating: true,
-                                expandedHeight: 180.0,
+                                expandedHeight: 160.0,
                                 centerTitle: false,
                                 leading: null,
                                 titleSpacing: 0,
-                                backgroundColor: kNeutralColor100,
+                                backgroundColor: kPreviousNeutralColor100,
                                 automaticallyImplyLeading: false,
                                 flexibleSpace: FlexibleSpaceBar(
                                   titlePadding: EdgeInsets.zero,
@@ -393,7 +408,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                   collapseMode: CollapseMode.pin,
                                   title: _buildTabbar(innerBoxIsScrolled),
                                   background: Container(
-                                    color: kNeutralColor100,
+                                    color: kPreviousNeutralColor100,
                                     child: Stack(
                                       children: [
                                         _buildBackGround(),
@@ -542,12 +557,12 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   maxAssets: 12,
                   // ignore: use_build_context_synchronously
                   pickerTheme: themeData(context).copyWith(
-                    canvasColor: kNeutralColor100,
+                    canvasColor: kPreviousNeutralColor100,
                     colorScheme: theme.colorScheme.copyWith(
-                      background: kNeutralColor100,
+                      background: kPreviousNeutralColor100,
                     ),
                     appBarTheme: theme.appBarTheme.copyWith(
-                      backgroundColor: kNeutralColor100,
+                      backgroundColor: kPreviousNeutralColor100,
                     ),
                   ),
                   onCompleted: (cropStream) {
@@ -584,7 +599,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
               ///산책하기 보류로 주석 처리
               // color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
               ///산책하기 보류로 주석 처리 완료
-              color: kNeutralColor600,
+              color: kPreviousNeutralColor600,
 
               ///주석 대신 위 코드로 변경
               ///const도 추가
@@ -656,12 +671,12 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   context,
                   maxAssets: 12,
                   pickerTheme: themeData(context).copyWith(
-                    canvasColor: kNeutralColor100,
+                    canvasColor: kPreviousNeutralColor100,
                     colorScheme: theme.colorScheme.copyWith(
-                      background: kNeutralColor100,
+                      background: kPreviousNeutralColor100,
                     ),
                     appBarTheme: theme.appBarTheme.copyWith(
-                      backgroundColor: kNeutralColor100,
+                      backgroundColor: kPreviousNeutralColor100,
                     ),
                   ),
                   onCompleted: (cropStream) {
@@ -708,7 +723,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
               ///산책하기 보류로 주석 처리
               // color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
               ///
-              color: kNeutralColor600,
+              color: kPreviousNeutralColor600,
 
               ///위 코드로 변경
               ///const 추가
@@ -735,7 +750,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                         child: Icon(
                           Puppycat_social.icon_profile_small,
                           size: 22,
-                          color: kNeutralColor400,
+                          color: kPreviousNeutralColor400,
                         ),
                       ),
                       child: SvgPicture.asset(
@@ -845,9 +860,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             height: 12,
                           ),
                           Text(
-                            '등록된 피드가 없습니다.',
+                            '피드가 없어요.',
                             textAlign: TextAlign.center,
-                            style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                            style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                           ),
                         ],
                       ),
@@ -988,9 +1003,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             height: 12,
                           ),
                           Text(
-                            '등록된 피드가 없습니다.',
+                            '피드가 없어요.',
                             textAlign: TextAlign.center,
-                            style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                            style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                           ),
                         ],
                       ),
@@ -1102,9 +1117,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             height: 12,
                           ),
                           Text(
-                            '등록된 작성 글이 없습니다.\n피드를 등록해 주세요!',
+                            '피드가 없어요.\n피드를 올려 볼까요?',
                             textAlign: TextAlign.center,
-                            style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                            style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                           ),
                         ],
                       ),
@@ -1128,12 +1143,12 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                           context,
                                           maxAssets: 12,
                                           pickerTheme: themeData(context).copyWith(
-                                            canvasColor: kNeutralColor100,
+                                            canvasColor: kPreviousNeutralColor100,
                                             colorScheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).colorScheme.copyWith(
-                                                  background: kNeutralColor100,
+                                                  background: kPreviousNeutralColor100,
                                                 ),
                                             appBarTheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).appBarTheme.copyWith(
-                                                  backgroundColor: kNeutralColor100,
+                                                  backgroundColor: kPreviousNeutralColor100,
                                                 ),
                                           ),
                                           onCompleted: (cropStream) {
@@ -1159,13 +1174,13 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                         );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: kPrimaryColor,
-                              disabledBackgroundColor: kNeutralColor400,
-                              disabledForegroundColor: kTextBodyColor,
+                              backgroundColor: kPreviousPrimaryColor,
+                              disabledBackgroundColor: kPreviousNeutralColor400,
+                              disabledForegroundColor: kPreviousTextBodyColor,
                               elevation: 0,
                             ),
                             child: Text(
-                              '게시글 등록하기',
+                              '피드 올리기',
                               style: kButton14MediumStyle,
                             ),
                           ),
@@ -1235,12 +1250,12 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
     final loginState = ref.watch(loginStateProvider);
 
-    return Padding(
-      padding: EdgeInsets.only(
-        top: isBigDevice ? 50 : 5,
-      ),
-      child: loginState == LoginStatus.success
-          ? Consumer(builder: (context, ref, child) {
+    return loginState == LoginStatus.success
+        ? Padding(
+            padding: EdgeInsets.only(
+              top: isBigDevice ? 50 : 5,
+            ),
+            child: Consumer(builder: (context, ref, child) {
               final userListState = ref.watch(favoriteUserListStateProvider);
               final userListLists = userListState.memberList;
 
@@ -1259,7 +1274,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                           const SizedBox(height: 4.0),
                           Text(
                             "my",
-                            style: kBody12RegularStyle.copyWith(color: kTextTitleColor),
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextTitleColor),
                           ),
                         ],
                       ),
@@ -1302,7 +1317,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.center,
-                                        style: kBody12RegularStyle.copyWith(color: kTextTitleColor),
+                                        style: kBody12RegularStyle.copyWith(color: kPreviousTextTitleColor),
                                       ),
                                     ),
                                   ],
@@ -1316,32 +1331,33 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   ),
                 ],
               );
-            })
-          : GestureDetector(
+            }),
+          )
+        : Center(
+            child: GestureDetector(
               onTap: () {
                 context.pushReplacement("/loginScreen");
               },
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: 16.h,
-                  ),
                   Image.asset(
                     'assets/image/character/character_01_not_loginpage.png',
+                    width: 56,
+                    height: 56,
                   ),
                   SizedBox(
-                    height: 2.h,
+                    width: 12,
                   ),
-                  Center(
-                    child: Text(
-                      "로그인 하고 나랑 딱! 맞는 친구 보기",
-                      style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
-                    ),
+                  Text(
+                    "로그인하고 일상 공유하기",
+                    style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   ),
                 ],
               ),
             ),
-    );
+          );
   }
 
   Widget buildWidgetMask(String? profileImgUrl, int? isBadge, int? isRedDot) {
@@ -1355,7 +1371,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                   child: Icon(
                     Puppycat_social.icon_profile_small,
                     size: 46,
-                    color: kNeutralColor400,
+                    color: kPreviousNeutralColor400,
                   ),
                 ),
                 child: SvgPicture.asset(
@@ -1428,17 +1444,16 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
               color: Colors.white,
             )
           : BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
+              color: kWhiteColor,
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  spreadRadius: -5,
-                  blurRadius: 7,
-                  offset: const Offset(0, -6),
+                  color: Color(0x0A000000),
+                  offset: Offset(0, -6),
+                  blurRadius: 10.0,
                 ),
               ],
             ),
@@ -1448,11 +1463,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             flex: isBigDevice ? 1 : 2,
             child: TabBar(
               controller: tabController,
-              indicatorWeight: 3,
-              labelColor: kNeutralColor600,
-              indicatorColor: kNeutralColor600,
-              unselectedLabelColor: kNeutralColor500,
-              indicatorSize: TabBarIndicatorSize.tab,
+              indicatorWeight: 2.4,
+              labelColor: kPreviousNeutralColor600,
+              indicatorColor: kPreviousNeutralColor600,
+              unselectedLabelColor: kPreviousNeutralColor500,
+              indicatorSize: TabBarIndicatorSize.label,
               labelPadding: EdgeInsets.only(
                 top: 10.h,
                 bottom: 6.h,
@@ -1461,6 +1476,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             ),
           ),
           const Spacer(),
+          ...getTabSpacer(),
         ],
       ),
     );

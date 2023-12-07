@@ -98,7 +98,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                                 widget.userName,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                                style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                               ),
                             ),
                             SizedBox(
@@ -109,13 +109,13 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(4.0),
-                                        border: Border.all(color: kBadgeColor),
+                                        border: Border.all(color: kPreviousErrorColor),
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(1.0),
                                         child: Text(
                                           "NEW",
-                                          style: kBadge9RegularStyle.copyWith(color: kBadgeColor),
+                                          style: kBadge9RegularStyle.copyWith(color: kPreviousErrorColor),
                                         ),
                                       ),
                                     ),
@@ -128,7 +128,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                         ),
                         Text(
                           widget.content,
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                          style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ],
                     ),
@@ -163,7 +163,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                               width: 56.w,
                               height: 32.h,
                               decoration: const BoxDecoration(
-                                color: kNeutralColor300,
+                                color: kPreviousNeutralColor300,
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(8.0),
                                 ),
@@ -171,7 +171,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                               child: Center(
                                 child: Text(
                                   "팔로잉",
-                                  style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                                  style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                                 ),
                               ),
                             ),
@@ -199,7 +199,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                               width: 56.w,
                               height: 32.h,
                               decoration: const BoxDecoration(
-                                color: kPrimaryColor,
+                                color: kPreviousPrimaryColor,
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(8.0),
                                 ),
@@ -207,7 +207,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                               child: Center(
                                 child: Text(
                                   "팔로우",
-                                  style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
+                                  style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                 ),
                               ),
                             ),

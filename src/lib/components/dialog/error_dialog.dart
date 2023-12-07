@@ -21,17 +21,17 @@ class ErrorDialog extends StatelessWidget {
             children: [
               Text(
                 '문제가 생겼어요.',
-                style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
               ),
               Text(
                 '잠시 후에 다시 시도해 주세요.',
-                style: kBody12RegularStyle400.copyWith(color: kTextBodyColor),
+                style: kBody12RegularStyle400.copyWith(color: kPreviousTextBodyColor),
               ),
               Visibility(
                 visible: code?.isNotEmpty ?? false,
                 child: Text(
                   '($code)',
-                  style: kBody12RegularStyle400.copyWith(color: kTextBodyColor),
+                  style: kBody12RegularStyle400.copyWith(color: kPreviousTextBodyColor),
                 ),
               ),
             ],
@@ -42,7 +42,7 @@ class ErrorDialog extends StatelessWidget {
         },
         confirmWidget: Text(
           "확인",
-          style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+          style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
         ));
   }
 }

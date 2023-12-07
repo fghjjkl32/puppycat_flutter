@@ -56,8 +56,7 @@ class TagUserItemWidget extends StatelessWidget {
                           : Container(),
                       Text(
                         userName,
-                        style:
-                            kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                        style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                       ),
                     ],
                   ),
@@ -66,7 +65,7 @@ class TagUserItemWidget extends StatelessWidget {
                   ),
                   Text(
                     content,
-                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                    style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   ),
                 ],
               ),

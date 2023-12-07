@@ -4,10 +4,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
-import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag_images.dart';
@@ -81,14 +79,19 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    Center(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                        child: Image.file(
-                          width: 300.w,
-                          height: 225.h,
-                          file,
-                          fit: BoxFit.cover,
+                    Container(
+                      // color: kBlackColor,
+                      // width: 300.w,
+                      // height: 225.h,
+                      child: Center(
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          child: Image.file(
+                            file,
+                            fit: BoxFit.cover,
+                            width: 300.w,
+                            height: 225.h,
+                          ),
                         ),
                       ),
                     ),
@@ -111,14 +114,14 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                               child: Container(
                                 padding: const EdgeInsets.all(6),
                                 decoration: BoxDecoration(
-                                  color: kTextSubTitleColor.withOpacity(0.8),
+                                  color: kPreviousTextSubTitleColor.withOpacity(0.8),
                                   shape: BoxShape.circle,
                                 ),
                                 height: 28.h,
                                 child: const Icon(
                                   Icons.close,
                                   size: 18,
-                                  color: kNeutralColor100,
+                                  color: kPreviousNeutralColor100,
                                 ),
                               ),
                             )
@@ -126,8 +129,8 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                     ),
                     if (tags.isNotEmpty)
                       Positioned(
-                        left: 20,
-                        bottom: 10,
+                        left: 4,
+                        bottom: 20,
                         child: Container(
                           decoration: BoxDecoration(
                             color: const Color(0xff414348).withOpacity(0.6),
@@ -138,7 +141,7 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                             child: Icon(
                               Puppycat_social.icon_taguser,
                               size: 24,
-                              color: kNeutralColor100,
+                              color: kPreviousNeutralColor100,
                             ),
                           ),
                         ),

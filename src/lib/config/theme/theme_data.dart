@@ -5,16 +5,16 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
 ThemeData themeData(context) => ThemeData(
       useMaterial3: false,
-      disabledColor: kNeutralColor300,
+      disabledColor: kPreviousNeutralColor300,
       checkboxTheme: CheckboxThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.0),
         ),
         side: MaterialStateBorderSide.resolveWith((states) {
           if (states.contains(MaterialState.selected)) {
-            return const BorderSide(width: 1.0, color: kPrimaryLightColor);
+            return const BorderSide(width: 1.0, color: kPreviousPrimaryLightColor);
           } else {
-            return const BorderSide(width: 1.0, color: kNeutralColor400);
+            return const BorderSide(width: 1.0, color: kPreviousNeutralColor400);
           }
         }),
       ),
@@ -24,18 +24,18 @@ ThemeData themeData(context) => ThemeData(
           TargetPlatform.iOS: CupertinoWillPopScopePageTransionsBuilder(),
         },
       ),
-      scaffoldBackgroundColor: kNeutralColor100,
-      primaryColor: kPrimaryColor,
+      scaffoldBackgroundColor: kPreviousNeutralColor100,
+      primaryColor: kPreviousPrimaryColor,
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,
-        titleTextStyle: kTitle18BoldStyle.copyWith(color: kNeutralColor600),
+        titleTextStyle: kTitle18BoldStyle.copyWith(color: kPreviousNeutralColor600),
         iconTheme: const IconThemeData(
-          color: kTextSubTitleColor,
+          color: kPreviousTextSubTitleColor,
         ),
       ),
       dividerTheme: const DividerThemeData(
-        color: kNeutralColor200,
+        color: kPreviousNeutralColor200,
         thickness: 2,
         space: 0,
       ),
@@ -54,28 +54,28 @@ ThemeData themeData(context) => ThemeData(
           borderRadius: BorderRadius.all(
             Radius.circular(10.0),
           ),
-          borderSide: BorderSide(color: kNeutralColor400),
+          borderSide: BorderSide(color: kPreviousNeutralColor400),
         ),
         focusedBorder: OutlineInputBorder(
           gapPadding: 10,
           borderRadius: BorderRadius.all(
             Radius.circular(10.0),
           ),
-          borderSide: BorderSide(color: kPrimaryColor),
+          borderSide: BorderSide(color: kPreviousPrimaryColor),
         ),
         errorBorder: OutlineInputBorder(
           gapPadding: 10,
           borderRadius: BorderRadius.all(
             Radius.circular(10.0),
           ),
-          borderSide: BorderSide(color: kBadgeColor),
+          borderSide: BorderSide(color: kPreviousErrorColor),
         ),
         focusedErrorBorder: OutlineInputBorder(
           gapPadding: 10,
           borderRadius: BorderRadius.all(
             Radius.circular(10.0),
           ),
-          borderSide: BorderSide(color: kBadgeColor),
+          borderSide: BorderSide(color: kPreviousErrorColor),
         ),
       ),
     );

@@ -103,9 +103,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   }
 
   void _scrollListener() {
-    if (scrollController.offset >= 128.h && appBarColor != kNeutralColor100) {
+    if (scrollController.offset >= 128.h && appBarColor != kPreviousNeutralColor100) {
       setState(() {
-        appBarColor = kNeutralColor100;
+        appBarColor = kPreviousNeutralColor100;
       });
     } else if (scrollController.offset < 128.h && appBarColor != Colors.transparent) {
       setState(() {
@@ -202,24 +202,16 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                     child: Column(
                                                       children: [
                                                         Text(
-                                                          "‘${widget.nick}’님을\n차단하시겠어요?",
-                                                          style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                                          "‘${widget.nick}’님을\n차단할까요?",
+                                                          style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                                           textAlign: TextAlign.center,
                                                         ),
                                                         SizedBox(
                                                           height: 8.h,
                                                         ),
                                                         Text(
-                                                          "‘${widget.nick}’님은 더 이상 회원님의\n피드를 보거나 메시지 등을 보낼 수 없습니다.",
-                                                          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                                          textAlign: TextAlign.center,
-                                                        ),
-                                                        SizedBox(
-                                                          height: 8.h,
-                                                        ),
-                                                        Text(
-                                                          " ‘${widget.nick}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
-                                                          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                                          "차단하게 되면 더 이상 서로의 피드를 보거나\n메시지 등을 보낼 수 없어요.\n차단 여부는 상대방에게 알리지 않아요.\n차단 풀기는 [마이페이지→설정→차단 유저 관리]에서\n얼마든지 가능해요.",
+                                                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                           textAlign: TextAlign.center,
                                                         ),
                                                       ],
@@ -229,7 +221,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                     context.pop();
                                                     toast(
                                                       context: context,
-                                                      text: "'${widget.nick.length > 8 ? '${widget.nick.substring(0, 8)}...' : widget.nick}'님을 차단하였습니다.",
+                                                      text: "'${widget.nick.length > 8 ? '${widget.nick.substring(0, 8)}...' : widget.nick}'님을 차단했어요.",
                                                       type: ToastType.purple,
                                                     );
                                                     final result = await ref.read(userInformationStateProvider.notifier).postBlock(
@@ -245,8 +237,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                     context.pop();
                                                   },
                                                   confirmWidget: Text(
-                                                    "프로필 차단",
-                                                    style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+                                                    "차단하기",
+                                                    style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
                                                   ),
                                                 );
                                               },
@@ -315,7 +307,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                   ? Container()
                   : lists[0].blockedState == 1
                       ? Container(
-                          color: kNeutralColor100,
+                          color: kPreviousNeutralColor100,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -327,16 +319,16 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 height: 10,
                               ),
                               Text(
-                                "차단한 유저의 정보는 확인할 수 없습니다.\n정보를 보시려면 차단을 해제해 주세요.",
+                                "차단한 유저의 정보는 볼 수 없어요.\n정보를 보려면 차단을 풀어 주세요.",
                                 textAlign: TextAlign.center,
-                                style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ],
                           ),
                         )
                       : lists[0].blockedMeState == 1
                           ? Container(
-                              color: kNeutralColor100,
+                              color: kPreviousNeutralColor100,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -348,9 +340,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     height: 10,
                                   ),
                                   Text(
-                                    "정보를 확인할 수 없습니다.",
+                                    "정보를 볼 수 없어요.",
                                     textAlign: TextAlign.center,
-                                    style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                    style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                   ),
                                 ],
                               ),
@@ -381,7 +373,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
         });
       },
       child: Container(
-        color: kNeutralColor100,
+        color: kPreviousNeutralColor100,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: <Widget>[
@@ -400,7 +392,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         child: Align(
                           alignment: Alignment.center,
                           child: Container(
-                            color: kNeutralColor100,
+                            color: kPreviousNeutralColor100,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -414,9 +406,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없습니다.',
+                                  '피드가 없어요.',
                                   textAlign: TextAlign.center,
-                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
@@ -478,7 +470,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 borderRadius: const BorderRadius.all(Radius.circular(12)),
                                 child: CachedNetworkImage(
                                   placeholder: (context, url) => Container(
-                                    color: kNeutralColor300,
+                                    color: kPreviousNeutralColor300,
                                   ),
                                   imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.imgUrl}").toUrl(),
                                   fit: BoxFit.cover,
@@ -517,7 +509,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 child: Center(
                                   child: Text(
                                     '${item.imageCnt}',
-                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                   ),
                                 ),
                               ),
@@ -548,7 +540,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
         });
       },
       child: Container(
-        color: kNeutralColor100,
+        color: kPreviousNeutralColor100,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: <Widget>[
@@ -567,7 +559,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         child: Align(
                           alignment: Alignment.center,
                           child: Container(
-                            color: kNeutralColor100,
+                            color: kPreviousNeutralColor100,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -581,9 +573,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없습니다.',
+                                  '피드가 없어요.',
                                   textAlign: TextAlign.center,
-                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
@@ -645,7 +637,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 borderRadius: const BorderRadius.all(Radius.circular(12)),
                                 child: CachedNetworkImage(
                                   placeholder: (context, url) => Container(
-                                    color: kNeutralColor300,
+                                    color: kPreviousNeutralColor300,
                                   ),
                                   imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.imgUrl}").toUrl(),
                                   fit: BoxFit.cover,
@@ -665,7 +657,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 child: Center(
                                   child: Text(
                                     "${item.imageCnt}",
-                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                   ),
                                 ),
                               ),
@@ -723,7 +715,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                               "${data.nick}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                              style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                             ),
                           ),
                         ],
@@ -737,7 +729,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                             ),
                             Text(
                               "${data.intro}",
-                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                              style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                             ),
                           ],
                         ),
@@ -752,23 +744,23 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                             children: [
                               Text(
                                 "팔로워 ",
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
                                 "${data.followerCnt}",
-                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                                style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                               ),
                               Text(
                                 "  ·  ",
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
                                 "팔로잉 ",
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
                                 "${data.followCnt}",
-                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                                style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                               ),
                             ],
                           ),
@@ -786,15 +778,15 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       child: Container(
                         height: 30.h,
                         decoration: const BoxDecoration(
-                          color: kNeutralColor300,
+                          color: kPreviousNeutralColor300,
                           borderRadius: BorderRadius.all(
                             Radius.circular(8.0),
                           ),
                         ),
                         child: Center(
                           child: Text(
-                            "유저를 찾을 수 없습니다.",
-                            style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                            "유저를 찾을 수 없어요.",
+                            style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ),
                       ),
@@ -820,7 +812,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         if (mounted) {
                                           toast(
                                             context: context,
-                                            text: "'${data.nick!.length > 8 ? '${data.nick!.substring(0, 8)}...' : data.nick}'님을 차단해제하였습니다.",
+                                            text: "'${data.nick!.length > 8 ? '${data.nick!.substring(0, 8)}...' : data.nick}'님 차단을 풀었어요.",
                                             type: ToastType.grey,
                                           );
                                         }
@@ -837,15 +829,15 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   child: Container(
                                     height: 30.h,
                                     decoration: const BoxDecoration(
-                                      color: kPrimaryColor,
+                                      color: kPreviousPrimaryColor,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(8.0),
                                       ),
                                     ),
                                     child: Center(
                                       child: Text(
-                                        "차단 해제",
-                                        style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
+                                        "차단 풀기",
+                                        style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                       ),
                                     ),
                                   ),
@@ -876,7 +868,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         child: Container(
                                           height: 30.h,
                                           decoration: const BoxDecoration(
-                                            color: kNeutralColor300,
+                                            color: kPreviousNeutralColor300,
                                             borderRadius: BorderRadius.all(
                                               Radius.circular(8.0),
                                             ),
@@ -884,7 +876,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           child: Center(
                                             child: Text(
                                               "팔로잉",
-                                              style: kButton12BoldStyle.copyWith(color: kTextSubTitleColor),
+                                              style: kButton12BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                             ),
                                           ),
                                         ),
@@ -919,7 +911,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         child: Container(
                                           height: 30.h,
                                           decoration: const BoxDecoration(
-                                            color: kPrimaryColor,
+                                            color: kPreviousPrimaryColor,
                                             borderRadius: BorderRadius.all(
                                               Radius.circular(8.0),
                                             ),
@@ -927,7 +919,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           child: Center(
                                             child: Text(
                                               "팔로우",
-                                              style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
+                                              style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                             ),
                                           ),
                                         ),
@@ -1116,7 +1108,7 @@ PopupMenuItem diaryPopUpMenuItem(
           ),
           Text(
             value,
-            style: kButton12BoldStyle.copyWith(color: kTextSubTitleColor),
+            style: kButton12BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
           ),
         ],
       ),
@@ -1140,18 +1132,17 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
           : Container(
               height: tabBarHeight,
               decoration: shrinkOffset == 0
-                  ? BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.only(
+                  ? const BoxDecoration(
+                      color: kWhiteColor,
+                      borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20.0),
                         topRight: Radius.circular(20.0),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.4),
-                          spreadRadius: -5,
-                          blurRadius: 7,
-                          offset: const Offset(0, -6),
+                          color: Color(0x0A000000),
+                          offset: Offset(0, -6),
+                          blurRadius: 10.0,
                         ),
                       ],
                     )
@@ -1164,52 +1155,58 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                       children: [
                         Expanded(
                           child: TabBar(
-                              indicatorWeight: 3,
-                              labelColor: kPrimaryColor,
-                              indicatorColor: kPrimaryColor,
-                              unselectedLabelColor: kNeutralColor500,
-                              indicatorSize: TabBarIndicatorSize.tab,
+                              indicatorWeight: 2.4,
+                              labelColor: kPreviousNeutralColor600,
+                              indicatorColor: kPreviousNeutralColor600,
+                              unselectedLabelColor: kPreviousNeutralColor500,
+                              indicatorSize: TabBarIndicatorSize.label,
                               labelPadding: EdgeInsets.only(
                                 top: 10.h,
                                 bottom: 10.h,
                               ),
                               tabs: [
-                                Consumer(builder: (context, ref, child) {
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "일상글",
-                                        style: kBody14BoldStyle,
-                                      ),
-                                      SizedBox(
-                                        width: 6.w,
-                                      ),
-                                      Text(
-                                        "${ref.watch(userContentsFeedTotalCountProvider)}",
-                                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                                      ),
-                                    ],
-                                  );
-                                }),
-                                Consumer(builder: (context, ref, child) {
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "태그됨",
-                                        style: kBody14BoldStyle,
-                                      ),
-                                      SizedBox(
-                                        width: 6.w,
-                                      ),
-                                      Text(
-                                        "${ref.watch(userTagContentsFeedTotalCountProvider)}",
-                                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                                      ),
-                                    ],
-                                  );
-                                }),
+                                Tab(
+                                  child: Consumer(builder: (context, ref, child) {
+                                    return Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "일상글",
+                                          style: kBody14BoldStyle,
+                                        ),
+                                        SizedBox(
+                                          width: 6.w,
+                                        ),
+                                        Text(
+                                          "${ref.watch(userContentsFeedTotalCountProvider)}",
+                                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                                        ),
+                                      ],
+                                    );
+                                  }),
+                                ),
+                                Tab(
+                                  child: Consumer(builder: (context, ref, child) {
+                                    return Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "태그됨",
+                                          style: kBody14BoldStyle,
+                                        ),
+                                        SizedBox(
+                                          width: 6.w,
+                                        ),
+                                        Text(
+                                          "${ref.watch(userTagContentsFeedTotalCountProvider)}",
+                                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                                        ),
+                                      ],
+                                    );
+                                  }),
+                                ),
                               ]),
                         ),
                       ],

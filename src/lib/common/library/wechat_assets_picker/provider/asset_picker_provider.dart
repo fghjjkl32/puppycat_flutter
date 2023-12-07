@@ -213,7 +213,7 @@ abstract class AssetPickerProvider<Asset, Path> extends ChangeNotifier {
     if (selectedAssets.length + 1 == maxAssets) {
       toast(
         context: context,
-        text: '사진은 최대 $maxAssets장만 선택 가능합니다.',
+        text: '사진은 최대 $maxAssets장만 선택 가능해요.',
         type: ToastType.red,
       );
     }

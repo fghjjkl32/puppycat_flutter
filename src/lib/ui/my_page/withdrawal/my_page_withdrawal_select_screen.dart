@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -57,15 +56,15 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "탈퇴하시려는 이유를 알려주세요!",
-                      style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                      "혹시 서비스에 불편함이 있으셨나요?",
+                      style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
                     SizedBox(
                       height: 2.h,
                     ),
                     Text(
-                      "더 발전하는 포레스트의 중요한 자료로 활용하겠습니다.",
-                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                      "탈퇴 사유를 남겨 주시면 더 발전하는 퍼피캣이 되겠습니다.",
+                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                     SizedBox(
                       height: 14.h,
@@ -124,8 +123,8 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                                 width: 40,
                               ),
                               Text(
-                                "정말 탈퇴하시겠어요?",
-                                style: kBody12SemiBoldStyle.copyWith(color: kTextTitleColor),
+                                "너무 아쉬워요... 정말 탈퇴하시나요?",
+                                style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextTitleColor),
                               ),
                             ],
                           ),
@@ -136,8 +135,8 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          disabledBackgroundColor: kNeutralColor400,
-                          backgroundColor: kPrimaryColor,
+                          disabledBackgroundColor: kPreviousNeutralColor400,
+                          backgroundColor: kPreviousPrimaryColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -156,7 +155,7 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                           padding: const EdgeInsets.all(18.0),
                           child: Text(
                             '다음',
-                            style: kBody14BoldStyle.copyWith(color: code == 0 || (code == 7 && directInputText!.isEmpty) ? kTextSubTitleColor : kNeutralColor100),
+                            style: kBody14BoldStyle.copyWith(color: code == 0 || (code == 7 && directInputText!.isEmpty) ? kPreviousTextSubTitleColor : kPreviousNeutralColor100),
                           ),
                         ),
                       ),

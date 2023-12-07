@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/select_pet_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 
 void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback onTap}) {
   showCustomModalBottomSheet(
@@ -17,24 +12,34 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
     widget: Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
+          padding: const EdgeInsets.only(top: 10),
+          child: Lottie.asset(
+            'assets/lottie/feed_end.json',
+            width: 50,
+            height: 50,
+            fit: BoxFit.fill,
+            repeat: false,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 10, bottom: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "피드를 보관하시겠어요?",
-                style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                "피드를 보관할까요?",
+                style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
               ),
             ],
           ),
         ),
         Text(
-          "보관된 피드는 언제든지 프로필에",
-          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+          "보관된 피드는",
+          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
         ),
         Text(
-          "다시 표시 가능합니다.",
-          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+          "[마이페이지 → 내 글 관리 → 보관피]에서 볼 수 있어요.",
+          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
         ),
         SizedBox(height: 20.h),
         Row(
@@ -48,15 +53,15 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
                 width: 152.w,
                 height: 36.h,
                 decoration: const BoxDecoration(
-                  color: kPrimaryLightColor,
+                  color: kBackgroundSecondary,
                   borderRadius: BorderRadius.all(
                     Radius.circular(8.0),
                   ),
                 ),
                 child: Center(
                   child: Text(
-                    "취소",
-                    style: kButton14BoldStyle.copyWith(color: kPrimaryColor),
+                    "닫기",
+                    style: kButton14BoldStyle.copyWith(color: kTextSecondary),
                   ),
                 ),
               ),
@@ -70,7 +75,7 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
                 width: 152.w,
                 height: 36.h,
                 decoration: const BoxDecoration(
-                  color: kPrimaryColor,
+                  color: kPreviousPrimaryColor,
                   borderRadius: BorderRadius.all(
                     Radius.circular(8.0),
                   ),
@@ -78,7 +83,7 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
                 child: Center(
                   child: Text(
                     "보관",
-                    style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
+                    style: kButton14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                   ),
                 ),
               ),

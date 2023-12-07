@@ -30,13 +30,13 @@ class LocationUserItemWidget extends StatelessWidget {
                   height: 36.h,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: kNeutralColor300,
+                    color: kPreviousNeutralColor300,
                   ),
                   child: const Center(
                     child: Icon(
                       Puppycat_social.icon_place,
                       size: 22,
-                      color: kTextBodyColor,
+                      color: kPreviousTextBodyColor,
                     ),
                   ),
                 ),
@@ -46,14 +46,14 @@ class LocationUserItemWidget extends StatelessWidget {
                 children: [
                   Text(
                     locationItem.name,
-                    style: kBody14BoldStyle.copyWith(color: kTextTitleColor),
+                    style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   ),
                   SizedBox(
                     height: 2.h,
                   ),
                   Text(
                     locationItem.subName,
-                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                    style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   ),
                 ],
               ),

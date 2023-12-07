@@ -21,7 +21,7 @@ class CustomModalBottomSheet extends StatelessWidget {
       ),
       child: Container(
         padding: const EdgeInsets.only(bottom: 20, top: 10),
-        color: kNeutralColor100,
+        color: kPreviousNeutralColor100,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -29,7 +29,7 @@ class CustomModalBottomSheet extends StatelessWidget {
               width: 70,
               height: 6,
               decoration: const BoxDecoration(
-                color: kNeutralColor200,
+                color: kPreviousNeutralColor200,
                 borderRadius: BorderRadius.all(Radius.circular(7)),
               ),
             ),

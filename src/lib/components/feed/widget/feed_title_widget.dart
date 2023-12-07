@@ -91,7 +91,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
             : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
       },
       child: Material(
-        color: kNeutralColor100,
+        color: kPreviousNeutralColor100,
         child: Padding(
           padding: EdgeInsets.only(left: 16.0.w, right: 16.w, bottom: 12.h),
           child: Row(
@@ -129,7 +129,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                   "${widget.userName}",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+                                  style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                 ),
                               ),
                               if (!widget.isDetailWidget || widget.contentType == "popularWeekContent")
@@ -141,7 +141,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                 children: [
                                                   Text(
                                                     " · ",
-                                                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                                    style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                   ),
                                                   InkWell(
                                                     onTap: () async {
@@ -164,7 +164,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                     },
                                                     child: Text(
                                                       "팔로잉",
-                                                      style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor500),
+                                                      style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor500),
                                                     ),
                                                   ),
                                                 ],
@@ -173,7 +173,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                 children: [
                                                   Text(
                                                     " · ",
-                                                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                                    style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                   ),
                                                   InkWell(
                                                     onTap: () async {
@@ -196,7 +196,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                     },
                                                     child: Text(
                                                       "팔로우",
-                                                      style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                                      style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
                                                     ),
                                                   ),
                                                 ],
@@ -212,28 +212,28 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                             children: [
                               Text(
                                 widget.address,
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               widget.address == ""
                                   ? Container()
                                   : Text(
                                       " · ",
-                                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                      style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
                               Text(
                                 widget.time,
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               widget.isEdit
                                   ? Row(
                                       children: [
                                         Text(
                                           " · ",
-                                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                          style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                         ),
                                         Text(
                                           "수정됨",
-                                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                          style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                         ),
                                       ],
                                     )
@@ -263,8 +263,8 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                           icon: const Icon(
                                             Puppycat_social.icon_user_ac,
                                           ),
-                                          title: '프로필 표시하기',
-                                          titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                          title: '전체 공개하기',
+                                          titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                           onTap: () async {
                                             context.pop();
 
@@ -277,7 +277,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                             if (result.result && mounted) {
                                               toast(
                                                 context: context,
-                                                text: '피드 보관이 취소됐습니다.',
+                                                text: '피드 보관을 취소했어요.',
                                                 type: ToastType.purple,
                                               );
                                             }
@@ -288,7 +288,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                             Puppycat_social.icon_keep,
                                           ),
                                           title: '보관하기',
-                                          titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                          titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                           onTap: () async {
                                             context.pop();
 
@@ -306,7 +306,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                 if (result.result && mounted) {
                                                   toast(
                                                     context: context,
-                                                    text: '피드 보관이 완료되었습니다.',
+                                                    text: '피드 보관 완료!.',
                                                     type: ToastType.purple,
                                                   );
                                                 }
@@ -319,7 +319,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                       Puppycat_social.icon_modify,
                                     ),
                                     title: '수정하기',
-                                    titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                    titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                     onTap: () {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
@@ -334,10 +334,10 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                   BottomSheetButtonItem(
                                     icon: const Icon(
                                       Puppycat_social.icon_delete_small,
-                                      color: kBadgeColor,
+                                      color: kPreviousErrorColor,
                                     ),
                                     title: '삭제하기',
-                                    titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
+                                    titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                     onTap: () async {
                                       context.pop();
 
@@ -355,7 +355,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                           if (result.result && mounted) {
                                             toast(
                                               context: context,
-                                              text: '피드 삭제가 완료되었습니다.',
+                                              text: '피드 삭제 완료!',
                                               type: ToastType.purple,
                                             );
                                           }
@@ -375,7 +375,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                       Puppycat_social.icon_user_de,
                                     ),
                                     title: '숨기기',
-                                    titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                    titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                     onTap: () async {
                                       widget.onTapHideButton();
                                     },
@@ -385,8 +385,8 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                           icon: const Icon(
                                             Puppycat_social.icon_follow_cancel,
                                           ),
-                                          title: '팔로우 취소',
-                                          titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                          title: '팔로우 취소하기',
+                                          titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                           onTap: () async {
                                             if (!ref.watch(followApiIsLoadingStateProvider)) {
                                               context.pop();
@@ -417,7 +417,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                       Puppycat_social.icon_user_block_ac,
                                     ),
                                     title: '차단하기',
-                                    titleStyle: kButton14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                    titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                     onTap: () async {
                                       if (ref.read(userInfoProvider).userModel == null) {
                                         context.pushReplacement("/loginScreen");
@@ -428,66 +428,59 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                           context: context,
                                           builder: (BuildContext ctx) {
                                             return CustomDialog(
-                                                content: Padding(
-                                                  padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                                                  child: Column(
-                                                    children: [
-                                                      Text(
-                                                        "‘${widget.userName}’님을\n차단하시겠어요?",
-                                                        style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 8.h,
-                                                      ),
-                                                      Text(
-                                                        "‘${widget.userName}’님은 더 이상 회원님의\n피드를 보거나 메시지 등을 보낼 수 없습니다.",
-                                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 8.h,
-                                                      ),
-                                                      Text(
-                                                        " ‘${widget.userName}’님에게는 차단 정보를 알리지 않으며\n[마이페이지 → 설정 → 차단 유저 관리] 에서\n언제든지 해제할 수 있습니다.",
-                                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                    ],
-                                                  ),
+                                              content: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      "‘${widget.userName}’님을\n차단할까요?",
+                                                      style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 8.h,
+                                                    ),
+                                                    Text(
+                                                      "차단하게 되면 더 이상 서로의 피드를 보거나\n메시지 등을 보낼 수 없어요.\n차단 여부는 상대방에게 알리지 않아요.\n차단 풀기는 [마이페이지→설정→차단 유저 관리]에서\n얼마든지 가능해요.",
+                                                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ],
                                                 ),
-                                                confirmTap: () async {
-                                                  if (mounted) {
-                                                    context.pop();
-
-                                                    final result = await ref.read(feedListStateProvider.notifier).postBlock(
-                                                          memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                                                          blockIdx: widget.memberIdx,
-                                                          contentType: widget.contentType,
-                                                        );
-
-                                                    if (result.result && mounted) {
-                                                      String location = GoRouter.of(context).location();
-
-                                                      if (location.contains("/home/myPage/detail/")) {
-                                                        context.pop();
-                                                      }
-
-                                                      toast(
-                                                        context: context,
-                                                        text: "'${widget.userName!.length > 8 ? '${widget.userName!.substring(0, 8)}...' : widget.userName}'님을 차단하였습니다.",
-                                                        type: ToastType.purple,
-                                                      );
-                                                    }
-                                                  }
-                                                },
-                                                cancelTap: () {
+                                              ),
+                                              confirmTap: () async {
+                                                if (mounted) {
                                                   context.pop();
-                                                },
-                                                confirmWidget: Text(
-                                                  "유저 차단",
-                                                  style: kButton14MediumStyle.copyWith(color: kBadgeColor),
-                                                ));
+
+                                                  final result = await ref.read(feedListStateProvider.notifier).postBlock(
+                                                        memberIdx: ref.watch(userInfoProvider).userModel!.idx,
+                                                        blockIdx: widget.memberIdx,
+                                                        contentType: widget.contentType,
+                                                      );
+
+                                                  if (result.result && mounted) {
+                                                    String location = GoRouter.of(context).location();
+
+                                                    if (location.contains("/home/myPage/detail/")) {
+                                                      context.pop();
+                                                    }
+
+                                                    toast(
+                                                      context: context,
+                                                      text: "'${widget.userName!.length > 8 ? '${widget.userName!.substring(0, 8)}...' : widget.userName}'님을 차단했어요.",
+                                                      type: ToastType.purple,
+                                                    );
+                                                  }
+                                                }
+                                              },
+                                              cancelTap: () {
+                                                context.pop();
+                                              },
+                                              confirmWidget: Text(
+                                                "차단하기",
+                                                style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
+                                              ),
+                                            );
                                           },
                                         );
                                       }
@@ -496,10 +489,10 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                   BottomSheetButtonItem(
                                     icon: const Icon(
                                       Puppycat_social.icon_report1,
-                                      color: kBadgeColor,
+                                      color: kPreviousErrorColor,
                                     ),
                                     title: '신고하기',
-                                    titleStyle: kButton14BoldStyle.copyWith(color: kBadgeColor),
+                                    titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                     onTap: () {
                                       if (ref.read(userInfoProvider).userModel == null) {
                                         context.pushReplacement("/loginScreen");
@@ -517,7 +510,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                 },
                 child: const Icon(
                   Puppycat_social.icon_more,
-                  color: kTextBodyColor,
+                  color: kPreviousTextBodyColor,
                   size: 26,
                 ),
               ),

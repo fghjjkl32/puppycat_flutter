@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class BlockUserItemWidget extends ConsumerStatefulWidget {
   const BlockUserItemWidget({
@@ -67,7 +65,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
                           : Container(),
                       Text(
                         widget.userName,
-                        style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                        style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                       ),
                     ],
                   ),
@@ -76,7 +74,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
                   ),
                   Text(
                     widget.content,
-                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                    style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   ),
                 ],
               ),
@@ -93,7 +91,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
                 if (mounted) {
                   toast(
                     context: context,
-                    text: "'${widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName}'님을 차단해제하였습니다.",
+                    text: "'${widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName}'님 차단을 풀었어요.",
                     type: ToastType.grey,
                   );
                 }
@@ -103,15 +101,15 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
               width: 56.w,
               height: 32.h,
               decoration: const BoxDecoration(
-                color: kPrimaryLightColor,
+                color: kPreviousPrimaryLightColor,
                 borderRadius: BorderRadius.all(
                   Radius.circular(8.0),
                 ),
               ),
               child: Center(
                 child: Text(
-                  "차단 해제",
-                  style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                  "차단 풀기",
+                  style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                 ),
               ),
             ),

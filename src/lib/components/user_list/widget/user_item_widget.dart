@@ -2,17 +2,14 @@ import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_helper_provider.dart';
 import 'package:pet_mobile_social_flutter/services/search/search_db_helper.dart';
 import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class UserItemWidget extends ConsumerStatefulWidget {
   const UserItemWidget({
@@ -33,6 +30,7 @@ class UserItemWidget extends ConsumerStatefulWidget {
   final int memberIdx;
   final String contentType;
   final int oldMemberIdx;
+
   @override
   UserItemWidgetState createState() => UserItemWidgetState();
 }
@@ -96,7 +94,7 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
                             : Container(),
                         Text(
                           widget.userName,
-                          style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ],
                     ),
@@ -105,7 +103,7 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
                     ),
                     Text(
                       widget.content,
-                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],
                 ),

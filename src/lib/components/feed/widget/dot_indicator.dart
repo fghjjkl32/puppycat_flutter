@@ -18,14 +18,13 @@ class DotIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<int>(
       valueListenable: counter,
-      builder: (BuildContext context, int index, Widget? child) =>
-          AnimatedSmoothIndicator(
+      builder: (BuildContext context, int index, Widget? child) => AnimatedSmoothIndicator(
         activeIndex: index,
         axisDirection: Axis.horizontal,
         count: imageListLength,
         effect: ScrollingDotsEffect(
-          dotColor: kNeutralColor400,
-          activeDotColor: kPrimaryColor,
+          dotColor: kPreviousNeutralColor400,
+          activeDotColor: kPreviousPrimaryColor,
           dotWidth: 6.h,
           dotHeight: 6.h,
         ),

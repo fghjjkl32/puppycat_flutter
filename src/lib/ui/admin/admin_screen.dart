@@ -6,7 +6,6 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,6 +42,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   late TextEditingController selThumborKeyController;
   late TextEditingController selThumborDomainController;
 
+  late TextEditingController selS3UrlController;
+
   late FocusNode devFocusNode;
   late FocusNode stgFocusNode;
   late FocusNode prdFocusNode;
@@ -52,6 +53,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   late FocusNode selFocusNode2;
   late FocusNode selFocusNode3;
   late FocusNode selFocusNode4;
+  late FocusNode selS3FocusNode;
 
   List<SystemUiOverlay>? systemUiOverlayList = [];
 
@@ -68,6 +70,10 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   String stgThumborDomainUrl = "https://imgs.pcstg.co.kr";
   String devThumborDomainUrl = "https://dev-imgs.devlabs.co.kr";
   String prdThumborDomainUrl = "https://imgs.puppycat.co.kr";
+
+  String devS3Url = "https://pet-mnt.devlabs.co.kr";
+  String stgS3Url = "https://mnt.pcstg.co.kr";
+  String prdS3Url = "https://mnt.puppycat.co.kr";
 
   @override
   void initState() {
@@ -93,6 +99,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     selThumborHostController = TextEditingController(text: '');
     selThumborKeyController = TextEditingController(text: '');
     selThumborDomainController = TextEditingController(text: '');
+    selS3UrlController = TextEditingController(text: '');
 
     devFocusNode = FocusNode();
     stgFocusNode = FocusNode();
@@ -103,6 +110,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     selFocusNode2 = FocusNode();
     selFocusNode3 = FocusNode();
     selFocusNode4 = FocusNode();
+    selS3FocusNode = FocusNode();
   }
 
   @override
@@ -119,6 +127,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     selUrlController.dispose();
     selWalkUrlController.dispose();
     selWalkGpsUrlController.dispose();
+    selS3UrlController.dispose();
     devFocusNode.dispose();
     stgFocusNode.dispose();
     prdFocusNode.dispose();
@@ -128,7 +137,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     selFocusNode2.dispose();
     selFocusNode3.dispose();
     selFocusNode4.dispose();
-
+    selS3FocusNode.dispose();
     super.dispose();
   }
 
@@ -139,6 +148,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     String thumborHost,
     String thumborKey,
     String thumborDomain,
+    String S3Url,
   ) {
     setState(() {
       selUrlController.text = urlController.text;
@@ -147,6 +157,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
       selThumborHostController.text = thumborHost;
       selThumborKeyController.text = thumborKey;
       selThumborDomainController.text = thumborDomain;
+      selS3UrlController.text = S3Url;
     });
   }
 
@@ -213,6 +224,14 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     imgDomain = await Constants.getThumborDomain();
   }
 
+  setS3UrlValue() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('selectedS3URL', selS3UrlController.text);
+
+    s3BaseUrl = await Constants.getS3Domain();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -253,7 +272,15 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      setSelectURL(devUrlController, walkDevUrlController, walkDevGpsUrlController, devThumborHostUrl, devThumborKey, devThumborDomainUrl);
+                      setSelectURL(
+                        devUrlController,
+                        walkDevUrlController,
+                        walkDevGpsUrlController,
+                        devThumborHostUrl,
+                        devThumborKey,
+                        devThumborDomainUrl,
+                        devS3Url,
+                      );
                     },
                     child: const Text('선택'),
                   ),
@@ -276,7 +303,15 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      setSelectURL(stgUrlController, walkStgUrlController, walkStgGpsUrlController, stgThumborHostUrl, stgThumborKey, stgThumborDomainUrl);
+                      setSelectURL(
+                        stgUrlController,
+                        walkStgUrlController,
+                        walkStgGpsUrlController,
+                        stgThumborHostUrl,
+                        stgThumborKey,
+                        stgThumborDomainUrl,
+                        stgS3Url,
+                      );
                     },
                     child: const Text('선택'),
                   ),
@@ -299,7 +334,15 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      setSelectURL(prdUrlController, walkPrdUrlController, walkPrdGpsUrlController, prdThumborHostUrl, prdThumborKey, prdThumborDomainUrl);
+                      setSelectURL(
+                        prdUrlController,
+                        walkPrdUrlController,
+                        walkPrdGpsUrlController,
+                        prdThumborHostUrl,
+                        prdThumborKey,
+                        prdThumborDomainUrl,
+                        prdS3Url,
+                      );
                     },
                     child: const Text('선택'),
                   ),
@@ -317,8 +360,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                   padding: 2,
                   width: 52.0.w,
                   height: 32.0.h,
-                  activeColor: kPrimaryColor,
-                  inactiveColor: kNeutralColor300,
+                  activeColor: kPreviousPrimaryColor,
+                  inactiveColor: kPreviousNeutralColor300,
                   toggleSize: 28.0.w,
                   value: developMode,
                   borderRadius: 50.0.w,
@@ -411,6 +454,19 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
             const SizedBox(
               height: 20,
             ),
+            Flexible(
+              child: TextField(
+                controller: selS3UrlController,
+                focusNode: selS3FocusNode,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  label: Text('S3 Url'),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -451,6 +507,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                         setThumborHostUrl();
                         setThumborKey();
                         setThumborDomain();
+                        setS3UrlValue();
 
                         if (ref.read(userInfoProvider).userModel == null) {
                           context.pushReplacementNamed("loginScreen");

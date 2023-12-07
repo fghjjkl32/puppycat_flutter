@@ -9,11 +9,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+
 // import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+
 // import 'package:location/location.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
@@ -389,15 +391,15 @@ class CustomError extends StatelessWidget {
               height: 12,
             ),
             Text(
-              "요청하신 페이지를 찾을 수 없습니다.",
-              style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+              "요청하신 페이지를 찾을 수 없어요.",
+              style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
             ),
             SizedBox(
               height: 8,
             ),
             Text(
-              "입력한 주소가 잘못되었거나\n페이지를 찾을 수 없습니다.",
-              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+              "입력한 주소가 잘못되었거나\n페이지를 찾을 수 없어요.",
+              style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
               textAlign: TextAlign.center,
             ),
           ],
@@ -419,7 +421,7 @@ class CustomError extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: kPrimaryLightColor,
+                      backgroundColor: kPreviousPrimaryLightColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -432,7 +434,7 @@ class CustomError extends StatelessWidget {
                       child: Text(
                         '홈으로 이동',
                         style: kBody14BoldStyle.copyWith(
-                          color: kPrimaryColor,
+                          color: kPreviousPrimaryColor,
                         ),
                       ),
                     ),

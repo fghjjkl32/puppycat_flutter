@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/tag_user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -102,11 +101,11 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                     child: FormBuilderTextField(
                       name: 'search',
                       controller: userSearchController,
-                      style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                      style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: kNeutralColor200,
+                        fillColor: kPreviousNeutralColor200,
                         contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
@@ -132,7 +131,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                 child: Icon(
                                   Puppycat_social.icon_search_medium,
-                                  color: kNeutralColor600,
+                                  color: kPreviousNeutralColor600,
                                 ),
                               )
                             : GestureDetector(
@@ -143,64 +142,41 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                                   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                   child: Icon(
                                     Puppycat_social.icon_close_large,
-                                    color: kNeutralColor600,
+                                    color: kPreviousNeutralColor600,
                                   ),
                                 ),
                               ),
-                        hintText: "검색어를 입력해 주세요.",
-                        hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                        hintText: "닉네임으로 검색해 보세요.",
+                        hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 4.h,
-                  ),
-                  userSearchController.text.isEmpty
-                      ? Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Text(
-                                "태그하고 싶은 사람을 검색해 보세요!",
-                                style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Text(
-                                "닉네임 선택 시 선택한 위치에 태그가 표시됩니다.",
-                                style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                              ),
-                            ),
-                          ],
-                        )
-                      : Container(),
-                  SizedBox(
-                    height: 3.h,
-                  ),
-                  SizedBox(
-                    height: 26.h,
                   ),
                   Expanded(
                     child: lists.isEmpty
                         ? Container(
-                            color: kNeutralColor100,
+                            color: kPreviousNeutralColor100,
                             child: Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.asset(
-                                    'assets/image/character/character_08_user_notfound_100.png',
-                                    width: 88,
-                                    height: 88,
-                                  ),
+                                  userSearchController.text == ""
+                                      ? Image.asset(
+                                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                          width: 88,
+                                          height: 88,
+                                        )
+                                      : Image.asset(
+                                          'assets/image/character/character_08_user_notfound_100.png',
+                                          width: 88,
+                                          height: 88,
+                                        ),
                                   const SizedBox(
                                     height: 12,
                                   ),
                                   Text(
-                                    '유저를 찾을 수 없습니다.',
+                                    userSearchController.text == "" ? '태그한 유저가 없어요.\n유저를 검색해서 태그해 보세요.' : '유저를 찾을 수 없어요.\n닉네임을 다시 확인해 주세요.',
                                     textAlign: TextAlign.center,
-                                    style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                    style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                   ),
                                 ],
                               ),
@@ -228,7 +204,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                                 child: TagUserItemWidget(
                                   profileImage: lists[index].profileImgUrl!,
                                   userName: lists[index].nick!,
-                                  content: lists[index].intro! == "" ? "소개글이 없습니다." : lists[index].intro!,
+                                  content: lists[index].intro! == "" ? "소개글이 없어요." : lists[index].intro!,
                                   isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
                                 ),
                               );

@@ -81,15 +81,16 @@ class InstaAssetPicker {
                 child: Column(
                   children: [
                     Text(
-                      "퍼피캣 접근 권한 허용",
-                      style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                      "피드를 올리거나 프로필을 설정하려면\n사진 권한이 필요해요.",
+                      style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                      textAlign: TextAlign.center,
                     ),
                     SizedBox(
                       height: 4.h,
                     ),
                     Text(
-                      "피드 등록을 위해\n사진 접근을 허용해 주세요.",
-                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                      "언제든지 설정을 바꿀 수 있어요.",
+                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -103,12 +104,12 @@ class InstaAssetPicker {
                 context.pop();
               },
               confirmWidget: Text(
-                "허용",
-                style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                "설정 열기",
+                style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
               ),
               cancelWidget: Text(
-                "허용 안 함",
-                style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                "닫기",
+                style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
               ));
         },
       );

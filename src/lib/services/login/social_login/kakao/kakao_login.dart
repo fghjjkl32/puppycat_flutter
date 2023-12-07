@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
-import 'package:pet_mobile_social_flutter/models/login/login_request_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/social_login_service.dart';
 
@@ -84,7 +83,8 @@ class KakaoLoginService implements SocialLoginService {
       password: userInfo.id.toString(),
       passwordConfirm: userInfo.id.toString(),
       isBadge: 0,
-      uuid: "", channelTalkHash: '',
+      uuid: "",
+      channelTalkHash: '',
     );
 
     return userModel;

@@ -5,7 +5,9 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/components/comment/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
+import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -124,7 +126,31 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
                     // animateTransitions: true,
                     noItemsFoundIndicatorBuilder: (context) {
                       // return const Text('No Comments');
-                      return const SizedBox.shrink();
+                      return Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 100.0),
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                  width: 88,
+                                  height: 88,
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                Text(
+                                  '아직 댓글이 없어요.\n피드에 댓글을 남겨 보세요.',
+                                  textAlign: TextAlign.center,
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
                     },
                     firstPageProgressIndicatorBuilder: (context) {
                       // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);

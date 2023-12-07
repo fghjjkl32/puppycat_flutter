@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
 final policyCheckProvider = StateProvider.autoDispose<bool>((ref) => false);
@@ -64,14 +65,14 @@ class PolicyCheckBoxWidget extends ConsumerWidget {
             }
           },
           icon: Icon(
-            Icons.check,
-            color: isAgreed ? kPrimaryColor : kNeutralColor400,
+            Puppycat_social.icon_check_single,
+            color: isAgreed ? kPreviousPrimaryColor : kPreviousNeutralColor400,
           ),
           splashRadius: 1,
         ),
         Text(
           '[${isEssential ? '회원가입.필수'.tr() : '회원가입.선택'.tr()}] $title',
-          style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+          style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
         ),
         const Spacer(),
         Visibility(
@@ -88,7 +89,7 @@ class PolicyCheckBoxWidget extends ConsumerWidget {
             },
             child: Text(
               '회원가입.보기'.tr(),
-              style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+              style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
             ),
           ),
         ),

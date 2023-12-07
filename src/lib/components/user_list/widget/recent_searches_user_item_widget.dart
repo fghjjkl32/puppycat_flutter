@@ -86,7 +86,7 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
                                 widget.userName,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                                style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                               ),
                             ),
                           ],
@@ -96,7 +96,7 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
                         ),
                         Text(
                           widget.content,
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                          style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ],
                     ),
@@ -108,7 +108,7 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
               children: [
                 Text(
                   DateFormat('MM.dd').format(widget.dateTime),
-                  style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                  style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                 ),
                 SizedBox(
                   width: 10,
@@ -126,7 +126,7 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
                     },
                     child: const Icon(
                       Puppycat_social.icon_close_medium,
-                      color: kTextBodyColor,
+                      color: kPreviousTextBodyColor,
                       size: 26,
                     ),
                   ),

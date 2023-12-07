@@ -298,7 +298,7 @@ class _DatePickerState extends State<_DatePickerComponent> {
               ),
               child: GestureDetector(
                 child: Material(
-                  color: kNeutralColor100,
+                  color: kPreviousNeutralColor100,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(25.0),
@@ -336,7 +336,7 @@ class _DatePickerState extends State<_DatePickerComponent> {
                 children: [
                   Text(
                     theme.title,
-                    style: kTitle18BoldStyle.copyWith(color: kNeutralColor600),
+                    style: kTitle18BoldStyle.copyWith(color: kPreviousNeutralColor600),
                   ),
                   // theme.isBirthDay
                   //     ? InkWell(
@@ -415,7 +415,7 @@ class _DatePickerState extends State<_DatePickerComponent> {
                 alignment: Alignment.center,
                 child: Text(
                   content,
-                  style: index == currentFirstIndex ? kBody16MediumStyle.copyWith(color: kPrimaryColor) : kBody16MediumStyle.copyWith(color: kNeutralColor600),
+                  style: index == currentFirstIndex ? kBody16MediumStyle.copyWith(color: kPreviousPrimaryColor) : kBody16MediumStyle.copyWith(color: kPreviousNeutralColor600),
                   textAlign: TextAlign.start,
                 ),
               );
@@ -470,7 +470,7 @@ class _DatePickerState extends State<_DatePickerComponent> {
                 alignment: Alignment.center,
                 child: Text(
                   content,
-                  style: index == currentSecondIndex ? kBody16MediumStyle.copyWith(color: kPrimaryColor) : kBody16MediumStyle.copyWith(color: kNeutralColor600),
+                  style: index == currentSecondIndex ? kBody16MediumStyle.copyWith(color: kPreviousPrimaryColor) : kBody16MediumStyle.copyWith(color: kPreviousNeutralColor600),
                   textAlign: TextAlign.start,
                 ),
               );
@@ -526,7 +526,7 @@ class _DatePickerState extends State<_DatePickerComponent> {
                 alignment: Alignment.center,
                 child: Text(
                   content,
-                  style: index == currentThirdIndex ? kBody16MediumStyle.copyWith(color: kPrimaryColor) : kBody16MediumStyle.copyWith(color: kNeutralColor600),
+                  style: index == currentThirdIndex ? kBody16MediumStyle.copyWith(color: kPreviousPrimaryColor) : kBody16MediumStyle.copyWith(color: kPreviousNeutralColor600),
                   textAlign: TextAlign.start,
                 ),
               );
@@ -602,8 +602,8 @@ class _DatePickerState extends State<_DatePickerComponent> {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            disabledBackgroundColor: kNeutralColor400,
-            backgroundColor: kPrimaryColor,
+            disabledBackgroundColor: kPreviousNeutralColor400,
+            backgroundColor: kPreviousPrimaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
@@ -618,7 +618,7 @@ class _DatePickerState extends State<_DatePickerComponent> {
             padding: const EdgeInsets.all(18.0),
             child: Text(
               '확인',
-              style: kBody14BoldStyle.copyWith(color: kNeutralColor100),
+              style: kBody14BoldStyle.copyWith(color: kPreviousNeutralColor100),
             ),
           ),
         ),

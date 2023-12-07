@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/web_view/channel_talk_webview_screen.dart';
 
 class MaintenanceScreen extends ConsumerStatefulWidget {
   const MaintenanceScreen({super.key});
@@ -90,7 +89,7 @@ class MaintenanceScreenState extends ConsumerState<MaintenanceScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 28.0),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: kNeutralColor200,
+                        color: kPreviousNeutralColor200,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Padding(
@@ -99,7 +98,7 @@ class MaintenanceScreenState extends ConsumerState<MaintenanceScreen> {
                           children: [
                             Text(
                               "서비스 점검 중",
-                              style: kBody12SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                              style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                               textAlign: TextAlign.center,
                             ),
                             Padding(
@@ -109,7 +108,7 @@ class MaintenanceScreenState extends ConsumerState<MaintenanceScreen> {
                               ),
                               child: Text(
                                 time,
-                                style: kBody13BoldStyle.copyWith(color: kBadgeColor),
+                                style: kBody13BoldStyle.copyWith(color: kPreviousErrorColor),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -117,15 +116,15 @@ class MaintenanceScreenState extends ConsumerState<MaintenanceScreen> {
                               padding: const EdgeInsets.symmetric(horizontal: 12.0),
                               child: Divider(
                                 thickness: 1,
-                                color: kNeutralColor100,
+                                color: kPreviousNeutralColor100,
                               ),
                             ),
                             SizedBox(
                               height: 16,
                             ),
                             Text(
-                              "이용에 불편을 드려 죄송합니다.\n안정적인 서비스를 위해 서버 점검 후\n더 좋은 모습으로 찾아뵙겠습니다.",
-                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                              "이용에 불편을 드려 죄송해요.\n안정적인 서비스를 위해 서버를 점검하고 있어요.\n더 좋은 모습으로 돌아올게요.",
+                              style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -151,8 +150,8 @@ class MaintenanceScreenState extends ConsumerState<MaintenanceScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          disabledBackgroundColor: kNeutralColor400,
-                          backgroundColor: kPrimaryColor,
+                          disabledBackgroundColor: kPreviousNeutralColor400,
+                          backgroundColor: kPreviousPrimaryColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -176,7 +175,7 @@ class MaintenanceScreenState extends ConsumerState<MaintenanceScreen> {
                           padding: const EdgeInsets.all(18.0),
                           child: Text(
                             '1:1 채널톡',
-                            style: kBody14BoldStyle.copyWith(color: kNeutralColor100),
+                            style: kBody14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                           ),
                         ),
                       ),
