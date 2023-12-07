@@ -28,7 +28,8 @@ class FeedBestPostItemWidget extends StatelessWidget {
             child: Image.network(
               Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$image").toUrl(),
               fit: BoxFit.cover,
-              height: 112.h,
+              height: 112,
+              width: 154,
             ),
           ),
           Positioned(
@@ -44,7 +45,7 @@ class FeedBestPostItemWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   "$imageCount",
-                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                  style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                 ),
               ),
             ),

@@ -1,17 +1,13 @@
 ///NOTE
 ///2023.12. 06.
 ///산책하기 보류로 전체 주석 처리
-// import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:intl/intl.dart';
-// import 'package:pet_mobile_social_flutter/config/constanst.dart';
 // import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 // import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
-// import 'package:pet_mobile_social_flutter/config/theme/size_data.dart';
 // import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 // import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-// import 'package:thumbor/thumbor.dart';
 //
 // class FeedWalkInfoWidget extends StatelessWidget {
 //   const FeedWalkInfoWidget({
@@ -19,7 +15,7 @@
 //     Key? key,
 //   }) : super(key: key);
 //
-//   // final List<WalkResultListData>? walkData;
+//   final List<WalkResultListData>? walkData;
 //
 //   @override
 //   Widget build(BuildContext context) {
@@ -34,7 +30,7 @@
 //                   children: [
 //                     Container(
 //                       decoration: const BoxDecoration(
-//                         color: kNeutralColor200,
+//                         color: kPreviousNeutralColor200,
 //                         borderRadius: BorderRadius.all(
 //                           Radius.circular(8.0),
 //                         ),
@@ -43,7 +39,7 @@
 //                         padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 6.0),
 //                         child: Text(
 //                           "날짜",
-//                           style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+//                           style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
 //                         ),
 //                       ),
 //                     ),
@@ -52,7 +48,7 @@
 //                     ),
 //                     Text(
 //                       DateFormat('yyyy-MM-dd(EEE)', 'ko_KR').format(DateTime.parse(walkData![0].startDate!)),
-//                       style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+//                       style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
 //                     ),
 //                   ],
 //                 ),
@@ -62,7 +58,7 @@
 //                 Container(
 //                   width: double.infinity,
 //                   decoration: const BoxDecoration(
-//                     color: kNeutralColor200,
+//                     color: kPreviousNeutralColor200,
 //                     borderRadius: BorderRadius.all(
 //                       Radius.circular(8.0),
 //                     ),
@@ -81,14 +77,14 @@
 //                                   Icon(
 //                                     Puppycat_social.icon_comment,
 //                                     size: 20,
-//                                     color: kTextBodyColor,
+//                                     color: kPreviousTextBodyColor,
 //                                   ),
 //                                   SizedBox(
 //                                     width: 2,
 //                                   ),
 //                                   Text(
 //                                     "분",
-//                                     style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+//                                     style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
 //                                   ),
 //                                 ],
 //                               ),
@@ -97,7 +93,7 @@
 //                               ),
 //                               Text(
 //                                 walkData![0].walkTime!,
-//                                 style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+//                                 style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
 //                               ),
 //                             ],
 //                           ),
@@ -105,7 +101,7 @@
 //                         Container(
 //                           height: 42,
 //                           child: VerticalDivider(
-//                             color: kNeutralColor100,
+//                             color: kPreviousNeutralColor100,
 //                             thickness: 1.0,
 //                           ),
 //                         ),
@@ -118,14 +114,14 @@
 //                                   Icon(
 //                                     Puppycat_social.icon_comment,
 //                                     size: 20,
-//                                     color: kTextBodyColor,
+//                                     color: kPreviousTextBodyColor,
 //                                   ),
 //                                   SizedBox(
 //                                     width: 2,
 //                                   ),
 //                                   Text(
 //                                     "걸음",
-//                                     style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+//                                     style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
 //                                   ),
 //                                 ],
 //                               ),
@@ -134,7 +130,7 @@
 //                               ),
 //                               Text(
 //                                 NumberFormat("#,##0", "en_US").format(walkData![0].step),
-//                                 style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+//                                 style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
 //                               ),
 //                             ],
 //                           ),
@@ -142,7 +138,7 @@
 //                         Container(
 //                           height: 42,
 //                           child: VerticalDivider(
-//                             color: kNeutralColor100,
+//                             color: kPreviousNeutralColor100,
 //                             thickness: 1.0,
 //                           ),
 //                         ),
@@ -155,14 +151,14 @@
 //                                   Icon(
 //                                     Puppycat_social.icon_comment,
 //                                     size: 20,
-//                                     color: kTextBodyColor,
+//                                     color: kPreviousTextBodyColor,
 //                                   ),
 //                                   SizedBox(
 //                                     width: 2,
 //                                   ),
 //                                   Text(
 //                                     "km",
-//                                     style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+//                                     style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
 //                                   ),
 //                                 ],
 //                               ),
@@ -171,7 +167,7 @@
 //                               ),
 //                               Text(
 //                                 "${NumberFormat("#,##0.##", "en_US").format(walkData![0].distance)}",
-//                                 style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+//                                 style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
 //                               ),
 //                             ],
 //                           ),
@@ -179,7 +175,7 @@
 //                         Container(
 //                           height: 42,
 //                           child: VerticalDivider(
-//                             color: kNeutralColor100,
+//                             color: kPreviousNeutralColor100,
 //                             thickness: 1.0,
 //                           ),
 //                         ),
@@ -192,14 +188,14 @@
 //                                   Icon(
 //                                     Puppycat_social.icon_comment,
 //                                     size: 20,
-//                                     color: kTextBodyColor,
+//                                     color: kPreviousTextBodyColor,
 //                                   ),
 //                                   SizedBox(
 //                                     width: 2,
 //                                   ),
 //                                   Text(
 //                                     "kcal",
-//                                     style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+//                                     style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
 //                                   ),
 //                                 ],
 //                               ),
@@ -208,7 +204,7 @@
 //                               ),
 //                               Text(
 //                                 "${NumberFormat("#,##0", "en_US").format(walkData![0].calorie!.floor())}",
-//                                 style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+//                                 style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
 //                               ),
 //                             ],
 //                           ),

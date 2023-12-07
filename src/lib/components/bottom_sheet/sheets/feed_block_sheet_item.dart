@@ -26,14 +26,14 @@ class FeedBlockSheetItem extends ConsumerWidget {
             children: [
               Text(
                 "차단한 유저의 피드예요.",
-                style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
               ),
             ],
           ),
         ),
         Text(
           "차단을 풀고 'test' 님의 피드를 볼까요?",
-          style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
         ),
         SizedBox(height: 20),
         Row(
@@ -47,7 +47,7 @@ class FeedBlockSheetItem extends ConsumerWidget {
                 width: 152,
                 height: 36,
                 decoration: const BoxDecoration(
-                  color: kPrimaryLightColor,
+                  color: kPreviousPrimaryLightColor,
                   borderRadius: BorderRadius.all(
                     Radius.circular(8.0),
                   ),
@@ -55,7 +55,7 @@ class FeedBlockSheetItem extends ConsumerWidget {
                 child: Center(
                   child: Text(
                     "취소",
-                    style: kButton14BoldStyle.copyWith(color: kPrimaryColor),
+                    style: kButton14BoldStyle.copyWith(color: kPreviousPrimaryColor),
                   ),
                 ),
               ),
@@ -69,7 +69,7 @@ class FeedBlockSheetItem extends ConsumerWidget {
                 width: 152,
                 height: 36,
                 decoration: const BoxDecoration(
-                  color: kPrimaryColor,
+                  color: kPreviousPrimaryColor,
                   borderRadius: BorderRadius.all(
                     Radius.circular(8.0),
                   ),
@@ -77,7 +77,7 @@ class FeedBlockSheetItem extends ConsumerWidget {
                 child: Center(
                   child: Text(
                     "보관",
-                    style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
+                    style: kButton14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                   ),
                 ),
               ),

@@ -99,7 +99,7 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
                             : Container(),
                         Text(
                           widget.userName,
-                          style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ],
                     ),
@@ -108,7 +108,7 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
                     ),
                     Text(
                       widget.content,
-                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],
                 ),

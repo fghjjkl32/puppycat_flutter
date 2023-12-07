@@ -52,7 +52,7 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
 
     return Card(
       margin: const EdgeInsets.all(8),
-      elevation: 2,
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -60,14 +60,14 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            color: const Color(0xFFF7F7F8),
-            child: ListTile(
-              dense: true,
-              horizontalTitleGap: 0,
-              title: Text("Users matching '${widget.query}'"),
-            ),
-          ),
+          // Container(
+          //   color: const Color(0xFFF7F7F8),
+          //   child: ListTile(
+          //     dense: true,
+          //     horizontalTitleGap: 0,
+          //     title: Text("Users matching '${widget.query}'"),
+          //   ),
+          // ),
           LimitedBox(
             maxHeight: MediaQuery.of(context).size.height * 0.3,
             child: ListView.separated(
@@ -75,14 +75,14 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               itemCount: users.length,
-              separatorBuilder: (_, __) => const Divider(height: 0),
+              separatorBuilder: (_, __) => Container(),
               itemBuilder: (context, i) {
                 final user = users[i];
                 return ListTile(
-                  shape: Border(
-                    bottom: BorderSide(color: kNeutralColor500, width: 1),
-                  ),
-                  tileColor: kNeutralColor100,
+                  // shape: Border(
+                  //   bottom: BorderSide(color: kWhiteColor, width: 1),
+                  // ),
+                  tileColor: kPreviousNeutralColor100,
                   dense: true,
                   leading: user.profileImgUrl == null || user.profileImgUrl == ""
                       ? WidgetMask(
@@ -92,7 +92,7 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
                             child: Icon(
                               Puppycat_social.icon_profile_small,
                               size: 42,
-                              color: kNeutralColor400,
+                              color: kPreviousNeutralColor400,
                             ),
                           ),
                           child: SvgPicture.asset(
@@ -119,7 +119,7 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
                           ),
                         ),
                   title: Text(user.nick ?? ''),
-                  subtitle: user.intro == null || user.intro == "" ? Text('소개 글이 없습니다.') : Text('${user.intro}'),
+                  subtitle: user.intro == null || user.intro == "" ? Text('소개 글이 없어요.') : Text('${user.intro}'),
                   onTap: () => widget.onMentionUserTap(user),
                 );
               },

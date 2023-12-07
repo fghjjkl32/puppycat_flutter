@@ -35,7 +35,7 @@ class FeedImageMainWidget extends StatelessWidget {
                   child: CachedNetworkImage(
                     imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[0].url!}").toUrl(),
                     placeholder: (context, url) => Container(
-                      color: kNeutralColor300,
+                      color: kPreviousNeutralColor300,
                     ),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                     fit: BoxFit.cover,
@@ -57,7 +57,7 @@ class FeedImageMainWidget extends StatelessWidget {
                     child: CachedNetworkImage(
                       imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[0].url!}").toUrl(),
                       placeholder: (context, url) => Container(
-                        color: kNeutralColor300,
+                        color: kPreviousNeutralColor300,
                       ),
                       errorWidget: (context, url, error) => Icon(Icons.error),
                       fit: BoxFit.cover,
@@ -77,7 +77,7 @@ class FeedImageMainWidget extends StatelessWidget {
                     ),
                     child: CachedNetworkImage(
                       placeholder: (context, url) => Container(
-                        color: kNeutralColor300,
+                        color: kPreviousNeutralColor300,
                       ),
                       imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[1].url!}").toUrl(),
                       errorWidget: (context, url, error) => Icon(Icons.error),
@@ -100,7 +100,7 @@ class FeedImageMainWidget extends StatelessWidget {
                     ),
                     child: CachedNetworkImage(
                       placeholder: (context, url) => Container(
-                        color: kNeutralColor300,
+                        color: kPreviousNeutralColor300,
                       ),
                       imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[0].url!}").toUrl(),
                       fit: BoxFit.cover,
@@ -121,7 +121,7 @@ class FeedImageMainWidget extends StatelessWidget {
                         ),
                         child: CachedNetworkImage(
                           placeholder: (context, url) => Container(
-                            color: kNeutralColor300,
+                            color: kPreviousNeutralColor300,
                           ),
                           imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[1].url!}").toUrl(),
                           fit: BoxFit.cover,
@@ -138,7 +138,7 @@ class FeedImageMainWidget extends StatelessWidget {
                         ),
                         child: CachedNetworkImage(
                           placeholder: (context, url) => Container(
-                            color: kNeutralColor300,
+                            color: kPreviousNeutralColor300,
                           ),
                           imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[2].url!}").toUrl(),
                           fit: BoxFit.cover,
@@ -162,7 +162,7 @@ class FeedImageMainWidget extends StatelessWidget {
                     ),
                     child: CachedNetworkImage(
                       placeholder: (context, url) => Container(
-                        color: kNeutralColor300,
+                        color: kPreviousNeutralColor300,
                       ),
                       imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[0].url!}").toUrl(),
                       fit: BoxFit.cover,
@@ -183,7 +183,7 @@ class FeedImageMainWidget extends StatelessWidget {
                         ),
                         child: CachedNetworkImage(
                           placeholder: (context, url) => Container(
-                            color: kNeutralColor300,
+                            color: kPreviousNeutralColor300,
                           ),
                           imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[1].url!}").toUrl(),
                           fit: BoxFit.cover,
@@ -202,7 +202,7 @@ class FeedImageMainWidget extends StatelessWidget {
                             ),
                             child: CachedNetworkImage(
                               placeholder: (context, url) => Container(
-                                color: kNeutralColor300,
+                                color: kPreviousNeutralColor300,
                               ),
                               imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[2].url!}").toUrl(),
                               fit: BoxFit.cover,
@@ -222,7 +222,7 @@ class FeedImageMainWidget extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 '+ ${imageList.length - 3}',
-                                style: kTitle18BoldStyle.copyWith(color: kNeutralColor100),
+                                style: kTitle18BoldStyle.copyWith(color: kPreviousNeutralColor100),
                               ),
                             ),
                           ),

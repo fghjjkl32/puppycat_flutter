@@ -136,7 +136,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                       children: [
                         Text(
                           widget.contentType != "notificationContent" ? widget.firstTitle : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? '',
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                          style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                         Text(widget.secondTitle),
                       ],
@@ -194,7 +194,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                               padding: const EdgeInsets.all(20.0),
                               child: Text(
                                 "팔로잉",
-                                style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor500),
+                                style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor500),
                               ),
                             ),
                           )
@@ -220,7 +220,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                               padding: const EdgeInsets.all(20.0),
                               child: Text(
                                 "팔로우",
-                                style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
                               ),
                             ),
                           )
@@ -234,7 +234,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                       children: [
                         Text(
                           widget.contentType != "notificationContent" ? widget.firstTitle : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? '',
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                          style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                         Text(widget.secondTitle),
                       ],
@@ -335,9 +335,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                               height: 12,
                                             ),
                                             Text(
-                                              '등록된 피드가 없습니다.',
+                                              '피드가 없어요.',
                                               textAlign: TextAlign.center,
-                                              style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                              style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                             ),
                                           ],
                                         ),
@@ -361,24 +361,24 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                             height: 12,
                                           ),
                                           Text(
-                                            "${ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick} 님의\n피드를 모두 확인했어요!",
+                                            "대단해요!\n${ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick}님의 피드를 모두 확인했어요!",
                                             textAlign: TextAlign.center,
-                                            style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+                                            style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                           ),
                                           const SizedBox(
                                             height: 8,
                                           ),
                                           Text(
-                                            "다른 유저의 피드도 보시겠어요?",
+                                            "다른 유저의 피드도 보러 갈까요?",
                                             textAlign: TextAlign.center,
-                                            style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                            style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                           ),
                                           const SizedBox(
                                             height: 12,
                                           ),
                                           Material(
                                             child: Container(
-                                              color: kNeutralColor100,
+                                              color: kPreviousNeutralColor100,
                                               child: GestureDetector(
                                                 onTap: () {
                                                   Navigator.push(
@@ -393,9 +393,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                                 child: Padding(
                                                   padding: const EdgeInsets.all(20.0),
                                                   child: Text(
-                                                    "다른 유저 피드 볼래요",
+                                                    "다른 피드 보러 가기",
                                                     textAlign: TextAlign.center,
-                                                    style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                                    style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
                                                   ),
                                                 ),
                                               ),
@@ -423,24 +423,24 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                         height: 12,
                                       ),
                                       Text(
-                                        "${ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick} 님의\n피드를 모두 확인했어요!",
+                                        "대단해요!\n${ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick}님의 피드를 모두 확인했어요!",
                                         textAlign: TextAlign.center,
-                                        style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+                                        style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                       ),
                                       SizedBox(
                                         height: 8,
                                       ),
                                       Text(
-                                        "다른 유저의 피드도 보시겠어요?",
+                                        "다른 유저의 피드도 보러 갈까요?",
                                         textAlign: TextAlign.center,
-                                        style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                        style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                       ),
                                       SizedBox(
                                         height: 12,
                                       ),
                                       Material(
                                         child: Container(
-                                          color: kNeutralColor100,
+                                          color: kPreviousNeutralColor100,
                                           child: GestureDetector(
                                             onTap: () {
                                               Navigator.push(
@@ -455,9 +455,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                             child: Padding(
                                               padding: const EdgeInsets.all(20.0),
                                               child: Text(
-                                                "다른 유저 피드 볼래요",
+                                                "다른 피드 보러 가기",
                                                 textAlign: TextAlign.center,
-                                                style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                                style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
                                               ),
                                             ),
                                           ),

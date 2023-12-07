@@ -85,14 +85,14 @@ class FeedNotFoundScreen extends StatelessWidget {
             ),
             Text(
               "피드를 찾을 수 없어요.",
-              style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+              style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
             ),
             const SizedBox(
               height: 8,
             ),
             Text(
               "피드가 삭제되었거나\n공개 범위가 바뀌었을 수 있어요.",
-              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+              style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
               textAlign: TextAlign.center,
             ),
           ],
@@ -114,7 +114,7 @@ class FeedNotFoundScreen extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: kPrimaryLightColor,
+                      backgroundColor: kPreviousPrimaryLightColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -127,7 +127,7 @@ class FeedNotFoundScreen extends StatelessWidget {
                       child: Text(
                         '홈으로 이동',
                         style: kBody14BoldStyle.copyWith(
-                          color: kPrimaryColor,
+                          color: kPreviousPrimaryColor,
                         ),
                       ),
                     ),

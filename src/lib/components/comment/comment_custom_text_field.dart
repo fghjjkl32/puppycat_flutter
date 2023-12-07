@@ -34,7 +34,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
 
     return Material(
       child: Container(
-        color: kNeutralColor100,
+        color: kPreviousNeutralColor100,
         child: Theme(
           data: ThemeData(
             inputDecorationTheme: const InputDecorationTheme(
@@ -71,7 +71,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                 commentHeaderState.isReply
                     ? Container(
                         width: double.infinity,
-                        color: kNeutralColor300,
+                        color: kPreviousNeutralColor300,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -79,7 +79,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                               padding: EdgeInsets.only(left: 12.0.w),
                               child: Text(
                                 "@${ref.watch(commentHeaderProvider).name} 님에게 답글 남기기",
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ),
                             IconButton(
@@ -92,7 +92,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                               icon: const Icon(
                                 Puppycat_social.icon_close,
                                 size: 26,
-                                color: kTextBodyColor,
+                                color: kPreviousTextBodyColor,
                               ),
                             ),
                           ],
@@ -102,7 +102,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                 commentHeaderState.isEdit
                     ? Container(
                         width: double.infinity,
-                        color: kNeutralColor300,
+                        color: kPreviousNeutralColor300,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -110,7 +110,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                               padding: EdgeInsets.only(left: 12.0.w),
                               child: Text(
                                 "댓글 수정",
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ),
                             IconButton(
@@ -124,7 +124,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                               icon: const Icon(
                                 Puppycat_social.icon_close,
                                 size: 26,
-                                color: kTextBodyColor,
+                                color: kPreviousTextBodyColor,
                               ),
                             ),
                           ],
@@ -156,7 +156,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          border: Border.all(color: kNeutralColor400, width: 1),
+                          border: Border.all(color: kPreviousNeutralColor400, width: 1),
                           borderRadius: BorderRadius.all(lineCount <= 2 ? const Radius.circular(50) : const Radius.circular(10)),
                         ),
                         child: TextField(
@@ -203,8 +203,8 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                             fillColor: Colors.transparent,
                             border: InputBorder.none,
                             counterText: "",
-                            hintText: !isLogined ? "로그인 하면 쓸 수 있어요." : '댓글을 입력해주세요.',
-                            hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+                            hintText: !isLogined ? "로그인 하면 쓸 수 있어요." : '댓글을 남겨 보세요.',
+                            hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                             contentPadding: const EdgeInsets.all(16),
                             suffixIcon: ref.read(commentHeaderProvider).hasInput
                                 ? IconButton(
@@ -261,7 +261,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                                     },
                                     icon: const Icon(
                                       Puppycat_social.icon_send,
-                                      color: kPrimaryColor,
+                                      color: kPreviousPrimaryColor,
                                     ),
                                   )
                                 : const Icon(
@@ -269,7 +269,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                                     color: Colors.grey,
                                   ),
                           ),
-                          style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                          style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                           keyboardType: TextInputType.multiline,
                           textAlignVertical: TextAlignVertical.center,
                         ),

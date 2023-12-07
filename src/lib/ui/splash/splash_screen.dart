@@ -32,6 +32,8 @@ class InitializationApp {
     if (await _checkNetwork()) {
       if (await _checkServers()) {
         if (await _initFirebase()) {
+          //업데이트 팝업 로직
+          // ref.read(maintenanceStateProvider.notifier).startPopupPolling();
           if (await getSinglePage(ref)) {
             ref.read(_initStateProvider.notifier).state = true;
           } else {

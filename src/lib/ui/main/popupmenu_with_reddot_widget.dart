@@ -209,7 +209,7 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
             ),
             Text(
               value,
-              style: kButton12BoldStyle.copyWith(color: kTextSubTitleColor),
+              style: kButton12BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
             ),
           ],
         ),

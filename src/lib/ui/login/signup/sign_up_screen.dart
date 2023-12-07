@@ -70,13 +70,8 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
             // mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                '회원가입.퍼피캣에 오신 걸 환영합니다'.tr(),
-                style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor, height: 1.2),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '회원가입.환영문구부제'.tr(),
-                style: kBody12RegularStyle400.copyWith(color: kTextBodyColor, height: 1.3),
+                '회원가입.환영문구'.tr(),
+                style: kTitle18BoldStyle.copyWith(color: kPreviousTextTitleColor),
               ),
             ],
           ),
@@ -95,15 +90,14 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               '회원가입.본인 인증'.tr(),
-              style: kBody13BoldStyle.copyWith(color: kTextTitleColor, height: 1.4),
+              style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4),
             ),
             Text(
-              '회원가입.필수'.tr(),
-              style: kBadge10MediumStyle.copyWith(color: kPrimaryColor),
+              ' *',
+              style: kBody12SemiBoldStyle.copyWith(color: kPreviousErrorColor),
             ),
           ],
         ),
@@ -184,7 +178,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                         },
                         label: Text(
                           '회원가입.휴대폰 인증'.tr(),
-                          style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor100),
+                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor100),
                         ),
                         icon: Image.asset('assets/image/signUpScreen/pass_icon.png'),
                       ),
@@ -201,9 +195,9 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 child: ElevatedButton(
                   onPressed: null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: kPrimaryColor,
-                    disabledBackgroundColor: kNeutralColor400,
-                    disabledForegroundColor: kTextBodyColor,
+                    backgroundColor: kPreviousPrimaryColor,
+                    disabledBackgroundColor: kPreviousNeutralColor400,
+                    disabledForegroundColor: kPreviousTextBodyColor,
                     elevation: 0,
                   ),
                   child: Text(
@@ -225,15 +219,14 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               '회원가입.닉네임'.tr(),
-              style: kBody13BoldStyle.copyWith(color: kTextTitleColor, height: 1.4),
+              style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4),
             ),
             Text(
-              '회원가입.필수'.tr(),
-              style: kBadge10MediumStyle.copyWith(color: kPrimaryColor),
+              ' *',
+              style: kBody12SemiBoldStyle.copyWith(color: kPreviousErrorColor),
             ),
           ],
         ),
@@ -251,13 +244,14 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   // inputFormatters: [FilteringTextInputFormatter.allow(_emojiRegExp)],
                   decoration: nickProvider != NickNameStatus.valid
                       ? InputDecoration(
-                          hintText: '회원가입.닉네임을 입력해주세요'.tr(),
-                          errorStyle: kBody11RegularStyle.copyWith(color: kBadgeColor, fontWeight: FontWeight.w400, height: 1.2),
+                          hintText: '회원가입.2~20자로 입력해 주세요'.tr(),
+                          hintStyle: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                          errorStyle: kBody11RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
                           errorText: getNickDescription(nickProvider),
                           errorBorder: const OutlineInputBorder(
                             borderSide: BorderSide(
                               width: 1,
-                              color: kBadgeColor,
+                              color: kPreviousErrorColor,
                             ),
                           ),
                           errorMaxLines: 2,
@@ -266,19 +260,19 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                           contentPadding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0), //Vertical 이 13인 이유는 정확하진 않은데 border까지 고려해야할듯
                         )
                       : InputDecoration(
-                          hintText: '회원가입.닉네임을 입력해주세요'.tr(),
+                          hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
                           errorText: '회원가입.사용 가능한 닉네임입니다'.tr(),
-                          errorStyle: kBody11RegularStyle.copyWith(color: kPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
+                          errorStyle: kBody11RegularStyle.copyWith(color: kPreviousPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
                           errorBorder: const OutlineInputBorder(
                             borderSide: BorderSide(
                               width: 1,
-                              color: kPrimaryColor,
+                              color: kPreviousPrimaryColor,
                             ),
                           ),
                           focusedErrorBorder: const OutlineInputBorder(
                             borderSide: BorderSide(
                               width: 1,
-                              color: kPrimaryColor,
+                              color: kPreviousPrimaryColor,
                             ),
                           ),
                           errorMaxLines: 2,
@@ -339,10 +333,10 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                     : null,
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.only(left: 5, right: 5),
-                  backgroundColor: kPrimaryLightColor,
-                  disabledBackgroundColor: kNeutralColor300,
-                  disabledForegroundColor: kTextBodyColor,
-                  foregroundColor: kPrimaryColor,
+                  backgroundColor: kPreviousPrimaryLightColor,
+                  disabledBackgroundColor: kPreviousNeutralColor300,
+                  disabledForegroundColor: kPreviousTextBodyColor,
+                  foregroundColor: kPreviousPrimaryColor,
                   elevation: 0,
                 ),
                 child: Text(
@@ -377,7 +371,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
               ),
               Text(
                 '회원가입.전체 동의하기'.tr(),
-                style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
               ),
             ],
           ),
@@ -420,18 +414,17 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     return SizedBox(
       width: double.infinity,
       child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: const BorderRadius.only(
+          decoration: const BoxDecoration(
+            color: kWhiteColor,
+            borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20.0),
               topRight: Radius.circular(20.0),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: -5,
-                blurRadius: 7,
-                offset: const Offset(0, -6), // 그림자의 위치 조정 (x, y)
+                color: Color(0x0A000000),
+                offset: Offset(0, -6),
+                blurRadius: 10.0,
               ),
             ],
           ),
@@ -480,7 +473,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   padding: EdgeInsets.symmetric(vertical: 24.0),
                   child: Text(
                     "본인 인증에 실패하였습니다.",
-                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                    style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   ),
                 ),
                 confirmTap: () {
@@ -492,7 +485,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 },
                 confirmWidget: Text(
                   "확인",
-                  style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+                  style: kButton14MediumStyle.copyWith(color: kPreviousErrorColor),
                 ));
           },
         );
@@ -506,7 +499,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   padding: EdgeInsets.symmetric(vertical: 24.0),
                   child: Text(
                     "이미 퍼피캣에 가입된 계정이 있습니다.",
-                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                    style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   ),
                 ),
                 confirmTap: () {
@@ -517,7 +510,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 },
                 confirmWidget: Text(
                   "확인",
-                  style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+                  style: kButton14MediumStyle.copyWith(color: kPreviousErrorColor),
                 ));
           },
         );
@@ -570,9 +563,9 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: kPrimaryColor,
-                        disabledBackgroundColor: kNeutralColor400,
-                        disabledForegroundColor: kTextBodyColor,
+                        backgroundColor: kPreviousPrimaryColor,
+                        disabledBackgroundColor: kPreviousNeutralColor400,
+                        disabledForegroundColor: kPreviousTextBodyColor,
                         elevation: 0,
                       ),
                       child: Text(

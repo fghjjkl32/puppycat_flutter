@@ -18,13 +18,13 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color: kNeutralColor300,
+              color: kPreviousNeutralColor300,
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
               child: Text(
                 "공유할 추억을 선택하세요!",
-                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
               ),
             ),
           ),
@@ -46,12 +46,12 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                         context,
                         maxAssets: 12,
                         pickerTheme: themeData(context).copyWith(
-                          canvasColor: kNeutralColor100,
+                          canvasColor: kPreviousNeutralColor100,
                           colorScheme: theme.colorScheme.copyWith(
-                            background: kNeutralColor100,
+                            background: kPreviousNeutralColor100,
                           ),
                           appBarTheme: theme.appBarTheme.copyWith(
-                            backgroundColor: kNeutralColor100,
+                            backgroundColor: kPreviousNeutralColor100,
                           ),
                         ),
                         onCompleted: (cropStream) {
@@ -68,7 +68,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                     child: Container(
                       decoration: const BoxDecoration(
                         border: Border(
-                          right: BorderSide(width: 1.0, color: kNeutralColor300),
+                          right: BorderSide(width: 1.0, color: kPreviousNeutralColor300),
                         ),
                       ),
                       child: Column(
@@ -83,7 +83,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                             padding: EdgeInsets.symmetric(horizontal: 8.0.h),
                             child: Text(
                               "일상공유",
-                              style: kButton14BoldStyle.copyWith(color: kTextTitleColor),
+                              style: kButton14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                             ),
                           ),
                         ],
@@ -118,7 +118,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
                             "산책하기",
-                            style: kButton14BoldStyle.copyWith(color: kTextTitleColor),
+                            style: kButton14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                           ),
                         ),
                       ],

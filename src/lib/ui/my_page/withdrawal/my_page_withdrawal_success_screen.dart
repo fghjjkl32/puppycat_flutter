@@ -1,16 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focus_detector/focus_detector.dart';
-import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
-import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/withdrawal/withdrawal_provider.dart';
 
 class MyPageWithdrawalSuccessScreen extends ConsumerStatefulWidget {
   const MyPageWithdrawalSuccessScreen({super.key});
@@ -52,8 +48,8 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                   height: 10.h,
                 ),
                 Text(
-                  "그동안 퍼피캣을\n이용해 주셔서 감사합니다.",
-                  style: kBody14BoldStyle.copyWith(color: kTextTitleColor),
+                  "지금은 퍼피캣을 떠나시지만,\n다시 만나길 바랄게요!",
+                  style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(
@@ -61,7 +57,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    color: kNeutralColor200,
+                    color: kPreviousNeutralColor200,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
@@ -70,18 +66,18 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "새 계정을 원하시면",
-                          style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
+                          "새 계정은 ",
+                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          " 7일 이후 ",
-                          style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                          "7일이 지나면",
+                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          "가능합니다!",
-                          style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
+                          " 만들 수 있어요.",
+                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -92,8 +88,8 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                   height: 12,
                 ),
                 Text(
-                  "회원 탈퇴가 완료되었습니다.\n보다 나은 서비스로 다시 만나길 바랍니다.",
-                  style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                  "더 나은 퍼피캣을 위해 의견을 남겨 주셔서 감사해요.\n모든 기기에서 안전하게 로그아웃 처리할게요.",
+                  style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -114,8 +110,8 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        disabledBackgroundColor: kNeutralColor400,
-                        backgroundColor: kPrimaryColor,
+                        disabledBackgroundColor: kPreviousNeutralColor400,
+                        backgroundColor: kPreviousPrimaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
@@ -128,7 +124,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                         padding: const EdgeInsets.all(18.0),
                         child: Text(
                           '확인',
-                          style: kBody14BoldStyle.copyWith(color: kNeutralColor100),
+                          style: kBody14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                         ),
                       ),
                     ),

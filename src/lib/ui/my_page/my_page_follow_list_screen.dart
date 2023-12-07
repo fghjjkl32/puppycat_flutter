@@ -7,9 +7,7 @@ import 'package:pet_mobile_social_flutter/components/user_list/widget/following_
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 class MyPageFollowListScreen extends ConsumerStatefulWidget {
   const MyPageFollowListScreen({super.key, required this.memberUuid});
@@ -90,7 +88,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text(
-            "친구",
+            "팔로우",
           ),
           leading: IconButton(
             onPressed: () {
@@ -103,52 +101,54 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
           ),
           bottom: TabBar(
               controller: tabController,
-              indicatorWeight: 3,
-              labelColor: kPrimaryColor,
-              indicatorColor: kPrimaryColor,
-              unselectedLabelColor: kNeutralColor500,
-              indicatorSize: TabBarIndicatorSize.tab,
-              labelPadding: EdgeInsets.only(
-                top: 10.h,
-                bottom: 10.h,
-              ),
+              indicatorWeight: 2.4,
+              labelColor: kPreviousNeutralColor600,
+              indicatorColor: kPreviousNeutralColor600,
+              unselectedLabelColor: kPreviousNeutralColor500,
+              indicatorSize: TabBarIndicatorSize.label,
               tabs: [
-                Consumer(builder: (context, ref, child) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "팔로워",
-                        style: kBody14BoldStyle,
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      Text(
-                        "${ref.watch(followStateProvider).followerListState.totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                      ),
-                    ],
-                  );
-                }),
-                Consumer(builder: (context, ref, child) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "팔로잉",
-                        style: kBody14BoldStyle,
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      Text(
-                        "${ref.watch(followStateProvider).followListState.totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                      ),
-                    ],
-                  );
-                }),
+                Tab(
+                  child: Consumer(builder: (context, ref, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "팔로워",
+                          style: kBody14BoldStyle,
+                        ),
+                        SizedBox(
+                          width: 6.w,
+                        ),
+                        Text(
+                          "${ref.watch(followStateProvider).followerListState.totalCount}",
+                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                        ),
+                      ],
+                    );
+                  }),
+                ),
+                Tab(
+                  child: Consumer(builder: (context, ref, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "팔로잉",
+                          style: kBody14BoldStyle,
+                        ),
+                        SizedBox(
+                          width: 6.w,
+                        ),
+                        Text(
+                          "${ref.watch(followStateProvider).followListState.totalCount}",
+                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                        ),
+                      ],
+                    );
+                  }),
+                ),
               ]),
         ),
         body: TabBarView(
@@ -172,8 +172,8 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
 
       followerOldLength = lists.length ?? 0;
 
-      final myInfo = ref.read(myInfoStateProvider);
-      final isLogined = ref.read(loginStatementProvider);
+      // final myInfo = ref.read(myInfoStateProvider);
+      // final isLogined = ref.read(loginStatementProvider);
 
       return Column(
         children: [
@@ -186,11 +186,11 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                   child: FormBuilderTextField(
                     name: 'follower',
                     controller: followerSearchController,
-                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: kNeutralColor200,
+                      fillColor: kPreviousNeutralColor200,
                       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
@@ -217,7 +217,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Icon(
                                 Puppycat_social.icon_search_medium,
-                                color: kNeutralColor600,
+                                color: kPreviousNeutralColor600,
                               ),
                             )
                           : GestureDetector(
@@ -228,12 +228,12 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                 child: Icon(
                                   Puppycat_social.icon_close_large,
-                                  color: kNeutralColor600,
+                                  color: kPreviousNeutralColor600,
                                 ),
                               ),
                             ),
-                      hintText: "닉네임을 입력해 주세요.",
-                      hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                      hintText: "닉네임으로 검색해 보세요.",
+                      hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                     ),
                   ),
                 ),
@@ -243,23 +243,29 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                 Expanded(
                   child: lists.isEmpty
                       ? Container(
-                          color: kNeutralColor100,
+                          color: kPreviousNeutralColor100,
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.asset(
-                                  'assets/image/character/character_08_user_notfound_100.png',
-                                  width: 88,
-                                  height: 88,
-                                ),
+                                followerSearchController.text == ""
+                                    ? Image.asset(
+                                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                        width: 88,
+                                        height: 88,
+                                      )
+                                    : Image.asset(
+                                        'assets/image/character/character_08_user_notfound_100.png',
+                                        width: 88,
+                                        height: 88,
+                                      ),
                                 const SizedBox(
                                   height: 12,
                                 ),
                                 Text(
-                                  '유저를 찾을 수 없습니다.',
+                                  followerSearchController.text == "" ? '팔로워가 없어요.' : '유저를 찾을 수 없어요.\n닉네임을 다시 확인해 주세요.',
                                   textAlign: TextAlign.center,
-                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
@@ -282,7 +288,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                             return FollowerItemWidget(
                               profileImage: "${lists[index].url}",
                               userName: lists[index].followerNick!,
-                              content: lists[index].intro == "" ? '소개글이 없습니다.' : lists[index].intro!,
+                              content: lists[index].intro == "" ? '소개글이 없어요.' : lists[index].intro!,
                               isSpecialUser: lists[index].isBadge! == 1,
                               isFollow: lists[index].isFollow == 1,
                               followerUuid: lists[index].followerUuid!,
@@ -305,10 +311,10 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
       final followState = ref.watch(followStateProvider);
       final isLoadMoreError = followState.followListState.isLoadMoreError;
       final isLoadMoreDone = followState.followListState.isLoadMoreDone;
-      final isLoading = followState.followListState.isLoading;
+      // final isLoading = followState.followListState.isLoading;
       final lists = followState.followListState.list;
-      final myInfo = ref.read(myInfoStateProvider);
-      final isLogined = ref.read(loginStatementProvider);
+      // final myInfo = ref.read(myInfoStateProvider);
+      // final isLogined = ref.read(loginStatementProvider);
 
       return Column(
         children: [
@@ -320,12 +326,12 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                   padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                   child: FormBuilderTextField(
                     name: 'follower',
-                    style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                    style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                     controller: followSearchController,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: kNeutralColor200,
+                      fillColor: kPreviousNeutralColor200,
                       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
@@ -352,7 +358,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                               child: Icon(
                                 Puppycat_social.icon_search_medium,
-                                color: kNeutralColor600,
+                                color: kPreviousNeutralColor600,
                               ),
                             )
                           : GestureDetector(
@@ -363,12 +369,12 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                 child: Icon(
                                   Puppycat_social.icon_close_large,
-                                  color: kNeutralColor600,
+                                  color: kPreviousNeutralColor600,
                                 ),
                               ),
                             ),
-                      hintText: "닉네임을 입력해 주세요.",
-                      hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+                      hintText: "닉네임으로 검색해 보세요.",
+                      hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
                     ),
                   ),
                 ),
@@ -378,23 +384,29 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                 Expanded(
                   child: lists.isEmpty
                       ? Container(
-                          color: kNeutralColor100,
+                          color: kPreviousNeutralColor100,
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.asset(
-                                  'assets/image/character/character_08_user_notfound_100.png',
-                                  width: 88,
-                                  height: 88,
-                                ),
+                                followSearchController.text == ""
+                                    ? Image.asset(
+                                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                        width: 88,
+                                        height: 88,
+                                      )
+                                    : Image.asset(
+                                        'assets/image/character/character_08_user_notfound_100.png',
+                                        width: 88,
+                                        height: 88,
+                                      ),
                                 const SizedBox(
                                   height: 12,
                                 ),
                                 Text(
-                                  '유저를 찾을 수 없습니다.',
+                                  followSearchController.text == "" ? '팔로잉이 없어요.' : '유저를 찾을 수 없어요.\n닉네임을 다시 확인해 주세요.',
                                   textAlign: TextAlign.center,
-                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
@@ -417,7 +429,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                             return FollowingItemWidget(
                               profileImage: "${lists[index].url}",
                               userName: lists[index].followNick!,
-                              content: lists[index].intro == "" || lists[index].intro == null ? '소개글이 없습니다.' : lists[index].intro!,
+                              content: lists[index].intro == "" || lists[index].intro == null ? '소개글이 없어요.' : lists[index].intro!,
                               isSpecialUser: lists[index].isBadge! == 1,
                               isFollow: lists[index].isFollow == 1,
                               isNewUser: lists[index].newState! == 1,

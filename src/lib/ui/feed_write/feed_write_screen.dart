@@ -34,21 +34,17 @@ class FeedWriteScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     Text(
-                      "이전으로 돌아가시겠어요?",
-                      style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                    ),
-                    SizedBox(
-                      height: 4.h,
-                    ),
-                    Text(
-                      "지금 돌아가시면\n입력한 내용이 모두 삭제됩니다.",
-                      style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                      "잠깐! 지금 나가면\n작성한 내용은 모두 사라져요.",
+                      style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                       textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
               confirmTap: () {
+                context.pop();
+              },
+              cancelTap: () {
                 context.pop();
                 context.pop();
 
@@ -57,12 +53,13 @@ class FeedWriteScreen extends ConsumerWidget {
                 ref.watch(feedWriteContentProvider.notifier).state = TextEditingController(text: "");
                 ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
               },
-              cancelTap: () {
-                context.pop();
-              },
               confirmWidget: Text(
-                "삭제",
-                style: kButton14MediumStyle.copyWith(color: kBadgeColor),
+                "이어서 하기",
+                style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
+              ),
+              cancelWidget: Text(
+                "나가기",
+                style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
               ),
             );
           },
@@ -73,25 +70,59 @@ class FeedWriteScreen extends ConsumerWidget {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('새 피드'),
+          title: const Text('새로운 피드'),
           leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomDialog(
+                    content: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                      child: Column(
+                        children: [
+                          Text(
+                            "잠깐! 지금 나가면\n작성한 내용은 모두 사라져요.",
+                            style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                    confirmTap: () {
+                      context.pop();
+                    },
+                    cancelTap: () {
+                      context.pop();
+                      context.pop();
 
-              ref.read(feedWriteProvider.notifier).resetTag();
-              ref.watch(feedWriteContentProvider.notifier).state = TextEditingController(text: "");
-              ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
-              ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
+                      ref.read(feedWriteProvider.notifier).resetTag();
+                      ref.watch(feedWriteContentProvider.notifier).state = TextEditingController(text: "");
+                      ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+                      ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
+                    },
+                    confirmWidget: Text(
+                      "이어서 하기",
+                      style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
+                    ),
+                    cancelWidget: Text(
+                      "나가기",
+                      style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
+                    ),
+                  );
+                },
+              );
             },
             icon: const Icon(
-              Puppycat_social.icon_close_large,
+              Puppycat_social.icon_back,
+              size: 40,
             ),
           ),
           actions: [
             TextButton(
               child: Text(
                 '등록',
-                style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
               ),
               onPressed: () async {
                 showDialog(
@@ -148,15 +179,15 @@ class FeedWriteScreen extends ConsumerWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  "피드를 등록할 수 없습니다.",
-                                  style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                  "피드 올리는데 문제가 생겼어요.",
+                                  style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                 ),
                                 SizedBox(
                                   height: 4.h,
                                 ),
                                 Text(
-                                  "죄송합니다.\n피드 등록 중 오류가 발생하였습니다.\n다시 시도해 주세요.",
-                                  style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                  "올리기를 다시 시도해 주세요.",
+                                  style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                   textAlign: TextAlign.center,
                                 ),
                               ],
@@ -167,7 +198,7 @@ class FeedWriteScreen extends ConsumerWidget {
                           },
                           confirmWidget: Text(
                             "확인",
-                            style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                            style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                           ));
                     },
                   );

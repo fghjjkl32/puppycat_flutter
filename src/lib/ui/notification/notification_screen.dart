@@ -104,7 +104,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: kNeutralColor300,
+                        color: kPreviousNeutralColor300,
                       ),
                       width: double.infinity,
                       child: Padding(
@@ -116,15 +116,15 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "혜택 알림이 꺼져 있어요.",
-                                  style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
+                                  "필수 혜택 정보를 알려 드릴까요?",
+                                  style: kBody11RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                                 const SizedBox(
                                   height: 2,
                                 ),
                                 Text(
-                                  "프로모션 및 이벤트 혜택 정보를 받으려면 ON!",
-                                  style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
+                                  "'${myInfo.nick!.length > 8 ? '${myInfo.nick?.substring(0, 8)}...' : myInfo.nick}'님에게 꼭 필요한 정보만 보내 드릴게요.",
+                                  style: kBody11RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
@@ -133,7 +133,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               width: 38,
                               height: 20,
                               activeColor: Theme.of(context).primaryColor,
-                              inactiveColor: kNeutralColor500,
+                              inactiveColor: kPreviousNeutralColor500,
                               toggleSize: 12.0,
                               value: switchState['main_2'] == 1,
                               borderRadius: 50.0,
@@ -211,7 +211,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                       child: Text(
                         itemTitle,
                         style: kButton14BoldStyle.copyWith(
-                          color: selected ? kTextTitleColor : kNeutralColor500,
+                          color: selected ? kPreviousTextTitleColor : kPreviousNeutralColor500,
                         ),
                       ),
                     );
@@ -227,7 +227,31 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                       pagingController: _notiListPagingController,
                       builderDelegate: PagedChildBuilderDelegate<NotificationListItemModel>(
                         noItemsFoundIndicatorBuilder: (context) {
-                          return const Text('No Noti');
+                          return Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 100.0),
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                      width: 88,
+                                      height: 88,
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Text(
+                                      '알림이 없어요.',
+                                      textAlign: TextAlign.center,
+                                      style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
                         },
                         itemBuilder: (context, item, index) {
                           if (item.subType == describeEnum(NotiSubType.follow)) {
@@ -391,7 +415,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                   ),
                   // const Text('asdsadad'),
                   Container(
-                    color: kNeutralColor100,
+                    color: kPreviousNeutralColor100,
                     height: 70,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -402,15 +426,8 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                           child: const Divider(),
                         ),
                         Text(
-                          "최근 30일 간의 알림만 확인할 수 있습니다.",
-                          style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 6.0.h),
-                          child: Text(
-                            "수신 거부 : 마이페이지 → 설정 → 알림",
-                            style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                          ),
+                          "최근 30일간의 알림만 볼 수 있어요.",
+                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ],
                     ),

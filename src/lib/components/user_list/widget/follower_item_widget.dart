@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -103,7 +104,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                 widget.userName,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                                style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                               ),
                             ),
                           ],
@@ -113,7 +114,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                         ),
                         Text(
                           widget.content,
-                          style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                          style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ],
                     ),
@@ -149,7 +150,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                   width: 56.w,
                                   height: 32.h,
                                   decoration: const BoxDecoration(
-                                    color: kNeutralColor300,
+                                    color: kPreviousNeutralColor300,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(8.0),
                                     ),
@@ -157,7 +158,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                   child: Center(
                                     child: Text(
                                       "팔로잉",
-                                      style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                                      style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
                                   ),
                                 ),
@@ -184,7 +185,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                   width: 56.w,
                                   height: 32.h,
                                   decoration: const BoxDecoration(
-                                    color: kPrimaryColor,
+                                    color: kPreviousPrimaryColor,
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(8.0),
                                     ),
@@ -192,7 +193,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                   child: Center(
                                     child: Text(
                                       "팔로우",
-                                      style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
+                                      style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                     ),
                                   ),
                                 ),
@@ -210,28 +211,34 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                   widget: Column(
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Lottie.asset(
+                                          'assets/lottie/feed_end.json',
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.fill,
+                                          repeat: false,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 10, bottom: 10),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              widget.userName,
-                                              style: kBody16BoldStyle.copyWith(color: kPrimaryColor),
-                                            ),
-                                            Text(
-                                              " 님을 삭제하시겠어요?",
-                                              style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                                              "${widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName}님의 팔로우를 끊을까요?",
+                                              style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                             ),
                                           ],
                                         ),
                                       ),
                                       Text(
-                                        "${widget.userName} 님은 팔로워 리스트에서 삭제되며",
-                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                        "내 팔로워 목록에서는 삭제되지만",
+                                        style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                       ),
                                       Text(
-                                        "나중에 ${widget.userName} 님을 다시 팔로우 할 수 있습니다.",
-                                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                                        "${widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName}님이 ${myInfo.nick!.length > 8 ? '${myInfo.nick?.substring(0, 8)}...' : myInfo.nick}님을 다시 팔로우할 수 있어요.",
+                                        style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                       ),
                                       SizedBox(height: 20.h),
                                       Row(
@@ -245,15 +252,15 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                               width: 152.w,
                                               height: 36.h,
                                               decoration: const BoxDecoration(
-                                                color: kPrimaryLightColor,
+                                                color: kBackgroundSecondary,
                                                 borderRadius: BorderRadius.all(
                                                   Radius.circular(8.0),
                                                 ),
                                               ),
                                               child: Center(
                                                 child: Text(
-                                                  "취소",
-                                                  style: kButton14BoldStyle.copyWith(color: kPrimaryColor),
+                                                  "닫기",
+                                                  style: kButton14BoldStyle.copyWith(color: kTextSecondary),
                                                 ),
                                               ),
                                             ),
@@ -274,15 +281,15 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                               width: 152.w,
                                               height: 36.h,
                                               decoration: const BoxDecoration(
-                                                color: kBadgeColor,
+                                                color: kBackgroundActionPrimary,
                                                 borderRadius: BorderRadius.all(
                                                   Radius.circular(8.0),
                                                 ),
                                               ),
                                               child: Center(
                                                 child: Text(
-                                                  "삭제",
-                                                  style: kButton14BoldStyle.copyWith(color: kNeutralColor100),
+                                                  "팔로우 끊기",
+                                                  style: kButton14BoldStyle.copyWith(color: kTextWhite),
                                                 ),
                                               ),
                                             ),
@@ -296,7 +303,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                               child: const Icon(
                                 Puppycat_social.icon_close_large,
                                 size: 20,
-                                color: kNeutralColor500,
+                                color: kPreviousNeutralColor500,
                               ),
                             ),
                     ],

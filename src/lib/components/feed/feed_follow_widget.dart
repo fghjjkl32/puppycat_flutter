@@ -22,8 +22,9 @@ class FeedFollowWidget extends StatelessWidget {
             children: [
               SizedBox(
                 width: double.infinity,
-                height: 205.h,
+                height: 222.h,
                 child: ListView.builder(
+                  padding: EdgeInsets.only(top: 8.h, bottom: 8.h),
                   itemCount: popularUserListData.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index) {

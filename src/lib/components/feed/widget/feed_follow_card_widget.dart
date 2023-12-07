@@ -64,9 +64,24 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
         decoration: BoxDecoration(
           border: Border.all(
             width: 1,
-            color: kNeutralColor300,
+            color: kPreviousNeutralColor300,
           ),
+          color: kWhiteColor,
           borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, -4),
+              blurRadius: 6,
+              spreadRadius: 0,
+              color: Color(0x0A000000),
+            ),
+            BoxShadow(
+              offset: Offset(0, 4),
+              blurRadius: 6,
+              spreadRadius: 0,
+              color: Color(0x1F000000),
+            ),
+          ],
         ),
         width: 230.w,
         height: 202.h,
@@ -89,116 +104,118 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                       //Route 다시
                       : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
                 },
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 12.w,
-                        top: 12.h,
-                        bottom: 12.h,
-                        right: 8.w,
+                child: Container(
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: 12.w,
+                          top: 12.h,
+                          bottom: 12.h,
+                          right: 8.w,
+                        ),
+                        child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
                       ),
-                      child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              widget.isSpecialUser
-                                  ? Row(
-                                      children: [
-                                        Image.asset(
-                                          'assets/image/feed/icon/small_size/icon_special.png',
-                                          height: 13.h,
-                                        ),
-                                        SizedBox(
-                                          width: 4.w,
-                                        ),
-                                      ],
-                                    )
-                                  : Container(),
-                              Flexible(
-                                child: Text(
-                                  widget.userName,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                widget.isSpecialUser
+                                    ? Row(
+                                        children: [
+                                          Image.asset(
+                                            'assets/image/feed/icon/small_size/icon_special.png',
+                                            height: 13.h,
+                                          ),
+                                          SizedBox(
+                                            width: 4.w,
+                                          ),
+                                        ],
+                                      )
+                                    : Container(),
+                                Flexible(
+                                  child: Text(
+                                    widget.userName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                "  ·  ",
-                                style: kBody11RegularStyle.copyWith(color: kNeutralColor400),
-                              ),
-                              isFollow
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(right: 8.0),
-                                      child: InkWell(
-                                        onTap: () async {
-                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                            if (!isLogined) {
-                                              context.pushReplacement("/loginScreen");
-                                            } else {
-                                              final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                    followUuid: widget.memberUuid,
-                                                  );
+                                Text(
+                                  "  ·  ",
+                                  style: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor400),
+                                ),
+                                isFollow
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(right: 8.0),
+                                        child: InkWell(
+                                          onTap: () async {
+                                            if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                              if (!isLogined) {
+                                                context.pushReplacement("/loginScreen");
+                                              } else {
+                                                final result = await ref.watch(followStateProvider.notifier).deleteFollow(
+                                                      followUuid: widget.memberUuid,
+                                                    );
 
-                                              if (result.result) {
-                                                setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
-                                                });
-                                              }
-                                              print(ref.read(followUserStateProvider));
-                                            }
-                                          }
-                                        },
-                                        child: Text(
-                                          "팔로잉",
-                                          style: kBody12SemiBoldStyle.copyWith(color: kNeutralColor500),
-                                        ),
-                                      ),
-                                    )
-                                  : Padding(
-                                      padding: const EdgeInsets.only(right: 8.0),
-                                      child: InkWell(
-                                        onTap: () async {
-                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                            if (!isLogined) {
-                                              context.pushReplacement("/loginScreen");
-                                            } else {
-                                              final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                    followUuid: widget.memberUuid,
-                                                  );
-
-                                              if (result.result) {
-                                                setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
-                                                });
+                                                if (result.result) {
+                                                  setState(() {
+                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                                  });
+                                                }
+                                                print(ref.read(followUserStateProvider));
                                               }
                                             }
-                                          }
-                                        },
-                                        child: Text(
-                                          "팔로우",
-                                          style: kBody12SemiBoldStyle.copyWith(color: kPrimaryColor),
+                                          },
+                                          child: Text(
+                                            "팔로잉",
+                                            style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor500),
+                                          ),
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.only(right: 8.0),
+                                        child: InkWell(
+                                          onTap: () async {
+                                            if (!ref.watch(followApiIsLoadingStateProvider)) {
+                                              if (!isLogined) {
+                                                context.pushReplacement("/loginScreen");
+                                              } else {
+                                                final result = await ref.watch(followStateProvider.notifier).postFollow(
+                                                      followUuid: widget.memberUuid,
+                                                    );
+
+                                                if (result.result) {
+                                                  setState(() {
+                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
+                                                  });
+                                                }
+                                              }
+                                            }
+                                          },
+                                          child: Text(
+                                            "팔로우",
+                                            style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 3.h,
-                          ),
-                          Text(
-                            "팔로워 ${NumberFormat('###,###,###,###').format(widget.followCount)}",
-                            style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
-                          ),
-                        ],
+                              ],
+                            ),
+                            SizedBox(
+                              height: 3.h,
+                            ),
+                            Text(
+                              "팔로워 ${NumberFormat('###,###,###,###').format(widget.followCount)}",
+                              style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -253,7 +270,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[0].imageCnt}",
-                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                 ),
                               ),
                             ),
@@ -315,7 +332,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[0].imageCnt}",
-                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                 ),
                               ),
                             ),
@@ -375,7 +392,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[1].imageCnt}",
-                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                 ),
                               ),
                             ),
@@ -437,7 +454,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[0].imageCnt}",
-                                  style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                  style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                 ),
                               ),
                             ),
@@ -494,7 +511,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                   child: Center(
                                     child: Text(
                                       "${widget.imageList[1].imageCnt}",
-                                      style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                      style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                     ),
                                   ),
                                 ),
@@ -550,7 +567,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                     child: Center(
                                       child: Text(
                                         "${widget.imageList[2].imageCnt}",
-                                        style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                        style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                       ),
                                     ),
                                   ),

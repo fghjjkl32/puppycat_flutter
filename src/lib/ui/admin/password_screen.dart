@@ -73,8 +73,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
   onBackspacePress(val) {
     setState(() {
       if (passwordKeyward!.isNotEmpty) {
-        passwordKeyward =
-            passwordKeyward!.substring(0, passwordKeyward!.length - 1);
+        passwordKeyward = passwordKeyward!.substring(0, passwordKeyward!.length - 1);
       }
     });
   }
@@ -300,13 +299,13 @@ class _PasswordScreenState extends State<PasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kPrimaryLightColor,
+      backgroundColor: kPreviousPrimaryLightColor,
       appBar: AppBar(
         title: Text(
           "비밀번호 확인",
         ),
         elevation: 0,
-        backgroundColor: kPrimaryLightColor,
+        backgroundColor: kPreviousPrimaryLightColor,
         automaticallyImplyLeading: false,
       ),
       body: Column(
@@ -354,8 +353,8 @@ class _KeyboardKeyState extends State<KeyboardKey> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      highlightColor: kNeutralColor400,
-      splashColor: kNeutralColor400,
+      highlightColor: kPreviousNeutralColor400,
+      splashColor: kPreviousNeutralColor400,
       onTap: () {
         widget.onTap(widget.value);
       },

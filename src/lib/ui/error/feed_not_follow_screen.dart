@@ -50,14 +50,14 @@ class FeedNotFollowScreen extends StatelessWidget {
             ),
             Text(
               "$name님의\n팔로우 공개 피드예요!",
-              style: kTitle14BoldStyle.copyWith(color: kTextTitleColor),
+              style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
             ),
             const SizedBox(
               height: 8,
             ),
             Text(
               "팔로우하면 피드를 볼 수 있어요.",
-              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+              style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
               textAlign: TextAlign.center,
             ),
           ],
@@ -79,7 +79,7 @@ class FeedNotFollowScreen extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: kPrimaryLightColor,
+                      backgroundColor: kPreviousPrimaryLightColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -92,7 +92,7 @@ class FeedNotFollowScreen extends StatelessWidget {
                       child: Text(
                         '팔로우하고 피드보기',
                         style: kBody14BoldStyle.copyWith(
-                          color: kPrimaryColor,
+                          color: kPreviousPrimaryColor,
                         ),
                       ),
                     ),

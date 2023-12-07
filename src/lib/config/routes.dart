@@ -6,6 +6,8 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_bl
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/custom_modal_bottom_sheet_widget.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/force_update_dialog.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/recommended_update_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_page.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/dialog_page.dart';
 import 'package:pet_mobile_social_flutter/components/toast/error_toast.dart';
@@ -681,6 +683,32 @@ class AppRouter {
           return const FeedNotFollowScreen(
             name: '',
             memberidx: 1,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/force_update_dialog',
+        name: 'force_update_dialog',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return DialogPage(
+            barrierDismissible: false,
+            builder: (_) => WillPopScope(
+              onWillPop: () async => false,
+              child: const ForceUpdateDialog(),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/recommend_update_dialog',
+        name: 'recommend_update_dialog',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return DialogPage(
+            barrierDismissible: false,
+            builder: (_) => WillPopScope(
+              onWillPop: () async => false,
+              child: const RecommendedUpdateDialog(),
+            ),
           );
         },
       ),

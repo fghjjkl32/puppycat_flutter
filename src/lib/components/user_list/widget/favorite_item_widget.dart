@@ -98,7 +98,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             : Container(),
                         Text(
                           widget.userName,
-                          style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                          style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ],
                     ),
@@ -107,7 +107,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                     ),
                     Text(
                       widget.content,
-                      style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                      style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],
                 ),
@@ -158,7 +158,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             width: 56.w,
                             height: 32.h,
                             decoration: const BoxDecoration(
-                              color: kNeutralColor300,
+                              color: kPreviousNeutralColor300,
                               borderRadius: BorderRadius.all(
                                 Radius.circular(8.0),
                               ),
@@ -166,7 +166,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             child: Center(
                               child: Text(
                                 "팔로잉",
-                                style: kButton12BoldStyle.copyWith(color: kTextBodyColor),
+                                style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ),
                           ),
@@ -215,7 +215,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             width: 56.w,
                             height: 32.h,
                             decoration: const BoxDecoration(
-                              color: kPrimaryColor,
+                              color: kPreviousPrimaryColor,
                               borderRadius: BorderRadius.all(
                                 Radius.circular(8.0),
                               ),
@@ -223,7 +223,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             child: Center(
                               child: Text(
                                 "팔로우",
-                                style: kButton12BoldStyle.copyWith(color: kNeutralColor100),
+                                style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                               ),
                             ),
                           ),

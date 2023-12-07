@@ -106,7 +106,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                         child: Align(
                           alignment: Alignment.center,
                           child: Container(
-                            color: kNeutralColor100,
+                            color: kPreviousNeutralColor100,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -122,7 +122,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                 Text(
                                   "'${widget.searchWord}'에 대한 피드가 없어요",
                                   textAlign: TextAlign.center,
-                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
@@ -160,13 +160,13 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                 ),
                                 Text(
                                   widget.searchWord,
-                                  style: kTitle14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                  style: kTitle14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                 ),
                               ],
                             ),
                             Text(
                               feedSearchState.totalCnt,
-                              style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                              style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                             ),
                           ],
                         ),
@@ -261,7 +261,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                           child: Center(
                                             child: Text(
                                               "${lists[index].imageCnt}",
-                                              style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                              style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                             ),
                                           ),
                                         ),

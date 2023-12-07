@@ -56,7 +56,7 @@ class NotificationPostItem extends StatelessWidget {
                 width: 8.0,
                 height: 8.0,
                 decoration: BoxDecoration(
-                  color: isRead ? kPrimaryLightColor : kBadgeColor,
+                  color: isRead ? kPreviousPrimaryLightColor : kPreviousErrorColor,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -84,11 +84,11 @@ class NotificationPostItem extends StatelessWidget {
                         children: [
                           Text(
                             notificationType,
-                            style: kBody11SemiBoldStyle.copyWith(color: kTextBodyColor),
+                            style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                           Text(
                             regDate,
-                            style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ],
                       ),
@@ -102,11 +102,11 @@ class NotificationPostItem extends StatelessWidget {
                             children: [
                               RichText(
                                 text: TextSpan(
-                                  style: kBody13RegularStyle.copyWith(color: kTextTitleColor),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextTitleColor),
                                   children: <TextSpan>[
                                     TextSpan(
                                       text: name.length > 13 ? '${name.substring(0, 13)}...' : name,
-                                      style: kBody13BoldStyle.copyWith(color: kTextTitleColor),
+                                      style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                     ),
                                     TextSpan(text: content),
                                   ],
@@ -126,12 +126,12 @@ class NotificationPostItem extends StatelessWidget {
                                       child: Image.asset(
                                         'assets/image/feed/icon/small_size/icon_comment_like_off.png',
                                         height: 20,
-                                        color: isLiked ? kPrimaryColor : kTextBodyColor,
+                                        color: isLiked ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                                       ),
                                     ),
                                     Text(
                                       '좋아요',
-                                      style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                                      style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
                                     const SizedBox(
                                       width: 10,
@@ -149,7 +149,7 @@ class NotificationPostItem extends StatelessWidget {
                                     ),
                                     Text(
                                       '댓글쓰기',
-                                      style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
+                                      style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
                                   ],
                                 ),

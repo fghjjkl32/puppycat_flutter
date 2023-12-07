@@ -30,7 +30,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                   ),
                   Text(
                     '회원가입.퍼피캣의 가족이 되신 걸 환영해요'.tr(),
-                    style: kTitle14BoldStyle.copyWith(height: 1.4, color: kTextTitleColor),
+                    style: kTitle14BoldStyle.copyWith(height: 1.4, color: kPreviousTextTitleColor),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -38,7 +38,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                   ),
                   Text(
                     '회원가입.회원가입 환영 메시지'.tr(),
-                    style: kBody12RegularStyle.copyWith(height: 1.3, color: kTextBodyColor),
+                    style: kBody12RegularStyle.copyWith(height: 1.3, color: kPreviousTextBodyColor),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -57,9 +57,9 @@ class SignUpCompleteScreen extends ConsumerWidget {
                       ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: kPrimaryColor,
-                      disabledBackgroundColor: kNeutralColor400,
-                      disabledForegroundColor: kTextBodyColor,
+                      backgroundColor: kPreviousPrimaryColor,
+                      disabledBackgroundColor: kPreviousNeutralColor400,
+                      disabledForegroundColor: kPreviousTextBodyColor,
                       elevation: 0,
                     ),
                     child: Text(

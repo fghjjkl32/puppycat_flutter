@@ -90,52 +90,54 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
           ),
           bottom: TabBar(
               controller: tabController,
-              indicatorWeight: 3,
-              labelColor: kPrimaryColor,
-              indicatorColor: kPrimaryColor,
-              unselectedLabelColor: kNeutralColor500,
-              indicatorSize: TabBarIndicatorSize.tab,
-              labelPadding: EdgeInsets.only(
-                top: 10.h,
-                bottom: 10.h,
-              ),
+              indicatorWeight: 2.4,
+              labelColor: kPreviousNeutralColor600,
+              indicatorColor: kPreviousNeutralColor600,
+              unselectedLabelColor: kPreviousNeutralColor500,
+              indicatorSize: TabBarIndicatorSize.label,
               tabs: [
-                Consumer(builder: (context, ref, child) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "좋아요",
-                        style: kBody14BoldStyle,
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      Text(
-                        "${ref.watch(myLikeStateProvider).totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                      ),
-                    ],
-                  );
-                }),
-                Consumer(builder: (context, ref, child) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "저장",
-                        style: kBody14BoldStyle,
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      Text(
-                        "${ref.watch(mySaveStateProvider).totalCount}",
-                        style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                      ),
-                    ],
-                  );
-                }),
+                Tab(
+                  child: Consumer(builder: (context, ref, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "좋아요",
+                          style: kBody14BoldStyle,
+                        ),
+                        SizedBox(
+                          width: 6.w,
+                        ),
+                        Text(
+                          "${ref.watch(myLikeStateProvider).totalCount}",
+                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                        ),
+                      ],
+                    );
+                  }),
+                ),
+                Tab(
+                  child: Consumer(builder: (context, ref, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "저장",
+                          style: kBody14BoldStyle,
+                        ),
+                        SizedBox(
+                          width: 6.w,
+                        ),
+                        Text(
+                          "${ref.watch(mySaveStateProvider).totalCount}",
+                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                        ),
+                      ],
+                    );
+                  }),
+                ),
               ]),
         ),
         body: TabBarView(
@@ -188,7 +190,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
         return lists.isEmpty
             ? Container(
-                color: kNeutralColor100,
+                color: kPreviousNeutralColor100,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -202,9 +204,9 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         height: 12,
                       ),
                       Text(
-                        '피드가 없습니다.\n좋아요한 피드가 여기에 표시됩니다.',
+                        '아직 ‘좋아요’한 피드가 없어요.\n피드를 ‘좋아요’해 보세요.',
                         textAlign: TextAlign.center,
-                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                        style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
                     ],
                   ),
@@ -289,7 +291,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                                 ),
                               ),
                               placeholder: (context, url) => Container(
-                                color: kNeutralColor300,
+                                color: kPreviousNeutralColor300,
                               ),
                               errorWidget: (context, url, error) => Icon(Icons.error),
                             ),
@@ -306,7 +308,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                                 child: Center(
                                   child: Text(
                                     "${lists[index].imageCnt}",
-                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                   ),
                                 ),
                               ),
@@ -337,7 +339,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
         return lists.isEmpty
             ? Container(
-                color: kNeutralColor100,
+                color: kPreviousNeutralColor100,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -351,9 +353,9 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         height: 12,
                       ),
                       Text(
-                        '피드가 없습니다.\n저장한 피드가 여기에 표시됩니다.',
+                        '아직 저장한 피드가 없어요.\n피드를 저장해 보세요.',
                         textAlign: TextAlign.center,
-                        style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                        style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
                     ],
                   ),
@@ -436,7 +438,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                                 ),
                               ),
                               placeholder: (context, url) => Container(
-                                color: kNeutralColor300,
+                                color: kPreviousNeutralColor300,
                               ),
                               errorWidget: (context, url, error) => Icon(Icons.error),
                             ),
@@ -453,7 +455,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                                 child: Center(
                                   child: Text(
                                     "${lists[index].imageCnt}",
-                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                   ),
                                 ),
                               ),

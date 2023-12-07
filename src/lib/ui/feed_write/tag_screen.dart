@@ -45,12 +45,12 @@ class TagScreen extends ConsumerWidget {
                   },
                   icon: const Icon(
                     Puppycat_social.icon_close_large,
-                    color: kNeutralColor100,
+                    color: kPreviousNeutralColor100,
                   ),
                 ),
                 Text(
                   "유저 태그하기",
-                  style: kTitle18BoldStyle.copyWith(color: kNeutralColor100),
+                  style: kTitle18BoldStyle.copyWith(color: kPreviousNeutralColor100),
                 ),
                 // "등록" 버튼을 정의합니다. 사용자가 이 버튼을 누르면 태그를 저장하고,
                 // carousel을 현재 보고 있는 이미지로 이동시킵니다. 그리고 태그 개수를
@@ -58,7 +58,7 @@ class TagScreen extends ConsumerWidget {
                 TextButton(
                   child: Text(
                     '등록',
-                    style: kButton12BoldStyle.copyWith(color: kPrimaryColor),
+                    style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                   ),
                   onPressed: () {
                     ref.read(feedWriteProvider.notifier).saveTag();
@@ -81,8 +81,8 @@ class TagScreen extends ConsumerWidget {
             ),
             SizedBox(height: 103.h),
             Text(
-              "태그할 위치를 선택해 주세요.",
-              style: kBody14BoldStyle.copyWith(color: kNeutralColor100),
+              "태그 할 위치를 눌러보세요.",
+              style: kBody14BoldStyle.copyWith(color: kPreviousNeutralColor100),
             ),
             SizedBox(
               height: 12.h,
@@ -175,7 +175,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
           if (newTagImage[existingIndex].tag.length >= 10) {
             toast(
               context: context,
-              text: '한 이미지에는 태그를 10개까지만 할 수 있습니다.',
+              text: '사진 당 태그는 10명까지 가능해요.',
               type: ToastType.red,
             );
             return;
@@ -222,8 +222,8 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
       feedback: Material(
         color: Colors.transparent,
         child: MentionTagWidget(
-          color: kTextSubTitleColor.withOpacity(0.8),
-          textStyle: kBody11RegularStyle.copyWith(color: kNeutralColor100),
+          color: kPreviousTextSubTitleColor.withOpacity(0.8),
+          textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
           text: tag.username,
           onDelete: () {},
         ),
@@ -261,8 +261,8 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
       child: draggingTag == tag
           ? Container()
           : MentionTagWidget(
-              color: kTextSubTitleColor.withOpacity(0.8),
-              textStyle: kBody11RegularStyle.copyWith(color: kNeutralColor100),
+              color: kPreviousTextSubTitleColor.withOpacity(0.8),
+              textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
               text: tag.username,
               onDelete: () {
                 ref.read(feedWriteProvider.notifier).removeTag(tag);

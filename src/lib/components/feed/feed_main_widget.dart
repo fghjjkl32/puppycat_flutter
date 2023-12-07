@@ -70,7 +70,7 @@ class FeedMainWidget extends ConsumerWidget {
       },
       child: Material(
         child: Container(
-          color: kNeutralColor100,
+          color: kPreviousNeutralColor100,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -82,8 +82,8 @@ class FeedMainWidget extends ConsumerWidget {
                     Padding(
                       padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h, top: 24),
                       child: Text(
-                        "인기있는 펫 집사들",
-                        style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                        "요즘 인기 퍼플루언서",
+                        style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                       ),
                     ),
                     FeedFollowWidget(
@@ -94,10 +94,10 @@ class FeedMainWidget extends ConsumerWidget {
                 ),
               if (index == 0 && feedType == "popular")
                 Padding(
-                  padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h, top: 24),
+                  padding: EdgeInsets.only(left: 16.0.w, right: 10.w),
                   child: Text(
-                    "인기 게시글",
-                    style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                    "베스트 댕냥 피드",
+                    style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                   ),
                 ),
               if (index == 4 && feedType == "recent")
@@ -144,7 +144,7 @@ class FeedMainWidget extends ConsumerWidget {
                 padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
-                    final style = kBody13RegularStyle.copyWith(color: kTextTitleColor);
+                    final style = kBody13RegularStyle.copyWith(color: kPreviousTextTitleColor);
                     final double maxWidth = constraints.maxWidth * 0.7;
 
                     final TextPainter textPainter = TextPainter(
@@ -169,7 +169,7 @@ class FeedMainWidget extends ConsumerWidget {
                                     feedData.contents!,
                                     feedData.mentionList!,
                                     context,
-                                    kBody13RegularStyle.copyWith(color: kSecondaryColor),
+                                    kBody13RegularStyle.copyWith(color: kPreviousSecondaryColor),
                                     ref,
                                     oldMemberUuid,
                                   ),
@@ -184,7 +184,7 @@ class FeedMainWidget extends ConsumerWidget {
                           Text(
                             "...더보기",
                             style: kBody13RegularStyle.copyWith(
-                              color: kTextBodyColor,
+                              color: kPreviousTextBodyColor,
                             ),
                           )
                         ],
@@ -198,7 +198,7 @@ class FeedMainWidget extends ConsumerWidget {
                               feedData.contents!,
                               feedData.mentionList!,
                               context,
-                              kBody13RegularStyle.copyWith(color: kSecondaryColor),
+                              kBody13RegularStyle.copyWith(color: kPreviousSecondaryColor),
                               ref,
                               oldMemberUuid,
                             ),

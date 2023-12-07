@@ -102,9 +102,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   }
 
   void _scrollListener() {
-    if (scrollController.offset >= 128.h && appBarColor != kNeutralColor100) {
+    if (scrollController.offset >= 128.h && appBarColor != kPreviousNeutralColor100) {
       setState(() {
-        appBarColor = kNeutralColor100;
+        appBarColor = kPreviousNeutralColor100;
       });
     } else if (scrollController.offset < 128.h && appBarColor != Colors.transparent) {
       setState(() {
@@ -286,7 +286,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
         });
       },
       child: Container(
-        color: kNeutralColor100,
+        color: kPreviousNeutralColor100,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: <Widget>[
@@ -305,7 +305,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         child: Align(
                           alignment: Alignment.center,
                           child: Container(
-                            color: kNeutralColor100,
+                            color: kPreviousNeutralColor100,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -319,9 +319,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없습니다.',
+                                  '피드가 없어요.',
                                   textAlign: TextAlign.center,
-                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
@@ -384,7 +384,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                 borderRadius: const BorderRadius.all(Radius.circular(12)),
                                 child: CachedNetworkImage(
                                   placeholder: (context, url) => Container(
-                                    color: kNeutralColor300,
+                                    color: kPreviousNeutralColor300,
                                   ),
                                   imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${item.imgUrl}").toUrl(),
                                   fit: BoxFit.cover,
@@ -451,9 +451,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                 height: 12,
                                                               ),
                                                               Text(
-                                                                '좋아요 한 유저가 없습니다.',
+                                                                "아직 '좋아요'가 없어요.",
                                                                 textAlign: TextAlign.center,
-                                                                style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                                style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                                               ),
                                                             ],
                                                           ),
@@ -487,18 +487,18 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                           ? const Icon(
                                               Puppycat_social.icon_comment_like_ac,
                                               size: 24,
-                                              color: kPrimaryColor,
+                                              color: kPreviousPrimaryColor,
                                             )
                                           : const Icon(
                                               Puppycat_social.icon_comment_like_de,
                                               size: 24,
-                                              color: kNeutralColor100,
+                                              color: kPreviousNeutralColor100,
                                             ),
                                     ),
                                   ),
                                   Text(
                                     '${item.likeCnt}',
-                                    style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                                    style: kBadge10MediumStyle.copyWith(color: kPreviousNeutralColor100),
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(left: 6.0.w, right: 2.w),
@@ -542,9 +542,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                           height: 12,
                                                                         ),
                                                                         Text(
-                                                                          '등록된 댓글이 없습니다.',
+                                                                          '아직 댓글이 없어요.\n피드에 댓글을 남겨 보세요.',
                                                                           textAlign: TextAlign.center,
-                                                                          style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                                          style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                                                         ),
                                                                       ],
                                                                     ),
@@ -647,14 +647,14 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                         child: const Icon(
                                           Puppycat_social.icon_comment_comment,
                                           size: 24,
-                                          color: kNeutralColor100,
+                                          color: kPreviousNeutralColor100,
                                         ),
                                       );
                                     }),
                                   ),
                                   Text(
                                     '${item.commentCnt}',
-                                    style: kBadge10MediumStyle.copyWith(color: kNeutralColor100),
+                                    style: kBadge10MediumStyle.copyWith(color: kPreviousNeutralColor100),
                                   ),
                                 ],
                               ),
@@ -672,7 +672,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                 child: Center(
                                   child: Text(
                                     '${item.imageCnt}',
-                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                   ),
                                 ),
                               ),
@@ -699,7 +699,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
         });
       },
       child: Container(
-        color: kNeutralColor100,
+        color: kPreviousNeutralColor100,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: <Widget>[
@@ -718,7 +718,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         child: Align(
                           alignment: Alignment.center,
                           child: Container(
-                            color: kNeutralColor100,
+                            color: kPreviousNeutralColor100,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -732,9 +732,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없습니다.',
+                                  '피드가 없어요.',
                                   textAlign: TextAlign.center,
-                                  style: kBody13RegularStyle.copyWith(color: kTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
@@ -802,7 +802,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                 borderRadius: const BorderRadius.all(Radius.circular(12)),
                                 child: CachedNetworkImage(
                                   placeholder: (context, url) => Container(
-                                    color: kNeutralColor300,
+                                    color: kPreviousNeutralColor300,
                                   ),
                                   imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${item.imgUrl}").toUrl(),
                                   fit: BoxFit.cover,
@@ -822,7 +822,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                 child: Center(
                                   child: Text(
                                     "${item.imageCnt}",
-                                    style: kBadge9RegularStyle.copyWith(color: kNeutralColor100),
+                                    style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
                                   ),
                                 ),
                               ),
@@ -882,7 +882,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                               "${data.nick}",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
+                              style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                             ),
                           ),
                           GestureDetector(
@@ -893,7 +893,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                               padding: EdgeInsets.all(5.0),
                               child: const Icon(
                                 Puppycat_social.icon_modify_small,
-                                color: kNeutralColor500,
+                                color: kPreviousNeutralColor500,
                                 size: 22,
                               ),
                             ),
@@ -909,7 +909,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                             ),
                             Text(
                               "${data.intro}",
-                              style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                              style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                             ),
                           ],
                         ),
@@ -926,23 +926,23 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                             children: [
                               Text(
                                 "팔로워 ",
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
                                 "${data.followerCnt}",
-                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                                style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                               ),
                               Text(
                                 "  ·  ",
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
                                 "팔로잉 ",
-                                style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
                                 "${data.followCnt}",
-                                style: kBody11SemiBoldStyle.copyWith(color: kTextSubTitleColor),
+                                style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                               ),
                             ],
                           ),
@@ -1103,7 +1103,7 @@ PopupMenuItem diaryPopUpMenuItem(
           ),
           Text(
             value,
-            style: kButton12BoldStyle.copyWith(color: kTextSubTitleColor),
+            style: kButton12BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
           ),
         ],
       ),
@@ -1122,17 +1122,16 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
       height: tabBarHeight,
       decoration: shrinkOffset == 0
           ? BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.only(
+              color: kWhiteColor,
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  spreadRadius: -5,
-                  blurRadius: 7,
-                  offset: const Offset(0, -6),
+                  color: Color(0x0A000000),
+                  offset: Offset(0, -6),
+                  blurRadius: 10.0,
                 ),
               ],
             )
@@ -1143,52 +1142,58 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
         children: [
           Expanded(
             child: TabBar(
-                indicatorWeight: 3,
-                labelColor: kPrimaryColor,
-                indicatorColor: kPrimaryColor,
-                unselectedLabelColor: kNeutralColor500,
-                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorWeight: 2.4,
+                labelColor: kPreviousNeutralColor600,
+                indicatorColor: kPreviousNeutralColor600,
+                unselectedLabelColor: kPreviousNeutralColor500,
+                indicatorSize: TabBarIndicatorSize.label,
                 labelPadding: EdgeInsets.only(
                   top: 10.h,
                   bottom: 10.h,
                 ),
                 tabs: [
-                  Consumer(builder: (context, ref, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "일상글",
-                          style: kBody14BoldStyle,
-                        ),
-                        const SizedBox(
-                          width: 6,
-                        ),
-                        Text(
-                          "${ref.watch(myContentsFeedTotalCountProvider)}",
-                          style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                        ),
-                      ],
-                    );
-                  }),
-                  Consumer(builder: (context, ref, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "태그됨",
-                          style: kBody14BoldStyle,
-                        ),
-                        const SizedBox(
-                          width: 6,
-                        ),
-                        Text(
-                          "${ref.watch(myTagContentsFeedTotalCountProvider)}",
-                          style: kBadge10MediumStyle.copyWith(color: kTextBodyColor),
-                        ),
-                      ],
-                    );
-                  }),
+                  Tab(
+                    child: Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "일상글",
+                            style: kBody14BoldStyle,
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            "${ref.watch(myContentsFeedTotalCountProvider)}",
+                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
+                  Tab(
+                    child: Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "태그됨",
+                            style: kBody14BoldStyle,
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            "${ref.watch(myTagContentsFeedTotalCountProvider)}",
+                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
                 ]),
           ),
         ],
@@ -2284,11 +2289,11 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
 //         children: [
 //           Expanded(
 //             child: TabBar(
-//                 indicatorWeight: 3,
+//                 indicatorWeight: 2.4,
 //                 labelColor: kPrimaryColor,
 //                 indicatorColor: kPrimaryColor,
 //                 unselectedLabelColor: kNeutralColor500,
-//                 indicatorSize: TabBarIndicatorSize.tab,
+//                 indicatorSize: TabBarIndicatorSize.label,
 //                 labelPadding: EdgeInsets.only(
 //                   top: 10.h,
 //                   bottom: 10.h,

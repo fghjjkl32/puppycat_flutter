@@ -93,7 +93,7 @@ class CroppedImagesListViewState extends ConsumerState<EditCroppedImagesListView
                             child: Icon(
                               Puppycat_social.icon_taguser,
                               size: 24,
-                              color: kNeutralColor100,
+                              color: kPreviousNeutralColor100,
                             ),
                           ),
                         ),

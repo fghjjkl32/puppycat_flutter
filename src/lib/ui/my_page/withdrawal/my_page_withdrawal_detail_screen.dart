@@ -7,6 +7,7 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/withdrawal/withdrawal_detail_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/withdrawal/withdrawal_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 class MyPageWithdrawalDetailScreen extends ConsumerStatefulWidget {
   const MyPageWithdrawalDetailScreen({super.key});
@@ -32,6 +33,8 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
 
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+
     return Material(
       child: Scaffold(
         appBar: AppBar(
@@ -66,12 +69,10 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                     width: 20.w,
                   ),
                   Text(
-                    '''회원 탈퇴 후 7일 동안 활동 정보가 유지됩니다.
-7일 이후 모든 활동 정보가 삭제되며,
-삭제된 데이터는 복구되지 않습니다.
-회원 탈퇴 후 7일 동안 재가입이 불가하니
-중요한 정보가 있는지 탈퇴 전 확인해 주세요.''',
-                    style: kBody11RegularStyle.copyWith(color: kTextBodyColor),
+                    '''활동한 정보는 돌아오실 경우를 위해 
+                    7일간 유지하고 그 이후엔 전부 삭제돼요.
+                    ''',
+                    style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   ),
                 ],
               ),
@@ -88,7 +89,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: kNeutralColor200,
+                        color: kPreviousNeutralColor200,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Padding(
@@ -97,18 +98,22 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "일상 공유 글, 산책 일지, 내 프로필 등",
-                              style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
+                              "${myInfo.nick}님이",
+                              style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
                             Row(
                               children: [
                                 Text(
-                                  "활동했던 기록이 삭제",
-                                  style: kBody14BoldStyle.copyWith(color: kPrimaryColor),
+                                  "퍼피캣과 함께한 ",
+                                  style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                 ),
                                 Text(
-                                  "됩니다.",
-                                  style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
+                                  "활동 정보",
+                                  style: kBody14BoldStyle.copyWith(color: kPreviousPrimaryColor),
+                                ),
+                                Text(
+                                  "예요.",
+                                  style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                 ),
                               ],
                             ),
@@ -122,11 +127,11 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                                 children: [
                                   Text(
                                     "작성한 피드",
-                                    style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                    style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ),
                                   Text(
                                     "${withdrawalLists[i].totalContentsCnt}개",
-                                    style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                                    style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ),
                                 ],
                               ),
@@ -138,11 +143,11 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                                 children: [
                                   Text(
                                     "저장한 피드",
-                                    style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                    style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ),
                                   Text(
                                     "${withdrawalLists[i].totalSaveCnt}개",
-                                    style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                                    style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ),
                                 ],
                               ),
@@ -154,11 +159,11 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                                 children: [
                                   Text(
                                     "태그된 피드",
-                                    style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                    style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ),
                                   Text(
                                     "${withdrawalLists[i].totalTagCnt}개",
-                                    style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                                    style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ),
                                 ],
                               ),
@@ -170,11 +175,11 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                                 children: [
                                   Text(
                                     "포레스트와 함께한",
-                                    style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                                    style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ),
                                   Text(
                                     "${withdrawalLists[i].totalActivityTime}",
-                                    style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                                    style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ),
                                 ],
                               ),
@@ -276,17 +281,17 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                   child: Row(
                     children: [
                       Checkbox(
-                        activeColor: kPrimaryLightColor,
+                        activeColor: kPreviousPrimaryLightColor,
                         visualDensity: VisualDensity.standard,
                         value: isAgree,
-                        checkColor: kPrimaryColor,
+                        checkColor: kPreviousPrimaryColor,
                         onChanged: (value) {
                           if (value != null) onTap();
                         },
                       ),
                       Text(
-                        "모든 정보를 삭제하는 것에 동의합니다",
-                        style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                        "모든 정보 삭제 동의하기",
+                        style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ],
                   ),
@@ -302,8 +307,8 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      disabledBackgroundColor: kNeutralColor400,
-                      backgroundColor: kPrimaryColor,
+                      disabledBackgroundColor: kPreviousNeutralColor400,
+                      backgroundColor: kPreviousPrimaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -323,8 +328,8 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
-                        '회원 탈퇴',
-                        style: kBody14BoldStyle.copyWith(color: isAgree ? kNeutralColor100 : kTextSubTitleColor),
+                        '탈퇴하기',
+                        style: kBody14BoldStyle.copyWith(color: isAgree ? kPreviousNeutralColor100 : kPreviousTextSubTitleColor),
                       ),
                     ),
                   ),

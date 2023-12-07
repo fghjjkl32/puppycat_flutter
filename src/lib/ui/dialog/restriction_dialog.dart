@@ -57,7 +57,7 @@ class RestrictionDialog extends ConsumerWidget {
                 children: [
                   Text(
                     "퍼피캣에서의\n활동이 제한되었습니다.",
-                    style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                    style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(
@@ -65,7 +65,7 @@ class RestrictionDialog extends ConsumerWidget {
                   ),
                   Text(
                     "제재와 관련된 문의 및 이의 신청은\n1:1 채널톡으로 문의해 주세요.",
-                    style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                    style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(
@@ -76,7 +76,7 @@ class RestrictionDialog extends ConsumerWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
-                        color: kNeutralColor300,
+                        color: kPreviousNeutralColor300,
                       ),
                       child: Padding(
                         padding: const EdgeInsets.only(left: 16, top: 10, bottom: 10),
@@ -84,7 +84,7 @@ class RestrictionDialog extends ConsumerWidget {
                           children: [
                             Text(
                               "제한 사유",
-                              style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
+                              style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(
@@ -92,7 +92,7 @@ class RestrictionDialog extends ConsumerWidget {
                             ),
                             Text(
                               "$restrainName",
-                              style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                              style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -110,7 +110,7 @@ class RestrictionDialog extends ConsumerWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
-                          color: kNeutralColor300,
+                          color: kPreviousNeutralColor300,
                         ),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 16, top: 10, bottom: 10),
@@ -118,7 +118,7 @@ class RestrictionDialog extends ConsumerWidget {
                             children: [
                               Text(
                                 "제한 기간",
-                                style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
+                                style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(
@@ -126,7 +126,7 @@ class RestrictionDialog extends ConsumerWidget {
                               ),
                               Text(
                                 "${date}일",
-                                style: kBody13RegularStyle.copyWith(color: kTextSubTitleColor),
+                                style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(
@@ -134,7 +134,7 @@ class RestrictionDialog extends ConsumerWidget {
                               ),
                               Text(
                                 "(${DateFormat("yy-MM-dd").format(DateTime.parse(startDate!))} ~ ${DateFormat("yy-MM-dd").format(DateTime.parse(endDate!))})",
-                                style: kBody12SemiBoldStyle.copyWith(color: kTextBodyColor),
+                                style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -150,7 +150,7 @@ class RestrictionDialog extends ConsumerWidget {
               height: 54,
               decoration: const BoxDecoration(
                 border: Border(
-                  top: BorderSide(width: 1.0, color: kNeutralColor300),
+                  top: BorderSide(width: 1.0, color: kPreviousNeutralColor300),
                 ),
               ),
               child: Row(
@@ -166,13 +166,13 @@ class RestrictionDialog extends ConsumerWidget {
                       child: Container(
                         decoration: const BoxDecoration(
                           border: Border(
-                            right: BorderSide(width: 1.0, color: kNeutralColor300),
+                            right: BorderSide(width: 1.0, color: kPreviousNeutralColor300),
                           ),
                         ),
                         child: Center(
                           child: Text(
                             "확인",
-                            style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                            style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                           ),
                         ),
                       ),
@@ -199,7 +199,7 @@ class RestrictionDialog extends ConsumerWidget {
                       child: Center(
                         child: Text(
                           "1:1 채널톡",
-                          style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                          style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                         ),
                       ),
                     ),
