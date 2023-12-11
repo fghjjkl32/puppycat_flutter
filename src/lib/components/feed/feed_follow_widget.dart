@@ -34,7 +34,7 @@ class FeedFollowWidget extends StatelessWidget {
                       userName: popularUserListData[index].nick!,
                       followCount: popularUserListData[index].followerCnt!,
                       isSpecialUser: popularUserListData[index].isBadge! == 1,
-                      memberUuid: popularUserListData[index].memberUuid!,
+                      memberUuid: popularUserListData[index].uuid!,
                       oldMemberUuid: oldMemberUuid,
                     );
                   },

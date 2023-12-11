@@ -28,6 +28,8 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationItemMode
   getInitUserInformation({
     required String memberUuid,
   }) async {
+    print("memberUuidmemberUuid ${memberUuid}");
+
     try {
       final userInformationItemModel = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(memberUuid);
 

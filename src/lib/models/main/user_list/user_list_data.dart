@@ -8,7 +8,7 @@ class UserListData with _$UserListData {
   factory UserListData({
     String? nick,
     int? redDotState,
-    String? memberUuid,
+    String? uuid,
     String? profileImgUrl,
     String? intro,
     String? regDate,

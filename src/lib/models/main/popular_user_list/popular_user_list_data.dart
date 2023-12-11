@@ -8,7 +8,7 @@ class PopularUserListData with _$PopularUserListData {
   factory PopularUserListData({
     String? nick,
     int? isBadge,
-    String? memberUuid,
+    String? uuid,
     int? followerCnt,
     String? profileImgUrl,
     List<ContentsListData>? contentsList,

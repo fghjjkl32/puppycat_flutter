@@ -144,6 +144,8 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
     isSearching = true;
     searchUserCurrentPage = 1;
 
+    print("searchWord" "${searchWord}");
+
     try {
       final lists = await SearchRepository(dio: ref.read(dioProvider)).getNickSearchList(
         page: 1,

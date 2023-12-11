@@ -13,7 +13,7 @@ class SettingRepository {
   SettingRepository({
     required this.dio,
   }) {
-    _settingService = SettingService(dio, baseUrl: baseUrl);
+    _settingService = SettingService(dio, baseUrl: memberBaseUrl);
   }
 
   Future<SettingResponseModel?> getSetting() async {
