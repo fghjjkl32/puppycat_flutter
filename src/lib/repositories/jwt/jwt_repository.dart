@@ -15,12 +15,11 @@ class JWTRepository {
     _jwtService = JWTService(dio, baseUrl: memberBaseUrl);
   }
 
-  Future<String> getAccessToken(String? refreshToken) async {
+  Future<Map<String, dynamic>> getAccessToken(String? refreshToken) async {
     JWTResponseModel responseModel = await _jwtService.getAccessToken({
       'refreshToken': refreshToken,
     });
 
-    print('refreshDio - 2');
     if (!responseModel.result) {
       throw APIException(
         msg: responseModel.message ?? '',
@@ -29,7 +28,6 @@ class JWTRepository {
         caller: 'getAccessToken',
       );
     }
-    print('refreshDio - 3');
     if (responseModel.data == null) {
       throw APIException(
         msg: 'data is null',
@@ -38,7 +36,6 @@ class JWTRepository {
         caller: 'getAccessToken',
       );
     }
-    print('refreshDio - 4');
     if (!responseModel.data!.containsKey('accessToken')) {
       throw APIException(
         msg: 'AccessToken data is null',
@@ -47,8 +44,12 @@ class JWTRepository {
         caller: 'getAccessToken',
       );
     }
-    print('refreshDio - 5');
-    return responseModel.data!['accessToken'];
+    Map<String, dynamic> resultMap = {
+      'accessToken': responseModel.data!['accessToken'],
+      'refreshToken': responseModel.data!['refreshToken'],
+    };
+
+    return resultMap; //responseModel.data!['accessToken'];
   }
 
   Future<bool> checkRefreshToken(String? refreshToken) async {

@@ -10,6 +10,7 @@ import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/jwt/jwt_repository.dart';
 import 'package:ua_client_hints/ua_client_hints.dart';
 
@@ -129,9 +130,10 @@ class DioWrap {
           String appInfo = 'uid=$uuid&name=${pkgInfo.pkgName}&version=${pkgInfo.appVersion}&build=${pkgInfo.appBuildNumber}';
           options.headers['App-Info'] = appInfo;
 
-          final accessToken = await TokenController.readAccessToken();
-
-          options.headers['Authorization'] = 'Bearer $accessToken';
+          if (ref.read(loginStatementProvider)) {
+            final accessToken = await TokenController.readAccessToken();
+            options.headers['Authorization'] = 'Bearer $accessToken';
+          }
 
           return handler.next(options);
         } catch (e) {
@@ -191,18 +193,21 @@ class DioWrap {
             }
           }
 
-          await TokenController.clearAccessToken();
-
           final refreshToken = await TokenController.readRefreshToken();
 
+          await TokenController.clearTokens();
           var refreshDio = Dio();
           try {
             print('refreshDio - 1');
 
             JWTRepository jwtRepository = JWTRepository(dio: refreshDio);
-            final newAccessToken = await jwtRepository.getAccessToken(refreshToken);
+            final tokenMap = await jwtRepository.getAccessToken(refreshToken);
+            final newAccessToken = tokenMap['accessToken'];
+            final newRefreshToken = tokenMap['refreshToken'];
             print('refreshDio - 6');
-            await TokenController.writeAccessToken(newAccessToken);
+            // await TokenController.writeAccessToken(newAccessToken);
+            await TokenController.writeTokens(newAccessToken, newRefreshToken);
+
             response.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
             final clonedRequest = await refreshDio.fetch(response.requestOptions);
             print('refreshDio - 7');
