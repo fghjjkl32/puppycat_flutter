@@ -161,26 +161,36 @@ class DioWrap {
           }
         }
         print('3');
-        // if (code == 'ERTE-9999') {
-        //   print('4 / ${response.toString()}');
-        //   resMap['code'] = 401;
-        //   print('4-1 / ${response.toString()}');
-        //   response.statusCode = 401;
-        //   print('4-2 / ${response.toString()}');
-        //   response.data = jsonDecode(convertToJsonStringQuotes(raw: resMap.toString()));
-        //   print('4-3 / ${response.toString()}');
-        //   DioException(requestOptions: response.requestOptions);
-        //   return handler.reject(
-        //     // DioException.badResponse(statusCode: 401, requestOptions: response.requestOptions, response: response),
-        //     DioException(requestOptions: response.requestOptions, response: response),
-        //     true,
-        //   );
-        // }
+
         print('5');
         // print('refreshDio - 0');
         // Access Token이 유효하지 않을 때
         if (code == 'ERTE-9999') {
           // _isAccessTokenReissue = true;
+          // final mutex = Mutex();
+          // await mutex.acquire();
+
+          String oldAccessToken = response.requestOptions.headers['Authorization'].toString();
+          oldAccessToken = oldAccessToken.replaceAll('Bearer ', '');
+
+          String? currentAccessToken = await TokenController.readAccessToken();
+
+          print('oldAccessToken $oldAccessToken / currentAccessToken $currentAccessToken');
+          print('same ? ${oldAccessToken == currentAccessToken}');
+          if (currentAccessToken != null) {
+            if (oldAccessToken != currentAccessToken) {
+              if (await TokenController.checkRefreshToken()) {
+                var refreshDio = Dio();
+
+                response.requestOptions.headers['Authorization'] = 'Bearer $currentAccessToken';
+                final clonedRequest = await refreshDio.fetch(response.requestOptions);
+                return handler.resolve(clonedRequest);
+              } else {
+                return handler.reject(DioException(requestOptions: response.requestOptions));
+              }
+            }
+          }
+
           await TokenController.clearAccessToken();
 
           final refreshToken = await TokenController.readRefreshToken();
@@ -194,9 +204,9 @@ class DioWrap {
             print('refreshDio - 6');
             await TokenController.writeAccessToken(newAccessToken);
             response.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
-            // final clonedRequest = await dio.fetch(response.requestOptions);
+            final clonedRequest = await refreshDio.fetch(response.requestOptions);
             print('refreshDio - 7');
-            return handler.resolve(response);
+            return handler.resolve(clonedRequest);
             // _isAccessTokenReissue = false;
           } on APIException catch (apiException) {
             ///getAccessToken 응답으로 받을 수 있는 오류라면  ECOM-9999 밖에 없음
@@ -206,6 +216,8 @@ class DioWrap {
           } catch (e) {
             // _isAccessTokenReissue = false;
             print('dio - getAccessToken error $e');
+          } finally {
+            // mutex.release();
           }
 
           // AccessToken의 만료로 수행하지 못했던 API 요청에 담겼던 AccessToken 갱신
@@ -217,6 +229,7 @@ class DioWrap {
         return handler.next(response);
       }, onError: (e, handler) async {
         print('dio onerror : ${e.toString()}');
+        return handler.reject(e);
         // int? errorCode = e.response?.statusCode;
         //
         // if (errorCode == 401) {
