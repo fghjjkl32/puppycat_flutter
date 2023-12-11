@@ -101,8 +101,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
           AnimatedContainer(
             duration: kThemeChangeDuration,
             curve: Curves.easeInOut,
-            height: 250.h,
-            width: 270.w,
+            height: getImageHeightCalculateValue(MediaQuery.of(context).size.width),
             child: Column(
               children: <Widget>[
                 EditCroppedImagesListView(

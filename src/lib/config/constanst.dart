@@ -99,6 +99,23 @@ String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
 String memberBaseUrl = 'https://member-api.pcstg.co.kr/';
 // String memberBaseUrl = 'https://member.puppycat.co.kr/';
 
+double getImageHeightCalculateValue(double width) {
+  const double slope = 0.172727;
+  const double intercept = 225.818182;
+
+  // 선형 방정식을 이용하여 값을 계산
+  return slope * width + intercept;
+}
+
+double getViewportFractionCalculateValue(double width) {
+  // 계산된 기울기와 절편
+  const double slope = -0.000909;
+  const double intercept = 1.127273;
+
+  // 선형 방정식을 이용하여 값을 계산
+  return slope * width + intercept;
+}
+
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
   var seconds = milliSeconds / 1000;

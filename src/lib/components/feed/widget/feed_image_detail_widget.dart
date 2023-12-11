@@ -11,7 +11,6 @@ import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_i
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
-import 'package:pet_mobile_social_flutter/config/theme/size_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -63,17 +62,6 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
         }
       }
     });
-
-    if (widget.imageList[0].imgWidth! > widget.imageList[0].imgHeight!) {
-      width = 336.0;
-      height = 251.7;
-    } else if (widget.imageList[0].imgWidth! < widget.imageList[0].imgHeight!) {
-      width = 273.2;
-      height = 364.0;
-    } else {
-      width = 336.0;
-      height = 336.0;
-    }
   }
 
   @override
@@ -110,7 +98,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
           },
           child: CarouselSlider(
             options: CarouselOptions(
-              height: height,
+              height: MediaQuery.of(context).size.width,
               enableInfiniteScroll: false,
               viewportFraction: 1.0,
               onPageChanged: (index, reason) {
@@ -118,148 +106,169 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
               },
             ),
             items: widget.imageList.map((i) {
-              return Stack(
-                children: [
-                  Padding(
-                    padding: kPrimarySideFeedImagePadding,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: CachedNetworkImage(
-                        placeholder: (context, url) => Container(
-                          color: kPreviousNeutralColor300,
-                        ),
-                        imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${i.url}").toUrl(),
-                        fit: BoxFit.cover,
-                        width: width,
-                        height: height,
+              return Padding(
+                padding: EdgeInsets.all(12.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Stack(
+                    children: [
+                      Container(
+                        color: kBlackColor,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width,
                       ),
-                      // ZoomOverlay(
-                      //   modalBarrierColor: Colors.black12, // Optional
-                      //   minScale: 0.5, // Optional
-                      //   maxScale: 3.0, // Optional
-                      //   animationCurve: Curves
-                      //       .fastOutSlowIn, // Defaults to fastOutSlowIn which mimics IOS instagram behavior
-                      //   animationDuration: Duration(
-                      //       milliseconds:
-                      //           300), // Defaults to 100 Milliseconds. Recommended duration is 300 milliseconds for Curves.fastOutSlowIn
-                      //   twoTouchOnly: true, // Defaults to false
-                      //   onScaleStart: () {}, // optional VoidCallback
-                      //   onScaleStop: () {}, // optional VoidCallback
-                      //   child: Image.network(
-                      //     Thumbor(host: thumborHostUrl, key: thumborKey)
-                      //         .buildImage("$imgDomain${i.url}")
-                      //         .toUrl(),
-                      //     fit: BoxFit.cover,
-                      //     width: double.infinity,
-                      //     height: double.infinity,
-                      //   ),
-                      // ),
-                    ),
-                  ),
-                  ...i.imgMemberTagList!.map((tag) {
-                    return Positioned(
-                      left: tag.width!.toDouble(),
-                      top: tag.height!.toDouble(),
-                      child: FadeTransition(
-                        opacity: _fadeController,
-                        child: ValueListenableBuilder<bool>(
-                          valueListenable: _isTagVisible,
-                          builder: (BuildContext context, bool isTagVisible, Widget? child) {
-                            return isTagVisible
-                                ? GestureDetector(
-                                    onTap: () {
-                                      myInfo.uuid == tag.memberUuid
-                                          ? context.push("/home/myPage")
-                                          : context.push("/home/myPage/followList/${tag.memberUuid}/userPage/${tag.nick!}/${tag.memberUuid}/${tag.memberUuid}");
-                                    },
-                                    child: MentionTagWidget(
-                                      isCanClose: false,
-                                      color: kPreviousTextSubTitleColor.withOpacity(0.8),
-                                      textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
-                                      text: tag.nick!,
-                                      onDelete: () {},
-                                    ),
-                                  )
-                                : SizedBox.shrink();
-                          },
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                  if (i.imgMemberTagList!.isNotEmpty)
-                    Positioned(
-                      left: 20,
-                      bottom: 10,
-                      child: InkWell(
-                        onTap: () {
-                          showCustomModalBottomSheet(
-                            context: context,
-                            widget: SizedBox(
-                              height: 500.h,
-                              child: Stack(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          top: 8.0.h,
-                                          bottom: 10.0.h,
-                                        ),
-                                        child: Text(
-                                          "태그된 대상",
-                                          style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                        ),
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Stack(
+                            children: [
+                              CachedNetworkImage(
+                                placeholder: (context, url) => Container(
+                                  color: kPreviousNeutralColor300,
+                                ),
+                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${i.url}").toUrl(),
+                                // fit: BoxFit.cover,
+                              ),
+                              ...i.imgMemberTagList!.map((tag) {
+                                return Positioned.fill(
+                                  child: Align(
+                                    alignment: FractionalOffset(tag.width!.toDouble(), tag.height!.toDouble()),
+                                    child: FadeTransition(
+                                      opacity: _fadeController,
+                                      child: ValueListenableBuilder<bool>(
+                                        valueListenable: _isTagVisible,
+                                        builder: (BuildContext context, bool isTagVisible, Widget? child) {
+                                          return isTagVisible
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    myInfo.uuid == tag.memberUuid
+                                                        ? context.push("/home/myPage")
+                                                        : context.push("/home/myPage/followList/${tag.memberUuid}/userPage/${tag.nick!}/${tag.memberUuid}/${tag.memberUuid}");
+                                                  },
+                                                  child: MentionTagWidget(
+                                                    isCanClose: false,
+                                                    color: kPreviousTextSubTitleColor.withOpacity(0.8),
+                                                    textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
+                                                    text: tag.nick!,
+                                                    onDelete: () {},
+                                                  ),
+                                                )
+                                              : SizedBox.shrink();
+                                        },
                                       ),
-                                      Expanded(
-                                        child: ListView.builder(
-                                          itemCount: i.imgMemberTagList!.length,
-                                          padding: EdgeInsets.only(bottom: 80.h),
-                                          itemBuilder: (BuildContext context, int index) {
-                                            return FavoriteItemWidget(
-                                              profileImage: i.imgMemberTagList![index].profileImgUrl,
-                                              userName: i.imgMemberTagList![index].nick!,
-                                              content: i.imgMemberTagList![index].intro!,
-                                              isSpecialUser: i.imgMemberTagList![index].isBadge == 1,
-                                              isFollow: i.imgMemberTagList![index].followState == 1,
-                                              followerUuid: i.imgMemberTagList![index].memberUuid!,
-                                              contentsIdx: widget.contentIdx,
-                                              contentType: widget.contentType,
-                                              oldMemberUuid: widget.memberUuid,
-                                            );
-                                          },
-                                        ),
+                                    ),
+                                  ),
+                                );
+                                Positioned.fill(
+                                  child: Align(
+                                    alignment: FractionalOffset(tag.width!.toDouble(), tag.height!.toDouble()),
+                                    child: FadeTransition(
+                                      opacity: _fadeController,
+                                      child: ValueListenableBuilder<bool>(
+                                        valueListenable: _isTagVisible,
+                                        builder: (BuildContext context, bool isTagVisible, Widget? child) {
+                                          return isTagVisible
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    ref.read(userInfoProvider).userModel!.idx == tag.memberIdx
+                                                        ? context.push("/home/myPage")
+                                                        : context.push("/home/myPage/followList/${tag.memberIdx}/userPage/${tag.nick!}/${tag.memberIdx}/${tag.memberIdx}");
+                                                  },
+                                                  child: MentionTagWidget(
+                                                    isCanClose: false,
+                                                    color: kPreviousTextSubTitleColor.withOpacity(0.8),
+                                                    textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
+                                                    text: tag.nick!,
+                                                    onDelete: () {},
+                                                  ),
+                                                )
+                                              : SizedBox.shrink();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (i.imgMemberTagList!.isNotEmpty)
+                        Positioned(
+                          left: 10,
+                          bottom: 10,
+                          child: InkWell(
+                            onTap: () {
+                              showCustomModalBottomSheet(
+                                context: context,
+                                widget: SizedBox(
+                                  height: 500.h,
+                                  child: Stack(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              top: 8.0.h,
+                                              bottom: 10.0.h,
+                                            ),
+                                            child: Text(
+                                              "태그된 대상",
+                                              style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: ListView.builder(
+                                              itemCount: i.imgMemberTagList!.length,
+                                              padding: EdgeInsets.only(bottom: 80.h),
+                                              itemBuilder: (BuildContext context, int index) {
+                                                return FavoriteItemWidget(
+                                                  profileImage: i.imgMemberTagList![index].profileImgUrl,
+                                                  userName: i.imgMemberTagList![index].nick!,
+                                                  content: i.imgMemberTagList![index].intro!,
+                                                  isSpecialUser: i.imgMemberTagList![index].isBadge == 1,
+                                                  isFollow: i.imgMemberTagList![index].followState == 1,
+                                                  followerUuid: i.imgMemberTagList![index].memberUuid!,
+                                                  contentsIdx: widget.contentIdx,
+                                                  contentType: widget.contentType,
+                                                  oldMemberUuid: widget.memberUuid,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xff414348).withOpacity(0.6),
+                                shape: BoxShape.circle,
                               ),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xff414348).withOpacity(0.6),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: Icon(
-                              Puppycat_social.icon_taguser,
-                              size: 24,
-                              color: kPreviousNeutralColor100,
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Puppycat_social.icon_taguser,
+                                  size: 24,
+                                  color: kPreviousNeutralColor100,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                ],
+                    ],
+                  ),
+                ),
               );
             }).toList(),
           ),
         ),
         if (widget.imageList.length != 1)
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0.h),
+            padding: EdgeInsets.symmetric(vertical: 8.0),
             child: DotIndicator(
               counter: _counter,
               imageListLength: widget.imageList.length,
