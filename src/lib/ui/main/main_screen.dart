@@ -1285,9 +1285,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                           padding: const EdgeInsets.all(8.0),
                           child: GestureDetector(
                             onTap: () {
-                              myInfo.uuid == userListLists[index].memberUuid
+                              myInfo.uuid == userListLists[index].uuid
                                   ? context.push("/home/myPage")
-                                  : context.push("/home/myPage/followList/${userListLists[index].memberUuid}/userPage/${userListLists[index].nick}/${userListLists[index].memberUuid}/0");
+                                  : context
+                                      .push("/home/myPage/followList/${userListLists[index].uuid}/userPage/${userListLists[index].nick}/${userListLists[index].uuid}/${userListLists[index].uuid}");
                             },
                             child: Column(
                               children: [

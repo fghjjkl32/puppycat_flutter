@@ -56,6 +56,8 @@ class SearchRepository {
     required String searchWord,
     int limit = 20,
   }) async {
+    print("searchWordsearchWordsearchWord" "${searchWord}");
+
     SearchResponseModel responseModel = await _searchService.getNickSearchList(page, searchWord, limit);
 
     if (!responseModel.result) {
