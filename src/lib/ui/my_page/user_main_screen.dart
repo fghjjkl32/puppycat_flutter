@@ -165,115 +165,115 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           final userInformationItemModel = ref.watch(userInformationStateProvider);
 
                           return userInformationItemModel.blockedState == 1 || userInformationItemModel.blockedMeState == 1
-                                  ? Container()
-                                  : PopupMenuButton(
-                                      padding: EdgeInsets.zero,
-                                      offset: Offset(0, 42),
-                                      child: showLottieAnimation
-                                          ? Lottie.asset(
-                                              'assets/lottie/icon_more_header.json',
-                                              repeat: false,
-                                            )
-                                          : Padding(
-                                              padding: const EdgeInsets.only(right: 8.0),
-                                              child: const Icon(
-                                                Puppycat_social.icon_more_header,
-                                                size: 40,
-                                              ),
-                                            ),
-                                      onCanceled: () {
-                                        setState(() {
-                                          showLottieAnimation = false;
-                                        });
-                                      },
-                                      onSelected: (id) {
-                                        setState(() {
-                                          showLottieAnimation = false;
-                                        });
-                                        if (id == 'block') {
-                                          if (!isLogined) {
-                                            context.pushReplacement("/loginScreen");
-                                          } else {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return CustomDialog(
-                                                  content: Padding(
-                                                    padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                                                    child: Column(
-                                                      children: [
-                                                        Text(
-                                                          "‘${widget.nick}’님을\n차단할까요?",
-                                                          style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
-                                                          textAlign: TextAlign.center,
-                                                        ),
-                                                        SizedBox(
-                                                          height: 8.h,
-                                                        ),
-                                                        Text(
-                                                          "차단하게 되면 더 이상 서로의 피드를 보거나\n메시지 등을 보낼 수 없어요.\n차단 여부는 상대방에게 알리지 않아요.\n차단 풀기는 [마이페이지→설정→차단 유저 관리]에서\n얼마든지 가능해요.",
-                                                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
-                                                          textAlign: TextAlign.center,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  confirmTap: () async {
-                                                    context.pop();
-                                                    toast(
-                                                      context: context,
-                                                      text: "'${widget.nick.length > 8 ? '${widget.nick.substring(0, 8)}...' : widget.nick}'님을 차단했어요.",
-                                                      type: ToastType.purple,
-                                                    );
-                                                    final result = await ref.read(userInformationStateProvider.notifier).postBlock(
-                                                      blockUuid: widget.memberUuid,
-                                                        );
-
-                                                    if (result.result) {
-                                                      ref.watch(userInformationStateProvider.notifier).updateBlockState();
-                                                    }
-                                                  },
-                                                  cancelTap: () {
-                                                    context.pop();
-                                                  },
-                                                  confirmWidget: Text(
-                                                    "차단하기",
-                                                    style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          }
-                                        }
-                                      },
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(16.0),
-                                          bottomRight: Radius.circular(16.0),
-                                          topLeft: Radius.circular(16.0),
-                                          topRight: Radius.circular(16.0),
-                                        ),
-                                      ),
-                                      itemBuilder: (context) {
-                                        Future.delayed(Duration.zero, () {
-                                          setState(() {
-                                            showLottieAnimation = true;
-                                          });
-                                        });
-                                        final list = <PopupMenuEntry>[];
-                                        list.add(
-                                          diaryPopUpMenuItem(
-                                            'block',
-                                            '차단하기',
-                                            const Icon(
-                                              Puppycat_social.icon_user_block_ac,
-                                            ),
-                                            context,
+                              ? Container()
+                              : PopupMenuButton(
+                                  padding: EdgeInsets.zero,
+                                  offset: Offset(0, 42),
+                                  child: showLottieAnimation
+                                      ? Lottie.asset(
+                                          'assets/lottie/icon_more_header.json',
+                                          repeat: false,
+                                        )
+                                      : Padding(
+                                          padding: const EdgeInsets.only(right: 8.0),
+                                          child: const Icon(
+                                            Puppycat_social.icon_more_header,
+                                            size: 40,
                                           ),
+                                        ),
+                                  onCanceled: () {
+                                    setState(() {
+                                      showLottieAnimation = false;
+                                    });
+                                  },
+                                  onSelected: (id) {
+                                    setState(() {
+                                      showLottieAnimation = false;
+                                    });
+                                    if (id == 'block') {
+                                      if (!isLogined) {
+                                        context.pushReplacement("/loginScreen");
+                                      } else {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return CustomDialog(
+                                              content: Padding(
+                                                padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      "‘${widget.nick}’님을\n차단할까요?",
+                                                      style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 8.h,
+                                                    ),
+                                                    Text(
+                                                      "차단하게 되면 더 이상 서로의 피드를 보거나\n메시지 등을 보낼 수 없어요.\n차단 여부는 상대방에게 알리지 않아요.\n차단 풀기는 [마이페이지→설정→차단 유저 관리]에서\n얼마든지 가능해요.",
+                                                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              confirmTap: () async {
+                                                context.pop();
+                                                toast(
+                                                  context: context,
+                                                  text: "'${widget.nick.length > 8 ? '${widget.nick.substring(0, 8)}...' : widget.nick}'님을 차단했어요.",
+                                                  type: ToastType.purple,
+                                                );
+                                                final result = await ref.read(userInformationStateProvider.notifier).postBlock(
+                                                      blockUuid: widget.memberUuid,
+                                                    );
+
+                                                if (result.result) {
+                                                  ref.watch(userInformationStateProvider.notifier).updateBlockState();
+                                                }
+                                              },
+                                              cancelTap: () {
+                                                context.pop();
+                                              },
+                                              confirmWidget: Text(
+                                                "차단하기",
+                                                style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
+                                              ),
+                                            );
+                                          },
                                         );
-                                        return list;
-                                      },
+                                      }
+                                    }
+                                  },
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(16.0),
+                                      bottomRight: Radius.circular(16.0),
+                                      topLeft: Radius.circular(16.0),
+                                      topRight: Radius.circular(16.0),
+                                    ),
+                                  ),
+                                  itemBuilder: (context) {
+                                    Future.delayed(Duration.zero, () {
+                                      setState(() {
+                                        showLottieAnimation = true;
+                                      });
+                                    });
+                                    final list = <PopupMenuEntry>[];
+                                    list.add(
+                                      diaryPopUpMenuItem(
+                                        'block',
+                                        '차단하기',
+                                        const Icon(
+                                          Puppycat_social.icon_user_block_ac,
+                                        ),
+                                        context,
+                                      ),
                                     );
+                                    return list;
+                                  },
+                                );
                         }),
                       ],
 
@@ -302,53 +302,53 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
               final userInformationItemModel = ref.watch(userInformationStateProvider);
 
               return userInformationItemModel.blockedState == 1
+                  ? Container(
+                      color: kPreviousNeutralColor100,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/image/character/character_07_block_88 (1).png',
+                            height: 68.h,
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "차단한 유저의 정보는 볼 수 없어요.\n정보를 보려면 차단을 풀어 주세요.",
+                            textAlign: TextAlign.center,
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                          ),
+                        ],
+                      ),
+                    )
+                  : userInformationItemModel.blockedMeState == 1
                       ? Container(
                           color: kPreviousNeutralColor100,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                'assets/image/character/character_07_block_88 (1).png',
+                                'character_07_block_me_88.png',
                                 height: 68.h,
                               ),
                               SizedBox(
                                 height: 10,
                               ),
                               Text(
-                                "차단한 유저의 정보는 볼 수 없어요.\n정보를 보려면 차단을 풀어 주세요.",
+                                "정보를 볼 수 없어요.",
                                 textAlign: TextAlign.center,
                                 style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ],
                           ),
                         )
-                      : userInformationItemModel.blockedMeState == 1
-                          ? Container(
-                              color: kPreviousNeutralColor100,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    'character_07_block_me_88.png',
-                                    height: 68.h,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "정보를 볼 수 없어요.",
-                                    textAlign: TextAlign.center,
-                                    style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : TabBarView(
-                              children: [
-                                _firstTabBody(),
-                                _secondTabBody(),
-                              ],
-                            );
+                      : TabBarView(
+                          children: [
+                            _firstTabBody(),
+                            _secondTabBody(),
+                          ],
+                        );
             }),
           ),
         )),
@@ -678,8 +678,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   }
 
   Widget _myPageSuccessProfile(UserInformationItemModel data, bool isFollow) {
-    final myInfo = ref.read(myInfoStateProvider);
-    final isLogined = ref.read(loginStatementProvider);
+    final isLogined = ref.watch(loginStatementProvider);
 
     return FlexibleSpaceBar(
       centerTitle: true,
@@ -1128,88 +1127,88 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
       final userInformationItemModel = ref.watch(userInformationStateProvider);
 
       return Container(
-              height: tabBarHeight,
-              decoration: shrinkOffset == 0
-                  ? const BoxDecoration(
-                      color: kWhiteColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20.0),
-                        topRight: Radius.circular(20.0),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0x0A000000),
-                          offset: Offset(0, -6),
-                          blurRadius: 10.0,
+        height: tabBarHeight,
+        decoration: shrinkOffset == 0
+            ? const BoxDecoration(
+                color: kWhiteColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x0A000000),
+                    offset: Offset(0, -6),
+                    blurRadius: 10.0,
+                  ),
+                ],
+              )
+            : const BoxDecoration(
+                color: Colors.white,
+              ),
+        child: userInformationItemModel.blockedState == 1 || userInformationItemModel.blockedMeState == 1
+            ? Container()
+            : Row(
+                children: [
+                  Expanded(
+                    child: TabBar(
+                        indicatorWeight: 2.4,
+                        labelColor: kPreviousNeutralColor600,
+                        indicatorColor: kPreviousNeutralColor600,
+                        unselectedLabelColor: kPreviousNeutralColor500,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        labelPadding: EdgeInsets.only(
+                          top: 10.h,
+                          bottom: 10.h,
                         ),
-                      ],
-                    )
-                  : const BoxDecoration(
-                      color: Colors.white,
-                    ),
-              child: userInformationItemModel.blockedState == 1 || userInformationItemModel.blockedMeState == 1
-                  ? Container()
-                  : Row(
-                      children: [
-                        Expanded(
-                          child: TabBar(
-                              indicatorWeight: 2.4,
-                              labelColor: kPreviousNeutralColor600,
-                              indicatorColor: kPreviousNeutralColor600,
-                              unselectedLabelColor: kPreviousNeutralColor500,
-                              indicatorSize: TabBarIndicatorSize.label,
-                              labelPadding: EdgeInsets.only(
-                                top: 10.h,
-                                bottom: 10.h,
-                              ),
-                              tabs: [
-                                Tab(
-                                  child: Consumer(builder: (context, ref, child) {
-                                    return Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          "일상글",
-                                          style: kBody14BoldStyle,
-                                        ),
-                                        SizedBox(
-                                          width: 6.w,
-                                        ),
-                                        Text(
-                                          "${ref.watch(userContentsFeedTotalCountProvider)}",
-                                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
-                                        ),
-                                      ],
-                                    );
-                                  }),
-                                ),
-                                Tab(
-                                  child: Consumer(builder: (context, ref, child) {
-                                    return Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          "태그됨",
-                                          style: kBody14BoldStyle,
-                                        ),
-                                        SizedBox(
-                                          width: 6.w,
-                                        ),
-                                        Text(
-                                          "${ref.watch(userTagContentsFeedTotalCountProvider)}",
-                                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
-                                        ),
-                                      ],
-                                    );
-                                  }),
-                                ),
-                              ]),
-                        ),
-                      ],
-                    ),
-            );
+                        tabs: [
+                          Tab(
+                            child: Consumer(builder: (context, ref, child) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "일상글",
+                                    style: kBody14BoldStyle,
+                                  ),
+                                  SizedBox(
+                                    width: 6.w,
+                                  ),
+                                  Text(
+                                    "${ref.watch(userContentsFeedTotalCountProvider)}",
+                                    style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                                  ),
+                                ],
+                              );
+                            }),
+                          ),
+                          Tab(
+                            child: Consumer(builder: (context, ref, child) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "태그됨",
+                                    style: kBody14BoldStyle,
+                                  ),
+                                  SizedBox(
+                                    width: 6.w,
+                                  ),
+                                  Text(
+                                    "${ref.watch(userTagContentsFeedTotalCountProvider)}",
+                                    style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                                  ),
+                                ],
+                              );
+                            }),
+                          ),
+                        ]),
+                  ),
+                ],
+              ),
+      );
     });
   }
 

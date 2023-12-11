@@ -363,7 +363,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         Map<String, dynamic> extraMap = {
                           'firstTitle': '${ref.watch(myInformationStateProvider).nick}',
                           'secondTitle': '피드',
-                          'memberUuid': ref.read(myInfoStateProvider).uuid ?? '',
+                          'memberUuid': ref.read(myInformationStateProvider).uuid ?? '',
                           'contentIdx': '${item.idx}',
                           'contentType': 'myContent',
                         };
@@ -774,7 +774,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     child: GestureDetector(
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
-                          'firstTitle': ref.read(myInfoStateProvider).nick ?? 'unknown',
+                          'firstTitle': ref.read(myInformationStateProvider).nick ?? 'unknown',
                           'secondTitle': '태그됨',
                           'memberUuid': ref.read(myInfoStateProvider).uuid,
                           'contentIdx': '${item.idx}',
@@ -842,7 +842,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   }
 
   Widget _myPageSuccessProfile(UserInformationItemModel data) {
-    final myInfo = ref.read(myInfoStateProvider);
+    // final myInfo = ref.read(myInfoStateProvider);
 
     return FlexibleSpaceBar(
       centerTitle: true,
@@ -918,7 +918,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         onTap: () {
                           //TODO
                           //Route 다시
-                          context.go("/home/myPage/followList/${myInfo.uuid}");
+                          context.go("/home/myPage/followList/${data.uuid}");
                         },
                         child: Padding(
                           padding: EdgeInsets.only(top: 8.0.h),

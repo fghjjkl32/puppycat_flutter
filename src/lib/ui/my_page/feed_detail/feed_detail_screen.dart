@@ -297,7 +297,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                           feedData: firstFeedData,
                           nick: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.nick : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick,
                           profileImage: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.profileImgUrl : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
-                          memberUuid: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.memberUuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberUuid ?? '',
+                          memberUuid: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.uuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.uuid ?? '',
                           contentType: widget.contentType,
                           index: 0,
                           isSpecialUser: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.isBadge == 1 : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
@@ -307,7 +307,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                               ref: ref,
                               contentType: widget.contentType,
                               contentIdx: widget.contentIdx,
-                              memberUuid: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.memberUuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.memberUuid ?? '',
+                              memberUuid: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.uuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.uuid ?? '',
                             );
                           },
                         ),
@@ -483,13 +483,14 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                             return Container();
                           },
                           itemBuilder: (context, item, index) {
+                            print('item.memberInfo!.memberUuid! ${item.memberInfo!.uuid}');
                             return Column(
                               children: [
                                 FeedDetailWidget(
                                   feedData: item,
                                   nick: (item.memberInfo != null) ? item.memberInfo!.nick : ref.read(feedListStateProvider.notifier).memberInfo?.nick,
                                   profileImage: (item.memberInfo != null) ? item.memberInfo!.profileImgUrl : ref.watch(feedListStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
-                                  memberUuid: (item.memberInfo != null) ? item.memberInfo!.memberUuid! : ref.read(feedListStateProvider.notifier).memberInfo?.memberUuid ?? '',
+                                  memberUuid: (item.memberInfo != null) ? item.memberInfo!.uuid! : ref.read(feedListStateProvider.notifier).memberInfo?.uuid ?? '',
                                   contentType: widget.contentType,
                                   index: index,
                                   isSpecialUser: (item.memberInfo != null) ? item.memberInfo!.isBadge == 1 : ref.read(feedListStateProvider.notifier).memberInfo?.isBadge == 1,
@@ -499,7 +500,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                       ref: ref,
                                       contentType: widget.contentType,
                                       contentIdx: item.idx,
-                                      memberUuid: (item.memberInfo != null) ? item.memberInfo!.memberUuid! : ref.read(feedListStateProvider.notifier).memberInfo?.memberUuid ?? '',
+                                      memberUuid: (item.memberInfo != null) ? item.memberInfo!.uuid! : ref.read(feedListStateProvider.notifier).memberInfo?.uuid ?? '',
                                     );
                                   },
                                 ),

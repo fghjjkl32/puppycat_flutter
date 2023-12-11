@@ -20,6 +20,7 @@ class JWTRepository {
       'refreshToken': refreshToken,
     });
 
+    print('refreshDio - 2');
     if (!responseModel.result) {
       throw APIException(
         msg: responseModel.message ?? '',
@@ -28,38 +29,29 @@ class JWTRepository {
         caller: 'getAccessToken',
       );
     }
-
+    print('refreshDio - 3');
     if (responseModel.data == null) {
       throw APIException(
         msg: 'data is null',
         code: responseModel.code,
-        refer: 'LoginRepository',
+        refer: 'JWTRepository',
         caller: 'getAccessToken',
       );
     }
-
+    print('refreshDio - 4');
     if (!responseModel.data!.containsKey('accessToken')) {
       throw APIException(
         msg: 'AccessToken data is null',
         code: responseModel.code,
-        refer: 'LoginRepository',
+        refer: 'JWTRepository',
         caller: 'getAccessToken',
       );
     }
-
+    print('refreshDio - 5');
     return responseModel.data!['accessToken'];
   }
 
   Future<bool> checkRefreshToken(String? refreshToken) async {
-    if (refreshToken == null) {
-      throw APIException(
-        msg: 'Refresh Token is Null.',
-        code: 'ECOM-9999',
-        refer: 'JWTRepository',
-        caller: 'checkRefreshToken',
-      );
-    }
-
     JWTResponseModel responseModel = await _jwtService.checkRefreshToken({
       'refreshToken': refreshToken,
     });

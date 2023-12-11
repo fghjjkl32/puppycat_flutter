@@ -28,14 +28,6 @@ import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/restrain/restrain_write_provider.dart';
-///NOTE
-///2023.11.14.
-///산책하기 보류로 주석 처리
-// import 'package:pet_mobile_social_flutter/providers/single_walk/single_walk_provider.dart';
-// import 'package:pet_mobile_social_flutter/providers/walk/walk_state_provider.dart';
-///산책하기 보류로 주석 처리 완료
-import 'package:pet_mobile_social_flutter/ui/dialog/restriction_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/popupmenu_with_reddot_widget.dart';
 import 'package:thumbor/thumbor.dart';
@@ -55,10 +47,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   late TabController tabController;
   bool _showIcon = false;
 
-  late final PagingController<int, FeedData> _myFeedListPagingController = ref.read(myFeedStateProvider);
-  late final PagingController<int, FeedData> _recentFeedListPagingController = ref.read(recentFeedStateProvider);
-  late final PagingController<int, FeedData> _followFeedListPagingController = ref.read(followFeedStateProvider);
-  late final PagingController<int, FeedData> _popularWeekFeedListPagingController = ref.read(popularWeekFeedStateProvider);
+  late final PagingController<int, FeedData> _myFeedListPagingController = ref.watch(myFeedStateProvider);
+  late final PagingController<int, FeedData> _recentFeedListPagingController = ref.watch(recentFeedStateProvider);
+  late final PagingController<int, FeedData> _followFeedListPagingController = ref.watch(followFeedStateProvider);
+  late final PagingController<int, FeedData> _popularWeekFeedListPagingController = ref.watch(popularWeekFeedStateProvider);
 
   // bool showLottieAnimation = false;
   bool _isWidgetVisible = true;
@@ -129,6 +121,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
       final loginState = ref.watch(loginStateProvider);
 
+      // ref.read(recentFeedStateProvider.notifier).lastPage = 0;
+      print('not run????');
       _recentFeedListPagingController.refresh();
 
       ref.read(popularUserListStateProvider.notifier).getInitUserList();
@@ -503,8 +497,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   Widget _buttonWidget() {
-    final myInfo = ref.read(myInfoStateProvider);
-    final isLogined = ref.read(loginStatementProvider);
+    final myInfo = ref.watch(myInfoStateProvider);
+    final isLogined = ref.watch(loginStatementProvider);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -965,14 +959,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 return FeedMainWidget(
                   feedData: item,
                   contentType: 'userContent',
-                  userName: ref.read(followFeedStateProvider.notifier).memberInfo!.nick ?? item.memberInfo!.nick!,
-                  profileImage: ref.read(followFeedStateProvider.notifier).memberInfo!.profileImgUrl ?? item.memberInfo!.profileImgUrl! ?? "",
+                  userName: ref.read(followFeedStateProvider.notifier).memberInfo?.nick ?? item.memberInfo!.nick!,
+                  profileImage: ref.read(followFeedStateProvider.notifier).memberInfo?.profileImgUrl ?? item.memberInfo!.profileImgUrl! ?? "",
                   oldMemberUuid: myInfo.uuid ?? '',
-                  firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo!.nick ?? item.memberInfo!.nick!,
+                  firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?.nick ?? item.memberInfo!.nick!,
                   secondTitle: '피드',
                   index: index,
                   feedType: 'follow',
-                  isSpecialUser: ref.read(followFeedStateProvider.notifier).memberInfo!.isBadge == 1,
+                  isSpecialUser: ref.read(followFeedStateProvider.notifier).memberInfo?.isBadge == 1,
                   onTapHideButton: () async {
                     onTapHide(
                       context: context,
@@ -1140,39 +1134,39 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             onPressed: () {
                               !isLogined
                                   ? context.pushReplacement("/loginScreen")
-                              : InstaAssetPicker.pickAssets(
-                                          context,
-                                          maxAssets: 12,
-                                          pickerTheme: themeData(context).copyWith(
-                                            canvasColor: kPreviousNeutralColor100,
-                                            colorScheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).colorScheme.copyWith(
-                                                  background: kPreviousNeutralColor100,
-                                                ),
-                                            appBarTheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).appBarTheme.copyWith(
-                                                  backgroundColor: kPreviousNeutralColor100,
-                                                ),
+                                  : InstaAssetPicker.pickAssets(
+                                      context,
+                                      maxAssets: 12,
+                                      pickerTheme: themeData(context).copyWith(
+                                        canvasColor: kPreviousNeutralColor100,
+                                        colorScheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).colorScheme.copyWith(
+                                              background: kPreviousNeutralColor100,
+                                            ),
+                                        appBarTheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).appBarTheme.copyWith(
+                                              backgroundColor: kPreviousNeutralColor100,
+                                            ),
+                                      ),
+                                      onCompleted: (cropStream) {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => FeedWriteScreen(
+                                              cropStream: cropStream,
+                                            ),
                                           ),
-                                          onCompleted: (cropStream) {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) => FeedWriteScreen(
-                                                  cropStream: cropStream,
-                                                ),
-                                              ),
-                                            );
-                                          },
                                         );
-                                      // : showDialog(
-                                      //     barrierDismissible: false,
-                                      //     context: context,
-                                      //     builder: (context) => RestrictionDialog(
-                                      //       isForever: false,
-                                      //       date: ref.watch(restrainWriteStateProvider).restrain.date,
-                                      //       restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-                                      //       startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-                                      //       endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-                                      //     ),
-                                      //   );
+                                      },
+                                    );
+                              // : showDialog(
+                              //     barrierDismissible: false,
+                              //     context: context,
+                              //     builder: (context) => RestrictionDialog(
+                              //       isForever: false,
+                              //       date: ref.watch(restrainWriteStateProvider).restrain.date,
+                              //       restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
+                              //       startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
+                              //       endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
+                              //     ),
+                              //   );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: kPreviousPrimaryColor,

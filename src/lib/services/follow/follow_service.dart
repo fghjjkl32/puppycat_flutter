@@ -18,7 +18,7 @@ abstract class FollowService {
     @Query("limit") int limit,
   );
 
-  @GET('v1/follow/{memberIdx}/search')
+  @GET('v1/follow/{memberUuid}/search')
   Future<FollowResponseModel> getFollowSearchList(
     @Path("memberUuid") String memberUuid,
     @Query("page") int page,

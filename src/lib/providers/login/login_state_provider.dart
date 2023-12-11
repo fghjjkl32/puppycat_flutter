@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
@@ -85,17 +86,17 @@ class LoginState extends _$LoginState {
     state = LoginStatus.success;
   }
 
-  void logout(String provider) async {
+  Future logout(String provider) async {
     final loginRepository = LoginRepository(provider: provider, dio: _dioProvider);
 
     try {
       var result = await loginRepository.logout();
       if (result) {
-        ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
-        ref.read(followUserStateProvider.notifier).resetState();
-
         await TokenController.clearTokens();
 
+        ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+        ref.read(followUserStateProvider.notifier).resetState();
+        ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
         state = LoginStatus.none;
       }
     } on APIException catch (apiException) {

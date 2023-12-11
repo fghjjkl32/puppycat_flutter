@@ -83,6 +83,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
 
     return GestureDetector(
       onTap: () {
+        print('11 myInfo.uuid == widget.memberUuid ${myInfo.uuid} / ${widget.memberUuid}');
         myInfo.uuid == widget.memberUuid
             ? Navigator.push(
                 context,
@@ -452,10 +453,10 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                 if (mounted) {
                                                   context.pop();
 
-                                                    final result = await ref.read(feedListStateProvider.notifier).postBlock(
-                                                          blockUuid: widget.memberUuid,
-                                                          contentType: widget.contentType,
-                                                        );
+                                                  final result = await ref.read(feedListStateProvider.notifier).postBlock(
+                                                        blockUuid: widget.memberUuid,
+                                                        contentType: widget.contentType,
+                                                      );
 
                                                   if (result.result && mounted) {
                                                     String location = GoRouter.of(context).location();

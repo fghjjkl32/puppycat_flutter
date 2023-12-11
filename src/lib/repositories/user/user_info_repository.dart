@@ -30,7 +30,7 @@ class UserInfoRepository {
     if (simpleId == null || simpleId.isEmpty) {
       throw APIException(
         msg: 'ID is Null(or empty).',
-        code: 'ASL-9998',
+        code: 'ASL-9997',
         refer: 'UserInfoRepository',
         caller: 'restoreAccount',
       );

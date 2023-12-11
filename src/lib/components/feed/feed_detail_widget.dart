@@ -37,6 +37,7 @@ class FeedDetailWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print('memberUuidmemberUuid $memberUuid');
     return Column(
       children: [
         //feed title

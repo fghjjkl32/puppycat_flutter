@@ -74,7 +74,7 @@ class FeedListState extends _$FeedListState {
 
       apiStatus = ListAPIStatus.loading;
 
-      FeedResponseModel feedResult = feedNullResponseModel;
+      FeedResponseModel? feedResult; // = feedNullResponseModel;
 
       if (contentType == "myContent") {
         feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(page: pageKey);
@@ -108,39 +108,24 @@ class FeedListState extends _$FeedListState {
       } else if (contentType == "notificationContent") {
         feedResult = await Future.value(feedNullResponseModel);
       }
-      memberInfo = feedResult.data!.memberInfo;
-      print(memberInfo);
 
-      List<FeedData> searchList = feedResult.data!.list
-          .map(
-            (e) => FeedData(
-              comment: e.comment,
-              keepState: e.keepState,
-              followState: e.followState,
-              isComment: e.isComment,
-              isLike: e.isLike,
-              saveState: e.saveState,
-              likeState: e.likeState,
-              isView: e.isView,
-              regDate: e.regDate,
-              imageCnt: e.imageCnt,
-              uuid: e.uuid,
-              memberUuid: e.memberUuid,
-              workUuid: e.workUuid,
-              // walkResultList: e.walkResultList,
-              likeCnt: e.likeCnt,
-              contents: e.contents,
-              location: e.location,
-              modifyState: e.modifyState,
-              idx: e.idx,
-              mentionList: e.mentionList,
-              commentCnt: e.commentCnt,
-              hashTagList: e.hashTagList,
-              memberInfo: e.memberInfo,
-              imgList: e.imgList,
-            ),
-          )
-          .toList();
+      if (feedResult == null) {
+        throw APIException(
+          msg: 'feedResult is null',
+          code: '400',
+          refer: 'FeedListState',
+          caller: '_fetchPage',
+        );
+      }
+
+      memberInfo = feedResult.data!.memberInfo;
+      print('feedResult.data!.list ${feedResult.data!.list.runtimeType}');
+
+      List<dynamic> resultList = feedResult.data!.list;
+      List<FeedData> searchList = resultList.map((e) {
+        FeedData feedDetail = FeedData.fromJson(e);
+        return feedDetail;
+      }).toList();
 
       searchList.removeWhere((element) => element.idx == idxToRemove);
 
@@ -164,6 +149,7 @@ class FeedListState extends _$FeedListState {
       apiStatus = ListAPIStatus.error;
       state.error = apiException.toString();
     } catch (e) {
+      print('FeedListState fetch error $e');
       apiStatus = ListAPIStatus.error;
       state.error = e;
     }

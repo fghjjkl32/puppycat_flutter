@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 
 class SignUpCompleteScreen extends ConsumerWidget {
   const SignUpCompleteScreen({Key? key}) : super(key: key);
@@ -55,6 +56,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                     onPressed: () {
                       final userModel = ref.read(signUpUserInfoProvider);
                       ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
+                      ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kPreviousPrimaryColor,

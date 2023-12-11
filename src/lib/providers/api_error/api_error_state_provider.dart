@@ -1,10 +1,13 @@
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'api_error_state_provider.g.dart';
@@ -96,12 +99,17 @@ class APIErrorState extends _$APIErrorState {
       case 'ATK-9999': //App Token, Access Token 재발행 시 Refresh Token 이 null 일 때, 따로 로직 추가해야할거 같긴함
         break;
       case 'ECOM-9999':
-      case 'ASL-9998':
+      case 'ASL-9997':
+        if (caller == 'checkRefreshToken') {
+          break;
+        }
         await TokenController.clearTokens();
 
+        ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+        ref.read(followUserStateProvider.notifier).resetState();
+        ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
         ref.read(loginStateProvider.notifier).state = LoginStatus.none;
-        ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
-        ref.read(signUpUserInfoProvider.notifier).state = null;
+
         break;
       // case 'ASP-9999': //회원가입 후 바로 로그인했는데  userModel이  null일 때
       default:

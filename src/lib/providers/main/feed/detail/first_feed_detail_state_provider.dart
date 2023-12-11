@@ -2,7 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
@@ -33,7 +32,7 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
         ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.loading;
       });
 
-      FeedResponseModel searchResult = feedNullResponseModel;
+      FeedResponseModel? searchResult; // = feedNullResponseModel;
 
       if (contentType == "myContent" || contentType == "myDetailContent") {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(contentIdx: contentIdx);
@@ -51,7 +50,14 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
       } else if (contentType == "myKeepContent") {
         searchResult = await KeepContentsRepository(dio: ref.read(dioProvider)).getMyKeepContentDetail(contentIdx: contentIdx);
       }
-
+      if (searchResult == null) {
+        throw APIException(
+          msg: 'searchResult is null',
+          code: '400',
+          refer: 'FirstFeedDetailState',
+          caller: 'getFirstFeedState',
+        );
+      }
       bool isResponseDataEmpty = searchResult.data!.list.isEmpty;
       ref.read(firstFeedEmptyProvider.notifier).state = isResponseDataEmpty;
       memberInfo = searchResult.data!.memberInfo;
@@ -60,7 +66,7 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
         ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.loaded;
       });
       if (!isResponseDataEmpty) {
-        FeedData firstFeed = searchResult.data!.list.first;
+        FeedData firstFeed = FeedData.fromJson(searchResult.data!.list);
         state = firstFeed;
         return firstFeed;
       } else {

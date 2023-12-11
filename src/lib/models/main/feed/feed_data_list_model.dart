@@ -8,7 +8,8 @@ part 'feed_data_list_model.g.dart';
 @freezed
 class FeedDataListModel with _$FeedDataListModel {
   const factory FeedDataListModel({
-    @Default([]) List<FeedData> list,
+    // @Default([]) List<FeedData> list,
+    dynamic list,
     MemberInfoData? memberInfo,
     // String? imgDomain,
     ParamsModel? params,

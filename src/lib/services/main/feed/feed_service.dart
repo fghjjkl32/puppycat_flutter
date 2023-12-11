@@ -48,16 +48,16 @@ abstract class FeedService {
   );
 
   //user page feed list - user
-  @GET('v1/member/{memberIdx}/contents')
+  @GET('v1/member/{memberUuid}/contents')
   Future<ContentResponseModel> getUserContentList(
     @Path("memberUuid") String memberUuid,
     @Query("page") int page,
     @Query("limit") int limit,
   );
 
-  @GET('v1/member/{memberIdx}/tag/contents')
+  @GET('v1/member/{memberUuid}/tag/contents')
   Future<ContentResponseModel> getUserTagContentList(
-    @Path("memberIdx") String memberUuid,
+    @Path("memberUuid") String memberUuid,
     @Query("page") int page,
     @Query("limit") int limit,
   );
@@ -90,12 +90,6 @@ abstract class FeedService {
     @Query("page") int page,
     @Query("limit") int limit,
     @Query("imgLimit") int imgLimit,
-  );
-
-  @GET('v1/contents/tag/detail?imgLimit=12&memberIdx={memberIdx}&page={page}')
-  Future<FeedResponseModel> getLogoutUserTagContentDetail(
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
   );
 
   @GET('v1/contents/hashtag/detail')

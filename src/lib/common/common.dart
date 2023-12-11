@@ -25,7 +25,7 @@ Widget getProfileAvatar(
     childSaveLayer: true,
     mask: Center(
       child: Image.network(
-        Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$avatarUrl").toUrl(),
+        Thumbor(host: thumborHostUrl, key: thumborKey).buildImage(avatarUrl).toUrl(),
         width: double.infinity,
         height: height,
         fit: BoxFit.cover,
@@ -95,4 +95,24 @@ Widget getSquircleImage(
       colorFilter: colorFilter == kPreviousPrimaryColor ? ColorFilter.mode(colorFilter.withAlpha(50), BlendMode.srcATop) : null,
     ),
   );
+}
+
+String convertToJsonStringQuotes({required String raw}) {
+  String jsonString = raw;
+
+  /// add quotes to json string
+  jsonString = jsonString.replaceAll('{', '{"');
+  jsonString = jsonString.replaceAll(': ', '": "');
+  jsonString = jsonString.replaceAll(', ', '", "');
+  jsonString = jsonString.replaceAll('}', '"}');
+
+  /// remove quotes on object json string
+  jsonString = jsonString.replaceAll('"{"', '{"');
+  jsonString = jsonString.replaceAll('"}"', '"}');
+
+  /// remove quotes on array json string
+  jsonString = jsonString.replaceAll('"[{', '[{');
+  jsonString = jsonString.replaceAll('}]"', '}]');
+
+  return jsonString;
 }

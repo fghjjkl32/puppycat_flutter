@@ -112,7 +112,7 @@ class MemberInfoData with _$MemberInfoData {
     String? simpleType,
     String? nick,
     int? isBadge,
-    String? memberUuid,
+    String? uuid,
     int? followerCnt,
     String? intro,
     String? profileImgUrl,

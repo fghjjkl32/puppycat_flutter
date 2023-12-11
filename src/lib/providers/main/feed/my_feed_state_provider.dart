@@ -40,36 +40,11 @@ class MyFeedState extends _$MyFeedState {
       );
       memberInfo = feedResult.data!.memberInfo;
 
-      List<FeedData> feedList = feedResult.data!.list
-          .map(
-            (e) => FeedData(
-              comment: e.comment,
-              keepState: e.keepState,
-              followState: e.followState,
-              isComment: e.isComment,
-              isLike: e.isLike,
-              saveState: e.saveState,
-              likeState: e.likeState,
-              isView: e.isView,
-              regDate: e.regDate,
-              imageCnt: e.imageCnt,
-              uuid: e.uuid,
-              memberUuid: e.memberUuid,
-              workUuid: e.workUuid,
-              // walkResultList: e.walkResultList,
-              likeCnt: e.likeCnt,
-              contents: e.contents,
-              location: e.location,
-              modifyState: e.modifyState,
-              idx: e.idx,
-              mentionList: e.mentionList,
-              commentCnt: e.commentCnt,
-              hashTagList: e.hashTagList,
-              memberInfo: e.memberInfo,
-              imgList: e.imgList,
-            ),
-          )
-          .toList();
+      List<dynamic> resultList = feedResult.data!.list;
+      List<FeedData> feedList = resultList.map((e) {
+        FeedData feedDetail = FeedData.fromJson(e);
+        return feedDetail;
+      }).toList();
 
       try {
         _lastPage = feedResult.data!.params!.pagination?.totalPageCount! ?? 0;
