@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
@@ -56,9 +57,9 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
             carouselController: ref.watch(feedWriteCarouselControllerProvider),
             options: CarouselOptions(
               initialPage: ref.watch(feedWriteCurrentViewCountProvider),
-              height: 260.0.h,
+              viewportFraction: getViewportFractionCalculateValue(MediaQuery.of(context).size.width),
+              height: getImageHeightCalculateValue(MediaQuery.of(context).size.width),
               enableInfiniteScroll: false,
-              aspectRatio: 1,
               padEnds: false,
               onPageChanged: (index, reason) {
                 ref.watch(feedWriteCurrentTagCountProvider.notifier).state = taggedImages.firstWhere((tagImage) => tagImage.index == index, orElse: () => TagImages(index: index, tag: [])).tag.length;
@@ -74,105 +75,100 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
 
               List<Tag> tags = tagImages.tag;
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 9.0),
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      // color: kBlackColor,
-                      // width: 300.w,
-                      // height: 225.h,
-                      child: Center(
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
-                          child: Image.file(
-                            file,
-                            fit: BoxFit.cover,
-                            width: 300.w,
-                            height: 225.h,
-                          ),
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        color: kBlackColor,
+                        child: Image.file(
+                          file,
                         ),
                       ),
                     ),
-                    Positioned(
-                      top: 10,
-                      right: -10,
-                      child: providerCroppedFiles.length > 1
-                          ? GestureDetector(
-                              onTap: () {
-                                ref.read(feedWriteCroppedFilesProvider.notifier).removeAt(index);
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: providerCroppedFiles.length > 1
+                        ? GestureDetector(
+                            onTap: () {
+                              ref.read(feedWriteCroppedFilesProvider.notifier).removeAt(index);
 
-                                ref.read(feedWriteProvider.notifier).removeTagsFromImage(index);
+                              ref.read(feedWriteProvider.notifier).removeTagsFromImage(index);
 
-                                if (index >= 0 && index < taggedImages.length - 1) {
-                                  ref.watch(feedWriteCurrentTagCountProvider.notifier).state = taggedImages[index + 1].tag.length;
-                                } else {
-                                  ref.watch(feedWriteCurrentTagCountProvider.notifier).state = 0;
-                                }
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  color: kPreviousTextSubTitleColor.withOpacity(0.8),
-                                  shape: BoxShape.circle,
-                                ),
-                                height: 28.h,
-                                child: const Icon(
-                                  Icons.close,
-                                  size: 18,
-                                  color: kPreviousNeutralColor100,
-                                ),
+                              if (index >= 0 && index < taggedImages.length - 1) {
+                                ref.watch(feedWriteCurrentTagCountProvider.notifier).state = taggedImages[index + 1].tag.length;
+                              } else {
+                                ref.watch(feedWriteCurrentTagCountProvider.notifier).state = 0;
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: kPreviousTextSubTitleColor.withOpacity(0.8),
+                                shape: BoxShape.circle,
                               ),
-                            )
-                          : Container(),
-                    ),
-                    if (tags.isNotEmpty)
-                      Positioned(
-                        left: 4,
-                        bottom: 20,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xff414348).withOpacity(0.6),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: Icon(
-                              Puppycat_social.icon_taguser,
-                              size: 24,
-                              color: kPreviousNeutralColor100,
+                              height: 28.h,
+                              child: const Icon(
+                                Icons.close,
+                                size: 18,
+                                color: kPreviousNeutralColor100,
+                              ),
                             ),
+                          )
+                        : Container(),
+                  ),
+                  if (tags.isNotEmpty)
+                    Positioned(
+                      left: 20,
+                      bottom: 20,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xff414348).withOpacity(0.6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Icon(
+                            Puppycat_social.icon_taguser,
+                            size: 24,
+                            color: kPreviousNeutralColor100,
                           ),
                         ),
                       ),
+                    ),
 
-                    // ...tags.map((item) {
-                    //   return Positioned(
-                    //     top: item.position.dy,
-                    //     left: item.position.dx,
-                    //     child: GestureDetector(
-                    //       onTap: () {
-                    //         ref.read(feedWriteProvider.notifier).removeTag(item);
-                    //         ref.watch(feedWriteCurrentTagCountProvider.notifier).state =
-                    //             taggedImages.firstWhere((tagImage) => tagImage.index == index, orElse: () => TagImages(index: index, tag: [])).tag.length - 1;
-                    //       },
-                    //       child: MentionTagWidget(
-                    //         color: kTextSubTitleColor.withOpacity(0.8),
-                    //         textStyle: kBody11RegularStyle.copyWith(color: kNeutralColor100),
-                    //         text: item.username,
-                    //         onDelete: () {
-                    //           ref.read(feedWriteProvider.notifier).removeTag(item);
-                    //
-                    //           ref.watch(feedWriteCurrentTagCountProvider.notifier).state =
-                    //               taggedImages.firstWhere((tagImage) => tagImage.index == index, orElse: () => TagImages(index: index, tag: [])).tag.length - 1;
-                    //         },
-                    //       ),
-                    //     ),
-                    //   );
-                    // }).toList(),
-                  ],
-                ),
+                  // ...tags.map((item) {
+                  //   return Positioned(
+                  //     top: item.position.dy,
+                  //     left: item.position.dx,
+                  //     child: GestureDetector(
+                  //       onTap: () {
+                  //         ref.read(feedWriteProvider.notifier).removeTag(item);
+                  //         ref.watch(feedWriteCurrentTagCountProvider.notifier).state =
+                  //             taggedImages.firstWhere((tagImage) => tagImage.index == index, orElse: () => TagImages(index: index, tag: [])).tag.length - 1;
+                  //       },
+                  //       child: MentionTagWidget(
+                  //         color: kTextSubTitleColor.withOpacity(0.8),
+                  //         textStyle: kBody11RegularStyle.copyWith(color: kNeutralColor100),
+                  //         text: item.username,
+                  //         onDelete: () {
+                  //           ref.read(feedWriteProvider.notifier).removeTag(item);
+                  //
+                  //           ref.watch(feedWriteCurrentTagCountProvider.notifier).state =
+                  //               taggedImages.firstWhere((tagImage) => tagImage.index == index, orElse: () => TagImages(index: index, tag: [])).tag.length - 1;
+                  //         },
+                  //       ),
+                  //     ),
+                  //   );
+                  // }).toList(),
+                ],
               );
             },
           ),

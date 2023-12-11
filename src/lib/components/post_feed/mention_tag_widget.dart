@@ -60,35 +60,39 @@ class MentionTagWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: RectangleWithNotchPainter(
-        color: color,
-        radius: radius,
-        shadow: shadow,
-        triangleWidth: triangleWidth,
-        triangleHeight: triangleHeight,
-        triangleRadius: triangleRadius,
-      ),
-      child: Container(
-        padding: padding,
-        margin: margin,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(text, style: textStyle),
-            isCanClose
-                ? GestureDetector(
-                    onTap: () {
-                      onDelete();
-                    },
-                    child: const Icon(
-                      Puppycat_social.icon_close_medium,
-                      size: 18,
-                      color: kPreviousNeutralColor100,
-                    ),
-                  )
-                : Container(),
-          ],
+    return Container(
+      height: 30,
+      child: CustomPaint(
+        painter: RectangleWithNotchPainter(
+          color: color,
+          radius: radius,
+          shadow: shadow,
+          triangleWidth: triangleWidth,
+          triangleHeight: triangleHeight,
+          triangleRadius: triangleRadius,
+        ),
+        child: Container(
+          padding: padding,
+          margin: margin,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(text, style: textStyle),
+              isCanClose
+                  ? GestureDetector(
+                      onTap: () {
+                        onDelete();
+                      },
+                      child: const Icon(
+                        Puppycat_social.icon_close_medium,
+                        size: 18,
+                        color: kPreviousNeutralColor100,
+                      ),
+                    )
+                  : Container(),
+            ],
+          ),
         ),
       ),
     );

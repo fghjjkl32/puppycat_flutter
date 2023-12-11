@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autocomplete_options.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -49,8 +50,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
           AnimatedContainer(
             duration: kThemeChangeDuration,
             curve: Curves.easeInOut,
-            height: 250.h,
-            width: 270.w,
+            height: getImageHeightCalculateValue(MediaQuery.of(context).size.width),
             child: Column(
               children: <Widget>[
                 CroppedImagesListView(
