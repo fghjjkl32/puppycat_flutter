@@ -5,7 +5,6 @@ import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart'
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -19,8 +18,7 @@ class MyFeedState extends _$MyFeedState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
 
-  List<MemberInfoListData>? memberInfo;
-  String? imgDomain;
+  MemberInfoData? memberInfo;
 
   @override
   PagingController<int, FeedData> build() {
@@ -37,46 +35,16 @@ class MyFeedState extends _$MyFeedState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
       var feedResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetailList(
-        loginMemberIdx: loginMemberIdx,
-        memberIdx: loginMemberIdx,
         page: pageKey,
       );
       memberInfo = feedResult.data!.memberInfo;
-      imgDomain = feedResult.data!.imgDomain;
 
-      List<FeedData> feedList = feedResult.data!.list
-          .map(
-            (e) => FeedData(
-              commentList: e.commentList,
-              keepState: e.keepState,
-              followState: e.followState,
-              isComment: e.isComment,
-              memberIdx: e.memberIdx,
-              isLike: e.isLike,
-              saveState: e.saveState,
-              likeState: e.likeState,
-              isView: e.isView,
-              regDate: e.regDate,
-              imageCnt: e.imageCnt,
-              uuid: e.uuid,
-              memberUuid: e.memberUuid,
-              workUuid: e.workUuid,
-              walkResultList: e.walkResultList,
-              likeCnt: e.likeCnt,
-              contents: e.contents,
-              location: e.location,
-              modifyState: e.modifyState,
-              idx: e.idx,
-              mentionList: e.mentionList,
-              commentCnt: e.commentCnt,
-              hashTagList: e.hashTagList,
-              memberInfoList: e.memberInfoList,
-              imgList: e.imgList,
-            ),
-          )
-          .toList();
+      List<dynamic> resultList = feedResult.data!.list;
+      List<FeedData> feedList = resultList.map((e) {
+        FeedData feedDetail = FeedData.fromJson(e);
+        return feedDetail;
+      }).toList();
 
       try {
         _lastPage = feedResult.data!.params!.pagination?.totalPageCount! ?? 0;

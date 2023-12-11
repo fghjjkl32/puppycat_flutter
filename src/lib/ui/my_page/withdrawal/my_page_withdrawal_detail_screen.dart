@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/withdrawal/withdrawal_detail_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/withdrawal/withdrawal_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 class MyPageWithdrawalDetailScreen extends ConsumerStatefulWidget {
   const MyPageWithdrawalDetailScreen({super.key});
@@ -20,7 +20,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
   @override
   void initState() {
     super.initState();
-    ref.read(withdrawalDetailStateProvider.notifier).getWithdrawalDetailList(ref.read(userInfoProvider).userModel!.idx);
+    ref.read(withdrawalDetailStateProvider.notifier).getWithdrawalDetailList();
   }
 
   void onTap() {
@@ -33,6 +33,8 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
 
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+
     return Material(
       child: Scaffold(
         appBar: AppBar(
@@ -96,7 +98,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${ref.read(userInfoProvider).userModel!.nick}님이",
+                              "${myInfo.nick}님이",
                               style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
                             Row(
@@ -314,7 +316,6 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                     onPressed: isAgree
                         ? () async {
                             final result = await ref.read(withdrawalStateProvider.notifier).withdrawalUser(
-                                  idx: ref.read(userInfoProvider).userModel!.idx,
                                   code: ref.read(withdrawalCodeProvider.notifier).state,
                                   reason: ref.read(withdrawalReasonProvider.notifier).state == "null" ? null : ref.read(withdrawalReasonProvider.notifier).state,
                                 );

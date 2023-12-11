@@ -3,20 +3,17 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 final searchStateProvider = StateNotifierProvider<SearchStateNotifier, SearchDataListModel>((ref) {
-  final loginMemberIdx = ref.watch(userInfoProvider).userModel!.idx;
-  return SearchStateNotifier(loginMemberIdx, ref);
+  return SearchStateNotifier(ref);
 });
 
 class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
-  final int loginMemberIdx;
   final Ref ref;
 
-  SearchStateNotifier(this.loginMemberIdx, this.ref) : super(const SearchDataListModel()) {
+  SearchStateNotifier(this.ref) : super(const SearchDataListModel()) {
     searchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
       await searchMentionList(query);
     });
@@ -38,7 +35,6 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
 
     final page = initPage ?? state.page;
     final lists = await SearchRepository(dio: ref.read(dioProvider)).getMentionRecommendList(
-      memberIdx: loginMemberIdx,
       page: page,
     );
 
@@ -54,7 +50,7 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
     state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
   }
 
-  loadMoreMentionSearchList(memberIdx) async {
+  loadMoreMentionSearchList() async {
     if (isMentionSearching) {
       if (searchMentionCurrentPage >= searchMentionMaxPages) {
         state = state.copyWith(isLoadMoreDone: true);
@@ -73,7 +69,6 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
       state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
       final lists = await SearchRepository(dio: ref.read(dioProvider)).getNickSearchList(
-        memberIdx: memberIdx,
         page: searchMentionCurrentPage + 1,
         searchWord: searchSearchWord,
       );
@@ -110,7 +105,6 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
       state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
       final lists = await SearchRepository(dio: ref.read(dioProvider)).getMentionRecommendList(
-        memberIdx: memberIdx,
         page: recommendCurrentPage + 1,
       );
 
@@ -134,7 +128,6 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
     isMentionSearching = true;
 
     final lists = await SearchRepository(dio: ref.read(dioProvider)).getNickSearchList(
-      memberIdx: loginMemberIdx,
       page: 1,
       searchWord: searchSearchWord,
     );

@@ -8,14 +8,13 @@ class PopularUserListData with _$PopularUserListData {
   factory PopularUserListData({
     String? nick,
     int? isBadge,
-    int? memberIdx,
+    String? memberUuid,
     int? followerCnt,
     String? profileImgUrl,
     List<ContentsListData>? contentsList,
   }) = _PopularUserListData;
 
-  factory PopularUserListData.fromJson(Map<String, dynamic> json) =>
-      _$PopularUserListDataFromJson(json);
+  factory PopularUserListData.fromJson(Map<String, dynamic> json) => _$PopularUserListDataFromJson(json);
 }
 
 @freezed
@@ -27,6 +26,5 @@ class ContentsListData with _$ContentsListData {
     int? imageCnt,
   }) = _ContentsListData;
 
-  factory ContentsListData.fromJson(Map<String, dynamic> json) =>
-      _$ContentsListDataFromJson(json);
+  factory ContentsListData.fromJson(Map<String, dynamic> json) => _$ContentsListDataFromJson(json);
 }

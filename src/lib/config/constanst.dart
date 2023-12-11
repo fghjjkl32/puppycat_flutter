@@ -16,6 +16,7 @@ import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_p
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,7 +54,7 @@ class Constants {
 
   static Future<String> getThumborDomain() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborDomain') ?? imgDomain;
+    return prefs.getString('thumborDomain') ?? '';
   }
 
   static Future<String> getS3Domain() async {
@@ -68,19 +69,17 @@ class Constants {
 }
 
 // String baseUrl = "https://sns-api.devlabs.co.kr:28080";
-// String baseUrl = "https://api.pcstg.co.kr/";
-String baseUrl = "https://api.puppycat.co.kr/";
+String baseUrl = "https://api.pcstg.co.kr/";
+// String baseUrl = "https://api.puppycat.co.kr";
 
 // String thumborHostUrl = "https://tb.pcstg.co.kr/";
-// String thumborHostUrl = "https://tb.pcstg.co.kr/";
-String thumborHostUrl = "https://tb.puppycat.co.kr/";
+String thumborHostUrl = "https://tb.pcstg.co.kr/";
+// String thumborHostUrl = "https://tb.puppycat.co.kr/";
 
-// String thumborKey = "Tjaqhvpt";
-String thumborKey = "vjvlzotvldkfel"; //prd
-
+String thumborKey = "Tjaqhvpt";
+// String thumborKey = "vjvlzotvldkfel"; //prd
 // String imgDomain = "https://imgs.pcstg.co.kr";
 // String imgDomain = "https://imgs.pcstg.co.kr";
-String imgDomain = "https://imgs.puppycat.co.kr";
 
 String s3BaseUrl = "https://mnt.puppycat.co.kr"; //prd
 
@@ -89,12 +88,16 @@ String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
 
 // String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
-// String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
-String walkBaseUrl = 'https://walk-api.puppycat.co.kr/';
+String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
+// String walkBaseUrl = 'https://walk-api.puppycat.co.kr';
 
 // String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr';
-// String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
-String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
+String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
+// String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr';
+
+// String memberBaseUrl = 'https://puppycat-dev-member.devlabs.co.kr/';
+String memberBaseUrl = 'https://member-api.pcstg.co.kr/';
+// String memberBaseUrl = 'https://member.puppycat.co.kr/';
 
 double getImageHeightCalculateValue(double width) {
   const double slope = 0.172727;
@@ -219,7 +222,7 @@ Future<String> processMentionEditedText(String editedText, List<MentionListData>
   return Future.value(editedText);
 }
 
-List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, int? oldMemberIdx) {
+List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, String? oldMemberUuid) {
   List<InlineSpan> spans = [];
 
   // Combining both mention and hashtag patterns
@@ -242,18 +245,20 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
         spans.add(WidgetSpan(
           child: GestureDetector(
             onTap: () {
-              ref.read(userInfoProvider).userModel?.idx == mention.memberIdx
+              ref.read(myInfoStateProvider).uuid == mention.uuid
                   ? Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => MyPageMainScreen(
-                          oldMemberIdx: oldMemberIdx!,
+                          oldMemberUuid: oldMemberUuid!,
                         ),
                       ),
                     )
+                  //TODO
+                  //Route 다시
                   : mention.memberState == 0
                       ? context.push("/home/myPage/userUnknown")
-                      : context.push("/home/myPage/followList/${mention.memberIdx}/userPage/${mention.nick}/${mention.memberIdx}/${oldMemberIdx}");
+                      : context.push("/home/myPage/followList/${mention.memberUuid}/userPage/${mention.nick}/${mention.memberUuid}/${oldMemberUuid}");
             },
             child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
           ),
@@ -268,7 +273,9 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
         spans.add(WidgetSpan(
           child: GestureDetector(
             onTap: () {
-              context.push("/home/search/$hashtagMatched/$oldMemberIdx");
+              //TODO
+              //Route 다시
+              context.push("/home/search/$hashtagMatched/$oldMemberUuid");
             },
             child: Text('#' + hashtagMatched, style: tagStyle),
           ),
@@ -438,9 +445,9 @@ void onTapHide({
   required WidgetRef ref,
   required String contentType,
   required dynamic contentIdx,
-  required dynamic memberIdx,
+  required String memberUuid,
 }) async {
-  if (ref.read(userInfoProvider).userModel == null) {
+  if (!ref.read(loginStatementProvider)) {
     context.pushReplacement("/loginScreen");
   } else {
     final tempContentIdx = contentIdx;
@@ -451,10 +458,8 @@ void onTapHide({
     context.pop();
 
     final result = await ref.watch(feedListStateProvider.notifier).postHide(
-          loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
           contentType: contentType,
           contentIdx: tempContentIdx,
-          memberIdx: memberIdx,
         );
 
     if (result.result && context.mounted) {
@@ -465,10 +470,8 @@ void onTapHide({
         buttonText: "되돌리기",
         buttonOnTap: () async {
           final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
-                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                 contentType: contentType,
                 contentIdx: tempContentIdx,
-                memberIdx: memberIdx,
               );
 
           if (result.result && context.mounted) {
@@ -498,12 +501,10 @@ void onTapReport({
     buttonOnTap: () async {
       final result = reportType
           ? await ref.read(commentListStateProvider.notifier).deleteCommentReport(
-                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                 contentIdx: contentIdx,
                 reportType: reportType ? "comment" : "contents",
               )
           : await ref.read(feedListStateProvider.notifier).deleteContentReport(
-                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                 contentIdx: contentIdx,
                 reportType: reportType ? "comment" : "contents",
               );

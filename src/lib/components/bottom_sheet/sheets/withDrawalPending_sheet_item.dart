@@ -26,14 +26,15 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
           height: 46,
           child: ElevatedButton(
             onPressed: () {
-              var userModel = ref.read(userInfoProvider).userModel;
+              final isLogined = ref.read(loginStatementProvider);
 
-              if (userModel == null) {
+              if (!isLogined) {
                 ///TODO
                 ///Error Proc
                 return;
               }
-              ref.read(userRestoreStateProvider.notifier).restoreAccount(userModel.simpleId);
+
+              ref.read(userRestoreStateProvider.notifier).restoreAccount();
             },
             style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(

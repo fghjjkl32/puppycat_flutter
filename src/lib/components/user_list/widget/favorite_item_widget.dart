@@ -7,6 +7,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 class FavoriteItemWidget extends ConsumerStatefulWidget {
   const FavoriteItemWidget({
@@ -15,9 +16,9 @@ class FavoriteItemWidget extends ConsumerStatefulWidget {
     required this.content,
     required this.isSpecialUser,
     required this.isFollow,
-    required this.followerIdx,
+    required this.followerUuid,
     required this.contentsIdx,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
     this.contentType,
     Key? key,
   }) : super(key: key);
@@ -27,10 +28,10 @@ class FavoriteItemWidget extends ConsumerStatefulWidget {
   final String content;
   final bool isSpecialUser;
   final bool isFollow;
-  final int followerIdx;
+  final String followerUuid;
   final int contentsIdx;
   final String? contentType;
-  final int oldMemberIdx;
+  final String oldMemberUuid;
 
   @override
   FavoriteItemWidgetState createState() => FavoriteItemWidgetState();
@@ -42,22 +43,26 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
     super.initState();
 
     Future(() {
-      final currentFollowState = ref.read(followUserStateProvider)[widget.followerIdx];
+      final currentFollowState = ref.read(followUserStateProvider)[widget.followerUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.followerIdx, widget.isFollow);
+        ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, widget.isFollow);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isFollow = ref.watch(followUserStateProvider)[widget.followerIdx] ?? false;
+    final isFollow = ref.watch(followUserStateProvider)[widget.followerUuid] ?? false;
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
 
     return InkWell(
       onTap: () {
-        ref.read(userInfoProvider).userModel!.idx == widget.followerIdx
+        myInfo.uuid == widget.followerUuid
             ? context.push("/home/myPage")
-            : context.push("/home/myPage/followList/${widget.followerIdx}/userPage/${widget.userName}/${widget.followerIdx}/${widget.oldMemberIdx}");
+            : context.push("/home/myPage/followList/${widget.followerUuid}/userPage/${widget.userName}/${widget.followerUuid}/${widget.oldMemberUuid}");
+        //TODO
+        //Route 다시
       },
       child: Padding(
         padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
@@ -109,23 +114,22 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
               ],
             ),
             Consumer(builder: (context, ref, child) {
-              return ref.read(userInfoProvider).userModel?.idx == widget.followerIdx
+              return myInfo.uuid == widget.followerUuid
                   ? Container()
                   : isFollow
                       ? GestureDetector(
                           onTap: () async {
                             if (!ref.watch(followApiIsLoadingStateProvider)) {
-                              if (ref.read(userInfoProvider).userModel == null) {
+                              if (!isLogined) {
                                 context.pushReplacement("/loginScreen");
                               } else {
                                 final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                      followIdx: widget.followerIdx,
+                                      followUuid: widget.followerUuid,
                                     );
 
                                 if (result.result) {
                                   setState(() {
-                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.followerIdx, false);
+                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, false);
                                   });
                                 }
                               }
@@ -170,17 +174,16 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                       : GestureDetector(
                           onTap: () async {
                             if (!ref.watch(followApiIsLoadingStateProvider)) {
-                              if (ref.read(userInfoProvider).userModel == null) {
+                              if (!isLogined) {
                                 context.pushReplacement("/loginScreen");
                               } else {
                                 final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                      followIdx: widget.followerIdx,
+                                      followUuid: widget.followerUuid,
                                     );
 
                                 if (result.result) {
                                   setState(() {
-                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.followerIdx, true);
+                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, true);
                                   });
                                 }
                               }

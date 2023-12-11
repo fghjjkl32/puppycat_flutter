@@ -6,7 +6,6 @@ import 'package:pet_mobile_social_flutter/components/feed/widget/feed_bottom_ico
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_comment_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_image_detail_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_title_widget.dart';
-import 'package:pet_mobile_social_flutter/components/feed/widget/feed_walk_info_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -17,10 +16,9 @@ class FeedDetailWidget extends ConsumerWidget {
   final String? profileImage;
   final String? nick;
   final FeedData feedData;
-  final int? memberIdx;
+  final String memberUuid;
   final String contentType;
   final bool isSpecialUser;
-  final String imgDomain;
   final int index;
 
   final Function onTapHideButton;
@@ -29,9 +27,8 @@ class FeedDetailWidget extends ConsumerWidget {
     required this.profileImage,
     required this.feedData,
     required this.nick,
-    required this.memberIdx,
+    required this.memberUuid,
     required this.contentType,
-    required this.imgDomain,
     required this.isSpecialUser,
     required this.index,
     required this.onTapHideButton,
@@ -40,6 +37,7 @@ class FeedDetailWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print('memberUuidmemberUuid $memberUuid');
     return Column(
       children: [
         //feed title
@@ -51,11 +49,11 @@ class FeedDetailWidget extends ConsumerWidget {
           address: feedData.location ?? "",
           time: feedData.regDate!,
           isEdit: feedData.modifyState == 1,
-          memberIdx: memberIdx,
+          memberUuid: memberUuid,
           isKeep: feedData.keepState == 1,
           contentType: contentType,
           contentIdx: feedData.idx,
-          oldMemberIdx: memberIdx!,
+          oldMemberUuid: memberUuid,
           isDetailWidget: true,
           onTapHideButton: () async {
             onTapHideButton();
@@ -66,13 +64,12 @@ class FeedDetailWidget extends ConsumerWidget {
           imageList: feedData.imgList!,
           contentIdx: feedData.idx,
           contentType: contentType,
-          memberIdx: memberIdx,
+          memberUuid: memberUuid,
           isLike: feedData.likeState == 1,
-          imgDomain: imgDomain,
         ),
-        FeedWalkInfoWidget(
-          walkData: feedData.walkResultList,
-        ),
+        // FeedWalkInfoWidget(
+        //   walkData: feedData.walkResultList,
+        // ),
         const SizedBox(
           height: 10,
         ),
@@ -88,7 +85,7 @@ class FeedDetailWidget extends ConsumerWidget {
                   context,
                   kBody13RegularStyle.copyWith(color: kPreviousSecondaryColor),
                   ref,
-                  memberIdx,
+                  memberUuid,
                 ),
                 style: kBody13RegularStyle.copyWith(color: kPreviousTextTitleColor),
               ),
@@ -102,19 +99,19 @@ class FeedDetailWidget extends ConsumerWidget {
           isLike: feedData.likeState == 1,
           isSave: feedData.saveState == 1,
           contentType: contentType,
-          oldMemberIdx: memberIdx!,
+          oldMemberUuid: memberUuid,
         ),
-        feedData.commentList!.isEmpty
+        feedData.comment == null
             ? Container()
             : FeedCommentWidget(
-                userMemberIdx: feedData.commentList![0].memberIdx!,
-                profileImage: feedData.commentList![0].profileImgUrl,
-                name: feedData.commentList![0].nick!,
-                comment: feedData.commentList![0].contents!,
-                isSpecialUser: feedData.commentList![0].isBadge! == 1,
-                mentionListData: feedData.commentList![0].mentionList ?? [],
+                memberUuid: feedData.comment!.memberUuid!,
+                profileImage: feedData.comment!.profileImgUrl,
+                name: feedData.comment!.nick!,
+                comment: feedData.comment!.contents!,
+                isSpecialUser: feedData.comment!.isBadge! == 1,
+                mentionListData: feedData.comment!.mentionList ?? [],
                 contentIdx: feedData.idx,
-                oldMemberIdx: memberIdx!,
+                oldMemberUuid: memberUuid,
               ),
         Padding(
           padding: EdgeInsets.all(12.0.h),
@@ -123,7 +120,7 @@ class FeedDetailWidget extends ConsumerWidget {
         if (index != 0 && index == 4)
           FeedFollowWidget(
             popularUserListData: ref.watch(popularUserListStateProvider).list,
-            oldMemberIdx: memberIdx!,
+            oldMemberUuid: memberUuid,
           ),
       ],
     );

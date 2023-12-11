@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pet_mobile_social_flutter/models/params_model.dart';
 
 part 'content_like_user_list_data.freezed.dart';
 part 'content_like_user_list_data.g.dart';
@@ -10,12 +9,11 @@ class ContentLikeUserListData with _$ContentLikeUserListData {
     String? nick,
     int? followState,
     int? isBadge,
-    int? memberIdx,
+    String? memberUuid,
     int? followerCnt,
     String? intro,
     String? profileImgUrl,
   }) = _ContentLikeUserListData;
 
-  factory ContentLikeUserListData.fromJson(Map<String, dynamic> json) =>
-      _$ContentLikeUserListDataFromJson(json);
+  factory ContentLikeUserListData.fromJson(Map<String, dynamic> json) => _$ContentLikeUserListDataFromJson(json);
 }

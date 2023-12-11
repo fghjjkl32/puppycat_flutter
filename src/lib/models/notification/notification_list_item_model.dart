@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pet_mobile_social_flutter/models/data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_sender_info_model.dart';
 
 part 'notification_list_item_model.freezed.dart';
@@ -8,9 +7,9 @@ part 'notification_list_item_model.g.dart';
 @freezed
 class NotificationListItemModel with _$NotificationListItemModel {
   factory NotificationListItemModel({
-    required int senderIdx,
+    required String senderUuid,
     String? img,
-    required int memberIdx,
+    required String memberUuid,
     required int commentIdx,
     required String regDate,
     required int type,
@@ -29,6 +28,5 @@ class NotificationListItemModel with _$NotificationListItemModel {
     int? followState,
   }) = _NotificationListItemModel;
 
-  factory NotificationListItemModel.fromJson(Map<String, dynamic> json) =>
-      _$NotificationListItemModelFromJson(json);
+  factory NotificationListItemModel.fromJson(Map<String, dynamic> json) => _$NotificationListItemModelFromJson(json);
 }

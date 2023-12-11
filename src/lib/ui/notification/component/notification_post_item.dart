@@ -162,7 +162,7 @@ class NotificationPostItem extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: const BorderRadius.all(Radius.circular(8)),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imgUrl}").toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imgUrl}").toUrl(),
                               fit: BoxFit.cover,
                               height: 52,
                               width: 52,

@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -74,7 +75,7 @@ class CroppedImagesListViewState extends ConsumerState<EditCroppedImagesListView
                         height: double.infinity,
                         color: kBlackColor,
                         child: Image.network(
-                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.feedData.imgList![index].url!}").toUrl(),
+                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.feedData.imgList![index].url!}").toUrl(),
                         ),
                       ),
                     ),

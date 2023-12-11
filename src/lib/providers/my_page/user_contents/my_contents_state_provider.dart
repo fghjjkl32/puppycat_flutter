@@ -5,7 +5,6 @@ import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart'
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -34,9 +33,7 @@ class MyContentsState extends _$MyContentsState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
       var result = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(
-        loginMemberIdx: loginMemberIdx,
         page: pageKey,
       );
 

@@ -5,20 +5,17 @@ import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart'
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
 final tagSearchStateProvider = StateNotifierProvider<TagSearchStateNotifier, SearchDataListModel>((ref) {
-  final loginMemberIdx = ref.watch(userInfoProvider).userModel?.idx;
-  return TagSearchStateNotifier(loginMemberIdx, ref);
+  return TagSearchStateNotifier(ref);
 });
 
 class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
-  final int? loginMemberIdx;
   final Ref ref;
 
-  TagSearchStateNotifier(this.loginMemberIdx, this.ref) : super(const SearchDataListModel()) {
+  TagSearchStateNotifier(this.ref) : super(const SearchDataListModel()) {
     searchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
       await searchTagList(query);
     });
@@ -40,7 +37,6 @@ class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
 
     try {
       final lists = await SearchRepository(dio: ref.read(dioProvider)).getTagSearchList(
-        memberIdx: loginMemberIdx,
         searchWord: searchSearchWord,
         page: 1,
       );
@@ -75,7 +71,7 @@ class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
     }
   }
 
-  loadMoreTagSearchList(memberIdx) async {
+  loadMoreTagSearchList() async {
     if (searchTagCurrentPage >= searchTagMaxPages) {
       state = state.copyWith(isLoadMoreDone: true);
       return;
@@ -94,7 +90,6 @@ class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
       state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
       final lists = await SearchRepository(dio: ref.read(dioProvider)).getTagSearchList(
-        memberIdx: memberIdx,
         page: searchTagCurrentPage + 1,
         searchWord: searchSearchWord,
       );

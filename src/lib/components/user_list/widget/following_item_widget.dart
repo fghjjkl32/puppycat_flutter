@@ -7,6 +7,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 class FollowingItemWidget extends ConsumerStatefulWidget {
   const FollowingItemWidget({
@@ -16,9 +17,9 @@ class FollowingItemWidget extends ConsumerStatefulWidget {
     required this.isSpecialUser,
     required this.isFollow,
     required this.isNewUser,
-    required this.followIdx,
-    required this.memberIdx,
-    required this.oldMemberIdx,
+    required this.followUuid,
+    required this.memberUuid,
+    required this.oldMemberUuid,
     Key? key,
   }) : super(key: key);
 
@@ -28,9 +29,9 @@ class FollowingItemWidget extends ConsumerStatefulWidget {
   final bool isSpecialUser;
   final bool isFollow;
   final bool isNewUser;
-  final int followIdx;
-  final int memberIdx;
-  final int oldMemberIdx;
+  final String followUuid;
+  final String memberUuid;
+  final String oldMemberUuid;
 
   @override
   FollowingItemWidgetState createState() => FollowingItemWidgetState();
@@ -42,22 +43,26 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
     super.initState();
 
     Future(() {
-      final currentFollowState = ref.read(followUserStateProvider)[widget.followIdx];
+      final currentFollowState = ref.read(followUserStateProvider)[widget.followUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.followIdx, widget.isFollow);
+        ref.read(followUserStateProvider.notifier).setFollowState(widget.followUuid, widget.isFollow);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isFollow = ref.watch(followUserStateProvider)[widget.followIdx] ?? false;
+    final isFollow = ref.watch(followUserStateProvider)[widget.followUuid] ?? false;
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
 
     return InkWell(
       onTap: () {
-        ref.read(userInfoProvider).userModel!.idx == widget.followIdx
+        myInfo.uuid == widget.followUuid
             ? context.push("/home/myPage")
-            : context.push("/home/myPage/followList/${widget.followIdx}/userPage/${widget.userName}/${widget.followIdx}/${widget.oldMemberIdx}");
+            : context.push("/home/myPage/followList/${widget.followUuid}/userPage/${widget.userName}/${widget.followUuid}/${widget.oldMemberUuid}");
+        //TODO
+        //Route 다시
       },
       child: Padding(
         padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
@@ -136,24 +141,23 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                 ],
               ),
             ),
-            ref.read(userInfoProvider).userModel!.idx == widget.followIdx
+            myInfo.uuid == widget.followUuid
                 ? Container()
                 : Consumer(builder: (context, ref, child) {
                     return isFollow
                         ? GestureDetector(
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                if (ref.read(userInfoProvider).userModel == null) {
+                                if (!isLogined) {
                                   context.pushReplacement("/loginScreen");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        followIdx: widget.followIdx,
+                                        followUuid: widget.followUuid,
                                       );
 
                                   if (result.result) {
                                     setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followIdx, false);
+                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followUuid, false);
                                     });
                                   }
                                 }
@@ -179,17 +183,16 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                         : GestureDetector(
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                if (ref.read(userInfoProvider).userModel == null) {
+                                if (!isLogined) {
                                   context.pushReplacement("/loginScreen");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                        memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                        followIdx: widget.followIdx,
+                                        followUuid: widget.followUuid,
                                       );
 
                                   if (result.result) {
                                     setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followIdx, true);
+                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followUuid, true);
                                     });
                                   }
                                 }

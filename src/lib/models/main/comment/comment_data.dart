@@ -9,7 +9,7 @@ part 'comment_data.g.dart';
 class CommentData with _$CommentData {
   factory CommentData({
     required int isBadge,
-    required int memberIdx,
+    required String memberUuid,
     int? commentLikeCnt,
     required String regDate,
     required int likeState,
@@ -32,8 +32,7 @@ class CommentData with _$CommentData {
     @Default(false) bool isDisplayPreviousMore,
   }) = _CommentData;
 
-  factory CommentData.fromJson(Map<String, dynamic> json) =>
-      _$CommentDataFromJson(json);
+  factory CommentData.fromJson(Map<String, dynamic> json) => _$CommentDataFromJson(json);
 }
 
 @freezed
@@ -43,6 +42,5 @@ class ChildCommentData with _$ChildCommentData {
     required List<CommentData> list,
   }) = _ChildCommentData;
 
-  factory ChildCommentData.fromJson(Map<String, dynamic> json) =>
-      _$ChildCommentDataFromJson(json);
+  factory ChildCommentData.fromJson(Map<String, dynamic> json) => _$ChildCommentDataFromJson(json);
 }

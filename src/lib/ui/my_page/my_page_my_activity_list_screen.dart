@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_save_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
 
 class MyPageMyActivityListScreen extends ConsumerStatefulWidget {
@@ -39,15 +40,15 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
       length: 2,
       vsync: this,
     );
-    ref.read(myLikeStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel!.idx, 1);
-    ref.read(mySaveStateProvider.notifier).initPosts(ref.read(userInfoProvider).userModel!.idx, 1);
+    ref.read(myLikeStateProvider.notifier).initPosts(1);
+    ref.read(mySaveStateProvider.notifier).initPosts(1);
     super.initState();
   }
 
   void _myLikeContentsScrollListener() {
     if (myLikeContentController.position.pixels > myLikeContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (myLikeOldLength == ref.read(myLikeStateProvider).list.length) {
-        ref.read(myLikeStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx);
+        ref.read(myLikeStateProvider.notifier).loadMorePost();
       }
     }
   }
@@ -55,7 +56,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
   void _mySaveContentsScrollListener() {
     if (mySaveContentController.position.pixels > mySaveContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (mySaveOldLength == ref.read(mySaveStateProvider).list.length) {
-        ref.read(mySaveStateProvider.notifier).loadMorePost(ref.read(userInfoProvider).userModel!.idx);
+        ref.read(mySaveStateProvider.notifier).loadMorePost();
       }
     }
   }
@@ -174,6 +175,9 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
     //     ],
     //   );
     // }
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return Consumer(
       builder: (ctx, ref, child) {
         final myLikeContentState = ref.watch(myLikeStateProvider);
@@ -210,9 +214,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
               )
             : RefreshIndicator(
                 onRefresh: () {
-                  return ref.read(myLikeStateProvider.notifier).refresh(
-                        ref.read(userInfoProvider).userModel!.idx,
-                      );
+                  return ref.read(myLikeStateProvider.notifier).refresh();
                 },
                 child: Padding(
                   padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
@@ -259,7 +261,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                           Map<String, dynamic> extraMap = {
                             'firstTitle': 'null',
                             'secondTitle': '좋아요한 피드',
-                            'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                            'memberUuid': myInfo.uuid,
                             'contentIdx': '${lists[index].idx}',
                             'contentType': 'myLikeContent',
                           };
@@ -274,7 +276,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         child: Stack(
                           children: [
                             CachedNetworkImage(
-                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
                               imageBuilder: (context, imageProvider) => Container(
                                 decoration: BoxDecoration(
                                   borderRadius: (index == 0)
@@ -333,6 +335,8 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
 
         mySaveOldLength = lists.length ?? 0;
 
+        final myInfo = ref.read(myInfoStateProvider);
+
         return lists.isEmpty
             ? Container(
                 color: kPreviousNeutralColor100,
@@ -359,9 +363,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
               )
             : RefreshIndicator(
                 onRefresh: () {
-                  return ref.read(mySaveStateProvider.notifier).refresh(
-                        ref.read(userInfoProvider).userModel!.idx,
-                      );
+                  return ref.read(mySaveStateProvider.notifier).refresh();
                 },
                 child: Padding(
                   padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
@@ -406,7 +408,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                           Map<String, dynamic> extraMap = {
                             'firstTitle': 'null',
                             'secondTitle': '저장한 피드',
-                            'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                            'memberUuid': myInfo.uuid,
                             'contentIdx': '${lists[index].idx}',
                             'contentType': 'mySaveContent',
                           };
@@ -421,7 +423,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         child: Stack(
                           children: [
                             CachedNetworkImage(
-                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
                               imageBuilder: (context, imageProvider) => Container(
                                 decoration: BoxDecoration(
                                   borderRadius: (index == 0)

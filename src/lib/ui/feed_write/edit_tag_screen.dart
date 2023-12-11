@@ -223,7 +223,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               child: Image.network(
-                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.url}").toUrl(),
+                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.url}").toUrl(),
                 fit: BoxFit.cover,
                 key: widget.imageKey,
               ),

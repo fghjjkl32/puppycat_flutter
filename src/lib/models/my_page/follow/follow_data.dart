@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pet_mobile_social_flutter/models/params_model.dart';
 
 part 'follow_data.freezed.dart';
 part 'follow_data.g.dart';
@@ -11,22 +10,17 @@ class FollowData with _$FollowData {
     String? followerNick,
     String? url,
     int? isBadge,
-    int? memberIdx,
+    String? memberUuid,
     int? followerCnt,
     String? regDate,
-    int? followIdx,
+    String? followUuid,
     int? newState,
     String? intro,
     int? isFollow,
-    int? followerIdx,
+    String? followerUuid,
     String? followerId,
-    String? chatMemberId,
-    String? chatHomeServer,
-    String? chatDeviceId,
-    String? chatAccessToken,
     int? favoriteState,
   }) = _FollowData;
 
-  factory FollowData.fromJson(Map<String, dynamic> json) =>
-      _$FollowDataFromJson(json);
+  factory FollowData.fromJson(Map<String, dynamic> json) => _$FollowDataFromJson(json);
 }

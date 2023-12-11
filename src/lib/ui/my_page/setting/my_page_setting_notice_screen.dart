@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/customer_support/customer_support_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class MyPageSettingNoticeScreen extends ConsumerStatefulWidget {
@@ -64,6 +65,9 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
 
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return Material(
       child: Scaffold(
         appBar: AppBar(
@@ -83,17 +87,17 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
           actions: [
             GestureDetector(
               onTap: () async {
-                ref.read(userInfoProvider).userModel == null
+                !isLogined
                     ? await ChannelTalk.boot(
                         pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
                       )
                     : await ChannelTalk.boot(
                         pluginKey: 'cb3dc42b-c554-4722-b8d3-f25be06cadb3',
-                        memberId: ref.read(userInfoProvider).userModel!.uuid,
-                        email: ref.read(userInfoProvider).userModel!.id,
-                        name: '${ref.read(userInfoProvider).userModel!.name}',
-                        memberHash: ref.read(userInfoProvider).userModel!.channelTalkHash,
-                        mobileNumber: '${ref.read(userInfoProvider).userModel!.phone}',
+                        memberId: myInfo.uuid,
+                        email: myInfo.email,
+                        name: myInfo.name,
+                        memberHash: myInfo.channelTalkHash,
+                        mobileNumber: myInfo.phone,
                       );
                 await ChannelTalk.showMessenger();
               },

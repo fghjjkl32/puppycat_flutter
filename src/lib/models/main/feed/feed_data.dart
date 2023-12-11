@@ -6,11 +6,10 @@ part 'feed_data.g.dart';
 @freezed
 class FeedData with _$FeedData {
   factory FeedData({
-    List<FeedCommentData>? commentList,
+    FeedCommentData? comment,
     int? keepState,
     int? followState,
     int? isComment,
-    int? memberIdx,
     int? isLike,
     int? saveState,
     int? isView,
@@ -28,9 +27,9 @@ class FeedData with _$FeedData {
     List<MentionListData>? mentionList,
     int? commentCnt,
     List<FeedHashTagListData>? hashTagList,
-    List<MemberInfoListData>? memberInfoList,
+    MemberInfoData? memberInfo,
     List<FeedImgListData>? imgList,
-    List<WalkResultListData>? walkResultList,
+    // List<WalkResultListData>? walkResultList,
   }) = _FeedData;
 
   factory FeedData.fromJson(Map<String, dynamic> json) => _$FeedDataFromJson(json);
@@ -42,7 +41,7 @@ class FeedCommentData with _$FeedCommentData {
     String? nick,
     int? likeCnt,
     int? isBadge,
-    int? memberIdx,
+    String? memberUuid,
     String? contents,
     String? regDate,
     int? likeState,
@@ -57,7 +56,7 @@ class FeedCommentData with _$FeedCommentData {
 @freezed
 class MentionListData with _$MentionListData {
   factory MentionListData({
-    int? memberIdx,
+    String? memberUuid,
     String? uuid,
     String? nick,
     int? memberState,
@@ -95,7 +94,7 @@ class ImgMemberTagListData with _$ImgMemberTagListData {
   factory ImgMemberTagListData({
     String? nick,
     int? imgIdx,
-    int? memberIdx,
+    String? memberUuid,
     int? isBadge,
     String? profileImgUrl,
     int? followState,
@@ -108,36 +107,36 @@ class ImgMemberTagListData with _$ImgMemberTagListData {
 }
 
 @freezed
-class MemberInfoListData with _$MemberInfoListData {
-  factory MemberInfoListData({
+class MemberInfoData with _$MemberInfoData {
+  factory MemberInfoData({
     String? simpleType,
     String? nick,
     int? isBadge,
-    int? memberIdx,
+    String? uuid,
     int? followerCnt,
     String? intro,
     String? profileImgUrl,
     int? followCnt,
     String? email,
-  }) = _MemberInfoListData;
+  }) = _MemberInfoData;
 
-  factory MemberInfoListData.fromJson(Map<String, dynamic> json) => _$MemberInfoListDataFromJson(json);
+  factory MemberInfoData.fromJson(Map<String, dynamic> json) => _$MemberInfoDataFromJson(json);
 }
 
-@freezed
-class WalkResultListData with _$WalkResultListData {
-  factory WalkResultListData({
-    double? distance,
-    String? memberUuid,
-    String? endDate,
-    double? calorie,
-    String? walkTime,
-    int? step,
-    String? walkUuid,
-    String? startDate,
-    int? together,
-    List<MemberInfoListData>? walkMemberList,
-  }) = _WalkResultListData;
-
-  factory WalkResultListData.fromJson(Map<String, dynamic> json) => _$WalkResultListDataFromJson(json);
-}
+// @freezed
+// class WalkResultListData with _$WalkResultListData {
+//   factory WalkResultListData({
+//     double? distance,
+//     String? memberUuid,
+//     String? endDate,
+//     double? calorie,
+//     String? walkTime,
+//     int? step,
+//     String? walkUuid,
+//     String? startDate,
+//     int? together,
+//     List<MemberInfoData>? walkMemberList,
+//   }) = _WalkResultListData;
+//
+//   factory WalkResultListData.fromJson(Map<String, dynamic> json) => _$WalkResultListDataFromJson(json);
+// }

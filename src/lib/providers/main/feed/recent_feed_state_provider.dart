@@ -14,12 +14,12 @@ final recentFeedListEmptyProvider = StateProvider<bool>((ref) => true);
 
 @Riverpod(keepAlive: true)
 class RecentFeedState extends _$RecentFeedState {
-  int _lastPage = 0;
+  int lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
 
-  List<MemberInfoListData>? memberInfo;
-  String? imgDomain;
-  int? loginMemberIdx;
+  MemberInfoData? memberInfo;
+
+  // String? imgDomain;
 
   @override
   PagingController<int, FeedData> build() {
@@ -30,65 +30,40 @@ class RecentFeedState extends _$RecentFeedState {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      if (_apiStatus == ListAPIStatus.loading) {
-        return;
-      }
+      // if (_apiStatus == ListAPIStatus.loading) {
+      //   return;
+      // }
 
       _apiStatus = ListAPIStatus.loading;
 
       var feedResult = await FeedRepository(dio: ref.read(dioProvider)).getRecentDetailList(
-        loginMemberIdx: loginMemberIdx,
         page: pageKey,
       );
 
       memberInfo = feedResult.data!.memberInfo;
-      imgDomain = feedResult.data!.imgDomain;
+      print('feedResult.data!.list ${feedResult.data!.list.runtimeType}');
 
-      List<FeedData> feedList = feedResult.data!.list
-          .map(
-            (e) => FeedData(
-              commentList: e.commentList,
-              keepState: e.keepState,
-              followState: e.followState,
-              isComment: e.isComment,
-              memberIdx: e.memberIdx,
-              isLike: e.isLike,
-              saveState: e.saveState,
-              likeState: e.likeState,
-              isView: e.isView,
-              regDate: e.regDate,
-              imageCnt: e.imageCnt,
-              uuid: e.uuid,
-              memberUuid: e.memberUuid,
-              workUuid: e.workUuid,
-              walkResultList: e.walkResultList,
-              likeCnt: e.likeCnt,
-              contents: e.contents,
-              location: e.location,
-              modifyState: e.modifyState,
-              idx: e.idx,
-              mentionList: e.mentionList,
-              commentCnt: e.commentCnt,
-              hashTagList: e.hashTagList,
-              memberInfoList: e.memberInfoList,
-              imgList: e.imgList,
-            ),
-          )
-          .toList();
+      List<dynamic> resultList = feedResult.data!.list;
+      List<FeedData> feedList = resultList.map((e) {
+        FeedData feedDetail = FeedData.fromJson(e);
+        return feedDetail;
+      }).toList();
 
+      print('ccccccccccccc $feedList');
       try {
-        _lastPage = feedResult.data!.params!.pagination?.totalPageCount! ?? 0;
+        lastPage = feedResult.data!.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
-        _lastPage = 1;
+        lastPage = 1;
       }
-
+      print('bbbbbbbbbb $feedList');
       final nextPageKey = feedList.isEmpty ? null : pageKey + 1;
 
-      if (pageKey == _lastPage) {
+      if (pageKey == lastPage) {
         state.appendLastPage(feedList);
       } else {
         state.appendPage(feedList, nextPageKey);
       }
+      print('aaaaaaaaaaaaa $feedList');
       _apiStatus = ListAPIStatus.loaded;
       ref.read(recentFeedListEmptyProvider.notifier).state = feedList.isEmpty;
     } on APIException catch (apiException) {
@@ -96,6 +71,7 @@ class RecentFeedState extends _$RecentFeedState {
       _apiStatus = ListAPIStatus.error;
       state.error = apiException.toString();
     } catch (e) {
+      print('RecentFeedState _fetch Error $e');
       _apiStatus = ListAPIStatus.error;
       state.error = e;
     }

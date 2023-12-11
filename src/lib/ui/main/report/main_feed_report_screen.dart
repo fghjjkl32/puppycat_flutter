@@ -7,7 +7,6 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/report/report_state_provider.dart';
 
@@ -131,14 +130,12 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                         : () async {
                             final result = widget.isComment
                                 ? await ref.watch(commentListStateProvider.notifier).postCommentReport(
-                                      loginMemberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                       contentIdx: widget.contentIdx,
                                       reportCode: code,
                                       reason: directInputText,
                                       reportType: "comment",
                                     )
                                 : await ref.watch(feedListStateProvider.notifier).postContentReport(
-                                      loginMemberIdx: ref.watch(userInfoProvider).userModel!.idx,
                                       contentIdx: widget.contentIdx,
                                       reportCode: code,
                                       reason: directInputText,

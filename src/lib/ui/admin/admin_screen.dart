@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum SystemUIOverlayStatus {
@@ -221,7 +222,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
 
     await prefs.setString('thumborDomain', selThumborDomainController.text);
 
-    imgDomain = await Constants.getThumborDomain();
+    // imgDomain = await Constants.getThumborDomain();
   }
 
   setS3UrlValue() async {
@@ -509,12 +510,14 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                         setThumborDomain();
                         setS3UrlValue();
 
-                        if (ref.read(userInfoProvider).userModel == null) {
+                        final myInfo = ref.read(myInfoStateProvider);
+                        final isLogined = ref.read(loginStatementProvider);
+
+                        if (!isLogined) {
                           context.pushReplacementNamed("loginScreen");
                         } else {
                           ref.read(loginStateProvider.notifier).logout(
-                                ref.read(userInfoProvider).userModel!.simpleType,
-                                ref.read(userInfoProvider).userModel!.appKey,
+                                myInfo.simpleType!,
                               );
                         }
                       }

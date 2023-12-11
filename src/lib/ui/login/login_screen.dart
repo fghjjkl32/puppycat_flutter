@@ -67,8 +67,8 @@ class LoginScreen extends ConsumerWidget {
 
     ref.listen(userRestoreStateProvider, (previous, next) {
       if (next) {
-        var userModel = ref.read(userInfoProvider).userModel;
-        ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel!);
+        final userModel = ref.read(signUpUserInfoProvider);
+        ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
       }
     });
 

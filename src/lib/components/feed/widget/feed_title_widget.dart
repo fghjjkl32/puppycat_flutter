@@ -18,6 +18,7 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_edit_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 
@@ -29,12 +30,12 @@ class FeedTitleWidget extends ConsumerStatefulWidget {
     required this.address,
     required this.time,
     required this.isEdit,
-    required this.memberIdx,
+    required this.memberUuid,
     required this.isKeep,
     required this.isSpecialUser,
     required this.contentIdx,
     required this.contentType,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
     required this.isDetailWidget,
     this.feedType = "recent",
     required this.onTapHideButton,
@@ -46,13 +47,14 @@ class FeedTitleWidget extends ConsumerStatefulWidget {
   final String address;
   final String time;
   final bool isEdit;
-  final int? memberIdx;
+  final String memberUuid;
+
   final bool isKeep;
   final bool isSpecialUser;
   final int contentIdx;
   final String contentType;
   final FeedData feedData;
-  final int oldMemberIdx;
+  final String oldMemberUuid;
   final bool isDetailWidget;
   final String feedType;
   final Function onTapHideButton;
@@ -66,29 +68,34 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
   void initState() {
     super.initState();
     Future(() {
-      final currentFollowState = ref.read(followUserStateProvider)[widget.memberIdx];
+      final currentFollowState = ref.read(followUserStateProvider)[widget.memberUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx!, widget.feedData.followState == 1);
+        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid!, widget.feedData.followState == 1);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isFollow = ref.watch(followUserStateProvider)[widget.memberIdx!] ?? false;
+    final isFollow = ref.watch(followUserStateProvider)[widget.memberUuid] ?? false;
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
 
     return GestureDetector(
       onTap: () {
-        ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
+        print('11 myInfo.uuid == widget.memberUuid ${myInfo.uuid} / ${widget.memberUuid}');
+        myInfo.uuid == widget.memberUuid
             ? Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => MyPageMainScreen(
-                    oldMemberIdx: widget.oldMemberIdx,
+                    oldMemberUuid: widget.oldMemberUuid,
                   ),
                 ),
               )
-            : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
+            //TODO
+            //Route 다시
+            : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
       },
       child: Material(
         color: kPreviousNeutralColor100,
@@ -135,7 +142,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                               if (!widget.isDetailWidget || widget.contentType == "popularWeekContent")
                                 if (widget.feedType != "follow")
                                   Consumer(builder: (context, ref, child) {
-                                    return ref.read(userInfoProvider).userModel?.idx != widget.memberIdx
+                                    return myInfo.uuid != widget.memberUuid
                                         ? isFollow
                                             ? Row(
                                                 children: [
@@ -146,17 +153,16 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                   InkWell(
                                                     onTap: () async {
                                                       if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                                        if (ref.read(userInfoProvider).userModel == null) {
+                                                        if (!isLogined) {
                                                           context.pushReplacement("/loginScreen");
                                                         } else {
                                                           final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                                memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                                followIdx: widget.memberIdx,
+                                                                followUuid: widget.memberUuid,
                                                               );
 
                                                           if (result.result) {
                                                             setState(() {
-                                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx!, false);
+                                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
                                                             });
                                                           }
                                                         }
@@ -178,17 +184,16 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                   InkWell(
                                                     onTap: () async {
                                                       if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                                        if (ref.read(userInfoProvider).userModel == null) {
+                                                        if (!isLogined) {
                                                           context.pushReplacement("/loginScreen");
                                                         } else {
                                                           final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                                memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                                followIdx: widget.memberIdx,
+                                                                followUuid: widget.memberUuid,
                                                               );
 
                                                           if (result.result) {
                                                             setState(() {
-                                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx!, true);
+                                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
                                                             });
                                                           }
                                                         }
@@ -253,7 +258,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                       if (value == null) {
                         return;
                       }
-                      widget.memberIdx == ref.read(userInfoProvider).userModel?.idx
+                      widget.memberUuid == myInfo.uuid
                           ? showCustomModalBottomSheet(
                               context: context,
                               widget: Column(
@@ -269,7 +274,6 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                             context.pop();
 
                                             final result = await ref.watch(feedListStateProvider.notifier).deleteOneKeepContents(
-                                                  loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                   contentType: widget.contentType,
                                                   contentIdx: widget.contentIdx,
                                                 );
@@ -298,10 +302,9 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                 context.pop();
 
                                                 final result = await ref.watch(feedListStateProvider.notifier).postKeepContents(
-                                                      loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                      contentIdxList: [widget.contentIdx],
-                                                      contentType: widget.contentType,
-                                                    );
+                                                  contentIdxList: [widget.contentIdx],
+                                                  contentType: widget.contentType,
+                                                );
 
                                                 if (result.result && mounted) {
                                                   toast(
@@ -347,7 +350,6 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                           context.pop();
 
                                           final result = await ref.watch(feedListStateProvider.notifier).deleteOneContents(
-                                                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                 contentType: widget.contentType,
                                                 contentIdx: widget.contentIdx,
                                               );
@@ -399,13 +401,12 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                               //     );
 
                                               final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                    memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                    followIdx: widget.memberIdx,
+                                                    followUuid: widget.memberUuid,
                                                   );
 
                                               if (result.result) {
                                                 setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx!, false);
+                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
                                                 });
                                               }
                                             }
@@ -419,7 +420,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     title: '차단하기',
                                     titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                     onTap: () async {
-                                      if (ref.read(userInfoProvider).userModel == null) {
+                                      if (!isLogined) {
                                         context.pushReplacement("/loginScreen");
                                       } else {
                                         Navigator.of(context).pop();
@@ -453,8 +454,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                   context.pop();
 
                                                   final result = await ref.read(feedListStateProvider.notifier).postBlock(
-                                                        memberIdx: ref.watch(userInfoProvider).userModel!.idx,
-                                                        blockIdx: widget.memberIdx,
+                                                        blockUuid: widget.memberUuid,
                                                         contentType: widget.contentType,
                                                       );
 
@@ -494,7 +494,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     title: '신고하기',
                                     titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                     onTap: () {
-                                      if (ref.read(userInfoProvider).userModel == null) {
+                                      if (!isLogined) {
                                         context.pushReplacement("/loginScreen");
                                       } else {
                                         context.pop();

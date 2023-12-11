@@ -4,7 +4,7 @@ class APIException implements Exception {
   final String refer;
 
   final String caller;
-  List<String>? arguments;
+  List<dynamic>? arguments;
 
   APIException({
     required this.msg,
@@ -18,11 +18,14 @@ class APIException implements Exception {
   String toString() => '$refer : $msg(code:$code)';
 
   String getExceptionMsg() => msg;
+
   String getExceptionCode() => code;
+
   String getExceptionRefer() => refer;
 
   String getExceptionCaller() => caller;
-  List<String>? getExceptionArgs() => arguments;
+
+  List<dynamic>? getExceptionArgs() => arguments;
 }
 
 // enum APIExceptionType {

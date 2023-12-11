@@ -1,66 +1,56 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_list_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
-
 // import 'package:pet_mobile_social_flutter/repositories/my_page/user_information/user_information_repository.dart';
 import 'package:riverpod/riverpod.dart';
 
-final userInformationStateProvider = StateNotifierProvider<UserInformationStateNotifier, UserInformationListModel>((ref) {
+final userInformationStateProvider = StateNotifierProvider<UserInformationStateNotifier, UserInformationItemModel>((ref) {
   return UserInformationStateNotifier(ref);
 });
 
-class UserInformationStateNotifier extends StateNotifier<UserInformationListModel> {
-  UserInformationStateNotifier(this.ref) : super(const UserInformationListModel());
+class UserInformationStateNotifier extends StateNotifier<UserInformationItemModel> {
+  UserInformationStateNotifier(this.ref) : super(UserInformationItemModel());
 
   final Ref ref;
 
-  final Map<int, UserInformationListModel> userInformationStateMap = {};
+  final Map<String, UserInformationItemModel> userInformationStateMap = {};
 
-  void getStateForUserInformation(int userIdx) {
-    state = userInformationStateMap[userIdx] ?? const UserInformationListModel();
+  void getStateForUserInformation(String memberUuid) {
+    state = userInformationStateMap[memberUuid] ?? UserInformationItemModel();
   }
 
-  getInitUserInformation([
-    loginMemberIdx,
-    memberIdx,
-  ]) async {
+  getInitUserInformation({
+    required String memberUuid,
+  }) async {
     try {
-      final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(loginMemberIdx, memberIdx);
+      final userInformationItemModel = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(memberUuid);
 
-      if (lists == null) {
-        state = state.copyWith(isLoading: false);
-        return;
-      }
+      state = userInformationItemModel;
 
-      state = state.copyWith(isLoading: false, list: lists.data.info);
+      userInformationStateMap[memberUuid] = userInformationItemModel;
 
-      userInformationStateMap[memberIdx] = state.copyWith(isLoading: false, list: lists.data.info);
-
-      ref.read(followUserStateProvider.notifier).setFollowState(memberIdx!, state.list[0].followState == 1);
+      ref.read(followUserStateProvider.notifier).setFollowState(memberUuid, userInformationItemModel.followState == 1);
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      state = state.copyWith(isLoading: false);
+      state = UserInformationItemModel();
     } catch (e) {
       print('getInitUserInformation error $e');
-      state = state.copyWith(isLoading: false);
+      state = UserInformationItemModel();
     }
   }
 
   Future<ResponseModel> postBlock({
-    required memberIdx,
-    required blockIdx,
+    required String blockUuid,
   }) async {
     try {
       final result = await BlockRepository(dio: ref.read(dioProvider)).postBlock(
-        memberIdx: memberIdx,
-        blockIdx: blockIdx,
+        blockUuid: blockUuid,
       );
 
       return result;
@@ -74,38 +64,42 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationListMode
   }
 
   void updateFollowState() {
-    state = state.copyWith(list: [state.list[0].copyWith(followState: 1, followerCnt: state.list[0].followerCnt! + 1)]);
+    state = state.copyWith(
+      followState: 1,
+      followerCnt: state.followerCnt! + 1,
+    );
   }
 
   void updateUnFollowState() {
-    state = state.copyWith(list: [state.list[0].copyWith(followState: 0, followerCnt: state.list[0].followerCnt! - 1)]);
+    state = state.copyWith(
+      followState: 0,
+      followerCnt: state.followerCnt! - 1,
+    );
   }
 
   Future<void> updateBlockState() async {
-    state = state.copyWith(list: [state.list[0].copyWith(blockedState: 1, followerCnt: 0, followCnt: 0)]);
+    state = state.copyWith(
+      blockedState: 1,
+      followerCnt: 0,
+      followCnt: 0,
+    );
   }
 
-  Future<void> updateUnBlockState(loginMemberIdx, memberIdx) async {
-    state = state.copyWith(list: [
-      state.list[0].copyWith(
-        blockedState: 0,
-        followerCnt: 0,
-        followCnt: 0,
-        followState: 0,
-      )
-    ]);
+  Future<void> updateUnBlockState(String memberUuid) async {
+    state = state.copyWith(
+      blockedState: 0,
+      followerCnt: 0,
+      followCnt: 0,
+      followState: 0,
+    );
 
     try {
-      final lists = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(loginMemberIdx, memberIdx);
+      final userInformationItemModel = await UserInfoRepository(dio: ref.read(dioProvider)).getUserInformation(memberUuid);
 
-      state = state.copyWith(list: [
-        state.list[0].copyWith(
-          blockedState: 0,
-          followerCnt: lists.data.info[0].followerCnt,
-          followCnt: lists.data.info[0].followCnt,
-          followState: 0,
-        )
-      ]);
+      state = userInformationItemModel.copyWith(
+        blockedState: 0,
+        followState: 0,
+      );
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {

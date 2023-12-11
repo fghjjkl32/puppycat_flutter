@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_helper_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/search/search_db_helper.dart';
 import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
 
@@ -17,9 +18,9 @@ class UserItemWidget extends ConsumerStatefulWidget {
     required this.userName,
     required this.content,
     required this.isSpecialUser,
-    required this.memberIdx,
+    required this.memberUuid,
     required this.contentType,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
     Key? key,
   }) : super(key: key);
 
@@ -27,9 +28,9 @@ class UserItemWidget extends ConsumerStatefulWidget {
   final String userName;
   final String content;
   final bool isSpecialUser;
-  final int memberIdx;
+  final String memberUuid;
   final String contentType;
-  final int oldMemberIdx;
+  final String oldMemberUuid;
 
   @override
   UserItemWidgetState createState() => UserItemWidgetState();
@@ -38,13 +39,15 @@ class UserItemWidget extends ConsumerStatefulWidget {
 class UserItemWidgetState extends ConsumerState<UserItemWidget> {
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
     return InkWell(
       onTap: () async {
         final dbHelper = ref.read(dbHelperProvider);
         final profile = SearchesCompanion(
           name: Value(widget.userName),
           content: Value(widget.contentType),
-          contentId: Value(widget.memberIdx),
+          contentId: Value(widget.memberUuid),
           image: Value(widget.profileImage),
           intro: Value(widget.content),
           isBadge: Value(widget.isSpecialUser),
@@ -56,9 +59,11 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
 
         ref.refresh(searchProvider);
 
-        ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
+        myInfo.uuid == widget.memberUuid
             ? context.push("/home/myPage")
-            : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
+            : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
+        //TODO
+        //Route 다시
       },
       child: Padding(
         padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),

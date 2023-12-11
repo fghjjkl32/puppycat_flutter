@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart' hide Headers;
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_response_model.dart';
 import 'package:retrofit/retrofit.dart';
@@ -10,28 +9,20 @@ part 'block_service.g.dart';
 abstract class BlockService {
   factory BlockService(Dio dio, {String baseUrl}) = _BlockService;
 
-  @GET('v1/block/member/{memberIdx}?page={page}&limit=30')
+  @GET('v1/block/member')
   Future<SearchResponseModel> getBlockList(
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
+    @Query("searchWord") String? searchWord,
+    @Query("page") int page,
+    @Query("limit") int limit,
   );
 
-  @GET('v1/block/member/{memberIdx}?page={page}&limit=30&searchWord={searchWord}')
-  Future<SearchResponseModel> getBlockSearchList(
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
-    @Path("searchWord") String searchWord,
-  );
-
-  @POST('v1/block/member/{blockIdx}')
+  @POST('v1/block/member/{blockUuid}')
   Future<ResponseModel> postBlock(
-    @Path("blockIdx") int blockIdx,
-    @Body() Map<String, dynamic> body,
+    @Path("blockUuid") String blockUuid,
   );
 
-  @DELETE('v1/block/member/{blockIdx}?memberIdx={memberIdx}')
+  @DELETE('v1/block/member/{blockUuid}')
   Future<ResponseModel> deleteBlock(
-    @Path("blockIdx") int blockIdx,
-    @Path("memberIdx") int memberIdx,
+    @Path("blockUuid") String blockUuid,
   );
 }

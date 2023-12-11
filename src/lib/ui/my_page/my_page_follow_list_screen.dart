@@ -10,9 +10,9 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 
 class MyPageFollowListScreen extends ConsumerStatefulWidget {
-  const MyPageFollowListScreen({super.key, required this.memberIdx});
+  const MyPageFollowListScreen({super.key, required this.memberUuid});
 
-  final int memberIdx;
+  final String memberUuid;
 
   @override
   MyPageFollowListScreenState createState() => MyPageFollowListScreenState();
@@ -29,23 +29,20 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
   int followerOldLength = 0;
   int followOldLength = 0;
 
-  int userMemberIdx = 0;
+  String memberUuid = '';
 
   @override
   void initState() {
-    Future(() {
-      ref.watch(followStateProvider.notifier).userMemberIdx = widget.memberIdx;
-    });
-    userMemberIdx = widget.memberIdx;
+    memberUuid = widget.memberUuid;
 
     followerController.addListener(_followerScrollListener);
     followController.addListener(_followScrollListener);
     followerSearchController.addListener(() {
-      ref.watch(followStateProvider.notifier).followerSearchQuery.add(followerSearchController.text);
+      ref.watch(followStateProvider.notifier).followerSearchQuery.add((memberUuid, followerSearchController.text));
     });
 
     followSearchController.addListener(() {
-      ref.watch(followStateProvider.notifier).followSearchQuery.add(followSearchController.text);
+      ref.watch(followStateProvider.notifier).followSearchQuery.add((memberUuid, followSearchController.text));
     });
 
     tabController = TabController(
@@ -55,14 +52,14 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
     );
     super.initState();
 
-    ref.read(followStateProvider.notifier).initFollowerList(userMemberIdx, 1);
-    ref.read(followStateProvider.notifier).initFollowList(userMemberIdx, 1);
+    ref.read(followStateProvider.notifier).initFollowerList(memberUuid: memberUuid, initPage: 1);
+    ref.read(followStateProvider.notifier).initFollowList(memberUuid: memberUuid, initPage: 1);
   }
 
   void _followerScrollListener() {
     if (followerController.position.pixels > followerController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (followerOldLength == ref.read(followStateProvider).followerListState.list.length) {
-        ref.read(followStateProvider.notifier).loadMoreFollowerList(userMemberIdx);
+        ref.read(followStateProvider.notifier).loadMoreFollowerList(memberUuid);
       }
     }
   }
@@ -70,7 +67,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
   void _followScrollListener() {
     if (followController.position.pixels > followController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (followOldLength == ref.read(followStateProvider).followListState.list.length) {
-        ref.read(followStateProvider.notifier).loadMoreFollowList(userMemberIdx);
+        ref.read(followStateProvider.notifier).loadMoreFollowList(memberUuid);
       }
     }
   }
@@ -174,6 +171,9 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
       final lists = followerState.followerListState.list;
 
       followerOldLength = lists.length ?? 0;
+
+      // final myInfo = ref.read(myInfoStateProvider);
+      // final isLogined = ref.read(loginStatementProvider);
 
       return Column(
         children: [
@@ -291,9 +291,9 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                               content: lists[index].intro == "" ? '소개글이 없어요.' : lists[index].intro!,
                               isSpecialUser: lists[index].isBadge! == 1,
                               isFollow: lists[index].isFollow == 1,
-                              followerIdx: lists[index].followerIdx!,
-                              memberIdx: lists[index].memberIdx!,
-                              oldMemberIdx: widget.memberIdx,
+                              followerUuid: lists[index].followerUuid!,
+                              memberUuid: lists[index].memberUuid!,
+                              oldMemberUuid: widget.memberUuid,
                             );
                           },
                         ),
@@ -311,8 +311,11 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
       final followState = ref.watch(followStateProvider);
       final isLoadMoreError = followState.followListState.isLoadMoreError;
       final isLoadMoreDone = followState.followListState.isLoadMoreDone;
-      final isLoading = followState.followListState.isLoading;
+      // final isLoading = followState.followListState.isLoading;
       final lists = followState.followListState.list;
+      // final myInfo = ref.read(myInfoStateProvider);
+      // final isLogined = ref.read(loginStatementProvider);
+
       return Column(
         children: [
           Expanded(
@@ -430,9 +433,9 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                               isSpecialUser: lists[index].isBadge! == 1,
                               isFollow: lists[index].isFollow == 1,
                               isNewUser: lists[index].newState! == 1,
-                              followIdx: lists[index].followIdx!,
-                              memberIdx: lists[index].memberIdx!,
-                              oldMemberIdx: widget.memberIdx,
+                              followUuid: lists[index].followUuid!,
+                              memberUuid: lists[index].memberUuid!,
+                              oldMemberUuid: widget.memberUuid,
                             );
                           },
                         ),

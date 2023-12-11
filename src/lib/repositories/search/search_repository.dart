@@ -1,10 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
-import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/params_model.dart';
-import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/search/search_service.dart';
 
@@ -20,10 +16,10 @@ class SearchRepository {
   }
 
   Future<SearchResponseModel> getMentionRecommendList({
-    required int memberIdx,
     required int page,
+    int limit = 10,
   }) async {
-    SearchResponseModel responseModel = await _searchService.getMentionRecommendList(memberIdx, page);
+    SearchResponseModel responseModel = await _searchService.getMentionRecommendList(page, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -38,10 +34,10 @@ class SearchRepository {
   }
 
   Future<SearchResponseModel> getImageTagRecommendList({
-    required int memberIdx,
     required int page,
+    int limit = 10,
   }) async {
-    SearchResponseModel responseModel = await _searchService.getImageTagRecommendList(memberIdx, page);
+    SearchResponseModel responseModel = await _searchService.getImageTagRecommendList(page, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -56,15 +52,11 @@ class SearchRepository {
   }
 
   Future<SearchResponseModel> getNickSearchList({
-    required int? memberIdx,
     required int page,
     required String searchWord,
     int limit = 20,
   }) async {
-    SearchResponseModel responseModel;
-    memberIdx == null
-        ? responseModel = await _searchService.getLogoutNickSearchList(page, searchWord, limit)
-        : responseModel = await _searchService.getNickSearchList(memberIdx, page, searchWord, limit);
+    SearchResponseModel responseModel = await _searchService.getNickSearchList(page, searchWord, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -79,15 +71,11 @@ class SearchRepository {
   }
 
   Future<SearchResponseModel> getTagSearchList({
-    required int? memberIdx,
     required int page,
     required String searchWord,
     int limit = 20,
   }) async {
-    SearchResponseModel responseModel;
-    memberIdx == null
-        ? responseModel = await _searchService.getLogoutTagSearchList(page, searchWord, limit)
-        : responseModel = await _searchService.getTagSearchList(memberIdx, page, searchWord, limit);
+    SearchResponseModel responseModel = await _searchService.getTagSearchList(page, searchWord, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -102,13 +90,11 @@ class SearchRepository {
   }
 
   Future<SearchResponseModel> getFullSearchList({
-    required int? memberIdx,
     required String searchWord,
+    int? page,
+    int? limit,
   }) async {
-    SearchResponseModel responseModel;
-    memberIdx == null
-        ? responseModel = await _searchService.getLogoutFullSearchList(searchWord)
-        : responseModel = await _searchService.getFullSearchList(memberIdx, searchWord);
+    SearchResponseModel responseModel = await _searchService.getFullSearchList(searchWord, page, limit);
 
     if (!responseModel.result) {
       throw APIException(

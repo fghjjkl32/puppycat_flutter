@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:thumbor/thumbor.dart';
@@ -22,8 +23,8 @@ class FeedFollowCardWidget extends ConsumerStatefulWidget {
     required this.imageList,
     required this.followCount,
     required this.isSpecialUser,
-    required this.memberIdx,
-    required this.oldMemberIdx,
+    required this.memberUuid,
+    required this.oldMemberUuid,
     Key? key,
   }) : super(key: key);
 
@@ -32,8 +33,8 @@ class FeedFollowCardWidget extends ConsumerStatefulWidget {
   final String userName;
   final int followCount;
   final bool isSpecialUser;
-  final int memberIdx;
-  final int oldMemberIdx;
+  final String memberUuid;
+  final String oldMemberUuid;
 
   @override
   FeedFollowCardWidgetState createState() => FeedFollowCardWidgetState();
@@ -44,16 +45,18 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
   void initState() {
     super.initState();
     Future(() {
-      final currentFollowState = ref.read(followUserStateProvider)[widget.memberIdx];
+      final currentFollowState = ref.read(followUserStateProvider)[widget.memberUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final isFollow = ref.watch(followUserStateProvider)[widget.memberIdx] ?? false;
+    final isFollow = ref.watch(followUserStateProvider)[widget.memberUuid] ?? false;
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
 
     return Padding(
       padding: EdgeInsets.only(left: 12.0.w),
@@ -88,16 +91,18 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
             Expanded(
               child: InkWell(
                 onTap: () {
-                  ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
+                  myInfo.uuid == widget.memberUuid
                       ? Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => MyPageMainScreen(
-                              oldMemberIdx: widget.oldMemberIdx,
+                              oldMemberUuid: widget.oldMemberUuid,
                             ),
                           ),
                         )
-                      : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
+                      //TODO
+                      //Route 다시
+                      : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
                 },
                 child: Container(
                   child: Row(
@@ -149,17 +154,16 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                         child: InkWell(
                                           onTap: () async {
                                             if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                              if (ref.read(userInfoProvider).userModel == null) {
+                                              if (!isLogined) {
                                                 context.pushReplacement("/loginScreen");
                                               } else {
                                                 final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                      followIdx: widget.memberIdx,
+                                                      followUuid: widget.memberUuid,
                                                     );
 
                                                 if (result.result) {
                                                   setState(() {
-                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, false);
+                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
                                                   });
                                                 }
                                                 print(ref.read(followUserStateProvider));
@@ -177,17 +181,16 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                         child: InkWell(
                                           onTap: () async {
                                             if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                              if (ref.read(userInfoProvider).userModel == null) {
+                                              if (!isLogined) {
                                                 context.pushReplacement("/loginScreen");
                                               } else {
                                                 final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                      memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                                      followIdx: widget.memberIdx,
+                                                      followUuid: widget.memberUuid,
                                                     );
 
                                                 if (result.result) {
                                                   setState(() {
-                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberIdx, true);
+                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
                                                   });
                                                 }
                                               }
@@ -229,10 +232,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           builder: (context) => FeedDetailScreen(
                                 firstTitle: widget.userName,
                                 secondTitle: "피드",
-                                memberIdx: widget.memberIdx,
+                                memberUuid: widget.memberUuid,
                                 contentIdx: widget.imageList[0].idx!,
                                 contentType: "FollowCardContent",
-                                oldMemberIdx: widget.oldMemberIdx,
+                                oldMemberUuid: widget.oldMemberUuid,
                               )),
                     );
                   });
@@ -248,7 +251,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomRight: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[0].imgUrl!}").toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[0].imgUrl!}").toUrl(),
                               fit: BoxFit.cover,
                               height: 147.h,
                               width: double.infinity,
@@ -295,10 +298,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                 builder: (context) => FeedDetailScreen(
                                       firstTitle: widget.userName,
                                       secondTitle: "피드",
-                                      memberIdx: widget.memberIdx,
+                                      memberUuid: widget.memberUuid,
                                       contentIdx: widget.imageList[0].idx!,
                                       contentType: "FollowCardContent",
-                                      oldMemberIdx: widget.oldMemberIdx,
+                                      oldMemberUuid: widget.oldMemberUuid,
                                     )),
                           );
                         });
@@ -310,7 +313,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomLeft: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[0].imgUrl!}").toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[0].imgUrl!}").toUrl(),
                               fit: BoxFit.cover,
                               height: 147.h,
                               width: double.infinity,
@@ -355,10 +358,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                 builder: (context) => FeedDetailScreen(
                                       firstTitle: widget.userName,
                                       secondTitle: "피드",
-                                      memberIdx: widget.memberIdx,
+                                      memberUuid: widget.memberUuid,
                                       contentIdx: widget.imageList[1].idx!,
                                       contentType: "FollowCardContent",
-                                      oldMemberIdx: widget.oldMemberIdx,
+                                      oldMemberUuid: widget.oldMemberUuid,
                                     )),
                           );
                         });
@@ -370,7 +373,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomRight: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[1].imgUrl!}").toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[1].imgUrl!}").toUrl(),
                               fit: BoxFit.cover,
                               height: 147.h,
                               width: double.infinity,
@@ -417,10 +420,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                 builder: (context) => FeedDetailScreen(
                                       firstTitle: widget.userName,
                                       secondTitle: "피드",
-                                      memberIdx: widget.memberIdx,
+                                      memberUuid: widget.memberUuid,
                                       contentIdx: widget.imageList[0].idx!,
                                       contentType: "FollowCardContent",
-                                      oldMemberIdx: widget.oldMemberIdx,
+                                      oldMemberUuid: widget.oldMemberUuid,
                                     )),
                           );
                         });
@@ -432,7 +435,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomLeft: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[0].imgUrl!}").toUrl(),
+                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[0].imgUrl!}").toUrl(),
                               fit: BoxFit.cover,
                               height: 147.h,
                               width: double.infinity,
@@ -479,10 +482,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                     builder: (context) => FeedDetailScreen(
                                           firstTitle: widget.userName,
                                           secondTitle: "피드",
-                                          memberIdx: widget.memberIdx,
+                                          memberUuid: widget.memberUuid,
                                           contentIdx: widget.imageList[1].idx!,
                                           contentType: "FollowCardContent",
-                                          oldMemberIdx: widget.oldMemberIdx,
+                                          oldMemberUuid: widget.oldMemberUuid,
                                         )),
                               );
                             });
@@ -490,7 +493,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           child: Stack(
                             children: [
                               Image.network(
-                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[1].imgUrl!}").toUrl(),
+                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[1].imgUrl!}").toUrl(),
                                 fit: BoxFit.cover,
                                 height: 73.h,
                                 width: double.infinity,
@@ -531,10 +534,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                     builder: (context) => FeedDetailScreen(
                                           firstTitle: widget.userName,
                                           secondTitle: "피드",
-                                          memberIdx: widget.memberIdx,
+                                          memberUuid: widget.memberUuid,
                                           contentIdx: widget.imageList[2].idx!,
                                           contentType: "FollowCardContent",
-                                          oldMemberIdx: widget.oldMemberIdx,
+                                          oldMemberUuid: widget.oldMemberUuid,
                                         )),
                               );
                             });
@@ -546,7 +549,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                             child: Stack(
                               children: [
                                 Image.network(
-                                  Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${widget.imageList[2].imgUrl!}").toUrl(),
+                                  Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[2].imgUrl!}").toUrl(),
                                   fit: BoxFit.cover,
                                   height: 73.h,
                                   width: double.infinity,

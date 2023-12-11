@@ -28,9 +28,9 @@ class FeedRepository {
   //user page feed list - my
   Future<ContentResponseModel> getMyContentList({
     required page,
-    required loginMemberIdx,
+    int limit = 15,
   }) async {
-    ContentResponseModel responseModel = await _feedService.getMyContentList(loginMemberIdx, page);
+    ContentResponseModel responseModel = await _feedService.getMyContentList(page, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -46,9 +46,9 @@ class FeedRepository {
 
   Future<ContentResponseModel> getMyTagContentList({
     required page,
-    required loginMemberIdx,
+    int limit = 15,
   }) async {
-    ContentResponseModel responseModel = await _feedService.getMyTagContentList(loginMemberIdx, page);
+    ContentResponseModel responseModel = await _feedService.getMyTagContentList(page, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -64,13 +64,11 @@ class FeedRepository {
 
   //user page feed list - user
   Future<ContentResponseModel> getUserContentList({
-    required page,
-    required loginMemberIdx,
-    required memberIdx,
+    required int page,
+    required String memberUuid,
+    int limit = 15,
   }) async {
-    ContentResponseModel responseModel;
-
-    loginMemberIdx == null ? responseModel = await _feedService.getLogoutUserContentList(memberIdx, page) : responseModel = await _feedService.getUserContentList(loginMemberIdx, memberIdx, page);
+    ContentResponseModel responseModel = await _feedService.getUserContentList(memberUuid, page, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -85,15 +83,11 @@ class FeedRepository {
   }
 
   Future<ContentResponseModel> getUserTagContentList({
-    required page,
-    required loginMemberIdx,
-    required memberIdx,
+    required int page,
+    required String memberUuid,
+    int limit = 15,
   }) async {
-    ContentResponseModel responseModel;
-
-    loginMemberIdx == null
-        ? responseModel = await _feedService.getLogoutUserTagContentList(memberIdx, page)
-        : responseModel = await _feedService.getUserTagContentList(loginMemberIdx, memberIdx, page);
+    ContentResponseModel responseModel = await _feedService.getUserTagContentList(memberUuid, page, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -108,15 +102,11 @@ class FeedRepository {
   }
 
   Future<ContentResponseModel> getUserHashtagContentList({
-    required memberIdx,
     required searchWord,
     required page,
+    int limit = 15,
   }) async {
-    ContentResponseModel responseModel;
-
-    memberIdx == null
-        ? responseModel = await _feedService.getLogoutUserHashtagContentList(searchWord, page)
-        : responseModel = await _feedService.getUserHashtagContentList(memberIdx, searchWord, page);
+    ContentResponseModel responseModel = await _feedService.getUserHashtagContentList(searchWord, page, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -132,15 +122,12 @@ class FeedRepository {
 
   //user contents detail
   Future<FeedResponseModel> getUserContentsDetailList({
-    required memberIdx,
+    required String memberUuid,
     required page,
-    required loginMemberIdx,
+    int limit = 10,
+    int imgLimit = 12,
   }) async {
-    FeedResponseModel responseModel;
-
-    loginMemberIdx == null
-        ? responseModel = await _feedService.getLogoutUserContentDetailList(memberIdx, page)
-        : responseModel = await _feedService.getUserContentDetailList(loginMemberIdx, memberIdx, page);
+    FeedResponseModel responseModel = await _feedService.getUserContentDetailList(memberUuid, page, limit, imgLimit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -155,15 +142,12 @@ class FeedRepository {
   }
 
   Future<FeedResponseModel> getUserTagContentDetail({
-    required int memberIdx,
+    required String memberUuid,
     required int page,
-    required int? loginMemberIdx,
+    int limit = 10,
+    int imgLimit = 12,
   }) async {
-    FeedResponseModel responseModel;
-
-    loginMemberIdx == null
-        ? responseModel = await _feedService.getLogoutUserTagContentDetail(memberIdx, page)
-        : responseModel = await _feedService.getUserTagContentDetail(loginMemberIdx, memberIdx, page);
+    FeedResponseModel responseModel = await _feedService.getUserTagContentDetail(memberUuid, page, limit, imgLimit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -178,15 +162,12 @@ class FeedRepository {
   }
 
   Future<FeedResponseModel> getUserHashtagContentDetailList({
-    required int? loginMemberIdx,
     required String searchWord,
     required int page,
+    int limit = 10,
+    int imgLimit = 12,
   }) async {
-    FeedResponseModel responseModel;
-
-    loginMemberIdx == null
-        ? responseModel = await _feedService.getLogoutUserHashtagContentDetailList(searchWord, page)
-        : responseModel = await _feedService.getUserHashtagContentDetailList(loginMemberIdx, searchWord, page);
+    FeedResponseModel responseModel = await _feedService.getUserHashtagContentDetailList(searchWord, page, limit, imgLimit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -203,9 +184,9 @@ class FeedRepository {
   //my contents
   Future<FeedResponseModel> getMyContentsDetail({
     required int contentIdx,
-    required int loginMemberIdx,
+    int imgLimit = 12,
   }) async {
-    FeedResponseModel responseModel = await _feedService.getMyContentDetail(contentIdx, loginMemberIdx);
+    FeedResponseModel responseModel = await _feedService.getMyContentDetail(contentIdx, imgLimit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -220,11 +201,11 @@ class FeedRepository {
   }
 
   Future<FeedResponseModel> getMyContentsDetailList({
-    required memberIdx,
     required page,
-    required loginMemberIdx,
+    int limit = 10,
+    int imgLimit = 12,
   }) async {
-    FeedResponseModel responseModel = await _feedService.getMyContentDetailList(loginMemberIdx, memberIdx, page);
+    FeedResponseModel responseModel = await _feedService.getMyContentDetailList(page, limit, imgLimit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -240,11 +221,9 @@ class FeedRepository {
 
   Future<FeedResponseModel> getContentDetail({
     required int contentIdx,
-    required int? loginMemberIdx,
+    int imgLimit = 12,
   }) async {
-    FeedResponseModel responseModel;
-
-    loginMemberIdx == null ? responseModel = await _feedService.getLogoutContentDetail(contentIdx) : responseModel = await _feedService.getContentDetail(contentIdx, loginMemberIdx);
+    FeedResponseModel responseModel = await _feedService.getContentDetail(contentIdx, imgLimit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -260,9 +239,10 @@ class FeedRepository {
 
   Future<FeedResponseModel> getMyTagContentsDetailList({
     required page,
-    required loginMemberIdx,
+    int limit = 10,
+    int imgLimit = 12,
   }) async {
-    FeedResponseModel responseModel = await _feedService.getMyTagContentDetailList(loginMemberIdx, page);
+    FeedResponseModel responseModel = await _feedService.getMyTagContentDetailList(page, limit, imgLimit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -278,11 +258,12 @@ class FeedRepository {
 
   Future<FeedResponseModel> getPopularWeekDetailList({
     required page,
-    required loginMemberIdx,
+    int limit = 10,
+    int imgLimit = 12,
   }) async {
     FeedResponseModel responseModel;
 
-    responseModel = await _feedService.getPopularWeekDetailList(loginMemberIdx, page);
+    responseModel = await _feedService.getPopularWeekDetailList(page, limit, imgLimit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -298,11 +279,10 @@ class FeedRepository {
 
   Future<FeedResponseModel> getPopularHourDetailList({
     required page,
-    required loginMemberIdx,
+    int limit = 10,
+    int imgLimit = 12,
   }) async {
-    FeedResponseModel responseModel;
-
-    loginMemberIdx == null ? responseModel = await _feedService.getLogoutPopularHourDetailList(page) : responseModel = await _feedService.getPopularHourDetailList(loginMemberIdx, page);
+    FeedResponseModel responseModel = await _feedService.getPopularHourDetailList(page, limit, imgLimit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -318,9 +298,9 @@ class FeedRepository {
 
   Future<FeedResponseModel> getFollowDetailList({
     required page,
-    required loginMemberIdx,
+    int limit = 10,
   }) async {
-    FeedResponseModel responseModel = await _feedService.getFollowDetailList(loginMemberIdx, page);
+    FeedResponseModel responseModel = await _feedService.getFollowDetailList(page, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -336,11 +316,10 @@ class FeedRepository {
 
   Future<FeedResponseModel> getRecentDetailList({
     required page,
-    required loginMemberIdx,
+    int limit = 10,
+    int imgLimit = 12,
   }) async {
-    FeedResponseModel responseModel;
-
-    loginMemberIdx == null ? responseModel = await _feedService.getRecentLogoutDetailList(page) : responseModel = await _feedService.getRecentDetailList(loginMemberIdx, page);
+    FeedResponseModel responseModel = await _feedService.getRecentDetailList(page, limit, imgLimit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -355,14 +334,9 @@ class FeedRepository {
   }
 
   Future<ResponseModel> postLike({
-    required int memberIdx,
     required int contentIdx,
   }) async {
-    final Map<String, dynamic> body = {
-      "memberIdx": memberIdx,
-    };
-
-    ResponseModel responseModel = await _feedService.postLike(contentIdx, body);
+    ResponseModel responseModel = await _feedService.postLike(contentIdx);
 
     if (!responseModel.result) {
       throw APIException(
@@ -378,11 +352,9 @@ class FeedRepository {
 
   Future<ResponseModel> deleteLike({
     required int contentsIdx,
-    required int memberIdx,
   }) async {
     ResponseModel responseModel = await _feedService.deleteLike(
       contentsIdx: contentsIdx,
-      memberIdx: memberIdx,
     );
 
     if (!responseModel.result) {
@@ -398,14 +370,9 @@ class FeedRepository {
   }
 
   Future<ResponseModel> postSave({
-    required int memberIdx,
     required int contentIdx,
   }) async {
-    final Map<String, dynamic> body = {
-      "memberIdx": memberIdx,
-    };
-
-    ResponseModel responseModel = await _feedService.postSave(contentIdx, body);
+    ResponseModel responseModel = await _feedService.postSave(contentIdx);
 
     if (!responseModel.result) {
       throw APIException(
@@ -421,11 +388,9 @@ class FeedRepository {
 
   Future<ResponseModel> deleteSave({
     required int contentsIdx,
-    required int memberIdx,
   }) async {
     ResponseModel responseModel = await _feedService.deleteSave(
       contentsIdx: contentsIdx,
-      memberIdx: memberIdx,
     );
 
     if (!responseModel.result) {
@@ -441,14 +406,9 @@ class FeedRepository {
   }
 
   Future<ResponseModel> postHide({
-    required int memberIdx,
     required int contentIdx,
   }) async {
-    final Map<String, dynamic> body = {
-      "memberIdx": memberIdx,
-    };
-
-    ResponseModel responseModel = await _feedService.postHide(contentIdx, body);
+    ResponseModel responseModel = await _feedService.postHide(contentIdx);
 
     if (!responseModel.result) {
       throw APIException(
@@ -464,11 +424,9 @@ class FeedRepository {
 
   Future<ResponseModel> deleteHide({
     required int contentsIdx,
-    required int memberIdx,
   }) async {
     ResponseModel responseModel = await _feedService.deleteHide(
       contentsIdx: contentsIdx,
-      memberIdx: memberIdx,
     );
 
     if (!responseModel.result) {
@@ -483,8 +441,8 @@ class FeedRepository {
     return responseModel;
   }
 
-  Future<ResponseModel> deleteContents({required int memberIdx, required String idx}) async {
-    ResponseModel responseModel = await _feedService.deleteContents(memberIdx, idx);
+  Future<ResponseModel> deleteContents({required String idx}) async {
+    ResponseModel responseModel = await _feedService.deleteOneContents(int.parse(idx));
 
     if (!responseModel.result) {
       throw APIException(
@@ -498,8 +456,8 @@ class FeedRepository {
     return responseModel;
   }
 
-  Future<ResponseModel> deleteOneContents({required int memberIdx, required int idx}) async {
-    ResponseModel responseModel = await _feedService.deleteOneContents(memberIdx, idx);
+  Future<ResponseModel> deleteOneContents({required int idx}) async {
+    ResponseModel responseModel = await _feedService.deleteOneContents(idx);
 
     if (!responseModel.result) {
       throw APIException(
@@ -514,7 +472,6 @@ class FeedRepository {
   }
 
   Future<ResponseModel> postContentReport({
-    required int memberIdx,
     required int contentIdx,
     required int reportCode,
     required String? reason,
@@ -525,12 +482,10 @@ class FeedRepository {
     reportCode == 8
         ? body = {
             "reportCode": reportCode,
-            "memberIdx": memberIdx,
             "reason": reason,
           }
         : body = {
             "reportCode": reportCode,
-            "memberIdx": memberIdx,
           };
 
     ResponseModel responseModel = await _feedService.postContentReport(reportType, contentIdx, body);
@@ -550,12 +505,10 @@ class FeedRepository {
   Future<ResponseModel> deleteContentReport({
     required String reportType,
     required int contentsIdx,
-    required int memberIdx,
   }) async {
     ResponseModel responseModel = await _feedService.deleteContentReport(
       reportType,
       contentsIdx,
-      memberIdx,
     );
 
     if (!responseModel.result) {
@@ -572,7 +525,6 @@ class FeedRepository {
 
   Future<ResponseModel> postFeed({
     required List<File> files,
-    required int memberIdx,
     required int isView,
     String? location,
     String? contents,
@@ -588,7 +540,6 @@ class FeedRepository {
     );
 
     Map<String, dynamic> formDataMap = {
-      "memberIdx": memberIdx,
       "menuIdx": 1,
       "contents": contents ?? "",
       "isView": isView,
@@ -600,7 +551,7 @@ class FeedRepository {
       for (var tag in tagImage.tag) {
         String baseKey = "imgTagList[$tagCounter]";
         formDataMap["$baseKey.imgIdx"] = tagImage.index;
-        formDataMap["$baseKey.memberIdx"] = tag.memberIdx;
+        formDataMap["$baseKey.memberUuid"] = tag.memberUuid;
         formDataMap["$baseKey.width"] = tag.position.dx;
         formDataMap["$baseKey.height"] = tag.position.dy;
         tagCounter++;
@@ -628,7 +579,6 @@ class FeedRepository {
   }
 
   Future<ResponseModel> putFeed({
-    required int memberIdx,
     required int isView,
     String? location,
     String? contents,
@@ -637,7 +587,6 @@ class FeedRepository {
     required List<TagImages> initialTagList,
   }) async {
     Map<String, dynamic> formDataMap = {
-      "memberIdx": memberIdx,
       "menuIdx": 1,
       "contents": contents ?? "",
       "isView": isView,
@@ -651,17 +600,17 @@ class FeedRepository {
     for (var tagImage in feedState.tagImage) {
       for (var tag in tagImage.tag) {
         // 초기 태그 리스트에서 해당 태그를 찾습니다.
-        var initialTag = initialTagList.where((e) => e.index == tagImage.index).expand((e) => e.tag).firstWhere((t) => t.memberIdx == tag.memberIdx,
+        var initialTag = initialTagList.where((e) => e.index == tagImage.index).expand((e) => e.tag).firstWhere((t) => t.memberUuid == tag.memberUuid,
             orElse: () => Tag(
                   username: '',
-                  memberIdx: 0,
+                  memberUuid: '',
                   position: Offset(0, 0),
                   imageIndex: tag.imageIndex,
                 ));
 
         // 태그의 상태를 결정하는 로직
         String status = "";
-        if (initialTag.username == '' && initialTag.memberIdx == 0) {
+        if (initialTag.username == '' && initialTag.memberUuid == 0) {
           status = "new"; // 새로운 태그
         } else if (initialTag.position != tag.position) {
           status = "modi"; // 위치가 수정된 태그
@@ -670,15 +619,15 @@ class FeedRepository {
           status = "";
         }
 
-        imgTagList.add({"imgIdx": tag.imageIndex, "memberIdx": tag.memberIdx, "width": tag.position.dx, "height": tag.position.dy, "status": status});
+        imgTagList.add({"imgIdx": tag.imageIndex, "memberUuid": tag.memberUuid, "width": tag.position.dx, "height": tag.position.dy, "status": status});
       }
     }
 
     // 초기 태그 리스트에만 있는 태그를 찾아서 "status": "del"로 설정합니다.
     for (var initialTagImage in initialTagList) {
       for (var initialTag in initialTagImage.tag) {
-        if (!feedState.tagImage.any((ti) => ti.tag.any((t) => t.memberIdx == initialTag.memberIdx))) {
-          imgTagList.add({"imgIdx": initialTag.imageIndex, "memberIdx": initialTag.memberIdx, "width": initialTag.position.dx, "height": initialTag.position.dy, "status": "del"});
+        if (!feedState.tagImage.any((ti) => ti.tag.any((t) => t.memberUuid == initialTag.memberUuid))) {
+          imgTagList.add({"imgIdx": initialTag.imageIndex, "memberUuid": initialTag.memberUuid, "width": initialTag.position.dx, "height": initialTag.position.dy, "status": "del"});
         }
       }
     }

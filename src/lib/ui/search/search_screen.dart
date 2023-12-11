@@ -14,7 +14,6 @@ import 'package:pet_mobile_social_flutter/components/user_list/widget/user_item_
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/full_search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/providers/search/profile_search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_helper_provider.dart';
@@ -76,7 +75,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
   void _tagScrollListener() {
     if (tagScrollController.position.pixels > tagScrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (tagOldLength == ref.read(tagSearchStateProvider).list.length) {
-        ref.read(tagSearchStateProvider.notifier).loadMoreTagSearchList(ref.read(userInfoProvider).userModel!.idx);
+        ref.read(tagSearchStateProvider.notifier).loadMoreTagSearchList();
       }
     }
   }
@@ -84,7 +83,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
   void _profileScrollListener() {
     if (profileScrollController.position.pixels > profileScrollController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (profileOldLength == ref.read(profileSearchStateProvider).list.length) {
-        ref.read(profileSearchStateProvider.notifier).loadMoreNickSearchList(ref.read(userInfoProvider).userModel!.idx);
+        ref.read(profileSearchStateProvider.notifier).loadMoreNickSearchList();
       }
     }
   }
@@ -368,9 +367,9 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                             userName: nickList[index - 1].nick!,
                                             content: nickList[index - 1].intro!,
                                             isSpecialUser: nickList[index - 1].isBadge == 1,
-                                            memberIdx: nickList[index - 1].memberIdx!,
+                                            memberUuid: nickList[index - 1].memberUuid!,
                                             contentType: 'profile',
-                                            oldMemberIdx: 0,
+                                            oldMemberUuid: '',
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
@@ -388,9 +387,9 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                         userName: nickList[index - 1].nick!,
                                         content: nickList[index - 1].intro!,
                                         isSpecialUser: nickList[index - 1].isBadge == 1,
-                                        memberIdx: nickList[index - 1].memberIdx!,
+                                        memberUuid: nickList[index - 1].memberUuid!,
                                         contentType: 'profile',
-                                        oldMemberIdx: 0,
+                                        oldMemberUuid: '',
                                       );
                                     }
                                   },
@@ -559,9 +558,9 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                   userName: profileList[index].nick!,
                                   content: profileList[index].intro!,
                                   isSpecialUser: profileList[index].isBadge == 1,
-                                  memberIdx: profileList[index].memberIdx!,
+                                  memberUuid: profileList[index].memberUuid!,
                                   contentType: 'profile',
-                                  oldMemberIdx: 0,
+                                  oldMemberUuid: '',
                                 );
                               },
                             );
@@ -843,10 +842,10 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                 userName: search.name!,
                                 content: search.intro!,
                                 isSpecialUser: search.isBadge!,
-                                memberIdx: search.contentId!,
+                                memberUuid: search.contentId!,
                                 search: search,
                                 dateTime: search.created!,
-                                oldMemberIdx: 0,
+                                oldMemberUuid: '',
                               );
                             } else if (search.content == "hashtag" || search.content == "search") {
                               return InkWell(

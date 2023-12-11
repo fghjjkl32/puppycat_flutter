@@ -1,10 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/params_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/content_like_user_list/content_like_user_list_service.dart';
 
 class ContentLikeUserListRepository {
@@ -20,14 +17,9 @@ class ContentLikeUserListRepository {
 
   Future<ContentLikeUserListResponseModel> getContentLikeUserList({
     required int contentsIdx,
-    required int? memberIdx,
     required int page,
   }) async {
-    ContentLikeUserListResponseModel responseModel;
-
-    memberIdx == null
-        ? responseModel = await _contentLikeUserListService.getLogoutContentLikeUserList(contentsIdx, page)
-        : responseModel = await _contentLikeUserListService.getContentLikeUserList(contentsIdx, memberIdx, page);
+    ContentLikeUserListResponseModel responseModel = await _contentLikeUserListService.getContentLikeUserList(contentsIdx, page);
 
     if (!responseModel.result) {
       throw APIException(

@@ -7,7 +7,6 @@ import 'package:pet_mobile_social_flutter/components/user_list/widget/blocked_us
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/block/block_state_provider.dart';
 
 class MyPageSettingBlockedUserScreen extends ConsumerStatefulWidget {
@@ -28,8 +27,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
     super.initState();
 
     Future(() {
-      ref.watch(blockStateProvider.notifier).userMemberIdx = ref.watch(userInfoProvider).userModel!.idx;
-      ref.read(blockStateProvider.notifier).initBlockList(ref.watch(userInfoProvider).userModel!.idx, 1);
+      ref.read(blockStateProvider.notifier).initBlockList(1);
     });
 
     blockController.addListener(_blockScrollListener);
@@ -41,7 +39,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
   void _blockScrollListener() {
     if (blockController.position.pixels > blockController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (blockOldLength == ref.read(blockStateProvider).list.length) {
-        ref.read(blockStateProvider.notifier).loadMoreBlockList(ref.watch(userInfoProvider).userModel!.idx);
+        ref.read(blockStateProvider.notifier).loadMoreBlockList();
       }
     }
   }
@@ -195,7 +193,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                   userName: lists[index].nick!,
                                   content: lists[index].intro! == "" ? "소개글이 없어요." : lists[index].intro!,
                                   isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
-                                  memberIdx: lists[index].memberIdx!,
+                                  memberUuid: lists[index].memberUuid!,
                                 );
                               },
                             ),

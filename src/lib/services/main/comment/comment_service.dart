@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart' hide Headers;
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_response_model.dart';
 import 'package:retrofit/retrofit.dart';
@@ -10,25 +9,19 @@ part 'comment_service.g.dart';
 abstract class CommentService {
   factory CommentService(Dio dio, {String baseUrl}) = _CommentService;
 
-  @GET('v1/contents/{contentIdx}/comment?page={page}&memberIdx={memberIdx}')
+  @GET('v1/contents/{contentIdx}/comment')
   Future<CommentResponseModel> getComment(
     @Path("contentIdx") int contentIdx,
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
-  );
-
-  @GET('v1/contents/{contentIdx}/comment')
-  Future<CommentResponseModel> getLogoutComment(
-    @Path("contentIdx") int contentIdx,
     @Query("page") int page,
+    @Query("limit") int limit,
   );
 
-  @GET('v1/contents/{contentsIdx}/comment/{commentIdx}/child?memberIdx={memberIdx}&page={page}&limit=10')
+  @GET('v1/contents/{contentsIdx}/comment/{commentIdx}/child')
   Future<CommentResponseModel> getReplyComment(
     @Path("contentsIdx") int contentsIdx,
     @Path("commentIdx") int commentIdx,
-    @Path("memberIdx") int memberIdx,
-    @Path("page") int page,
+    @Query("page") int page,
+    @Query("limit") int limit,
   );
 
   @GET('v1/contents/{contentsIdx}/comment/{commentIdx}/child?&page={page}&limit=10')
@@ -51,24 +44,21 @@ abstract class CommentService {
     @Body() Map<String, dynamic> body,
   );
 
-  @DELETE('v1/contents/{contentsIdx}/comment/{commentIdx}?memberIdx={memberIdx}')
+  @DELETE('v1/contents/{contentsIdx}/comment/{commentIdx}')
   Future<ResponseModel> deleteComment({
     @Path("contentsIdx") required int contentsIdx,
     @Path("commentIdx") required int commentIdx,
-    @Path("memberIdx") required int memberIdx,
     @Query('parentIdx') required int parentIdx,
   });
 
   @POST('v1/comment/{commentIdx}/like')
   Future<ResponseModel> postCommentLike(
     @Path("commentIdx") int commentIdx,
-    @Body() Map<String, dynamic> body,
   );
 
-  @DELETE('v1/comment/{commentIdx}/like?memberIdx={memberIdx}')
+  @DELETE('v1/comment/{commentIdx}/like')
   Future<ResponseModel> deleteCommentLike({
     @Path("commentIdx") required int commentIdx,
-    @Path("memberIdx") required int memberIdx,
   });
 
   @GET('v1/contents/{contentsIdx}/comment/{commentIdx}/focus')

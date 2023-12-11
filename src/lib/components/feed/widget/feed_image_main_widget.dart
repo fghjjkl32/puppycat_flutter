@@ -10,12 +10,13 @@ import 'package:thumbor/thumbor.dart';
 class FeedImageMainWidget extends StatelessWidget {
   const FeedImageMainWidget({
     required this.imageList,
-    required this.imageDomain,
+    // required this.imageDomain,
     Key? key,
   }) : super(key: key);
 
   final List<FeedImgListData> imageList;
-  final String imageDomain;
+
+  // final String imageDomain;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class FeedImageMainWidget extends StatelessWidget {
                   placeholder: (context, url) => Container(
                     color: kPreviousNeutralColor300,
                   ),
-                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
+                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[0].url!}").toUrl(),
                   // fit: BoxFit.cover,
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.width,
@@ -51,7 +52,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       topLeft: Radius.circular(12.0),
                     ),
                     child: CachedNetworkImage(
-                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
+                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[0].url!}").toUrl(),
                       placeholder: (context, url) => Container(
                         color: kPreviousNeutralColor300,
                       ),
@@ -75,7 +76,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       placeholder: (context, url) => Container(
                         color: kPreviousNeutralColor300,
                       ),
-                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].url!}").toUrl(),
+                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[1].url!}").toUrl(),
                       errorWidget: (context, url, error) => Icon(Icons.error),
                       fit: BoxFit.cover,
                       height: MediaQuery.of(context).size.width.floor().toDouble(),
@@ -98,7 +99,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       placeholder: (context, url) => Container(
                         color: kPreviousNeutralColor300,
                       ),
-                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
+                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[0].url!}").toUrl(),
                       fit: BoxFit.cover,
                       height: MediaQuery.of(context).size.width.floor().toDouble(),
                       width: double.infinity,
@@ -119,7 +120,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           placeholder: (context, url) => Container(
                             color: kPreviousNeutralColor300,
                           ),
-                          imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].url!}").toUrl(),
+                          imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[1].url!}").toUrl(),
                           fit: BoxFit.cover,
                           height: (MediaQuery.of(context).size.width / 2).floor().toDouble() - 1,
                           width: double.infinity,
@@ -136,7 +137,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           placeholder: (context, url) => Container(
                             color: kPreviousNeutralColor300,
                           ),
-                          imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[2].url!}").toUrl(),
+                          imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[2].url!}").toUrl(),
                           fit: BoxFit.cover,
                           height: (MediaQuery.of(context).size.width / 2).floor().toDouble() - 1,
                           width: double.infinity,
@@ -160,7 +161,7 @@ class FeedImageMainWidget extends StatelessWidget {
                       placeholder: (context, url) => Container(
                         color: kPreviousNeutralColor300,
                       ),
-                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
+                      imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[0].url!}").toUrl(),
                       fit: BoxFit.cover,
                       height: MediaQuery.of(context).size.width.floor().toDouble(),
                       width: double.infinity,
@@ -181,7 +182,7 @@ class FeedImageMainWidget extends StatelessWidget {
                           placeholder: (context, url) => Container(
                             color: kPreviousNeutralColor300,
                           ),
-                          imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[1].url!}").toUrl(),
+                          imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[1].url!}").toUrl(),
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: (MediaQuery.of(context).size.width / 2).floor().toDouble() - 1,
@@ -200,7 +201,7 @@ class FeedImageMainWidget extends StatelessWidget {
                               placeholder: (context, url) => Container(
                                 color: kPreviousNeutralColor300,
                               ),
-                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[2].url!}").toUrl(),
+                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[2].url!}").toUrl(),
                               fit: BoxFit.cover,
                               height: (MediaQuery.of(context).size.width / 2).floor().toDouble() - 1,
                               width: double.infinity,

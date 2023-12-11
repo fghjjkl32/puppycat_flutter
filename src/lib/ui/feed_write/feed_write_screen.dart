@@ -14,7 +14,6 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_conten
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_cropped_files_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_information_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/post_feed_view.dart';
 
 class FeedWriteScreen extends ConsumerWidget {
@@ -156,7 +155,6 @@ class FeedWriteScreen extends ConsumerWidget {
 
                 final result = await ref.watch(feedWriteProvider.notifier).postFeed(
                       files: ref.watch(feedWriteCroppedFilesProvider),
-                      memberIdx: ref.watch(userInfoProvider).userModel!.idx,
                       isView: ref.watch(feedWriteButtonSelectedProvider),
                       location: ref.watch(feedWriteLocationInformationProvider.notifier).state,
                       contents: ref.watch(feedWriteContentProvider.notifier).state.text,

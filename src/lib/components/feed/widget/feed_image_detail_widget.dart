@@ -15,6 +15,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
 
 class FeedImageDetailWidget extends ConsumerStatefulWidget {
@@ -23,8 +24,8 @@ class FeedImageDetailWidget extends ConsumerStatefulWidget {
     required this.contentIdx,
     required this.contentType,
     required this.isLike,
-    required this.memberIdx,
-    required this.imgDomain,
+    required this.memberUuid,
+    // required this.imgDomain,
     Key? key,
   }) : super(key: key);
 
@@ -32,8 +33,9 @@ class FeedImageDetailWidget extends ConsumerStatefulWidget {
   final int contentIdx;
   final String contentType;
   final bool isLike;
-  final int? memberIdx;
-  final String imgDomain;
+  final String memberUuid;
+
+  // final String imgDomain;
 
   @override
   FeedImageDetailWidgetState createState() => FeedImageDetailWidgetState();
@@ -70,6 +72,9 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
 
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return Column(
       children: [
         GestureDetector(
@@ -86,7 +91,6 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
               widget.isLike
                   ? null
                   : ref.watch(feedListStateProvider.notifier).postLike(
-                        loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                         contentIdx: widget.contentIdx,
                         contentType: widget.contentType,
                       );
@@ -122,7 +126,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                 placeholder: (context, url) => Container(
                                   color: kPreviousNeutralColor300,
                                 ),
-                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${i.url}").toUrl(),
+                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${i.url}").toUrl(),
                                 // fit: BoxFit.cover,
                               ),
                               ...i.imgMemberTagList!.map((tag) {
@@ -137,9 +141,9 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                           return isTagVisible
                                               ? GestureDetector(
                                                   onTap: () {
-                                                    ref.read(userInfoProvider).userModel!.idx == tag.memberIdx
+                                                    myInfo.uuid == tag.memberUuid
                                                         ? context.push("/home/myPage")
-                                                        : context.push("/home/myPage/followList/${tag.memberIdx}/userPage/${tag.nick!}/${tag.memberIdx}/${tag.memberIdx}");
+                                                        : context.push("/home/myPage/followList/${tag.memberUuid}/userPage/${tag.nick!}/${tag.memberUuid}/${tag.memberUuid}");
                                                   },
                                                   child: MentionTagWidget(
                                                     isCanClose: false,
@@ -224,10 +228,10 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                                   content: i.imgMemberTagList![index].intro!,
                                                   isSpecialUser: i.imgMemberTagList![index].isBadge == 1,
                                                   isFollow: i.imgMemberTagList![index].followState == 1,
-                                                  followerIdx: i.imgMemberTagList![index].memberIdx!,
+                                                  followerUuid: i.imgMemberTagList![index].memberUuid!,
                                                   contentsIdx: widget.contentIdx,
                                                   contentType: widget.contentType,
-                                                  oldMemberIdx: widget.memberIdx!,
+                                                  oldMemberUuid: widget.memberUuid,
                                                 );
                                               },
                                             ),

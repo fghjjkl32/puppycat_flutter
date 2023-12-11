@@ -14,6 +14,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:thumbor/thumbor.dart';
 
 class MyPageMyPostListScreen extends ConsumerStatefulWidget {
@@ -42,8 +43,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
       vsync: this,
     );
 
-    ref.read(myPostStateProvider.notifier).initMyPosts(ref.read(userInfoProvider).userModel!.idx, 1);
-    ref.read(myPostStateProvider.notifier).initMyKeeps(ref.read(userInfoProvider).userModel!.idx, 1);
+    ref.read(myPostStateProvider.notifier).initMyPosts(1);
+    ref.read(myPostStateProvider.notifier).initMyKeeps(1);
 
     Future(() {
       ref.watch(myPostStateProvider.notifier).resetMyPostSelection();
@@ -56,7 +57,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
   void _myPostContentsScrollListener() {
     if (myPostContentController.position.pixels > myPostContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (myPostOldLength == ref.read(myPostStateProvider).myPostState.list.length) {
-        ref.read(myPostStateProvider.notifier).loadMoreMyPost(ref.read(userInfoProvider).userModel!.idx);
+        ref.read(myPostStateProvider.notifier).loadMoreMyPost();
       }
     }
   }
@@ -64,7 +65,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
   void _myKeepContentsScrollListener() {
     if (myKeepContentController.position.pixels > myKeepContentController.position.maxScrollExtent - MediaQuery.of(context).size.height) {
       if (myKeepOldLength == ref.read(myPostStateProvider).myKeepState.list.length) {
-        ref.read(myPostStateProvider.notifier).loadMoreMyKeeps(ref.read(userInfoProvider).userModel!.idx);
+        ref.read(myPostStateProvider.notifier).loadMoreMyKeeps();
       }
     }
   }
@@ -160,6 +161,9 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
   Widget _firstTabBody() {
     final myPageMyPostController = ref.watch(myPostStateProvider.notifier);
     final myPageMyPostState = ref.watch(myPostStateProvider);
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return Consumer(
       builder: (ctx, ref, child) {
         final myPostState = ref.watch(myPostStateProvider);
@@ -239,7 +243,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                             Map<String, dynamic> extraMap = {
                               'firstTitle': 'null',
                               'secondTitle': '일상글 피드',
-                              'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                              'memberUuid': myInfo.uuid,
                               'contentIdx': '${lists[index].idx}',
                               'contentType': 'myDetailContent',
                             };
@@ -247,8 +251,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                             final result = await context.push('/home/myPage/detail', extra: extraMap);
 
                             if (result == null) {
-                              await ref.watch(myPostStateProvider.notifier).refreshMyKeeps(ref.read(userInfoProvider).userModel!.idx);
-                              await ref.watch(myPostStateProvider.notifier).refreshMyPost(ref.read(userInfoProvider).userModel!.idx);
+                              await ref.watch(myPostStateProvider.notifier).refreshMyKeeps();
+                              await ref.watch(myPostStateProvider.notifier).refreshMyPost();
 
                               ref.watch(myPostStateProvider.notifier).resetMyPostSelection();
                               ref.watch(myPostStateProvider.notifier).resetMyKeepSelection();
@@ -257,7 +261,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           child: Stack(
                             children: [
                               CachedNetworkImage(
-                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
                                 imageBuilder: (context, imageProvider) => Container(
                                   decoration: BoxDecoration(
                                     borderRadius: (index == 0)
@@ -393,7 +397,6 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                           context.pop();
 
                                           final result = await myPageMyPostController.postKeepContents(
-                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                             idxList: myPageMyPostController.getSelectedMyPostImageIdx(),
                                           );
 
@@ -439,7 +442,6 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                           context.pop();
 
                                           final result = await myPageMyPostController.deleteContents(
-                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                             idx: myPageMyPostController.getSelectedImageIndices(isKeepSelect: false),
                                           );
 
@@ -501,6 +503,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
         final lists = myKeepState.myKeepState.list;
 
         myKeepOldLength = lists.length ?? 0;
+
+        final myInfo = ref.read(myInfoStateProvider);
 
         return lists.isEmpty
             ? Container(
@@ -570,7 +574,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                             Map<String, dynamic> extraMap = {
                               'firstTitle': 'null',
                               'secondTitle': '보관한 피드',
-                              'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                              'memberUuid': myInfo.uuid,
                               'contentIdx': '${lists[index].idx}',
                               'contentType': 'myKeepContent',
                             };
@@ -582,8 +586,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                               final result = await context.push('/home/myPage/detail', extra: extraMap);
 
                               if (result == null) {
-                                await ref.watch(myPostStateProvider.notifier).refreshMyKeeps(ref.read(userInfoProvider).userModel!.idx);
-                                await ref.watch(myPostStateProvider.notifier).refreshMyPost(ref.read(userInfoProvider).userModel!.idx);
+                                await ref.watch(myPostStateProvider.notifier).refreshMyKeeps();
+                                await ref.watch(myPostStateProvider.notifier).refreshMyPost();
 
                                 ref.watch(myPostStateProvider.notifier).resetMyPostSelection();
                                 ref.watch(myPostStateProvider.notifier).resetMyKeepSelection();
@@ -593,7 +597,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           child: Stack(
                             children: [
                               CachedNetworkImage(
-                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${lists[index].imgUrl}").toUrl(),
+                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
                                 imageBuilder: (context, imageProvider) => Container(
                                   decoration: BoxDecoration(
                                     borderRadius: (index == 0)
@@ -723,7 +727,6 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                               ),
                               onTap: () async {
                                 final result = await myKeepController.deleteKeepContents(
-                                  memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                   idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
                                 );
 
@@ -766,7 +769,6 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                           context.pop();
 
                                           final result = await myKeepController.deleteContents(
-                                            memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                             idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
                                           );
 

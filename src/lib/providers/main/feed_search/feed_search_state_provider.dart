@@ -25,7 +25,6 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
   }
 
   initPosts(
-    memberIdx,
     int? initPage,
     String searchWord,
   ) async {
@@ -33,7 +32,7 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
 
     try {
       final page = initPage ?? state.page;
-      final lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentList(memberIdx: memberIdx, page: page, searchWord: searchWord);
+      final lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentList(page: page, searchWord: searchWord);
 
       print("list : ${lists}");
       print("list : ${lists}");
@@ -67,7 +66,7 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
     }
   }
 
-  loadMorePost(memberIdx, searchWord) async {
+  loadMorePost(searchWord) async {
     if (currentPage >= maxPages) {
       state = state.copyWith(isLoadMoreDone: true);
       return;
@@ -84,7 +83,7 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
       bf.write(' success');
       state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-      final lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentList(memberIdx: memberIdx, page: state.page + 1, searchWord: searchWord);
+      final lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentList(page: state.page + 1, searchWord: searchWord);
 
       if (lists == null) {
         state = state.copyWith(isLoadMoreError: true, isLoading: false);
@@ -106,8 +105,8 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
     }
   }
 
-  Future<void> refresh(memberIdx, searchWord) async {
-    initPosts(memberIdx, 1, searchWord);
+  Future<void> refresh(searchWord) async {
+    initPosts(1, searchWord);
     currentPage = 1;
   }
 }

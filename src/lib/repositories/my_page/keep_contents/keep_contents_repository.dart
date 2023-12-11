@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
@@ -17,8 +16,11 @@ class KeepContentsRepository {
     _keepContentsService = KeepContentsService(dio, baseUrl: baseUrl);
   }
 
-  Future<ContentResponseModel> getKeepContents({required int memberIdx, required int page}) async {
-    ContentResponseModel responseModel = await _keepContentsService.getKeepContents(memberIdx, page);
+  Future<ContentResponseModel> getKeepContents({
+    required int page,
+    int limit = 15,
+  }) async {
+    ContentResponseModel responseModel = await _keepContentsService.getKeepContents(page, limit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -34,9 +36,9 @@ class KeepContentsRepository {
 
   Future<FeedResponseModel> getMyKeepContentDetail({
     required int contentIdx,
-    required int loginMemberIdx,
+    int imgLimit = 12,
   }) async {
-    FeedResponseModel responseModel = await _keepContentsService.getMyKeepContentDetail(contentIdx, loginMemberIdx);
+    FeedResponseModel responseModel = await _keepContentsService.getMyKeepContentDetail(contentIdx, imgLimit);
 
     if (!responseModel.result) {
       throw APIException(
@@ -50,8 +52,8 @@ class KeepContentsRepository {
     return responseModel;
   }
 
-  Future<ResponseModel> deleteKeepContents({required int memberIdx, required String idx}) async {
-    ResponseModel responseModel = await _keepContentsService.deleteKeepContents(memberIdx, idx);
+  Future<ResponseModel> deleteKeepContents({required String idx}) async {
+    ResponseModel responseModel = await _keepContentsService.deleteOneKeepContents(int.parse(idx));
 
     if (!responseModel.result) {
       throw APIException(
@@ -65,8 +67,8 @@ class KeepContentsRepository {
     return responseModel;
   }
 
-  Future<ResponseModel> deleteOneKeepContents({required int memberIdx, required int idx}) async {
-    ResponseModel responseModel = await _keepContentsService.deleteOneKeepContents(memberIdx, idx);
+  Future<ResponseModel> deleteOneKeepContents({required int idx}) async {
+    ResponseModel responseModel = await _keepContentsService.deleteOneKeepContents(idx);
 
     if (!responseModel.result) {
       throw APIException(
@@ -80,9 +82,8 @@ class KeepContentsRepository {
     return responseModel;
   }
 
-  Future<ResponseModel> postKeepContents({required int memberIdx, required List<int> idxList}) async {
+  Future<ResponseModel> postKeepContents({required List<int> idxList}) async {
     Map<String, dynamic> body = {
-      "memberIdx": memberIdx,
       "idxList": idxList,
     };
 

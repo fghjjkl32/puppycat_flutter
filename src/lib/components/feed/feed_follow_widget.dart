@@ -8,11 +8,11 @@ class FeedFollowWidget extends StatelessWidget {
   const FeedFollowWidget({
     Key? key,
     required this.popularUserListData,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
   }) : super(key: key);
 
   final List<PopularUserListData> popularUserListData;
-  final int oldMemberIdx;
+  final String oldMemberUuid;
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +34,8 @@ class FeedFollowWidget extends StatelessWidget {
                       userName: popularUserListData[index].nick!,
                       followCount: popularUserListData[index].followerCnt!,
                       isSpecialUser: popularUserListData[index].isBadge! == 1,
-                      memberIdx: popularUserListData[index].memberIdx!,
-                      oldMemberIdx: oldMemberIdx,
+                      memberUuid: popularUserListData[index].memberUuid!,
+                      oldMemberUuid: oldMemberUuid,
                     );
                   },
                 ),

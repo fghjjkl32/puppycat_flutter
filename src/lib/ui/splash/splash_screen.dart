@@ -15,6 +15,7 @@ import 'package:pet_mobile_social_flutter/controller/notification/notification_c
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 final splashStateProvider = StateProvider<bool>((ref) => false);
 final splashProgressStateProvider = StateProvider<double>((ref) => 0.0);
@@ -133,14 +134,19 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
     //   }
     // });
     _splashTimer = Timer.periodic(const Duration(milliseconds: 1000), (timer) {
+      print('splash tick ${timer.tick} / $_splashTimerTick');
+
       if (_splashTimerTick < 3) {
         _splashTimerTick++;
         return;
       }
 
       if (ref.read(_initStateProvider)) {
+        print('splash timer 1');
         checkPushAppLaunch();
+        print('splash timer 2');
         _splashTimer.cancel();
+        print('splash timer 3');
         ref.read(splashStateProvider.notifier).state = true;
       } else {
         _splashTimerTick = 0;
@@ -166,6 +172,7 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
     // context.push('/home/notification');
     final router = ref.watch(routerProvider);
+    final myInfo = ref.read(myInfoStateProvider);
     // router.go('/home/notification');
     PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
 
@@ -177,16 +184,14 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
       case PushType.metion_contents:
       case PushType.like_contents:
       case PushType.img_tag:
-        var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-        router.push("/home/myPage/detail/Contents/피드/$loginMemberIdx/${payload.contentsIdx}/notificationContent");
+        router.push("/home/myPage/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
         break;
 
       case PushType.new_comment:
       case PushType.new_reply:
       case PushType.mention_comment:
       case PushType.like_comment:
-        var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
-        router.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${payload.contentsIdx}/notificationContent", extra: {
+        router.push("/home/myPage/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
           "isRouteComment": true,
           "focusIdx": payload.commentIdx,
         });

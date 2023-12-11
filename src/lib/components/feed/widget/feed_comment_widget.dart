@@ -8,36 +8,40 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 
 class FeedCommentWidget extends ConsumerWidget {
   const FeedCommentWidget({
-    required this.userMemberIdx,
+    required this.memberUuid,
     required this.profileImage,
     required this.name,
     required this.comment,
     required this.isSpecialUser,
     required this.mentionListData,
     required this.contentIdx,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
     Key? key,
   }) : super(key: key);
 
-  final int userMemberIdx;
+  final String memberUuid;
   final String? profileImage;
   final String name;
   final String comment;
   final bool isSpecialUser;
   final List<MentionListData> mentionListData;
   final int contentIdx;
-  final int oldMemberIdx;
+  final String oldMemberUuid;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final myInfo = ref.read(myInfoStateProvider);
+
     return GestureDetector(
       onTap: () {
-        context.push("/home/commentDetail/$contentIdx/$oldMemberIdx");
+        //TODO
+        //Route 다시
+        context.push("/home/commentDetail/$contentIdx/$oldMemberUuid");
       },
       child: Padding(
         padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 12.h),
@@ -46,16 +50,18 @@ class FeedCommentWidget extends ConsumerWidget {
           children: [
             GestureDetector(
               onTap: () {
-                ref.read(userInfoProvider).userModel?.idx == userMemberIdx
+                myInfo.uuid == memberUuid
                     ? Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => MyPageMainScreen(
-                            oldMemberIdx: oldMemberIdx,
+                            oldMemberUuid: oldMemberUuid,
                           ),
                         ),
                       )
-                    : context.push("/home/myPage/followList/$userMemberIdx/userPage/$name/$userMemberIdx/$oldMemberIdx");
+                    //TODO
+                    //Route 다시
+                    : context.push("/home/myPage/followList/$memberUuid/userPage/$name/$memberUuid/$oldMemberUuid");
               },
               child: getProfileAvatar(profileImage ?? "", 30.w, 30.h),
             ),
@@ -109,7 +115,7 @@ class FeedCommentWidget extends ConsumerWidget {
                             context,
                             kBody11RegularStyle.copyWith(color: kPreviousSecondaryColor),
                             ref,
-                            oldMemberIdx,
+                            oldMemberUuid,
                           ),
                           style: kBody11RegularStyle.copyWith(color: kPreviousTextTitleColor),
                         ),

@@ -41,7 +41,7 @@ class FeedBestPostWidget extends ConsumerWidget {
                           Map<String, dynamic> extraMap = {
                             'firstTitle': 'null',
                             'secondTitle': '인기 급상승',
-                            'memberIdx': '${feedData[index].memberInfoList![0].memberIdx}',
+                            'memberUuid': feedData[index].memberInfo!.uuid,
                             'contentIdx': '${feedData[index].idx}',
                             'contentType': 'popularWeekContent',
                           };

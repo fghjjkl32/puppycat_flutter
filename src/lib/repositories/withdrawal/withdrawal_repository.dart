@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/select_button/select_button_response_model.dart';
@@ -36,8 +33,8 @@ class WithdrawalRepository {
     return responseModel;
   }
 
-  Future<WithdrawalDetailResponseModel> getWithdrawalDetailList(memberIdx) async {
-    WithdrawalDetailResponseModel responseModel = await _withdrawalService.getWithdrawalDetailList(memberIdx);
+  Future<WithdrawalDetailResponseModel> getWithdrawalDetailList() async {
+    WithdrawalDetailResponseModel responseModel = await _withdrawalService.getWithdrawalDetailList();
 
     if (!responseModel.result) {
       throw APIException(
@@ -51,15 +48,13 @@ class WithdrawalRepository {
     return responseModel;
   }
 
-  Future<WithdrawalStatus> withdrawalUser({required int idx, required int code, String? reason}) async {
+  Future<WithdrawalStatus> withdrawalUser({required int code, String? reason}) async {
     Map<String, dynamic> body = reason != null
         ? {
-            "memberIdx": idx,
             "code": code,
             "reason": reason,
           }
         : {
-            "memberIdx": idx,
             "code": code,
           };
 

@@ -23,7 +23,7 @@ class FeedBottomIconWidget extends ConsumerStatefulWidget {
     required this.isLike,
     required this.isSave,
     required this.contentType,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
   });
 
   final int contentIdx;
@@ -32,7 +32,7 @@ class FeedBottomIconWidget extends ConsumerStatefulWidget {
   final bool isLike;
   final bool isSave;
   final String contentType;
-  final int oldMemberIdx;
+  final String oldMemberUuid;
 
   @override
   MyPageMainState createState() => MyPageMainState();
@@ -67,6 +67,9 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
 
   @override
   Widget build(BuildContext context) {
+    // final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 12.0.w, vertical: 8.0.h),
       child: Row(
@@ -79,7 +82,6 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                       onTap: () {
                         if (!ref.watch(likeApiIsLoadingStateProvider)) {
                           ref.watch(feedListStateProvider.notifier).deleteLike(
-                                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                 contentIdx: widget.contentIdx,
                                 contentType: widget.contentType,
                               );
@@ -103,7 +105,6 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                 ),
                           InkWell(
                             onTap: () async {
-                              ref.read(contentLikeUserListStateProvider.notifier).memberIdx = ref.read(userInfoProvider).userModel?.idx;
                               ref.read(contentLikeUserListStateProvider.notifier).contentsIdx = widget.contentIdx;
 
                               _contentLikeUserPagingController.refresh();
@@ -156,9 +157,9 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                             content: contentLikeUserItem.intro!,
                                             isSpecialUser: contentLikeUserItem.isBadge == 1,
                                             isFollow: contentLikeUserItem.followState == 1,
-                                            followerIdx: contentLikeUserItem.memberIdx!,
+                                            followerUuid: contentLikeUserItem.memberUuid!,
                                             contentsIdx: widget.contentIdx,
-                                            oldMemberIdx: 0,
+                                            oldMemberUuid: '',
                                           );
                                         },
                                       ),
@@ -178,10 +179,9 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                   : GestureDetector(
                       onTap: () async {
                         if (!ref.watch(likeApiIsLoadingStateProvider)) {
-                          ref.read(userInfoProvider).userModel == null
+                          isLogined == false
                               ? context.pushReplacement("/loginScreen")
                               : await ref.watch(feedListStateProvider.notifier).postLike(
-                                    loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                     contentIdx: widget.contentIdx,
                                     contentType: widget.contentType,
                                   );
@@ -202,7 +202,6 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                           ),
                           InkWell(
                             onTap: () async {
-                              ref.read(contentLikeUserListStateProvider.notifier).memberIdx = ref.read(userInfoProvider).userModel?.idx;
                               ref.read(contentLikeUserListStateProvider.notifier).contentsIdx = widget.contentIdx;
 
                               _contentLikeUserPagingController.refresh();
@@ -255,9 +254,9 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                             content: contentLikeUserItem.intro!,
                                             isSpecialUser: contentLikeUserItem.isBadge == 1,
                                             isFollow: contentLikeUserItem.followState == 1,
-                                            followerIdx: contentLikeUserItem.memberIdx!,
+                                            followerUuid: contentLikeUserItem.memberUuid!,
                                             contentsIdx: widget.contentIdx,
-                                            oldMemberIdx: 0,
+                                            oldMemberUuid: '',
                                           );
                                         },
                                       ),
@@ -277,7 +276,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
               SizedBox(width: 12.w),
               GestureDetector(
                 onTap: () {
-                  context.push("/home/commentDetail/${widget.contentIdx}/${widget.oldMemberIdx}");
+                  context.push("/home/commentDetail/${widget.contentIdx}/${widget.oldMemberUuid}");
                 },
                 child: Row(
                   children: [
@@ -299,10 +298,9 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
               ? GestureDetector(
                   onTap: () {
                     if (!ref.watch(likeApiIsLoadingStateProvider)) {
-                      ref.read(userInfoProvider).userModel == null
+                      isLogined == false
                           ? context.pushReplacement("/loginScreen")
                           : ref.watch(feedListStateProvider.notifier).deleteSave(
-                                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                 contentIdx: widget.contentIdx,
                                 contentType: widget.contentType,
                               );
@@ -329,10 +327,9 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
               : GestureDetector(
                   onTap: () async {
                     if (!ref.watch(saveApiIsLoadingStateProvider)) {
-                      ref.read(userInfoProvider).userModel == null
+                      isLogined == false
                           ? context.pushReplacement("/loginScreen")
                           : await ref.watch(feedListStateProvider.notifier).postSave(
-                                loginMemberIdx: ref.read(userInfoProvider).userModel!.idx,
                                 contentIdx: widget.contentIdx,
                                 contentType: widget.contentType,
                               );

@@ -14,8 +14,8 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_content_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_information_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/componenet/cropped_images_list_view.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/kpostal_view.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/tag_screen.dart';
@@ -40,6 +40,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
   @override
   Widget build(BuildContext context) {
     final buttonSelected = ref.watch(feedWriteButtonSelectedProvider);
+    final myInfo = ref.read(myInfoStateProvider);
 
     return GestureDetector(
       onTap: () {
@@ -190,7 +191,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                     maxLines: 6,
                     decoration: InputDecoration(
                         counterText: "",
-                        hintText: "내용을 입력해 주세요. (최대 500자)\n\n운영 정책에 위반되는 폭력/선정/욕설 등은\n'${ref.read(userInfoProvider).userModel!.nick}'님에게 책임이 있으며 동의 없이 삭제될 수 있어요.",
+                        hintText: "내용을 입력해 주세요. (최대 500자)\n\n운영 정책에 위반되는 폭력/선정/욕설 등은\n'${myInfo.nick}'님에게 책임이 있으며 동의 없이 삭제될 수 있어요.",
                         hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                         contentPadding: const EdgeInsets.all(16)),
                     name: 'content',

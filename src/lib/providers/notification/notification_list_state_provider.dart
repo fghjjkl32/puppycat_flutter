@@ -5,7 +5,6 @@ import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart'
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
@@ -69,9 +68,8 @@ class NotificationListState extends _$NotificationListState {
       try {
         // NotificationRepository repository = ref.read(notificationRepositoryProvider);
         NotificationRepository repository = NotificationRepository(dio: ref.read(dioProvider));
-        var loginMemberIdx = ref.read(userInfoProvider).userModel!.idx;
         int type = _notiType.index;
-        var result = await repository.getNotifications(loginMemberIdx, pageKey, type == 0 ? null : type);
+        var result = await repository.getNotifications(pageKey, type == 0 ? null : type);
 
         var resultList = result.list.map((e) {
           if (e.senderInfo == null) {
@@ -127,11 +125,11 @@ class NotificationListState extends _$NotificationListState {
     state.refresh();
   }
 
-  void setFeedLike(int memberIdx, int contentsIdx) async {
+  void setFeedLike(int contentsIdx) async {
     ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
 
     try {
-      final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(memberIdx: memberIdx, contentIdx: contentsIdx);
+      final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(contentIdx: contentsIdx);
       if (result.result) {
         changedLikeState(contentsIdx, true);
       }
@@ -145,11 +143,11 @@ class NotificationListState extends _$NotificationListState {
     }
   }
 
-  void unSetFeedLike(int memberIdx, int contentsIdx) async {
+  void unSetFeedLike(int contentsIdx) async {
     ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
 
     try {
-      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(memberIdx: memberIdx, contentsIdx: contentsIdx);
+      final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(contentsIdx: contentsIdx);
       if (result.result) {
         changedLikeState(contentsIdx, false);
       }
@@ -163,13 +161,13 @@ class NotificationListState extends _$NotificationListState {
     }
   }
 
-  void setFollow(int memberIdx, int followIdx) async {
+  void setFollow(String followUuid) async {
     try {
       ref.read(followApiIsLoadingStateProvider.notifier).state = true;
 
-      final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(memberIdx: memberIdx, followIdx: followIdx);
+      final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(followUuid: followUuid);
       if (result.result) {
-        changedFollowState(followIdx, true);
+        changedFollowState(followUuid, true);
       }
       ref.read(followApiIsLoadingStateProvider.notifier).state = false;
     } on APIException catch (apiException) {
@@ -181,13 +179,13 @@ class NotificationListState extends _$NotificationListState {
     }
   }
 
-  void unSetFollow(int memberIdx, int followIdx) async {
+  void unSetFollow(String followUuid) async {
     try {
       ref.read(followApiIsLoadingStateProvider.notifier).state = true;
 
-      final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(memberIdx: memberIdx, followIdx: followIdx);
+      final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(followUuid: followUuid);
       if (result.result) {
-        changedFollowState(followIdx, false);
+        changedFollowState(followUuid, false);
       }
       ref.read(followApiIsLoadingStateProvider.notifier).state = false;
     } on APIException catch (apiException) {
@@ -199,9 +197,9 @@ class NotificationListState extends _$NotificationListState {
     }
   }
 
-  void setCommentLike(int memberIdx, int commentIdx) async {
+  void setCommentLike(int commentIdx) async {
     try {
-      final result = await CommentRepository(dio: ref.read(dioProvider)).postCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+      final result = await CommentRepository(dio: ref.read(dioProvider)).postCommentLike(commentIdx: commentIdx);
       if (result.result) {
         changedLikeState(commentIdx, true);
       }
@@ -214,9 +212,9 @@ class NotificationListState extends _$NotificationListState {
     }
   }
 
-  void unSetCommentLike(int memberIdx, int commentIdx) async {
+  void unSetCommentLike(int commentIdx) async {
     try {
-      final result = await CommentRepository(dio: ref.read(dioProvider)).deleteCommentLike(memberIdx: memberIdx, commentIdx: commentIdx);
+      final result = await CommentRepository(dio: ref.read(dioProvider)).deleteCommentLike(commentIdx: commentIdx);
 
       if (result.result) {
         changedLikeState(commentIdx, false);
@@ -242,9 +240,9 @@ class NotificationListState extends _$NotificationListState {
     state.notifyListeners();
   }
 
-  void changedFollowState(int followIdx, bool isFollow) {
+  void changedFollowState(String followUuid, bool isFollow) {
     state.itemList = state.itemList!.map((e) {
-      if (e.senderIdx != followIdx) {
+      if (e.senderUuid != followUuid) {
         return e;
       }
       return e.copyWith(
@@ -254,26 +252,3 @@ class NotificationListState extends _$NotificationListState {
     state.notifyListeners();
   }
 }
-
-//
-// @Riverpod(keepAlive: true)
-// class NotificationListState extends _$NotificationListState {
-//   @override
-//   List<NotificationListItemModel> build() {
-//     return [];
-//   }
-//
-//   void getNotifications() async {
-//     final NotificationRepository notificationRepository = NotificationRepository();
-//     try {
-//       var memberIdx = ref.read(userInfoProvider).userModel!.idx;
-//       var result = await notificationRepository.getNotifications(memberIdx);
-//       state = result;
-//       print('notification list $result');
-//     } catch (e) {
-//       print('get Notification List Error - $e');
-//       state = [];
-//     }
-//   }
-//
-// }

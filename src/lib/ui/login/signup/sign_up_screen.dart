@@ -9,7 +9,6 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
@@ -521,7 +520,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     return DefaultOnWillPopScope(
       onWillPop: () async {
         ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
-        ref.read(userInfoProvider.notifier).state = UserInfoModel();
+        ref.read(signUpUserInfoProvider.notifier).state = null;
         return true;
       },
       child: GestureDetector(
@@ -546,9 +545,9 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                     child: ElevatedButton(
                       onPressed: essentialAgreeProvider && isValidNickName && ref.watch(authStateProvider)
                           ? () {
-                              var userModel = ref.read(userInfoProvider).userModel;
+                              UserModel? userModel = ref.read(signUpUserInfoProvider);
                               if (userModel == null) {
-                                throw 'usermodel is null';
+                                throw 'userModel is null';
                               }
                               userModel = userModel.copyWith(
                                 nick: nickController.text,
@@ -559,7 +558,6 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                                 gender: signUpAuthModel?.gender ?? '',
                                 birth: signUpAuthModel?.birth ?? '',
                               );
-                              ref.read(userInfoProvider.notifier).state = UserInfoModel(userModel: userModel);
                               ref.read(signUpStateProvider.notifier).socialSignUp(userModel); // ㅇㅇㅇ
                               // chatClientController.changeDisplayName(userModel.id, userModel.nick);
                             }

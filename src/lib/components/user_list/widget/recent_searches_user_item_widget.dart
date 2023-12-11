@@ -9,6 +9,7 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_helper_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/search/search_db_helper.dart';
 import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
 
@@ -18,10 +19,10 @@ class RecentSearchesUserItemWidget extends ConsumerStatefulWidget {
     required this.userName,
     required this.content,
     required this.isSpecialUser,
-    required this.memberIdx,
+    required this.memberUuid,
     required this.search,
     required this.dateTime,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
     Key? key,
   }) : super(key: key);
 
@@ -29,10 +30,10 @@ class RecentSearchesUserItemWidget extends ConsumerStatefulWidget {
   final String userName;
   final String content;
   final bool isSpecialUser;
-  final int memberIdx;
+  final String memberUuid;
   final Searche search;
   final DateTime dateTime;
-  final int oldMemberIdx;
+  final String oldMemberUuid;
 
   @override
   RecentSearchesUserItemWidgetState createState() => RecentSearchesUserItemWidgetState();
@@ -41,11 +42,16 @@ class RecentSearchesUserItemWidget extends ConsumerStatefulWidget {
 class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUserItemWidget> {
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+
     return InkWell(
       onTap: () {
-        ref.read(userInfoProvider).userModel?.idx == widget.memberIdx
+        myInfo.uuid == widget.memberUuid
             ? context.push("/home/myPage")
-            : context.push("/home/myPage/followList/${widget.memberIdx}/userPage/${widget.userName}/${widget.memberIdx}/${widget.oldMemberIdx}");
+            : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
+        //TODO
+        //Route 다시
       },
       child: Padding(
         padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),

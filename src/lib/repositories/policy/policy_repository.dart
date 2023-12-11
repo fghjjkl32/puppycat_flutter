@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_menu_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/policy/policy_menu_response_model.dart';
@@ -16,7 +17,7 @@ class PolicyRepository {
   PolicyRepository({
     required this.dio,
   }) {
-    _policyService = PolicyService(dio, baseUrl: "https://member-api.puppycat.co.kr/");
+    _policyService = PolicyService(dio, baseUrl: memberBaseUrl);
   }
 
   Future<List<PolicyItemModel>> getPolicies() async {

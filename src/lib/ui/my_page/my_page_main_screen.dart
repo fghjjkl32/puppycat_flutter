@@ -22,7 +22,6 @@ import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/
 import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
@@ -30,6 +29,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_li
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -43,10 +43,10 @@ import 'package:thumbor/thumbor.dart';
 class MyPageMainScreen extends ConsumerStatefulWidget {
   const MyPageMainScreen({
     super.key,
-    required this.oldMemberIdx,
+    required this.oldMemberUuid,
   });
 
-  final int oldMemberIdx;
+  final String oldMemberUuid;
 
   @override
   MyPageMainState createState() => MyPageMainState();
@@ -85,8 +85,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
     feedListStateNotifier = ref.read(feedListStateProvider.notifier);
     firstFeedStateNotifier = ref.read(firstFeedDetailStateProvider.notifier);
 
-    ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
-    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberIdx);
+    ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+    ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
 
     tabController = TabController(
       initialIndex: 0,
@@ -97,7 +97,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
     _myContentsListPagingController.refresh();
     _myTagContentsListPagingController.refresh();
 
-    ref.read(myInformationStateProvider.notifier).getInitUserInformation(ref.read(userInfoProvider).userModel!.idx);
+    ref.read(myInformationStateProvider.notifier).getInitUserInformation(memberUuid: ref.read(myInfoStateProvider).uuid ?? '');
     super.initState();
   }
 
@@ -121,8 +121,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   }
 
   Future<bool> handleFocusLost() {
-    feedListStateNotifier.getStateForUser(widget.oldMemberIdx ?? 0);
-    firstFeedStateNotifier.getStateForUser(widget.oldMemberIdx ?? 0);
+    feedListStateNotifier.getStateForUser(widget.oldMemberUuid);
+    firstFeedStateNotifier.getStateForUser(widget.oldMemberUuid);
     return Future.value(true);
   }
 
@@ -146,8 +146,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     title: const Text('마이페이지'),
                     leading: IconButton(
                       onPressed: () {
-                        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
-                        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberIdx ?? 0);
+                        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(
@@ -256,10 +256,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     ],
                     expandedHeight: 120.h,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
-                      final userInformationState = ref.watch(myInformationStateProvider);
-                      final lists = userInformationState.list;
+                      final userInformationItemModel = ref.watch(myInformationStateProvider);
 
-                      return lists.isEmpty ? Container() : _myPageSuccessProfile(lists[0]);
+                      return _myPageSuccessProfile(userInformationItemModel);
                     })),
                 SliverPersistentHeader(
                   delegate: TabBarDelegate(),
@@ -362,9 +361,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     child: GestureDetector(
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
-                          'firstTitle': '${ref.watch(myInformationStateProvider).list[0].nick}',
+                          'firstTitle': '${ref.watch(myInformationStateProvider).nick}',
                           'secondTitle': '피드',
-                          'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                          'memberUuid': ref.read(myInformationStateProvider).uuid ?? '',
                           'contentIdx': '${item.idx}',
                           'contentType': 'myContent',
                         };
@@ -387,7 +386,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   placeholder: (context, url) => Container(
                                     color: kPreviousNeutralColor300,
                                   ),
-                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.imgUrl}").toUrl(),
+                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${item.imgUrl}").toUrl(),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -421,7 +420,6 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                     padding: EdgeInsets.only(left: 6.0.w, right: 2.w),
                                     child: InkWell(
                                       onTap: () async {
-                                        ref.read(contentLikeUserListStateProvider.notifier).memberIdx = ref.read(userInfoProvider).userModel?.idx;
                                         ref.read(contentLikeUserListStateProvider.notifier).contentsIdx = item.idx;
 
                                         _contentLikeUserPagingController.refresh();
@@ -474,9 +472,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                       content: contentLikeUserItem.intro!,
                                                       isSpecialUser: contentLikeUserItem.isBadge == 1,
                                                       isFollow: contentLikeUserItem.followState == 1,
-                                                      followerIdx: contentLikeUserItem.memberIdx!,
+                                                      followerUuid: contentLikeUserItem.memberUuid!,
                                                       contentsIdx: item.idx,
-                                                      oldMemberIdx: 0,
+                                                      oldMemberUuid: '',
                                                     );
                                                   },
                                                 ),
@@ -577,9 +575,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                   // replies: item.childCommentData,
                                                                   contentIdx: item.contentsIdx,
                                                                   isLike: item.likeState == 1,
-                                                                  memberIdx: item.memberIdx,
+                                                                  memberUuid: item.memberUuid,
                                                                   mentionListData: item.mentionList ?? [],
-                                                                  oldMemberIdx: widget.oldMemberIdx,
+                                                                  oldMemberUuid: widget.oldMemberUuid,
                                                                   isLastDisPlayChild: item.isLastDisPlayChild,
                                                                   // remainChildCount: item.remainChildCount,
                                                                   onMoreChildComment: (page) {
@@ -606,7 +604,6 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                   },
                                                                   onTapRemoveButton: () async {
                                                                     final result = await ref.read(commentListStateProvider.notifier).deleteContents(
-                                                                          memberIdx: ref.read(userInfoProvider).userModel!.idx,
                                                                           contentsIdx: item.contentsIdx,
                                                                           commentIdx: item.idx,
                                                                           parentIdx: item.parentIdx,
@@ -777,9 +774,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     child: GestureDetector(
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
-                          'firstTitle': '${ref.watch(myInformationStateProvider).list[0].nick}',
+                          'firstTitle': ref.read(myInformationStateProvider).nick ?? 'unknown',
                           'secondTitle': '태그됨',
-                          'memberIdx': '${ref.read(userInfoProvider).userModel!.idx}',
+                          'memberUuid': ref.read(myInfoStateProvider).uuid,
                           'contentIdx': '${item.idx}',
                           'contentType': 'myTagContent',
                         };
@@ -807,7 +804,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   placeholder: (context, url) => Container(
                                     color: kPreviousNeutralColor300,
                                   ),
-                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.imgUrl}").toUrl(),
+                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${item.imgUrl}").toUrl(),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -845,6 +842,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   }
 
   Widget _myPageSuccessProfile(UserInformationItemModel data) {
+    // final myInfo = ref.read(myInfoStateProvider);
+
     return FlexibleSpaceBar(
       centerTitle: true,
       expandedTitleScale: 1.0,
@@ -856,7 +855,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                  child: getProfileAvatar(data.profileImgUrl! ?? "", 48.w, 48.h),
+                  child: getProfileAvatar(data.profileImgUrl ?? "", 48.w, 48.h),
                 ),
                 Expanded(
                   child: Column(
@@ -917,7 +916,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                       ),
                       GestureDetector(
                         onTap: () {
-                          context.go("/home/myPage/followList/${ref.read(userInfoProvider).userModel!.idx}");
+                          //TODO
+                          //Route 다시
+                          context.go("/home/myPage/followList/${data.uuid}");
                         },
                         child: Padding(
                           padding: EdgeInsets.only(top: 8.0.h),

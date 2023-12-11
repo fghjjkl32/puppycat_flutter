@@ -1,9 +1,7 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_info_model.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -19,9 +17,17 @@ class MyInfoState extends _$MyInfoState {
     return UserInformationItemModel();
   }
 
-  void getMyInfo(String memberIdx) async {
-    UserInformationItemModel userInfoModel = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).getMyInfo(memberIdx);
-    state = userInfoModel;
+  void getMyInfo() async {
+    try {
+      UserInformationItemModel userInfoModel = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).getMyInfo();
+      state = userInfoModel;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      state = UserInformationItemModel();
+    } catch (e) {
+      print('getMyInfo error $e');
+      state = UserInformationItemModel();
+    }
   }
 
   ///NOTE
