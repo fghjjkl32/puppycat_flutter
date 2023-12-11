@@ -80,7 +80,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
             ),
           ],
         ),
-        width: 230.w,
+        width: 230,
         height: 202.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -255,15 +255,15 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                             ),
                           ),
                           Positioned(
-                            right: 4.w,
-                            top: 4.w,
+                            right: 4,
+                            top: 4,
                             child: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xff414348).withOpacity(0.75),
                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                               ),
-                              width: 18.w,
-                              height: 14.w,
+                              width: 18,
+                              height: 14,
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[0].imageCnt}",
@@ -317,15 +317,15 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                             ),
                           ),
                           Positioned(
-                            right: 4.w,
-                            top: 4.w,
+                            right: 4,
+                            top: 4,
                             child: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xff414348).withOpacity(0.75),
                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                               ),
-                              width: 18.w,
-                              height: 14.w,
+                              width: 18,
+                              height: 14,
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[0].imageCnt}",
@@ -377,15 +377,15 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                             ),
                           ),
                           Positioned(
-                            right: 4.w,
-                            top: 4.w,
+                            right: 4,
+                            top: 4,
                             child: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xff414348).withOpacity(0.75),
                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                               ),
-                              width: 18.w,
-                              height: 14.w,
+                              width: 18,
+                              height: 14,
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[1].imageCnt}",
@@ -439,15 +439,15 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                             ),
                           ),
                           Positioned(
-                            right: 4.w,
-                            top: 4.w,
+                            right: 4,
+                            top: 4,
                             child: Container(
                               decoration: BoxDecoration(
                                 color: const Color(0xff414348).withOpacity(0.75),
                                 borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                               ),
-                              width: 18.w,
-                              height: 14.w,
+                              width: 18,
+                              height: 14,
                               child: Center(
                                 child: Text(
                                   "${widget.imageList[0].imageCnt}",
@@ -496,15 +496,15 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                 width: double.infinity,
                               ),
                               Positioned(
-                                right: 4.w,
-                                top: 4.w,
+                                right: 4,
+                                top: 4,
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: const Color(0xff414348).withOpacity(0.75),
                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  width: 18.w,
-                                  height: 14.w,
+                                  width: 18,
+                                  height: 14,
                                   child: Center(
                                     child: Text(
                                       "${widget.imageList[1].imageCnt}",
@@ -552,15 +552,15 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                   width: double.infinity,
                                 ),
                                 Positioned(
-                                  right: 4.w,
-                                  top: 4.w,
+                                  right: 4,
+                                  top: 4,
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: const Color(0xff414348).withOpacity(0.75),
                                       borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                     ),
-                                    width: 18.w,
-                                    height: 14.w,
+                                    width: 18,
+                                    height: 14,
                                     child: Center(
                                       child: Text(
                                         "${widget.imageList[2].imageCnt}",

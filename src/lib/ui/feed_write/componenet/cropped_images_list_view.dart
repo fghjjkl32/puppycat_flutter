@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
@@ -32,32 +33,6 @@ class CroppedImagesListView extends ConsumerStatefulWidget {
 class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
   bool alreadyLoaded = false;
 
-  double getViewportFractionCalculateValue(double width) {
-    // 계산된 기울기와 절편
-    const double slope = -0.000909;
-    const double intercept = 1.127273;
-
-    // 선형 방정식을 이용하여 값을 계산
-    return slope * width + intercept;
-  }
-
-  double getCloseButtonCalculateValue(double width) {
-    // 계산된 기울기와 절편
-    const double slope = 0.121212;
-    const double intercept = -53.636364;
-
-    // 선형 방정식을 이용하여 값을 계산
-    return slope * width + intercept;
-  }
-
-  double getTagCalculateLeft(double width) {
-    return 0.084848 * width - 24.545454;
-  }
-
-  double getTagCalculateBottom(double height) {
-    return 0.153846 * height - 110.0;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (widget.progress == 1.0 && !alreadyLoaded) {
@@ -83,7 +58,7 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
             options: CarouselOptions(
               initialPage: ref.watch(feedWriteCurrentViewCountProvider),
               viewportFraction: getViewportFractionCalculateValue(MediaQuery.of(context).size.width),
-              height: 290,
+              height: getImageHeightCalculateValue(MediaQuery.of(context).size.width),
               enableInfiniteScroll: false,
               padEnds: false,
               onPageChanged: (index, reason) {
@@ -101,14 +76,16 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
               List<Tag> tags = tagImages.tag;
 
               return Stack(
-                // clipBehavior: Clip.none,
+                clipBehavior: Clip.none,
                 children: [
                   Padding(
                     padding: EdgeInsets.all(12.0),
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                       child: Container(
-                        // color: kBlackColor,
+                        width: double.infinity,
+                        height: double.infinity,
+                        color: kBlackColor,
                         child: Image.file(
                           file,
                         ),
@@ -116,7 +93,8 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                     ),
                   ),
                   Positioned(
-                    right: getCloseButtonCalculateValue(MediaQuery.of(context).size.width),
+                    top: 0,
+                    right: 0,
                     child: providerCroppedFiles.length > 1
                         ? GestureDetector(
                             onTap: () {
@@ -148,8 +126,8 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                   ),
                   if (tags.isNotEmpty)
                     Positioned(
-                      left: getTagCalculateLeft(MediaQuery.of(context).size.width),
-                      bottom: getTagCalculateBottom(MediaQuery.of(context).size.height),
+                      left: 20,
+                      bottom: 20,
                       child: Container(
                         decoration: BoxDecoration(
                           color: const Color(0xff414348).withOpacity(0.6),

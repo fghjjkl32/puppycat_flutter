@@ -24,19 +24,20 @@ class FeedImageMainWidget extends StatelessWidget {
       child: Column(
         children: [
           if (imageList.length == 1) ...[
-            AspectRatio(
-              aspectRatio: 1,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12.0),
+              child: Container(
+                color: kBlackColor,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.width - 24.w,
                 child: CachedNetworkImage(
-                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
                   placeholder: (context, url) => Container(
                     color: kPreviousNeutralColor300,
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                  fit: BoxFit.cover,
-                  height: 266.h,
-                  width: double.infinity,
+                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${imageList[0].url!}").toUrl(),
+                  // fit: BoxFit.cover,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width,
                 ),
               ),
             ),

@@ -70,18 +70,6 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
 
   @override
   Widget build(BuildContext context) {
-    // if (widget.imageList[0].imgWidth! > widget.imageList[0].imgHeight!) {
-    //   //가로가 더 길때
-    //   width = MediaQuery.of(context).size.width * (4 / 3);
-    //   height = MediaQuery.of(context).size.width;
-    // } else if (widget.imageList[0].imgWidth! < widget.imageList[0].imgHeight!) {
-    //   //세로가 더 길때
-    //   width = MediaQuery.of(context).size.width;
-    //   height = MediaQuery.of(context).size.width * (4 / 3);
-    // } else {
-    //   width = MediaQuery.of(context).size.width;
-    //   height = MediaQuery.of(context).size.width;
-    // }
     return Column(
       children: [
         GestureDetector(
@@ -114,146 +102,162 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
               },
             ),
             items: widget.imageList.map((i) {
-              return Stack(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: Container(
+              return Padding(
+                padding: EdgeInsets.all(12.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Stack(
+                    children: [
+                      Container(
                         color: kBlackColor,
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.width,
-                        child: CachedNetworkImage(
-                          placeholder: (context, url) => Container(
-                            color: kPreviousNeutralColor300,
-                          ),
-                          imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${i.url}").toUrl(),
-                          // fit: BoxFit.cover,
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width,
-                        ),
                       ),
-                      // ZoomOverlay(
-                      //   modalBarrierColor: Colors.black12, // Optional
-                      //   minScale: 0.5, // Optional
-                      //   maxScale: 3.0, // Optional
-                      //   animationCurve: Curves
-                      //       .fastOutSlowIn, // Defaults to fastOutSlowIn which mimics IOS instagram behavior
-                      //   animationDuration: Duration(
-                      //       milliseconds:
-                      //           300), // Defaults to 100 Milliseconds. Recommended duration is 300 milliseconds for Curves.fastOutSlowIn
-                      //   twoTouchOnly: true, // Defaults to false
-                      //   onScaleStart: () {}, // optional VoidCallback
-                      //   onScaleStop: () {}, // optional VoidCallback
-                      //   child: Image.network(
-                      //     Thumbor(host: thumborHostUrl, key: thumborKey)
-                      //         .buildImage("$imgDomain${i.url}")
-                      //         .toUrl(),
-                      //     fit: BoxFit.cover,
-                      //     width: double.infinity,
-                      //     height: double.infinity,
-                      //   ),
-                      // ),
-                    ),
-                  ),
-                  ...i.imgMemberTagList!.map((tag) {
-                    return Positioned(
-                      left: tag.width!.toDouble(),
-                      top: tag.height!.toDouble(),
-                      child: FadeTransition(
-                        opacity: _fadeController,
-                        child: ValueListenableBuilder<bool>(
-                          valueListenable: _isTagVisible,
-                          builder: (BuildContext context, bool isTagVisible, Widget? child) {
-                            return isTagVisible
-                                ? GestureDetector(
-                                    onTap: () {
-                                      ref.read(userInfoProvider).userModel!.idx == tag.memberIdx
-                                          ? context.push("/home/myPage")
-                                          : context.push("/home/myPage/followList/${tag.memberIdx}/userPage/${tag.nick!}/${tag.memberIdx}/${tag.memberIdx}");
-                                    },
-                                    child: MentionTagWidget(
-                                      isCanClose: false,
-                                      color: kPreviousTextSubTitleColor.withOpacity(0.8),
-                                      textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
-                                      text: tag.nick!,
-                                      onDelete: () {},
-                                    ),
-                                  )
-                                : SizedBox.shrink();
-                          },
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                  if (i.imgMemberTagList!.isNotEmpty)
-                    Positioned(
-                      left: 20,
-                      bottom: 10,
-                      child: InkWell(
-                        onTap: () {
-                          showCustomModalBottomSheet(
-                            context: context,
-                            widget: SizedBox(
-                              height: 500.h,
-                              child: Stack(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          top: 8.0.h,
-                                          bottom: 10.0.h,
-                                        ),
-                                        child: Text(
-                                          "태그된 대상",
-                                          style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                        ),
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Stack(
+                            children: [
+                              CachedNetworkImage(
+                                placeholder: (context, url) => Container(
+                                  color: kPreviousNeutralColor300,
+                                ),
+                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${i.url}").toUrl(),
+                                // fit: BoxFit.cover,
+                              ),
+                              ...i.imgMemberTagList!.map((tag) {
+                                return Positioned.fill(
+                                  child: Align(
+                                    alignment: FractionalOffset(tag.width!.toDouble(), tag.height!.toDouble()),
+                                    child: FadeTransition(
+                                      opacity: _fadeController,
+                                      child: ValueListenableBuilder<bool>(
+                                        valueListenable: _isTagVisible,
+                                        builder: (BuildContext context, bool isTagVisible, Widget? child) {
+                                          return isTagVisible
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    ref.read(userInfoProvider).userModel!.idx == tag.memberIdx
+                                                        ? context.push("/home/myPage")
+                                                        : context.push("/home/myPage/followList/${tag.memberIdx}/userPage/${tag.nick!}/${tag.memberIdx}/${tag.memberIdx}");
+                                                  },
+                                                  child: MentionTagWidget(
+                                                    isCanClose: false,
+                                                    color: kPreviousTextSubTitleColor.withOpacity(0.8),
+                                                    textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
+                                                    text: tag.nick!,
+                                                    onDelete: () {},
+                                                  ),
+                                                )
+                                              : SizedBox.shrink();
+                                        },
                                       ),
-                                      Expanded(
-                                        child: ListView.builder(
-                                          itemCount: i.imgMemberTagList!.length,
-                                          padding: EdgeInsets.only(bottom: 80.h),
-                                          itemBuilder: (BuildContext context, int index) {
-                                            return FavoriteItemWidget(
-                                              profileImage: i.imgMemberTagList![index].profileImgUrl,
-                                              userName: i.imgMemberTagList![index].nick!,
-                                              content: i.imgMemberTagList![index].intro!,
-                                              isSpecialUser: i.imgMemberTagList![index].isBadge == 1,
-                                              isFollow: i.imgMemberTagList![index].followState == 1,
-                                              followerIdx: i.imgMemberTagList![index].memberIdx!,
-                                              contentsIdx: widget.contentIdx,
-                                              contentType: widget.contentType,
-                                              oldMemberIdx: widget.memberIdx!,
-                                            );
-                                          },
-                                        ),
+                                    ),
+                                  ),
+                                );
+                                Positioned.fill(
+                                  child: Align(
+                                    alignment: FractionalOffset(tag.width!.toDouble(), tag.height!.toDouble()),
+                                    child: FadeTransition(
+                                      opacity: _fadeController,
+                                      child: ValueListenableBuilder<bool>(
+                                        valueListenable: _isTagVisible,
+                                        builder: (BuildContext context, bool isTagVisible, Widget? child) {
+                                          return isTagVisible
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    ref.read(userInfoProvider).userModel!.idx == tag.memberIdx
+                                                        ? context.push("/home/myPage")
+                                                        : context.push("/home/myPage/followList/${tag.memberIdx}/userPage/${tag.nick!}/${tag.memberIdx}/${tag.memberIdx}");
+                                                  },
+                                                  child: MentionTagWidget(
+                                                    isCanClose: false,
+                                                    color: kPreviousTextSubTitleColor.withOpacity(0.8),
+                                                    textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
+                                                    text: tag.nick!,
+                                                    onDelete: () {},
+                                                  ),
+                                                )
+                                              : SizedBox.shrink();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (i.imgMemberTagList!.isNotEmpty)
+                        Positioned(
+                          left: 10,
+                          bottom: 10,
+                          child: InkWell(
+                            onTap: () {
+                              showCustomModalBottomSheet(
+                                context: context,
+                                widget: SizedBox(
+                                  height: 500.h,
+                                  child: Stack(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              top: 8.0.h,
+                                              bottom: 10.0.h,
+                                            ),
+                                            child: Text(
+                                              "태그된 대상",
+                                              style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: ListView.builder(
+                                              itemCount: i.imgMemberTagList!.length,
+                                              padding: EdgeInsets.only(bottom: 80.h),
+                                              itemBuilder: (BuildContext context, int index) {
+                                                return FavoriteItemWidget(
+                                                  profileImage: i.imgMemberTagList![index].profileImgUrl,
+                                                  userName: i.imgMemberTagList![index].nick!,
+                                                  content: i.imgMemberTagList![index].intro!,
+                                                  isSpecialUser: i.imgMemberTagList![index].isBadge == 1,
+                                                  isFollow: i.imgMemberTagList![index].followState == 1,
+                                                  followerIdx: i.imgMemberTagList![index].memberIdx!,
+                                                  contentsIdx: widget.contentIdx,
+                                                  contentType: widget.contentType,
+                                                  oldMemberIdx: widget.memberIdx!,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xff414348).withOpacity(0.6),
+                                shape: BoxShape.circle,
                               ),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xff414348).withOpacity(0.6),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: Icon(
-                              Puppycat_social.icon_taguser,
-                              size: 24,
-                              color: kPreviousNeutralColor100,
+                              child: const Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Puppycat_social.icon_taguser,
+                                  size: 24,
+                                  color: kPreviousNeutralColor100,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                ],
+                    ],
+                  ),
+                ),
               );
             }).toList(),
           ),

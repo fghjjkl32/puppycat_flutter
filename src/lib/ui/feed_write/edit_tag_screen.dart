@@ -148,6 +148,22 @@ class TaggableImage extends ConsumerStatefulWidget {
 
 class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKeepAliveClientMixin {
   Tag? draggingTag;
+  Size? _imageSize;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      final RenderBox? imageBox = widget.imageKey.currentContext?.findRenderObject() as RenderBox?;
+      if (imageBox != null) {
+        setState(() {
+          _imageSize = imageBox.size;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +177,13 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
     return GestureDetector(
       onTapDown: (details) {
         RenderBox box = context.findRenderObject() as RenderBox;
-        Offset tapLocation = box.globalToLocal(details.globalPosition);
+
+        final Offset localPosition = box.globalToLocal(details.globalPosition);
+        final RenderBox imageBox = widget.imageKey.currentContext!.findRenderObject() as RenderBox;
+        final Size displayedImageSize = imageBox.size;
+
+        final double xRatio = localPosition.dx / displayedImageSize.width;
+        final double yRatio = localPosition.dy / displayedImageSize.height;
 
         List<TagImages> newTagImage = List.from(state.tagImage);
         int existingIndex = -1;
@@ -187,7 +209,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
           PageRouteBuilder(
             opaque: false, // set to false
             pageBuilder: (_, __, ___) => FeedWriteTagSearchScreen(
-              offset: tapLocation,
+              offset: Offset(xRatio, yRatio),
               imagePositionIndex: widget.imagePositionIndex,
               imageIdx: widget.imageIdx,
             ),
@@ -207,13 +229,17 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
               ),
             ),
           ),
-          ...tags
-              .map((tag) => Positioned(
-                    top: tag.position.dy,
-                    left: tag.position.dx,
-                    child: buildDraggableTag(tag),
-                  ))
-              .toList(),
+          ...tags.map((tag) {
+            if (_imageSize == null) {
+              return Container();
+            }
+
+            return Positioned(
+              top: _imageSize!.height * tag.position.dy,
+              left: _imageSize!.width * tag.position.dx,
+              child: buildDraggableTag(tag),
+            );
+          }).toList(),
         ],
       ),
     );
@@ -253,7 +279,10 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
         if (xPos > imageWidth) xPos = imageWidth;
         if (yPos > imageHeight) yPos = imageHeight;
 
-        final newTag = tag.copyWith(position: Offset(xPos, yPos));
+        print("xPos / _imageSize!.width ${xPos / _imageSize!.width}");
+        print("xPos / _imageSize!.width ${yPos / _imageSize!.height}");
+
+        final newTag = tag.copyWith(position: Offset(xPos / _imageSize!.width, yPos / _imageSize!.height));
 
         ref.read(feedWriteProvider.notifier).updateTag(tag, newTag, widget.imagePositionIndex);
 
