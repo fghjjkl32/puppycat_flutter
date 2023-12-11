@@ -14,6 +14,7 @@ import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_pr
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/policy_checkbox_widget.dart';
 
@@ -90,18 +91,20 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     return Column(
       children: [
         Row(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               '회원가입.본인 인증'.tr(),
-              style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4),
+              style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4, letterSpacing: 0.2),
             ),
             Text(
-              ' *',
-              style: kBody12SemiBoldStyle.copyWith(color: kPreviousErrorColor),
+              '*',
+              style: kBody13RegularStyle.copyWith(color: kPreviousErrorColor, height: 1.4, letterSpacing: 0.2),
             ),
           ],
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Stack(
           children: [
             Visibility(
@@ -171,14 +174,14 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                           ),
                           backgroundColor: MaterialStateProperty.all<Color>(kSignUpPassColor),
-                          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.only(left: 5, right: 5)),
+                          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.only(left: 5, right: 5)),
                         ),
                         onPressed: () {
                           ref.read(authStateProvider.notifier).getPassAuthUrl();
                         },
                         label: Text(
                           '회원가입.휴대폰 인증'.tr(),
-                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor100),
+                          style: kBody14RegularStyle.copyWith(color: kPreviousNeutralColor100, fontWeight: FontWeight.w500, height: 1.4, letterSpacing: 0.2),
                         ),
                         icon: Image.asset('assets/image/signUpScreen/pass_icon.png'),
                       ),
@@ -189,22 +192,31 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
             ),
             Visibility(
               visible: isAuth,
-              child: SizedBox(
-                width: 320,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kPreviousPrimaryColor,
-                    disabledBackgroundColor: kPreviousNeutralColor400,
-                    disabledForegroundColor: kPreviousTextBodyColor,
-                    elevation: 0,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      // width: 320,
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kPreviousPrimaryColor,
+                          disabledBackgroundColor: kPreviousNeutralColor400,
+                          disabledForegroundColor: kPreviousTextBodyColor,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          '회원가입.인증 완료'.tr(),
+                          style: kButton12BoldStyle.copyWith(color: kNeutralColor500, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
                   ),
-                  child: Text(
-                    '회원가입.인증 완료'.tr(),
-                    style: kButton14BoldStyle,
-                  ),
-                ),
+                ],
               ),
             ),
           ],
@@ -222,11 +234,11 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
           children: [
             Text(
               '회원가입.닉네임'.tr(),
-              style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4),
+              style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4, letterSpacing: 0.2),
             ),
             Text(
               ' *',
-              style: kBody12SemiBoldStyle.copyWith(color: kPreviousErrorColor),
+              style: kBody14BoldStyle.copyWith(color: kPreviousErrorColor, height: 1.4, letterSpacing: 0.2),
             ),
           ],
         ),
@@ -257,7 +269,11 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                           errorMaxLines: 2,
                           counterText: '',
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0), //Vertical 이 13인 이유는 정확하진 않은데 border까지 고려해야할듯
+                          contentPadding: const EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0),
+                          //Vertical 이 13인 이유는 정확하진 않은데 border까지 고려해야할듯
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         )
                       : InputDecoration(
                           hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
@@ -278,7 +294,10 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                           errorMaxLines: 2,
                           counterText: '',
                           isDense: true,
-                          contentPadding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
                   maxLength: 20,
                   autovalidateMode: AutovalidateMode.always,
@@ -286,14 +305,12 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                     FilteringTextInputFormatter.deny(RegExp(r'\s')),
                   ],
                   onChanged: (value) {
-                    if (value.isNotEmpty) {
-                      if (value.length > 1) {
-                        ref.read(checkButtonProvider.notifier).state = true;
-                      }
+                    if (_formKey.currentState!.validate()) {
+                      ref.read(checkButtonProvider.notifier).state = true;
                     } else {
                       ref.read(checkButtonProvider.notifier).state = false;
                     }
-                    ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
+                    // ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
                   },
                   validator: (value) {
                     if (value != null) {
@@ -332,16 +349,19 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                       }
                     : null,
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.only(left: 5, right: 5),
+                  padding: const EdgeInsets.only(left: 5, right: 5),
                   backgroundColor: kPreviousPrimaryLightColor,
                   disabledBackgroundColor: kPreviousNeutralColor300,
                   disabledForegroundColor: kPreviousTextBodyColor,
                   foregroundColor: kPreviousPrimaryColor,
                   elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 child: Text(
                   '회원가입.중복확인'.tr(),
-                  style: kBody12SemiBoldStyle, //.copyWith(color: kPrimaryColor),
+                  style: kBody16MediumStyle.copyWith(height: 1.4, letterSpacing: -0.5), //.copyWith(color: kPrimaryColor),
                 ),
               ),
             ),
@@ -519,8 +539,13 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
 
     return DefaultOnWillPopScope(
       onWillPop: () async {
+        ///NOTE
+        ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
+        ///로그인 페이지 이동 초기화
         ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+        ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
         ref.read(signUpUserInfoProvider.notifier).state = null;
+        ref.read(authStateProvider.notifier).state = false;
         return true;
       },
       child: GestureDetector(
@@ -537,43 +562,52 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
               children: [
                 _buildTop(),
                 Expanded(child: _buildBody()),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: SizedBox(
-                    width: 320,
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: essentialAgreeProvider && isValidNickName && ref.watch(authStateProvider)
-                          ? () {
-                              UserModel? userModel = ref.read(signUpUserInfoProvider);
-                              if (userModel == null) {
-                                throw 'userModel is null';
-                              }
-                              userModel = userModel.copyWith(
-                                nick: nickController.text,
-                                ci: signUpAuthModel?.ci ?? '',
-                                di: signUpAuthModel?.di ?? '',
-                                name: signUpAuthModel?.name ?? '',
-                                phone: signUpAuthModel?.phone ?? '',
-                                gender: signUpAuthModel?.gender ?? '',
-                                birth: signUpAuthModel?.birth ?? '',
-                              );
-                              ref.read(signUpStateProvider.notifier).socialSignUp(userModel); // ㅇㅇㅇ
-                              // chatClientController.changeDisplayName(userModel.id, userModel.nick);
-                            }
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: kPreviousPrimaryColor,
-                        disabledBackgroundColor: kPreviousNeutralColor400,
-                        disabledForegroundColor: kPreviousTextBodyColor,
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        '확인'.tr(),
-                        style: kButton14BoldStyle,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: SizedBox(
+                          // width: 320,
+                          height: 48,
+                          child: ElevatedButton(
+                            onPressed: essentialAgreeProvider && isValidNickName && ref.watch(authStateProvider)
+                                ? () {
+                                    UserModel? userModel = ref.read(signUpUserInfoProvider);
+                                    if (userModel == null) {
+                                      throw 'userModel is null';
+                                    }
+                                    userModel = userModel.copyWith(
+                                      nick: nickController.text,
+                                      ci: signUpAuthModel?.ci ?? '',
+                                      di: signUpAuthModel?.di ?? '',
+                                      name: signUpAuthModel?.name ?? '',
+                                      phone: signUpAuthModel?.phone ?? '',
+                                      gender: signUpAuthModel?.gender ?? '',
+                                      birth: signUpAuthModel?.birth ?? '',
+                                    );
+                                    ref.read(signUpStateProvider.notifier).socialSignUp(userModel); // ㅇㅇㅇ
+                                    // chatClientController.changeDisplayName(userModel.id, userModel.nick);
+                                  }
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: kPreviousPrimaryColor,
+                              disabledBackgroundColor: kPreviousNeutralColor400,
+                              disabledForegroundColor: kPreviousTextBodyColor,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text(
+                              '확인'.tr(),
+                              style: kBody16MediumStyle.copyWith(height: 1.4, letterSpacing: -0.5),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),

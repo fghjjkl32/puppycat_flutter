@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_block_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/custom_modal_bottom_sheet_widget.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/duplication_signup_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/force_update_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/recommended_update_dialog.dart';
@@ -708,6 +709,34 @@ class AppRouter {
             builder: (_) => WillPopScope(
               onWillPop: () async => false,
               child: const RecommendedUpdateDialog(),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/duplication_signup_dialog',
+        name: 'duplication_signup_dialog',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          String simpleType = '';
+          String email = '';
+          if (state.extra != null) {
+            Map<String, dynamic> extraMap = {};
+            extraMap = state.extra! as Map<String, dynamic>;
+
+            if (extraMap.containsKey('simpleType')) {
+              simpleType = extraMap['simpleType'];
+            }
+
+            if (extraMap.containsKey('id')) {
+              email = extraMap['id'];
+            }
+          }
+
+          return DialogPage(
+            barrierDismissible: false,
+            builder: (_) => WillPopScope(
+              onWillPop: () async => false,
+              child: DuplicationSignUpDialog(simpleType: simpleType, email: email),
             ),
           );
         },

@@ -51,6 +51,7 @@ class SignUpRepository {
         code: responseModel.code,
         refer: 'SignUpRepository',
         caller: 'socialSignUp',
+        arguments: [responseModel.data],
       );
     }
 

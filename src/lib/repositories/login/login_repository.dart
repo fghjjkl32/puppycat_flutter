@@ -211,4 +211,49 @@ class LoginRepository {
 
     return socialService;
   }
+
+  ///NOTE
+  ///Google, Apple 용
+  ///카카오, 네이버는 필요 없음
+  Future<String> getRefreshToken(String simpleType, String authCode) async {
+    ResponseModel responseModel;
+
+    print('authCode $authCode');
+    if (simpleType == 'google') {
+      responseModel = await _loginService.getGoogleRefreshToken(authCode);
+    } else if (simpleType == 'apple') {
+      responseModel = await _loginService.getAppleRefreshToken(authCode);
+    } else {
+      return '';
+    }
+
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message,
+        code: responseModel.code,
+        refer: 'LoginRepository',
+        caller: 'getRefreshToken',
+      );
+    }
+
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'LoginRepository',
+        caller: 'getRefreshToken',
+      );
+    }
+
+    if (!responseModel.data!.containsKey('refreshToken')) {
+      throw APIException(
+        msg: 'refreshToken is null',
+        code: responseModel.code,
+        refer: 'LoginRepository',
+        caller: 'getRefreshToken',
+      );
+    }
+
+    return responseModel.data!['refreshToken'];
+  }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 
@@ -15,64 +16,85 @@ class SignUpCompleteScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Lottie.asset(
-                    'assets/lottie/character_00_welcome_220.json',
-                    repeat: false,
-                    fit: BoxFit.fill,
-                  ),
-                  SizedBox(
-                    height: 12.h,
-                  ),
-                  Text(
-                    '회원가입.퍼피캣의 가족이 되신 걸 환영해요'.tr(),
-                    style: kTitle14BoldStyle.copyWith(height: 1.4, color: kPreviousTextTitleColor),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 8.h,
-                  ),
-                  Text(
-                    '회원가입.회원가입 환영 메시지'.tr(),
-                    style: kBody12RegularStyle.copyWith(height: 1.3, color: kPreviousTextBodyColor),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: 320.w,
-                  height: 48.h,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      final userModel = ref.read(signUpUserInfoProvider);
-                      ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
-                      ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: kPreviousPrimaryColor,
-                      disabledBackgroundColor: kPreviousNeutralColor400,
-                      disabledForegroundColor: kPreviousTextBodyColor,
-                      elevation: 0,
+        child: PopScope(
+          canPop: false,
+          onPopInvoked: (didPop) async {
+            print('didPop $didPop');
+            if (didPop) {
+              return;
+            }
+
+            ///NOTE
+            ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
+            ///로그인 페이지 이동 초기화
+            final userModel = ref.read(signUpUserInfoProvider);
+            ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
+            ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
+            ref.read(authStateProvider.notifier).state = false;
+          },
+          child: Column(
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset(
+                      'assets/lottie/character_00_welcome_220.json',
+                      repeat: false,
+                      fit: BoxFit.fill,
                     ),
-                    child: Text(
-                      '회원가입.퍼피캣 이용하기'.tr(),
-                      style: kButton14BoldStyle,
+                    SizedBox(
+                      height: 12.h,
+                    ),
+                    Text(
+                      '회원가입.퍼피캣의 가족이 되신 걸 환영해요'.tr(),
+                      style: kTitle14BoldStyle.copyWith(height: 1.4, color: kPreviousTextTitleColor),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      height: 8.h,
+                    ),
+                    Text(
+                      '회원가입.회원가입 환영 메시지'.tr(),
+                      style: kBody12RegularStyle.copyWith(height: 1.3, color: kPreviousTextBodyColor),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    width: 320.w,
+                    height: 48.h,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        ///NOTE
+                        ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
+                        ///로그인 페이지 이동 초기화
+                        final userModel = ref.read(signUpUserInfoProvider);
+                        ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
+                        ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
+                        ref.read(authStateProvider.notifier).state = false;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kPreviousPrimaryColor,
+                        disabledBackgroundColor: kPreviousNeutralColor400,
+                        disabledForegroundColor: kPreviousTextBodyColor,
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        '회원가입.퍼피캣 이용하기'.tr(),
+                        style: kButton14BoldStyle,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
