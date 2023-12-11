@@ -153,36 +153,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                                     onDelete: () {},
                                                   ),
                                                 )
-                                              : SizedBox.shrink();
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                );
-                                Positioned.fill(
-                                  child: Align(
-                                    alignment: FractionalOffset(tag.width!.toDouble(), tag.height!.toDouble()),
-                                    child: FadeTransition(
-                                      opacity: _fadeController,
-                                      child: ValueListenableBuilder<bool>(
-                                        valueListenable: _isTagVisible,
-                                        builder: (BuildContext context, bool isTagVisible, Widget? child) {
-                                          return isTagVisible
-                                              ? GestureDetector(
-                                                  onTap: () {
-                                                    ref.read(userInfoProvider).userModel!.idx == tag.memberIdx
-                                                        ? context.push("/home/myPage")
-                                                        : context.push("/home/myPage/followList/${tag.memberIdx}/userPage/${tag.nick!}/${tag.memberIdx}/${tag.memberIdx}");
-                                                  },
-                                                  child: MentionTagWidget(
-                                                    isCanClose: false,
-                                                    color: kPreviousTextSubTitleColor.withOpacity(0.8),
-                                                    textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
-                                                    text: tag.nick!,
-                                                    onDelete: () {},
-                                                  ),
-                                                )
-                                              : SizedBox.shrink();
+                                              : const SizedBox.shrink();
                                         },
                                       ),
                                     ),

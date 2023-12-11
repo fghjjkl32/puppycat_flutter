@@ -41,7 +41,6 @@ class RecentFeedState extends _$RecentFeedState {
       );
 
       memberInfo = feedResult.data!.memberInfo;
-      print('feedResult.data!.list ${feedResult.data!.list.runtimeType}');
 
       List<dynamic> resultList = feedResult.data!.list;
       List<FeedData> feedList = resultList.map((e) {
@@ -49,13 +48,11 @@ class RecentFeedState extends _$RecentFeedState {
         return feedDetail;
       }).toList();
 
-      print('ccccccccccccc $feedList');
       try {
         lastPage = feedResult.data!.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         lastPage = 1;
       }
-      print('bbbbbbbbbb $feedList');
       final nextPageKey = feedList.isEmpty ? null : pageKey + 1;
 
       if (pageKey == lastPage) {
@@ -63,7 +60,6 @@ class RecentFeedState extends _$RecentFeedState {
       } else {
         state.appendPage(feedList, nextPageKey);
       }
-      print('aaaaaaaaaaaaa $feedList');
       _apiStatus = ListAPIStatus.loaded;
       ref.read(recentFeedListEmptyProvider.notifier).state = feedList.isEmpty;
     } on APIException catch (apiException) {
