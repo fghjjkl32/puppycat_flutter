@@ -63,6 +63,7 @@ class TokenController {
   }
 
   static Future clearRefreshToken() async {
+    _refreshToken = null;
     await clearStorage(key: refreshTokenName);
   }
 

@@ -193,18 +193,21 @@ class DioWrap {
             }
           }
 
-          await TokenController.clearAccessToken();
-
           final refreshToken = await TokenController.readRefreshToken();
 
+          await TokenController.clearTokens();
           var refreshDio = Dio();
           try {
             print('refreshDio - 1');
 
             JWTRepository jwtRepository = JWTRepository(dio: refreshDio);
-            final newAccessToken = await jwtRepository.getAccessToken(refreshToken);
+            final tokenMap = await jwtRepository.getAccessToken(refreshToken);
+            final newAccessToken = tokenMap['accessToken'];
+            final newRefreshToken = tokenMap['refreshToken'];
             print('refreshDio - 6');
-            await TokenController.writeAccessToken(newAccessToken);
+            // await TokenController.writeAccessToken(newAccessToken);
+            await TokenController.writeTokens(newAccessToken, newRefreshToken);
+
             response.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
             final clonedRequest = await refreshDio.fetch(response.requestOptions);
             print('refreshDio - 7');
