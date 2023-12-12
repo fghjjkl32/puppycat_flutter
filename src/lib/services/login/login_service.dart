@@ -28,12 +28,12 @@ abstract class LoginService {
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
-  Future<ResponseModel> getGoogleRefreshToken(@Body() String authorizationCode);
+  Future<ResponseModel> getGoogleRefreshToken(@Body() Map<String, dynamic> body);
 
   // @FormUrlEncoded()
   @POST('v1/oauth/apple/refresh/token')
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
-  Future<ResponseModel> getAppleRefreshToken(@Body() String authorizationCode);
+  Future<ResponseModel> getAppleRefreshToken(@Body() Map<String, dynamic> body);
 }

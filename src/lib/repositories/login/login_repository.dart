@@ -219,10 +219,13 @@ class LoginRepository {
     ResponseModel responseModel;
 
     print('authCode $authCode');
+    Map<String, dynamic> authMap = {
+      'authorizationCode': authCode,
+    };
     if (simpleType == 'google') {
-      responseModel = await _loginService.getGoogleRefreshToken(authCode);
+      responseModel = await _loginService.getGoogleRefreshToken(authMap);
     } else if (simpleType == 'apple') {
-      responseModel = await _loginService.getAppleRefreshToken(authCode);
+      responseModel = await _loginService.getAppleRefreshToken(authMap);
     } else {
       return '';
     }

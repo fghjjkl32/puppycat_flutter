@@ -16,6 +16,10 @@ class GoogleLoginService implements SocialLoginService {
         'https://www.googleapis.com/auth/contacts.readonly',
       ],
     );
+
+    ///NOTE
+    ///구글 계정 여러개 사용 시 계정 선택을 할 수 있게 하기 위함
+    _googleSignIn.disconnect();
   }
 
   @override
@@ -32,7 +36,7 @@ class GoogleLoginService implements SocialLoginService {
       id: _accountResult!.email,
       // id: "thirdnso2v@gmail.com",
       simpleId: _accountResult!.id,
-      refreshToken: _authentication!.idToken ?? '',
+      refreshToken: _accountResult!.serverAuthCode ?? '',
       isSimple: 1,
       simpleType: 'google',
       accessToken: _authentication!.accessToken ?? '',
