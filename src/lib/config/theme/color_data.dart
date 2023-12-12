@@ -131,3 +131,18 @@ Color kOpacityError = kOpacityError;
 Color kOpacityBlack = kOpacityBlackColor500;
 
 Color kDimPrimary = kOpacityBlackColor900;
+
+Color getSimpleTypeColor(String simpleType) {
+  switch (simpleType) {
+    case 'kakao':
+      return kKakaoLoginColor;
+    case 'naver':
+      return kNaverLoginColor;
+    case 'google':
+      return const Color(0xFF3E82F1); //흰색 계열로 할 수 없어서 디자인 파트에 문의, 구글 로고의 파란색 코드
+    case 'apple':
+      return kAppleLoginColor;
+    default:
+      return kNeutralColor900;
+  }
+}
