@@ -23,11 +23,17 @@ abstract class LoginService {
 // })
 // Future<ResponseModel> logout(@Body() Map<String, dynamic> body);
 
-  @FormUrlEncoded()
+  // @FormUrlEncoded()
   @POST('v1/oauth/google/refresh/token')
+  @Headers(<String, dynamic>{
+    "Content-Type": "application/json",
+  })
   Future<ResponseModel> getGoogleRefreshToken(@Body() String authorizationCode);
 
-  @FormUrlEncoded()
+  // @FormUrlEncoded()
   @POST('v1/oauth/apple/refresh/token')
+  @Headers(<String, dynamic>{
+    "Content-Type": "application/json",
+  })
   Future<ResponseModel> getAppleRefreshToken(@Body() String authorizationCode);
 }

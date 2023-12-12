@@ -55,6 +55,9 @@ class GoogleLoginService implements SocialLoginService {
         return false;
       }
       _authentication = await _accountResult!.authentication;
+
+      print('_authentication $_authentication');
+
       return true;
     } catch (error) {
       print(error);
