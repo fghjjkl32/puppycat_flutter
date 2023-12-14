@@ -67,6 +67,17 @@ class APIErrorState extends _$APIErrorState {
         break;
       case 'SIJD-3999': //TODO 중복 가입 alert, 멤버 서버 나오면 다시 작업
         print('SIJD-3999 ${apiException.toString()}');
+        final goRouter = ref.read(routerProvider);
+        if (apiException.arguments != null) {
+          final argsMap = apiException.arguments!.first as Map<String, dynamic>;
+          final Map<String, dynamic> extraMap = {
+            'simpleType': argsMap['simpleType'],
+            'id': argsMap['id'],
+          };
+          goRouter.pushNamed('duplication_signup_dialog', extra: extraMap);
+        } else {
+          goRouter.pushNamed('error_dialog');
+        }
         break;
       case 'ECON-3994': //존재하지 않는 게시물, 페이지 이동
         //TODO 피드 상세보기 오류시 해당 게시글 숨기거나 새로고침 기능 추가 해야함

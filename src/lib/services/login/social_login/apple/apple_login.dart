@@ -32,6 +32,10 @@ class AppleLoginService implements SocialLoginService {
         return null;
       }
 
+      print('userInfo11111 $userInfo');
+      print('identityToken ${_accountResult.identityToken}');
+      print('authorizationCode ${_accountResult.authorizationCode}');
+
       UserModel? userModel = UserModel(
         // loginStatus: LoginStatus.none,
         idx: 0,

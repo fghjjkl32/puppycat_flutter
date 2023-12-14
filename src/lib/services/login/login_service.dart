@@ -16,9 +16,24 @@ abstract class LoginService {
 
   @POST('v1/logout')
   Future<ResponseModel> logout();
+
 // @POST('v1/logout')
 // @Headers(<String, dynamic>{
 //   "Content-Type": "application/json",
 // })
 // Future<ResponseModel> logout(@Body() Map<String, dynamic> body);
+
+  // @FormUrlEncoded()
+  @POST('v1/oauth/google/refresh/token')
+  @Headers(<String, dynamic>{
+    "Content-Type": "application/json",
+  })
+  Future<ResponseModel> getGoogleRefreshToken(@Body() Map<String, dynamic> body);
+
+  // @FormUrlEncoded()
+  @POST('v1/oauth/apple/refresh/token')
+  @Headers(<String, dynamic>{
+    "Content-Type": "application/json",
+  })
+  Future<ResponseModel> getAppleRefreshToken(@Body() Map<String, dynamic> body);
 }
