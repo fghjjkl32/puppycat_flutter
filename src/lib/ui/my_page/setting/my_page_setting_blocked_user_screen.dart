@@ -193,7 +193,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                   userName: lists[index].nick!,
                                   content: lists[index].intro! == "" ? "소개글이 없어요." : lists[index].intro!,
                                   isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
-                                  memberUuid: lists[index].memberUuid!,
+                                  memberUuid: lists[index].uuid!,
                                 );
                               },
                             ),

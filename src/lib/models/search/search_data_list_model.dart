@@ -30,7 +30,7 @@ class SearchDataListModel with _$SearchDataListModel {
 class NickListData with _$NickListData {
   factory NickListData({
     String? nick,
-    String? memberUuid,
+    String? uuid,
     String? intro,
     String? profileImgUrl,
     int? isBadge,

@@ -22,6 +22,7 @@ import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/edit_my_information/edit_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
@@ -266,6 +267,10 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         if (result.result) {
                           // await ref.read(myInformationStateProvider.notifier).getInitUserInformation(memberUuid: myInfo.uuid?? '');
                           ref.read(myInfoStateProvider.notifier).getMyInfo();
+                          //NOTE
+                          //마이페이지 정보 업데이트하기 위한 api호출
+                          ref.read(myInformationStateProvider.notifier).getInitUserInformation(memberUuid: ref.read(myInfoStateProvider).uuid ?? '');
+
                           // final userInformationState = ref.watch(myInformationStateProvider);
                           // final lists = userInformationState.list;
                           //

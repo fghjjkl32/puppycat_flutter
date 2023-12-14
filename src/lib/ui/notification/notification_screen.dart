@@ -403,7 +403,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               onTapProfileButton: () {
                                 myInfo.uuid == item.senderUuid
                                     ? context.push("/home/myPage")
-                                    : context.push("/home/myPage/followList/${item.senderUuid}/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/0");
+                                    : context.push("/home/myPage/followList/${item.senderUuid}/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
                               },
                             );
                           } else {

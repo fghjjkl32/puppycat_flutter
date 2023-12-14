@@ -9,13 +9,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-
 // import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-
 // import 'package:location/location.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
@@ -60,6 +58,8 @@ void main() async {
   thumborHostUrl = await Constants.getThumborHostUrl();
   thumborKey = await Constants.getThumborKey();
   firstInstallTime = await Constants.checkFirstInstall();
+  inspectS3BaseUrl = await Constants.getInspectS3Domain();
+  updateS3BaseUrl = await Constants.getUpdateS3Domain();
 
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp(

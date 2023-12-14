@@ -287,7 +287,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                             }
                             return FollowerItemWidget(
                               profileImage: "${lists[index].url}",
-                              userName: lists[index].followerNick!,
+                              userName: lists[index].followNick!,
                               content: lists[index].intro == "" ? '소개글이 없어요.' : lists[index].intro!,
                               isSpecialUser: lists[index].isBadge! == 1,
                               isFollow: lists[index].isFollow == 1,
