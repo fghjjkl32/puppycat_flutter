@@ -14,7 +14,7 @@ class CommentData with _$CommentData {
     required String regDate,
     required int likeState,
     required String uuid,
-    String? url,
+    String? profileImgUrl,
     required String nick,
     required String contents,
     required int parentIdx,

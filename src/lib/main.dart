@@ -54,6 +54,7 @@ class ScrollBehaviorModified extends ScrollBehavior {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   baseUrl = await Constants.getBaseUrl();
   thumborHostUrl = await Constants.getThumborHostUrl();
   thumborKey = await Constants.getThumborKey();
@@ -252,6 +253,8 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     final router = ref.watch(routerProvider);
     return ScreenUtilInit(
       designSize: const Size(360, 640),

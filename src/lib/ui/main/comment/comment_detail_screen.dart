@@ -164,7 +164,7 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
                           key: UniqueKey(),
                           parentIdx: item.parentIdx,
                           commentIdx: item.idx,
-                          profileImage: item.url ?? 'assets/image/feed/image/sample_image1.png',
+                          profileImage: item.profileImgUrl ?? 'assets/image/feed/image/sample_image1.png',
                           name: item.nick,
                           comment: item.contents,
                           isSpecialUser: item.isBadge == 1,

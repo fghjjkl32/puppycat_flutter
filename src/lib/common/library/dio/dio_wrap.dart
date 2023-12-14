@@ -4,6 +4,7 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
@@ -197,6 +198,7 @@ class DioWrap {
 
           await TokenController.clearTokens();
           var refreshDio = Dio();
+
           try {
             print('refreshDio - 1');
 
@@ -207,6 +209,34 @@ class DioWrap {
             print('refreshDio - 6');
             // await TokenController.writeAccessToken(newAccessToken);
             await TokenController.writeTokens(newAccessToken, newRefreshToken);
+
+            if (response.requestOptions.data is FormData) {
+              FormData originalFormData = response.requestOptions.data as FormData;
+              List<MultipartFile> newFiles = [];
+
+              for (var file in originalFormData.files) {
+                MultipartFileRecreatable oldFile = file.value as MultipartFileRecreatable;
+                MultipartFile newFile = await MultipartFileRecreatable.fromFileSync(
+                  oldFile.filePath,
+                  contentType: MediaType('image', 'jpg'),
+                );
+                newFiles.add(newFile);
+              }
+
+              FormData newFormData = FormData.fromMap({
+                // 기존의 텍스트 필드 복사
+                // 예: 'name': 'value'
+                ...originalFormData.fields.fold({}, (map, element) {
+                  map[element.key] = element.value;
+                  return map;
+                }),
+
+                // 복사된 파일 필드 추가
+                'uploadFile': newFiles,
+              });
+
+              response.requestOptions.data = newFormData;
+            }
 
             response.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
             final clonedRequest = await refreshDio.fetch(response.requestOptions);

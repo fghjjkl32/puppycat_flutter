@@ -73,7 +73,7 @@ class Constants {
   }
 }
 
-// String baseUrl = "https://sns-api.devlabs.co.kr:28080";
+// String baseUrl = "https://pet-api.devlabs.co.kr/";
 String baseUrl = "https://api.pcstg.co.kr/";
 // String baseUrl = "https://api.puppycat.co.kr";
 
@@ -101,7 +101,7 @@ String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
 String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
 // String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr';
 
-// String memberBaseUrl = 'https://puppycat-dev-member.devlabs.co.kr/';
+// String memberBaseUrl = 'https://puppycat-dev-member-api.devlabs.co.kr/';
 String memberBaseUrl = 'https://member-api.pcstg.co.kr/';
 // String memberBaseUrl = 'https://member.puppycat.co.kr/';
 
@@ -264,7 +264,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
                   //Route 다시
                   : mention.memberState == 0
                       ? context.push("/home/myPage/userUnknown")
-                      : context.push("/home/myPage/followList/${mention.memberUuid}/userPage/${mention.nick}/${mention.memberUuid}/${oldMemberUuid}");
+                      : context.push("/home/myPage/followList/${mention.uuid}/userPage/${mention.nick}/${mention.uuid}/${oldMemberUuid}");
             },
             child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
           ),

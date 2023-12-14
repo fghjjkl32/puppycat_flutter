@@ -365,6 +365,8 @@ class CommentListState extends _$CommentListState {
       if (targetIdx != -1) {
         tempCommentData = state.itemList![targetIdx];
 
+        state.itemList!.removeAt(targetIdx);
+
         state.notifyListeners();
       }
     }
@@ -456,7 +458,7 @@ class CommentListState extends _$CommentListState {
     );
 
     if (state.itemList != null) {
-      state.itemList!.removeWhere((element) => element.uuid == blockUuid);
+      state.itemList!.removeWhere((element) => element.memberUuid == blockUuid);
       state.notifyListeners();
     }
 

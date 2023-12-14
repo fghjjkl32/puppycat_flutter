@@ -307,9 +307,9 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                                     confirmTap: () async {
                                                                       context.pop();
 
-                                                                        final result = await ref.read(commentListStateProvider.notifier).postBlock(
-                                                                              blockUuid: widget.memberUuid,
-                                                                            );
+                                                                      final result = await ref.read(commentListStateProvider.notifier).postBlock(
+                                                                            blockUuid: widget.memberUuid,
+                                                                          );
 
                                                                       if (result.result && mounted) {
                                                                         context.pop();

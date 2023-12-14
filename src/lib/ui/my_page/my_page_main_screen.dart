@@ -30,7 +30,6 @@ import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -566,7 +565,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                   key: UniqueKey(),
                                                                   parentIdx: item.parentIdx,
                                                                   commentIdx: item.idx,
-                                                                  profileImage: item.url ?? 'assets/image/feed/image/sample_image1.png',
+                                                                  profileImage: item.profileImgUrl ?? 'assets/image/feed/image/sample_image1.png',
                                                                   name: item.nick,
                                                                   comment: item.contents,
                                                                   isSpecialUser: item.isBadge == 1,
