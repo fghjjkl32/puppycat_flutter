@@ -483,7 +483,6 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                             return Container();
                           },
                           itemBuilder: (context, item, index) {
-                            print('item.memberInfo!.memberUuid! ${item.memberInfo!.uuid}');
                             return Column(
                               children: [
                                 FeedDetailWidget(

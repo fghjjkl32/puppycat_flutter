@@ -107,10 +107,13 @@ class NotificationListState extends _$NotificationListState {
         }
         _apiStatus = ListAPIStatus.loaded;
       } catch (e) {
+        print("errorrr ${e}");
         _apiStatus = ListAPIStatus.error;
         state.error = e;
       }
     } on APIException catch (apiException) {
+      print("error ${apiException}");
+
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       _apiStatus = ListAPIStatus.error;
       state.error = apiException.toString();

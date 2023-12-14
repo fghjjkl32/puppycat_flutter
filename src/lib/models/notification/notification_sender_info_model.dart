@@ -9,7 +9,7 @@ class NotificationSenderInfoModel with _$NotificationSenderInfoModel {
     required String nick,
     required int isBadge,
     required String memberUuid,
-    required int followerCnt,
+    required int? followerCnt,
     required String profileImgUrl,
   }) = _NotificationSenderInfoModel;
 

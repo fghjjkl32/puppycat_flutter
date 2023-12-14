@@ -24,7 +24,7 @@ final hashtagListProvider = StateProvider<List<String>>((ref) => []);
 
 final mentionListProvider = StateProvider<List<MentionListData>>((ref) => []);
 
-const int APP_BUILD_NUMBER = 1;
+const int APP_BUILD_NUMBER = 3;
 
 class Constants {
   static Future<String> getBaseUrl() async {
@@ -57,9 +57,14 @@ class Constants {
     return prefs.getString('thumborDomain') ?? '';
   }
 
-  static Future<String> getS3Domain() async {
+  static Future<String> getInspectS3Domain() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedS3URL') ?? s3BaseUrl;
+    return prefs.getString('selectedInspectS3URL') ?? inspectS3BaseUrl;
+  }
+
+  static Future<String> getUpdateS3Domain() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('selectedUpdateS3URL') ?? updateS3BaseUrl;
   }
 
   static Future<String> checkFirstInstall() async {
@@ -81,7 +86,8 @@ String thumborKey = "Tjaqhvpt";
 // String imgDomain = "https://imgs.pcstg.co.kr";
 // String imgDomain = "https://imgs.pcstg.co.kr";
 
-String s3BaseUrl = "https://mnt.puppycat.co.kr"; //prd
+String inspectS3BaseUrl = "https://mnt.puppycat.co.kr/maintenance/prd"; //prd
+String updateS3BaseUrl = "https://mnt.puppycat.co.kr/update/prd"; //prd
 
 String firstInstallTime = "";
 String lastestBuildVersion = "";

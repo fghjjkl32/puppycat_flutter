@@ -329,7 +329,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                'character_07_block_me_88.png',
+                                'assets/image/character/character_07_block_me_88.png',
                                 height: 68.h,
                               ),
                               SizedBox(

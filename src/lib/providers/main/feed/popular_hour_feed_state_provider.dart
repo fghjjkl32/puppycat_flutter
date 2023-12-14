@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
@@ -27,10 +28,16 @@ class PopularHourFeedStateNotifier extends StateNotifier<FeedDataListModel> {
         return;
       }
 
+      List<dynamic> resultList = lists.data!.list;
+      List<FeedData> listData = resultList.map((e) {
+        FeedData feedData = FeedData.fromJson(e);
+        return feedData;
+      }).toList();
+
       state = state.copyWith(
         page: 1,
         isLoading: false,
-        list: lists.data!.list,
+        list: listData,
         memberInfo: lists.data!.memberInfo,
       );
     } on APIException catch (apiException) {

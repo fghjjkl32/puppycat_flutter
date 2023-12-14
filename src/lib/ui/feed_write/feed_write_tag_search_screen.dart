@@ -190,7 +190,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                                         Tag(
                                           username: lists[index].nick!,
                                           position: widget.offset,
-                                          memberUuid: lists[index].memberUuid!,
+                                          memberUuid: lists[index].uuid!,
                                           imageIndex: widget.imageIdx,
                                         ),
                                         widget.imagePositionIndex,

@@ -7,7 +7,7 @@ part 'search_data.g.dart';
 class SearchData with _$SearchData {
   factory SearchData({
     String? nick,
-    String? memberUuid,
+    String? uuid,
     String? intro,
     String? profileImgUrl,
     int? isBadge,
