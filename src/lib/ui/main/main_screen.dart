@@ -1358,78 +1358,44 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   Widget buildWidgetMask(String? profileImgUrl, int? isBadge, int? isRedDot) {
-    return profileImgUrl == null || profileImgUrl == ""
-        ? Stack(
-            children: [
-              WidgetMask(
-                blendMode: BlendMode.srcATop,
-                childSaveLayer: true,
-                mask: Center(
-                  child: Icon(
-                    Puppycat_social.icon_profile_small,
-                    size: 46,
-                    color: kPreviousNeutralColor400,
-                  ),
+    return Stack(
+      children: [
+        WidgetMask(
+          blendMode: BlendMode.srcATop,
+          childSaveLayer: true,
+          mask: Center(
+            child: Image.network(
+              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$profileImgUrl").toUrl(),
+              height: 46.h,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              errorBuilder: (context, exception, stackTrace) {
+                return const Icon(
+                  Puppycat_social.icon_profile_small,
+                  size: 46,
+                  color: kPreviousNeutralColor400,
+                );
+              },
+            ),
+          ),
+          child: SvgPicture.asset(
+            'assets/image/feed/image/squircle.svg',
+            height: 46.h,
+            fit: BoxFit.fill,
+          ),
+        ),
+        isBadge == 1
+            ? Positioned(
+                right: 0,
+                top: 0,
+                child: Image.asset(
+                  'assets/image/feed/icon/small_size/icon_special.png',
+                  height: 13.h,
                 ),
-                child: SvgPicture.asset(
-                  'assets/image/feed/image/squircle.svg',
-                  height: 46.h,
-                  fit: BoxFit.fill,
-                ),
-              ),
-              isBadge == 1
-                  ? Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Image.asset(
-                        'assets/image/feed/icon/small_size/icon_special.png',
-                        height: 13.h,
-                      ),
-                    )
-                  : Container(),
-              isRedDot != null
-                  ? Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Image.asset(
-                        'assets/image/feed/icon/small_size/icon_manage_special.png',
-                        height: 13.h,
-                      ),
-                    )
-                  : Container(),
-            ],
-          )
-        : Stack(
-            children: [
-              WidgetMask(
-                blendMode: BlendMode.srcATop,
-                childSaveLayer: true,
-                mask: Center(
-                  child: Image.network(
-                    Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$profileImgUrl").toUrl(),
-                    height: 46.h,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                  ),
-                ),
-                child: SvgPicture.asset(
-                  'assets/image/feed/image/squircle.svg',
-                  height: 46.h,
-                  fit: BoxFit.fill,
-                ),
-              ),
-              isBadge == 1
-                  ? Positioned(
-                      right: 0,
-                      top: 0,
-                      child: Image.asset(
-                        'assets/image/feed/icon/small_size/icon_special.png',
-                        height: 13.h,
-                      ),
-                    )
-                  : Container(),
-            ],
-          );
+              )
+            : Container(),
+      ],
+    );
   }
 
   Widget _buildTabbar(bool innerBoxIsScrolled) {

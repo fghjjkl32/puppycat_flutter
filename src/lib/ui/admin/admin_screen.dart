@@ -87,7 +87,7 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     super.initState();
     getDevelopMode();
 
-    devUrlController = TextEditingController(text: "https://sns-api.devlabs.co.kr:28080/");
+    devUrlController = TextEditingController(text: "https://pet-api.devlabs.co.kr/");
     stgUrlController = TextEditingController(text: "https://api.pcstg.co.kr/");
     prdUrlController = TextEditingController(text: "https://api.puppycat.co.kr/");
 
@@ -162,9 +162,6 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     String inspectS3Url,
     String updateS3Url,
   ) {
-    print("updateS3Url ${updateS3Url}");
-    print("inspectS3Url ${inspectS3Url}");
-
     setState(() {
       selUrlController.text = urlController.text;
       selWalkUrlController.text = walkUrlController.text;
@@ -175,7 +172,6 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
       selInspectS3UrlController.text = inspectS3Url;
       selUpdateS3UrlController.text = updateS3Url;
     });
-    print("selInspectS3UrlController.text ${selInspectS3UrlController.text}");
   }
 
   getDevelopMode() async {

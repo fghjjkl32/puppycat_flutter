@@ -67,12 +67,17 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<void> _fetchPage(int pageKey) async {
+    print("pageKey ${pageKey}");
     try {
+      print("apiStatus1 ${apiStatus}");
+
       if (apiStatus == ListAPIStatus.loading) {
         return;
       }
 
       apiStatus = ListAPIStatus.loading;
+
+      print("apiStatus2 ${apiStatus}");
 
       FeedResponseModel? feedResult; // = feedNullResponseModel;
 
@@ -135,7 +140,12 @@ class FeedListState extends _$FeedListState {
         _lastPage = 1;
       }
 
+      print("_lastPage ${_lastPage}");
+
       final nextPageKey = searchList.isEmpty ? null : pageKey + 1;
+
+      print("nextPageKey ${nextPageKey}");
+      print("pageKey ${pageKey}");
 
       if (pageKey == _lastPage) {
         state.appendLastPage(searchList);
