@@ -8,7 +8,7 @@ class FollowData with _$FollowData {
   factory FollowData({
     String? followNick,
     String? followerNick,
-    String? url,
+    String? profileImgUrl,
     int? isBadge,
     String? memberUuid,
     int? followerCnt,

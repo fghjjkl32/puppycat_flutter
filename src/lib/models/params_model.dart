@@ -1,11 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 part 'params_model.freezed.dart';
+
 part 'params_model.g.dart';
 
 @freezed
 class ParamsModel with _$ParamsModel {
   const factory ParamsModel({
-    int? memberIdx,
+    String? memberUuid,
     Pagination? pagination,
     int? offset,
     int? limit,
@@ -14,8 +16,7 @@ class ParamsModel with _$ParamsModel {
     int? recordSize,
   }) = _ParamsModel;
 
-  factory ParamsModel.fromJson(Map<String, dynamic> json) =>
-      _$ParamsModelFromJson(json);
+  factory ParamsModel.fromJson(Map<String, dynamic> json) => _$ParamsModelFromJson(json);
 }
 
 @freezed
@@ -30,6 +31,5 @@ class Pagination with _$Pagination {
     int? totalRecordCount,
   }) = _Pagination;
 
-  factory Pagination.fromJson(Map<String, dynamic> json) =>
-      _$PaginationFromJson(json);
+  factory Pagination.fromJson(Map<String, dynamic> json) => _$PaginationFromJson(json);
 }

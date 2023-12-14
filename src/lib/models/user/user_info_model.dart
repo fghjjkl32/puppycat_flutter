@@ -9,7 +9,7 @@ part 'user_info_model.g.dart';
 class UserInfoModel with _$UserInfoModel {
   factory UserInfoModel({
     UserModel? userModel,
-    ChatUserModel? chatUserModel,
+    // ChatUserModel? chatUserModel,
   }) = _UserInfoModel;
 
   factory UserInfoModel.fromJson(Map<String, dynamic> json) => _$UserInfoModelFromJson(json);

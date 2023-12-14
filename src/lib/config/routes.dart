@@ -16,6 +16,8 @@ import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/chat/chat_home_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/chat/chat_search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/error/feed_not_follow_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/error/feed_not_found_screen.dart';
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -740,6 +742,34 @@ class AppRouter {
             ),
           );
         },
+      ),
+      GoRoute(
+        path: '/chatHome',
+        name: 'chatHome',
+        builder: (BuildContext context, GoRouterState state) {
+          return const ChatHomeScreen();
+        },
+        routes: [
+          // GoRoute(
+          //   path: 'chatRoom',
+          //   name: 'chatRoom',
+          //   builder: (BuildContext context, GoRouterState state) {
+          //     if (state.extra is Room) {
+          //       return ChatRoomScreen(room: state.extra! as Room);
+          //       // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
+          //     } else {
+          //       return const ChatMainScreen();
+          //     }
+          //   },
+          // ),
+          GoRoute(
+            path: 'chatSearch',
+            name: 'chatSearch',
+            builder: (BuildContext context, GoRouterState state) {
+              return const ChatSearchScreen();
+            },
+          ),
+        ],
       ),
     ],
 

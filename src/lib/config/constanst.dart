@@ -99,6 +99,10 @@ String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
 String memberBaseUrl = 'https://member-api.pcstg.co.kr/';
 // String memberBaseUrl = 'https://member.puppycat.co.kr/';
 
+// String chatBaseUrl = "https://pet-chat.devlabs.co.kr";
+String chatBaseUrl = "https://chat.pcstg.co.kr/";
+// String chatBaseUrl = "https://chat.puppycat.co.kr";
+
 double getImageHeightCalculateValue(double width) {
   const double slope = 0.172727;
   const double intercept = 225.818182;
@@ -136,7 +140,7 @@ final ContentResponseModel contentNullResponseModel = ContentResponseModel(
   data: const ContentDataListModel(
     list: [],
     params: ParamsModel(
-      memberIdx: 0,
+      memberUuid: '',
       pagination: Pagination(
         startPage: 0,
         limitStart: 0,
@@ -162,7 +166,7 @@ final FeedResponseModel feedNullResponseModel = FeedResponseModel(
   data: const FeedDataListModel(
     list: [],
     params: ParamsModel(
-      memberIdx: 0,
+      memberUuid: '',
       pagination: Pagination(
         startPage: 0,
         limitStart: 0,
