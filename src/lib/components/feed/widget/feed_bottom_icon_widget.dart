@@ -157,7 +157,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                             content: contentLikeUserItem.intro!,
                                             isSpecialUser: contentLikeUserItem.isBadge == 1,
                                             isFollow: contentLikeUserItem.followState == 1,
-                                            followerUuid: contentLikeUserItem.memberUuid!,
+                                            followerUuid: contentLikeUserItem.uuid!,
                                             contentsIdx: widget.contentIdx,
                                             oldMemberUuid: '',
                                           );
@@ -254,7 +254,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                             content: contentLikeUserItem.intro!,
                                             isSpecialUser: contentLikeUserItem.isBadge == 1,
                                             isFollow: contentLikeUserItem.followState == 1,
-                                            followerUuid: contentLikeUserItem.memberUuid!,
+                                            followerUuid: contentLikeUserItem.uuid!,
                                             contentsIdx: widget.contentIdx,
                                             oldMemberUuid: '',
                                           );

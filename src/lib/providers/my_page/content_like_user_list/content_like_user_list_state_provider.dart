@@ -46,7 +46,7 @@ class ContentLikeUserListState extends _$ContentLikeUserListState {
               nick: e.nick,
               followState: e.followState,
               isBadge: e.isBadge,
-              memberUuid: e.memberUuid,
+              uuid: e.uuid,
               followerCnt: e.followerCnt,
               intro: e.intro,
               profileImgUrl: e.profileImgUrl,

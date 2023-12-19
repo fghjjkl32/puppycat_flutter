@@ -59,6 +59,6 @@ class BottomSheetPage<T> extends Page<T> {
         settings: this,
         useSafeArea: true,
         builder: builder,
-        isScrollControlled: false,
+        isScrollControlled: isScrollControlled,
       );
 }

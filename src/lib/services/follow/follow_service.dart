@@ -48,7 +48,7 @@ abstract class FollowService {
 
   @DELETE('v1/follow/{followUuid}')
   Future<ResponseModel> deleteFollow(
-    @Path("followIdx") String followUuid,
+    @Path("followUuid") String followUuid,
   );
 
   @DELETE('v1/follower/{followUuid}')

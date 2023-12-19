@@ -97,7 +97,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -367,7 +367,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                             userName: nickList[index - 1].nick!,
                                             content: nickList[index - 1].intro!,
                                             isSpecialUser: nickList[index - 1].isBadge == 1,
-                                            memberUuid: nickList[index - 1].memberUuid!,
+                                            memberUuid: nickList[index - 1].uuid!,
                                             contentType: 'profile',
                                             oldMemberUuid: '',
                                           ),
@@ -387,7 +387,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                         userName: nickList[index - 1].nick!,
                                         content: nickList[index - 1].intro!,
                                         isSpecialUser: nickList[index - 1].isBadge == 1,
-                                        memberUuid: nickList[index - 1].memberUuid!,
+                                        memberUuid: nickList[index - 1].uuid!,
                                         contentType: 'profile',
                                         oldMemberUuid: '',
                                       );

@@ -7,8 +7,8 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDra
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/custom_modal_bottom_sheet_widget.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/duplication_signup_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/force_update_dialog.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/recommended_update_dialog.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/force_update_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/recommended_update_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/restrain_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_page.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/dialog_page.dart';
@@ -16,6 +16,7 @@ import 'package:pet_mobile_social_flutter/components/toast/error_toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/restrain/restrain_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_home_screen.dart';
@@ -92,6 +93,8 @@ class AppRouter {
 
   // var _pushPayloadState = null;
   bool _maintenanceState = false;
+  bool _forceUpdateState = false;
+  bool _recommendUpdateState = false;
 
   final Ref ref;
 
@@ -547,7 +550,7 @@ class AppRouter {
         path: '/maintenance',
         name: 'maintenance',
         builder: (BuildContext context, GoRouterState state) {
-          return const MaintenanceScreen();
+          return InspectScreen();
         },
       ),
 
@@ -693,27 +696,63 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: '/force_update_dialog',
-        name: 'force_update_dialog',
+        path: '/force_update_bottom_sheet',
+        name: 'force_update_bottom_sheet',
         pageBuilder: (BuildContext context, GoRouterState state) {
-          return DialogPage(
-            barrierDismissible: false,
-            builder: (_) => WillPopScope(
-              onWillPop: () async => false,
-              child: const ForceUpdateDialog(),
+          return BottomSheetPage(
+            isDismissible: false,
+            enableDrag: false,
+            builder: (BuildContext context) {
+              return WillPopScope(
+                onWillPop: () async => false,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                  child: SingleChildScrollView(
+                    child: CustomModalBottomSheet(
+                      isTopWidget: false,
+                      widget: ForceUpdateBottomSheet(),
+                      context: context,
+                    ),
+                  ),
+                ),
+              );
+            },
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(20.0),
+              ),
             ),
           );
         },
       ),
       GoRoute(
-        path: '/recommend_update_dialog',
-        name: 'recommend_update_dialog',
+        path: '/recommend_update_bottom_sheet',
+        name: 'recommend_update_bottom_sheet',
         pageBuilder: (BuildContext context, GoRouterState state) {
-          return DialogPage(
-            barrierDismissible: false,
-            builder: (_) => WillPopScope(
-              onWillPop: () async => false,
-              child: const RecommendedUpdateDialog(),
+          return BottomSheetPage(
+            isDismissible: false,
+            enableDrag: false,
+            builder: (BuildContext context) {
+              return WillPopScope(
+                onWillPop: () async => false,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                  child: SingleChildScrollView(
+                    child: CustomModalBottomSheet(
+                      isTopWidget: false,
+                      widget: RecommendedUpdateBottomSheet(),
+                      context: context,
+                    ),
+                  ),
+                ),
+              );
+            },
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(20.0),
+              ),
             ),
           );
         },
@@ -810,6 +849,8 @@ class AppRouter {
       const signUpLocation = '$loginLocation/signupScreen/:authType';
       const signUpCompleteLocation = '$signUpLocation/signupCompleteScreen';
       const maintenanceLocation = '/maintenance';
+      const forceUpdateLocation = '/force_update_bottom_sheet';
+      const recommendUpdateLocation = '/recommend_update_bottom_sheet';
 
       InitializationApp.initialize(ref);
 
@@ -818,10 +859,16 @@ class AppRouter {
         if (_splashState) {
           _loginRouteState = ref.watch(loginRouteStateProvider);
           _signUpState = ref.watch(signUpRouteStateProvider);
-          _maintenanceState = ref.watch(isMaintenanceProvider);
+          _maintenanceState = ref.watch(isInspectProvider);
+          _forceUpdateState = ref.watch(isForceUpdateProvider);
+          _recommendUpdateState = ref.watch(isRecommendUpdateProvider);
 
           if (_maintenanceState) {
             return maintenanceLocation;
+          } else if (_forceUpdateState) {
+            return forceUpdateLocation;
+          } else if (_recommendUpdateState) {
+            return recommendUpdateLocation;
           } else if (_loginRouteState == LoginRoute.success) {
             return homeLocation;
           }

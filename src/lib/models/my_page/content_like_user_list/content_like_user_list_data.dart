@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'content_like_user_list_data.freezed.dart';
+
 part 'content_like_user_list_data.g.dart';
 
 @freezed
@@ -9,7 +10,7 @@ class ContentLikeUserListData with _$ContentLikeUserListData {
     String? nick,
     int? followState,
     int? isBadge,
-    String? memberUuid,
+    String? uuid,
     int? followerCnt,
     String? intro,
     String? profileImgUrl,

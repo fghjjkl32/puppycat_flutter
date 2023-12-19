@@ -1,27 +1,25 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 final splashStateProvider = StateProvider<bool>((ref) => false);
 final splashProgressStateProvider = StateProvider<double>((ref) => 0.0);
 final _initStateProvider = StateProvider<bool>((ref) => false);
-final isMaintenanceProvider = StateProvider<bool>((ref) => false);
 
 class InitializationApp {
   static void initialize(Ref ref) async {
@@ -34,14 +32,11 @@ class InitializationApp {
       if (await _checkServers()) {
         await ref.read(chatSocketStateProvider);
         if (await _initFirebase()) {
+          await ref.read(loginStateProvider.notifier).autoLogin();
+          ref.read(_initStateProvider.notifier).state = true;
           //업데이트 팝업 로직
-          // ref.read(maintenanceStateProvider.notifier).startPopupPolling();
-          if (await getSinglePage(ref)) {
-            ref.read(_initStateProvider.notifier).state = true;
-          } else {
-            await ref.read(loginStateProvider.notifier).autoLogin();
-            ref.read(_initStateProvider.notifier).state = true;
-          }
+          ref.read(maintenanceStateProvider.notifier).startInspectPopupPolling();
+          ref.read(maintenanceStateProvider.notifier).startUpdatePopupPolling();
         }
       }
     }
@@ -76,40 +71,6 @@ class InitializationApp {
     });
 
     return result;
-  }
-
-  static Future<bool> getSinglePage(ref) async {
-    const int maxRetries = 3;
-    int currentRetries = 0;
-
-    final remoteConfig = FirebaseRemoteConfig.instance;
-
-    while (currentRetries < maxRetries) {
-      try {
-        await remoteConfig.fetchAndActivate();
-        await remoteConfig.setConfigSettings(RemoteConfigSettings(
-          fetchTimeout: const Duration(seconds: 1),
-          minimumFetchInterval: const Duration(seconds: 1),
-        ));
-
-        lastestBuildVersion = remoteConfig.getString("lastest_build_version");
-
-        if (remoteConfig.getBool("is_all_service_maintenance")) {
-          ref.read(isMaintenanceProvider.notifier).state = true;
-          return true;
-        }
-        return false;
-      } catch (e) {
-        currentRetries++; // 재시도 횟수를 증가시킵니다.
-        if (currentRetries == maxRetries) {
-          print("Remote Config 데이터를 가져오는 데 실패했습니다: $e");
-        } else {
-          print("재시도 중... ($currentRetries/$maxRetries)");
-          await Future.delayed(Duration(seconds: 2)); // 2초 동안 기다립니다.
-        }
-      }
-    }
-    return false;
   }
 }
 

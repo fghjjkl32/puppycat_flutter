@@ -473,7 +473,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                       content: contentLikeUserItem.intro!,
                                                       isSpecialUser: contentLikeUserItem.isBadge == 1,
                                                       isFollow: contentLikeUserItem.followState == 1,
-                                                      followerUuid: contentLikeUserItem.memberUuid!,
+                                                      followerUuid: contentLikeUserItem.uuid!,
                                                       contentsIdx: item.idx,
                                                       oldMemberUuid: '',
                                                     );
@@ -566,7 +566,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                   key: UniqueKey(),
                                                                   parentIdx: item.parentIdx,
                                                                   commentIdx: item.idx,
-                                                                  profileImage: item.url ?? 'assets/image/feed/image/sample_image1.png',
+                                                                  profileImage: item.profileImgUrl ?? 'assets/image/feed/image/sample_image1.png',
                                                                   name: item.nick,
                                                                   comment: item.contents,
                                                                   isSpecialUser: item.isBadge == 1,

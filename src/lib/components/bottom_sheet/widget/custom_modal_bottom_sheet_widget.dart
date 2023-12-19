@@ -6,11 +6,14 @@ class CustomModalBottomSheet extends StatelessWidget {
   const CustomModalBottomSheet({
     required this.widget,
     required this.context,
+    this.isTopWidget = true,
     Key? key,
   }) : super(key: key);
 
   final Widget widget;
   final BuildContext context;
+
+  final bool isTopWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +28,16 @@ class CustomModalBottomSheet extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 70,
-              height: 6,
-              decoration: const BoxDecoration(
-                color: kPreviousNeutralColor200,
-                borderRadius: BorderRadius.all(Radius.circular(7)),
-              ),
-            ),
+            isTopWidget
+                ? Container(
+                    width: 70,
+                    height: 6,
+                    decoration: const BoxDecoration(
+                      color: kPreviousNeutralColor200,
+                      borderRadius: BorderRadius.all(Radius.circular(7)),
+                    ),
+                  )
+                : Container(),
             widget
           ],
         ),

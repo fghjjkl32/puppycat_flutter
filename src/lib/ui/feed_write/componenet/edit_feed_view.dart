@@ -256,9 +256,28 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
           ),
           Padding(
             padding: EdgeInsets.only(top: 20.0.h, bottom: 8.0.h, left: 12.w),
-            child: Text(
-              "위치정보",
-              style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "위치정보",
+                  style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                ),
+                ref.watch(feedWriteLocationInformationProvider) == ""
+                    ? Container()
+                    : GestureDetector(
+                        onTap: () {
+                          ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 12, bottom: 8, top: 12, left: 12),
+                          child: Text(
+                            "삭제",
+                            style: kBadge10MediumStyle.copyWith(color: kTextTertiary),
+                          ),
+                        ),
+                      ),
+              ],
             ),
           ),
           Padding(

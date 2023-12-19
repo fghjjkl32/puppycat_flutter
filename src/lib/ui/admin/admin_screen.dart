@@ -43,7 +43,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   late TextEditingController selThumborKeyController;
   late TextEditingController selThumborDomainController;
 
-  late TextEditingController selS3UrlController;
+  late TextEditingController selInspectS3UrlController;
+  late TextEditingController selUpdateS3UrlController;
 
   late FocusNode devFocusNode;
   late FocusNode stgFocusNode;
@@ -54,7 +55,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   late FocusNode selFocusNode2;
   late FocusNode selFocusNode3;
   late FocusNode selFocusNode4;
-  late FocusNode selS3FocusNode;
+  late FocusNode selInspectS3FocusNode;
+  late FocusNode selUpdateS3FocusNode;
 
   List<SystemUiOverlay>? systemUiOverlayList = [];
 
@@ -72,16 +74,20 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
   String devThumborDomainUrl = "https://dev-imgs.devlabs.co.kr";
   String prdThumborDomainUrl = "https://imgs.puppycat.co.kr";
 
-  String devS3Url = "https://pet-mnt.devlabs.co.kr";
-  String stgS3Url = "https://mnt.pcstg.co.kr";
-  String prdS3Url = "https://mnt.puppycat.co.kr";
+  String devUpdateS3Url = "https://pet-mnt.devlabs.co.kr/update/dev";
+  String stgUpdateS3Url = "https://mnt.pcstg.co.kr/update/stg";
+  String prdUpdateS3Url = "https://mnt.puppycat.co.kr/update/prd";
+
+  String devInspectS3Url = "https://pet-mnt.devlabs.co.kr/maintenance/dev";
+  String stgInspectS3Url = "https://mnt.pcstg.co.kr/maintenance/stg";
+  String prdInspectS3Url = "https://mnt.puppycat.co.kr/maintenance/prd";
 
   @override
   void initState() {
     super.initState();
     getDevelopMode();
 
-    devUrlController = TextEditingController(text: "https://sns-api.devlabs.co.kr:28080/");
+    devUrlController = TextEditingController(text: "https://pet-api.devlabs.co.kr/");
     stgUrlController = TextEditingController(text: "https://api.pcstg.co.kr/");
     prdUrlController = TextEditingController(text: "https://api.puppycat.co.kr/");
 
@@ -100,7 +106,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     selThumborHostController = TextEditingController(text: '');
     selThumborKeyController = TextEditingController(text: '');
     selThumborDomainController = TextEditingController(text: '');
-    selS3UrlController = TextEditingController(text: '');
+    selInspectS3UrlController = TextEditingController(text: '');
+    selUpdateS3UrlController = TextEditingController(text: '');
 
     devFocusNode = FocusNode();
     stgFocusNode = FocusNode();
@@ -111,7 +118,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     selFocusNode2 = FocusNode();
     selFocusNode3 = FocusNode();
     selFocusNode4 = FocusNode();
-    selS3FocusNode = FocusNode();
+    selInspectS3FocusNode = FocusNode();
+    selUpdateS3FocusNode = FocusNode();
   }
 
   @override
@@ -128,7 +136,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     selUrlController.dispose();
     selWalkUrlController.dispose();
     selWalkGpsUrlController.dispose();
-    selS3UrlController.dispose();
+    selInspectS3UrlController.dispose();
+    selUpdateS3UrlController.dispose();
     devFocusNode.dispose();
     stgFocusNode.dispose();
     prdFocusNode.dispose();
@@ -138,7 +147,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     selFocusNode2.dispose();
     selFocusNode3.dispose();
     selFocusNode4.dispose();
-    selS3FocusNode.dispose();
+    selInspectS3FocusNode.dispose();
+    selUpdateS3FocusNode.dispose();
     super.dispose();
   }
 
@@ -149,7 +159,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     String thumborHost,
     String thumborKey,
     String thumborDomain,
-    String S3Url,
+    String inspectS3Url,
+    String updateS3Url,
   ) {
     setState(() {
       selUrlController.text = urlController.text;
@@ -158,7 +169,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
       selThumborHostController.text = thumborHost;
       selThumborKeyController.text = thumborKey;
       selThumborDomainController.text = thumborDomain;
-      selS3UrlController.text = S3Url;
+      selInspectS3UrlController.text = inspectS3Url;
+      selUpdateS3UrlController.text = updateS3Url;
     });
   }
 
@@ -225,12 +237,20 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
     // imgDomain = await Constants.getThumborDomain();
   }
 
-  setS3UrlValue() async {
+  setInspectS3UrlValue() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString('selectedS3URL', selS3UrlController.text);
+    await prefs.setString('selectedInspectS3URL', selInspectS3UrlController.text);
 
-    s3BaseUrl = await Constants.getS3Domain();
+    inspectS3BaseUrl = await Constants.getInspectS3Domain();
+  }
+
+  setUpdateS3UrlValue() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('selectedUpdateS3URL', selUpdateS3UrlController.text);
+
+    updateS3BaseUrl = await Constants.getUpdateS3Domain();
   }
 
   @override
@@ -280,7 +300,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                         devThumborHostUrl,
                         devThumborKey,
                         devThumborDomainUrl,
-                        devS3Url,
+                        devInspectS3Url,
+                        devUpdateS3Url,
                       );
                     },
                     child: const Text('선택'),
@@ -311,7 +332,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                         stgThumborHostUrl,
                         stgThumborKey,
                         stgThumborDomainUrl,
-                        stgS3Url,
+                        stgInspectS3Url,
+                        stgUpdateS3Url,
                       );
                     },
                     child: const Text('선택'),
@@ -342,7 +364,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                         prdThumborHostUrl,
                         prdThumborKey,
                         prdThumborDomainUrl,
-                        prdS3Url,
+                        prdInspectS3Url,
+                        prdUpdateS3Url,
                       );
                     },
                     child: const Text('선택'),
@@ -457,11 +480,25 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
             ),
             Flexible(
               child: TextField(
-                controller: selS3UrlController,
-                focusNode: selS3FocusNode,
+                controller: selInspectS3UrlController,
+                focusNode: selInspectS3FocusNode,
                 readOnly: true,
                 decoration: const InputDecoration(
-                  label: Text('S3 Url'),
+                  label: Text('Inspect S3 Url'),
+                ),
+              ),
+            ),
+            Text("${selInspectS3UrlController.text}"),
+            const SizedBox(
+              height: 20,
+            ),
+            Flexible(
+              child: TextField(
+                controller: selUpdateS3UrlController,
+                focusNode: selUpdateS3FocusNode,
+                readOnly: true,
+                decoration: const InputDecoration(
+                  label: Text('Update S3 Url'),
                 ),
               ),
             ),
@@ -508,7 +545,8 @@ class AdminScreenState extends ConsumerState<AdminScreen> {
                         setThumborHostUrl();
                         setThumborKey();
                         setThumborDomain();
-                        setS3UrlValue();
+                        setInspectS3UrlValue();
+                        setUpdateS3UrlValue();
 
                         final myInfo = ref.read(myInfoStateProvider);
                         final isLogined = ref.read(loginStatementProvider);

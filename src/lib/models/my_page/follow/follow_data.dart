@@ -9,6 +9,7 @@ class FollowData with _$FollowData {
     String? followNick,
     String? followerNick,
     String? profileImgUrl,
+    String? url,
     int? isBadge,
     String? memberUuid,
     int? followerCnt,

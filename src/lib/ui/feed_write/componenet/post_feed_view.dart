@@ -212,18 +212,20 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                   "위치정보",
                   style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 12, bottom: 8, top: 12, left: 12),
-                    child: Text(
-                      "삭제",
-                      style: kBadge10MediumStyle.copyWith(color: kTextTertiary),
-                    ),
-                  ),
-                ),
+                ref.watch(feedWriteLocationInformationProvider) == ""
+                    ? Container()
+                    : GestureDetector(
+                        onTap: () {
+                          ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 12, bottom: 8, top: 12, left: 12),
+                          child: Text(
+                            "삭제",
+                            style: kBadge10MediumStyle.copyWith(color: kTextTertiary),
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),

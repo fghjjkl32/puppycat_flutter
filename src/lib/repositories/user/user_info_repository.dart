@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
@@ -110,7 +111,7 @@ class UserInfoRepository {
 
     // 파일이 있는 경우에만 추가
     if (file != null) {
-      baseParams["uploadFile"] = MultipartFile.fromFileSync(
+      baseParams["uploadFile"] = MultipartFileRecreatable.fromFileSync(
         file.path,
         contentType: MediaType('image', 'jpg'),
       );

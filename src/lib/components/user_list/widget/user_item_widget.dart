@@ -61,7 +61,7 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
 
         myInfo.uuid == widget.memberUuid
             ? context.push("/home/myPage")
-            : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
+            : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.memberUuid}");
         //TODO
         //Route 다시
       },
