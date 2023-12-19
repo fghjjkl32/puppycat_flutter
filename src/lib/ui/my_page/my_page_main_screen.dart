@@ -29,6 +29,7 @@ import 'package:pet_mobile_social_flutter/providers/my_page/content_like_user_li
 import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/my_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_information_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 ///NOTE
 ///2023.11.14.
@@ -886,8 +887,12 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                              context.go("/home/myPage/profileEdit");
+                            onTap: () async {
+                              final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.editMyInfo);
+
+                              if (restrain) {
+                                context.go("/home/myPage/profileEdit");
+                              }
                             },
                             child: const Padding(
                               padding: EdgeInsets.all(5.0),

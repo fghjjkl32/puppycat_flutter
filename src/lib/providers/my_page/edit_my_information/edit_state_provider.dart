@@ -1,8 +1,10 @@
 import 'package:image_picker/image_picker.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/edit_my_information/edit_my_information_state.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
+import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
@@ -38,8 +40,16 @@ class EditState extends _$EditState {
     required bool isProfileImageDelete,
     required bool isPhoneNumberEdit,
   }) async {
-    final result = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).updateMyInfo(myInfoModel, file, beforeNick, isProfileImageDelete, isPhoneNumberEdit);
+    try {
+      final result = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).updateMyInfo(myInfoModel, file, beforeNick, isProfileImageDelete, isPhoneNumberEdit);
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      print('putMyInfo error $e');
+      rethrow;
+    }
   }
 }

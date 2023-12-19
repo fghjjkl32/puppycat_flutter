@@ -29,10 +29,7 @@ class GoogleLoginService implements SocialLoginService {
     }
 
     UserModel? userModel = UserModel(
-      // loginStatus: LoginStatus.none,
-      idx: 0,
       nick: '',
-
       id: _accountResult!.email,
       // id: "thirdnso2v@gmail.com",
       simpleId: _accountResult!.id,

@@ -1,19 +1,13 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_room_data_list_model.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_room_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/params_model.dart';
-import 'package:pet_mobile_social_flutter/models/policy/policy_item_model.dart';
-import 'package:pet_mobile_social_flutter/models/policy/policy_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/chat/chat_service.dart';
-import 'package:pet_mobile_social_flutter/services/policy/policy_service.dart';
 
 final chatRepositoryProvider = StateProvider.family<ChatRepository, Dio>((ref, dio) => ChatRepository(dio: dio));
 
@@ -25,188 +19,182 @@ class ChatRepository {
   ChatRepository({
     required this.dio,
   }) {
-    _chatService = ChatService(dio, baseUrl: baseUrl);
+    _chatService = ChatService(dio, baseUrl: chatBaseUrl);
   }
 
-  Future<List<ChatFavoriteModel>> getChatFavorite(int memberIdx, [int page = 1, int limit = 10]) async {
-    if (memberIdx <= 0) {
-      throw "Invalid MemberIdx";
-    }
+  Future<ChatRoomDataListModel> getChatRooms({
+    int page = 1,
+    int recordSize = 10,
+  }) async {
+    ChatRoomResponseModel responseModel = await _chatService.getChatRooms(page: page, recordSize: recordSize);
 
-    bool isError = false;
-    var chatFavoriteResponseModel = await _chatService.getChatFavorite(memberIdx, page, limit).catchError((Object obj) async {
-      (ResponseModel?, bool) errorResult = await errorHandler(obj);
-      var responseModel = errorResult.$1;
-      isError = errorResult.$2;
-
-      return responseModel;
-    });
-
-    if (chatFavoriteResponseModel == null) {
-      if (isError) {
-        ///TODO
-        ///throw로 할지 그냥 return null로 할지 생각해보기
-        throw "error";
-      } else {
-        return [];
-      }
-    }
-
-    return chatFavoriteResponseModel.data.list;
-  }
-
-  Future<ChatFavoriteDataListModel> getChatFavoriteUsers(int memberIdx, [int page = 1, int limit = 10]) async {
-    if (memberIdx <= 0) {
-      throw "Invalid MemberIdx";
-    }
-
-    bool isError = false;
-    ChatFavoriteResponseModel? chatFavoriteResponseModel = await _chatService.getChatFavorite(memberIdx, page, limit).catchError((Object obj) async {
-      isError = true;
-      return ChatFavoriteResponseModel(
-        result: false,
-        code: '',
-        data: ChatFavoriteDataListModel(
-          imgDomain: '',
-          list: [],
-          params: const ParamsModel(
-            memberIdx: 0,
-            pagination: Pagination(
-              startPage: 0,
-              limitStart: 0,
-              totalPageCount: 0,
-              existNextPage: false,
-              endPage: 0,
-              existPrevPage: false,
-              totalRecordCount: 0,
-            ),
-            offset: 0,
-            limit: 0,
-            pageSize: 0,
-            page: 0,
-            recordSize: 0,
-          ),
-        ),
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'getChatRooms',
       );
-    });
-
-    if (chatFavoriteResponseModel == null) {
-      if (isError) {
-        ///TODO
-        ///throw로 할지 그냥 return null로 할지 생각해보기
-        throw "error";
-      } else {
-        return ChatFavoriteDataListModel(
-          imgDomain: '',
-          list: [],
-          params: const ParamsModel(
-            memberIdx: 0,
-            pagination: Pagination(
-              startPage: 0,
-              limitStart: 0,
-              totalPageCount: 0,
-              existNextPage: false,
-              endPage: 0,
-              existPrevPage: false,
-              totalRecordCount: 0,
-            ),
-            offset: 0,
-            limit: 0,
-            pageSize: 0,
-            page: 0,
-            recordSize: 0,
-          ),
-        );
-      }
     }
 
-    return chatFavoriteResponseModel.data;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'getChatRooms',
+      );
+    }
+
+    final rooms = responseModel.data!;
+
+    return rooms;
   }
 
-  Future<bool> setChatFavorite(int memberIdx, String chatMemberId, [int type = 1]) async {
-    if (memberIdx <= 0) {
-      throw "Invalid MemberIdx";
-    }
-
+  Future<String> getChatRoomId({
+    required String targetMemberUuid,
+    int maxUser = 2,
+    int type = 0, //0 : DM, 1 : Group
+  }) async {
     Map<String, dynamic> body = {
-      "memberIdx": memberIdx,
-      "type": type,
-      "chatMemberId": chatMemberId,
+      'targetMemberUuid': targetMemberUuid,
+      'maxUser': maxUser,
+      'type': type,
     };
 
-    ResponseModel? responseModel = await _chatService.setChatFavorite(body);
+    ResponseModel responseModel = await _chatService.getRoomId(body: body);
 
-    if (responseModel == null) {
-      ///TODO
-      ///throw로 할지 그냥 return null로 할지 생각해보기
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'getChatRoomId',
+      );
+    }
+
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'getChatRoomId',
+      );
+    }
+
+    if (!responseModel.data!.containsKey('room_id')) {
+      throw APIException(
+        msg: 'room_id data is null',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'getChatRoomId',
+      );
+    }
+
+    final String rooms = responseModel.data!['room_id'];
+
+    return rooms;
+  }
+
+  Future<bool> exitChatRoom({
+    required String roomUuid,
+  }) async {
+    ResponseModel responseModel = await _chatService.exitRoom(roomUuid: roomUuid);
+
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'exitChatRoom',
+      );
     }
 
     return true;
   }
 
-  Future<bool> unSetChatFavorite(int memberIdx, String chatMemberId, [int type = 1]) async {
-    if (memberIdx <= 0) {
-      throw "Invalid MemberIdx";
+  Future<bool> pinChatRoom({
+    required String roomUuid,
+    required bool isPin,
+  }) async {
+    ResponseModel responseModel;
+
+    if (isPin) {
+      Map<String, dynamic> body = {
+        'uuid': roomUuid,
+      };
+      responseModel = await _chatService.setPinRoom(body: body);
+    } else {
+      responseModel = await _chatService.unSetPinRoom(roomUuid: roomUuid);
     }
 
-    Map<String, dynamic> queries = {
-      "memberIdx": memberIdx,
-      "type": type,
-      "chatMemberId": chatMemberId,
-    };
-
-    ResponseModel? responseModel = await _chatService.unSetChatFavorite(queries);
-
-    if (responseModel == null) {
-      ///TODO
-      ///throw로 할지 그냥 return null로 할지 생각해보기
-      throw "error";
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'exitChatRoom',
+        arguments: [roomUuid, isPin],
+      );
     }
 
     return true;
   }
 
-  Future<(ResponseModel?, bool)> errorHandler(Object obj) async {
-    ResponseModel? responseModel;
-    switch (obj.runtimeType) {
-      case DioException:
-        final res = (obj as DioException).response;
+  Future<ChatFavoriteDataListModel> getChatFavoriteMembers({
+    int page = 1,
+    int recordSize = 10,
+  }) async {
+    ChatFavoriteResponseModel responseModel = await _chatService.getChatFavoriteMembers(page: page, recordSize: recordSize);
 
-        if (res?.data == null) {
-          ///TODO
-          ///Error Proc
-          return (responseModel, true);
-        } else if (res?.data is Map) {
-          print('res data : ${res?.data}');
-          responseModel = ResponseModel.fromJson(res?.data);
-        } else if (res?.data is String) {
-          Map<String, dynamic> valueMap = jsonDecode(res?.data);
-          responseModel = ResponseModel.fromJson(valueMap);
-        }
-
-        // print('responseModel $responseModel');
-        break;
-      default:
-        break;
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'getChatRooms',
+      );
     }
-    return (responseModel, true);
+
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'getChatRooms',
+      );
+    }
+
+    final members = responseModel.data!;
+
+    return members;
   }
 
-  Future<bool> checkError(Object obj) async {
-    ResponseModel? responseModel;
-    switch (obj.runtimeType) {
-      case DioException:
-        final res = (obj as DioException).response;
-        final statusCode = res?.statusCode ?? 400;
+  Future<bool> favoriteChatMember({
+    required String targetMemberUuid,
+    required bool isFavorite,
+  }) async {
+    ResponseModel responseModel;
 
-        if (statusCode >= 400) {
-          return true;
-        }
-        break;
-      default:
-        break;
+    if (isFavorite) {
+      Map<String, dynamic> body = {
+        'targetMemberUuid': targetMemberUuid,
+      };
+      responseModel = await _chatService.setChatFavoriteMember(body: body);
+    } else {
+      responseModel = await _chatService.unSetChatFavoriteMember(targetMemberUuid: targetMemberUuid);
     }
+
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'exitChatRoom',
+        arguments: [targetMemberUuid, isFavorite],
+      );
+    }
+
     return true;
   }
 }

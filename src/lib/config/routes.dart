@@ -9,14 +9,19 @@ import 'package:pet_mobile_social_flutter/components/dialog/duplication_signup_d
 import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/force_update_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/recommended_update_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/restrain_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_page.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/dialog_page.dart';
 import 'package:pet_mobile_social_flutter/components/toast/error_toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/models/restrain/restrain_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/chat/chat_home_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/chat/chat_room_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/chat/chat_search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/error/feed_not_follow_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/error/feed_not_found_screen.dart';
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -776,6 +781,61 @@ class AppRouter {
             builder: (_) => WillPopScope(
               onWillPop: () async => false,
               child: DuplicationSignUpDialog(simpleType: simpleType, email: email),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/chatHome',
+        name: 'chatHome',
+        builder: (BuildContext context, GoRouterState state) {
+          return const ChatHomeScreen();
+        },
+        routes: [
+          GoRoute(
+            path: 'chatRoom',
+            name: 'chatRoom',
+            builder: (BuildContext context, GoRouterState state) {
+              if (state.extra is Map) {
+                Map<String, dynamic> extraMap = state.extra! as Map<String, dynamic>;
+                if (extraMap.containsKey('roomId')) {
+                  print('extraMap roomId ${extraMap['roomId']}');
+                  String roomId = extraMap['roomId'];
+                  String nick = extraMap['nick'];
+                  String? profileImgUrl = extraMap['profileImgUrl'];
+                  return ChatRoomScreen(
+                    roomId: roomId,
+                    nick: nick,
+                    profileImgUrl: profileImgUrl,
+                  );
+                } else {
+                  return const ChatHomeScreen();
+                }
+                // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
+              } else {
+                return const ChatHomeScreen();
+              }
+            },
+          ),
+          GoRoute(
+            path: 'chatSearch',
+            name: 'chatSearch',
+            builder: (BuildContext context, GoRouterState state) {
+              return const ChatSearchScreen();
+            },
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/restrain_dialog',
+        name: 'restrain_dialog',
+        // builder: (BuildContext context, GoRouterState state) {
+        //   return const MaintenanceScreen();
+        // },
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return DialogPage(
+            builder: (_) => RestrainDialog(
+              restrainItemModel: state.extra as RestrainItemModel,
             ),
           );
         },

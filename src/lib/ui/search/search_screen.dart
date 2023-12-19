@@ -558,7 +558,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                   userName: profileList[index].nick!,
                                   content: profileList[index].intro!,
                                   isSpecialUser: profileList[index].isBadge == 1,
-                                  memberUuid: profileList[index].uuid!,
+                                  memberUuid: profileList[index].memberUuid!,
                                   contentType: 'profile',
                                   oldMemberUuid: '',
                                 );

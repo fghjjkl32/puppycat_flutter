@@ -6,6 +6,7 @@ import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -44,7 +45,42 @@ class APIErrorState extends _$APIErrorState {
         ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.signUpScreen);
         break;
       case 'ERES-9999': // 제재 상태
-        ref.read(loginStateProvider.notifier).state = LoginStatus.restriction;
+      case 'ERES-9998': // 로그인 제재 상태
+        final restrainModel = await ref.read(restrainStateProvider.notifier).getRestrainDetail(RestrainType.loginRestrain);
+        final goRouter = ref.read(routerProvider);
+        if (restrainModel == null) {
+          goRouter.pushNamed('error_dialog', extra: 'UNKNOWN');
+        }
+
+        await logoutLogic();
+
+        goRouter.pushNamed('restrain_dialog', extra: restrainModel!);
+        break;
+      case 'ERES-9997': // 모든 글 작성 제재 상태
+        final restrainModel = await ref.read(restrainStateProvider.notifier).getRestrainDetail(RestrainType.writeAllRestrain);
+        final goRouter = ref.read(routerProvider);
+        if (restrainModel == null) {
+          goRouter.pushNamed('error_dialog', extra: 'UNKNOWN');
+        }
+        goRouter.pushNamed('restrain_dialog', extra: restrainModel!);
+        break;
+      case 'ERES-9996': // 피드 작성 제재 상태
+        final restrainModel = await ref.read(restrainStateProvider.notifier).getRestrainDetail(RestrainType.writeFeedRestrain);
+        final goRouter = ref.read(routerProvider);
+        if (restrainModel == null) {
+          goRouter.pushNamed('error_dialog', extra: 'UNKNOWN');
+        }
+        goRouter.pushNamed('restrain_dialog', extra: restrainModel!);
+        break;
+        break;
+      case 'ERES-9995': // 댓글 작성 제재 상태
+        final restrainModel = await ref.read(restrainStateProvider.notifier).getRestrainDetail(RestrainType.writeCommentRestrain);
+        final goRouter = ref.read(routerProvider);
+        if (restrainModel == null) {
+          goRouter.pushNamed('error_dialog', extra: 'UNKNOWN');
+        }
+        goRouter.pushNamed('restrain_dialog', extra: restrainModel!);
+        break;
         break;
       case 'EOUT-7777': // 탈퇴 대기
         final loginData = apiException.arguments?.first;
@@ -65,7 +101,7 @@ class APIErrorState extends _$APIErrorState {
         //TODO 더 고도화 필요
         ref.read(nickNameProvider.notifier).state = NickNameStatus.failure;
         break;
-      case 'SIJD-3999': //TODO 중복 가입 alert, 멤버 서버 나오면 다시 작업
+      case 'SIJD-3999':
         print('SIJD-3999 ${apiException.toString()}');
         final goRouter = ref.read(routerProvider);
         if (apiException.arguments != null) {
@@ -114,12 +150,13 @@ class APIErrorState extends _$APIErrorState {
         if (caller == 'checkRefreshToken') {
           break;
         }
-        await TokenController.clearTokens();
-
-        ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
-        ref.read(followUserStateProvider.notifier).resetState();
-        ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
-        ref.read(loginStateProvider.notifier).state = LoginStatus.none;
+        await logoutLogic();
+        // await TokenController.clearTokens();
+        //
+        // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+        // ref.read(followUserStateProvider.notifier).resetState();
+        // ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
+        // ref.read(loginStateProvider.notifier).state = LoginStatus.none;
 
         break;
       // case 'ASP-9999': //회원가입 후 바로 로그인했는데  userModel이  null일 때
@@ -134,5 +171,14 @@ class APIErrorState extends _$APIErrorState {
   Future apiErrorLogging(APIException apiException) async {
     String apiErrorMsg = apiException.toString();
     print('API Error Msg : $apiErrorMsg');
+  }
+
+  Future logoutLogic() async {
+    await TokenController.clearTokens();
+
+    ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+    ref.read(followUserStateProvider.notifier).resetState();
+    ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
+    ref.read(loginStateProvider.notifier).state = LoginStatus.none;
   }
 }

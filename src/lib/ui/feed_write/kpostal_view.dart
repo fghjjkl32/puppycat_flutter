@@ -170,7 +170,7 @@ class _KpostalViewState extends State<KpostalView> {
             WebMessageListener(
               jsObjectName: "onComplete",
               allowedOriginRules: Set.from(["*"]),
-              onPostMessage: (message, sourceOrigin, isMainFrame, replyProxy) => handleMessage(message),
+              onPostMessage: (message, sourceOrigin, isMainFrame, replyProxy) => handleMessage(message?.toJson().toString()),
             ),
           );
         } else {

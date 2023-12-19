@@ -286,8 +286,8 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                               return Container();
                             }
                             return FollowerItemWidget(
-                              profileImage: "${lists[index].url}",
-                              userName: lists[index].followNick!,
+                              profileImage: "${lists[index].profileImgUrl}",
+                              userName: lists[index].followerNick!,
                               content: lists[index].intro == "" ? '소개글이 없어요.' : lists[index].intro!,
                               isSpecialUser: lists[index].isBadge! == 1,
                               isFollow: lists[index].isFollow == 1,
@@ -427,7 +427,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                               return Container();
                             }
                             return FollowingItemWidget(
-                              profileImage: "${lists[index].url}",
+                              profileImage: "${lists[index].profileImgUrl}",
                               userName: lists[index].followNick!,
                               content: lists[index].intro == "" || lists[index].intro == null ? '소개글이 없어요.' : lists[index].intro!,
                               isSpecialUser: lists[index].isBadge! == 1,

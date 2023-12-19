@@ -3,10 +3,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
+import 'package:pet_mobile_social_flutter/ui/chat/chat_room_screen.dart';
 import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> contextProvider = GlobalKey<NavigatorState>();
+final GlobalKey<ChatRoomScreenState> chatScreenKey = GlobalKey<ChatRoomScreenState>();
+final GlobalKey rowKey = GlobalKey();
 
 enum ListAPIStatus {
   idle,

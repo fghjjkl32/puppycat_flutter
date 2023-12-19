@@ -69,10 +69,7 @@ class KakaoLoginService implements SocialLoginService {
     User userInfo = await UserApi.instance.me();
 
     UserModel userModel = UserModel(
-      // loginStatus: LoginStatus.none,
-      idx: 0,
       nick: userInfo.kakaoAccount?.name ?? '',
-
       id: userInfo.kakaoAccount?.email ?? 'thirdnsov.dev@gmail.com',
       // id: "thirdnso2v@gmail.com",
       simpleId: userInfo.id.toString(),

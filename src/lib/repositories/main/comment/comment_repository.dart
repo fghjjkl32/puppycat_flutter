@@ -64,7 +64,7 @@ class CommentRepository {
       data: const CommentDataListModel(
         list: [],
         params: ParamsModel(
-          memberIdx: 0,
+          memberUuid: '',
           pagination: Pagination(
             startPage: 0,
             limitStart: 0,

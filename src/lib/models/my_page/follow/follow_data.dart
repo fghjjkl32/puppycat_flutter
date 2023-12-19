@@ -7,6 +7,8 @@ part 'follow_data.g.dart';
 class FollowData with _$FollowData {
   factory FollowData({
     String? followNick,
+    String? followerNick,
+    String? profileImgUrl,
     String? url,
     int? isBadge,
     String? memberUuid,

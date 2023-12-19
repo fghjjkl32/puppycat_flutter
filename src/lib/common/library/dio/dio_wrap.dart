@@ -12,6 +12,7 @@ import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/jwt/jwt_repository.dart';
 import 'package:ua_client_hints/ua_client_hints.dart';
 
@@ -206,6 +207,8 @@ class DioWrap {
             final tokenMap = await jwtRepository.getAccessToken(refreshToken);
             final newAccessToken = tokenMap['accessToken'];
             final newRefreshToken = tokenMap['refreshToken'];
+            final restrainList = tokenMap['restrainList'] ?? [];
+            ref.read(restrainStateProvider.notifier).state = restrainList;
             print('refreshDio - 6');
             // await TokenController.writeAccessToken(newAccessToken);
             await TokenController.writeTokens(newAccessToken, newRefreshToken);

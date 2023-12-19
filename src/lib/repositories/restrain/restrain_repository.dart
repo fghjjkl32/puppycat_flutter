@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
-import 'package:pet_mobile_social_flutter/models/restrain/restrain_write_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/restrain/restrain_item_model.dart';
+import 'package:pet_mobile_social_flutter/models/restrain/restrain_response_model.dart';
+import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/restrain/restrain_service.dart';
 
 class RestrainRepository {
@@ -12,11 +14,11 @@ class RestrainRepository {
   RestrainRepository({
     required this.dio,
   }) {
-    _restrainService = RestrainService(dio, baseUrl: baseUrl);
+    _restrainService = RestrainService(dio, baseUrl: memberBaseUrl);
   }
 
-  Future<RestrainWriteResponseModel> getWriteRestrain(memberIdx) async {
-    RestrainWriteResponseModel responseModel = await _restrainService.getWriteRestrain(memberIdx);
+  Future<RestrainItemModel> getRestrainDetail(RestrainType type) async {
+    RestrainResponseModel responseModel = await _restrainService.getRestrainDetail(type.index);
 
     if (!responseModel.result) {
       throw APIException(
@@ -27,6 +29,15 @@ class RestrainRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'RestrainRepository',
+        caller: 'getWriteRestrain',
+      );
+    }
+
+    return responseModel.data!.restrain;
   }
 }

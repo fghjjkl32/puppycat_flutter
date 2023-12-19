@@ -63,7 +63,7 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
           context.go("/home/search");
         }
         if (id == 'message') {
-          !isLogined ? context.pushReplacement("/loginScreen") : context.push('/chatMain');
+          !isLogined ? context.pushReplacement("/loginScreen") : context.push('/chatHome');
         }
         if (id == 'setting') {
           context.push("/home/myPage/setting");
@@ -120,21 +120,21 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
             height: 5,
           ),
         );
-        // list.add(
-        //   diaryPopUpMenuItem(
-        //     'message',
-        //     '메시지',
-        //     const Icon(
-        //       Puppycat_social.icon_chat,
-        //     ),
-        //     false,
-        //   ),
-        // );
-        // list.add(
-        //   const PopupMenuDivider(
-        //     height: 5,
-        //   ),
-        // );
+        list.add(
+          diaryPopUpMenuItem(
+            'message',
+            '메시지',
+            const Icon(
+              Puppycat_social.icon_chat,
+            ),
+            false,
+          ),
+        );
+        list.add(
+          const PopupMenuDivider(
+            height: 5,
+          ),
+        );
         list.add(
           diaryPopUpMenuItem(
             'setting',
