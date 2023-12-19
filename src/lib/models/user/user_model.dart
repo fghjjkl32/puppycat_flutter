@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
@@ -41,6 +41,7 @@ class UserModel with _$UserModel {
     String? gender,
     String? profileImgUrl,
     String? introText,
+    List<RestrainType>? restrainList,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);

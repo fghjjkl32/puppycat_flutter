@@ -17,6 +17,7 @@ import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.d
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_home_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/chat/chat_room_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/error/feed_not_follow_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/error/feed_not_found_screen.dart';
@@ -750,18 +751,31 @@ class AppRouter {
           return const ChatHomeScreen();
         },
         routes: [
-          // GoRoute(
-          //   path: 'chatRoom',
-          //   name: 'chatRoom',
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     if (state.extra is Room) {
-          //       return ChatRoomScreen(room: state.extra! as Room);
-          //       // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
-          //     } else {
-          //       return const ChatMainScreen();
-          //     }
-          //   },
-          // ),
+          GoRoute(
+            path: 'chatRoom',
+            name: 'chatRoom',
+            builder: (BuildContext context, GoRouterState state) {
+              if (state.extra is Map) {
+                Map<String, dynamic> extraMap = state.extra! as Map<String, dynamic>;
+                if (extraMap.containsKey('roomId')) {
+                  print('extraMap roomId ${extraMap['roomId']}');
+                  String roomId = extraMap['roomId'];
+                  String nick = extraMap['nick'];
+                  String? profileImgUrl = extraMap['profileImgUrl'];
+                  return ChatRoomScreen(
+                    roomId: roomId,
+                    nick: nick,
+                    profileImgUrl: profileImgUrl,
+                  );
+                } else {
+                  return const ChatHomeScreen();
+                }
+                // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
+              } else {
+                return const ChatHomeScreen();
+              }
+            },
+          ),
           GoRoute(
             path: 'chatSearch',
             name: 'chatSearch',

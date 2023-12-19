@@ -38,7 +38,7 @@ dependencies:
   # 이미지 선택 기능의 의존성 라이브러리
   insta_assets_crop: ^0.0.2 # custom package from image_crop
   fraction: ^5.0.0 # to show crop ratio in crop view
-  provider: ^6.0.5 # match with wechat_assets_picker package
+  provider: ^6.1.1 # match with wechat_assets_picker package
   extended_image: ^8.1.1 # match with wechat_assets_picker package
   #  photo_manager: ^2.8.1
   photo_manager: ^3.0.0-dev.2
@@ -99,7 +99,7 @@ dependencies:
 
 
   #chat
-  matrix: ^0.22.6
+  #  matrix: ^0.22.6
   flutter_slidable:
     git:
       url: https://github.com/engine-smkang-uxplus/flutter_slidable
@@ -160,7 +160,9 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_secure_storage: ^9.0.0
   store_redirect: ^2.0.1
-  mutex: ^3.1.0
+  vchatcloud_flutter_sdk:
+    path: '../library/flutter_vchat_sdk'
+  web_socket_channel: ^2.3.0
 
 dev_dependencies:
   flutter_test:

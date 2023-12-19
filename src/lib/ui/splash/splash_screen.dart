@@ -13,6 +13,7 @@ import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
@@ -31,6 +32,7 @@ class InitializationApp {
 
     if (await _checkNetwork()) {
       if (await _checkServers()) {
+        await ref.read(chatSocketStateProvider);
         if (await _initFirebase()) {
           //업데이트 팝업 로직
           // ref.read(maintenanceStateProvider.notifier).startPopupPolling();

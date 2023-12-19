@@ -328,7 +328,7 @@ class ChatRoomItem extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              'roomModel.lastMsg',
+                              roomModel.lastMsg ?? '',
                               style: kBody12RegularStyle400.copyWith(color: kPreviousTextBodyColor, height: 1.3),
                               softWrap: false,
                               maxLines: 2,

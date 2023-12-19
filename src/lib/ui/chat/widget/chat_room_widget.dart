@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_room_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
@@ -37,10 +38,20 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
             pagingController: _pagingController,
             builderDelegate: PagedChildBuilderDelegate<ChatRoomModel>(
               noItemsFoundIndicatorBuilder: (context) {
+                ref.read(chatRoomListEmptyProvider.notifier).state = true;
                 return const Text('empty');
               },
               itemBuilder: (context, item, index) {
-                return ChatRoomItem(roomModel: item);
+                return ChatRoomItem(
+                  roomModel: item,
+                  onTap: () {
+                    context.push('/chatHome/chatRoom', extra: {
+                      'roomId': item.roomId,
+                      'nick': item.nick,
+                      'profileImgUrl': item.profileImgUrl,
+                    });
+                  },
+                );
               },
             ),
           ),

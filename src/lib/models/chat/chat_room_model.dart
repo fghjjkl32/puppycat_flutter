@@ -49,6 +49,7 @@ class ChatRoomModel with _$ChatRoomModel {
     required int state,
     required int idx,
     required int maxUser,
+    String? lastMsg,
   }) = _ChatRoomModel;
 
   factory ChatRoomModel.fromJson(Map<String, dynamic> json) => _$ChatRoomModelFromJson(json);
