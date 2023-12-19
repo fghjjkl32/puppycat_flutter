@@ -377,9 +377,16 @@ class CommentListState extends _$CommentListState {
     required contentIdx,
     int? parentIdx,
   }) async {
-    final result = await CommentRepository(dio: ref.read(dioProvider)).postComment(contents: contents, parentIdx: parentIdx, contentIdx: contentIdx);
+    try {
+      final result = await CommentRepository(dio: ref.read(dioProvider)).postComment(contents: contents, parentIdx: parentIdx, contentIdx: contentIdx);
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<ResponseModel> editContents({
@@ -387,13 +394,20 @@ class CommentListState extends _$CommentListState {
     required String contents,
     required int contentIdx,
   }) async {
-    final result = await CommentRepository(dio: ref.read(dioProvider)).editComment(
-      contents: contents,
-      contentIdx: contentIdx,
-      commentIdx: commentIdx,
-    );
+    try {
+      final result = await CommentRepository(dio: ref.read(dioProvider)).editComment(
+        contents: contents,
+        contentIdx: contentIdx,
+        commentIdx: commentIdx,
+      );
 
-    return result;
+      return result;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      throw apiException.toString();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<ResponseModel> postCommentLike({

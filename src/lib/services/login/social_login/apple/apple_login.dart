@@ -37,8 +37,6 @@ class AppleLoginService implements SocialLoginService {
       print('authorizationCode ${_accountResult.authorizationCode}');
 
       UserModel? userModel = UserModel(
-        // loginStatus: LoginStatus.none,
-        idx: 0,
         nick: "",
         id: email!,
         // id: "thirdnso2v@gmail.com",

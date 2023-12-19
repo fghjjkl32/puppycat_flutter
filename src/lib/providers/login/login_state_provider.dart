@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/jwt/jwt_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
@@ -75,19 +76,25 @@ class LoginState extends _$LoginState {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       state = LoginStatus.failure;
     } catch (e) {
-      print('auto login exception ($e)');
+      print('login exception 2 ($e)');
       state = LoginStatus.failure;
     }
   }
 
   Future<void> _procLogin(UserModel userModel, [bool isAutoLogin = false]) async {
-    ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
-    ref.read(myInfoStateProvider.notifier).getMyInfo();
-    ref.read(signUpUserInfoProvider.notifier).state = null;
+    ref.read(restrainStateProvider.notifier).state = userModel.restrainList ?? [];
+    final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.login);
 
-    print('ref.read(myInfoStateProvider ${ref.read(myInfoStateProvider)}');
+    if (restrain) {
+      ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
+      ref.read(myInfoStateProvider.notifier).getMyInfo();
+      ref.read(signUpUserInfoProvider.notifier).state = null;
 
-    state = LoginStatus.success;
+      print('ref.read(myInfoStateProvider ${ref.read(myInfoStateProvider)}');
+      print('ref.read(restrainStateProvider ${ref.read(restrainStateProvider)}');
+
+      state = LoginStatus.success;
+    }
   }
 
   Future logout(String provider) async {

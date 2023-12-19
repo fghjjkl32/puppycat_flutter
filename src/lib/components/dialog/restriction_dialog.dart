@@ -213,41 +213,5 @@ class RestrictionDialog extends ConsumerWidget {
       content: null,
       actions: <Widget>[],
     );
-    return AlertDialog(
-      content: WillPopScope(
-        onWillPop: () async => false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(isForever ? foreverRestrictionTitle : restrictionTitle, textAlign: TextAlign.center),
-            Visibility(
-              visible: !isForever,
-              child: Text('기한 : $restrictionPeriod', textAlign: TextAlign.center),
-            ),
-            Text(
-              restrictionBody,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text('확인'),
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text('1:1 채널톡'),
-            ),
-          ],
-        ),
-      ],
-    );
   }
 }

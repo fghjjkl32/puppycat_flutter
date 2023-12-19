@@ -9,7 +9,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/user_restore_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/dialog/restriction_dialog.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/restriction_dialog.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({Key? key}) : super(key: key);

@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_c
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/login/login_request_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
+import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/login/login_service.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/apple/apple_login.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/google/google_login.dart';
@@ -120,11 +121,27 @@ class LoginRepository {
         caller: 'loginByUserModel',
       );
     }
-    final storage = FlutterSecureStorage();
+
+    if (!responseModel.data!.containsKey('restrainList')) {
+      throw APIException(
+        msg: 'restrainList is null',
+        code: responseModel.code,
+        refer: 'LoginRepository',
+        caller: 'loginByUserModel',
+      );
+    }
+
+    const storage = FlutterSecureStorage();
     await storage.write(key: 'ACCESS_TOKEN', value: responseModel.data!['accessToken']);
     await storage.write(key: 'REFRESH_TOKEN', value: responseModel.data!['refreshToken']);
 
-    userModel = userModel.copyWith(idx: int.parse(_getMemberIdx(responseModel) ?? '0'), appKey: appKey);
+    print('asdasd');
+    List<dynamic> restrainList = responseModel.data?['restrainList'] ?? [];
+    print('asdasd 2222');
+    final List<RestrainType> restrainTypeList = restrainList.map((e) => RestrainType.values[e]).toList();
+    print('asdasd 3333');
+
+    userModel = userModel.copyWith(appKey: appKey, restrainList: restrainTypeList);
 
     return userModel;
   }

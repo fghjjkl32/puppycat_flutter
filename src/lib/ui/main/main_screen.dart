@@ -27,6 +27,7 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/recent_feed_state_
 import 'package:pet_mobile_social_flutter/providers/main/user_list/favorite_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/popupmenu_with_reddot_widget.dart';
@@ -665,30 +666,34 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 context.pushReplacement("/loginScreen");
                 // } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
               } else {
-                final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
+                final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.writeFeed);
 
-                InstaAssetPicker.pickAssets(
-                  context,
-                  maxAssets: 12,
-                  pickerTheme: themeData(context).copyWith(
-                    canvasColor: kPreviousNeutralColor100,
-                    colorScheme: theme.colorScheme.copyWith(
-                      background: kPreviousNeutralColor100,
-                    ),
-                    appBarTheme: theme.appBarTheme.copyWith(
-                      backgroundColor: kPreviousNeutralColor100,
-                    ),
-                  ),
-                  onCompleted: (cropStream) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => FeedWriteScreen(
-                          cropStream: cropStream,
-                        ),
+                if (restrain) {
+                  final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
+
+                  InstaAssetPicker.pickAssets(
+                    context,
+                    maxAssets: 12,
+                    pickerTheme: themeData(context).copyWith(
+                      canvasColor: kPreviousNeutralColor100,
+                      colorScheme: theme.colorScheme.copyWith(
+                        background: kPreviousNeutralColor100,
                       ),
-                    );
-                  },
-                );
+                      appBarTheme: theme.appBarTheme.copyWith(
+                        backgroundColor: kPreviousNeutralColor100,
+                      ),
+                    ),
+                    onCompleted: (cropStream) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => FeedWriteScreen(
+                            cropStream: cropStream,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
               }
               // else {
               //   showDialog(

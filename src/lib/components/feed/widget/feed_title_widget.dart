@@ -18,6 +18,7 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_edit_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
@@ -323,15 +324,19 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     ),
                                     title: '수정하기',
                                     titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => FeedEditScreen(
-                                            feedData: widget.feedData,
-                                            contentIdx: widget.contentIdx,
+                                    onTap: () async {
+                                      final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.writeFeed);
+
+                                      if (restrain) {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => FeedEditScreen(
+                                              feedData: widget.feedData,
+                                              contentIdx: widget.contentIdx,
+                                            ),
                                           ),
-                                        ),
-                                      );
+                                        );
+                                      }
                                     },
                                   ),
                                   BottomSheetButtonItem(

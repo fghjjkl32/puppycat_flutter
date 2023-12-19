@@ -9,10 +9,12 @@ import 'package:pet_mobile_social_flutter/components/dialog/duplication_signup_d
 import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/force_update_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/recommended_update_dialog.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/restrain_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_page.dart';
 import 'package:pet_mobile_social_flutter/components/route_page/dialog_page.dart';
 import 'package:pet_mobile_social_flutter/components/toast/error_toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/models/restrain/restrain_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
@@ -784,6 +786,20 @@ class AppRouter {
             },
           ),
         ],
+      ),
+      GoRoute(
+        path: '/restrain_dialog',
+        name: 'restrain_dialog',
+        // builder: (BuildContext context, GoRouterState state) {
+        //   return const MaintenanceScreen();
+        // },
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          return DialogPage(
+            builder: (_) => RestrainDialog(
+              restrainItemModel: state.extra as RestrainItemModel,
+            ),
+          );
+        },
       ),
     ],
 

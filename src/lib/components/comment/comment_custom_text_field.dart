@@ -10,6 +10,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
@@ -209,55 +210,59 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                             suffixIcon: ref.read(commentHeaderProvider).hasInput
                                 ? IconButton(
                                     onPressed: () async {
-                                      if (commentHeaderState.isEdit) {
-                                        String tempContents;
-                                        tempContents = await processHashtagEditedText(
-                                          ref.watch(commentValueProvider.notifier).state.text,
-                                          ref.read(hashtagListProvider),
-                                        );
+                                      final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.writeComment);
 
-                                        tempContents = await processMentionEditedText(
-                                          tempContents,
-                                          ref.read(mentionListProvider),
-                                        );
+                                      if (restrain) {
+                                        if (commentHeaderState.isEdit) {
+                                          String tempContents;
+                                          tempContents = await processHashtagEditedText(
+                                            ref.watch(commentValueProvider.notifier).state.text,
+                                            ref.read(hashtagListProvider),
+                                          );
 
-                                        await ref.watch(commentListStateProvider.notifier).editContents(
-                                              contents: tempContents,
-                                              contentIdx: widget.contentIdx,
-                                              commentIdx: ref.watch(commentHeaderProvider).commentIdx!,
-                                            );
-                                      } else {
-                                        await ref.watch(commentListStateProvider.notifier).postContents(
-                                              contents: ref.watch(commentValueProvider).value.text,
-                                              contentIdx: widget.contentIdx,
-                                              parentIdx: ref.watch(commentHeaderProvider).isReply ? ref.watch(commentHeaderProvider).commentIdx : null,
-                                            );
+                                          tempContents = await processMentionEditedText(
+                                            tempContents,
+                                            ref.read(mentionListProvider),
+                                          );
+
+                                          await ref.watch(commentListStateProvider.notifier).editContents(
+                                                contents: tempContents,
+                                                contentIdx: widget.contentIdx,
+                                                commentIdx: ref.watch(commentHeaderProvider).commentIdx!,
+                                              );
+                                        } else {
+                                          await ref.watch(commentListStateProvider.notifier).postContents(
+                                                contents: ref.watch(commentValueProvider).value.text,
+                                                contentIdx: widget.contentIdx,
+                                                parentIdx: ref.watch(commentHeaderProvider).isReply ? ref.watch(commentHeaderProvider).commentIdx : null,
+                                              );
+                                        }
+
+                                        int commentIdx = -1;
+                                        if (ref.read(commentHeaderProvider).commentIdx != null) {
+                                          commentIdx = ref.read(commentHeaderProvider).commentIdx!;
+                                        }
+
+                                        print('ref.watch(commentHeaderProvider).isReply ${ref.watch(commentHeaderProvider).isReply}');
+                                        if (ref.watch(commentHeaderProvider).isReply) {
+                                          ref.read(commentListRefreshFocusProvider.notifier).state = ref.read(commentHeaderProvider).commentIdx!;
+                                          // ref.read(commentListStateProvider.notifier).getFocusingComments(widget.contentIdx, ref.watch(commentHeaderProvider).commentIdx!);
+                                          ref.read(commentListStateProvider).refresh();
+                                        } else {
+                                          ref.read(commentListStateProvider).refresh();
+                                        }
+
+                                        // if (result.result) {
+                                        //   FocusScope.of(context).unfocus();
+                                        ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
+                                        ref.watch(commentValueProvider).text = '';
+                                        ref.read(commentHeaderProvider.notifier).setHasInput(false);
+                                        initialized.value = false;
+
+                                        ref.read(hashtagListProvider.notifier).state = [];
+                                        ref.read(mentionListProvider.notifier).state = [];
+                                        // }
                                       }
-
-                                      int commentIdx = -1;
-                                      if (ref.read(commentHeaderProvider).commentIdx != null) {
-                                        commentIdx = ref.read(commentHeaderProvider).commentIdx!;
-                                      }
-
-                                      print('ref.watch(commentHeaderProvider).isReply ${ref.watch(commentHeaderProvider).isReply}');
-                                      if (ref.watch(commentHeaderProvider).isReply) {
-                                        ref.read(commentListRefreshFocusProvider.notifier).state = ref.read(commentHeaderProvider).commentIdx!;
-                                        // ref.read(commentListStateProvider.notifier).getFocusingComments(widget.contentIdx, ref.watch(commentHeaderProvider).commentIdx!);
-                                        ref.read(commentListStateProvider).refresh();
-                                      } else {
-                                        ref.read(commentListStateProvider).refresh();
-                                      }
-
-                                      // if (result.result) {
-                                      //   FocusScope.of(context).unfocus();
-                                      ref.watch(commentHeaderProvider.notifier).resetReplyCommentHeader();
-                                      ref.watch(commentValueProvider).text = '';
-                                      ref.read(commentHeaderProvider.notifier).setHasInput(false);
-                                      initialized.value = false;
-
-                                      ref.read(hashtagListProvider.notifier).state = [];
-                                      ref.read(mentionListProvider.notifier).state = [];
-                                      // }
                                     },
                                     icon: const Icon(
                                       Puppycat_social.icon_send,
