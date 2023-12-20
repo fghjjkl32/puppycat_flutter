@@ -118,7 +118,7 @@ class NotificationController {
           channel.id,
           channel.name,
           channelDescription: channel.description,
-          icon: 'launch_background',
+          icon: 'mipmap/launcher_icon',
           largeIcon: FilePathAndroidBitmap(largeIconPath),
           styleInformation: bigPictureStyleInformation,
         ),
