@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:go_router/go_router.dart';
 
 class KpostalView extends StatefulWidget {
   static const String routeName = '/kpostal';
@@ -166,14 +167,20 @@ class _KpostalViewState extends State<KpostalView> {
         // 안드로이드는 롤리팝 버전 이상 빌드에서만 작동 유의
         // WEB_MESSAGE_LISTENER 지원 여부 확인
         if (!Platform.isAndroid || await AndroidWebViewFeature.isFeatureSupported(AndroidWebViewFeature.WEB_MESSAGE_LISTENER)) {
+          print('here?');
           await controller.addWebMessageListener(
             WebMessageListener(
               jsObjectName: "onComplete",
               allowedOriginRules: Set.from(["*"]),
-              onPostMessage: (message, sourceOrigin, isMainFrame, replyProxy) => handleMessage(message?.toJson().toString()),
+              onPostMessage: (message, sourceOrigin, isMainFrame, replyProxy) {
+                if (message != null) {
+                  handleMessage(message.data.toString());
+                }
+              },
             ),
           );
         } else {
+          print('here?2');
           controller.addJavaScriptHandler(
             handlerName: 'onComplete',
             callback: (args) => handleMessage(args[0]),
@@ -210,11 +217,15 @@ class _KpostalViewState extends State<KpostalView> {
           widget.callback!(result);
         }
 
-        Navigator.pop(context, result);
+        if (mounted) {
+          context.pop(result);
+          // Navigator.pop(context, result);
+        }
       } else {
         throw 'fail to load message : message is null';
       }
     } catch (e) {
+      print('kpostal error $e');
       Navigator.pop(context);
     }
   }

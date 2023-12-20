@@ -201,17 +201,35 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
       case PushType.metion_contents:
       case PushType.like_contents:
       case PushType.img_tag:
-        router.push("/home/myPage/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
+        Map<String, dynamic> extraMap = {
+          'firstTitle': myInfo.nick ?? 'nickname',
+          'secondTitle': '피드',
+          'memberUuid': myInfo.uuid,
+          'contentIdx': payload.contentsIdx,
+          'contentType': 'notificationContent',
+        };
+        router.push('/home/myPage/detail', extra: extraMap);
+        // router.push("/home/myPage/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
         break;
 
       case PushType.new_comment:
       case PushType.new_reply:
       case PushType.mention_comment:
       case PushType.like_comment:
-        router.push("/home/myPage/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
+        Map<String, dynamic> extraMap = {
           "isRouteComment": true,
           "focusIdx": payload.commentIdx,
-        });
+          'firstTitle': myInfo.nick ?? 'nickname',
+          'secondTitle': '피드',
+          'memberUuid': myInfo.uuid,
+          'contentIdx': payload.contentsIdx,
+          'contentType': 'notificationContent',
+        };
+        router.push('/home/myPage/detail', extra: extraMap);
+        // router.push("/home/myPage/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
+        //   "isRouteComment": true,
+        //   "focusIdx": payload.commentIdx,
+        // });
         break;
 
       case PushType.notice:

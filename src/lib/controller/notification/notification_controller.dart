@@ -90,6 +90,7 @@ class NotificationController {
     int contentId = createNotificationId(payload);
 
     await checkExistNotification(contentId.toString()).then((value) {
+      print('check noti $value');
       body = '${payload.body}${getBodyString(convertStringToPushType(payload.type), value)}';
     });
 
@@ -132,6 +133,7 @@ class NotificationController {
     bool isActived = false;
 
     for (final activeNoti in activeNotiList) {
+      print('activeNoti.id.toString() ${activeNoti.id.toString()} / id $id');
       if (activeNoti.id.toString() == id) {
         isActived = true;
         break;
@@ -156,7 +158,7 @@ class NotificationController {
 
   int createNotificationId(FirebaseCloudMessagePayload payload) {
     if (payload.type == describeEnum(PushType.follow)) {
-      return 0;
+      return 1;
     }
 
     int typeIndex = PushType.values.indexWhere((element) => payload.type == describeEnum(element));
@@ -173,7 +175,7 @@ class NotificationController {
         if (isMultiple) {
           return '푸시.팔로우멀티'.tr();
         } else {
-          return '푸시.팔로우멀티'.tr();
+          return '푸시.팔로우싱글'.tr();
         }
       case PushType.new_contents:
         return '푸시.팔로우새글'.tr();

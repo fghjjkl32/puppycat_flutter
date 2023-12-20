@@ -103,7 +103,7 @@ String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
 
 // String memberBaseUrl = 'https://puppycat-dev-member-api.devlabs.co.kr/';
 String memberBaseUrl = 'https://member-api.pcstg.co.kr/';
-// String memberBaseUrl = 'https://member.puppycat.co.kr/';
+// String memberBaseUrl = 'https://member-api.puppycat.co.kr/';
 
 // String chatBaseUrl = "https://pet-chat.devlabs.co.kr/";
 String chatBaseUrl = "https://chat.pcstg.co.kr/";

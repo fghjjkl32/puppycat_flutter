@@ -158,11 +158,6 @@ abstract class FeedService {
     @Query("imgLimit") int imgLimit,
   );
 
-  @GET('v1/contents/recent/detail?imgLimit=12&&page={page}')
-  Future<FeedResponseModel> getRecentLogoutDetailList(
-    @Path("page") int page,
-  );
-
   @POST('v1/contents/{contentsIdx}/like')
   Future<ResponseModel> postLike(
     @Path("contentsIdx") int contentsIdx,

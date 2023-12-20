@@ -294,10 +294,10 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                 ///route 정리 필요
 
                                 Map<String, dynamic> extraMap = {
-                                  'firstTitle': 'null',
+                                  'firstTitle': 'nickname',
                                   'secondTitle': '피드',
                                   'memberUuid': myInfo.uuid,
-                                  'contentIdx': '${item.contentsIdx}',
+                                  'contentIdx': item.contentsIdx,
                                   'contentType': 'notificationContent',
                                 };
 
@@ -325,7 +325,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   'firstTitle': 'nickname',
                                   'secondTitle': '피드',
                                   'memberUuid': myInfo.uuid,
-                                  'contentIdx': '${item.contentsIdx}',
+                                  'contentIdx': item.contentsIdx,
                                   'contentType': 'notificationContent',
                                   'isRouteComment': true,
                                 };
@@ -364,7 +364,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   'firstTitle': 'nickname',
                                   'secondTitle': '피드',
                                   'memberUuid': myInfo.uuid,
-                                  'contentIdx': '${item.contentsIdx}',
+                                  'contentIdx': item.contentsIdx,
                                   'contentType': 'notificationContent',
                                   'isRouteComment': true,
                                   'focusIdx': item.commentIdx,

@@ -295,19 +295,27 @@ class AppRouter {
                     String firstTitle = '';
                     String secondTitle = '';
                     String memberUuid = '';
-                    String contentIdx = '0';
+                    int contentIdx = 0;
                     String contentType = '';
 
                     bool isRouteComment = false;
                     int? commentFocusIndex;
                     final extraData = state.extra;
+                    print('11');
                     if (extraData != null) {
                       Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
                       if (extraMap.keys.contains('isRouteComment')) {
                         isRouteComment = extraMap['isRouteComment'];
                       }
                       if (extraMap.keys.contains('focusIdx')) {
-                        commentFocusIndex = int.parse(extraMap['focusIdx']);
+                        print('33');
+                        final fIdx = extraMap['focusIdx'];
+                        if (fIdx is int) {
+                          commentFocusIndex = extraMap['focusIdx'];
+                        } else {
+                          commentFocusIndex = int.parse(extraMap['focusIdx']);
+                        }
+                        print('44');
                       }
                       if (extraMap.keys.contains('firstTitle')) {
                         firstTitle = extraMap['firstTitle'];
@@ -319,18 +327,24 @@ class AppRouter {
                         memberUuid = extraMap['memberUuid'];
                       }
                       if (extraMap.keys.contains('contentIdx')) {
-                        contentIdx = extraMap['contentIdx'];
+                        final cIdx = extraMap['contentIdx'];
+                        if (cIdx is int) {
+                          contentIdx = extraMap['contentIdx'];
+                        } else {
+                          contentIdx = int.parse(extraMap['contentIdx']);
+                        }
                       }
                       if (extraMap.keys.contains('contentType')) {
                         contentType = extraMap['contentType'];
                       }
                     }
 
+                    print('22');
                     return FeedDetailScreen(
                       firstTitle: firstTitle,
                       secondTitle: secondTitle,
                       memberUuid: memberUuid,
-                      contentIdx: int.parse(contentIdx),
+                      contentIdx: contentIdx,
                       contentType: contentType,
                       isRouteComment: isRouteComment,
                       commentFocusIndex: commentFocusIndex,
