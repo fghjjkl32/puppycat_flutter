@@ -726,6 +726,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 ),
                               ),
                               onTap: () async {
+                                print('aaa?');
                                 final result = await myKeepController.deleteKeepContents(
                                   idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
                                 );

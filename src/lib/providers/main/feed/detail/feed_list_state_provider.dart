@@ -743,7 +743,7 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<ResponseModel> deleteOneKeepContents({
-    required contentIdx,
+    required int contentIdx,
     required contentType,
   }) async {
     try {

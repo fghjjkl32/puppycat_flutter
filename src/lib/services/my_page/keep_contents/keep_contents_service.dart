@@ -22,11 +22,10 @@ abstract class KeepContentsService {
     @Query('imgLimit') int imgLimit,
   );
 
-  // @DELETE('v1/contents/keep?memberIdx={memberIdx}&{idx}')
-  // Future<ResponseModel> deleteKeepContents(
-  //   @Path("memberIdx") int memberIdx,
-  //   @Path("idx") String idx,
-  // );
+  @DELETE('v1/contents/keep?{idx}')
+  Future<ResponseModel> deleteKeepContents(
+    @Path("idx") String idx,
+  );
 
   @DELETE('v1/contents/keep')
   Future<ResponseModel> deleteOneKeepContents(

@@ -272,7 +272,7 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
     myKeepCurrentPage = 1;
   }
 
-  Future<ResponseModel> deleteKeepContents({required idx}) async {
+  Future<ResponseModel> deleteKeepContents({required String idx}) async {
     try {
       final result = await KeepContentsRepository(dio: ref.read(dioProvider)).deleteKeepContents(idx: idx);
 
