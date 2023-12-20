@@ -53,7 +53,8 @@ class KeepContentsRepository {
   }
 
   Future<ResponseModel> deleteKeepContents({required String idx}) async {
-    ResponseModel responseModel = await _keepContentsService.deleteOneKeepContents(int.parse(idx));
+    print('idx $idx');
+    ResponseModel responseModel = await _keepContentsService.deleteKeepContents(idx);
 
     if (!responseModel.result) {
       throw APIException(

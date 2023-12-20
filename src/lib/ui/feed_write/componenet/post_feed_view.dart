@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
@@ -155,7 +154,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  child: FormBuilderTextField(
+                  child: TextField(
                     focusNode: focusNode,
                     controller: controller,
                     onChanged: (text) {
@@ -187,14 +186,14 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                     scrollPhysics: const ClampingScrollPhysics(),
                     scrollController: _scrollController,
                     maxLength: 500,
-                    scrollPadding: EdgeInsets.only(bottom: 500.h),
+                    scrollPadding: const EdgeInsets.only(bottom: 500),
                     maxLines: 6,
                     decoration: InputDecoration(
                         counterText: "",
                         hintText: "내용을 입력해 주세요. (최대 500자)\n\n운영 정책에 위반되는 폭력/선정/욕설 등은\n'${myInfo.nick}'님에게 책임이 있으며 동의 없이 삭제될 수 있어요.",
                         hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                         contentPadding: const EdgeInsets.all(16)),
-                    name: 'content',
+                    // name: 'content',
                     style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                     keyboardType: TextInputType.multiline,
                     textAlignVertical: TextAlignVertical.center,
@@ -204,7 +203,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
             },
           ),
           Padding(
-            padding: EdgeInsets.only(top: 20.0.h, bottom: 8.0.h, left: 12.w),
+            padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

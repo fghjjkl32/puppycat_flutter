@@ -38,7 +38,7 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
           style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
         ),
         Text(
-          "[마이페이지 → 내 글 관리 → 보관피]에서 볼 수 있어요.",
+          "[마이페이지 → 내 글 관리 → 보관피드]에서 볼 수 있어요.",
           style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
         ),
         SizedBox(height: 20.h),
