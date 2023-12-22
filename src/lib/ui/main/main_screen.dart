@@ -8,6 +8,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -310,7 +311,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             appBar: isBigDevice
                 ? null
                 : PreferredSize(
-                    preferredSize: Size.fromHeight(30.0),
+                    preferredSize: const Size.fromHeight(30.0),
                     child: AppBar(
                       automaticallyImplyLeading: false,
                       title: Row(
@@ -367,7 +368,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                     child: Stack(
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.only(
+                                          padding: const EdgeInsets.only(
                                             top: 12,
                                             left: 16,
                                           ),
@@ -793,8 +794,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     final myInfo = ref.read(myInfoStateProvider);
     final isLogined = ref.read(loginStatementProvider);
 
-    print('aaaaaaaaaaaaaaaaaaaaa33333');
-
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
@@ -802,7 +801,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
           final loginState = ref.watch(loginStateProvider);
 
-          print('aaaaaaaaaaaaaaaaaaaaa 2222');
           _recentFeedListPagingController.refresh();
 
           ref.read(popularUserListStateProvider.notifier).getInitUserList();
@@ -1132,7 +1130,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 70,
                     ),
                     Padding(
@@ -1278,7 +1276,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       },
                       child: Column(
                         children: [
-                          buildWidgetMask(myInfo.profileImgUrl ?? "", myInfo.isBadge, null),
+                          // buildWidgetMask(myInfo.profileImgUrl ?? "", myInfo.isBadge, null),
+                          getProfileAvatarWithBadge(myInfo.profileImgUrl ?? '', myInfo.isBadge == 1, 54, 54),
                           const SizedBox(height: 4.0),
                           Text(
                             "my",
@@ -1304,7 +1303,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             },
                             child: Column(
                               children: [
-                                buildWidgetMask(userListLists[index].profileImgUrl, userListLists[index].isBadge, userListLists[index].redDotState),
+                                // buildWidgetMask(userListLists[index].profileImgUrl, userListLists[index].isBadge, userListLists[index].redDotState),
+                                getProfileAvatarWithBadge(myInfo.profileImgUrl ?? '', myInfo.isBadge == 1, 54, 54),
                                 const SizedBox(height: 4.0),
                                 Stack(
                                   children: [
@@ -1318,7 +1318,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                               size: 6,
                                             ),
                                           )
-                                        : SizedBox.shrink(),
+                                        : const SizedBox.shrink(),
                                     SizedBox(
                                       width: 60,
                                       child: Text(
@@ -1356,7 +1356,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                     width: 56,
                     height: 56,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 12,
                   ),
                   Text(
@@ -1369,46 +1369,46 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           );
   }
 
-  Widget buildWidgetMask(String? profileImgUrl, int? isBadge, int? isRedDot) {
-    return Stack(
-      children: [
-        WidgetMask(
-          blendMode: BlendMode.srcATop,
-          childSaveLayer: true,
-          mask: Center(
-            child: Image.network(
-              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$profileImgUrl").toUrl(),
-              height: 46.h,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              errorBuilder: (context, exception, stackTrace) {
-                return const Icon(
-                  Puppycat_social.icon_profile_small,
-                  size: 46,
-                  color: kPreviousNeutralColor400,
-                );
-              },
-            ),
-          ),
-          child: SvgPicture.asset(
-            'assets/image/feed/image/squircle.svg',
-            height: 46.h,
-            fit: BoxFit.fill,
-          ),
-        ),
-        isBadge == 1
-            ? Positioned(
-                right: 0,
-                top: 0,
-                child: Image.asset(
-                  'assets/image/feed/icon/small_size/icon_special.png',
-                  height: 13.h,
-                ),
-              )
-            : Container(),
-      ],
-    );
-  }
+  // Widget buildWidgetMask(String? profileImgUrl, int? isBadge, int? isRedDot) {
+  //   return Stack(
+  //     children: [
+  //       WidgetMask(
+  //         blendMode: BlendMode.srcATop,
+  //         childSaveLayer: true,
+  //         mask: Center(
+  //           child: Image.network(
+  //             Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$profileImgUrl").toUrl(),
+  //             height: 46,
+  //             fit: BoxFit.cover,
+  //             width: double.infinity,
+  //             errorBuilder: (context, exception, stackTrace) {
+  //               return const Icon(
+  //                 Puppycat_social.icon_profile_small,
+  //                 size: 46,
+  //                 color: kPreviousNeutralColor400,
+  //               );
+  //             },
+  //           ),
+  //         ),
+  //         child: SvgPicture.asset(
+  //           'assets/image/feed/image/squircle.svg',
+  //           height: 46,
+  //           fit: BoxFit.fill,
+  //         ),
+  //       ),
+  //       isBadge == 1
+  //           ? Positioned(
+  //               right: 0,
+  //               top: 0,
+  //               child: Image.asset(
+  //                 'assets/image/feed/icon/small_size/icon_special.png',
+  //                 height: 13,
+  //               ),
+  //             )
+  //           : Container(),
+  //     ],
+  //   );
+  // }
 
   Widget _buildTabbar(bool innerBoxIsScrolled) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
@@ -1418,7 +1418,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           ? const BoxDecoration(
               color: Colors.white,
             )
-          : BoxDecoration(
+          : const BoxDecoration(
               color: kWhiteColor,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20.0),

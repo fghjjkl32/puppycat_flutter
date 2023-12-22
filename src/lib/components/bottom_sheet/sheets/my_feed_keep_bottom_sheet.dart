@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
@@ -22,7 +22,7 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top: 10, bottom: 10),
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -41,7 +41,7 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
           "[마이페이지 → 내 글 관리 → 보관피드]에서 볼 수 있어요.",
           style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
         ),
-        SizedBox(height: 20.h),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -50,8 +50,8 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
                 context.pop();
               },
               child: Container(
-                width: 152.w,
-                height: 36.h,
+                width: 152,
+                height: 36,
                 decoration: const BoxDecoration(
                   color: kBackgroundSecondary,
                   borderRadius: BorderRadius.all(
@@ -66,14 +66,14 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
                 ),
               ),
             ),
-            SizedBox(
-              width: 8.w,
+            const SizedBox(
+              width: 8,
             ),
             GestureDetector(
               onTap: onTap,
               child: Container(
-                width: 152.w,
-                height: 36.h,
+                width: 152,
+                height: 36,
                 decoration: const BoxDecoration(
                   color: kPreviousPrimaryColor,
                   borderRadius: BorderRadius.all(

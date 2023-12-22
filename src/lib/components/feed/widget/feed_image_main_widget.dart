@@ -21,7 +21,7 @@ class FeedImageMainWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 12.h),
+      padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),
       child: Column(
         children: [
           if (imageList.length == 1) ...[
@@ -30,7 +30,7 @@ class FeedImageMainWidget extends StatelessWidget {
               child: Container(
                 color: kBlackColor,
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.width - 24.w,
+                height: MediaQuery.of(context).size.width - 24,
                 child: CachedNetworkImage(
                   placeholder: (context, url) => Container(
                     color: kPreviousNeutralColor300,
@@ -56,15 +56,15 @@ class FeedImageMainWidget extends StatelessWidget {
                       placeholder: (context, url) => Container(
                         color: kPreviousNeutralColor300,
                       ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
                       fit: BoxFit.cover,
                       height: MediaQuery.of(context).size.width.floor().toDouble(),
                       width: double.infinity,
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 2.w,
+                const SizedBox(
+                  width: 2,
                 ),
                 Expanded(
                   child: ClipRRect(
@@ -77,7 +77,7 @@ class FeedImageMainWidget extends StatelessWidget {
                         color: kPreviousNeutralColor300,
                       ),
                       imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imageList[1].url!}").toUrl(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
                       fit: BoxFit.cover,
                       height: MediaQuery.of(context).size.width.floor().toDouble(),
                       width: double.infinity,
@@ -106,8 +106,8 @@ class FeedImageMainWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 2.w,
+                const SizedBox(
+                  width: 2,
                 ),
                 Expanded(
                   child: Column(
@@ -126,8 +126,8 @@ class FeedImageMainWidget extends StatelessWidget {
                           width: double.infinity,
                         ),
                       ),
-                      SizedBox(
-                        height: 2.h,
+                      const SizedBox(
+                        height: 2,
                       ),
                       ClipRRect(
                         borderRadius: const BorderRadius.only(
@@ -168,8 +168,8 @@ class FeedImageMainWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: 2.w,
+                const SizedBox(
+                  width: 2,
                 ),
                 Expanded(
                   child: Column(

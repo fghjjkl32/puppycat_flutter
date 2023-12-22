@@ -51,6 +51,29 @@ Widget getProfileAvatar(
   );
 }
 
+Widget getProfileAvatarWithBadge(
+  String avatarUrl, [
+  bool isBadge = false,
+  double width = 48,
+  double height = 48,
+]) {
+  return Stack(
+    children: [
+      getProfileAvatar(avatarUrl, width, height),
+      Visibility(
+          visible: isBadge,
+          child: Positioned(
+            right: 0,
+            top: 0,
+            child: Image.asset(
+              'assets/image/feed/icon/small_size/icon_special.png',
+              height: 13,
+            ),
+          )),
+    ],
+  );
+}
+
 Widget getSquircleImage(
   String avatarUrl, [
   double width = 48,

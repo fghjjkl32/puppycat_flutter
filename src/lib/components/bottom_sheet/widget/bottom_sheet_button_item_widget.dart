@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BottomSheetButtonItem extends StatelessWidget {
   const BottomSheetButtonItem({
@@ -14,6 +14,7 @@ class BottomSheetButtonItem extends StatelessWidget {
   final String title;
   final TextStyle titleStyle;
   final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -21,12 +22,12 @@ class BottomSheetButtonItem extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 32.w),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
           child: Row(
             children: [
               icon,
               Padding(
-                padding: EdgeInsets.only(left: 16.0.w),
+                padding: const EdgeInsets.only(left: 16.0),
                 child: Text(
                   title,
                   style: titleStyle,

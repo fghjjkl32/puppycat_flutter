@@ -63,7 +63,7 @@ class FeedCommentWidget extends ConsumerWidget {
                     //Route 다시
                     : context.push("/home/myPage/followList/$memberUuid/userPage/$name/$memberUuid/$oldMemberUuid");
               },
-              child: getProfileAvatar(profileImage ?? "", 30.w, 30.h),
+              child: getProfileAvatar(profileImage ?? "", 30, 30),
             ),
             SizedBox(
               width: 8.w,

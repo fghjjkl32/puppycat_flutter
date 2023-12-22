@@ -105,15 +105,15 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
     final isLogined = ref.read(loginStatementProvider);
 
     return Padding(
-      padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 12.h),
+      padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),
       child: Column(
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               widget.isReply
-                  ? SizedBox(
-                      width: 30.w,
+                  ? const SizedBox(
+                      width: 30,
                     )
                   : Container(),
               GestureDetector(
@@ -131,10 +131,10 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                       //Route 다시
                       : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.name}/${widget.memberUuid}/${widget.oldMemberUuid}");
                 },
-                child: getProfileAvatar(widget.profileImage!, 30.w, 30.h),
+                child: getProfileAvatar(widget.profileImage ?? '', 30, 30),
               ),
-              SizedBox(
-                width: 8.w,
+              const SizedBox(
+                width: 8,
               ),
               Expanded(
                 child: Column(
@@ -405,7 +405,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                             likeController.forward();
                                           },
                                         )
-                                      : Icon(
+                                      : const Icon(
                                           Puppycat_social.icon_comment_like_ac,
                                           color: kPreviousPrimaryColor,
                                         ),

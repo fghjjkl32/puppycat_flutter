@@ -24,7 +24,7 @@ final hashtagListProvider = StateProvider<List<String>>((ref) => []);
 
 final mentionListProvider = StateProvider<List<MentionListData>>((ref) => []);
 
-const int APP_BUILD_NUMBER = 3;
+const int APP_BUILD_NUMBER = 12;
 
 class Constants {
   static Future<String> getBaseUrl() async {

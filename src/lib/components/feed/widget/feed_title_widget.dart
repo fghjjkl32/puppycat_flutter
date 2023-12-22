@@ -84,7 +84,6 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
 
     return GestureDetector(
       onTap: () {
-        print('11 myInfo.uuid == widget.memberUuid ${myInfo.uuid} / ${widget.memberUuid}');
         myInfo.uuid == widget.memberUuid
             ? Navigator.push(
                 context,
@@ -101,7 +100,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
       child: Material(
         color: kPreviousNeutralColor100,
         child: Padding(
-          padding: EdgeInsets.only(left: 16.0.w, right: 16.w, bottom: 12.h),
+          padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 12),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,9 +108,9 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
               Expanded(
                 child: Row(
                   children: [
-                    getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
-                    SizedBox(
-                      width: 10.w,
+                    getProfileAvatar(widget.profileImage ?? "", 32, 32),
+                    const SizedBox(
+                      width: 10,
                     ),
                     Expanded(
                       child: Column(
@@ -124,10 +123,10 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                       children: [
                                         Image.asset(
                                           'assets/image/feed/icon/small_size/icon_special.png',
-                                          height: 13.h,
+                                          height: 13,
                                         ),
-                                        SizedBox(
-                                          width: 4.w,
+                                        const SizedBox(
+                                          width: 4,
                                         ),
                                       ],
                                     )

@@ -42,7 +42,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
                 padding: EdgeInsets.only(
                   right: 10.w,
                 ),
-                child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
+                child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

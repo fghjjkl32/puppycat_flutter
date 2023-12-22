@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
@@ -14,21 +14,21 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
       context: context,
       widget: Column(
         children: [
-          SizedBox(height: 8.h),
+          const SizedBox(height: 8),
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
               color: kPreviousNeutralColor300,
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 16.w),
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
               child: Text(
                 "공유할 추억을 선택하세요!",
                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
               ),
             ),
           ),
-          SizedBox(height: 16.h),
+          const SizedBox(height: 16),
           SizedBox(
             height: 120,
             child: Row(
@@ -80,7 +80,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                             fit: BoxFit.fill,
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0.h),
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
                               "일상공유",
                               style: kButton14BoldStyle.copyWith(color: kPreviousTextTitleColor),

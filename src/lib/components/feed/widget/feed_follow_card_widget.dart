@@ -114,7 +114,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           bottom: 12.h,
                           right: 8.w,
                         ),
-                        child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
+                        child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
                       ),
                       Expanded(
                         child: Column(
