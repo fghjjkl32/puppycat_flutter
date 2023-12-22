@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart'
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/post_feed_state.dart';
 import 'package:pet_mobile_social_flutter/models/post_feed/tag.dart';
@@ -26,7 +27,7 @@ class FeedRepository {
   }
 
   //user page feed list - my
-  Future<ContentResponseModel> getMyContentList({
+  Future<ContentDataListModel> getMyContentList({
     required page,
     int limit = 15,
   }) async {
@@ -41,10 +42,19 @@ class FeedRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getMyContentList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<ContentResponseModel> getMyTagContentList({
+  Future<ContentDataListModel> getMyTagContentList({
     required page,
     int limit = 15,
   }) async {
@@ -59,11 +69,20 @@ class FeedRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getMyTagContentList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
   //user page feed list - user
-  Future<ContentResponseModel> getUserContentList({
+  Future<ContentDataListModel> getUserContentList({
     required int page,
     required String memberUuid,
     int limit = 15,
@@ -79,10 +98,19 @@ class FeedRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getUserContentList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<ContentResponseModel> getUserTagContentList({
+  Future<ContentDataListModel> getUserTagContentList({
     required int page,
     required String memberUuid,
     int limit = 15,
@@ -98,10 +126,19 @@ class FeedRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getUserTagContentList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<ContentResponseModel> getUserHashtagContentList({
+  Future<ContentDataListModel> getUserHashtagContentList({
     required searchWord,
     required page,
     int limit = 15,
@@ -117,7 +154,16 @@ class FeedRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'FeedRepository',
+        caller: 'getUserHashtagContentList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
   //user contents detail
@@ -604,13 +650,13 @@ class FeedRepository {
             orElse: () => Tag(
                   username: '',
                   memberUuid: '',
-                  position: Offset(0, 0),
+                  position: const Offset(0, 0),
                   imageIndex: tag.imageIndex,
                 ));
 
         // 태그의 상태를 결정하는 로직
         String status = "";
-        if (initialTag.username == '' && initialTag.memberUuid == 0) {
+        if (initialTag.username == '' && initialTag.memberUuid == '') {
           status = "new"; // 새로운 태그
         } else if (initialTag.position != tag.position) {
           status = "modi"; // 위치가 수정된 태그

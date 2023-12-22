@@ -30,9 +30,9 @@ class RecentFeedState extends _$RecentFeedState {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      // if (_apiStatus == ListAPIStatus.loading) {
-      //   return;
-      // }
+      if (_apiStatus == ListAPIStatus.loading) {
+        return;
+      }
 
       _apiStatus = ListAPIStatus.loading;
 

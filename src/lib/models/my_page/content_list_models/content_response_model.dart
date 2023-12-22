@@ -9,10 +9,9 @@ class ContentResponseModel with _$ContentResponseModel {
   factory ContentResponseModel({
     required bool result,
     required String code,
-    required ContentDataListModel data,
+    required ContentDataListModel? data,
     String? message,
   }) = _ContentResponseModel;
 
-  factory ContentResponseModel.fromJson(Map<String, dynamic> json) =>
-      _$ContentResponseModelFromJson(json);
+  factory ContentResponseModel.fromJson(Map<String, dynamic> json) => _$ContentResponseModelFromJson(json);
 }

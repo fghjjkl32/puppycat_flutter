@@ -39,9 +39,9 @@ class UserTagContentsState extends _$UserTagContentsState {
 
       var result = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentList(memberUuid: memberUuid!, page: pageKey);
 
-      ref.read(userTagContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination?.totalRecordCount! ?? 0;
+      ref.read(userTagContentsFeedTotalCountProvider.notifier).state = result.params!.pagination?.totalRecordCount! ?? 0;
 
-      List<ContentImageData> feedList = result.data.list
+      List<ContentImageData> feedList = result.list
           .map(
             (e) => ContentImageData(
               imgUrl: e.imgUrl,
@@ -54,7 +54,7 @@ class UserTagContentsState extends _$UserTagContentsState {
       userTagContentStateMap[memberUuid!] = feedList;
 
       try {
-        _lastPage = result.data.params!.pagination?.totalPageCount! ?? 0;
+        _lastPage = result.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

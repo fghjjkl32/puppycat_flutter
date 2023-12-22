@@ -9,10 +9,9 @@ class CommentResponseModel with _$CommentResponseModel {
   factory CommentResponseModel({
     required bool result,
     required String code,
-    required CommentDataListModel data,
+    required CommentDataListModel? data,
     String? message,
   }) = _CommentResponseModel;
 
-  factory CommentResponseModel.fromJson(Map<String, dynamic> json) =>
-      _$CommentResponseModelFromJson(json);
+  factory CommentResponseModel.fromJson(Map<String, dynamic> json) => _$CommentResponseModelFromJson(json);
 }

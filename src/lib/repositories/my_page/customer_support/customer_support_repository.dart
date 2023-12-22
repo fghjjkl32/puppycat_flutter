@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/customer_support/customer_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/customer_support/customer_support_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/customer_support/menu_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/customer_support/menu_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/customer_support/customer_support_service.dart';
 
@@ -17,7 +19,7 @@ class CustomerSupportRepository {
     _settingService = CustomerSupportService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
   }
 
-  Future<CustomerSupportResponseModel?> getFaqList(int page, [int? type, String? searchWord, int limit = 20]) async {
+  Future<CustomerDataListModel> getFaqList(int page, [int? type, String? searchWord, int limit = 20]) async {
     Map<String, dynamic> queries = {
       'page': page,
       'limit': limit,
@@ -41,10 +43,19 @@ class CustomerSupportRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'CustomerSupportRepository',
+        caller: 'getFaqList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<MenuResponseModel?> getFaqMenuList() async {
+  Future<List<MenuItemModel>> getFaqMenuList() async {
     MenuResponseModel responseModel = await _settingService.getFaqMenuList();
 
     if (!responseModel.result) {
@@ -56,10 +67,19 @@ class CustomerSupportRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'CustomerSupportRepository',
+        caller: 'getFaqMenuList',
+      );
+    }
+
+    return responseModel.data!.list;
   }
 
-  Future<CustomerSupportResponseModel?> getNoticeList(int page, [int? type, int limit = 20]) async {
+  Future<CustomerDataListModel> getNoticeList(int page, [int? type, int limit = 20]) async {
     Map<String, dynamic> queries = {
       'page': page,
       'limit': limit,
@@ -80,10 +100,19 @@ class CustomerSupportRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'CustomerSupportRepository',
+        caller: 'getNoticeList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<MenuResponseModel?> getNoticeMenuList() async {
+  Future<List<MenuItemModel>> getNoticeMenuList() async {
     MenuResponseModel responseModel = await _settingService.getNoticeMenuList();
 
     if (!responseModel.result) {
@@ -95,6 +124,15 @@ class CustomerSupportRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'CustomerSupportRepository',
+        caller: 'getNoticeMenuList',
+      );
+    }
+
+    return responseModel.data!.list;
   }
 }

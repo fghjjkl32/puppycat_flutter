@@ -37,7 +37,7 @@ final chatRoomListEmptyProvider = StateProvider<bool>((ref) => false);
 
 final chatSocketStateProvider = StateProvider<Future<WebSocketChannel>>((ref) async {
   final socket = await VChatCloud.connectSocket();
-  await ref.read(chatRoomStateProvider.notifier).initSocketStream(socket);
+  // await ref.read(chatRoomStateProvider.notifier).initSocketStream(socket);
   return socket;
 });
 
@@ -144,7 +144,7 @@ class ChatRoomState extends _$ChatRoomState {
         // Channel channel = await VChatCloud.connect(CustomHandler(roomId: roomId, channelStore: channelStore));
         final socket = await ref.read(chatSocketStateProvider);
 
-        Channel channel = Channel(socket, null);
+        Channel channel = Channel(socket, CustomHandler());
         print('33333');
         channelStore.addChannel(
           roomId,
@@ -156,7 +156,7 @@ class ChatRoomState extends _$ChatRoomState {
         var user = UserModel(
           roomId: roomId,
           nickName: myInfo.nick ?? 'unknown',
-          userInfo: {"profile": 1},
+          userInfo: {},
           clientKey: myInfo.uuid,
         );
         print('44444 / ${user.toString()}');
@@ -165,7 +165,7 @@ class ChatRoomState extends _$ChatRoomState {
           print('4444-1');
           channel.user = user;
           channel = channel.leave();
-          print('4444-1-1');
+          // print('4444-1-1');
           history = await channel.join(user);
           print('4444-2');
         } catch (e) {
@@ -216,18 +216,19 @@ class ChatRoomState extends _$ChatRoomState {
       print('data111 ${data.body}');
       var message = ChannelMessageModel.fromJson(data.body)..error = data.error;
       final roomId = message.roomId;
-      print('roomId $roomId');
+      print('roomId $roomId / message $message');
 
       if (roomId == null) {
         // 첫 조인 시 히스토리 수신
         if (data.address == "join_user_init") {
-          String roomName = data.body['roomName'];
-          String targetMemberUuid = roomName.split('^').last;
-          final tmpRoomId = await createChatRoom(targetMemberUuid: targetMemberUuid);
+          // String roomName = data.body['roomName'];
+          // String targetMemberUuid = roomName.split('^').last;
+          // final tmpRoomId = await createChatRoom(targetMemberUuid: targetMemberUuid);
 
-          print('roomName $roomName');
-          print('roomId $tmpRoomId');
-          final channel = channelStroe.getChannel(tmpRoomId);
+          // print('roomName $roomName');
+          // print('roomId $tmpRoomId');
+          // final channel = channelStroe.getChannel(tmpRoomId);
+          final channel = channelStroe.getChannel('VBrhzLZgGG-nAFo5CS7jp-20210802120142');
           if (channel == null) {
             print('channel 1 is null');
             return;

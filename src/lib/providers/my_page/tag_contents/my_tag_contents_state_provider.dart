@@ -36,9 +36,9 @@ class MyTagContentsState extends _$MyTagContentsState {
 
       var result = await FeedRepository(dio: ref.read(dioProvider)).getMyTagContentList(page: pageKey);
 
-      ref.read(myTagContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination?.totalRecordCount! ?? 0;
+      ref.read(myTagContentsFeedTotalCountProvider.notifier).state = result.params!.pagination?.totalRecordCount! ?? 0;
 
-      List<ContentImageData> feedList = result.data.list
+      List<ContentImageData> feedList = result.list
           .map(
             (e) => ContentImageData(
               imgUrl: e.imgUrl,
@@ -49,7 +49,7 @@ class MyTagContentsState extends _$MyTagContentsState {
           .toList();
 
       try {
-        _lastPage = result.data.params!.pagination?.totalPageCount! ?? 0;
+        _lastPage = result.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

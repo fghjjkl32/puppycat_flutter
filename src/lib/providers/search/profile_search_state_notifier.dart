@@ -38,18 +38,18 @@ class ProfileSearchStateNotifier extends StateNotifier<SearchDataListModel> {
       page: 1,
     );
 
-    if (lists.data.list.isEmpty) {
+    if (lists.list.isEmpty) {
       state = state.copyWith(
         isLoading: false,
-        best_list: lists.data.best_list,
-        list: lists.data.list,
+        best_list: lists.best_list,
+        list: lists.list,
       );
       return;
     }
 
     state = state.copyWith(
       isLoading: false,
-      list: lists.data.list,
+      list: lists.list,
     );
   }
 
@@ -80,10 +80,10 @@ class ProfileSearchStateNotifier extends StateNotifier<SearchDataListModel> {
       return;
     }
 
-    if (lists.data.list.isNotEmpty) {
+    if (lists.list.isNotEmpty) {
       state = state.copyWith(
         isLoading: false,
-        list: [...state.list, ...lists.data.list],
+        list: [...state.list, ...lists.list],
       );
       searchProfileCurrentPage++;
     } else {

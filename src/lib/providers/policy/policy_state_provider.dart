@@ -123,4 +123,10 @@ class PolicyState extends _$PolicyState {
     List<PolicyItemModel> result = policies.where((element) => element.required == 'N').toList();
     return result;
   }
+
+  void policyStateReset() {
+    ref.read(policyAllAgreeStateProvider.notifier).state = false;
+    ref.read(policyAgreeStateProvider.notifier).state = false;
+    ref.read(policyMarketingStateProvider.notifier).state = false;
+  }
 }

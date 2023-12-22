@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/customer_support/customer_support_item_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/customer_support/menu_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/faq_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
@@ -28,20 +29,29 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
   final TextEditingController searchController = TextEditingController();
   Timer? _searchDebounceTimer;
 
+  late Future _getMenuListFuture;
+
   @override
   void initState() {
+    _getMenuListFuture = _getMenuList();
+
+    _faqPagingController = ref.read(faqListStateProvider);
+    super.initState();
+  }
+
+  Future<List<MenuItemModel>> _getMenuList() async {
+    List<MenuItemModel> menuList = await ref.read(faqListStateProvider.notifier).getFaqMenuList();
     tabController = TabController(
       initialIndex: 0,
-      length: 4,
+      length: menuList.length,
       vsync: this,
     );
 
     tabController.addListener(() {
       ref.read(faqListStateProvider.notifier).setFaqType(FaqType.values[tabController.index]);
     });
-
-    _faqPagingController = ref.read(faqListStateProvider);
-    super.initState();
+    print('menuList $menuList');
+    return menuList;
   }
 
   @override
@@ -88,7 +98,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                   padding: EdgeInsets.only(right: 8.0.w),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: kPreviousPrimaryLightColor,
+                      color: Colors.transparent,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Padding(
@@ -173,48 +183,67 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                     ),
                   ),
                 ),
-                TabBar(
-                    controller: tabController,
-                    indicatorWeight: 4,
-                    labelColor: kPreviousPrimaryColor,
-                    indicatorColor: kPreviousPrimaryColor,
-                    unselectedLabelColor: kPreviousNeutralColor500,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    labelPadding: EdgeInsets.only(
-                      top: 10.h,
-                      bottom: 10.h,
-                    ),
-                    tabs: [
-                      Text(
-                        "전체",
-                        style: kBody14BoldStyle,
-                      ),
-                      Text(
-                        "계정",
-                        style: kBody14BoldStyle,
-                      ),
-                      Text(
-                        "서비스",
-                        style: kBody14BoldStyle,
-                      ),
-                      Text(
-                        "이벤트",
-                        style: kBody14BoldStyle,
-                      ),
-                    ]),
               ],
             ),
           ),
         ),
-        body: TabBarView(
-          controller: tabController,
-          children: [
-            _buildListView(),
-            _buildListView(),
-            _buildListView(),
-            _buildListView(),
-          ],
-        ),
+        body: FutureBuilder(
+            future: _getMenuListFuture,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                print('snapshot error ${snapshot.error}');
+                return const Text('error');
+              }
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              final List<MenuItemModel> menuList = snapshot.data!;
+              return Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TabBar(
+                      controller: tabController,
+                      indicatorWeight: 4,
+                      labelColor: kPreviousPrimaryColor,
+                      indicatorColor: kPreviousPrimaryColor,
+                      unselectedLabelColor: kPreviousNeutralColor500,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      labelPadding: const EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                        left: 14,
+                        right: 10,
+                      ),
+                      isScrollable: true,
+                      tabs: menuList
+                          .map(
+                            (e) => Text(
+                              e.menuName ?? 'unknown',
+                              style: kBody14BoldStyle,
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: tabController,
+                      children: [
+                        _buildListView(),
+                        _buildListView(),
+                        _buildListView(),
+                        _buildListView(),
+                        _buildListView(),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }),
       ),
     );
   }
@@ -250,15 +279,15 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0.h, horizontal: 14.0.w),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14.0),
                       child: Text(
                         itemModel.menuName ?? 'unknown',
                         style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 10.w,
+                  const SizedBox(
+                    width: 10,
                   ),
                   Expanded(
                     child: Text(
@@ -272,7 +301,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
               ),
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 14.0.w),
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -280,7 +309,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0.h, horizontal: 20.0.w),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
                       child: Html(
                         data: itemModel.contents ?? 'unknown',
                       ),
@@ -294,9 +323,9 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                 ),
               ]),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-          child: const Divider(),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Divider(),
         ),
       ],
     );

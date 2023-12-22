@@ -9,10 +9,9 @@ class SearchResponseModel with _$SearchResponseModel {
   factory SearchResponseModel({
     required bool result,
     required String code,
-    required SearchDataListModel data,
+    required SearchDataListModel? data,
     String? message,
   }) = _SearchResponseModel;
 
-  factory SearchResponseModel.fromJson(Map<String, dynamic> json) =>
-      _$SearchResponseModelFromJson(json);
+  factory SearchResponseModel.fromJson(Map<String, dynamic> json) => _$SearchResponseModelFromJson(json);
 }

@@ -923,7 +923,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         onTap: () {
                           //TODO
                           //Route 다시
-                          context.go("/home/myPage/followList/${data.uuid}");
+                          context.push("/home/myPage/followList/${data.uuid}").then((value) async {
+                            await ref.read(myInformationStateProvider.notifier).getInitUserInformation(memberUuid: data.uuid ?? '');
+                          });
                         },
                         child: Padding(
                           padding: EdgeInsets.only(top: 8.0.h),

@@ -17,7 +17,7 @@ class CommentRepository {
     _contentsService = CommentService(dio, baseUrl: baseUrl);
   }
 
-  Future<CommentResponseModel> getComment({
+  Future<CommentDataListModel> getComment({
     required int contentIdx,
     required int page,
     int limit = 10,
@@ -33,10 +33,19 @@ class CommentRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'CommentRepository',
+        caller: 'getComment',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<CommentResponseModel> getReplyComment({
+  Future<CommentDataListModel> getReplyComment({
     required int contentIdx,
     required int commentIdx,
     required int page,
@@ -54,7 +63,16 @@ class CommentRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'CommentRepository',
+        caller: 'getReplyComment',
+      );
+    }
+
+    return responseModel.data!;
   }
 
   CommentResponseModel _getDefaultCommentResponseModel() {
@@ -198,7 +216,7 @@ class CommentRepository {
     return responseModel;
   }
 
-  Future<CommentResponseModel> getFocusComments(int contentsIdx, int commentIdx, [int page = 1, int limit = 10]) async {
+  Future<CommentDataListModel> getFocusComments(int contentsIdx, int commentIdx, [int page = 1, int limit = 10]) async {
     Map<String, dynamic> queries = {
       "page": page,
       "limit": limit,
@@ -219,6 +237,15 @@ class CommentRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'CommentRepository',
+        caller: 'getFocusComments',
+      );
+    }
+
+    return responseModel.data!;
   }
 }

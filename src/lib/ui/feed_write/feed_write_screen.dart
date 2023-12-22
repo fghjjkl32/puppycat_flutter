@@ -153,14 +153,14 @@ class FeedWriteScreen extends ConsumerWidget {
                   },
                 );
 
-                final result = await ref.watch(feedWriteProvider.notifier).postFeed(
-                      files: ref.watch(feedWriteCroppedFilesProvider),
-                      isView: ref.watch(feedWriteButtonSelectedProvider),
-                      location: ref.watch(feedWriteLocationInformationProvider.notifier).state,
-                      contents: ref.watch(feedWriteContentProvider.notifier).state.text,
-                      feedState: ref.watch(feedWriteProvider),
+                final result = await ref.read(feedWriteProvider.notifier).postFeed(
+                      files: ref.read(feedWriteCroppedFilesProvider),
+                      isView: ref.read(feedWriteButtonSelectedProvider),
+                      location: ref.read(feedWriteLocationInformationProvider.notifier).state,
+                      contents: ref.read(feedWriteContentProvider.notifier).state.text,
+                      feedState: ref.read(feedWriteProvider),
                     );
-                context.pop();
+                // context.pop();
 
                 if (result.result) {
                   ref.read(feedWriteProvider.notifier).resetTag();

@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -101,7 +100,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: FormBuilderTextField(
+          title: TextField(
             onSubmitted: (name) async {
               final dbHelper = ref.read(dbHelperProvider);
               final search = SearchesCompanion(
@@ -115,7 +114,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
 
               ref.refresh(searchProvider);
             },
-            name: 'search',
+            // name: 'search',
             controller: _searchController,
             style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
             keyboardType: TextInputType.text,

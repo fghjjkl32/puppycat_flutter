@@ -8,8 +8,8 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Channel {
   final WebSocketChannel _client;
-  final ChannelHandler? _handler;
-  StreamSubscription? _subscription;
+  final ChannelHandler _handler;
+  static StreamSubscription? _subscription;
   late Completer<ChannelResultModel> joined;
   late Completer<List<UserModel>> _clientList;
   Function(ChannelResultModel)? gCallback;
@@ -25,99 +25,102 @@ class Channel {
   }
 
   Channel(this._client, this._handler) {
-    // _eventInit();
+    _eventInit();
   }
 
-  // Channel _eventInit() {
-  //   _subscription ??= _client.stream.listen((event) {
-  //     var data = decode(event);
-  //     print('data111 ${data.body}');
-  //     var message = ChannelMessageModel.fromJson(data.body)..error = data.error;
-  //
-  //     // 첫 조인 시 히스토리 수신
-  //     if (data.address == "join_user_init") {
-  //       if (!joined.isCompleted) {
-  //         if (data.error != null) {
-  //           joined.completeError(data.error!);
-  //         } else {
-  //           joined.complete(data);
-  //         }
-  //       }
-  //     }
-  //     if (data.address == "client_user_list") {
-  //       try {
-  //         var clientList = (data.body["clientlist"] as List<dynamic>)
-  //             .map((data) => UserModel.fromJson(data as Map<String, dynamic>))
-  //             .toList();
-  //         if (!_clientList.isCompleted) {
-  //           _clientList.complete(clientList);
-  //         }
-  //       } catch (e) {
-  //         if (!_clientList.isCompleted) {
-  //           _clientList.completeError(
-  //             data.error ??
-  //                 VChatCloudError.fromResult(VChatCloudResult.systemError),
-  //           );
-  //         }
-  //       }
-  //     }
-  //     if (data.address == "s2c.notify.custom/60CFA203FC623D5547F13B1C27A2F6FA") {
-  //       print('aaaaaaaa');
-  //       _handler.onBroadCast(message);
-  //     }
-  //     if (data.address == "s2c.notify.message/$roomId") {
-  //       _handler.onMessage(message);
-  //     }
-  //     if (data.address.startsWith("s2c.personal.whisper/$roomId")) {
-  //       _handler.onWhisper(message);
-  //     }
-  //     if (data.address == "s2c.notify.notice/$roomId") {
-  //       _handler.onNotice(message);
-  //     }
-  //     if (data.address == "s2c.notify.custom/$roomId") {
-  //       _handler.onCustom(message);
-  //     }
-  //     if (data.address == "s2c.notify.join.user/$roomId") {
-  //       _handler.onJoinUser(message);
-  //     }
-  //     if (data.address == "s2c.notify.leave.user/$roomId") {
-  //       _handler.onLeaveUser(message);
-  //     }
-  //     if (data.address == "s2c.notify.kick.user/$roomId") {
-  //       _handler.onKickUser(message);
-  //     }
-  //     if (data.address == "s2c.notify.unkick.user/$roomId") {
-  //       _handler.onUnkickUser(message);
-  //     }
-  //     if (data.address == "s2c.notify.mute.user/$roomId") {
-  //       _handler.onMuteUser(message);
-  //     }
-  //     if (data.address == "s2c.notify.unmute.user/$roomId") {
-  //       _handler.onUnmuteUser(message);
-  //     }
-  //     if (data.address.startsWith("s2c.personal.duplicate.user/$roomId")) {
-  //       _handler.onPersonalDuplicateUser(message);
-  //     }
-  //     if (data.address.startsWith("s2c.personal.invite/$roomId")) {
-  //       _handler.onPersonalInvite(message);
-  //     }
-  //     if (data.address.startsWith("s2c.personal.kick.user/$roomId")) {
-  //       _handler.onPersonalKickUser(message);
-  //     }
-  //     if (data.address.startsWith("s2c.personal.mute.user/$roomId")) {
-  //       _handler.onMuteUser(message);
-  //     }
-  //     if (data.address.startsWith("s2c.personal.unmute.user/$roomId")) {
-  //       _handler.onUnmuteUser(message);
-  //     }
-  //
-  //     if (gCallback != null) {
-  //       gCallback!(data);
-  //     }
-  //   });
-  //
-  //   return this;
-  // }
+  Channel _eventInit() {
+    print('run?? $_subscription');
+    _subscription ??= _client.stream.listen((event) {
+      var data = decode(event);
+      print('data111 ${data.body}');
+      var message = ChannelMessageModel.fromJson(data.body)..error = data.error;
+
+      // 첫 조인 시 히스토리 수신
+      if (data.address == "join_user_init") {
+        if (!joined.isCompleted) {
+          if (data.error != null) {
+            joined.completeError(data.error!);
+          } else {
+            joined.complete(data);
+          }
+        }
+      }
+      if (data.address == "client_user_list") {
+        try {
+          var clientList = (data.body["clientlist"] as List<dynamic>)
+              .map((data) => UserModel.fromJson(data as Map<String, dynamic>))
+              .toList();
+          if (!_clientList.isCompleted) {
+            _clientList.complete(clientList);
+          }
+        } catch (e) {
+          if (!_clientList.isCompleted) {
+            _clientList.completeError(
+              data.error ??
+                  VChatCloudError.fromResult(VChatCloudResult.systemError),
+            );
+          }
+        }
+      }
+      if (data.address == "s2c.notify.custom/60CFA203FC623D5547F13B1C27A2F6FA") {
+        print('aaaaaaaa');
+        _handler.onBroadCast(message);
+      }
+      if (data.address == "s2c.notify.message/$roomId") {
+        _handler.onMessage(message);
+      }
+      // if (data.address.startsWith("s2c.personal.whisper/$roomId")) {
+      //   _handler.onWhisper(message);
+      // }
+      if (data.address == "s2c.notify.notice/$roomId") {
+        _handler.onNotice(message);
+      }
+      if (data.address == "s2c.notify.custom/$roomId") {
+        _handler.onCustom(message);
+      }
+      if (data.address == "s2c.notify.join.user/$roomId") {
+        _handler.onJoinUser(message);
+      }
+      // if (data.address == "s2c.notify.leave.user/$roomId") {
+      //   _handler.onLeaveUser(message);
+      // }
+      // if (data.address == "s2c.notify.kick.user/$roomId") {
+      //   _handler.onKickUser(message);
+      // }
+      // if (data.address == "s2c.notify.unkick.user/$roomId") {
+      //   _handler.onUnkickUser(message);
+      // }
+      // if (data.address == "s2c.notify.mute.user/$roomId") {
+      //   _handler.onMuteUser(message);
+      // }
+      // if (data.address == "s2c.notify.unmute.user/$roomId") {
+      //   _handler.onUnmuteUser(message);
+      // }
+      // if (data.address.startsWith("s2c.personal.duplicate.user/$roomId")) {
+      //   _handler.onPersonalDuplicateUser(message);
+      // }
+      // if (data.address.startsWith("s2c.personal.invite/$roomId")) {
+      //   _handler.onPersonalInvite(message);
+      // }
+      // if (data.address.startsWith("s2c.personal.kick.user/$roomId")) {
+      //   _handler.onPersonalKickUser(message);
+      // }
+      // if (data.address.startsWith("s2c.personal.mute.user/$roomId")) {
+      //   _handler.onMuteUser(message);
+      // }
+      // if (data.address.startsWith("s2c.personal.unmute.user/$roomId")) {
+      //   _handler.onUnmuteUser(message);
+      // }
+
+      if (gCallback != null) {
+        gCallback!(data);
+      }
+
+      print('run?? 22 $_subscription');
+    });
+
+    return this;
+  }
 
   /// 접속유저 목록 조회
   Future<List<UserModel>> requestClientList() async {
@@ -395,7 +398,7 @@ class Channel {
   void _send(dynamic message) {
     try {
       _client.sink.add(json.encode(message));
-      print('asdasd');
+      // print('asdasd $message');
     } catch (e) {
       debugPrint(e.toString());
     }

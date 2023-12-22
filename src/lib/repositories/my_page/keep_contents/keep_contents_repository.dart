@@ -3,6 +3,7 @@ import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart'
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/keep_contents/keep_contents_service.dart';
 
@@ -16,7 +17,7 @@ class KeepContentsRepository {
     _keepContentsService = KeepContentsService(dio, baseUrl: baseUrl);
   }
 
-  Future<ContentResponseModel> getKeepContents({
+  Future<ContentDataListModel> getKeepContents({
     required int page,
     int limit = 15,
   }) async {
@@ -31,7 +32,16 @@ class KeepContentsRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'KeepContentsRepository',
+        caller: 'getKeepContents',
+      );
+    }
+
+    return responseModel.data!;
   }
 
   Future<FeedResponseModel> getMyKeepContentDetail({

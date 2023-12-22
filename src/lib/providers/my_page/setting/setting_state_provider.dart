@@ -22,22 +22,22 @@ class SettingStateNotifier extends StateNotifier<SettingDataListModel> {
         return null;
       }
       Map<String, int> switchState = {
-        "main_1": lists.data.mainList[0].state!,
-        "main_2": lists.data.mainList[1].state!,
-        "main_3": lists.data.mainList[2].state!,
-        "sub_1_1": lists.data.subList[0].state!,
-        "sub_1_2": lists.data.subList[1].state!,
-        "sub_1_3": lists.data.subList[2].state!,
-        "sub_1_4": lists.data.subList[3].state!,
-        "sub_1_5": lists.data.subList[4].state!,
-        "sub_1_6": lists.data.subList[5].state!,
-        "sub_2_1": lists.data.mainList[1].state!,
-        "sub_3_1": lists.data.mainList[2].state!,
+        "main_1": lists.mainList[0].state!,
+        "main_2": lists.mainList[1].state!,
+        "main_3": lists.mainList[2].state!,
+        "sub_1_1": lists.subList[0].state!,
+        "sub_1_2": lists.subList[1].state!,
+        "sub_1_3": lists.subList[2].state!,
+        "sub_1_4": lists.subList[3].state!,
+        "sub_1_5": lists.subList[4].state!,
+        "sub_1_6": lists.subList[5].state!,
+        "sub_2_1": lists.mainList[1].state!,
+        "sub_3_1": lists.mainList[2].state!,
       };
 
       state = state.copyWith(
-        mainList: lists.data.mainList,
-        subList: lists.data.subList,
+        mainList: lists.mainList,
+        subList: lists.subList,
         switchState: switchState,
       );
     } on APIException catch (apiException) {

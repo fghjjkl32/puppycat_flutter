@@ -4,6 +4,7 @@ import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/customer_support/customer_support_item_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/customer_support/menu_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/my_page/customer_support/customer_support_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -24,9 +25,12 @@ class NoticeListState extends _$NoticeListState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
   NoticeType _noticeType = NoticeType.all;
+  late final CustomerSupportRepository _customerSupportRepository; // = CustomerSupportRepository(dio: ref.read(dioProvider));
 
   @override
   PagingController<int, CustomerSupportItemModel> build() {
+    _customerSupportRepository = CustomerSupportRepository(dio: ref.read(dioProvider));
+
     PagingController<int, CustomerSupportItemModel> pagingController = PagingController(firstPageKey: 1);
     pagingController.addPageRequestListener(_fetchPage);
     return pagingController;
@@ -34,26 +38,25 @@ class NoticeListState extends _$NoticeListState {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      if(_apiStatus == ListAPIStatus.loading) {
+      if (_apiStatus == ListAPIStatus.loading) {
         return;
       }
 
       _apiStatus = ListAPIStatus.loading;
 
-      CustomerSupportRepository customerSupportRepository = CustomerSupportRepository(dio: ref.read(dioProvider));
-      var searchResult = await customerSupportRepository.getNoticeList(pageKey, _noticeType == NoticeType.all ? null : _noticeType.index);
+      // CustomerSupportRepository customerSupportRepository = CustomerSupportRepository(dio: ref.read(dioProvider));
+      var searchResult = await _customerSupportRepository.getNoticeList(pageKey, _noticeType == NoticeType.all ? null : _noticeType.index);
 
-      if(searchResult == null) {
+      if (searchResult == null) {
         _apiStatus = ListAPIStatus.loaded;
         state.appendPage([], 0);
         return;
       }
 
-      var searchList = searchResult!.data.list;
-
+      var searchList = searchResult.list;
 
       try {
-        _lastPage = searchResult!.data.params!.pagination?.totalPageCount! ?? 0;
+        _lastPage = searchResult.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }
@@ -67,9 +70,9 @@ class NoticeListState extends _$NoticeListState {
       }
 
       var focusIdx = ref.read(noticeFocusIdxStateProvider);
-      if(focusIdx > 0) {
+      if (focusIdx > 0) {
         List<CustomerSupportItemModel> currentList = state.itemList ?? [];
-        if(currentList.indexWhere((element) => element.idx == focusIdx) < 0) {
+        if (currentList.indexWhere((element) => element.idx == focusIdx) < 0) {
           print('nextPageKey $nextPageKey');
           state.notifyPageRequestListeners(nextPageKey);
         }
@@ -89,5 +92,14 @@ class NoticeListState extends _$NoticeListState {
   void setNoticeType(NoticeType type) {
     _noticeType = type;
     state.refresh();
+  }
+
+  Future<List<MenuItemModel>> getNoticeMenuList() async {
+    List<MenuItemModel> menuList = [
+      MenuItemModel(menuName: '전체', idx: 0),
+    ];
+    menuList.addAll(await _customerSupportRepository.getNoticeMenuList());
+    print('noticeType 2 $menuList');
+    return menuList;
   }
 }

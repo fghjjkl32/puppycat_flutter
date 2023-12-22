@@ -65,8 +65,11 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
     super.initState();
 
+    print('11111111111111111111111111111');
+
     if (widget.isRouteComment) {
       Future(() {
+        print('widget.commentFocusIndex ${widget.commentFocusIndex}');
         context.push("/home/commentDetail/${widget.contentIdx}/${widget.memberUuid}", extra: {
           "focusIndex": widget.commentFocusIndex,
         });
@@ -170,7 +173,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
             return AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               actions: [
-                widget.contentType == "userContent" || widget.contentType == "FollowCardContent" && ref.read(firstFeedDetailStateProvider)?.memberUuid != myInfo.uuid
+                (widget.contentType == "userContent" || widget.contentType == "FollowCardContent") && ref.read(firstFeedDetailStateProvider)?.memberUuid != myInfo.uuid
                     ? isFollow
                         ? InkWell(
                             onTap: () async {

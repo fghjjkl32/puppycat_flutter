@@ -42,16 +42,25 @@ class ChannelMessageModel {
             ? jsonDecode(json['userInfo'])
             : json['userInfo'] {
     if (json['messageDt'] != null) {
-      var date = json['messageDt'] as String?;
+      var date;
+      if(json['messageDt'] is String) {
+        date = json['messageDt'] as String?;
+      } else {
+        date = json['messageDt'].toString();
+      }
       if (date != null) {
-        messageDt = DateTime(
-          int.parse(date.substring(0, 4)),
-          int.parse(date.substring(4, 6)),
-          int.parse(date.substring(6, 8)),
-          int.parse(date.substring(8, 10)),
-          int.parse(date.substring(10, 12)),
-          int.parse(date.substring(12, 14)),
-        );
+        try {
+          messageDt = DateTime(
+            int.parse(date.substring(0, 4)),
+            int.parse(date.substring(4, 6)),
+            int.parse(date.substring(6, 8)),
+            int.parse(date.substring(8, 10)),
+            int.parse(date.substring(10, 12)),
+            int.parse(date.substring(12, 14)),
+          );
+        } catch(_) {
+          messageDt = DateTime.fromMillisecondsSinceEpoch(int.parse(date));
+        }
       }
     } else {
       messageDt = DateTime.now();

@@ -49,7 +49,9 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
 
     super.initState();
 
+    print('_commentFocusIndex $_commentFocusIndex');
     if (_commentFocusIndex == null) {
+      print('aaaaaaaaa');
       ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
     } else {
       // ref.read(commentListStateProvider.notifier).getFocusingComments(17, 99);
@@ -66,34 +68,43 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
       //   }
       // });
 
-      _commentPagingController.addListener(() async {
-        print('not run? ');
-        if (_commentPagingController.itemList != null) {
-          int refreshFocusIdx = ref.read(commentListRefreshFocusProvider);
-          if (_commentFocusIndex != null) {
-            refreshFocusIdx = _commentFocusIndex!;
-          }
-          int scrollIdx = ref.read(commentListStateProvider).itemList!.indexWhere((element) => element.idx == refreshFocusIdx);
-          print('run?? $refreshFocusIdx / scrollIdx $scrollIdx');
-          if (scrollIdx < 0) {
-            return;
-          }
-
-          await _scrollController.scrollToIndex(
-            // _commentFocusIndex!,
-            scrollIdx,
-            preferPosition: AutoScrollPosition.begin,
-          );
-          _commentFocusIndex = null;
-          ref.read(commentListRefreshFocusProvider.notifier).state = 0;
-        }
-      });
+      _commentPagingController.addListener(commentPageControllerListener);
     }
     // _commentPagingController.refresh();
   }
 
+  commentPageControllerListener() async {
+    print('not run??????? ');
+    if (_commentPagingController.itemList != null) {
+      int refreshFocusIdx = ref.read(commentListRefreshFocusProvider);
+      if (_commentFocusIndex != null) {
+        refreshFocusIdx = _commentFocusIndex!;
+      }
+      int scrollIdx = ref.read(commentListStateProvider).itemList!.indexWhere((element) => element.idx == refreshFocusIdx);
+      print('run?? $refreshFocusIdx / scrollIdx $scrollIdx');
+      if (scrollIdx < 0) {
+        return;
+      }
+
+      await _scrollController.scrollToIndex(
+        // _commentFocusIndex!,
+        scrollIdx,
+        preferPosition: AutoScrollPosition.begin,
+      );
+      _commentFocusIndex = null;
+      ref.read(commentListRefreshFocusProvider.notifier).state = 0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _commentPagingController.removeListener(commentPageControllerListener);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('zzzzzzzzzzzzzzzzzzz');
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(

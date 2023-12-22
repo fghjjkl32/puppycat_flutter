@@ -9,7 +9,7 @@ class WalkResultResponseModel with _$WalkResultResponseModel {
   factory WalkResultResponseModel({
     required bool result,
     required String code,
-    required WalkResultListModel data,
+    required WalkResultListModel? data,
     String? message,
   }) = _WalkResultResponseModel;
 

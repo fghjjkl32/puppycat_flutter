@@ -41,7 +41,7 @@ class WithdrawalStateNotifier extends StateNotifier<SelectButtonListModel> {
 
       state = state.copyWith(
         isLoading: false,
-        list: lists.data.list,
+        list: lists.list,
       );
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);

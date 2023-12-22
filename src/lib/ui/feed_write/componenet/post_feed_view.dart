@@ -248,6 +248,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                         localPort: 9723,
                         kakaoKey: 'e70ed9e481a7927e0adc8647263bf6a5',
                         callback: (Kpostal result) {
+                          print('location result $result');
                           ref.watch(feedWriteLocationInformationProvider.notifier).state = result.buildingName == "" ? result.roadAddress : result.buildingName;
                         },
                       ),

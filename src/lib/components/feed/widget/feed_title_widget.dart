@@ -143,6 +143,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                               if (!widget.isDetailWidget || widget.contentType == "popularWeekContent")
                                 if (widget.feedType != "follow")
                                   Consumer(builder: (context, ref, child) {
+                                    print('feed myInfo.uuid ${myInfo.uuid} /  widget.memberUuid ${widget.memberUuid} ');
                                     return myInfo.uuid != widget.memberUuid
                                         ? isFollow
                                             ? Row(

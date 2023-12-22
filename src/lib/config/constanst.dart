@@ -75,7 +75,7 @@ class Constants {
 
 // String baseUrl = "https://pet-api.devlabs.co.kr/";
 String baseUrl = "https://api.pcstg.co.kr/";
-// String baseUrl = "https://api.puppycat.co.kr";
+// String baseUrl = "https://api.puppycat.co.kr/";
 
 // String thumborHostUrl = "https://tb.pcstg.co.kr/";
 String thumborHostUrl = "https://tb.pcstg.co.kr/";
@@ -93,21 +93,21 @@ String firstInstallTime = "";
 String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
 
-// String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
+// String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr/';
 String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
-// String walkBaseUrl = 'https://walk-api.puppycat.co.kr';
+// String walkBaseUrl = 'https://walk-api.puppycat.co.kr/';
 
-// String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr';
+// String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr/';
 String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
-// String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr';
+// String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
 
 // String memberBaseUrl = 'https://puppycat-dev-member-api.devlabs.co.kr/';
 String memberBaseUrl = 'https://member-api.pcstg.co.kr/';
-// String memberBaseUrl = 'https://member.puppycat.co.kr/';
+// String memberBaseUrl = 'https://member-api.puppycat.co.kr/';
 
 // String chatBaseUrl = "https://pet-chat.devlabs.co.kr/";
 String chatBaseUrl = "https://chat.pcstg.co.kr/";
-// String chatBaseUrl = "https://chat.puppycat.co.kr";
+// String chatBaseUrl = "https://chat.puppycat.co.kr/";
 
 double getImageHeightCalculateValue(double width) {
   const double slope = 0.172727;

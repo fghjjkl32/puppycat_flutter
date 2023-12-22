@@ -26,7 +26,7 @@ class FavoriteUserListStateNotifier extends StateNotifier<UserListDataListModel>
 
       state = state.copyWith(
         isLoading: false,
-        memberList: lists.data.memberList,
+        memberList: lists.memberList,
       );
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);

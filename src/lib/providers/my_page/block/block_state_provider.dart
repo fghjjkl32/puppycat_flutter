@@ -42,16 +42,16 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
         page: page,
       );
 
-      blockMaxPages = lists.data.params!.pagination?.endPage ?? 0;
+      blockMaxPages = lists.params!.pagination?.endPage ?? 0;
 
-      state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
+      state = state.copyWith(totalCount: lists.params!.pagination?.totalRecordCount! ?? 0);
 
       if (lists == null) {
         state = state.copyWith(page: page, isLoading: false);
         return;
       }
 
-      state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
+      state = state.copyWith(page: page, isLoading: false, list: lists.list);
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
@@ -88,10 +88,10 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
           return;
         }
 
-        if (lists.data.list.isNotEmpty) {
+        if (lists.list.isNotEmpty) {
           state = state.copyWith(
             isLoading: false,
-            list: [...state.list, ...lists.data.list],
+            list: [...state.list, ...lists.list],
           );
           searchBlockCurrentPage++;
         } else {
@@ -123,8 +123,8 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
           return;
         }
 
-        if (lists.data.list.isNotEmpty) {
-          state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.data.list]);
+        if (lists.list.isNotEmpty) {
+          state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.list]);
           blockCurrentPage++;
         } else {
           state = state.copyWith(isLoading: false);
@@ -156,14 +156,14 @@ class BlockStateNotifier extends StateNotifier<SearchDataListModel> {
         searchWord: searchWord,
       );
 
-      searchBlockMaxPages = lists.data.params!.pagination?.endPage ?? 0;
+      searchBlockMaxPages = lists.params!.pagination?.endPage ?? 0;
 
       if (lists == null) {
         state = state.copyWith(page: 1, isLoading: false, list: []);
         return;
       }
 
-      state = state.copyWith(page: 1, isLoading: false, list: lists.data.list);
+      state = state.copyWith(page: 1, isLoading: false, list: lists.list);
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {

@@ -34,12 +34,9 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
       final page = initPage ?? state.page;
       final lists = await FeedRepository(dio: ref.read(dioProvider)).getUserHashtagContentList(page: page, searchWord: searchWord);
 
-      print("list : ${lists}");
-      print("list : ${lists}");
+      maxPages = lists.params!.pagination?.endPage ?? 0;
 
-      maxPages = lists.data.params!.pagination?.endPage ?? 0;
-
-      state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
+      state = state.copyWith(totalCount: lists.params!.pagination?.totalRecordCount! ?? 0);
 
       if (lists == null) {
         state = state.copyWith(page: page, isLoading: false);
@@ -49,15 +46,15 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
       state = state.copyWith(
         page: page,
         isLoading: false,
-        list: lists.data.list,
-        totalCnt: lists.data.totalCnt,
+        list: lists.list,
+        totalCnt: lists.totalCnt,
       );
 
       searchStateMap[searchWord ?? ""] = state.copyWith(
         page: page,
         isLoading: false,
-        list: lists.data.list,
-        totalCnt: lists.data.totalCnt,
+        list: lists.list,
+        totalCnt: lists.totalCnt,
       );
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
@@ -90,8 +87,8 @@ class FeedSearchStateNotifier extends StateNotifier<ContentDataListModel> {
         return;
       }
 
-      if (lists.data.list.isNotEmpty) {
-        state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.data.list]);
+      if (lists.list.isNotEmpty) {
+        state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.list]);
         currentPage++;
       } else {
         state = state.copyWith(

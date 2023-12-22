@@ -33,13 +33,14 @@ class MyContentsState extends _$MyContentsState {
 
       _apiStatus = ListAPIStatus.loading;
 
+      print('asdasdasd');
       var result = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(
         page: pageKey,
       );
 
-      ref.read(myContentsFeedTotalCountProvider.notifier).state = result.data.params!.pagination?.totalRecordCount! ?? 0;
+      ref.read(myContentsFeedTotalCountProvider.notifier).state = result.params!.pagination?.totalRecordCount! ?? 0;
 
-      List<ContentImageData> feedList = result.data.list
+      List<ContentImageData> feedList = result.list
           .map(
             (e) => ContentImageData(
               imgUrl: e.imgUrl,
@@ -53,7 +54,7 @@ class MyContentsState extends _$MyContentsState {
           .toList();
 
       try {
-        _lastPage = result.data.params!.pagination?.totalPageCount! ?? 0;
+        _lastPage = result.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }
@@ -72,6 +73,7 @@ class MyContentsState extends _$MyContentsState {
       _apiStatus = ListAPIStatus.error;
       state.error = apiException.toString();
     } catch (e) {
+      print('mycontents error $e');
       _apiStatus = ListAPIStatus.error;
       state.error = e;
     }

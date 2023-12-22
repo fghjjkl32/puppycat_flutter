@@ -112,6 +112,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   void initState() {
     super.initState();
 
+    print('aaaaaaaaaaaaaaaaaaaaa');
+
     Permissions.requestNotificationPermission();
 
     tabController = TabController(vsync: this, length: getTabs().length);
@@ -791,6 +793,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     final myInfo = ref.read(myInfoStateProvider);
     final isLogined = ref.read(loginStatementProvider);
 
+    print('aaaaaaaaaaaaaaaaaaaaa33333');
+
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
@@ -798,6 +802,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
           final loginState = ref.watch(loginStateProvider);
 
+          print('aaaaaaaaaaaaaaaaaaaaa 2222');
           _recentFeedListPagingController.refresh();
 
           ref.read(popularUserListStateProvider.notifier).getInitUserList();
@@ -879,22 +884,22 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 return FeedMainWidget(
                   feedData: item,
                   contentType: 'userContent',
-                  userName: item.memberInfo!.nick ?? '',
-                  profileImage: item.memberInfo!.profileImgUrl! ?? "",
+                  userName: item.memberInfo?.nick ?? '',
+                  profileImage: item.memberInfo?.profileImgUrl ?? "",
                   oldMemberUuid: myInfo.uuid ?? '',
-                  firstTitle: item.memberInfo!.nick!,
+                  firstTitle: item.memberInfo?.nick ?? 'unknown',
                   secondTitle: '피드',
                   // imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'recent',
-                  isSpecialUser: item.memberInfo!.isBadge == 1,
+                  isSpecialUser: item.memberInfo?.isBadge == 1,
                   onTapHideButton: () async {
                     onTapHide(
                       context: context,
                       ref: ref,
                       contentType: 'userContent',
                       contentIdx: item.idx,
-                      memberUuid: item.memberUuid!,
+                      memberUuid: item.memberUuid ?? '',
                     );
                   },
                 );
@@ -916,6 +921,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           ref.read(followUserStateProvider.notifier).resetState();
 
           final loginState = ref.watch(loginStateProvider);
+          print('aaaaaaaaaaaaaaaaaaaaa44444');
 
           _recentFeedListPagingController.refresh();
 
@@ -1075,6 +1081,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           ref.read(followUserStateProvider.notifier).resetState();
 
           final loginState = ref.watch(loginStateProvider);
+          print('aaaaaaaaaaaaaaaaaaaaa 5555');
 
           _recentFeedListPagingController.refresh();
 
