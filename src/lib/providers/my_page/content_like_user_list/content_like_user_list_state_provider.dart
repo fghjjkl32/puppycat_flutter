@@ -40,7 +40,7 @@ class ContentLikeUserListState extends _$ContentLikeUserListState {
         page: pageKey,
       );
 
-      List<ContentLikeUserListData> feedList = result.data.list
+      List<ContentLikeUserListData> feedList = result.list
           .map(
             (e) => ContentLikeUserListData(
               nick: e.nick,
@@ -55,7 +55,7 @@ class ContentLikeUserListState extends _$ContentLikeUserListState {
           .toList();
 
       try {
-        _lastPage = result.data.params!.pagination?.totalPageCount! ?? 0;
+        _lastPage = result.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

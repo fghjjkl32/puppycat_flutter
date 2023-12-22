@@ -9,7 +9,7 @@ class MyPetListResponseModel with _$MyPetListResponseModel {
   factory MyPetListResponseModel({
     required bool result,
     required String code,
-    required MyPetListModel data,
+    required MyPetListModel? data,
     String? message,
   }) = _MyPetListResponseModel;
 

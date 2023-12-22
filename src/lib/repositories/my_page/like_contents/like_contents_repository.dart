@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/like_contents/like_contents_service.dart';
 
@@ -16,7 +17,7 @@ class LikeContentsRepository {
     _likeContentsService = LikeContentsService(dio, baseUrl: baseUrl);
   }
 
-  Future<ContentResponseModel> getLikeContents({
+  Future<ContentDataListModel> getLikeContents({
     required int page,
     int limit = 15,
   }) async {
@@ -31,7 +32,16 @@ class LikeContentsRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'LikeContentsRepository',
+        caller: 'getLikeContents',
+      );
+    }
+
+    return responseModel.data!;
   }
 
   Future<FeedResponseModel> getLikeDetailContentList({

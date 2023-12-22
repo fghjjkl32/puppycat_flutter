@@ -26,7 +26,7 @@ class WithdrawalDetailStateNotifier extends StateNotifier<WithdrawalDetailListMo
 
       state = state.copyWith(
         isLoading: false,
-        memberInfo: lists.data.memberInfo,
+        memberInfo: lists.memberInfo,
       );
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);

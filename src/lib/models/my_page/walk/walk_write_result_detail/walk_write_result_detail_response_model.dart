@@ -9,7 +9,7 @@ class WalkWriteResultDetailResponseModel with _$WalkWriteResultDetailResponseMod
   factory WalkWriteResultDetailResponseModel({
     required bool result,
     required String code,
-    required WalkWriteResultDetailListModel data,
+    required WalkWriteResultDetailListModel? data,
     String? message,
   }) = _WalkWriteResultDetailResponseModel;
 

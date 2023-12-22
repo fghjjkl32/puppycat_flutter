@@ -40,7 +40,16 @@ class NotificationRepository {
       );
     }
 
-    return responseModel.data;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'NotificationRepository',
+        caller: 'getNotifications',
+      );
+    }
+
+    return responseModel.data!;
   }
 
   Future<bool> checkNewNotifications() async {

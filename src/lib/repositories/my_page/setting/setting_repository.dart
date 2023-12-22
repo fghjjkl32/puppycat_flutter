@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/setting/setting_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/setting/setting_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/setting/setting_service.dart';
 
@@ -16,7 +17,7 @@ class SettingRepository {
     _settingService = SettingService(dio, baseUrl: memberBaseUrl);
   }
 
-  Future<SettingResponseModel?> getSetting() async {
+  Future<SettingDataListModel> getSetting() async {
     SettingResponseModel responseModel = await _settingService.getSetting();
 
     if (!responseModel.result) {
@@ -28,7 +29,16 @@ class SettingRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'SettingRepository',
+        caller: 'getSetting',
+      );
+    }
+
+    return responseModel.data!;
   }
 
   Future<ResponseModel> putSetting({

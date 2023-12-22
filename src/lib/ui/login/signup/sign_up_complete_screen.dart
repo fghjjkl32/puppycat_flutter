@@ -7,7 +7,10 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 
 class SignUpCompleteScreen extends ConsumerWidget {
   const SignUpCompleteScreen({Key? key}) : super(key: key);
@@ -31,6 +34,9 @@ class SignUpCompleteScreen extends ConsumerWidget {
             ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
             ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
             ref.read(authStateProvider.notifier).state = false;
+            ref.read(checkButtonProvider.notifier).state = false;
+            ref.read(policyStateProvider.notifier).policyStateReset();
+            ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
           },
           child: Column(
             children: [
@@ -78,6 +84,9 @@ class SignUpCompleteScreen extends ConsumerWidget {
                         ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
                         ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
                         ref.read(authStateProvider.notifier).state = false;
+                        ref.read(checkButtonProvider.notifier).state = false;
+                        ref.read(policyStateProvider.notifier).policyStateReset();
+                        ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: kPreviousPrimaryColor,

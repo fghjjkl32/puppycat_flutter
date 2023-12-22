@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/main/select_button/select_button_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/select_button/select_button_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/withdrawal/withdrawal_detail_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/withdrawal/withdrawal_detail_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/withdrawal/withdrawal_provider.dart';
 import 'package:pet_mobile_social_flutter/services/withdrawal/withdrawal_service.dart';
@@ -18,7 +20,7 @@ class WithdrawalRepository {
     _withdrawalService = WithdrawalService(dio, baseUrl: baseUrl);
   }
 
-  Future<SelectButtonResponseModel> getWithdrawalReasonList() async {
+  Future<SelectButtonListModel> getWithdrawalReasonList() async {
     SelectButtonResponseModel responseModel = await _withdrawalService.getWithdrawalReasonList();
 
     if (!responseModel.result) {
@@ -30,10 +32,19 @@ class WithdrawalRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'WithdrawalRepository',
+        caller: 'getWithdrawalReasonList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<WithdrawalDetailResponseModel> getWithdrawalDetailList() async {
+  Future<WithdrawalDetailListModel> getWithdrawalDetailList() async {
     WithdrawalDetailResponseModel responseModel = await _withdrawalService.getWithdrawalDetailList();
 
     if (!responseModel.result) {
@@ -45,7 +56,16 @@ class WithdrawalRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'WithdrawalRepository',
+        caller: 'getWithdrawalDetailList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
   Future<WithdrawalStatus> withdrawalUser({required int code, String? reason}) async {

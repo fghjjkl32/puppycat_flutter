@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/block/block_service.dart';
 
@@ -16,7 +17,7 @@ class BlockRepository {
     _blockService = BlockService(dio, baseUrl: baseUrl);
   }
 
-  Future<SearchResponseModel> getBlockSearchList({
+  Future<SearchDataListModel> getBlockSearchList({
     required int page,
     required String searchWord,
     int limit = 30,
@@ -32,10 +33,19 @@ class BlockRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'BlockRepository',
+        caller: 'getBlockSearchList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<SearchResponseModel> getBlockList({
+  Future<SearchDataListModel> getBlockList({
     required int page,
     int limit = 30,
   }) async {
@@ -50,7 +60,16 @@ class BlockRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'BlockRepository',
+        caller: 'getBlockList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
   Future<ResponseModel> deleteBlock({

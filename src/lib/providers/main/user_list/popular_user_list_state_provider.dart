@@ -26,7 +26,7 @@ class PopularUserListStateNotifier extends StateNotifier<PopularUserListDataList
 
       state = state.copyWith(
         isLoading: false,
-        list: lists.data.list,
+        list: lists.list,
       );
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);

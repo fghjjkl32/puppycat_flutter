@@ -6,7 +6,6 @@ import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/models/main/comment/comment_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
@@ -52,10 +51,10 @@ class CommentListState extends _$CommentListState {
         page: pageKey,
       );
 
-      List<CommentData> commentList = _serializationComment(searchResult.data.list);
+      List<CommentData> commentList = _serializationComment(searchResult.list);
 
       try {
-        _lastPage = searchResult.data.params!.pagination?.totalPageCount! ?? 0;
+        _lastPage = searchResult.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }
@@ -101,10 +100,10 @@ class CommentListState extends _$CommentListState {
       );
 
       // var searchList = searchResult.data.list;
-      List<CommentData> commentList = _serializationComment(searchResult.data.list);
+      List<CommentData> commentList = _serializationComment(searchResult.list);
 
       try {
-        _lastPage = searchResult.data.params!.pagination?.totalPageCount! ?? 0;
+        _lastPage = searchResult.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }
@@ -189,21 +188,20 @@ class CommentListState extends _$CommentListState {
 
       // _apiStatus = ListAPIStatus.loading;
       _isChildMore = false;
+      state.removePageRequestListener(fetchPage);
 
-      CommentResponseModel searchResult = await CommentRepository(dio: ref.read(dioProvider)).getFocusComments(
+      CommentDataListModel searchResult = await CommentRepository(dio: ref.read(dioProvider)).getFocusComments(
         contentsIdx,
         commentIdx,
       );
 
-      state.removePageRequestListener(fetchPage);
-
       int? childPage;
       int parentIdx = 0;
-      if (searchResult.data.list != null) {
-        if (searchResult.data.list.first.parentIdx > 0) {
-          parentIdx = searchResult.data.list.first.parentIdx;
-          _childFocusListModel = searchResult.data;
-          childPage = searchResult.data.params?.page;
+      if (searchResult.list != null) {
+        if (searchResult.list.first.parentIdx > 0) {
+          parentIdx = searchResult.list.first.parentIdx;
+          _childFocusListModel = searchResult;
+          childPage = searchResult.params?.page;
 
           searchResult = await CommentRepository(dio: ref.read(dioProvider)).getFocusComments(
             contentsIdx,
@@ -212,13 +210,13 @@ class CommentListState extends _$CommentListState {
         }
       }
 
-      int currentPage = searchResult.data.params!.page!;
+      int currentPage = searchResult.params!.page!;
       if (currentPage - 1 <= 0) {
         currentPage = 1;
       }
 
-      state.nextPageKey = currentPage;
-      print('state.nextPageKey ${state.nextPageKey}');
+      // state.nextPageKey = currentPage;
+      // print('state.nextPageKey ${state.nextPageKey}');
       // _fetchPage(currentPage); //TEST
 
       final parentPageResult = await CommentRepository(dio: ref.read(dioProvider)).getComment(
@@ -226,7 +224,7 @@ class CommentListState extends _$CommentListState {
         page: currentPage,
       );
 
-      List<CommentData> commentList = _serializationComment(parentPageResult.data.list);
+      List<CommentData> commentList = _serializationComment(parentPageResult.list);
 
       if (childPage != null) {
         final childPageResult = await CommentRepository(dio: ref.read(dioProvider)).getReplyComment(
@@ -235,7 +233,7 @@ class CommentListState extends _$CommentListState {
           page: childPage,
         );
 
-        var searchList = childPageResult.data.list;
+        var searchList = childPageResult.list;
 
         commentList.removeWhere((element) => element.parentIdx == parentIdx);
         int insertIdx = commentList.indexWhere((element) => element.idx == parentIdx);
@@ -245,9 +243,9 @@ class CommentListState extends _$CommentListState {
           return;
         }
 
-        int pageNumber = childPageResult.data.params!.page!;
-        int totalPageCount = childPageResult.data.params!.pagination?.totalPageCount! ?? 0;
-        int totalRecordCount = childPageResult.data.params!.pagination?.totalRecordCount! ?? 0;
+        int pageNumber = childPageResult.params!.page!;
+        int totalPageCount = childPageResult.params!.pagination?.totalPageCount! ?? 0;
+        int totalRecordCount = childPageResult.params!.pagination?.totalRecordCount! ?? 0;
 
         List<CommentData> childList = searchList.map((e) => e.copyWith(isReply: true)).toList();
         childList.first = childList.first.copyWith(isDisplayPreviousMore: pageNumber > 1, pageNumber: pageNumber - 1);
@@ -259,19 +257,37 @@ class CommentListState extends _$CommentListState {
         print('searchList.last ${searchList.last}');
       }
 
-      //TODO 11/17 리스트 중복 제거 하기 위해 추가
-      var uniqueComments = Map<int, CommentData>();
-      for (var comment in commentList) {
-        uniqueComments[comment.idx] = comment;
+      int lastPage = 1;
+      try {
+        lastPage = parentPageResult.params!.pagination?.totalPageCount! ?? 0;
+      } catch (_) {
+        lastPage = 1;
       }
-      //TODO 11/17 무한으로 리스트 나오는 문제 떄문에 수정함
-      //currentPage + 1 => currentPage 으로 수정
-      //하지만 페이지 불러오고 그다음 로직을 태우도록 비동기를 걸어놔도 addPageRequestListener를 1페이지 부터 렌더링을 하는 이슈가 있음
-      //removePageRequestListener를 해도 여전히 동일
-      state.appendPage(uniqueComments.values.toList(), currentPage);
-      state.notifyListeners();
 
-      state.addPageRequestListener(fetchPage);
+      print('11111 pageKey $currentPage');
+      final nextPageKey = commentList.isEmpty ? null : currentPage + 1;
+
+      print('lastPage $lastPage / currentPage $currentPage / nextPageKey $nextPageKey');
+      if (currentPage == lastPage) {
+        state.appendLastPage(commentList.toSet().toList());
+      } else {
+        state.appendPage(commentList.toSet().toList(), nextPageKey);
+        state.nextPageKey = nextPageKey;
+        state.addPageRequestListener(fetchPage);
+      }
+
+      //
+      // //TODO 11/17 리스트 중복 제거 하기 위해 추가
+      // var uniqueComments = Map<int, CommentData>();
+      // for (var comment in commentList) {
+      //   uniqueComments[comment.idx] = comment;
+      // }
+      // //TODO 11/17 무한으로 리스트 나오는 문제 떄문에 수정함
+      // //currentPage + 1 => currentPage 으로 수정
+      // //하지만 페이지 불러오고 그다음 로직을 태우도록 비동기를 걸어놔도 addPageRequestListener를 1페이지 부터 렌더링을 하는 이슈가 있음
+      // //removePageRequestListener를 해도 여전히 동일
+      // state.appendPage(uniqueComments.values.toList(), currentPage);
+      state.notifyListeners();
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
@@ -299,7 +315,7 @@ class CommentListState extends _$CommentListState {
         page: page,
       );
 
-      var searchList = searchResult.data.list;
+      var searchList = searchResult.list;
 
       List<CommentData> currentList = state.itemList ?? [];
       int insertIdx = currentList.indexWhere((element) => element.idx == lastChildCommentIdx);
@@ -309,9 +325,9 @@ class CommentListState extends _$CommentListState {
         return;
       }
 
-      int pageNumber = searchResult.data.params!.page!;
-      int totalPageCount = searchResult.data.params!.pagination?.totalPageCount! ?? 0;
-      int totalRecordCount = searchResult.data.params!.pagination?.totalRecordCount! ?? 0;
+      int pageNumber = searchResult.params!.page!;
+      int totalPageCount = searchResult.params!.pagination?.totalPageCount! ?? 0;
+      int totalRecordCount = searchResult.params!.pagination?.totalRecordCount! ?? 0;
 
       List<CommentData> childList = searchList.map((e) => e.copyWith(isReply: true)).toList();
 

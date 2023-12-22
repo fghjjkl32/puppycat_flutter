@@ -9,7 +9,7 @@ class ListResponseModel with _$ListResponseModel {
   factory ListResponseModel({
     required bool result,
     required String code,
-    required ListModel data,
+    required ListModel? data,
     String? message,
   }) = _ListResponseModel;
 

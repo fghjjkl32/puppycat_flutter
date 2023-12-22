@@ -9,11 +9,9 @@ class ContentLikeUserListResponseModel with _$ContentLikeUserListResponseModel {
   factory ContentLikeUserListResponseModel({
     required bool result,
     required String code,
-    required ContentLikeUserListDataListModel data,
+    required ContentLikeUserListDataListModel? data,
     String? message,
   }) = _ContentLikeUserListResponseModel;
 
-  factory ContentLikeUserListResponseModel.fromJson(
-          Map<String, dynamic> json) =>
-      _$ContentLikeUserListResponseModelFromJson(json);
+  factory ContentLikeUserListResponseModel.fromJson(Map<String, dynamic> json) => _$ContentLikeUserListResponseModelFromJson(json);
 }

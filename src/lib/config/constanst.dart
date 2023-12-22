@@ -93,11 +93,11 @@ String firstInstallTime = "";
 String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
 
-// String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr';
+// String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr/';
 String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
 // String walkBaseUrl = 'https://walk-api.puppycat.co.kr/';
 
-// String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr';
+// String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr/';
 String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
 // String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
 

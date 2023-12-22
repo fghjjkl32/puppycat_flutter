@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/main/user_list/user_list_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/main/user_list/user_list_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/main/user_list/user_list_service.dart';
 
@@ -16,7 +18,7 @@ class UserListRepository {
     _userListService = UserListService(dio, baseUrl: baseUrl);
   }
 
-  Future<UserListResponseModel> getFavoriteUserList({
+  Future<UserListDataListModel> getFavoriteUserList({
     int page = 1,
     int limit = 19,
   }) async {
@@ -31,10 +33,19 @@ class UserListRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'UserListRepository',
+        caller: 'getFavoriteUserList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<PopularUserListResponseModel> getPopularUserList() async {
+  Future<PopularUserListDataListModel> getPopularUserList() async {
     PopularUserListResponseModel responseModel = await _userListService.getPopularUserList();
 
     if (!responseModel.result) {
@@ -46,6 +57,15 @@ class UserListRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'UserListRepository',
+        caller: 'getPopularUserList',
+      );
+    }
+
+    return responseModel.data!;
   }
 }

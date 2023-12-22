@@ -1,6 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/content_like_user_list/content_like_user_list_data_list_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/setting/setting_data_list_model.dart';
 
 part 'setting_response_model.freezed.dart';
@@ -11,10 +9,9 @@ class SettingResponseModel with _$SettingResponseModel {
   factory SettingResponseModel({
     required bool result,
     required String code,
-    required SettingDataListModel data,
+    required SettingDataListModel? data,
     String? message,
   }) = _SettingResponseModel;
 
-  factory SettingResponseModel.fromJson(Map<String, dynamic> json) =>
-      _$SettingResponseModelFromJson(json);
+  factory SettingResponseModel.fromJson(Map<String, dynamic> json) => _$SettingResponseModelFromJson(json);
 }

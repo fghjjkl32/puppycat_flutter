@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/follow/follow_service.dart';
 
@@ -16,7 +17,7 @@ class FollowRepository {
     _followService = FollowService(dio, baseUrl: baseUrl);
   }
 
-  Future<FollowResponseModel> getFollowerSearchList({
+  Future<FollowDataListModel> getFollowerSearchList({
     required String memberUuid,
     required int page,
     required String searchWord,
@@ -34,10 +35,19 @@ class FollowRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'FollowRepository',
+        caller: 'getFollowerSearchList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<FollowResponseModel> getFollowSearchList({
+  Future<FollowDataListModel> getFollowSearchList({
     required String memberUuid,
     required int page,
     required String searchWord,
@@ -55,10 +65,19 @@ class FollowRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'FollowRepository',
+        caller: 'getFollowSearchList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<FollowResponseModel> getFollowerList({
+  Future<FollowDataListModel> getFollowerList({
     required String memberUuid,
     required int page,
     int limit = 30,
@@ -74,10 +93,19 @@ class FollowRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'FollowRepository',
+        caller: 'getFollowerList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
-  Future<FollowResponseModel> getFollowList({
+  Future<FollowDataListModel> getFollowList({
     required String memberUuid,
     required int page,
     int limit = 30,
@@ -93,7 +121,16 @@ class FollowRepository {
       );
     }
 
-    return responseModel;
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'FollowRepository',
+        caller: 'getFollowList',
+      );
+    }
+
+    return responseModel.data!;
   }
 
   Future<ResponseModel> deleteFollow({

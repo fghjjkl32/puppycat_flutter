@@ -163,7 +163,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                         child: TextField(
                           readOnly: !isLogined ? true : false,
                           focusNode: focusNode,
-                          controller: ref.watch(commentValueProvider),
+                          controller: controller,
                           onChanged: (text) {
                             setState(() {
                               lineCount = text.split('\n').length;

@@ -27,16 +27,16 @@ class MySaveStateNotifier extends StateNotifier<ContentDataListModel> {
       final page = initPage ?? state.page;
       final lists = await SaveContentsRepository(dio: ref.read(dioProvider)).getSaveContents(page: page);
 
-      maxPages = lists.data.params!.pagination?.endPage ?? 0;
+      maxPages = lists.params!.pagination?.endPage ?? 0;
 
-      state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
+      state = state.copyWith(totalCount: lists.params!.pagination?.totalRecordCount! ?? 0);
 
       if (lists == null) {
         state = state.copyWith(page: page, isLoading: false);
         return;
       }
 
-      state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
+      state = state.copyWith(page: page, isLoading: false, list: lists.list);
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
@@ -68,8 +68,8 @@ class MySaveStateNotifier extends StateNotifier<ContentDataListModel> {
         return;
       }
 
-      if (lists.data.list.isNotEmpty) {
-        state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.data.list]);
+      if (lists.list.isNotEmpty) {
+        state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.list]);
         currentPage++;
       } else {
         state = state.copyWith(

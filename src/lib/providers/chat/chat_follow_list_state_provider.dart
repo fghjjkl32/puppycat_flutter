@@ -3,7 +3,6 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
@@ -40,10 +39,10 @@ class ChatFollowUserState extends _$ChatFollowUserState {
         page: pageKey,
       );
 
-      var searchList = searchResult.data.list;
+      var searchList = searchResult.list;
 
       try {
-        _lastPage = searchResult.data.params!.pagination?.totalPageCount! ?? 0;
+        _lastPage = searchResult.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

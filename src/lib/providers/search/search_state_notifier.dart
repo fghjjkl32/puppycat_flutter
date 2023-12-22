@@ -38,16 +38,16 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
       page: page,
     );
 
-    recommendMaxPages = lists.data.params!.pagination?.endPage ?? 0;
+    recommendMaxPages = lists.params!.pagination?.endPage ?? 0;
 
-    state = state.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0);
+    state = state.copyWith(totalCount: lists.params!.pagination?.totalRecordCount! ?? 0);
 
     if (lists == null) {
       state = state.copyWith(page: page, isLoading: false);
       return;
     }
 
-    state = state.copyWith(page: page, isLoading: false, list: lists.data.list);
+    state = state.copyWith(page: page, isLoading: false, list: lists.list);
   }
 
   loadMoreMentionSearchList() async {
@@ -78,10 +78,10 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
         return;
       }
 
-      if (lists.data.list.isNotEmpty) {
+      if (lists.list.isNotEmpty) {
         state = state.copyWith(
           isLoading: false,
-          list: [...state.list, ...lists.data.list],
+          list: [...state.list, ...lists.list],
         );
         searchMentionCurrentPage++;
       } else {
@@ -113,8 +113,8 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
         return;
       }
 
-      if (lists.data.list.isNotEmpty) {
-        state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.data.list]);
+      if (lists.list.isNotEmpty) {
+        state = state.copyWith(page: state.page + 1, isLoading: false, list: [...state.list, ...lists.list]);
         recommendCurrentPage++;
       } else {
         state = state.copyWith(isLoading: false);
@@ -132,14 +132,14 @@ class SearchStateNotifier extends StateNotifier<SearchDataListModel> {
       searchWord: searchSearchWord,
     );
 
-    searchMentionMaxPages = lists.data.params!.pagination?.endPage ?? 0;
+    searchMentionMaxPages = lists.params!.pagination?.endPage ?? 0;
 
     if (lists == null) {
       state = state.copyWith(page: 1, isLoading: false, list: []);
       return;
     }
 
-    state = state.copyWith(page: 1, isLoading: false, list: lists.data.list);
+    state = state.copyWith(page: 1, isLoading: false, list: lists.list);
   }
 
   @override

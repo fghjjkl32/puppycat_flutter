@@ -477,6 +477,9 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     });
 
     ref.listen(passUrlProvider, (previous, next) {
+      if (next == 'about:blank') {
+        return;
+      }
       final url = Uri.encodeComponent(next);
       // context.go('/webview/$url');
       context.goNamed('webview', pathParameters: {"url": url, "authType": 'pass'});
@@ -546,6 +549,9 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
         ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
         ref.read(signUpUserInfoProvider.notifier).state = null;
         ref.read(authStateProvider.notifier).state = false;
+        ref.read(checkButtonProvider.notifier).state = false;
+        ref.read(policyStateProvider.notifier).policyStateReset();
+        ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
         return true;
       },
       child: GestureDetector(

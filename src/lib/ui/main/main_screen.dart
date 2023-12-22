@@ -884,22 +884,22 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 return FeedMainWidget(
                   feedData: item,
                   contentType: 'userContent',
-                  userName: item.memberInfo!.nick ?? '',
-                  profileImage: item.memberInfo!.profileImgUrl! ?? "",
+                  userName: item.memberInfo?.nick ?? '',
+                  profileImage: item.memberInfo?.profileImgUrl ?? "",
                   oldMemberUuid: myInfo.uuid ?? '',
-                  firstTitle: item.memberInfo!.nick!,
+                  firstTitle: item.memberInfo?.nick ?? 'unknown',
                   secondTitle: '피드',
                   // imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
                   index: index,
                   feedType: 'recent',
-                  isSpecialUser: item.memberInfo!.isBadge == 1,
+                  isSpecialUser: item.memberInfo?.isBadge == 1,
                   onTapHideButton: () async {
                     onTapHide(
                       context: context,
                       ref: ref,
                       contentType: 'userContent',
                       contentIdx: item.idx,
-                      memberUuid: item.memberUuid!,
+                      memberUuid: item.memberUuid ?? '',
                     );
                   },
                 );

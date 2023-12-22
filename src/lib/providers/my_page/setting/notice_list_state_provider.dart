@@ -53,10 +53,10 @@ class NoticeListState extends _$NoticeListState {
         return;
       }
 
-      var searchList = searchResult!.data.list;
+      var searchList = searchResult.list;
 
       try {
-        _lastPage = searchResult!.data.params!.pagination?.totalPageCount! ?? 0;
+        _lastPage = searchResult.params!.pagination?.totalPageCount! ?? 0;
       } catch (_) {
         _lastPage = 1;
       }

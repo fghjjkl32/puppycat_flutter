@@ -7,7 +7,10 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 
 class DuplicationSignUpDialog extends ConsumerWidget {
   final String simpleType;
@@ -76,6 +79,9 @@ class DuplicationSignUpDialog extends ConsumerWidget {
           ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
           ref.read(signUpUserInfoProvider.notifier).state = null;
           ref.read(authStateProvider.notifier).state = false;
+          ref.read(checkButtonProvider.notifier).state = false;
+          ref.read(policyStateProvider.notifier).policyStateReset();
+          ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
           context.pop();
         },
         confirmWidget: Text(

@@ -41,7 +41,7 @@ class ChatEmptyWidgetState extends ConsumerState<ChatEmptyWidget> {
                 height: 12,
               ),
               Text(
-                '${widget.nick}${'메시지.님'.tr()}\n${'메시지.첫 메시지를 보내 보세요'.tr()}',
+                '${widget.nick ?? 'unknown'}${'메시지.님'.tr()}\n${'메시지.첫 메시지를 보내 보세요'.tr()}',
                 style: kBody14RegularStyle.copyWith(color: kNeutralColor500, height: 1.4, letterSpacing: 0.2),
                 textAlign: TextAlign.center,
               ),

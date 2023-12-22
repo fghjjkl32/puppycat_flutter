@@ -9,10 +9,9 @@ class UserListResponseModel with _$UserListResponseModel {
   factory UserListResponseModel({
     required bool result,
     required String code,
-    required UserListDataListModel data,
+    required UserListDataListModel? data,
     String? message,
   }) = _UserListResponseModel;
 
-  factory UserListResponseModel.fromJson(Map<String, dynamic> json) =>
-      _$UserListResponseModelFromJson(json);
+  factory UserListResponseModel.fromJson(Map<String, dynamic> json) => _$UserListResponseModelFromJson(json);
 }

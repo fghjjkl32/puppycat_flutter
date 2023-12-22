@@ -35,19 +35,19 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
 
       final lists = await FeedRepository(dio: ref.read(dioProvider)).getMyContentList(page: page);
 
-      myPostMaxPages = lists.data.params!.pagination?.endPage ?? 0;
+      myPostMaxPages = lists.params!.pagination?.endPage ?? 0;
 
-      state = state.copyWith(myPostState: state.myPostState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
+      state = state.copyWith(myPostState: state.myPostState.copyWith(totalCount: lists.params!.pagination?.totalRecordCount! ?? 0));
 
       if (lists == null) {
         state = state.copyWith(myPostState: state.myPostState.copyWith(page: page, isLoading: false));
         return;
       }
 
-      List<int> selectOrder = List.filled(lists.data.list.length, -1);
+      List<int> selectOrder = List.filled(lists.list.length, -1);
 
       state = state.copyWith(
-        myPostState: state.myPostState.copyWith(page: page, isLoading: false, list: lists.data.list, selectOrder: selectOrder),
+        myPostState: state.myPostState.copyWith(page: page, isLoading: false, list: lists.list, selectOrder: selectOrder),
       ); // Modify this line
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
@@ -116,12 +116,12 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
         return;
       }
 
-      if (lists.data.list.isNotEmpty) {
-        List<int> newSelectOrder = List.filled(lists.data.list.length, -1);
+      if (lists.list.isNotEmpty) {
+        List<int> newSelectOrder = List.filled(lists.list.length, -1);
 
         state = state.copyWith(
-            myPostState: state.myPostState.copyWith(
-                page: state.myPostState.page + 1, isLoading: false, list: [...state.myPostState.list, ...lists.data.list], selectOrder: [...state.myPostState.selectOrder, ...newSelectOrder]));
+            myPostState: state.myPostState
+                .copyWith(page: state.myPostState.page + 1, isLoading: false, list: [...state.myPostState.list, ...lists.list], selectOrder: [...state.myPostState.selectOrder, ...newSelectOrder]));
         myCurrentPage++;
       } else {
         state = state.copyWith(myPostState: state.myPostState.copyWith(isLoading: false));
@@ -169,16 +169,16 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
       final page = initPage ?? state.myKeepState.page;
       final lists = await KeepContentsRepository(dio: ref.read(dioProvider)).getKeepContents(page: page);
 
-      myKeepMaxPages = lists.data.params!.pagination?.endPage ?? 0;
+      myKeepMaxPages = lists.params!.pagination?.endPage ?? 0;
 
-      state = state.copyWith(myKeepState: state.myKeepState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
+      state = state.copyWith(myKeepState: state.myKeepState.copyWith(totalCount: lists.params!.pagination?.totalRecordCount! ?? 0));
 
       if (lists == null) {
         state = state.copyWith(myKeepState: state.myKeepState.copyWith(page: page, isLoading: false));
         return;
       }
 
-      List<ContentImageData> images = lists.data.list;
+      List<ContentImageData> images = lists.list;
       List<int> selectOrder = List.filled(images.length, -1);
 
       state = state.copyWith(myKeepState: state.myKeepState.copyWith(page: page, isLoading: false, list: images, selectOrder: selectOrder));
@@ -250,12 +250,12 @@ class MyPostStateNotifier extends StateNotifier<MyPostState> {
         return;
       }
 
-      if (lists.data.list.isNotEmpty) {
-        List<int> newSelectOrder = List.filled(lists.data.list.length, -1);
+      if (lists.list.isNotEmpty) {
+        List<int> newSelectOrder = List.filled(lists.list.length, -1);
 
         state = state.copyWith(
-            myKeepState: state.myKeepState.copyWith(
-                page: state.myKeepState.page + 1, isLoading: false, list: [...state.myKeepState.list, ...lists.data.list], selectOrder: [...state.myKeepState.selectOrder, ...newSelectOrder]));
+            myKeepState: state.myKeepState
+                .copyWith(page: state.myKeepState.page + 1, isLoading: false, list: [...state.myKeepState.list, ...lists.list], selectOrder: [...state.myKeepState.selectOrder, ...newSelectOrder]));
         myKeepCurrentPage++;
       } else {
         state = state.copyWith(myKeepState: state.myKeepState.copyWith(isLoading: false));

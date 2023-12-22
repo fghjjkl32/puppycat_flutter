@@ -76,16 +76,16 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     try {
       final lists = await FollowRepository(dio: ref.read(dioProvider)).getFollowerList(memberUuid: memberUuid, page: page);
 
-      followerMaxPages = lists.data.params!.pagination?.endPage ?? 0;
+      followerMaxPages = lists.params!.pagination?.endPage ?? 0;
 
-      state = state.copyWith(followerListState: state.followerListState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
+      state = state.copyWith(followerListState: state.followerListState.copyWith(totalCount: lists.params!.pagination?.totalRecordCount! ?? 0));
 
       if (lists == null) {
         state = state.copyWith(followerListState: state.followerListState.copyWith(page: page, isLoading: false));
         return;
       }
 
-      state = state.copyWith(followerListState: state.followerListState.copyWith(page: page, isLoading: false, list: lists.data.list));
+      state = state.copyWith(followerListState: state.followerListState.copyWith(page: page, isLoading: false, list: lists.list));
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
@@ -123,11 +123,11 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
           return;
         }
 
-        if (lists.data.list.isNotEmpty) {
+        if (lists.list.isNotEmpty) {
           state = state.copyWith(
             followerListState: state.followerListState.copyWith(
               isLoading: false,
-              list: [...state.followerListState.list, ...lists.data.list],
+              list: [...state.followerListState.list, ...lists.list],
             ),
           );
           searchFollowerCurrentPage++;
@@ -161,12 +161,12 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
           return;
         }
 
-        if (lists.data.list.isNotEmpty) {
+        if (lists.list.isNotEmpty) {
           state = state.copyWith(
             followerListState: state.followerListState.copyWith(
               page: state.followerListState.page + 1,
               isLoading: false,
-              list: [...state.followerListState.list, ...lists.data.list],
+              list: [...state.followerListState.list, ...lists.list],
             ),
           );
           followerCurrentPage++;
@@ -200,16 +200,16 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
         page: page,
       );
 
-      followMaxPages = lists.data.params!.pagination?.endPage ?? 0;
+      followMaxPages = lists.params!.pagination?.endPage ?? 0;
 
-      state = state.copyWith(followListState: state.followListState.copyWith(totalCount: lists.data.params!.pagination?.totalRecordCount! ?? 0));
+      state = state.copyWith(followListState: state.followListState.copyWith(totalCount: lists.params!.pagination?.totalRecordCount! ?? 0));
 
       if (lists == null) {
         state = state.copyWith(followListState: state.followListState.copyWith(page: page, isLoading: false));
         return;
       }
 
-      state = state.copyWith(followListState: state.followListState.copyWith(page: page, isLoading: false, list: lists.data.list));
+      state = state.copyWith(followListState: state.followListState.copyWith(page: page, isLoading: false, list: lists.list));
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
@@ -247,11 +247,11 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
           return;
         }
 
-        if (lists.data.list.isNotEmpty) {
+        if (lists.list.isNotEmpty) {
           state = state.copyWith(
             followListState: state.followListState.copyWith(
               isLoading: false,
-              list: [...state.followListState.list, ...lists.data.list],
+              list: [...state.followListState.list, ...lists.list],
             ),
           );
           searchFollowCurrentPage++;
@@ -285,12 +285,12 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
           return;
         }
 
-        if (lists.data.list.isNotEmpty) {
+        if (lists.list.isNotEmpty) {
           state = state.copyWith(
             followListState: state.followListState.copyWith(
               page: state.followListState.page + 1,
               isLoading: false,
-              list: [...state.followListState.list, ...lists.data.list],
+              list: [...state.followListState.list, ...lists.list],
             ),
           );
           followCurrentPage++;
@@ -325,7 +325,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
         return;
       }
 
-      state = state.copyWith(followerListState: state.followerListState.copyWith(page: 1, isLoading: false, list: lists.data.list));
+      state = state.copyWith(followerListState: state.followerListState.copyWith(page: 1, isLoading: false, list: lists.list));
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {
@@ -350,7 +350,7 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
         return;
       }
 
-      state = state.copyWith(followListState: state.followListState.copyWith(page: 1, isLoading: false, list: lists.data.list));
+      state = state.copyWith(followListState: state.followListState.copyWith(page: 1, isLoading: false, list: lists.list));
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
     } catch (e) {

@@ -34,20 +34,20 @@ class FullSearchStateNotifier extends StateNotifier<SearchDataListModel> {
       searchWord: searchSearchWord,
     );
 
-    if (lists.data.nick_list!.isEmpty && lists.data.nick_list!.isEmpty) {
+    if (lists.nick_list!.isEmpty && lists.nick_list!.isEmpty) {
       state = state.copyWith(
         isLoading: false,
-        best_list: lists.data.best_list,
-        nick_list: lists.data.nick_list,
-        tag_list: lists.data.tag_list,
+        best_list: lists.best_list,
+        nick_list: lists.nick_list,
+        tag_list: lists.tag_list,
       );
       return;
     }
 
     state = state.copyWith(
       isLoading: false,
-      nick_list: lists.data.nick_list,
-      tag_list: lists.data.tag_list,
+      nick_list: lists.nick_list,
+      tag_list: lists.tag_list,
     );
   }
 
