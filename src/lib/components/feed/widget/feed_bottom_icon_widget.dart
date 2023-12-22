@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
@@ -71,7 +72,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
     final isLogined = ref.read(loginStatementProvider);
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.0.w, vertical: 8.0.h),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -113,7 +114,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                 context: context,
                                 widget: Consumer(builder: (context, ref, child) {
                                   return SizedBox(
-                                    height: 500.h,
+                                    height: 500,
                                     child: PagedListView<int, ContentLikeUserListData>(
                                       pagingController: _contentLikeUserPagingController,
                                       builderDelegate: PagedChildBuilderDelegate<ContentLikeUserListData>(
@@ -210,7 +211,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                 context: context,
                                 widget: Consumer(builder: (context, ref, child) {
                                   return SizedBox(
-                                    height: 500.h,
+                                    height: 500,
                                     child: PagedListView<int, ContentLikeUserListData>(
                                       pagingController: _contentLikeUserPagingController,
                                       builderDelegate: PagedChildBuilderDelegate<ContentLikeUserListData>(
@@ -273,7 +274,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                         ],
                       ),
                     ),
-              SizedBox(width: 12.w),
+              const SizedBox(width: 12),
               GestureDetector(
                 onTap: () {
                   context.push("/home/commentDetail/${widget.contentIdx}/${widget.oldMemberUuid}");

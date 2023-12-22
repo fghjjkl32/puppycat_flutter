@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
@@ -26,7 +27,6 @@ import 'package:pet_mobile_social_flutter/providers/my_page/user_information/my_
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
-import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 final _formKey = GlobalKey<FormState>();
@@ -351,7 +351,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                 color: kPreviousNeutralColor500,
                                               )
                                             : Image.network(
-                                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${myInfo.profileImgUrl}").toUrl(),
+                                                thumborUrl(myInfo.profileImgUrl ?? ''),
                                                 width: 135,
                                                 height: 135,
                                                 fit: BoxFit.cover,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-final kPrimarySideFeedImagePadding = EdgeInsets.symmetric(horizontal: 12.w);
+const kPrimarySideFeedImagePadding = EdgeInsets.symmetric(horizontal: 12);
 
 final kXLarge = BorderRadius.circular(999);
 final kLarge = BorderRadius.circular(20);

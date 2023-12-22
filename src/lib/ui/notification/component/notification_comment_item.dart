@@ -2,10 +2,8 @@ import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:thumbor/thumbor.dart';
 
 class NotificationCommentItem extends StatelessWidget {
   NotificationCommentItem({
@@ -181,7 +179,7 @@ class NotificationCommentItem extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: const BorderRadius.all(Radius.circular(8)),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imgUrl}").toUrl(),
+                              thumborUrl(imgUrl ?? ''),
                               fit: BoxFit.cover,
                               height: 52,
                               width: 52,

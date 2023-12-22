@@ -1,16 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focus_detector/focus_detector.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/controller/webview_bridge/webview_bridge.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/web_view/web_view.dart';
 
 class WebViewWidget extends ConsumerStatefulWidget {

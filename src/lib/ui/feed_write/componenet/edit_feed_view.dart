@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autocomplete_options.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -70,7 +71,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
       ref.read(hashtagListProvider.notifier).state = getHashtagList(widget.feedData.contents!);
       ref.read(mentionListProvider.notifier).state = widget.feedData.mentionList!;
 
-      Future<void>.delayed(Duration(milliseconds: 100), () async {
+      Future<void>.delayed(const Duration(milliseconds: 100), () async {
         ref.watch(feedEditContentProvider.notifier).state.text = replaceMentionsWithNicknamesInContentAsTextFieldString(widget.feedData.contents!, widget.feedData.mentionList!);
         ref.watch(feedWriteLocationInformationProvider.notifier).state = widget.feedData.location!;
         ref.watch(feedWriteButtonSelectedProvider.notifier).state = widget.feedData.isView!;
@@ -110,7 +111,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0.w),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
@@ -125,10 +126,10 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(bottom: 12.0.h),
+                    padding: const EdgeInsets.only(bottom: 12.0),
                     child: Container(
                       width: 150,
-                      height: 36.h,
+                      height: 36,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(Radius.circular(100)),
                         color: kPreviousNeutralColor100,
@@ -237,7 +238,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                     scrollPhysics: const ClampingScrollPhysics(),
                     scrollController: _scrollController,
                     maxLength: 500,
-                    scrollPadding: EdgeInsets.only(bottom: 500.h),
+                    scrollPadding: const EdgeInsets.only(bottom: 500),
                     maxLines: 6,
                     decoration: InputDecoration(
                         counterText: "",
@@ -254,7 +255,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
             },
           ),
           Padding(
-            padding: EdgeInsets.only(top: 20.0.h, bottom: 8.0.h, left: 12.w),
+            padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -280,7 +281,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0.w),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: GestureDetector(
               onTap: () async {
                 // ref.watch(feedWriteLocationInformationProvider.notifier).state =
@@ -314,14 +315,14 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                   children: [
                     ref.watch(feedWriteLocationInformationProvider) == ""
                         ? Padding(
-                            padding: EdgeInsets.only(left: 16.0.w),
+                            padding: const EdgeInsets.only(left: 16.0),
                             child: Text(
                               "위치를 추가해 주세요.",
                               style: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                             ),
                           )
                         : Padding(
-                            padding: EdgeInsets.only(left: 16.0.w),
+                            padding: const EdgeInsets.only(left: 16.0),
                             child: Text(
                               ref.watch(feedWriteLocationInformationProvider),
                               style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
@@ -352,14 +353,14 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: 20.0.h, bottom: 8.0.h, left: 12.w),
+            padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 12),
             child: Text(
               "공개 범위",
               style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: Row(
               children: [
                 Expanded(
@@ -386,7 +387,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                             size: 20,
                             color: buttonSelected == 1 ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 9,
                           ),
                           Text(
@@ -425,7 +426,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                             size: 20,
                             color: buttonSelected == 2 ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 9,
                           ),
                           Text(
@@ -464,7 +465,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                             size: 20,
                             color: buttonSelected == 0 ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 9,
                           ),
                           Text(
@@ -479,7 +480,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 100,
           ),
         ],

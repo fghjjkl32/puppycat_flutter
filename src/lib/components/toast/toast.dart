@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -44,7 +45,7 @@ void toast({
   }
 
   Widget toast = Container(
-    width: 335.w,
+    width: 335,
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(100),
@@ -58,7 +59,7 @@ void toast({
             Row(
               children: [
                 Container(
-                  height: 20.h,
+                  height: 20,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
                     color: kPreviousNeutralColor100,
@@ -68,8 +69,8 @@ void toast({
                     child: iconImage,
                   ),
                 ),
-                SizedBox(
-                  width: 14.w,
+                const SizedBox(
+                  width: 14,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +124,7 @@ void toast({
         alignment: Alignment.center,
         children: [
           Positioned(
-            bottom: MediaQuery.of(context).viewInsets.bottom + 30.h,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 30,
             child: Container(
               child: child,
             ),

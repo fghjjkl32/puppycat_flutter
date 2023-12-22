@@ -2,13 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -16,7 +16,6 @@ import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:thumbor/thumbor.dart';
 
 class FeedImageDetailWidget extends ConsumerStatefulWidget {
   FeedImageDetailWidget({
@@ -53,9 +52,9 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
   @override
   void initState() {
     super.initState();
-    _fadeController = AnimationController(vsync: this, duration: Duration(seconds: 1), value: 1.0);
+    _fadeController = AnimationController(vsync: this, duration: const Duration(seconds: 1), value: 1.0);
 
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         if (_isTagVisible.value) {
           _fadeController.reverse();
@@ -107,7 +106,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
             ),
             items: widget.imageList.map((i) {
               return Padding(
-                padding: EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(12.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
                   child: Stack(
@@ -126,7 +125,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                 placeholder: (context, url) => Container(
                                   color: kPreviousNeutralColor300,
                                 ),
-                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${i.url}").toUrl(),
+                                imageUrl: thumborUrl(i.url ?? ''),
                                 // fit: BoxFit.cover,
                               ),
                               ...i.imgMemberTagList!.map((tag) {
@@ -173,15 +172,15 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                               showCustomModalBottomSheet(
                                 context: context,
                                 widget: SizedBox(
-                                  height: 500.h,
+                                  height: 500,
                                   child: Stack(
                                     children: [
                                       Column(
                                         children: [
                                           Padding(
-                                            padding: EdgeInsets.only(
-                                              top: 8.0.h,
-                                              bottom: 10.0.h,
+                                            padding: const EdgeInsets.only(
+                                              top: 8.0,
+                                              bottom: 10.0,
                                             ),
                                             child: Text(
                                               "태그된 대상",
@@ -191,7 +190,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                           Expanded(
                                             child: ListView.builder(
                                               itemCount: i.imgMemberTagList!.length,
-                                              padding: EdgeInsets.only(bottom: 80.h),
+                                              padding: const EdgeInsets.only(bottom: 80),
                                               itemBuilder: (BuildContext context, int index) {
                                                 return FavoriteItemWidget(
                                                   profileImage: i.imgMemberTagList![index].profileImgUrl,
@@ -239,7 +238,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
         ),
         if (widget.imageList.length != 1)
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: DotIndicator(
               counter: _counter,
               imageListLength: widget.imageList.length,

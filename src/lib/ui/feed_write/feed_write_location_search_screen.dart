@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/location_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -98,8 +99,8 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 4.h,
+                    const SizedBox(
+                      height: 4,
                     ),
                     ref.watch(feedWriteLocationSearchProvider).isEmpty
                         ? Column(
@@ -121,8 +122,8 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                   ],
                                 ),
                               ),
-                              SizedBox(
-                                height: 16.h,
+                              const SizedBox(
+                                height: 16,
                               ),
                             ],
                           )

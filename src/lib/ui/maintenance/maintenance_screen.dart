@@ -2,7 +2,7 @@ import 'package:channel_talk_flutter/channel_talk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -36,7 +36,7 @@ class InspectScreenState extends ConsumerState<InspectScreen> {
             body: Center(
               child: ListView(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 // mainAxisAlignment: MainAxisAlignment.center,
                 // mainAxisSize: MainAxisSize.max,
                 children: [
@@ -45,7 +45,7 @@ class InspectScreenState extends ConsumerState<InspectScreen> {
                       'assets/image/character/character_09_service_check.png',
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 32,
                   ),
                   Padding(
@@ -84,14 +84,14 @@ class InspectScreenState extends ConsumerState<InspectScreen> {
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 12.0),
                               child: Divider(
                                 thickness: 1,
                                 color: kPreviousNeutralColor100,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 16,
                             ),
                             ref.watch(inspectProvider).message == null || ref.watch(inspectProvider).message == ''
@@ -126,10 +126,10 @@ class InspectScreenState extends ConsumerState<InspectScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(
-                      left: 20.0.w,
-                      right: 20.0.w,
-                      bottom: 20.0.h,
+                    padding: const EdgeInsets.only(
+                      left: 20.0,
+                      right: 20.0,
+                      bottom: 20.0,
                     ),
                     child: SizedBox(
                       width: double.infinity,

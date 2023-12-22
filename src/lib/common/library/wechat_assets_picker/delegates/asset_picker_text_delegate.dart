@@ -75,7 +75,7 @@ class AssetPickerTextDelegate {
 
   /// Empty list string for empty asset list.
   /// 资源列表为空时的占位字段
-  String get emptyList => '列表为空';
+  String get emptyList => '이미지가 없어요.';
 
   /// Un-supported asset type string for assets that
   /// belongs to [AssetType.other].

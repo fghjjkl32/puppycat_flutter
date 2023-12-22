@@ -1,7 +1,8 @@
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -44,7 +45,7 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
         context.push("/home/search/${widget.hashTag}/0");
       },
       child: Padding(
-        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 8, top: 8),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,8 +53,8 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
             Row(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(
-                    right: 10.w,
+                  padding: const EdgeInsets.only(
+                    right: 10,
                   ),
                   child: WidgetMask(
                     blendMode: BlendMode.srcATop,
@@ -61,13 +62,13 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
                     mask: Center(
                       child: Image.asset(
                         'assets/image/search/icon/icon_tag_large.png',
-                        height: 20.h,
+                        height: 20,
                         fit: BoxFit.fill,
                       ),
                     ),
                     child: SvgPicture.asset(
                       'assets/image/feed/image/squircle.svg',
-                      height: 32.h,
+                      height: 32,
                     ),
                   ),
                 ),
@@ -78,8 +79,8 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
                       widget.hashTag,
                       style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
-                    SizedBox(
-                      height: 4.h,
+                    const SizedBox(
+                      height: 4,
                     ),
                     Text(
                       "${widget.hashTagCnt}+",

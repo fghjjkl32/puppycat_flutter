@@ -1,7 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -13,7 +14,6 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_carous
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_view_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
-import 'package:thumbor/thumbor.dart';
 
 class EditCroppedImagesListView extends ConsumerStatefulWidget {
   const EditCroppedImagesListView({
@@ -75,7 +75,7 @@ class CroppedImagesListViewState extends ConsumerState<EditCroppedImagesListView
                         height: double.infinity,
                         color: kBlackColor,
                         child: Image.network(
-                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.feedData.imgList![index].url!}").toUrl(),
+                          thumborUrl(widget.feedData.imgList![index].url ?? ''),
                         ),
                       ),
                     ),

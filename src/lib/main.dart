@@ -55,12 +55,13 @@ class ScrollBehaviorModified extends ScrollBehavior {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  baseUrl = await Constants.getBaseUrl();
-  thumborHostUrl = await Constants.getThumborHostUrl();
-  thumborKey = await Constants.getThumborKey();
-  firstInstallTime = await Constants.checkFirstInstall();
-  inspectS3BaseUrl = await Constants.getInspectS3Domain();
-  updateS3BaseUrl = await Constants.getUpdateS3Domain();
+  // baseUrl = await Constants.getBaseUrl();
+  // thumborHostUrl = await Constants.getThumborHostUrl();
+  // thumborKey = await Constants.getThumborKey();
+  firstInstallTime = await checkFirstInstall();
+  // inspectS3BaseUrl = await Constants.getInspectS3Domain();
+  // updateS3BaseUrl = await Constants.getUpdateS3Domain();
+  initRunningMode();
 
   await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp(
@@ -294,7 +295,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
                 return CustomError(errorDetails: errorDetails);
               };
 
-              return MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0), child: ScrollConfiguration(behavior: ScrollBehaviorModified(), child: widget!));
+              return MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0), child: ScrollConfiguration(behavior: const ScrollBehaviorModified(), child: widget!));
             },
           ),
         );
@@ -400,14 +401,14 @@ class CustomError extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
             Text(
               "요청하신 페이지를 찾을 수 없어요.",
               style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Text(
@@ -425,10 +426,10 @@ class CustomError extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                  left: 20.0.w,
-                  right: 20.0.w,
-                  bottom: 20.0.h,
+                padding: const EdgeInsets.only(
+                  left: 20.0,
+                  right: 20.0,
+                  bottom: 20.0,
                 ),
                 child: SizedBox(
                   width: double.infinity,

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -95,14 +95,14 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
               child: Align(
                 alignment: Alignment.center,
                 child: Padding(
-                  padding: EdgeInsets.only(right: 8.0.w),
+                  padding: const EdgeInsets.only(right: 8.0),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 12.0.w),
+                      padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
                       child: Text(
                         "1:1채널톡",
                         style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),

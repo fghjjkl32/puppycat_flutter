@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -74,7 +74,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
               : ListView(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -86,13 +86,13 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                           ),
                           FlutterSwitch(
                             padding: 4,
-                            width: 34.w,
-                            height: 16.h,
+                            width: 34,
+                            height: 16,
                             activeColor: Theme.of(context).primaryColor,
                             inactiveColor: kPreviousNeutralColor500,
-                            toggleSize: 12.0.w,
+                            toggleSize: 12.0,
                             value: switchState['main_2'] == 1,
-                            borderRadius: 50.0.w,
+                            borderRadius: 50.0,
                             onToggle: (value) async {
                               onTap('main_2', value);
 
@@ -114,7 +114,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 36.w, right: 20.w),
+                            padding: const EdgeInsets.only(top: 4, bottom: 4, left: 36, right: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -140,13 +140,13 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 ),
                                 FlutterSwitch(
                                   padding: 4,
-                                  width: 34.w,
-                                  height: 16.h,
+                                  width: 34,
+                                  height: 16,
                                   activeColor: Theme.of(context).primaryColor,
                                   inactiveColor: kPreviousNeutralColor500,
-                                  toggleSize: 12.0.w,
+                                  toggleSize: 12.0,
                                   value: switchState['main_3'] == 1,
-                                  borderRadius: 50.0.w,
+                                  borderRadius: 50.0,
                                   onToggle: (value) async {
                                     onTap('main_3', value);
                                     if (value) {
@@ -162,12 +162,12 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                         ],
                       )),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                      child: const Divider(),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Divider(),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 20.w),
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -179,13 +179,13 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                           ),
                           FlutterSwitch(
                             padding: 4,
-                            width: 34.w,
-                            height: 16.h,
+                            width: 34,
+                            height: 16,
                             activeColor: Theme.of(context).primaryColor,
                             inactiveColor: kPreviousNeutralColor500,
-                            toggleSize: 12.0.w,
+                            toggleSize: 12.0,
                             value: switchState['main_1'] == 1,
-                            borderRadius: 50.0.w,
+                            borderRadius: 50.0,
                             onToggle: (value) async {
                               onTap('main_1', value);
                             },
@@ -201,7 +201,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 36.w, right: 20.w),
+                            padding: const EdgeInsets.only(top: 4, bottom: 4, left: 36, right: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -213,13 +213,13 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 ),
                                 FlutterSwitch(
                                   padding: 4,
-                                  width: 34.w,
-                                  height: 16.h,
+                                  width: 34,
+                                  height: 16,
                                   activeColor: Theme.of(context).primaryColor,
                                   inactiveColor: kPreviousNeutralColor500,
-                                  toggleSize: 12.0.w,
+                                  toggleSize: 12.0,
                                   value: switchState['sub_1_1'] == 1,
-                                  borderRadius: 50.0.w,
+                                  borderRadius: 50.0,
                                   onToggle: (value) async {
                                     onTap('sub_1_1', value);
                                   },
@@ -228,7 +228,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 36.w, right: 20.w),
+                            padding: const EdgeInsets.only(top: 4, bottom: 4, left: 36, right: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -240,13 +240,13 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 ),
                                 FlutterSwitch(
                                   padding: 4,
-                                  width: 34.w,
-                                  height: 16.h,
+                                  width: 34,
+                                  height: 16,
                                   activeColor: Theme.of(context).primaryColor,
                                   inactiveColor: kPreviousNeutralColor500,
-                                  toggleSize: 12.0.w,
+                                  toggleSize: 12.0,
                                   value: switchState['sub_1_2'] == 1,
-                                  borderRadius: 50.0.w,
+                                  borderRadius: 50.0,
                                   onToggle: (value) async {
                                     onTap('sub_1_2', value);
                                   },
@@ -255,7 +255,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 36.w, right: 20.w),
+                            padding: const EdgeInsets.only(top: 4, bottom: 4, left: 36, right: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -267,13 +267,13 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 ),
                                 FlutterSwitch(
                                   padding: 4,
-                                  width: 34.w,
-                                  height: 16.h,
+                                  width: 34,
+                                  height: 16,
                                   activeColor: Theme.of(context).primaryColor,
                                   inactiveColor: kPreviousNeutralColor500,
-                                  toggleSize: 12.0.w,
+                                  toggleSize: 12.0,
                                   value: switchState['sub_1_3'] == 1,
-                                  borderRadius: 50.0.w,
+                                  borderRadius: 50.0,
                                   onToggle: (value) async {
                                     onTap('sub_1_3', value);
                                   },
@@ -282,7 +282,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 36.w, right: 20.w),
+                            padding: const EdgeInsets.only(top: 4, bottom: 4, left: 36, right: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -294,13 +294,13 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 ),
                                 FlutterSwitch(
                                   padding: 4,
-                                  width: 34.w,
-                                  height: 16.h,
+                                  width: 34,
+                                  height: 16,
                                   activeColor: Theme.of(context).primaryColor,
                                   inactiveColor: kPreviousNeutralColor500,
-                                  toggleSize: 12.0.w,
+                                  toggleSize: 12.0,
                                   value: switchState['sub_1_4'] == 1,
-                                  borderRadius: 50.0.w,
+                                  borderRadius: 50.0,
                                   onToggle: (value) async {
                                     onTap('sub_1_4', value);
                                   },
@@ -309,7 +309,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 36.w, right: 20.w),
+                            padding: const EdgeInsets.only(top: 4, bottom: 4, left: 36, right: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -321,13 +321,13 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 ),
                                 FlutterSwitch(
                                   padding: 4,
-                                  width: 34.w,
-                                  height: 16.h,
+                                  width: 34,
+                                  height: 16,
                                   activeColor: Theme.of(context).primaryColor,
                                   inactiveColor: kPreviousNeutralColor500,
-                                  toggleSize: 12.0.w,
+                                  toggleSize: 12.0,
                                   value: switchState['sub_1_5'] == 1,
-                                  borderRadius: 50.0.w,
+                                  borderRadius: 50.0,
                                   onToggle: (value) async {
                                     onTap('sub_1_5', value);
                                   },
@@ -336,7 +336,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.only(top: 4.h, bottom: 4.h, left: 36.w, right: 20.w),
+                            padding: const EdgeInsets.only(top: 4, bottom: 4, left: 36, right: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -348,13 +348,13 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                 ),
                                 FlutterSwitch(
                                   padding: 4,
-                                  width: 34.w,
-                                  height: 16.h,
+                                  width: 34,
+                                  height: 16,
                                   activeColor: Theme.of(context).primaryColor,
                                   inactiveColor: kPreviousNeutralColor500,
-                                  toggleSize: 12.0.w,
+                                  toggleSize: 12.0,
                                   value: switchState['sub_1_6'] == 1,
-                                  borderRadius: 50.0.w,
+                                  borderRadius: 50.0,
                                   onToggle: (value) async {
                                     onTap('sub_1_6', value);
                                   },

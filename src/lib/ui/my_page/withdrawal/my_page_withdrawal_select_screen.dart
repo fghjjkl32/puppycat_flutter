@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/select_button.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -59,15 +59,15 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                       "혹시 서비스에 불편함이 있으셨나요?",
                       style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
-                    SizedBox(
-                      height: 2.h,
+                    const SizedBox(
+                      height: 2,
                     ),
                     Text(
                       "탈퇴 사유를 남겨 주시면 더 발전하는 퍼피캣이 되겠습니다.",
                       style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
-                    SizedBox(
-                      height: 14.h,
+                    const SizedBox(
+                      height: 14,
                     ),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
@@ -105,10 +105,10 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                  left: 20.0.w,
-                  right: 20.0.w,
-                  bottom: 20.0.h,
+                padding: const EdgeInsets.only(
+                  left: 20.0,
+                  right: 20.0,
+                  bottom: 20.0,
                 ),
                 child: Column(
                   children: [
@@ -128,8 +128,8 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                               ),
                             ],
                           ),
-                    SizedBox(
-                      height: 10.h,
+                    const SizedBox(
+                      height: 10,
                     ),
                     SizedBox(
                       width: double.infinity,

@@ -4,7 +4,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -307,8 +308,8 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
               ),
             ),
           ),
-          SizedBox(
-            height: 4.h,
+          const SizedBox(
+            height: 4,
           ),
           searchController.text.isEmpty
               ? Expanded(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -32,7 +32,6 @@ import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_prov
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/popupmenu_with_reddot_widget.dart';
-import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class PuppyCatMain extends ConsumerStatefulWidget {
@@ -278,7 +277,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
   void _myPostScrollListener() {
     setState(() {
-      ref.read(loginStatementProvider) == false ? _showIcon = false : _showIcon = scrollController.offset > 100.h;
+      ref.read(loginStatementProvider) == false ? _showIcon = false : _showIcon = scrollController.offset > 100;
     });
     if (scrollController.position.userScrollDirection != ScrollDirection.idle) {
       setState(() {
@@ -299,7 +298,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   Widget build(BuildContext context) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
     final loginState = ref.watch(loginStateProvider);
-
+    print('isBigDevice $isBigDevice / ${MediaQuery.of(context).size.width} / ${MediaQuery.of(context).size.height}');
     return WillPopScope(
       onWillPop: () async {
         bool backResult = onBackPressed();
@@ -342,7 +341,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                 pinned: true,
                                 snap: false,
                                 floating: true,
-                                expandedHeight: 200.0,
+                                expandedHeight: 180.0,
                                 centerTitle: false,
                                 leading: null,
                                 titleSpacing: 0,
@@ -388,7 +387,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                 pinned: true,
                                 snap: false,
                                 floating: true,
-                                expandedHeight: 160.0,
+                                expandedHeight: 135.0,
                                 centerTitle: false,
                                 leading: null,
                                 titleSpacing: 0,
@@ -764,7 +763,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       ),
                       child: SvgPicture.asset(
                         'assets/image/feed/image/squircle.svg',
-                        height: 22.h,
+                        height: 22,
                       ),
                     )
                   : WidgetMask(
@@ -772,15 +771,15 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                       childSaveLayer: true,
                       mask: Center(
                         child: Image.network(
-                          Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${myInfo.profileImgUrl}").toUrl(),
-                          height: 22.h,
+                          thumborUrl(myInfo.profileImgUrl ?? ''),
+                          height: 22,
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),
                       ),
                       child: SvgPicture.asset(
                         'assets/image/feed/image/squircle.svg',
-                        height: 22.h,
+                        height: 22,
                       ),
                     ),
             ),
@@ -1443,9 +1442,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
               indicatorColor: kPreviousNeutralColor600,
               unselectedLabelColor: kPreviousNeutralColor500,
               indicatorSize: TabBarIndicatorSize.label,
-              labelPadding: EdgeInsets.only(
-                top: 10.h,
-                bottom: 6.h,
+              labelPadding: const EdgeInsets.only(
+                top: 10,
+                bottom: 6,
               ),
               tabs: getTabs(),
             ),

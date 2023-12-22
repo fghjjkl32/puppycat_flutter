@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/favorite_item_widget.dart';
 
 class FavoriteListWidget extends StatelessWidget {
@@ -7,7 +8,7 @@ class FavoriteListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
         // FavoriteItemWidget(
         //   profileImage: 'assets/image/feed/image/sample_image1.png',
@@ -42,7 +43,7 @@ class FavoriteListWidget extends StatelessWidget {
         //   followerIdx: 95,
         // ),
         Padding(
-          padding: EdgeInsets.all(10.0.h),
+          padding: EdgeInsets.all(10.0),
         ),
       ],
     );

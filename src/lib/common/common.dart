@@ -29,7 +29,7 @@ Widget getProfileAvatar(
     childSaveLayer: true,
     mask: Center(
       child: Image.network(
-        Thumbor(host: thumborHostUrl, key: thumborKey).buildImage(avatarUrl).toUrl(),
+        thumborUrl(avatarUrl),
         width: double.infinity,
         height: height,
         fit: BoxFit.cover,
@@ -87,7 +87,7 @@ Widget getSquircleImage(
       child: Stack(
         children: [
           Image.network(
-            Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$avatarUrl").toUrl(),
+            thumborUrl(avatarUrl),
             width: double.infinity,
             height: height,
             fit: BoxFit.cover,
@@ -142,4 +142,8 @@ String convertToJsonStringQuotes({required String raw}) {
   jsonString = jsonString.replaceAll('}]"', '}]');
 
   return jsonString;
+}
+
+String thumborUrl(String url) {
+  return Thumbor(host: thumborHostUrl, key: thumborKey).buildImage(url).toUrl();
 }

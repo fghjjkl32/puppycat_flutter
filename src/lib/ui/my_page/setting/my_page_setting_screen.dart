@@ -1,7 +1,7 @@
 import 'package:channel_talk_flutter/channel_talk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -100,7 +100,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       builder: (BuildContext context) {
                         return CustomDialog(
                             content: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                              padding: const EdgeInsets.symmetric(vertical: 24.0),
                               child: Column(
                                 children: [
                                   Text(
@@ -108,8 +108,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                                     style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                     textAlign: TextAlign.center,
                                   ),
-                                  SizedBox(
-                                    height: 4.h,
+                                  const SizedBox(
+                                    height: 4,
                                   ),
                                   Text(
                                     "언제든지 설정을 바꿀 수 있어요.",
@@ -140,9 +140,9 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 }
               },
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-              child: const Divider(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(),
             ),
             ProfileButton(
               icon: const Icon(
@@ -154,20 +154,20 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 !isLogined ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingBlockedUser");
               },
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-              child: const Divider(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 16.w),
+              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16),
               child: Row(
                 children: [
                   const Icon(
                     Puppycat_social.icon_terms,
                     size: 20,
                   ),
-                  SizedBox(
-                    width: 10.w,
+                  const SizedBox(
+                    width: 10,
                   ),
                   Text(
                     "이용약관",
@@ -179,9 +179,9 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
             ),
             SizedBox(
-              height: 30.h,
+              height: 30,
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: ListView.builder(
                   itemCount: ref.watch(policyMenuStateProvider).length,
                   scrollDirection: Axis.horizontal,
@@ -210,7 +210,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         ),
                         child: Center(
                           child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Text(
                               data.menuName!,
                               style: kBody11RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
@@ -223,20 +223,20 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 8.h),
-              child: const Divider(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+              child: Divider(),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 16.0.w, right: 16.0.w),
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
               child: Row(
                 children: [
                   const Icon(
                     Puppycat_social.icon_etc,
                     size: 20,
                   ),
-                  SizedBox(
-                    width: 10.w,
+                  const SizedBox(
+                    width: 10,
                   ),
                   Text(
                     "기타",
@@ -254,14 +254,14 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   widget: Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(top: 20.0.h),
+                        padding: const EdgeInsets.only(top: 20.0),
                         child: Text(
                           '앱 권한 설정',
                           style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 10.0.h, bottom: 4.0.h),
+                        padding: const EdgeInsets.only(top: 10.0, bottom: 4.0),
                         child: Text(
                           '원활한 퍼피캣 앱 이용을 위해 접근 권한을 허용해 주세요.',
                           style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
@@ -269,44 +269,44 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(bottom: 10.0),
+                        padding: const EdgeInsets.only(bottom: 10.0),
                         child: Text(
                           '퍼피캣 이용에 꼭 필요한 접근 권한은\n해당 기능을 이용하시는 순간에 요청을 드리고 있어요.\n허용하지 않아도 퍼피캣을 이용하실 수 있지만,\n일부 서비스는 이용이 어려울 수 있어요.',
                           style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 4.h),
-                        child: const Divider(),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+                        child: Divider(),
                       ),
                       Text(
                         "저장 공간 (필수)",
                         style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
-                      SizedBox(
-                        height: 3.h,
+                      const SizedBox(
+                        height: 3,
                       ),
                       Text(
                         "사진, 미디어, 파일 등의 이용 및 로그를 저장해요.",
                         style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
-                      SizedBox(
-                        height: 10.h,
+                      const SizedBox(
+                        height: 10,
                       ),
                       Text(
                         "알림 (필수)",
                         style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
-                      SizedBox(
-                        height: 3.h,
+                      const SizedBox(
+                        height: 3,
                       ),
                       Text(
                         "푸시 알림 발송을 위해 기기 ID를 확인해요.",
                         style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
-                      SizedBox(
-                        height: 10.h,
+                      const SizedBox(
+                        height: 10,
                       ),
                       // Text(
                       //   "위치 서비스 (필수)",
@@ -328,9 +328,9 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           openAppSettings();
                         },
                         child: Padding(
-                          padding: EdgeInsets.all(12.0.w),
+                          padding: const EdgeInsets.all(12.0),
                           child: Container(
-                            height: 30.h,
+                            height: 30,
                             decoration: const BoxDecoration(
                               color: kPreviousPrimaryColor,
                               borderRadius: BorderRadius.all(
@@ -353,7 +353,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 );
               },
               child: Padding(
-                padding: EdgeInsets.only(top: 8.h, left: 50.w, right: 16.w, bottom: 8.h),
+                padding: const EdgeInsets.only(top: 8, left: 50, right: 16, bottom: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -379,7 +379,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   builder: (BuildContext context) {
                     return CustomDialog(
                       content: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                        padding: const EdgeInsets.symmetric(vertical: 24.0),
                         child: Text(
                           "저장 공간을 정리할까요?",
                           style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
@@ -401,7 +401,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 );
               },
               child: Padding(
-                padding: EdgeInsets.only(top: 8.h, left: 50.w, right: 16.w, bottom: 8.h),
+                padding: const EdgeInsets.only(top: 8, left: 50, right: 16, bottom: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -422,7 +422,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 8.h, left: 50.w, right: 16.w, bottom: 8.h),
+              padding: const EdgeInsets.only(top: 8, left: 50, right: 16, bottom: 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -442,7 +442,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 8.h, left: 50.w, right: 16.w, bottom: 10.h),
+              padding: const EdgeInsets.only(top: 8, left: 50, right: 16, bottom: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -488,8 +488,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                                   color: kPreviousTextBodyColor,
                                 ),
                               ),
-                        SizedBox(
-                          width: 10.w,
+                        const SizedBox(
+                          width: 10,
                         ),
                         Text(
                           GetIt.I<PackageInformationUtil>().appVersion,
@@ -503,20 +503,20 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-              child: const Divider(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 16.w),
+              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16),
               child: Row(
                 children: [
                   const Icon(
                     Puppycat_social.icon_cs,
                     size: 20,
                   ),
-                  SizedBox(
-                    width: 10.w,
+                  const SizedBox(
+                    width: 10,
                   ),
                   Text(
                     "고객지원",
@@ -528,7 +528,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 22.0.w),
+              padding: const EdgeInsets.symmetric(horizontal: 22.0),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -543,7 +543,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   color: kPreviousNeutralColor100,
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0.h),
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -558,8 +558,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               Puppycat_social.icon_faq,
                               size: 40,
                             ),
-                            SizedBox(
-                              height: 4.h,
+                            const SizedBox(
+                              height: 4,
                             ),
                             Text(
                               "자주하는 질문",
@@ -591,8 +591,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               Puppycat_social.icon_canneltalk,
                               size: 40,
                             ),
-                            SizedBox(
-                              height: 4.h,
+                            const SizedBox(
+                              height: 4,
                             ),
                             Text(
                               "1:1 채널톡",
@@ -612,8 +612,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               Puppycat_social.icon_notice,
                               size: 40,
                             ),
-                            SizedBox(
-                              height: 4.h,
+                            const SizedBox(
+                              height: 4,
                             ),
                             Text(
                               "공지사항",
@@ -636,7 +636,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           );
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(top: 60.0.h, bottom: 20.h),
+                      padding: const EdgeInsets.only(top: 60.0, bottom: 20),
                       child: Center(
                         child: Text(
                           "로그아웃",
@@ -669,15 +669,15 @@ class ProfileButton extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
                 icon,
-                SizedBox(
-                  width: 10.w,
+                const SizedBox(
+                  width: 10,
                 ),
                 Text(
                   title,

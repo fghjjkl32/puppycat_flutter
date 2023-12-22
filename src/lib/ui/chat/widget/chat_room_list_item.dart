@@ -316,7 +316,7 @@ class ChatRoomItem extends ConsumerWidget {
                           ),
                           const Spacer(),
                           Padding(
-                            padding: EdgeInsets.only(left: 4.0.w),
+                            padding: EdgeInsets.only(left: 4.0),
                             child: Text(
                               DateTime.parse(roomModel.regDate).localizedTimeDayDiff(),
                               style: kBadge10MediumStyle.copyWith(color: kNeutralColor500),

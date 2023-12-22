@@ -1,7 +1,8 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -168,13 +169,13 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                       },
                       child: Bubble(
                         isComment: true,
-                        radius: Radius.circular(10.w),
+                        radius: const Radius.circular(10),
                         elevation: 0,
                         alignment: Alignment.topLeft,
                         nip: BubbleNip.leftTop,
-                        nipOffset: 15.h,
+                        nipOffset: 15,
                         color: kPreviousNeutralColor200,
-                        padding: BubbleEdges.only(left: 12.w, right: 12.w, top: 10.h, bottom: 12.h),
+                        padding: const BubbleEdges.only(left: 12, right: 12, top: 10, bottom: 12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -204,10 +205,10 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                 children: [
                                                   Image.asset(
                                                     'assets/image/feed/icon/small_size/icon_special.png',
-                                                    height: 13.h,
+                                                    height: 13,
                                                   ),
-                                                  SizedBox(
-                                                    width: 4.w,
+                                                  const SizedBox(
+                                                    width: 4,
                                                   ),
                                                 ],
                                               )
@@ -285,7 +286,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                                 builder: (BuildContext context) {
                                                                   return CustomDialog(
                                                                     content: Padding(
-                                                                      padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                                      padding: const EdgeInsets.symmetric(vertical: 24.0),
                                                                       child: Column(
                                                                         children: [
                                                                           Text(
@@ -293,8 +294,8 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                                             style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                                                             textAlign: TextAlign.center,
                                                                           ),
-                                                                          SizedBox(
-                                                                            height: 8.h,
+                                                                          const SizedBox(
+                                                                            height: 8,
                                                                           ),
                                                                           Text(
                                                                             "차단하게 되면 더 이상 서로의 피드를 보거나\n메시지 등을 보낼 수 없어요.\n차단 여부는 상대방에게 알리지 않아요.\n차단 풀기는 [마이페이지→설정→차단 유저 관리]에서\n얼마든지 가능해요.",
@@ -358,8 +359,8 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 6.h,
+                            const SizedBox(
+                              height: 6,
                             ),
                             Container(
                               alignment: Alignment.centerLeft,
@@ -384,7 +385,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                     Row(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(left: 12.0.w, right: 2.w),
+                          padding: const EdgeInsets.only(left: 12.0, right: 2),
                           child: widget.isLike
                               ? InkWell(
                                   onTap: () {
@@ -453,9 +454,9 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                           },
                           child: Row(
                             children: [
-                              Padding(
-                                padding: EdgeInsets.only(left: 12.0.w, right: 2.w),
-                                child: const Icon(
+                              const Padding(
+                                padding: EdgeInsets.only(left: 12.0, right: 2),
+                                child: Icon(
                                   Puppycat_social.icon_comment_comment,
                                   color: kPreviousTextBodyColor,
                                 ),

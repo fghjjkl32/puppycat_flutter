@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -22,11 +23,11 @@ class DotIndicator extends StatelessWidget {
         activeIndex: index,
         axisDirection: Axis.horizontal,
         count: imageListLength,
-        effect: ScrollingDotsEffect(
+        effect: const ScrollingDotsEffect(
           dotColor: kPreviousNeutralColor400,
           activeDotColor: kPreviousPrimaryColor,
-          dotWidth: 6.h,
-          dotHeight: 6.h,
+          dotWidth: 6,
+          dotHeight: 6,
         ),
       ),
     );

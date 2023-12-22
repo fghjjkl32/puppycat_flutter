@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:thumbor/thumbor.dart';
 
 class FeedBestPostItemWidget extends StatelessWidget {
   const FeedBestPostItemWidget({
@@ -18,7 +16,7 @@ class FeedBestPostItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 6.0.w),
+      padding: const EdgeInsets.symmetric(horizontal: 6.0),
       child: Stack(
         children: [
           ClipRRect(
@@ -26,7 +24,7 @@ class FeedBestPostItemWidget extends StatelessWidget {
               Radius.circular(10),
             ),
             child: Image.network(
-              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$image").toUrl(),
+              thumborUrl(image ?? ''),
               fit: BoxFit.cover,
               height: 112,
               width: 154,

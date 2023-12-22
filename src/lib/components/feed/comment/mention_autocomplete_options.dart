@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
-import 'package:thumbor/thumbor.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class MentionAutocompleteOptions extends ConsumerStatefulWidget {
@@ -106,7 +105,7 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
                           childSaveLayer: true,
                           mask: Center(
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${user.profileImgUrl!}").toUrl(),
+                              thumborUrl(user.profileImgUrl ?? ''),
                               height: 42,
                               fit: BoxFit.cover,
                               width: double.infinity,

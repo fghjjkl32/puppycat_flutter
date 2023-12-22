@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
@@ -79,16 +80,16 @@ class TagScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            SizedBox(height: 103.h),
+            const SizedBox(height: 103),
             Text(
               "태그 할 위치를 눌러보세요.",
               style: kBody14BoldStyle.copyWith(color: kPreviousNeutralColor100),
             ),
-            SizedBox(
-              height: 12.h,
+            const SizedBox(
+              height: 12,
             ),
             SizedBox(
-              height: 280.h,
+              height: 280,
               // PageView를 사용하여 사용자가 태그를 추가할 이미지를 넘겨볼 수 있게 합니다.
               // 사용자가 페이지를 넘길 때마다, counter를 업데이트합니다.
               child: PageView(
@@ -114,7 +115,7 @@ class TagScreen extends ConsumerWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0.h),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: DotIndicator(
                 counter: ValueNotifier<int>(ref.watch(feedWriteCurrentViewCountProvider.notifier).state),
                 imageListLength: croppedFiles.length,

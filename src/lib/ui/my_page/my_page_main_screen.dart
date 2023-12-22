@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
@@ -39,7 +39,6 @@ import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.
 ///산책하기 보류로 주석 처리 완료
 import 'package:screenshot/screenshot.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:thumbor/thumbor.dart';
 
 class MyPageMainScreen extends ConsumerStatefulWidget {
   const MyPageMainScreen({
@@ -103,11 +102,11 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   }
 
   void _scrollListener() {
-    if (scrollController.offset >= 128.h && appBarColor != kPreviousNeutralColor100) {
+    if (scrollController.offset >= 128 && appBarColor != kPreviousNeutralColor100) {
       setState(() {
         appBarColor = kPreviousNeutralColor100;
       });
-    } else if (scrollController.offset < 128.h && appBarColor != Colors.transparent) {
+    } else if (scrollController.offset < 128 && appBarColor != Colors.transparent) {
       setState(() {
         appBarColor = Colors.transparent;
       });
@@ -129,6 +128,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
 
   @override
   Widget build(BuildContext context) {
+    bool isBigDevice = MediaQuery.of(context).size.width >= 345;
+
     return DefaultOnWillPopScope(
       onWillPop: handleFocusLost,
       child: Material(
@@ -160,15 +161,15 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     actions: [
                       PopupMenuButton(
                         padding: EdgeInsets.zero,
-                        offset: Offset(0, 42),
+                        offset: const Offset(0, 42),
                         child: showLottieAnimation
                             ? Lottie.asset(
                                 'assets/lottie/icon_more_header.json',
                                 repeat: false,
                               )
-                            : Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: const Icon(
+                            : const Padding(
+                                padding: EdgeInsets.only(right: 8.0),
+                                child: Icon(
                                   Puppycat_social.icon_more_header,
                                   size: 40,
                                 ),
@@ -255,13 +256,13 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         },
                       ),
                     ],
-                    expandedHeight: 120.h,
+                    expandedHeight: 140,
                     flexibleSpace: Consumer(builder: (context, ref, _) {
                       final userInformationItemModel = ref.watch(myInformationStateProvider);
 
                       return _myPageSuccessProfile(userInformationItemModel);
                     })),
-                SliverPersistentHeader(
+                const SliverPersistentHeader(
                   delegate: TabBarDelegate(),
                   pinned: true,
                 ),
@@ -387,7 +388,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   placeholder: (context, url) => Container(
                                     color: kPreviousNeutralColor300,
                                   ),
-                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${item.imgUrl}").toUrl(),
+                                  imageUrl: thumborUrl(item.imgUrl ?? ''),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -418,7 +419,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                               child: Row(
                                 children: [
                                   Padding(
-                                    padding: EdgeInsets.only(left: 6.0.w, right: 2.w),
+                                    padding: const EdgeInsets.only(left: 6.0, right: 2),
                                     child: InkWell(
                                       onTap: () async {
                                         ref.read(contentLikeUserListStateProvider.notifier).contentsIdx = item.idx;
@@ -429,7 +430,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                           context: context,
                                           widget: Consumer(builder: (context, ref, child) {
                                             return SizedBox(
-                                              height: 500.h,
+                                              height: 500,
                                               child: PagedListView<int, ContentLikeUserListData>(
                                                 pagingController: _contentLikeUserPagingController,
                                                 builderDelegate: PagedChildBuilderDelegate<ContentLikeUserListData>(
@@ -502,7 +503,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                     style: kBadge10MediumStyle.copyWith(color: kPreviousNeutralColor100),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(left: 6.0.w, right: 2.w),
+                                    padding: const EdgeInsets.only(left: 6.0, right: 2),
                                     child: Builder(builder: (context) {
                                       return InkWell(
                                         onTap: () async {
@@ -517,7 +518,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                   FocusScope.of(context).requestFocus(FocusNode());
                                                 },
                                                 child: SizedBox(
-                                                  height: 500.h,
+                                                  height: 500,
                                                   child: Column(
                                                     children: [
                                                       Expanded(
@@ -661,15 +662,15 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                               ),
                             ),
                             Positioned(
-                              right: 6.w,
-                              top: 6.w,
+                              right: 6,
+                              top: 6,
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: const Color(0xff414348).withOpacity(0.75),
                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                                width: 18.w,
-                                height: 14.w,
+                                width: 18,
+                                height: 14,
                                 child: Center(
                                   child: Text(
                                     '${item.imageCnt}',
@@ -805,21 +806,21 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   placeholder: (context, url) => Container(
                                     color: kPreviousNeutralColor300,
                                   ),
-                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${item.imgUrl}").toUrl(),
+                                  imageUrl: thumborUrl(item.imgUrl ?? ''),
                                   fit: BoxFit.cover,
                                 ),
                               ),
                             ),
                             Positioned(
-                              right: 6.w,
-                              top: 6.w,
+                              right: 6,
+                              top: 6,
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: const Color(0xff414348).withOpacity(0.75),
                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                                width: 18.w,
-                                height: 14.w,
+                                width: 18,
+                                height: 14,
                                 child: Center(
                                   child: Text(
                                     "${item.imageCnt}",
@@ -855,8 +856,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
             Row(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                  child: getProfileAvatar(data.profileImgUrl ?? "", 48.w, 48.h),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: getProfileAvatar(data.profileImgUrl ?? "", 48, 48),
                 ),
                 Expanded(
                   child: Column(
@@ -870,10 +871,10 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   children: [
                                     Image.asset(
                                       'assets/image/feed/icon/small_size/icon_special.png',
-                                      height: 13.h,
+                                      height: 13,
                                     ),
-                                    SizedBox(
-                                      width: 4.w,
+                                    const SizedBox(
+                                      width: 4,
                                     ),
                                   ],
                                 )
@@ -909,7 +910,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         visible: data.intro != "",
                         child: Column(
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               height: 3,
                             ),
                             Text(
@@ -928,7 +929,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                           });
                         },
                         child: Padding(
-                          padding: EdgeInsets.only(top: 8.0.h),
+                          padding: const EdgeInsets.only(top: 8.0),
                           child: Row(
                             children: [
                               Text(
@@ -1105,8 +1106,8 @@ PopupMenuItem diaryPopUpMenuItem(
       child: Row(
         children: [
           icon,
-          SizedBox(
-            width: 10.w,
+          const SizedBox(
+            width: 10,
           ),
           Text(
             value,
@@ -1128,7 +1129,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
     return Container(
       height: tabBarHeight,
       decoration: shrinkOffset == 0
-          ? BoxDecoration(
+          ? const BoxDecoration(
               color: kWhiteColor,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20.0),
@@ -1154,9 +1155,9 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                 indicatorColor: kPreviousNeutralColor600,
                 unselectedLabelColor: kPreviousNeutralColor500,
                 indicatorSize: TabBarIndicatorSize.label,
-                labelPadding: EdgeInsets.only(
-                  top: 10.h,
-                  bottom: 10.h,
+                labelPadding: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 10,
                 ),
                 tabs: [
                   Tab(

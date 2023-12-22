@@ -1,7 +1,8 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -44,7 +45,7 @@ class FeedCommentWidget extends ConsumerWidget {
         context.push("/home/commentDetail/$contentIdx/$oldMemberUuid");
       },
       child: Padding(
-        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 12.h),
+        padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -65,19 +66,19 @@ class FeedCommentWidget extends ConsumerWidget {
               },
               child: getProfileAvatar(profileImage ?? "", 30, 30),
             ),
-            SizedBox(
-              width: 8.w,
+            const SizedBox(
+              width: 8,
             ),
             Expanded(
               child: Bubble(
                 isComment: true,
-                radius: Radius.circular(10.w),
+                radius: const Radius.circular(10),
                 elevation: 0,
                 alignment: Alignment.topLeft,
                 nip: BubbleNip.leftTop,
-                nipOffset: 15.h,
+                nipOffset: 15,
                 color: kPreviousNeutralColor200,
-                padding: BubbleEdges.only(left: 12.w, right: 12.w, top: 10.h, bottom: 12.h),
+                padding: const BubbleEdges.only(left: 12, right: 12, top: 10, bottom: 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -88,10 +89,10 @@ class FeedCommentWidget extends ConsumerWidget {
                                 children: [
                                   Image.asset(
                                     'assets/image/feed/icon/small_size/icon_special.png',
-                                    height: 13.h,
+                                    height: 13,
                                   ),
-                                  SizedBox(
-                                    width: 4.w,
+                                  const SizedBox(
+                                    width: 4,
                                   ),
                                 ],
                               )
@@ -102,8 +103,8 @@ class FeedCommentWidget extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 6.h,
+                    const SizedBox(
+                      height: 6,
                     ),
                     Container(
                       alignment: Alignment.centerLeft,

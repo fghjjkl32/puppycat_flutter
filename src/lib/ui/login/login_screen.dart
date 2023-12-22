@@ -52,17 +52,18 @@ class LoginScreen extends ConsumerWidget {
     ref.listen(loginStateProvider, (previous, next) {
       if (next == LoginStatus.withdrawalPending) {
         showCustomModalBottomSheet(context: context, widget: const WithDrawalPendingSheetItem());
-      } else if (next == LoginStatus.restriction) {
-        ///TODO
-        ///API 호출
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) => const RestrictionDialog(
-            isForever: false,
-          ),
-        );
       }
+      // else if (next == LoginStatus.restriction) {
+      //   ///TODO
+      //   ///API 호출
+      //   showDialog(
+      //     barrierDismissible: false,
+      //     context: context,
+      //     builder: (context) => const RestrictionDialog(
+      //       isForever: false,
+      //     ),
+      //   );
+      // }
     });
 
     ref.listen(userRestoreStateProvider, (previous, next) {

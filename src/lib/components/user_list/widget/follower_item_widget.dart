@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -66,7 +67,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
         //Route 다시
       },
       child: Padding(
-        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 8, top: 8),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -75,10 +76,10 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
               child: Row(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(
-                      right: 10.w,
+                    padding: const EdgeInsets.only(
+                      right: 10,
                     ),
-                    child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
+                    child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
                   ),
                   Expanded(
                     child: Column(
@@ -91,10 +92,10 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                     children: [
                                       Image.asset(
                                         'assets/image/feed/icon/small_size/icon_special.png',
-                                        height: 13.h,
+                                        height: 13,
                                       ),
-                                      SizedBox(
-                                        width: 4.w,
+                                      const SizedBox(
+                                        width: 4,
                                       ),
                                     ],
                                   )
@@ -109,8 +110,8 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 4.h,
+                        const SizedBox(
+                          height: 4,
                         ),
                         Text(
                           widget.content,
@@ -147,8 +148,8 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                   }
                                 },
                                 child: Container(
-                                  width: 56.w,
-                                  height: 32.h,
+                                  width: 56,
+                                  height: 32,
                                   decoration: const BoxDecoration(
                                     color: kPreviousNeutralColor300,
                                     borderRadius: BorderRadius.all(
@@ -182,8 +183,8 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                   }
                                 },
                                 child: Container(
-                                  width: 56.w,
-                                  height: 32.h,
+                                  width: 56,
+                                  height: 32,
                                   decoration: const BoxDecoration(
                                     color: kPreviousPrimaryColor,
                                     borderRadius: BorderRadius.all(
@@ -199,8 +200,8 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                 ),
                               );
                       }),
-                      SizedBox(
-                        width: 10.w,
+                      const SizedBox(
+                        width: 10,
                       ),
                       widget.memberUuid != myInfo.uuid
                           ? Container()
@@ -240,7 +241,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                         "${widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName}님이 ${myInfo.nick!.length > 8 ? '${myInfo.nick?.substring(0, 8)}...' : myInfo.nick}님을 다시 팔로우할 수 있어요.",
                                         style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                       ),
-                                      SizedBox(height: 20.h),
+                                      const SizedBox(height: 20),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
@@ -249,8 +250,8 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                               context.pop();
                                             },
                                             child: Container(
-                                              width: 152.w,
-                                              height: 36.h,
+                                              width: 152,
+                                              height: 36,
                                               decoration: const BoxDecoration(
                                                 color: kBackgroundSecondary,
                                                 borderRadius: BorderRadius.all(
@@ -265,8 +266,8 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                               ),
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: 8.w,
+                                          const SizedBox(
+                                            width: 8,
                                           ),
                                           GestureDetector(
                                             onTap: () async {
@@ -278,8 +279,8 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                               }
                                             },
                                             child: Container(
-                                              width: 152.w,
-                                              height: 36.h,
+                                              width: 152,
+                                              height: 36,
                                               decoration: const BoxDecoration(
                                                 color: kBackgroundActionPrimary,
                                                 borderRadius: BorderRadius.all(

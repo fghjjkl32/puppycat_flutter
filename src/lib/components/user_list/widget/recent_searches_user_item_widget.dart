@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -54,7 +55,7 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
         //Route 다시
       },
       child: Padding(
-        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 8, top: 8),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,10 +64,10 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
               child: Row(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(
-                      right: 10.w,
+                    padding: const EdgeInsets.only(
+                      right: 10,
                     ),
-                    child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
+                    child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
                   ),
                   Expanded(
                     child: Column(
@@ -79,10 +80,10 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
                                     children: [
                                       Image.asset(
                                         'assets/image/feed/icon/small_size/icon_special.png',
-                                        height: 13.h,
+                                        height: 13,
                                       ),
-                                      SizedBox(
-                                        width: 4.w,
+                                      const SizedBox(
+                                        width: 4,
                                       ),
                                     ],
                                   )
@@ -97,8 +98,8 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 4.h,
+                        const SizedBox(
+                          height: 4,
                         ),
                         Text(
                           widget.content,
@@ -116,7 +117,7 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
                   DateFormat('MM.dd').format(widget.dateTime),
                   style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Padding(
