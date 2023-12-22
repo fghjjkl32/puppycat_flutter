@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
-import 'package:pet_mobile_social_flutter/ui/admin/admin_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/admin/admin_setting_screen.dart';
 
 //ignore: must_be_immutable
 class PasswordScreen extends StatefulWidget {
@@ -48,7 +48,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
       context,
       MaterialPageRoute(
           builder: (BuildContext context) => const SafeArea(
-                child: AdminScreen(),
+                child: AdminSettingScreen(),
               )),
     );
   }

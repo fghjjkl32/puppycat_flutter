@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -95,7 +95,7 @@ class NotificationFollowItem extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 10.w, right: 4.w),
+                        padding: EdgeInsets.only(left: 10, right: 4),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             foregroundColor: isFollowed ? kPreviousTextBodyColor : kPreviousNeutralColor100,

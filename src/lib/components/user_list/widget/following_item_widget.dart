@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -65,7 +66,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
         //Route 다시
       },
       child: Padding(
-        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 8, top: 8),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -74,10 +75,10 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
               child: Row(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(
-                      right: 10.w,
+                    padding: const EdgeInsets.only(
+                      right: 10,
                     ),
-                    child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
+                    child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
                   ),
                   Expanded(
                     child: Column(
@@ -90,10 +91,10 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                                     children: [
                                       Image.asset(
                                         'assets/image/feed/icon/small_size/icon_special.png',
-                                        height: 13.h,
+                                        height: 13,
                                       ),
-                                      SizedBox(
-                                        width: 4.w,
+                                      const SizedBox(
+                                        width: 4,
                                       ),
                                     ],
                                   )
@@ -106,8 +107,8 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                                 style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                               ),
                             ),
-                            SizedBox(
-                              width: 4.w,
+                            const SizedBox(
+                              width: 4,
                             ),
                             widget.isNewUser
                                 ? Center(
@@ -128,8 +129,8 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                                 : Container(),
                           ],
                         ),
-                        SizedBox(
-                          height: 4.h,
+                        const SizedBox(
+                          height: 4,
                         ),
                         Text(
                           widget.content,
@@ -164,8 +165,8 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                               }
                             },
                             child: Container(
-                              width: 56.w,
-                              height: 32.h,
+                              width: 56,
+                              height: 32,
                               decoration: const BoxDecoration(
                                 color: kPreviousNeutralColor300,
                                 borderRadius: BorderRadius.all(
@@ -199,8 +200,8 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                               }
                             },
                             child: Container(
-                              width: 56.w,
-                              height: 32.h,
+                              width: 56,
+                              height: 32,
                               decoration: const BoxDecoration(
                                 color: kPreviousPrimaryColor,
                                 borderRadius: BorderRadius.all(

@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -13,7 +13,6 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_save_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:thumbor/thumbor.dart';
 
 class MyPageMyActivityListScreen extends ConsumerStatefulWidget {
   const MyPageMyActivityListScreen({super.key});
@@ -106,8 +105,8 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                           "좋아요",
                           style: kBody14BoldStyle,
                         ),
-                        SizedBox(
-                          width: 6.w,
+                        const SizedBox(
+                          width: 6,
                         ),
                         Text(
                           "${ref.watch(myLikeStateProvider).totalCount}",
@@ -127,8 +126,8 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                           "저장",
                           style: kBody14BoldStyle,
                         ),
-                        SizedBox(
-                          width: 6.w,
+                        const SizedBox(
+                          width: 6,
                         ),
                         Text(
                           "${ref.watch(mySaveStateProvider).totalCount}",
@@ -217,7 +216,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                   return ref.read(myLikeStateProvider.notifier).refresh();
                 },
                 child: Padding(
-                  padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
+                  padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
                   child: GridView.builder(
                     controller: myLikeContentController,
                     addAutomaticKeepAlives: false,
@@ -276,7 +275,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         child: Stack(
                           children: [
                             CachedNetworkImage(
-                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
+                              imageUrl: thumborUrl(lists[index].imgUrl ?? ''),
                               imageBuilder: (context, imageProvider) => Container(
                                 decoration: BoxDecoration(
                                   borderRadius: (index == 0)
@@ -293,18 +292,18 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                               placeholder: (context, url) => Container(
                                 color: kPreviousNeutralColor300,
                               ),
-                              errorWidget: (context, url, error) => Icon(Icons.error),
+                              errorWidget: (context, url, error) => const Icon(Icons.error),
                             ),
                             Positioned(
-                              right: 4.w,
-                              top: 4.w,
+                              right: 4,
+                              top: 4,
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: const Color(0xff414348).withOpacity(0.75),
                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                                width: 18.w,
-                                height: 14.w,
+                                width: 18,
+                                height: 14,
                                 child: Center(
                                   child: Text(
                                     "${lists[index].imageCnt}",
@@ -366,7 +365,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                   return ref.read(mySaveStateProvider.notifier).refresh();
                 },
                 child: Padding(
-                  padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
+                  padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
                   child: GridView.builder(
                     controller: mySaveContentController,
                     gridDelegate: SliverQuiltedGridDelegate(
@@ -423,7 +422,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         child: Stack(
                           children: [
                             CachedNetworkImage(
-                              imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
+                              imageUrl: thumborUrl(lists[index].imgUrl ?? ''),
                               imageBuilder: (context, imageProvider) => Container(
                                 decoration: BoxDecoration(
                                   borderRadius: (index == 0)
@@ -440,18 +439,18 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                               placeholder: (context, url) => Container(
                                 color: kPreviousNeutralColor300,
                               ),
-                              errorWidget: (context, url, error) => Icon(Icons.error),
+                              errorWidget: (context, url, error) => const Icon(Icons.error),
                             ),
                             Positioned(
-                              right: 4.w,
-                              top: 4.w,
+                              right: 4,
+                              top: 4,
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: const Color(0xff414348).withOpacity(0.75),
                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                                width: 18.w,
-                                height: 14.w,
+                                width: 18,
+                                height: 14,
                                 child: Center(
                                   child: Text(
                                     "${lists[index].imageCnt}",

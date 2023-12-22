@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -65,8 +65,8 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                     height: 68,
                     width: 68,
                   ),
-                  SizedBox(
-                    width: 20.w,
+                  const SizedBox(
+                    width: 20,
                   ),
                   Text(
                     '''활동한 정보는 돌아오실 경우를 위해 
@@ -76,8 +76,8 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                   ),
                 ],
               ),
-              SizedBox(
-                height: 20.h,
+              const SizedBox(
+                height: 20,
               ),
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
@@ -85,7 +85,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                 itemCount: withdrawalLists.length,
                 itemBuilder: (BuildContext context, int i) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 14.0.w),
+                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -93,7 +93,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16.0.h, horizontal: 20.0.w),
+                        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -117,11 +117,11 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 4.h,
+                            const SizedBox(
+                              height: 4,
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
+                              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -137,7 +137,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
+                              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -153,7 +153,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
+                              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -169,7 +169,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
+                              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -273,7 +273,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 10.0.w),
+                padding: const EdgeInsets.only(left: 10.0),
                 child: GestureDetector(
                   onTap: () {
                     onTap();
@@ -298,10 +298,10 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(
-                  left: 20.0.w,
-                  right: 20.0.w,
-                  bottom: 20.0.h,
+                padding: const EdgeInsets.only(
+                  left: 20.0,
+                  right: 20.0,
+                  bottom: 20.0,
                 ),
                 child: SizedBox(
                   width: double.infinity,

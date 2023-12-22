@@ -140,6 +140,7 @@ class ChatRoomState extends _$ChatRoomState {
       for (var room in rooms) {
         String roomId = room.roomId;
         // String roomId = 'VBrhzLZgGG-nAFo5CS7jp-20210802120142';
+        // String roomId = 'phzFRNVDOX-C34e30XOe7-20231222132959';
         print('222222');
         // Channel channel = await VChatCloud.connect(CustomHandler(roomId: roomId, channelStore: channelStore));
         final socket = await ref.read(chatSocketStateProvider);

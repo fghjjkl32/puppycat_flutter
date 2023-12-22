@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/select_button.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -71,8 +71,8 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                       "어떤 점이 불편하신가요?",
                       style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
-                    SizedBox(
-                      height: 14.h,
+                    const SizedBox(
+                      height: 14,
                     ),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
@@ -110,10 +110,10 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                  left: 20.0.w,
-                  right: 20.0.w,
-                  bottom: 20.0.h,
+                padding: const EdgeInsets.only(
+                  left: 20.0,
+                  right: 20.0,
+                  bottom: 20.0,
                 ),
                 child: SizedBox(
                   width: double.infinity,

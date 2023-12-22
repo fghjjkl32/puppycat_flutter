@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_bottom_icon_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_comment_widget.dart';
@@ -74,7 +75,7 @@ class FeedDetailWidget extends ConsumerWidget {
           height: 10,
         ),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Container(
             alignment: Alignment.centerLeft,
             child: RichText(
@@ -113,9 +114,9 @@ class FeedDetailWidget extends ConsumerWidget {
                 contentIdx: feedData.idx,
                 oldMemberUuid: memberUuid,
               ),
-        Padding(
-          padding: EdgeInsets.all(12.0.h),
-          child: const Divider(),
+        const Padding(
+          padding: EdgeInsets.all(12.0),
+          child: Divider(),
         ),
         if (index != 0 && index == 4)
           FeedFollowWidget(

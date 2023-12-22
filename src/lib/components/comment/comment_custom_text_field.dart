@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/components/feed/comment/mention_autocomplete_options.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
@@ -77,7 +78,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(left: 12.0.w),
+                              padding: const EdgeInsets.only(left: 12.0),
                               child: Text(
                                 "@${ref.watch(commentHeaderProvider).name} 님에게 답글 남기기",
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
@@ -108,7 +109,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(left: 12.0.w),
+                              padding: const EdgeInsets.only(left: 12.0),
                               child: Text(
                                 "댓글 수정",
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),

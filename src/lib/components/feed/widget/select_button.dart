@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -52,7 +53,7 @@ class SelectButton extends StatelessWidget {
                     children: [
                       isDirectInput && isSelected
                           ? Padding(
-                              padding: EdgeInsets.only(right: 8.0.w),
+                              padding: const EdgeInsets.only(right: 8.0),
                               child: Text(
                                 "최대 200자",
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
@@ -70,12 +71,12 @@ class SelectButton extends StatelessWidget {
               ),
               if (isDirectInput && isSelected)
                 Padding(
-                  padding: EdgeInsets.only(top: 8.h, left: 4.w, right: 4.w, bottom: 4.h),
+                  padding: const EdgeInsets.only(top: 8, left: 4, right: 4, bottom: 4),
                   child: FormBuilderTextField(
                     onChanged: onTextChanged,
                     scrollPhysics: const ClampingScrollPhysics(),
                     maxLength: 200,
-                    scrollPadding: EdgeInsets.only(bottom: 500.h),
+                    scrollPadding: const EdgeInsets.only(bottom: 500),
                     maxLines: 6,
                     decoration: InputDecoration(
                       fillColor: kPreviousNeutralColor100,

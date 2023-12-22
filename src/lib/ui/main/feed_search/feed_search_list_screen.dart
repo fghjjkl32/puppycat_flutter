@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -134,7 +136,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                 : Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(left: 12.0.w, right: 12.0.w),
+                        padding: const EdgeInsets.only(left: 12.0, right: 12.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -146,17 +148,17 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                   mask: Center(
                                     child: Image.asset(
                                       'assets/image/search/icon/icon_tag_large.png',
-                                      height: 20.w,
+                                      height: 20,
                                       fit: BoxFit.fill,
                                     ),
                                   ),
                                   child: SvgPicture.asset(
                                     'assets/image/feed/image/squircle.svg',
-                                    height: 32.h,
+                                    height: 32,
                                   ),
                                 ),
-                                SizedBox(
-                                  width: 8.w,
+                                const SizedBox(
+                                  width: 8,
                                 ),
                                 Text(
                                   widget.searchWord,
@@ -243,21 +245,21 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                                   : BorderRadius.circular(0),
                                           image: DecorationImage(
                                               image: NetworkImage(
-                                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
+                                                thumborUrl(lists[index].imgUrl ?? ''),
                                               ),
                                               fit: BoxFit.cover),
                                         ),
                                       ),
                                       Positioned(
-                                        right: 4.w,
-                                        top: 4.w,
+                                        right: 4,
+                                        top: 4,
                                         child: Container(
                                           decoration: BoxDecoration(
                                             color: const Color(0xff414348).withOpacity(0.75),
                                             borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                           ),
-                                          width: 18.w,
-                                          height: 14.w,
+                                          width: 18,
+                                          height: 14,
                                           child: Center(
                                             child: Text(
                                               "${lists[index].imageCnt}",

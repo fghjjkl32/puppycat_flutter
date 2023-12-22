@@ -20,94 +20,22 @@ import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+part 'package:pet_mobile_social_flutter/config/hosts.dart';
+
 final hashtagListProvider = StateProvider<List<String>>((ref) => []);
 
 final mentionListProvider = StateProvider<List<MentionListData>>((ref) => []);
 
 const int APP_BUILD_NUMBER = 12;
 
-class Constants {
-  static Future<String> getBaseUrl() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedURL') ?? baseUrl;
-  }
-
-  static Future<String> getBaseWalkUrl() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedWalkURL') ?? walkBaseUrl;
-  }
-
-  static Future<String> getBaseWalkGpsUrl() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedWalkGpsURL') ?? walkGpsBaseUrl;
-  }
-
-  static Future<String> getThumborHostUrl() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborHostUrl') ?? thumborHostUrl;
-  }
-
-  static Future<String> getThumborKey() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborKey') ?? thumborKey;
-  }
-
-  static Future<String> getThumborDomain() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('thumborDomain') ?? '';
-  }
-
-  static Future<String> getInspectS3Domain() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedInspectS3URL') ?? inspectS3BaseUrl;
-  }
-
-  static Future<String> getUpdateS3Domain() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('selectedUpdateS3URL') ?? updateS3BaseUrl;
-  }
-
-  static Future<String> checkFirstInstall() async {
-    final DateTime date = await AppInstallDate().installDate;
-    return date.toString();
-  }
+Future<String> checkFirstInstall() async {
+  final DateTime date = await AppInstallDate().installDate;
+  return date.toString();
 }
-
-// String baseUrl = "https://pet-api.devlabs.co.kr/";
-String baseUrl = "https://api.pcstg.co.kr/";
-// String baseUrl = "https://api.puppycat.co.kr/";
-
-// String thumborHostUrl = "https://tb.pcstg.co.kr/";
-String thumborHostUrl = "https://tb.pcstg.co.kr/";
-// String thumborHostUrl = "https://tb.puppycat.co.kr/";
-
-String thumborKey = "Tjaqhvpt";
-// String thumborKey = "vjvlzotvldkfel"; //prd
-// String imgDomain = "https://imgs.pcstg.co.kr";
-// String imgDomain = "https://imgs.pcstg.co.kr";
-
-String inspectS3BaseUrl = "https://mnt.puppycat.co.kr/maintenance/prd"; //prd
-String updateS3BaseUrl = "https://mnt.puppycat.co.kr/update/prd"; //prd
 
 String firstInstallTime = "";
 String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
-
-// String walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr/';
-String walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
-// String walkBaseUrl = 'https://walk-api.puppycat.co.kr/';
-
-// String walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr/';
-String walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
-// String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
-
-// String memberBaseUrl = 'https://puppycat-dev-member-api.devlabs.co.kr/';
-String memberBaseUrl = 'https://member-api.pcstg.co.kr/';
-// String memberBaseUrl = 'https://member-api.puppycat.co.kr/';
-
-// String chatBaseUrl = "https://pet-chat.devlabs.co.kr/";
-String chatBaseUrl = "https://chat.pcstg.co.kr/";
-// String chatBaseUrl = "https://chat.puppycat.co.kr/";
 
 double getImageHeightCalculateValue(double width) {
   const double slope = 0.172727;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/follower_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/following_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -117,8 +117,8 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                           "팔로워",
                           style: kBody14BoldStyle,
                         ),
-                        SizedBox(
-                          width: 6.w,
+                        const SizedBox(
+                          width: 6,
                         ),
                         Text(
                           "${ref.watch(followStateProvider).followerListState.totalCount}",
@@ -138,8 +138,8 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                           "팔로잉",
                           style: kBody14BoldStyle,
                         ),
-                        SizedBox(
-                          width: 6.w,
+                        const SizedBox(
+                          width: 6,
                         ),
                         Text(
                           "${ref.watch(followStateProvider).followListState.totalCount}",
@@ -237,8 +237,8 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 4.h,
+                const SizedBox(
+                  height: 4,
                 ),
                 Expanded(
                   child: lists.isEmpty
@@ -378,8 +378,8 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 4.h,
+                const SizedBox(
+                  height: 4,
                 ),
                 Expanded(
                   child: lists.isEmpty

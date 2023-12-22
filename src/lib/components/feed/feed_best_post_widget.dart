@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_best_post_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -21,7 +22,7 @@ class FeedBestPostWidget extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h),
+                padding: const EdgeInsets.only(left: 16.0, right: 10, bottom: 12),
                 child: Text(
                   "인기 급상승",
                   style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
@@ -31,7 +32,7 @@ class FeedBestPostWidget extends ConsumerWidget {
                 width: double.infinity,
                 height: 112,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 6.0.w),
+                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
                   child: ListView.builder(
                     itemCount: feedData.length,
                     scrollDirection: Axis.horizontal,
@@ -62,9 +63,9 @@ class FeedBestPostWidget extends ConsumerWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 16.0.h),
-                child: const Divider(),
+              const Padding(
+                padding: EdgeInsets.only(top: 16.0),
+                child: Divider(),
               ),
               const SizedBox(
                 height: 30,

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:thumbor/thumbor.dart';
 
 class NotificationPostItem extends StatelessWidget {
   const NotificationPostItem({
@@ -158,11 +156,11 @@ class NotificationPostItem extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: 10.w),
+                          padding: EdgeInsets.only(left: 10),
                           child: ClipRRect(
                             borderRadius: const BorderRadius.all(Radius.circular(8)),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${imgUrl}").toUrl(),
+                              thumborUrl(imgUrl ?? ''),
                               fit: BoxFit.cover,
                               height: 52,
                               width: 52,

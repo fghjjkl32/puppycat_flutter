@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/my_feed_delete_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/my_feed_keep_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -15,7 +15,6 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:thumbor/thumbor.dart';
 
 class MyPageMyPostListScreen extends ConsumerStatefulWidget {
   const MyPageMyPostListScreen({super.key});
@@ -113,8 +112,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           "일상글",
                           style: kBody14BoldStyle,
                         ),
-                        SizedBox(
-                          width: 6.w,
+                        const SizedBox(
+                          width: 6,
                         ),
                         Text(
                           "${ref.watch(myPostStateProvider).myPostState.totalCount}",
@@ -134,8 +133,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           "보관글",
                           style: kBody14BoldStyle,
                         ),
-                        SizedBox(
-                          width: 6.w,
+                        const SizedBox(
+                          width: 6,
                         ),
                         Text(
                           "${ref.watch(myPostStateProvider).myKeepState.totalCount}",
@@ -201,7 +200,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
             : Stack(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
+                    padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
                     child: GridView.builder(
                       controller: myPostContentController,
                       gridDelegate: SliverQuiltedGridDelegate(
@@ -261,7 +260,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           child: Stack(
                             children: [
                               CachedNetworkImage(
-                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
+                                imageUrl: thumborUrl(lists[index].imgUrl ?? ''),
                                 imageBuilder: (context, imageProvider) => Container(
                                   decoration: BoxDecoration(
                                     borderRadius: (index == 0)
@@ -278,18 +277,18 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 placeholder: (context, url) => Container(
                                   color: kPreviousNeutralColor300,
                                 ),
-                                errorWidget: (context, url, error) => Icon(Icons.error),
+                                errorWidget: (context, url, error) => const Icon(Icons.error),
                               ),
                               Positioned(
-                                right: 4.w,
-                                top: 4.w,
+                                right: 4,
+                                top: 4,
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: const Color(0xff414348).withOpacity(0.75),
                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  width: 18.w,
-                                  height: 14.w,
+                                  width: 18,
+                                  height: 14,
                                   child: Center(
                                     child: Text(
                                       '${lists[index].imageCnt}',
@@ -312,8 +311,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                         height: 20,
                                         decoration: BoxDecoration(
                                           border: myPageMyPostState.myPostState.selectOrder[index] != -1
-                                              ? Border.all(color: kPreviousPrimaryColor.withOpacity(0.7), width: 2.w)
-                                              : Border.all(color: kPreviousNeutralColor100.withOpacity(0.7), width: 2.w),
+                                              ? Border.all(color: kPreviousPrimaryColor.withOpacity(0.7), width: 2)
+                                              : Border.all(color: kPreviousNeutralColor100.withOpacity(0.7), width: 2),
                                           shape: BoxShape.circle,
                                         ),
                                         child: Container(
@@ -372,8 +371,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           children: [
                             GestureDetector(
                               child: Container(
-                                width: 152.w,
-                                height: 36.h,
+                                width: 152,
+                                height: 36,
                                 decoration: BoxDecoration(
                                   color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousPrimaryLightColor : kPreviousNeutralColor400,
                                   borderRadius: const BorderRadius.all(
@@ -412,13 +411,13 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                     : null;
                               },
                             ),
-                            SizedBox(
-                              width: 10.w,
+                            const SizedBox(
+                              width: 10,
                             ),
                             GestureDetector(
                               child: Container(
-                                width: 152.w,
-                                height: 36.h,
+                                width: 152,
+                                height: 36,
                                 decoration: BoxDecoration(
                                   color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousErrorColor : kPreviousNeutralColor400,
                                   borderRadius: const BorderRadius.all(
@@ -533,7 +532,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
             : Stack(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(top: 10.0.h, left: 12.w, right: 12.w),
+                    padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
                     child: GridView.builder(
                       controller: myKeepContentController,
                       gridDelegate: SliverQuiltedGridDelegate(
@@ -597,7 +596,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           child: Stack(
                             children: [
                               CachedNetworkImage(
-                                imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${lists[index].imgUrl}").toUrl(),
+                                imageUrl: thumborUrl(lists[index].imgUrl ?? ''),
                                 imageBuilder: (context, imageProvider) => Container(
                                   decoration: BoxDecoration(
                                     borderRadius: (index == 0)
@@ -614,18 +613,18 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 placeholder: (context, url) => Container(
                                   color: kPreviousNeutralColor300,
                                 ),
-                                errorWidget: (context, url, error) => Icon(Icons.error),
+                                errorWidget: (context, url, error) => const Icon(Icons.error),
                               ),
                               Positioned(
-                                right: 4.w,
-                                top: 4.w,
+                                right: 4,
+                                top: 4,
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: const Color(0xff414348).withOpacity(0.75),
                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                   ),
-                                  width: 18.w,
-                                  height: 14.w,
+                                  width: 18,
+                                  height: 14,
                                   child: Center(
                                     child: Text(
                                       "${lists[index].imageCnt}",
@@ -648,8 +647,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                         height: 20,
                                         decoration: BoxDecoration(
                                           border: myKeepState.myKeepState.selectOrder[index] != -1
-                                              ? Border.all(color: kPreviousPrimaryColor.withOpacity(0.7), width: 2.w)
-                                              : Border.all(color: kPreviousNeutralColor100.withOpacity(0.7), width: 2.w),
+                                              ? Border.all(color: kPreviousPrimaryColor.withOpacity(0.7), width: 2)
+                                              : Border.all(color: kPreviousNeutralColor100.withOpacity(0.7), width: 2),
                                           shape: BoxShape.circle,
                                         ),
                                         child: Container(
@@ -708,8 +707,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           children: [
                             GestureDetector(
                               child: Container(
-                                width: 152.w,
-                                height: 36.h,
+                                width: 152,
+                                height: 36,
                                 decoration: BoxDecoration(
                                   color: myKeepController.hasMyKeepSelectedImage() ? kPreviousPrimaryLightColor : kPreviousNeutralColor400,
                                   borderRadius: const BorderRadius.all(
@@ -740,13 +739,13 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 }
                               },
                             ),
-                            SizedBox(
-                              width: 10.w,
+                            const SizedBox(
+                              width: 10,
                             ),
                             GestureDetector(
                               child: Container(
-                                width: 152.w,
-                                height: 36.h,
+                                width: 152,
+                                height: 36,
                                 decoration: BoxDecoration(
                                   color: myKeepController.hasMyKeepSelectedImage() ? kPreviousErrorColor : kPreviousNeutralColor400,
                                   borderRadius: const BorderRadius.all(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -17,7 +17,6 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_curren
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_view_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_tag_search_screen.dart';
-import 'package:thumbor/thumbor.dart';
 
 class EditTagScreen extends ConsumerWidget {
   EditTagScreen({
@@ -80,16 +79,16 @@ class EditTagScreen extends ConsumerWidget {
                 ),
               ],
             ),
-            SizedBox(height: 103.h),
+            const SizedBox(height: 103),
             Text(
               "태그 할 위치를 눌러보세요.",
               style: kBody14BoldStyle.copyWith(color: kPreviousNeutralColor100),
             ),
-            SizedBox(
-              height: 12.h,
+            const SizedBox(
+              height: 12,
             ),
             SizedBox(
-              height: 280.h,
+              height: 280,
               // PageView를 사용하여 사용자가 태그를 추가할 이미지를 넘겨볼 수 있게 합니다.
               // 사용자가 페이지를 넘길 때마다, counter를 업데이트합니다.
               child: PageView(
@@ -115,7 +114,7 @@ class EditTagScreen extends ConsumerWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0.h),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: DotIndicator(
                 counter: ValueNotifier<int>(ref.watch(feedWriteCurrentViewCountProvider.notifier).state),
                 imageListLength: feedData.imgList!.length,
@@ -223,7 +222,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               child: Image.network(
-                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.url}").toUrl(),
+                thumborUrl(widget.url ?? ''),
                 fit: BoxFit.cover,
                 key: widget.imageKey,
               ),

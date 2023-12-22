@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
@@ -30,7 +31,7 @@ class FeedWriteScreen extends ConsumerWidget {
           builder: (BuildContext context) {
             return CustomDialog(
               content: Padding(
-                padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                padding: const EdgeInsets.symmetric(vertical: 24.0),
                 child: Column(
                   children: [
                     Text(
@@ -78,7 +79,7 @@ class FeedWriteScreen extends ConsumerWidget {
                 builder: (BuildContext context) {
                   return CustomDialog(
                     content: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
                       child: Column(
                         children: [
                           Text(
@@ -175,15 +176,15 @@ class FeedWriteScreen extends ConsumerWidget {
                     builder: (context) {
                       return CustomDialog(
                           content: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                            padding: const EdgeInsets.symmetric(vertical: 24.0),
                             child: Column(
                               children: [
                                 Text(
                                   "피드 올리는데 문제가 생겼어요.",
                                   style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                 ),
-                                SizedBox(
-                                  height: 4.h,
+                                const SizedBox(
+                                  height: 4,
                                 ),
                                 Text(
                                   "올리기를 다시 시도해 주세요.",

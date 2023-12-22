@@ -1,7 +1,8 @@
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -66,7 +67,7 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
         //Route 다시
       },
       child: Padding(
-        padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 8.h, top: 8.h),
+        padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 8, top: 8),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -74,10 +75,10 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
             Row(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(
-                    right: 10.w,
+                  padding: const EdgeInsets.only(
+                    right: 10,
                   ),
-                  child: getProfileAvatar(widget.profileImage ?? "", 32.w, 32.h),
+                  child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,10 +90,10 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
                                 children: [
                                   Image.asset(
                                     'assets/image/feed/icon/small_size/icon_special.png',
-                                    height: 13.h,
+                                    height: 13,
                                   ),
-                                  SizedBox(
-                                    width: 4.w,
+                                  const SizedBox(
+                                    width: 4,
                                   ),
                                 ],
                               )
@@ -103,8 +104,8 @@ class UserItemWidgetState extends ConsumerState<UserItemWidget> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 4.h,
+                    const SizedBox(
+                      height: 4,
                     ),
                     Text(
                       widget.content,

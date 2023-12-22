@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/popular_user_list/popular_user_list_data.dart';
@@ -14,7 +13,6 @@ import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
-import 'package:thumbor/thumbor.dart';
 
 class FeedFollowCardWidget extends ConsumerStatefulWidget {
   const FeedFollowCardWidget({
@@ -59,7 +57,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
     final isLogined = ref.read(loginStatementProvider);
 
     return Padding(
-      padding: EdgeInsets.only(left: 12.0.w),
+      padding: const EdgeInsets.only(left: 12.0),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
@@ -69,13 +67,13 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
           color: kWhiteColor,
           borderRadius: const BorderRadius.all(Radius.circular(12.0)),
           boxShadow: [
-            BoxShadow(
+            const BoxShadow(
               offset: Offset(0, -4),
               blurRadius: 6,
               spreadRadius: 0,
               color: Color(0x0A000000),
             ),
-            BoxShadow(
+            const BoxShadow(
               offset: Offset(0, 4),
               blurRadius: 6,
               spreadRadius: 0,
@@ -84,7 +82,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
           ],
         ),
         width: 230,
-        height: 202.h,
+        height: 202,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -108,11 +106,11 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                   child: Row(
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(
-                          left: 12.w,
-                          top: 12.h,
-                          bottom: 12.h,
-                          right: 8.w,
+                        padding: const EdgeInsets.only(
+                          left: 12,
+                          top: 12,
+                          bottom: 12,
+                          right: 8,
                         ),
                         child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
                       ),
@@ -128,10 +126,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                         children: [
                                           Image.asset(
                                             'assets/image/feed/icon/small_size/icon_special.png',
-                                            height: 13.h,
+                                            height: 13,
                                           ),
-                                          SizedBox(
-                                            width: 4.w,
+                                          const SizedBox(
+                                            width: 4,
                                           ),
                                         ],
                                       )
@@ -204,8 +202,8 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                       ),
                               ],
                             ),
-                            SizedBox(
-                              height: 3.h,
+                            const SizedBox(
+                              height: 3,
                             ),
                             Text(
                               "팔로워 ${NumberFormat('###,###,###,###').format(widget.followCount)}",
@@ -251,9 +249,9 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomRight: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[0].imgUrl!}").toUrl(),
+                              thumborUrl(widget.imageList[0].imgUrl ?? ''),
                               fit: BoxFit.cover,
-                              height: 147.h,
+                              height: 147,
                               width: double.infinity,
                             ),
                           ),
@@ -313,9 +311,9 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomLeft: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[0].imgUrl!}").toUrl(),
+                              thumborUrl(widget.imageList[0].imgUrl ?? ''),
                               fit: BoxFit.cover,
-                              height: 147.h,
+                              height: 147,
                               width: double.infinity,
                             ),
                           ),
@@ -373,9 +371,9 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomRight: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[1].imgUrl!}").toUrl(),
+                              thumborUrl(widget.imageList[1].imgUrl ?? ''),
                               fit: BoxFit.cover,
-                              height: 147.h,
+                              height: 147,
                               width: double.infinity,
                             ),
                           ),
@@ -435,9 +433,9 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               bottomLeft: Radius.circular(12.0),
                             ),
                             child: Image.network(
-                              Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[0].imgUrl!}").toUrl(),
+                              thumborUrl(widget.imageList[0].imgUrl ?? ''),
                               fit: BoxFit.cover,
-                              height: 147.h,
+                              height: 147,
                               width: double.infinity,
                             ),
                           ),
@@ -493,9 +491,9 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           child: Stack(
                             children: [
                               Image.network(
-                                Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[1].imgUrl!}").toUrl(),
+                                thumborUrl(widget.imageList[1].imgUrl ?? ''),
                                 fit: BoxFit.cover,
-                                height: 73.h,
+                                height: 73,
                                 width: double.infinity,
                               ),
                               Positioned(
@@ -519,8 +517,8 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 1.h,
+                        const SizedBox(
+                          height: 1,
                         ),
                         GestureDetector(
                           onTap: () async {
@@ -549,9 +547,9 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                             child: Stack(
                               children: [
                                 Image.network(
-                                  Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${widget.imageList[2].imgUrl!}").toUrl(),
+                                  thumborUrl(widget.imageList[2].imgUrl ?? ''),
                                   fit: BoxFit.cover,
-                                  height: 73.h,
+                                  height: 73,
                                   width: double.infinity,
                                 ),
                                 Positioned(

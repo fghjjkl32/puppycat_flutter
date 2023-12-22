@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:go_router/go_router.dart';
 import 'package:group_button/group_button.dart';
@@ -422,7 +422,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 10.h),
+                          padding: EdgeInsets.fromLTRB(16, 0, 16, 10),
                           child: const Divider(),
                         ),
                         Text(

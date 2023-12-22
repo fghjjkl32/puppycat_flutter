@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -31,7 +32,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 16.h),
+      padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 16),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -39,8 +40,8 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
           Row(
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                  right: 10.w,
+                padding: const EdgeInsets.only(
+                  right: 10,
                 ),
                 child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
               ),
@@ -54,10 +55,10 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
                               children: [
                                 Image.asset(
                                   'assets/image/feed/icon/small_size/icon_special.png',
-                                  height: 13.h,
+                                  height: 13,
                                 ),
-                                SizedBox(
-                                  width: 4.w,
+                                const SizedBox(
+                                  width: 4,
                                 ),
                               ],
                             )
@@ -68,8 +69,8 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 4.h,
+                  const SizedBox(
+                    height: 4,
                   ),
                   Text(
                     widget.content,
@@ -96,8 +97,8 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
               }
             },
             child: Container(
-              width: 56.w,
-              height: 32.h,
+              width: 56,
+              height: 32,
               decoration: const BoxDecoration(
                 color: kPreviousPrimaryLightColor,
                 borderRadius: BorderRadius.all(

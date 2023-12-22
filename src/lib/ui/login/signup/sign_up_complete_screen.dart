@@ -1,7 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -49,16 +50,16 @@ class SignUpCompleteScreen extends ConsumerWidget {
                       repeat: false,
                       fit: BoxFit.fill,
                     ),
-                    SizedBox(
-                      height: 12.h,
+                    const SizedBox(
+                      height: 12,
                     ),
                     Text(
                       '회원가입.퍼피캣의 가족이 되신 걸 환영해요'.tr(),
                       style: kTitle14BoldStyle.copyWith(height: 1.4, color: kPreviousTextTitleColor),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(
-                      height: 8.h,
+                    const SizedBox(
+                      height: 8,
                     ),
                     Text(
                       '회원가입.회원가입 환영 메시지'.tr(),
@@ -73,8 +74,8 @@ class SignUpCompleteScreen extends ConsumerWidget {
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: SizedBox(
-                    width: 320.w,
-                    height: 48.h,
+                    width: 320,
+                    height: 48,
                     child: ElevatedButton(
                       onPressed: () {
                         ///NOTE

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -38,14 +38,14 @@ class UserUnknownScreen extends StatelessWidget {
                 height: 100,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 12,
             ),
             Text(
               "유저를 찾을 수 없어요.",
               style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Text(
@@ -63,10 +63,10 @@ class UserUnknownScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: EdgeInsets.only(
-                  left: 20.0.w,
-                  right: 20.0.w,
-                  bottom: 20.0.h,
+                padding: const EdgeInsets.only(
+                  left: 20.0,
+                  right: 20.0,
+                  bottom: 20.0,
                 ),
                 child: SizedBox(
                   width: double.infinity,

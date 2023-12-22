@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
@@ -9,7 +9,6 @@ import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -30,12 +29,6 @@ import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_ta
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-///NOTE
-///2023.11.14.
-///산책하기 보류로 주석 처리
-// import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/user_pet_detail_screen.dart';
-///산책하기 보류로 주석 처리 완료
-import 'package:thumbor/thumbor.dart';
 
 class UserMainScreen extends ConsumerStatefulWidget {
   const UserMainScreen({
@@ -169,15 +162,15 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                               ? Container()
                               : PopupMenuButton(
                                   padding: EdgeInsets.zero,
-                                  offset: Offset(0, 42),
+                                  offset: const Offset(0, 42),
                                   child: showLottieAnimation
                                       ? Lottie.asset(
                                           'assets/lottie/icon_more_header.json',
                                           repeat: false,
                                         )
-                                      : Padding(
-                                          padding: const EdgeInsets.only(right: 8.0),
-                                          child: const Icon(
+                                      : const Padding(
+                                          padding: EdgeInsets.only(right: 8.0),
+                                          child: Icon(
                                             Puppycat_social.icon_more_header,
                                             size: 40,
                                           ),
@@ -200,7 +193,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           builder: (BuildContext context) {
                                             return CustomDialog(
                                               content: Padding(
-                                                padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                                                padding: const EdgeInsets.symmetric(vertical: 24.0),
                                                 child: Column(
                                                   children: [
                                                     Text(
@@ -208,8 +201,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                       style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                                       textAlign: TextAlign.center,
                                                     ),
-                                                    SizedBox(
-                                                      height: 8.h,
+                                                    const SizedBox(
+                                                      height: 8,
                                                     ),
                                                     Text(
                                                       "차단하게 되면 더 이상 서로의 피드를 보거나\n메시지 등을 보낼 수 없어요.\n차단 여부는 상대방에게 알리지 않아요.\n차단 풀기는 [마이페이지→설정→차단 유저 관리]에서\n얼마든지 가능해요.",
@@ -282,7 +275,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       ///2023.11.16.
                       ///산책하기 보류로 주석 처리
                       // expandedHeight: ref.watch(expandedHeightProvider),
-                      expandedHeight: 210,
+                      expandedHeight: 170,
 
                       ///산책하기 보류로 주석 처리 완료
                       flexibleSpace: Consumer(builder: (context, ref, _) {
@@ -310,9 +303,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         children: [
                           Image.asset(
                             'assets/image/character/character_07_block_88 (1).png',
-                            height: 68.h,
+                            height: 68,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           Text(
@@ -331,9 +324,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                             children: [
                               Image.asset(
                                 'assets/image/character/character_07_block_me_88.png',
-                                height: 68.h,
+                                height: 68,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
                               Text(
@@ -472,7 +465,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   placeholder: (context, url) => Container(
                                     color: kPreviousNeutralColor300,
                                   ),
-                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${item.imgUrl}").toUrl(),
+                                  imageUrl: thumborUrl(item.imgUrl ?? ''),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -497,15 +490,15 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                               ),
                             ),
                             Positioned(
-                              right: 6.w,
-                              top: 6.w,
+                              right: 6,
+                              top: 6,
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: const Color(0xff414348).withOpacity(0.75),
                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                                width: 18.w,
-                                height: 14.w,
+                                width: 18,
+                                height: 14,
                                 child: Center(
                                   child: Text(
                                     '${item.imageCnt}',
@@ -641,21 +634,21 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   placeholder: (context, url) => Container(
                                     color: kPreviousNeutralColor300,
                                   ),
-                                  imageUrl: Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("${item.imgUrl}").toUrl(),
+                                  imageUrl: thumborUrl(item.imgUrl ?? ''),
                                   fit: BoxFit.cover,
                                 ),
                               ),
                             ),
                             Positioned(
-                              right: 6.w,
-                              top: 6.w,
+                              right: 6,
+                              top: 6,
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: const Color(0xff414348).withOpacity(0.75),
                                   borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                 ),
-                                width: 18.w,
-                                height: 14.w,
+                                width: 18,
+                                height: 14,
                                 child: Center(
                                   child: Text(
                                     "${item.imageCnt}",
@@ -691,8 +684,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
             Row(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                  child: getProfileAvatar(data.profileImgUrl ?? "", 48.w, 48.h),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: getProfileAvatar(data.profileImgUrl ?? "", 48, 48),
                 ),
                 Expanded(
                   child: Column(
@@ -706,10 +699,10 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   children: [
                                     Image.asset(
                                       'assets/image/feed/icon/small_size/icon_special.png',
-                                      height: 13.h,
+                                      height: 13,
                                     ),
-                                    SizedBox(
-                                      width: 4.w,
+                                    const SizedBox(
+                                      width: 4,
                                     ),
                                   ],
                                 )
@@ -728,7 +721,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         visible: data.intro != "",
                         child: Column(
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               height: 3,
                             ),
                             Text(
@@ -743,7 +736,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           !isLogined ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/followList/${widget.memberUuid}");
                         },
                         child: Padding(
-                          padding: EdgeInsets.only(top: 8.0.h),
+                          padding: const EdgeInsets.only(top: 8.0),
                           child: Row(
                             children: [
                               Text(
@@ -776,11 +769,11 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
               ],
             ),
             Padding(
-              padding: EdgeInsets.only(left: 12.w, right: 12.w, top: 10.h, bottom: 10.h),
+              padding: const EdgeInsets.only(left: 12, right: 12, top: 10, bottom: 10),
               child: data.blockedMeState == 1
                   ? Expanded(
                       child: Container(
-                        height: 30.h,
+                        height: 30,
                         decoration: const BoxDecoration(
                           color: kPreviousNeutralColor300,
                           borderRadius: BorderRadius.all(
@@ -830,7 +823,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     // }
                                   },
                                   child: Container(
-                                    height: 30.h,
+                                    height: 30,
                                     decoration: const BoxDecoration(
                                       color: kPreviousPrimaryColor,
                                       borderRadius: BorderRadius.all(
@@ -868,7 +861,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           }
                                         },
                                         child: Container(
-                                          height: 30.h,
+                                          height: 30,
                                           decoration: const BoxDecoration(
                                             color: kPreviousNeutralColor300,
                                             borderRadius: BorderRadius.all(
@@ -910,7 +903,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           // }
                                         },
                                         child: Container(
-                                          height: 30.h,
+                                          height: 30,
                                           decoration: const BoxDecoration(
                                             color: kPreviousPrimaryColor,
                                             borderRadius: BorderRadius.all(
@@ -952,7 +945,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                               }
                             },
                             child: Container(
-                              height: 30.h,
+                              height: 30,
                               decoration: const BoxDecoration(
                                 color: kPreviousPrimaryLightColor,
                                 borderRadius: BorderRadius.all(
@@ -1107,8 +1100,8 @@ PopupMenuItem diaryPopUpMenuItem(
       child: Row(
         children: [
           icon,
-          SizedBox(
-            width: 10.w,
+          const SizedBox(
+            width: 10,
           ),
           Text(
             value,
@@ -1161,9 +1154,9 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                         indicatorColor: kPreviousNeutralColor600,
                         unselectedLabelColor: kPreviousNeutralColor500,
                         indicatorSize: TabBarIndicatorSize.label,
-                        labelPadding: EdgeInsets.only(
-                          top: 10.h,
-                          bottom: 10.h,
+                        labelPadding: const EdgeInsets.only(
+                          top: 10,
+                          bottom: 10,
                         ),
                         tabs: [
                           Tab(
@@ -1176,8 +1169,8 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                     "일상글",
                                     style: kBody14BoldStyle,
                                   ),
-                                  SizedBox(
-                                    width: 6.w,
+                                  const SizedBox(
+                                    width: 6,
                                   ),
                                   Text(
                                     "${ref.watch(userContentsFeedTotalCountProvider)}",
@@ -1197,8 +1190,8 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                     "태그됨",
                                     style: kBody14BoldStyle,
                                   ),
-                                  SizedBox(
-                                    width: 6.w,
+                                  const SizedBox(
+                                    width: 6,
                                   ),
                                   Text(
                                     "${ref.watch(userTagContentsFeedTotalCountProvider)}",

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focus_detector/focus_detector.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -44,15 +44,15 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                 Image.asset(
                   'assets/image/character/character_07_Withdrawal_complete.png',
                 ),
-                SizedBox(
-                  height: 10.h,
+                const SizedBox(
+                  height: 10,
                 ),
                 Text(
                   "지금은 퍼피캣을 떠나시지만,\n다시 만나길 바랄게요!",
                   style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 12,
                 ),
                 Container(
@@ -84,7 +84,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 12,
                 ),
                 Text(
@@ -101,10 +101,10 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(
-                    left: 20.0.w,
-                    right: 20.0.w,
-                    bottom: 20.0.h,
+                  padding: const EdgeInsets.only(
+                    left: 20.0,
+                    right: 20.0,
+                    bottom: 20.0,
                   ),
                   child: SizedBox(
                     width: double.infinity,

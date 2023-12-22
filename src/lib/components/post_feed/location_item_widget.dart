@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -16,7 +17,7 @@ class LocationUserItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 12.0.w, right: 12.w, bottom: 6.h),
+      padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 6),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -24,10 +25,10 @@ class LocationUserItemWidget extends StatelessWidget {
           Row(
             children: [
               Padding(
-                padding: EdgeInsets.only(right: 8.0.w),
+                padding: const EdgeInsets.only(right: 8.0),
                 child: Container(
-                  width: 36.w,
-                  height: 36.h,
+                  width: 36,
+                  height: 36,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     color: kPreviousNeutralColor300,
@@ -48,8 +49,8 @@ class LocationUserItemWidget extends StatelessWidget {
                     locationItem.name,
                     style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   ),
-                  SizedBox(
-                    height: 2.h,
+                  const SizedBox(
+                    height: 2,
                   ),
                   Text(
                     locationItem.subName,

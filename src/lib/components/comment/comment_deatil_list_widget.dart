@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/comment/widget/comment_detail_item_widget.dart';
 
 class CommentDetailListWidget extends StatelessWidget {
@@ -7,7 +8,7 @@ class CommentDetailListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
         // CommentDetailItemWidget(
         //   profileImage: 'assets/image/feed/image/sample_image1.png',
@@ -28,8 +29,8 @@ class CommentDetailListWidget extends StatelessWidget {
         //   likeCount: 32,
         // ),
         Padding(
-          padding: EdgeInsets.all(10.0.h),
-          child: const Divider(),
+          padding: EdgeInsets.all(10.0),
+          child: Divider(),
         ),
       ],
     );

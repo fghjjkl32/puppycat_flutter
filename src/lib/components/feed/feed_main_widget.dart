@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_best_post_widget.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_follow_widget.dart';
@@ -80,7 +81,7 @@ class FeedMainWidget extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: 16.0.w, right: 10.w, bottom: 12.h, top: 24),
+                      padding: const EdgeInsets.only(left: 16.0, right: 10, bottom: 12, top: 24),
                       child: Text(
                         "요즘 인기 퍼플루언서",
                         style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
@@ -94,7 +95,7 @@ class FeedMainWidget extends ConsumerWidget {
                 ),
               if (index == 0 && feedType == "popular")
                 Padding(
-                  padding: EdgeInsets.only(left: 16.0.w, right: 10.w),
+                  padding: const EdgeInsets.only(left: 16.0, right: 10),
                   child: Text(
                     "베스트 댕냥 피드",
                     style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
@@ -110,7 +111,7 @@ class FeedMainWidget extends ConsumerWidget {
                   feedData: ref.watch(popularHourFeedStateProvider).list,
                 ),
               index == 0
-                  ? SizedBox(
+                  ? const SizedBox(
                       height: 20,
                     )
                   : Container(),
@@ -141,7 +142,7 @@ class FeedMainWidget extends ConsumerWidget {
               //   walkData: feedData.walkResultList,
               // ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     final style = kBody13RegularStyle.copyWith(color: kPreviousTextTitleColor);
@@ -180,7 +181,7 @@ class FeedMainWidget extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          SizedBox(width: 8.0.w),
+                          const SizedBox(width: 8.0),
                           Text(
                             "...더보기",
                             style: kBody13RegularStyle.copyWith(
@@ -219,9 +220,9 @@ class FeedMainWidget extends ConsumerWidget {
                 contentType: contentType,
                 oldMemberUuid: oldMemberUuid,
               ),
-              Padding(
-                padding: EdgeInsets.all(12.0.h),
-                child: const Divider(),
+              const Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Divider(),
               ),
             ],
           ),
