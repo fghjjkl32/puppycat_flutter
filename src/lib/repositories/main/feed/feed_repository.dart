@@ -488,7 +488,7 @@ class FeedRepository {
   }
 
   Future<ResponseModel> deleteContents({required String idx}) async {
-    ResponseModel responseModel = await _feedService.deleteOneContents(int.parse(idx));
+    ResponseModel responseModel = await _feedService.deleteContents(idx);
 
     if (!responseModel.result) {
       throw APIException(

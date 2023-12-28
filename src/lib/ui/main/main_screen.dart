@@ -1303,7 +1303,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             child: Column(
                               children: [
                                 // buildWidgetMask(userListLists[index].profileImgUrl, userListLists[index].isBadge, userListLists[index].redDotState),
-                                getProfileAvatarWithBadge(myInfo.profileImgUrl ?? '', myInfo.isBadge == 1, 54, 54),
+                                getProfileAvatarWithBadge(userListLists[index].profileImgUrl ?? '', userListLists[index].isBadge == 1, 54, 54),
                                 const SizedBox(height: 4.0),
                                 Stack(
                                   children: [

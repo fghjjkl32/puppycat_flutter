@@ -26,7 +26,7 @@ final hashtagListProvider = StateProvider<List<String>>((ref) => []);
 
 final mentionListProvider = StateProvider<List<MentionListData>>((ref) => []);
 
-const int APP_BUILD_NUMBER = 12;
+// const int APP_BUILD_NUMBER = 12;
 
 Future<String> checkFirstInstall() async {
   final DateTime date = await AppInstallDate().installDate;
@@ -34,7 +34,7 @@ Future<String> checkFirstInstall() async {
 }
 
 String firstInstallTime = "";
-String lastestBuildVersion = "";
+// String lastestBuildVersion = "";
 bool isAppLinkHandled = false;
 
 double getImageHeightCalculateValue(double width) {

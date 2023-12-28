@@ -762,7 +762,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                 ),
                               ),
                               onTap: () {
-                                myKeepController.hasMyPostSelectedImage()
+                                myKeepController.hasMyKeepSelectedImage()
                                     ? myFeedDeleteBottomSheet(
                                         context: context,
                                         onTap: () async {

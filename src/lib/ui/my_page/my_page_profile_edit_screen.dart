@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -46,11 +45,20 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
   final FocusNode _nickFocusNode = FocusNode();
   bool isCheckableNickName = false;
   bool isValidNickName = false;
+  final ImagePicker _picker = ImagePicker();
+  XFile? selectedImage;
+
+  bool isProfileEdit = false;
+  bool isPhoneNumberEdit = false;
+  bool isNextStep = false;
+  bool isProfileImageDelete = false;
+  bool isTotalNextStep = false;
 
   @override
   void initState() {
+    print('ref.read(myInfoStateProvider) ${ref.read(myInfoStateProvider)}');
     Future(() {
-      ref.watch(editStateProvider.notifier).resetState();
+      ref.read(editStateProvider.notifier).resetState();
       introController.text = ref.read(myInfoStateProvider).intro ?? "";
     });
 
@@ -64,14 +72,6 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
     super.dispose();
   }
 
-  final ImagePicker _picker = ImagePicker();
-  XFile? selectedImage;
-
-  bool isProfileEdit = false;
-  bool isPhoneNumberEdit = false;
-  bool isNextStep = false;
-  bool isProfileImageDelete = false;
-
   Future openGallery() async {
     selectedImage = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
 
@@ -80,8 +80,6 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
       isProfileImageDelete = false;
     });
   }
-
-  bool isTotalNextStep = false;
 
   void checkNextStep() {
     if (ref.read(nickNameProvider) == NickNameStatus.valid || nickController.text == ref.read(editStateProvider).myInfoModel!.nick) {
@@ -106,6 +104,32 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
         isTotalNextStep = false;
       });
     }
+  }
+
+  Widget _getLoginLogo(String simpleType) {
+    Widget resultWidget;
+
+    switch (simpleType) {
+      case 'kakao':
+        resultWidget = Image.asset('assets/image/loginScreen/kakao_icon.png');
+        break;
+      case 'naver':
+        resultWidget = Image.asset(
+          'assets/image/loginScreen/naver_icon.png',
+          color: kNaverLoginColor,
+        );
+        break;
+      case 'google':
+        resultWidget = Image.asset('assets/image/loginScreen/google_icon.png');
+        break;
+      case 'apple':
+        resultWidget = Image.asset('assets/image/loginScreen/apple_icon.png');
+        break;
+      default:
+        resultWidget = const SizedBox.shrink();
+    }
+
+    return resultWidget;
   }
 
   @override
@@ -254,7 +278,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                           di: authModel == null ? editMyInfoModel.di : authModel.di,
                         );
 
-                        final result = await ref.watch(editStateProvider.notifier).putMyInfo(
+                        final result = await ref.read(editStateProvider.notifier).putMyInfo(
                               myInfoModel: editUserModel,
                               file: selectedImage,
                               beforeNick: myInfo.nick ?? 'unknown',
@@ -522,6 +546,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             isProfileEdit
                                 ? Expanded(
                                     child: SizedBox(
+                                      height: 44,
                                       child: Form(
                                         key: _formKey,
                                         child: TextFormField(
@@ -626,7 +651,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                   )
                                 : Expanded(
                                     child: SizedBox(
-                                      height: 32,
+                                      height: 44,
                                       child: Container(
                                         decoration: BoxDecoration(color: kPreviousNeutralColor300, borderRadius: BorderRadius.circular(10)),
                                         child: Align(
@@ -656,7 +681,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           : null,
                                       child: Container(
                                         width: 56,
-                                        height: 32,
+                                        height: 44,
                                         decoration: BoxDecoration(
                                           color: ref.watch(checkButtonProvider) ? kPreviousPrimaryLightColor : kPreviousNeutralColor300,
                                           borderRadius: const BorderRadius.all(
@@ -683,7 +708,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                     },
                                     child: Container(
                                       width: 56,
-                                      height: 32,
+                                      height: 44,
                                       decoration: const BoxDecoration(
                                         color: kPreviousPrimaryLightColor,
                                         borderRadius: BorderRadius.all(
@@ -710,22 +735,25 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: TextField(
-                          controller: introController,
-                          maxLength: 30,
-                          decoration: InputDecoration(
-                            counterText: "",
-                            hintText: "${editMyInfoModel.intro == "" ? '나를 간단하게 소개해 주세요.' : editMyInfoModel.intro}",
-                            hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
-                            contentPadding: const EdgeInsets.all(16),
+                        child: SizedBox(
+                          height: 44,
+                          child: TextField(
+                            controller: introController,
+                            maxLength: 30,
+                            decoration: InputDecoration(
+                              counterText: "",
+                              hintText: "${editMyInfoModel.intro == "" ? '나를 간단하게 소개해 주세요.' : editMyInfoModel.intro}",
+                              hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                              contentPadding: const EdgeInsets.all(16),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                isNextStep = true;
+                              });
+                            },
+                            style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                            textAlignVertical: TextAlignVertical.center,
                           ),
-                          onChanged: (value) {
-                            setState(() {
-                              isNextStep = true;
-                            });
-                          },
-                          style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
-                          textAlignVertical: TextAlignVertical.center,
                         ),
                       ),
                       Padding(
@@ -745,47 +773,30 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24.0),
                         child: SizedBox(
-                          height: 32,
-                          child: FormBuilderTextField(
-                            initialValue: "${editMyInfoModel.email}",
+                          height: 44,
+                          child: TextField(
+                            // textAlign: TextAlign.center,
+                            // initialValue: "${editMyInfoModel.email}",
+                            controller: TextEditingController(text: editMyInfoModel.email),
                             enabled: false,
                             decoration: InputDecoration(
                               prefixIcon: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: editMyInfoModel.simpleType == "kakao"
-                                    ? Image.asset(
-                                        'assets/image/loginScreen/kakao_icon.png',
-                                        height: 16,
-                                        width: 16,
-                                      )
-                                    : editMyInfoModel.simpleType == "naver"
-                                        ? Image.asset(
-                                            'assets/image/loginScreen/naver_icon.png',
-                                            height: 16,
-                                            width: 16,
-                                            color: Color(0xff03CF5D),
-                                          )
-                                        : editMyInfoModel.simpleType == "google"
-                                            ? Image.asset(
-                                                'assets/image/loginScreen/google_icon.png',
-                                                height: 16,
-                                                width: 16,
-                                              )
-                                            : editMyInfoModel.simpleType == "apple"
-                                                ? Image.asset(
-                                                    'assets/image/loginScreen/apple_icon.png',
-                                                    height: 16,
-                                                    width: 16,
-                                                  )
-                                                : const SizedBox.shrink(),
+                                padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
+                                child: SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: _getLoginLogo(editMyInfoModel.simpleType ?? ''),
+                                ),
                               ),
                               filled: true,
                               fillColor: kPreviousNeutralColor300,
                               counterText: "",
                               hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
-                              contentPadding: const EdgeInsets.all(16),
+                              // contentPadding: const EdgeInsets.all(16),
+                              contentPadding: const EdgeInsets.only(
+                                bottom: 22,
+                              ),
                             ),
-                            name: 'content',
                             style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                             textAlignVertical: TextAlignVertical.center,
                           ),
@@ -801,17 +812,18 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24.0),
                         child: SizedBox(
-                          height: 32,
-                          child: FormBuilderTextField(
+                          height: 44,
+                          child: TextField(
                             enabled: false,
-                            initialValue: "${editMyInfoModel.name}",
+                            // initialValue: "${editMyInfoModel.name}",
+                            controller: TextEditingController(text: editMyInfoModel.name),
                             decoration: InputDecoration(
                                 counterText: "",
                                 hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                                 filled: true,
                                 fillColor: kPreviousNeutralColor300,
                                 contentPadding: const EdgeInsets.all(16)),
-                            name: 'content',
+                            // name: 'content',
                             style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                             textAlignVertical: TextAlignVertical.center,
                           ),
@@ -834,7 +846,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               return ref.watch(editStateProvider).authModel == null
                                   ? Expanded(
                                       child: SizedBox(
-                                        height: 32,
+                                        height: 44,
                                         child: Container(
                                           decoration: BoxDecoration(color: kPreviousNeutralColor300, borderRadius: BorderRadius.circular(10)),
                                           child: Align(
@@ -852,7 +864,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                     )
                                   : Expanded(
                                       child: SizedBox(
-                                        height: 32,
+                                        height: 44,
                                         child: Container(
                                           decoration: BoxDecoration(color: kPreviousNeutralColor300, borderRadius: BorderRadius.circular(10)),
                                           child: Align(
@@ -880,7 +892,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                         },
                                         child: Container(
                                           width: 56,
-                                          height: 32,
+                                          height: 44,
                                           decoration: const BoxDecoration(
                                             color: kPreviousPrimaryLightColor,
                                             borderRadius: BorderRadius.all(
@@ -903,7 +915,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                         },
                                         child: Container(
                                           width: 56,
-                                          height: 32,
+                                          height: 44,
                                           decoration: const BoxDecoration(
                                             color: kPreviousPrimaryLightColor,
                                             borderRadius: BorderRadius.all(

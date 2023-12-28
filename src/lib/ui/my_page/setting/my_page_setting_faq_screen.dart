@@ -41,6 +41,8 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
 
   Future<List<MenuItemModel>> _getMenuList() async {
     List<MenuItemModel> menuList = await ref.read(faqListStateProvider.notifier).getFaqMenuList();
+    final faqListProvider = ref.read(faqListStateProvider.notifier);
+    faqListProvider.setFaqType(FaqType.all);
     tabController = TabController(
       initialIndex: 0,
       length: menuList.length,
@@ -48,10 +50,18 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
     );
 
     tabController.addListener(() {
-      ref.read(faqListStateProvider.notifier).setFaqType(FaqType.values[tabController.index]);
+      print('tabController.addListener ${tabController.index}');
+      faqListProvider.setFaqType(FaqType.values[tabController.index]);
     });
+
     print('menuList $menuList');
     return menuList;
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
   }
 
   @override

@@ -15,6 +15,7 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/setting/my_page_setting_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_menu_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
@@ -64,6 +65,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
   Widget build(BuildContext context) {
     final myInfo = ref.read(myInfoStateProvider);
     final isLogined = ref.read(loginStatementProvider);
+    final isOldVersion = ref.read(oldVersionStateProvider);
 
     return Material(
       child: Scaffold(
@@ -475,15 +477,16 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                     },
                     child: Row(
                       children: [
-                        lastestBuildVersion == GetIt.I<PackageInformationUtil>().appVersion
+                        // lastestBuildVersion == GetIt.I<PackageInformationUtil>().appVersion
+                        isOldVersion
                             ? Text(
-                                "최신 버전",
+                                "구 버전 사용 중",
                                 style: kBadge10MediumStyle.copyWith(
                                   color: kPreviousTextBodyColor,
                                 ),
                               )
                             : Text(
-                                "구 버전 사용 중",
+                                "최신 버전",
                                 style: kBadge10MediumStyle.copyWith(
                                   color: kPreviousTextBodyColor,
                                 ),
@@ -549,7 +552,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          context.go("/home/myPage/setting/FAQ");
+                          context.push("/home/myPage/setting/FAQ");
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -603,7 +606,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          context.go("/home/myPage/setting/notice");
+                          // context.go("/home/myPage/setting/notice");
+                          context.push("/home/myPage/setting/notice");
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,

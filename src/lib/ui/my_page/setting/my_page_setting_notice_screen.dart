@@ -68,6 +68,8 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
 
   Future<List<MenuItemModel>> _getMenuList() async {
     List<MenuItemModel> menuList = await ref.read(noticeListStateProvider.notifier).getNoticeMenuList();
+    final noticeListProvider = ref.read(noticeListStateProvider.notifier);
+    noticeListProvider.setNoticeType(NoticeType.all);
     tabController = TabController(
       initialIndex: 0,
       length: menuList.length,
@@ -76,7 +78,7 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
 
     tabController.addListener(() {
       print('tabController Idx ${tabController.index}');
-      ref.read(noticeListStateProvider.notifier).setNoticeType(NoticeType.values[tabController.index]);
+      noticeListProvider.setNoticeType(NoticeType.values[tabController.index]);
     });
     print('menuList $menuList');
     return menuList;

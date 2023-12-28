@@ -51,7 +51,7 @@ String baseUrl = "https://api.puppycat.co.kr/";
 String thumborHostUrl = "https://tb.puppycat.co.kr/";
 String thumborKey = "vjvlzotvldkfel";
 String inspectS3BaseUrl = "https://mnt.puppycat.co.kr/maintenance/prd"; //prd
-String updateS3BaseUrl = "https://mnt.puppycat.co.kr/update/prd"; //prd
+String updateS3BaseUrl = "https://mnt.puppycat.co.kr/update/"; //prd
 String walkBaseUrl = 'https://walk-api.puppycat.co.kr/';
 String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
 String memberBaseUrl = 'https://member-api.puppycat.co.kr/';
@@ -70,7 +70,8 @@ Future<RunningMode> getRunningMode() async {
 }
 
 Future initRunningMode() async {
-  final RunningMode mode = await getRunningMode();
+  // final RunningMode mode = await getRunningMode();
+  const RunningMode mode = RunningMode.stg;
 
   print('current mode : $mode');
   switch (mode) {

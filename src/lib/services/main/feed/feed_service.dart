@@ -10,11 +10,10 @@ part 'feed_service.g.dart';
 abstract class FeedService {
   factory FeedService(Dio dio, {String baseUrl}) = _FeedService;
 
-  // @DELETE('v1/contents?memberIdx={memberIdx}&{idx}')
-  // Future<ResponseModel> deleteContents(
-  //   @Path("memberIdx") int memberIdx,
-  //   @Path("idx") String idx,
-  // );
+  @DELETE('v1/contents?{idx}')
+  Future<ResponseModel> deleteContents(
+    @Path("idx") String idx,
+  );
 
   @DELETE('v1/contents')
   Future<ResponseModel> deleteOneContents(

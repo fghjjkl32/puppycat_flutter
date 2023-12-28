@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
@@ -10,6 +11,7 @@ import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
+import 'package:pet_mobile_social_flutter/repositories/jwt/jwt_repository.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -50,37 +52,32 @@ class APIErrorState extends _$APIErrorState {
         break;
       case 'ERES-9999': // 제재 상태
       case 'ERES-9998': // 로그인 제재 상태
-        final restrainModel = await ref.read(restrainStateProvider.notifier).getRestrainDetail(RestrainType.loginRestrain);
-        if (restrainModel == null) {
-          goRouter.pushNamed('error_dialog', extra: 'UNKNOWN');
-        }
-
+        await _restrainProc(RestrainType.loginRestrain);
         await logoutLogic();
-
-        goRouter.pushNamed('restrain_dialog', extra: restrainModel!);
         break;
       case 'ERES-9997': // 모든 글 작성 제재 상태
-        final restrainModel = await ref.read(restrainStateProvider.notifier).getRestrainDetail(RestrainType.writeAllRestrain);
-        if (restrainModel == null) {
-          goRouter.pushNamed('error_dialog', extra: 'UNKNOWN');
-        }
-        goRouter.pushNamed('restrain_dialog', extra: restrainModel!);
+        await _restrainProc(RestrainType.writeAllRestrain);
         break;
       case 'ERES-9996': // 피드 작성 제재 상태
-        final restrainModel = await ref.read(restrainStateProvider.notifier).getRestrainDetail(RestrainType.writeFeedRestrain);
-        if (restrainModel == null) {
-          goRouter.pushNamed('error_dialog', extra: 'UNKNOWN');
-        }
-        goRouter.pushNamed('restrain_dialog', extra: restrainModel!);
+        await _restrainProc(RestrainType.writeFeedRestrain);
         break;
         break;
       case 'ERES-9995': // 댓글 작성 제재 상태
-        final restrainModel = await ref.read(restrainStateProvider.notifier).getRestrainDetail(RestrainType.writeCommentRestrain);
-        if (restrainModel == null) {
-          goRouter.pushNamed('error_dialog', extra: 'UNKNOWN');
-        }
-        goRouter.pushNamed('restrain_dialog', extra: restrainModel!);
+        await _restrainProc(RestrainType.writeCommentRestrain);
         break;
+      case 'Restrain-null':
+
+        ///TODO
+        ///고도화 필요
+        final refreshToken = await TokenController.readRefreshToken();
+        JWTRepository jwtRepository = JWTRepository(dio: Dio());
+        final tokenMap = await jwtRepository.getAccessToken(refreshToken);
+        final newAccessToken = tokenMap['accessToken'];
+        final newRefreshToken = tokenMap['refreshToken'];
+        final restrainList = tokenMap['restrainList'] ?? [];
+        ref.read(restrainStateProvider.notifier).state = restrainList;
+        print('refreshDio - 6');
+        await TokenController.writeTokens(newAccessToken, newRefreshToken);
         break;
       case 'EOUT-7777': // 탈퇴 대기
         final loginData = apiException.arguments?.first;
@@ -183,5 +180,21 @@ class APIErrorState extends _$APIErrorState {
     ref.read(checkButtonProvider.notifier).state = false;
     ref.read(policyStateProvider.notifier).policyStateReset();
     ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
+  }
+
+  Future _restrainProc(RestrainType type) async {
+    try {
+      final goRouter = ref.read(routerProvider);
+
+      final restrainModel = await ref.read(restrainStateProvider.notifier).getRestrainDetail(type);
+      if (restrainModel == null) {
+        return;
+      }
+      goRouter.pushNamed('restrain_dialog', extra: restrainModel);
+    } on APIException catch (apiException) {
+      apiErrorProc(apiException);
+    } catch (e) {
+      print('_restrainProc error $e');
+    }
   }
 }

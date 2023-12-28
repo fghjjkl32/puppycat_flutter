@@ -28,9 +28,10 @@ class EditState extends _$EditState {
   }
 
   void resetState() {
+    print('reset ref.read(myInfoStateProvider) ${ref.read(myInfoStateProvider)}');
     state = state.copyWith(authModel: null, myInfoModel: ref.read(myInfoStateProvider));
 
-    ref.watch(nickNameProvider.notifier).state = NickNameStatus.none;
+    ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
   }
 
   Future<ResponseModel> putMyInfo({
