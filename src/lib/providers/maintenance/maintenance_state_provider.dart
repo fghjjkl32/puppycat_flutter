@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
+import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/models/maintenance/inspect_response_model.dart';
@@ -85,25 +86,32 @@ class MaintenanceState extends _$MaintenanceState {
   void getUpdateFile() async {
     getLastDate();
 
-    UpdateResponseModel updateResult = await _maintenanceRepository.getUpdateFile();
+    try {
+      UpdateResponseModel updateResult = await _maintenanceRepository.getUpdateFile();
 
-    final int appBuildNum = int.parse(GetIt.I<PackageInformationUtil>().appBuildNumber);
-    print('appBuildNum $appBuildNum');
+      final int appBuildNum = int.parse(GetIt.I<PackageInformationUtil>().appBuildNumber);
+      print('appBuildNum $appBuildNum');
 
-    if (appBuildNum < updateResult.currentBuildNumber) {
-      ref.read(oldVersionStateProvider.notifier).state = true;
-    } else {
-      ref.read(oldVersionStateProvider.notifier).state = false;
-    }
+      if (appBuildNum < updateResult.currentBuildNumber) {
+        ref.read(oldVersionStateProvider.notifier).state = true;
+      } else {
+        ref.read(oldVersionStateProvider.notifier).state = false;
+      }
 
-    if (appBuildNum < updateResult.minBuildNumber) {
-      stopUpdatePopupPolling();
-      ref.read(forceUpdateProvider.notifier).state = updateResult;
-      ref.read(isForceUpdateProvider.notifier).state = true;
-    } else if (!isOpenPopup && appBuildNum < updateResult.recommendBuildNumber) {
-      stopUpdatePopupPolling();
-      ref.read(recommendUpdateProvider.notifier).state = updateResult;
-      ref.read(isRecommendUpdateProvider.notifier).state = true;
+      if (appBuildNum < updateResult.minBuildNumber) {
+        stopUpdatePopupPolling();
+        ref.read(forceUpdateProvider.notifier).state = updateResult;
+        ref.read(isForceUpdateProvider.notifier).state = true;
+      } else if (!isOpenPopup && appBuildNum < updateResult.recommendBuildNumber) {
+        stopUpdatePopupPolling();
+        ref.read(recommendUpdateProvider.notifier).state = updateResult;
+        ref.read(isRecommendUpdateProvider.notifier).state = true;
+      }
+    } on APIException catch (apiException) {
+      print('getUpdateFile error ${apiException.toString()}');
+      // await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+    } catch (e) {
+      print('getUpdateFile error $e');
     }
   }
 

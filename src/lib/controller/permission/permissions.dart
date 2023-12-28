@@ -24,13 +24,13 @@ class Permissions {
     return await requestLocationPermission().isGranted ? true : false;
   }
 
-  // static Future<PermissionStatus> requestCameraPermission() async {
-  //   return await Permission.camera.request();
-  // }
-  //
-  // static Future<bool> getCameraPermissionState() async {
-  //   return await requestCameraPermission().isGranted ? true : false;
-  // }
+  static Future<PermissionStatus> requestCameraPermission() async {
+    return await Permission.camera.request();
+  }
+
+  static Future<bool> getCameraPermissionState() async {
+    return await requestCameraPermission().isGranted ? true : false;
+  }
 
   static Future<PermissionStatus> requestPhotosPermission() async {
     return await Permission.photos.request();
@@ -39,6 +39,7 @@ class Permissions {
   static Future<bool> getPhotosPermissionState() async {
     return await requestPhotosPermission().isGranted ? true : false;
   }
+
   //
   // static Future<PermissionStatus> requestSensorsPermission() async {
   //   return await Permission.sensors.request();

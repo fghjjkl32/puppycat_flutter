@@ -20,7 +20,7 @@ class MaintenanceRepository {
     try {
       UpdateResponseModel responseModel = await _maintenanceService.getUpdateFile(updateS3BaseUrl);
       return responseModel;
-    } on DioError catch (dioError) {
+    } on DioException catch (dioError) {
       throw APIException(
         msg: dioError.message ?? "",
         code: dioError.response?.statusCode.toString() ?? 'Unknown',
@@ -28,6 +28,8 @@ class MaintenanceRepository {
         caller: 'getUpdateFile',
       );
     } catch (e) {
+      //TODO
+      //여긴 나중에 따로 오류 관련 Exception으로 변경 필요
       throw APIException(
         msg: 'Unknown error occurred',
         code: 'Unknown',

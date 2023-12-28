@@ -74,6 +74,7 @@ class AppleLoginService implements SocialLoginService {
           ),
         ),
       );
+      print('tokenaaaa : $token');
       _accountResult = token;
       // email = token.email;
 

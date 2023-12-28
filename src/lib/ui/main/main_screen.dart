@@ -540,6 +540,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             ///산책하기 보류로 주석 처리 완료
             // else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
             else {
+              print('aaaaazzz');
+
               final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
 
               final ImagePicker picker = ImagePicker();

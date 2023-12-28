@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -236,8 +237,19 @@ class LoginRepository {
     ResponseModel responseModel;
 
     print('authCode $authCode');
+
+    String pkgName = GetIt.I<PackageInformationUtil>().pkgName;
+    if (Platform.isAndroid) {
+      pkgName = 'io.services';
+    }
+
+    if (pkgName.isEmpty) {
+      pkgName = 'com.uxp.puppycat';
+    }
+    // return '';
     Map<String, dynamic> authMap = {
       'authorizationCode': authCode,
+      'clientId': pkgName,
     };
     if (simpleType == 'google') {
       responseModel = await _loginService.getGoogleRefreshToken(authMap);

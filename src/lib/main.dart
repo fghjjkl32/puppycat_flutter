@@ -109,6 +109,8 @@ void main() async {
   GetIt.I.registerSingleton<PackageInformationUtil>(PackageInformationUtil());
   await GetIt.I<PackageInformationUtil>().init();
 
+  // print('pkg name ${GetIt.I<PackageInformationUtil>().pkgName}');
+
   GetIt.I.registerSingleton<CookieJar>(CookieJar());
 
   // GetIt.I.registerSingleton<ChatClientController>(ChatClientController());
