@@ -540,6 +540,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             ///산책하기 보류로 주석 처리 완료
             // else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
             else {
+              print('aaaaazzz');
+
               final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
 
               final ImagePicker picker = ImagePicker();
@@ -668,33 +670,36 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 context.pushReplacement("/loginScreen");
                 // } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
               } else {
+                print('aaa');
                 final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.writeFeed);
 
                 if (restrain) {
-                  final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
+                  if (mounted) {
+                    final theme = themeData(context); //InstaAssetPicker.themeData(Theme.of(context).primaryColor);
 
-                  InstaAssetPicker.pickAssets(
-                    context,
-                    maxAssets: 12,
-                    pickerTheme: themeData(context).copyWith(
-                      canvasColor: kPreviousNeutralColor100,
-                      colorScheme: theme.colorScheme.copyWith(
-                        background: kPreviousNeutralColor100,
-                      ),
-                      appBarTheme: theme.appBarTheme.copyWith(
-                        backgroundColor: kPreviousNeutralColor100,
-                      ),
-                    ),
-                    onCompleted: (cropStream) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => FeedWriteScreen(
-                            cropStream: cropStream,
-                          ),
+                    InstaAssetPicker.pickAssets(
+                      context,
+                      maxAssets: 12,
+                      pickerTheme: themeData(context).copyWith(
+                        canvasColor: kPreviousNeutralColor100,
+                        colorScheme: theme.colorScheme.copyWith(
+                          background: kPreviousNeutralColor100,
                         ),
-                      );
-                    },
-                  );
+                        appBarTheme: theme.appBarTheme.copyWith(
+                          backgroundColor: kPreviousNeutralColor100,
+                        ),
+                      ),
+                      onCompleted: (cropStream) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => FeedWriteScreen(
+                              cropStream: cropStream,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
                 }
               }
               // else {
@@ -1303,7 +1308,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                             child: Column(
                               children: [
                                 // buildWidgetMask(userListLists[index].profileImgUrl, userListLists[index].isBadge, userListLists[index].redDotState),
-                                getProfileAvatarWithBadge(myInfo.profileImgUrl ?? '', myInfo.isBadge == 1, 54, 54),
+                                getProfileAvatarWithBadge(userListLists[index].profileImgUrl ?? '', userListLists[index].isBadge == 1, 54, 54),
                                 const SizedBox(height: 4.0),
                                 Stack(
                                   children: [

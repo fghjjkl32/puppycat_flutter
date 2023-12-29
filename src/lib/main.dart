@@ -77,13 +77,15 @@ void main() async {
   };
 
   // // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+  const systemUIOverlayStyle = SystemUiOverlayStyle(
     statusBarColor: Colors.white,
     statusBarIconBrightness: Brightness.dark,
     statusBarBrightness: Brightness.light,
     systemNavigationBarColor: Colors.white,
     systemNavigationBarIconBrightness: Brightness.dark,
-  ));
+  );
+
+  SystemChrome.setSystemUIOverlayStyle(systemUIOverlayStyle);
 
   // await LocationUtil.checkLocationPermission();
   // Location().changeSettings(interval: 500);
@@ -108,6 +110,8 @@ void main() async {
 
   GetIt.I.registerSingleton<PackageInformationUtil>(PackageInformationUtil());
   await GetIt.I<PackageInformationUtil>().init();
+
+  // print('pkg name ${GetIt.I<PackageInformationUtil>().pkgName}');
 
   GetIt.I.registerSingleton<CookieJar>(CookieJar());
 

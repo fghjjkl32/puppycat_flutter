@@ -10,10 +10,11 @@ class GoogleLoginService implements SocialLoginService {
   GoogleLoginService() {
     _googleSignIn = GoogleSignIn(
       // forceCodeForRefreshToken: true,
-      clientId: "14263543464-mt3majukl2io6fqllr24eh6egoc1fv5a.apps.googleusercontent.com",
+      // clientId: "14263543464-mt3majukl2io6fqllr24eh6egoc1fv5a.apps.googleusercontent.com",
+      serverClientId: "14263543464-mt3majukl2io6fqllr24eh6egoc1fv5a.apps.googleusercontent.com",
       scopes: [
         'email',
-        'https://www.googleapis.com/auth/contacts.readonly',
+        // 'https://www.googleapis.com/auth/contacts.readonly',
       ],
     );
 

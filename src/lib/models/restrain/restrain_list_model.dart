@@ -7,7 +7,7 @@ part 'restrain_list_model.g.dart';
 @freezed
 class RestrainDataModel with _$RestrainDataModel {
   const factory RestrainDataModel({
-    required RestrainItemModel restrain,
+    required RestrainItemModel? restrain,
   }) = _RestrainDataModel;
 
   factory RestrainDataModel.fromJson(Map<String, dynamic> json) => _$RestrainDataModelFromJson(json);

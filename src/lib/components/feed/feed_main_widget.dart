@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_best_post_widget.dart';
@@ -50,6 +49,8 @@ class FeedMainWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final popularUserList = ref.watch(popularUserListStateProvider).list;
+
     return GestureDetector(
       onTap: () async {
         Map<String, dynamic> extraMap = {
@@ -76,7 +77,7 @@ class FeedMainWidget extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (index == 0 && feedType == "follow")
+              if (index == 0 && feedType == "follow" && popularUserList.isNotEmpty)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -88,7 +89,7 @@ class FeedMainWidget extends ConsumerWidget {
                       ),
                     ),
                     FeedFollowWidget(
-                      popularUserListData: ref.watch(popularUserListStateProvider).list,
+                      popularUserListData: popularUserList,
                       oldMemberUuid: oldMemberUuid,
                     ),
                   ],

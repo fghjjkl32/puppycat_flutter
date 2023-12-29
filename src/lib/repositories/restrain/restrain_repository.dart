@@ -38,6 +38,15 @@ class RestrainRepository {
       );
     }
 
-    return responseModel.data!.restrain;
+    if (responseModel.data!.restrain == null) {
+      throw APIException(
+        msg: 'restrain is null',
+        code: 'Restrain-null', //백단에서 제재가 이미 풀렸을 때,
+        refer: 'RestrainRepository',
+        caller: 'getWriteRestrain',
+      );
+    }
+
+    return responseModel.data!.restrain!;
   }
 }

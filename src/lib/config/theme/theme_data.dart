@@ -1,5 +1,6 @@
 import 'package:cupertino_will_pop_scope/cupertino_will_pop_scope.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
@@ -27,13 +28,19 @@ ThemeData themeData(context) => ThemeData(
       scaffoldBackgroundColor: kPreviousNeutralColor100,
       primaryColor: kPreviousPrimaryColor,
       appBarTheme: AppBarTheme(
-        centerTitle: true,
-        elevation: 0,
-        titleTextStyle: kTitle18BoldStyle.copyWith(color: kPreviousNeutralColor600),
-        iconTheme: const IconThemeData(
-          color: kPreviousTextSubTitleColor,
-        ),
-      ),
+          centerTitle: true,
+          elevation: 0,
+          titleTextStyle: kTitle18BoldStyle.copyWith(color: kPreviousNeutralColor600),
+          iconTheme: const IconThemeData(
+            color: kPreviousTextSubTitleColor,
+          ),
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Colors.white,
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.light,
+            systemNavigationBarColor: Colors.white,
+            systemNavigationBarIconBrightness: Brightness.dark,
+          )),
       dividerTheme: const DividerThemeData(
         color: kPreviousNeutralColor200,
         thickness: 2,

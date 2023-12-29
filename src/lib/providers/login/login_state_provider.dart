@@ -38,9 +38,13 @@ class LoginState extends _$LoginState {
     try {
       UserModel socialUserModel = await loginRepository.socialLogin();
       final refreshToken = await loginRepository.getRefreshToken(socialUserModel.simpleType, socialUserModel.refreshToken);
+
+      // return;
       if (refreshToken.isNotEmpty) {
         socialUserModel = socialUserModel.copyWith(refreshToken: refreshToken);
       }
+
+      print('login refreshToken $refreshToken');
 
       final loginResult = await loginRepository.loginByUserModel(userModel: socialUserModel);
       _procLogin(loginResult);

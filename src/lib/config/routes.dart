@@ -494,7 +494,7 @@ class AppRouter {
               },
             ),
           ]),
-      GoRoute(path: '/loginScreen', name: 'loginScreen', builder: (_, state) => LoginScreen(), routes: [
+      GoRoute(path: '/loginScreen', name: 'loginScreen', builder: (_, state) => const LoginScreen(), routes: [
         GoRoute(
           path: 'signupScreen/:authType',
           name: 'signupScreen/:authType',
