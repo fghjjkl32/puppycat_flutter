@@ -366,95 +366,189 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Column(
                           children: [
-                            GestureDetector(
-                              child: Container(
-                                width: 152,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousPrimaryLightColor : kPreviousNeutralColor400,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(8.0),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '보관하기',
-                                    style: kButton14BoldStyle.copyWith(
-                                      color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousPrimaryColor : kPreviousTextBodyColor,
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.center,
+                            //   children: [
+                            //     GestureDetector(
+                            //       child: Container(
+                            //         width: 152,
+                            //         height: 36,
+                            //         decoration: BoxDecoration(
+                            //           color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousPrimaryLightColor : kPreviousNeutralColor400,
+                            //           borderRadius: const BorderRadius.all(
+                            //             Radius.circular(8.0),
+                            //           ),
+                            //         ),
+                            //         child: Center(
+                            //           child: Text(
+                            //             '보관하기',
+                            //             style: kButton14BoldStyle.copyWith(
+                            //               color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousPrimaryColor : kPreviousTextBodyColor,
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       onTap: () {
+                            //         myPageMyPostController.hasMyPostSelectedImage()
+                            //             ? myFeedKeepBottomSheet(
+                            //                 context: context,
+                            //                 onTap: () async {
+                            //                   context.pop();
+                            //
+                            //                   final result = await myPageMyPostController.postKeepContents(
+                            //                     idxList: myPageMyPostController.getSelectedMyPostImageIdx(),
+                            //                   );
+                            //
+                            //                   if (result.result && mounted) {
+                            //                     toast(
+                            //                       context: context,
+                            //                       text: '피드 보관 완료!',
+                            //                       type: ToastType.purple,
+                            //                     );
+                            //                   }
+                            //                 },
+                            //               )
+                            //             : null;
+                            //       },
+                            //     ),
+                            //     const SizedBox(
+                            //       width: 10,
+                            //     ),
+                            //     GestureDetector(
+                            //       child: Container(
+                            //         width: 152,
+                            //         height: 36,
+                            //         decoration: BoxDecoration(
+                            //           color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousErrorColor : kPreviousNeutralColor400,
+                            //           borderRadius: const BorderRadius.all(
+                            //             Radius.circular(8.0),
+                            //           ),
+                            //         ),
+                            //         child: Center(
+                            //           child: Text(
+                            //             '삭제하기',
+                            //             style: kButton14BoldStyle.copyWith(
+                            //               color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousNeutralColor100 : kPreviousTextBodyColor,
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       onTap: () {
+                            //         myPageMyPostController.hasMyPostSelectedImage()
+                            //             ? myFeedDeleteBottomSheet(
+                            //                 context: context,
+                            //                 onTap: () async {
+                            //                   context.pop();
+                            //
+                            //                   final result = await myPageMyPostController.deleteContents(
+                            //                     idx: myPageMyPostController.getSelectedImageIndices(isKeepSelect: false),
+                            //                   );
+                            //
+                            //                   if (result.result && mounted) {
+                            //                     toast(
+                            //                       context: context,
+                            //                       text: '피드 삭제 완료!',
+                            //                       type: ToastType.purple,
+                            //                     );
+                            //                   }
+                            //                 },
+                            //               )
+                            //             : null;
+                            //       },
+                            //     ),
+                            //   ],
+                            // ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 46,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: kPreviousPrimaryLightColor,
+                                        foregroundColor: kPreviousPrimaryColor,
+                                        textStyle: kBody16MediumStyle.copyWith(height: 1.4, letterSpacing: -0.5),
+                                        disabledBackgroundColor: kPreviousNeutralColor400,
+                                        disabledForegroundColor: kPreviousTextBodyColor,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                      onPressed: myPageMyPostController.hasMyPostSelectedImage()
+                                          ? () {
+                                              myFeedKeepBottomSheet(
+                                                context: context,
+                                                onTap: () async {
+                                                  context.pop();
+
+                                                  final result = await myPageMyPostController.postKeepContents(
+                                                    idxList: myPageMyPostController.getSelectedMyPostImageIdx(),
+                                                  );
+
+                                                  if (result.result && mounted) {
+                                                    toast(
+                                                      context: context,
+                                                      text: '피드 보관 완료!',
+                                                      type: ToastType.purple,
+                                                    );
+                                                  }
+                                                },
+                                              );
+                                            }
+                                          : null,
+                                      child: const Text('보관하기'),
                                     ),
                                   ),
                                 ),
-                              ),
-                              onTap: () {
-                                myPageMyPostController.hasMyPostSelectedImage()
-                                    ? myFeedKeepBottomSheet(
-                                        context: context,
-                                        onTap: () async {
-                                          context.pop();
-
-                                          final result = await myPageMyPostController.postKeepContents(
-                                            idxList: myPageMyPostController.getSelectedMyPostImageIdx(),
-                                          );
-
-                                          if (result.result && mounted) {
-                                            toast(
-                                              context: context,
-                                              text: '피드 보관 완료!',
-                                              type: ToastType.purple,
-                                            );
-                                          }
-                                        },
-                                      )
-                                    : null;
-                              },
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              child: Container(
-                                width: 152,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousErrorColor : kPreviousNeutralColor400,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(8.0),
-                                  ),
+                                const SizedBox(
+                                  width: 8,
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    '삭제하기',
-                                    style: kButton14BoldStyle.copyWith(
-                                      color: myPageMyPostController.hasMyPostSelectedImage() ? kPreviousNeutralColor100 : kPreviousTextBodyColor,
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 46,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: kPreviousErrorColor,
+                                        // foregroundColor: kPreviousPrimaryColor,
+                                        textStyle: kBody16MediumStyle.copyWith(height: 1.4, letterSpacing: -0.5),
+                                        disabledBackgroundColor: kPreviousNeutralColor400,
+                                        disabledForegroundColor: kPreviousTextBodyColor,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                      onPressed: myPageMyPostController.hasMyPostSelectedImage()
+                                          ? () {
+                                              myFeedDeleteBottomSheet(
+                                                context: context,
+                                                onTap: () async {
+                                                  context.pop();
+
+                                                  final result = await myPageMyPostController.deleteContents(
+                                                    idx: myPageMyPostController.getSelectedImageIndices(isKeepSelect: false),
+                                                  );
+
+                                                  if (result.result && mounted) {
+                                                    toast(
+                                                      context: context,
+                                                      text: '피드 삭제 완료!',
+                                                      type: ToastType.purple,
+                                                    );
+                                                  }
+                                                },
+                                              );
+                                            }
+                                          : null,
+                                      child: const Text('삭제하기'),
                                     ),
                                   ),
                                 ),
-                              ),
-                              onTap: () {
-                                myPageMyPostController.hasMyPostSelectedImage()
-                                    ? myFeedDeleteBottomSheet(
-                                        context: context,
-                                        onTap: () async {
-                                          context.pop();
-
-                                          final result = await myPageMyPostController.deleteContents(
-                                            idx: myPageMyPostController.getSelectedImageIndices(isKeepSelect: false),
-                                          );
-
-                                          if (result.result && mounted) {
-                                            toast(
-                                              context: context,
-                                              text: '피드 삭제 완료!',
-                                              type: ToastType.purple,
-                                            );
-                                          }
-                                        },
-                                      )
-                                    : null;
-                              },
+                              ],
                             ),
                           ],
                         ),
@@ -702,87 +796,174 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Column(
                           children: [
-                            GestureDetector(
-                              child: Container(
-                                width: 152,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: myKeepController.hasMyKeepSelectedImage() ? kPreviousPrimaryLightColor : kPreviousNeutralColor400,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(8.0),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '전체 공개',
-                                    style: kButton14BoldStyle.copyWith(
-                                      color: myKeepController.hasMyKeepSelectedImage() ? kPreviousPrimaryColor : kPreviousTextBodyColor,
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.center,
+                            //   children: [
+                            //     GestureDetector(
+                            //       child: Container(
+                            //         width: 152,
+                            //         height: 36,
+                            //         decoration: BoxDecoration(
+                            //           color: myKeepController.hasMyKeepSelectedImage() ? kPreviousPrimaryLightColor : kPreviousNeutralColor400,
+                            //           borderRadius: const BorderRadius.all(
+                            //             Radius.circular(8.0),
+                            //           ),
+                            //         ),
+                            //         child: Center(
+                            //           child: Text(
+                            //             '전체 공개',
+                            //             style: kButton14BoldStyle.copyWith(
+                            //               color: myKeepController.hasMyKeepSelectedImage() ? kPreviousPrimaryColor : kPreviousTextBodyColor,
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       onTap: () async {
+                            //         print('aaa?');
+                            //         final result = await myKeepController.deleteKeepContents(
+                            //           idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
+                            //         );
+                            //
+                            //         if (result.result) {
+                            //           toast(
+                            //             context: context,
+                            //             text: '전체 공개가 완료되었어요.',
+                            //             type: ToastType.purple,
+                            //           );
+                            //         }
+                            //       },
+                            //     ),
+                            //     const SizedBox(
+                            //       width: 10,
+                            //     ),
+                            //     GestureDetector(
+                            //       child: Container(
+                            //         width: 152,
+                            //         height: 36,
+                            //         decoration: BoxDecoration(
+                            //           color: myKeepController.hasMyKeepSelectedImage() ? kPreviousErrorColor : kPreviousNeutralColor400,
+                            //           borderRadius: const BorderRadius.all(
+                            //             Radius.circular(8.0),
+                            //           ),
+                            //         ),
+                            //         child: Center(
+                            //           child: Text(
+                            //             '삭제하기',
+                            //             style: kButton14BoldStyle.copyWith(
+                            //               color: myKeepController.hasMyKeepSelectedImage() ? kPreviousNeutralColor100 : kPreviousTextBodyColor,
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
+                            //       onTap: () {
+                            //         myKeepController.hasMyKeepSelectedImage()
+                            //             ? myFeedDeleteBottomSheet(
+                            //                 context: context,
+                            //                 onTap: () async {
+                            //                   context.pop();
+                            //
+                            //                   final result = await myKeepController.deleteContents(
+                            //                     idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
+                            //                   );
+                            //
+                            //                   if (result.result && mounted) {
+                            //                     toast(
+                            //                       context: context,
+                            //                       text: '피드 삭제 완료!',
+                            //                       type: ToastType.purple,
+                            //                     );
+                            //                   }
+                            //                 },
+                            //               )
+                            //             : null;
+                            //       },
+                            //     ),
+                            //   ],
+                            // ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 46,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: kPreviousPrimaryLightColor,
+                                        foregroundColor: kPreviousPrimaryColor,
+                                        textStyle: kBody16MediumStyle.copyWith(height: 1.4, letterSpacing: -0.5),
+                                        disabledBackgroundColor: kPreviousNeutralColor400,
+                                        disabledForegroundColor: kPreviousTextBodyColor,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                      onPressed: myKeepController.hasMyKeepSelectedImage()
+                                          ? () async {
+                                              final result = await myKeepController.deleteKeepContents(
+                                                idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
+                                              );
+
+                                              if (result.result) {
+                                                toast(
+                                                  context: context,
+                                                  text: '전체 공개가 완료되었어요.',
+                                                  type: ToastType.purple,
+                                                );
+                                              }
+                                            }
+                                          : null,
+                                      child: const Text('전체 공개'),
                                     ),
                                   ),
                                 ),
-                              ),
-                              onTap: () async {
-                                print('aaa?');
-                                final result = await myKeepController.deleteKeepContents(
-                                  idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
-                                );
-
-                                if (result.result) {
-                                  toast(
-                                    context: context,
-                                    text: '전체 공개가 완료되었어요.',
-                                    type: ToastType.purple,
-                                  );
-                                }
-                              },
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            GestureDetector(
-                              child: Container(
-                                width: 152,
-                                height: 36,
-                                decoration: BoxDecoration(
-                                  color: myKeepController.hasMyKeepSelectedImage() ? kPreviousErrorColor : kPreviousNeutralColor400,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(8.0),
-                                  ),
+                                const SizedBox(
+                                  width: 8,
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    '삭제하기',
-                                    style: kButton14BoldStyle.copyWith(
-                                      color: myKeepController.hasMyKeepSelectedImage() ? kPreviousNeutralColor100 : kPreviousTextBodyColor,
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 46,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: kPreviousErrorColor,
+                                        // foregroundColor: kPreviousPrimaryColor,
+                                        textStyle: kBody16MediumStyle.copyWith(height: 1.4, letterSpacing: -0.5),
+                                        disabledBackgroundColor: kPreviousNeutralColor400,
+                                        disabledForegroundColor: kPreviousTextBodyColor,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                      onPressed: myKeepController.hasMyKeepSelectedImage()
+                                          ? () {
+                                              myFeedDeleteBottomSheet(
+                                                context: context,
+                                                onTap: () async {
+                                                  context.pop();
+
+                                                  final result = await myKeepController.deleteContents(
+                                                    idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
+                                                  );
+
+                                                  if (result.result && mounted) {
+                                                    toast(
+                                                      context: context,
+                                                      text: '피드 삭제 완료!',
+                                                      type: ToastType.purple,
+                                                    );
+                                                  }
+                                                },
+                                              );
+                                            }
+                                          : null,
+                                      child: const Text('삭제하기'),
                                     ),
                                   ),
                                 ),
-                              ),
-                              onTap: () {
-                                myKeepController.hasMyKeepSelectedImage()
-                                    ? myFeedDeleteBottomSheet(
-                                        context: context,
-                                        onTap: () async {
-                                          context.pop();
-
-                                          final result = await myKeepController.deleteContents(
-                                            idx: myKeepController.getSelectedImageIndices(isKeepSelect: true),
-                                          );
-
-                                          if (result.result && mounted) {
-                                            toast(
-                                              context: context,
-                                              text: '피드 삭제 완료!',
-                                              type: ToastType.purple,
-                                            );
-                                          }
-                                        },
-                                      )
-                                    : null;
-                              },
+                              ],
                             ),
                           ],
                         ),

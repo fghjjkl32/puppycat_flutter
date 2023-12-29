@@ -670,33 +670,36 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 context.pushReplacement("/loginScreen");
                 // } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
               } else {
+                print('aaa');
                 final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.writeFeed);
 
                 if (restrain) {
-                  final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
+                  if (mounted) {
+                    final theme = themeData(context); //InstaAssetPicker.themeData(Theme.of(context).primaryColor);
 
-                  InstaAssetPicker.pickAssets(
-                    context,
-                    maxAssets: 12,
-                    pickerTheme: themeData(context).copyWith(
-                      canvasColor: kPreviousNeutralColor100,
-                      colorScheme: theme.colorScheme.copyWith(
-                        background: kPreviousNeutralColor100,
-                      ),
-                      appBarTheme: theme.appBarTheme.copyWith(
-                        backgroundColor: kPreviousNeutralColor100,
-                      ),
-                    ),
-                    onCompleted: (cropStream) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => FeedWriteScreen(
-                            cropStream: cropStream,
-                          ),
+                    InstaAssetPicker.pickAssets(
+                      context,
+                      maxAssets: 12,
+                      pickerTheme: themeData(context).copyWith(
+                        canvasColor: kPreviousNeutralColor100,
+                        colorScheme: theme.colorScheme.copyWith(
+                          background: kPreviousNeutralColor100,
                         ),
-                      );
-                    },
-                  );
+                        appBarTheme: theme.appBarTheme.copyWith(
+                          backgroundColor: kPreviousNeutralColor100,
+                        ),
+                      ),
+                      onCompleted: (cropStream) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => FeedWriteScreen(
+                              cropStream: cropStream,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
                 }
               }
               // else {

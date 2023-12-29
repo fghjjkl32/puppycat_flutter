@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
@@ -9,7 +8,6 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/user_restore_state_provider.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/restriction_dialog.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -75,7 +73,7 @@ class LoginScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        // systemOverlayStyle: SystemUiOverlayStyle.dark,
         automaticallyImplyLeading: false,
         title: Align(
             alignment: Alignment.centerLeft,

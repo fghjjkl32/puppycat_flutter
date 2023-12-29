@@ -71,7 +71,7 @@ Future<RunningMode> getRunningMode() async {
 
 Future initRunningMode() async {
   // final RunningMode mode = await getRunningMode();
-  const RunningMode mode = RunningMode.prd;
+  const RunningMode mode = RunningMode.stg;
 
   print('current mode : $mode');
   switch (mode) {
