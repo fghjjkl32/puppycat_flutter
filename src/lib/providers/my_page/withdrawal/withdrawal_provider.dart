@@ -1,14 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
 import 'package:pet_mobile_social_flutter/models/main/select_button/select_button_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/withdrawal/withdrawal_repository.dart';
+import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:riverpod/riverpod.dart';
 
 enum WithdrawalStatus {
@@ -65,12 +72,19 @@ class WithdrawalStateNotifier extends StateNotifier<SelectButtonListModel> {
         // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
         //TODO
         //탈퇴 후 처리 고도화 필요
+        await TokenController.clearTokens();
         ref.read(loginStateProvider.notifier).state = LoginStatus.none;
         ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
-        ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
-
+        // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
+        ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+        ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
+        ref.read(signUpUserInfoProvider.notifier).state = null;
+        ref.read(authStateProvider.notifier).state = false;
+        ref.read(checkButtonProvider.notifier).state = false;
+        ref.read(policyStateProvider.notifier).policyStateReset();
+        ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
         // ref.read(loginStateProvider.notifier).saveUserModel(null);
-
+        ref.read(routerProvider).push("/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail/withdrawalSuccess");
         return true;
       } else {
         return false;

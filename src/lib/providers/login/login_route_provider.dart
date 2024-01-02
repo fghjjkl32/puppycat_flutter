@@ -1,6 +1,3 @@
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'login_route_provider.g.dart';
@@ -20,6 +17,7 @@ class LoginRouteState extends _$LoginRouteState {
   }
 
   void changeLoginRoute(LoginRoute loginRoute) {
+    print('changeLoginRoute $state / $loginRoute');
     state = loginRoute;
   }
 }

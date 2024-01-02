@@ -12,10 +12,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:provider/provider.dart';
@@ -1093,74 +1097,118 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                   if (index == 0) {
                     return GestureDetector(
                       onTap: () async {
-                        final ImagePicker picker = ImagePicker();
+                        if (await Permissions.getCameraPermissionState()) {
+                          final ImagePicker picker = ImagePicker();
 
-                        final pickedFile = await picker.pickImage(source: ImageSource.camera);
+                          final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
-                        if (pickedFile != null) {
-                          await ImageGallerySaver.saveFile(pickedFile.path);
+                          if (pickedFile != null) {
+                            await ImageGallerySaver.saveFile(pickedFile.path);
 
-                          await provider.getAssetsFromCurrentPath();
+                            await provider.getAssetsFromCurrentPath();
 
-                          // ignore: use_build_context_synchronously
-                          selectAsset(context, assets[0], 1, false);
+                            // ignore: use_build_context_synchronously
+                            selectAsset(context, assets[0], 1, false);
+                          }
+
+                          // if (await Permissions.getCameraPermissionState()) {
+                          //   final ImagePicker picker = ImagePicker();
+                          //
+                          //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
+                          //
+                          //   if (pickedFile != null) {
+                          //     await ImageGallerySaver.saveFile(pickedFile.path);
+                          //
+                          //     await provider.getAssetsFromCurrentPath();
+                          //
+                          //     // ignore: use_build_context_synchronously
+                          //     selectAsset(context, assets[0], 1, false);
+                          //   }
+                          // } else {
+                          //   showDialog(
+                          //     context: context,
+                          //     builder: (BuildContext context) {
+                          //       return CustomDialog(
+                          //           content: Padding(
+                          //             padding: EdgeInsets.symmetric(vertical: 24.0.h),
+                          //             child: Column(
+                          //               children: [
+                          //                 Text(
+                          //                   "퍼피캣 접근 권한 허용",
+                          //                   style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
+                          //                 ),
+                          //                 SizedBox(
+                          //                   height: 4.h,
+                          //                 ),
+                          //                 Text(
+                          //                   "사진 촬영을 위해\n카메라 접근 권한을 허용해 주세요.",
+                          //                   style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
+                          //                   textAlign: TextAlign.center,
+                          //                 ),
+                          //               ],
+                          //             ),
+                          //           ),
+                          //           confirmTap: () {
+                          //             context.pop();
+                          //             openAppSettings();
+                          //           },
+                          //           cancelTap: () {
+                          //             context.pop();
+                          //           },
+                          //           confirmWidget: Text(
+                          //             "허용",
+                          //             style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
+                          //           ),
+                          //           cancelWidget: Text(
+                          //             "허용 안 함",
+                          //             style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
+                          //           ));
+                          //     },
+                          //   );
+                          // }
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return CustomDialog(
+                                  content: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "피드를 올리거나 프로필을 설정하려면\n사진 권한이 필요해요.",
+                                          style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+                                        Text(
+                                          "언제든지 설정을 바꿀 수 있어요.",
+                                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  confirmTap: () {
+                                    context.pop();
+                                    openAppSettings();
+                                  },
+                                  cancelTap: () {
+                                    context.pop();
+                                  },
+                                  confirmWidget: Text(
+                                    "설정 열기",
+                                    style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
+                                  ),
+                                  cancelWidget: Text(
+                                    "닫기",
+                                    style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                  ));
+                            },
+                          );
                         }
-
-                        // if (await Permissions.getCameraPermissionState()) {
-                        //   final ImagePicker picker = ImagePicker();
-                        //
-                        //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
-                        //
-                        //   if (pickedFile != null) {
-                        //     await ImageGallerySaver.saveFile(pickedFile.path);
-                        //
-                        //     await provider.getAssetsFromCurrentPath();
-                        //
-                        //     // ignore: use_build_context_synchronously
-                        //     selectAsset(context, assets[0], 1, false);
-                        //   }
-                        // } else {
-                        //   showDialog(
-                        //     context: context,
-                        //     builder: (BuildContext context) {
-                        //       return CustomDialog(
-                        //           content: Padding(
-                        //             padding: EdgeInsets.symmetric(vertical: 24.0.h),
-                        //             child: Column(
-                        //               children: [
-                        //                 Text(
-                        //                   "퍼피캣 접근 권한 허용",
-                        //                   style: kBody16BoldStyle.copyWith(color: kTextTitleColor),
-                        //                 ),
-                        //                 SizedBox(
-                        //                   height: 4.h,
-                        //                 ),
-                        //                 Text(
-                        //                   "사진 촬영을 위해\n카메라 접근 권한을 허용해 주세요.",
-                        //                   style: kBody12RegularStyle.copyWith(color: kTextBodyColor),
-                        //                   textAlign: TextAlign.center,
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //           confirmTap: () {
-                        //             context.pop();
-                        //             openAppSettings();
-                        //           },
-                        //           cancelTap: () {
-                        //             context.pop();
-                        //           },
-                        //           confirmWidget: Text(
-                        //             "허용",
-                        //             style: kButton14MediumStyle.copyWith(color: kPrimaryColor),
-                        //           ),
-                        //           cancelWidget: Text(
-                        //             "허용 안 함",
-                        //             style: kButton14MediumStyle.copyWith(color: kTextSubTitleColor),
-                        //           ));
-                        //     },
-                        //   );
-                        // }
                       },
                       child: Container(
                         decoration: const BoxDecoration(

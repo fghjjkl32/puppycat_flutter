@@ -93,8 +93,9 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
               title: '알림',
               onPressed: () async {
+                print('isLogined $isLogined');
                 if (await Permissions.getNotificationPermissionState()) {
-                  !isLogined ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingAlarm");
+                  !isLogined ? context.replace("/loginScreen") : context.push("/home/myPage/setting/settingAlarm");
                 } else {
                   if (mounted) {
                     showDialog(
@@ -273,7 +274,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: Text(
-                          '퍼피캣 이용에 꼭 필요한 접근 권한은\n해당 기능을 이용하시는 순간에 요청을 드리고 있어요.\n허용하지 않아도 퍼피캣을 이용하실 수 있지만,\n일부 서비스는 이용이 어려울 수 있어요.',
+                          '퍼피캣 이용에 꼭 필요한 접근 권한은\n 허용하지 않아도 퍼피캣을 이용하실 수 있지만,\n일부 서비스는 이용이 어려울 수 있어요.',
                           style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                           textAlign: TextAlign.center,
                         ),
@@ -283,6 +284,20 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         child: Divider(),
                       ),
                       Text(
+                        "카메라 (필수)",
+                        style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                      ),
+                      const SizedBox(
+                        height: 3,
+                      ),
+                      Text(
+                        "사진 촬영을 위해 필요한 권한이에요.",
+                        style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
                         "저장 공간 (필수)",
                         style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
@@ -290,7 +305,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         height: 3,
                       ),
                       Text(
-                        "사진, 미디어, 파일 등의 이용 및 로그를 저장해요.",
+                        "사진, 미디어, 파일 등을 사용 하기 위해 필요한 권한이에요.",
                         style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       const SizedBox(
@@ -304,7 +319,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         height: 3,
                       ),
                       Text(
-                        "푸시 알림 발송을 위해 기기 ID를 확인해요.",
+                        "푸시 알림 수신을 위해 필요한 권한이에요.",
                         style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       const SizedBox(
@@ -332,7 +347,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Container(
-                            height: 30,
+                            height: 46,
                             decoration: const BoxDecoration(
                               color: kPreviousPrimaryColor,
                               borderRadius: BorderRadius.all(

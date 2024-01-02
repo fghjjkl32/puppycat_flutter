@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
@@ -90,14 +91,15 @@ class LoginState extends _$LoginState {
     final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.login);
 
     if (restrain) {
-      ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
-      ref.read(myInfoStateProvider.notifier).getMyInfo();
+      await ref.read(myInfoStateProvider.notifier).getMyInfo();
       ref.read(signUpUserInfoProvider.notifier).state = null;
 
       print('ref.read(myInfoStateProvider ${ref.read(myInfoStateProvider)}');
       print('ref.read(restrainStateProvider ${ref.read(restrainStateProvider)}');
+      print('current route 33 : ${ref.read(routerProvider).location()}');
 
       state = LoginStatus.success;
+      ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRoute.success);
     }
   }
 

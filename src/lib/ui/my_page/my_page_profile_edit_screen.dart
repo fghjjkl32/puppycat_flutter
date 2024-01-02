@@ -1026,7 +1026,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         child: Center(
                           child: TextButton(
                             onPressed: () {
-                              context.go("/home/myPage/profileEdit/withdrawalSelect");
+                              context.push("/home/myPage/profileEdit/withdrawalSelect");
                             },
                             child: Text(
                               "회원 탈퇴",

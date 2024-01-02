@@ -10,6 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/config/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
+import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -23,10 +24,12 @@ final _initStateProvider = StateProvider<bool>((ref) => false);
 
 class InitializationApp {
   static void initialize(Ref ref) async {
+    print('asdasdasdasdasdasdasdasdad');
     if (ref.read(_initStateProvider)) {
+      print('zxczxczxczxczxczx');
       return;
     }
-    // Permissions.requestPermissions();
+    Permissions.requestPermissions();
 
     if (await _checkNetwork()) {
       if (await _checkServers()) {
@@ -135,7 +138,7 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
     print("payload ::: ${payload}");
     // context.push('/home/notification');
-    final router = ref.watch(routerProvider);
+    final router = ref.read(routerProvider);
     final myInfo = ref.read(myInfoStateProvider);
     // router.go('/home/notification');
 

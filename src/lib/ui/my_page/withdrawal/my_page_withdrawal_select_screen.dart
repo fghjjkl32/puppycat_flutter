@@ -149,7 +149,7 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                                 }
                                 ref.read(withdrawalCodeProvider.notifier).state = code;
                                 ref.read(withdrawalReasonProvider.notifier).state = directInputText;
-                                context.go("/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail");
+                                context.push("/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail");
                               },
                         child: Padding(
                           padding: const EdgeInsets.all(18.0),

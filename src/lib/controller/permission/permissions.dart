@@ -57,14 +57,18 @@ class Permissions {
     return await requestActivityRecognitionPermission().isGranted ? true : false;
   }
 
-  // static Future<void> requestPermissions() async {
-  //   Map<Permission, PermissionStatus> statuses = await [
-  //     Permission.location,
-  //     Permission.phone,
-  //     Permission.notification,
-  //     Permission.activityRecognition,
-  //   ].request();
-  // }
+  static Future<void> requestPermissions() async {
+    print('permission run??');
+    Map<Permission, PermissionStatus> statuses = await [
+      // Permission.location,
+      // Permission.phone,
+      Permission.photos,
+      Permission.storage,
+      Permission.notification,
+      // Permission.activityRecognition,
+      Permission.camera,
+    ].request();
+  }
 
   // static Future<void> requestNotificationPermission() async {
   //   final curStatus = await getNotificationPermission();
