@@ -59,6 +59,8 @@ class AuthRepository {
       );
     }
 
+    print("responseModel.data!['location'] ${responseModel.data!['location']}");
+
     return responseModel.data!['location'];
   }
 }

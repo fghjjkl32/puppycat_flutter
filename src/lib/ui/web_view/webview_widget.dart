@@ -123,7 +123,9 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
         }
       }
 
-      await webViewController.goBack();
+      //NOTE :: PASS 인증 시도 중 앱을 백그라운드로 내렸다가 다시 포그라운드로 전환 시 웹뷰가 뒤로가기 되어있는 문제때문에 주석
+      // 인증 완료되는것 확인했음
+      // await webViewController.goBack();
       return Future.value(false);
     } else {
       if (webViewControllerList.first == webViewController) {
