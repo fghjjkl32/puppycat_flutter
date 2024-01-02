@@ -8,8 +8,10 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
+import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/feed/feed_main_widget.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -18,7 +20,6 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/feed/my_feed_state_provider.dart';
@@ -57,7 +58,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   bool _isWidgetVisible = true;
 
   List<Widget> getTabs() {
-    final loginState = ref.read(loginStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
 
     List<Widget> tabs = [
       Text(
@@ -70,7 +71,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       // ),
     ];
 
-    if (loginState == LoginStatus.success) {
+    if (isLogined) {
       tabs.addAll([
         Text(
           "팔로잉",
@@ -87,9 +88,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   }
 
   List<Widget> getTabSpacer() {
-    final loginState = ref.read(loginStateProvider);
+    final isLogined = ref.read(loginStatementProvider);
+    // final loginState = ref.read(loginStateProvider);
 
-    if (loginState == LoginStatus.success) {
+    if (isLogined) {
       return [const SizedBox.shrink()];
     } else {
       return [
@@ -114,15 +116,16 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
     print('aaaaaaaaaaaaaaaaaaaaa');
 
-    Permissions.requestNotificationPermission();
+    // Permissions.requestNotificationPermission();
 
+    final isLogined = ref.read(loginStatementProvider);
     tabController = TabController(vsync: this, length: getTabs().length);
     tabController.index = widget.initialTabIndex;
 
     Future(() async {
       ref.read(followUserStateProvider.notifier).resetState();
 
-      final loginState = ref.watch(loginStateProvider);
+      // final loginState = ref.watch(loginStateProvider);
 
       // ref.read(recentFeedStateProvider.notifier).lastPage = 0;
       print('not run????');
@@ -134,7 +137,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
       scrollController.addListener(_myPostScrollListener);
 
-      if (loginState == LoginStatus.success) {
+      if (isLogined) {
         ///NOTE
         ///2023.11.14.
         ///산책하기 보류로 주석 처리
@@ -297,8 +300,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   @override
   Widget build(BuildContext context) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
-    final loginState = ref.watch(loginStateProvider);
+    // final loginState = ref.watch(loginStateProvider);
+    final isLogined = ref.watch(loginStatementProvider);
     print('isBigDevice $isBigDevice / ${MediaQuery.of(context).size.width} / ${MediaQuery.of(context).size.height}');
+    print('test333333 main ${GoRouter.of(context).routerDelegate.currentConfiguration}');
+
     return WillPopScope(
       onWillPop: () async {
         bool backResult = onBackPressed();
@@ -331,7 +337,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             body: SafeArea(
               child: Consumer(builder: (context, ref, _) {
                 return DefaultTabController(
-                  length: loginState == LoginStatus.success ? 4 : 2,
+                  length: isLogined ? 4 : 2,
                   child: NestedScrollView(
                     controller: scrollController,
                     headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -427,10 +433,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                               //   color: Colors.blue,
                               // ),
 
-                              if (loginState == LoginStatus.success) ...[
+                              if (isLogined) ...[
                                 _thirdTab(),
                               ],
-                              if (loginState == LoginStatus.success) ...[
+                              if (isLogined) ...[
                                 _fourthTab(),
                               ],
                             ],
@@ -527,7 +533,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             if (!isLogined) {
               if (mounted) {
-                context.pushReplacement("/loginScreen");
+                context.replace("/loginScreen");
               }
             }
 
@@ -542,37 +548,85 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             else {
               print('aaaaazzz');
 
-              final theme = InstaAssetPicker.themeData(Theme.of(context).primaryColor);
+              if (await Permissions.getCameraPermissionState()) {
+                if (!isLogined) {
+                  context.go('/loginScreen');
+                }
 
-              final ImagePicker picker = ImagePicker();
+                final theme = themeData(context);
 
-              final pickedFile = await picker.pickImage(source: ImageSource.camera);
+                final ImagePicker picker = ImagePicker();
 
-              if (pickedFile != null) {
-                await ImageGallerySaver.saveFile(pickedFile.path);
+                final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
-                // ignore: use_build_context_synchronously
-                InstaAssetPicker.pickAssets(
-                  context,
-                  maxAssets: 12,
+                if (pickedFile != null) {
+                  await ImageGallerySaver.saveFile(pickedFile.path);
+
                   // ignore: use_build_context_synchronously
-                  pickerTheme: themeData(context).copyWith(
-                    canvasColor: kPreviousNeutralColor100,
-                    colorScheme: theme.colorScheme.copyWith(
-                      background: kPreviousNeutralColor100,
-                    ),
-                    appBarTheme: theme.appBarTheme.copyWith(
-                      backgroundColor: kPreviousNeutralColor100,
-                    ),
-                  ),
-                  onCompleted: (cropStream) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => FeedWriteScreen(
-                          cropStream: cropStream,
-                        ),
+                  InstaAssetPicker.pickAssets(
+                    context,
+                    maxAssets: 12,
+                    // ignore: use_build_context_synchronously
+                    pickerTheme: themeData(context).copyWith(
+                      canvasColor: kPreviousNeutralColor100,
+                      colorScheme: theme.colorScheme.copyWith(
+                        background: kPreviousNeutralColor100,
                       ),
-                    );
+                      appBarTheme: theme.appBarTheme.copyWith(
+                        backgroundColor: kPreviousNeutralColor100,
+                      ),
+                    ),
+                    onCompleted: (cropStream) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => FeedWriteScreen(
+                            cropStream: cropStream,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return CustomDialog(
+                        content: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                "피드를 올리거나 프로필을 설정하려면\n사진 권한이 필요해요.",
+                                style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
+                                "언제든지 설정을 바꿀 수 있어요.",
+                                style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                        confirmTap: () {
+                          context.pop();
+                          openAppSettings();
+                        },
+                        cancelTap: () {
+                          context.pop();
+                        },
+                        confirmWidget: Text(
+                          "설정 열기",
+                          style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
+                        ),
+                        cancelWidget: Text(
+                          "닫기",
+                          style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
+                        ));
                   },
                 );
               }
@@ -748,7 +802,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         const PopupMenuWithReddot(),
         GestureDetector(
           onTap: () {
-            context.go("/home/myPage");
+            context.push("/home/myPage");
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
@@ -803,7 +857,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         return Future(() {
           ref.read(followUserStateProvider.notifier).resetState();
 
-          final loginState = ref.watch(loginStateProvider);
+          // final loginState = ref.watch(loginStateProvider);
 
           _recentFeedListPagingController.refresh();
 
@@ -813,7 +867,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
           scrollController.addListener(_myPostScrollListener);
 
-          if (loginState == LoginStatus.success) {
+          if (isLogined) {
             _myFeedListPagingController.refresh();
 
             _popularWeekFeedListPagingController.refresh();
@@ -922,7 +976,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         return Future(() {
           ref.read(followUserStateProvider.notifier).resetState();
 
-          final loginState = ref.watch(loginStateProvider);
+          // final loginState = ref.watch(loginStateProvider);
           print('aaaaaaaaaaaaaaaaaaaaa44444');
 
           _recentFeedListPagingController.refresh();
@@ -933,7 +987,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
           scrollController.addListener(_myPostScrollListener);
 
-          if (loginState == LoginStatus.success) {
+          if (isLogined) {
             _myFeedListPagingController.refresh();
 
             _popularWeekFeedListPagingController.refresh();
@@ -1082,7 +1136,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         return Future(() {
           ref.read(followUserStateProvider.notifier).resetState();
 
-          final loginState = ref.watch(loginStateProvider);
           print('aaaaaaaaaaaaaaaaaaaaa 5555');
 
           _recentFeedListPagingController.refresh();
@@ -1093,7 +1146,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
           scrollController.addListener(_myPostScrollListener);
 
-          if (loginState == LoginStatus.success) {
+          if (isLogined) {
             _myFeedListPagingController.refresh();
 
             _popularWeekFeedListPagingController.refresh();
@@ -1349,7 +1402,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         : Center(
             child: GestureDetector(
               onTap: () {
-                context.pushReplacement("/loginScreen");
+                context.push("/loginScreen");
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

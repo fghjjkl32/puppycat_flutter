@@ -54,7 +54,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
         ),
         body: Consumer(builder: (context, ref, child) {
           final withdrawalState = ref.watch(withdrawalDetailStateProvider);
-          final withdrawalLists = withdrawalState.memberInfo;
+          final withdrawalInfo = withdrawalState.memberInfo;
           return ListView(
             children: [
               Row(
@@ -79,190 +79,183 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
               const SizedBox(
                 height: 20,
               ),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: withdrawalLists.length,
-                itemBuilder: (BuildContext context, int i) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: kPreviousNeutralColor200,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: kPreviousNeutralColor200,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${myInfo.nick}님이",
+                          style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                        ),
+                        Row(
                           children: [
                             Text(
-                              "${myInfo.nick}님이",
+                              "퍼피캣과 함께한 ",
                               style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
-                            Row(
-                              children: [
-                                Text(
-                                  "퍼피캣과 함께한 ",
-                                  style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                ),
-                                Text(
-                                  "활동 정보",
-                                  style: kBody14BoldStyle.copyWith(color: kPreviousPrimaryColor),
-                                ),
-                                Text(
-                                  "예요.",
-                                  style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                ),
-                              ],
+                            Text(
+                              "활동 정보",
+                              style: kBody14BoldStyle.copyWith(color: kPreviousPrimaryColor),
                             ),
-                            const SizedBox(
-                              height: 4,
+                            Text(
+                              "예요.",
+                              style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "작성한 피드",
-                                    style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                  ),
-                                  Text(
-                                    "${withdrawalLists[i].totalContentsCnt}개",
-                                    style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "저장한 피드",
-                                    style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                  ),
-                                  Text(
-                                    "${withdrawalLists[i].totalSaveCnt}개",
-                                    style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "태그된 피드",
-                                    style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                  ),
-                                  Text(
-                                    "${withdrawalLists[i].totalTagCnt}개",
-                                    style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "포레스트와 함께한",
-                                    style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                  ),
-                                  Text(
-                                    "${withdrawalLists[i].totalActivityTime}",
-                                    style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // Padding(
-                            //   padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
-                            //   child: Row(
-                            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //     children: [
-                            //       Text(
-                            //         "우리 아이들과 산책한",
-                            //         style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
-                            //       ),
-                            //       Text(
-                            //         "589시간",
-                            //         style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
-                            // Padding(
-                            //   padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
-                            //   child: Row(
-                            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //     children: [
-                            //       Text(
-                            //         "즐거움을 공유한 친구들",
-                            //         style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
-                            //       ),
-                            //       Text(
-                            //         "5,890명",
-                            //         style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
-                            // Padding(
-                            //   padding: EdgeInsets.symmetric(vertical: 10.0.h),
-                            //   child: const Divider(
-                            //     color: kNeutralColor300,
-                            //   ),
-                            // ),
-                            // Text(
-                            //   "참여 중인 대화방에서 모두 나가게 되고",
-                            //   style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
-                            // ),
-                            // Row(
-                            //   children: [
-                            //     Text(
-                            //       "대화 내용은 즉시 삭제",
-                            //       style: kBody14BoldStyle.copyWith(color: kPrimaryColor),
-                            //     ),
-                            //     Text(
-                            //       "됩니다.",
-                            //       style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
-                            //     ),
-                            //   ],
-                            // ),
-                            // SizedBox(
-                            //   height: 4.h,
-                            // ),
-                            // Padding(
-                            //   padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
-                            //   child: Row(
-                            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //     children: [
-                            //       Text(
-                            //         "참여 중인 대화방",
-                            //         style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
-                            //       ),
-                            //       Text(
-                            //         "23개",
-                            //         style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
                           ],
                         ),
-                      ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "작성한 피드",
+                                style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                              ),
+                              Text(
+                                "${withdrawalInfo?.totalContentsCnt ?? 0}개",
+                                style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "저장한 피드",
+                                style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                              ),
+                              Text(
+                                "${withdrawalInfo?.totalSaveCnt ?? 0}개",
+                                style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "태그된 피드",
+                                style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                              ),
+                              Text(
+                                "${withdrawalInfo?.totalTagCnt ?? 0}개",
+                                style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "포레스트와 함께한",
+                                style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                              ),
+                              Text(
+                                "${withdrawalInfo?.totalActivityTime ?? 0}",
+                                style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Padding(
+                        //   padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //     children: [
+                        //       Text(
+                        //         "우리 아이들과 산책한",
+                        //         style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                        //       ),
+                        //       Text(
+                        //         "589시간",
+                        //         style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        // Padding(
+                        //   padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //     children: [
+                        //       Text(
+                        //         "즐거움을 공유한 친구들",
+                        //         style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                        //       ),
+                        //       Text(
+                        //         "5,890명",
+                        //         style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        // Padding(
+                        //   padding: EdgeInsets.symmetric(vertical: 10.0.h),
+                        //   child: const Divider(
+                        //     color: kNeutralColor300,
+                        //   ),
+                        // ),
+                        // Text(
+                        //   "참여 중인 대화방에서 모두 나가게 되고",
+                        //   style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
+                        // ),
+                        // Row(
+                        //   children: [
+                        //     Text(
+                        //       "대화 내용은 즉시 삭제",
+                        //       style: kBody14BoldStyle.copyWith(color: kPrimaryColor),
+                        //     ),
+                        //     Text(
+                        //       "됩니다.",
+                        //       style: kBody14BoldStyle.copyWith(color: kTextSubTitleColor),
+                        //     ),
+                        //   ],
+                        // ),
+                        // SizedBox(
+                        //   height: 4.h,
+                        // ),
+                        // Padding(
+                        //   padding: EdgeInsets.symmetric(vertical: 6.0.h, horizontal: 8.0.w),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //     children: [
+                        //       Text(
+                        //         "참여 중인 대화방",
+                        //         style: kBody12RegularStyle.copyWith(color: kTextSubTitleColor),
+                        //       ),
+                        //       Text(
+                        //         "23개",
+                        //         style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
             ],
           );
@@ -320,9 +313,10 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                                   reason: ref.read(withdrawalReasonProvider.notifier).state == "null" ? null : ref.read(withdrawalReasonProvider.notifier).state,
                                 );
 
-                            if (result) {
-                              context.push("/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail/withdrawalSuccess");
-                            }
+                            // if (result && mounted) {
+                            //   print('withdrawalSuccess');
+                            //   context.push("/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail/withdrawalSuccess");
+                            // }
                           }
                         : null,
                     child: Padding(

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:focus_detector/focus_detector.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 
 class MyPageWithdrawalSuccessScreen extends ConsumerStatefulWidget {
   const MyPageWithdrawalSuccessScreen({super.key});
@@ -18,15 +15,18 @@ class MyPageWithdrawalSuccessScreen extends ConsumerStatefulWidget {
 class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalSuccessScreen> {
   @override
   void initState() {
+    print('withdrawalSuccess ???');
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FocusDetector(
-      onFocusLost: () async {
-        ref.watch(loginRouteStateProvider.notifier).state = LoginRoute.none;
-        ref.read(loginStateProvider.notifier).state = LoginStatus.none;
+    print('aaaa??');
+    return DefaultOnWillPopScope(
+      onWillPop: () async {
+        print('aaaa?? 2222');
+        context.go('/home');
+        return true;
       },
       child: Material(
         child: Scaffold(
@@ -117,8 +117,10 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                         ),
                       ),
                       onPressed: () async {
-                        ref.watch(loginRouteStateProvider.notifier).state = LoginRoute.none;
-                        ref.read(loginStateProvider.notifier).state = LoginStatus.none;
+                        // ref.watch(loginRouteStateProvider.notifier).state = LoginRoute.none;
+                        // ref.read(loginStateProvider.notifier).state = LoginStatus.none;
+                        print('asd');
+                        context.go('/home');
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(18.0),

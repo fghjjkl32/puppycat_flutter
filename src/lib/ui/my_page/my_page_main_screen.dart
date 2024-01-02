@@ -892,7 +892,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                               final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.editMyInfo);
 
                               if (restrain) {
-                                context.go("/home/myPage/profileEdit");
+                                context.push("/home/myPage/profileEdit");
                               }
                             },
                             child: const Padding(

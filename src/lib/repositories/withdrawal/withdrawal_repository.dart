@@ -17,7 +17,7 @@ class WithdrawalRepository {
   WithdrawalRepository({
     required this.dio,
   }) {
-    _withdrawalService = WithdrawalService(dio, baseUrl: baseUrl);
+    _withdrawalService = WithdrawalService(dio, baseUrl: memberBaseUrl);
   }
 
   Future<SelectButtonListModel> getWithdrawalReasonList() async {
@@ -45,7 +45,8 @@ class WithdrawalRepository {
   }
 
   Future<WithdrawalDetailListModel> getWithdrawalDetailList() async {
-    WithdrawalDetailResponseModel responseModel = await _withdrawalService.getWithdrawalDetailList();
+    final withdrawalServiceForSNS = WithdrawalService(dio, baseUrl: baseUrl);
+    WithdrawalDetailResponseModel responseModel = await withdrawalServiceForSNS.getWithdrawalDetailList();
 
     if (!responseModel.result) {
       throw APIException(

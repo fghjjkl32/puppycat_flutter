@@ -17,7 +17,7 @@ class MyInfoState extends _$MyInfoState {
     return UserInformationItemModel();
   }
 
-  void getMyInfo() async {
+  Future getMyInfo() async {
     try {
       UserInformationItemModel userInfoModel = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).getMyInfo();
       state = userInfoModel;

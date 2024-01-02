@@ -75,6 +75,16 @@ import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/web_view/webview_widget.dart';
 
 final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref: ref).router);
+// final routerProvider = StateProvider<GoRouter>((ref) {
+//   final aa = GetIt.I.isRegistered<AppRouter>();
+//   print('GoRouter $aa');
+//   if (!aa) {
+//     print('asdasdad');
+//     final aaaa = GetIt.I.registerSingleton<AppRouter>(AppRouter(ref: ref));
+//     print('asdasd222 ${GetIt.I<AppRouter>()}');
+//   }
+//   return GetIt.I<AppRouter>().router;
+// });
 
 extension GoRouterExtension on GoRouter {
   String location() {
@@ -87,7 +97,7 @@ extension GoRouterExtension on GoRouter {
 
 class AppRouter {
   GoRouter get router => _goRouter;
-  var _loginRouteState = LoginRoute.none;
+  var _loginRouteState = LoginRoute.none; // ref.watch(loginRouteStateProvider); //LoginRoute.none;
   var _signUpState = SignUpRoute.none;
   bool _splashState = false;
 
@@ -102,13 +112,14 @@ class AppRouter {
   AppRouter({
     required this.ref,
   }) {
-    // _loginRouteState = ref.watch(loginRouteStateProvider);
+    _loginRouteState = ref.watch(loginRouteStateProvider);
     // _signUpState = ref.watch(signUpRouteStateProvider);
     _splashState = ref.watch(splashStateProvider);
     // _pushPayloadState = ref.watch(pushPayloadStateProvider);
     // _maintenanceState = ref.watch(isMaintenanceProvider);
     // _pushPayloadState = ref.watch(pushPayloadNotifierProvider);
     // _walkState = ref.watch(walkStatusStateProvider);
+    print('asdasdasdasdasdzxczczxc');
   }
 
   late final GoRouter _goRouter = GoRouter(
@@ -869,9 +880,15 @@ class AppRouter {
       InitializationApp.initialize(ref);
 
       bool isSplashPage = state.matchedLocation == splashLocation;
+      print('_loginRouteState $_loginRouteState');
+      print('_splashState $_splashState');
+      print('_signUpState $_signUpState');
+      print('_maintenanceState $_maintenanceState');
+      print('_recommendUpdateState $_recommendUpdateState');
       if (isSplashPage) {
         if (_splashState) {
-          _loginRouteState = ref.watch(loginRouteStateProvider);
+          print('_splashState $_splashState');
+          // _loginRouteState = ref.watch(loginRouteStateProvider);
           _signUpState = ref.watch(signUpRouteStateProvider);
           _maintenanceState = ref.watch(isInspectProvider);
           _forceUpdateState = ref.watch(isForceUpdateProvider);
@@ -893,10 +910,14 @@ class AppRouter {
       }
 
       bool isLoginPage = state.matchedLocation == loginLocation;
+      print('isLoginPage 1 $isLoginPage / $_loginRouteState / ${state.matchedLocation} / ${state.path} / ${state.fullPath}');
       if (isLoginPage) {
+        print('isLoginPage 2 $isLoginPage / $_loginRouteState / ${state.matchedLocation} / ${state.path} / ${state.fullPath}');
         if (_loginRouteState == LoginRoute.success) {
+          print('isLoginPage 3 $isLoginPage / $_loginRouteState / ${state.matchedLocation} / ${state.path} / ${state.fullPath}');
           return homeLocation;
         } else if (_loginRouteState == LoginRoute.signUpScreen) {
+          print('isLoginPage 4 $isLoginPage / $_loginRouteState / ${state.matchedLocation} / ${state.path} / ${state.fullPath}');
           return signUpLocation;
         } else {
           return null;
