@@ -190,7 +190,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
     print("payload ::: ${payload}");
     // context.push('/home/notification');
-    final router = ref.watch(routerProvider);
+    final router = ref.read(routerProvider);
     final myInfo = ref.read(myInfoStateProvider);
     // router.go('/home/notification');
 

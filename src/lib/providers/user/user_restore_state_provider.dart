@@ -1,5 +1,5 @@
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/user/user_info_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,7 +13,7 @@ class UserRestoreState extends _$UserRestoreState {
   }
 
   void restoreAccount() async {
-    final myInfo = ref.read(myInfoStateProvider);
-    state = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).restoreAccount(myInfo.simpleId);
+    final loginInfo = ref.read(signUpUserInfoProvider);
+    state = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).restoreAccount(loginInfo?.simpleId ?? '');
   }
 }

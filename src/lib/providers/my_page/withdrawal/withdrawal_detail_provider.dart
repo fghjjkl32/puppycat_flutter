@@ -19,21 +19,11 @@ class WithdrawalDetailStateNotifier extends StateNotifier<WithdrawalDetailListMo
     try {
       final lists = await WithdrawalRepository(dio: ref.read(dioProvider)).getWithdrawalDetailList();
 
-      if (lists == null) {
-        state = state.copyWith(isLoading: false);
-        return;
-      }
-
-      state = state.copyWith(
-        isLoading: false,
-        memberInfo: lists.memberInfo,
-      );
+      state = lists;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      state = state.copyWith(isLoading: false);
     } catch (e) {
       print('getWithdrawalDetailList error $e');
-      state = state.copyWith(isLoading: false);
     }
   }
 }

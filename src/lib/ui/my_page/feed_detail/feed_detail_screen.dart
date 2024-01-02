@@ -95,6 +95,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
     if (firstFeedData == null) {
       return ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(widget.contentType, widget.contentIdx);
     } else {
+      if (firstFeedData.idx != widget.contentIdx) {
+        return ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(widget.contentType, widget.contentIdx);
+      }
       return firstFeedData;
     }
   }
