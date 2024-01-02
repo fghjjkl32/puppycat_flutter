@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -277,7 +276,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
               const SizedBox(width: 12),
               GestureDetector(
                 onTap: () {
-                  context.push("/home/commentDetail/${widget.contentIdx}/${widget.oldMemberUuid}");
+                  context.push("/home/commentDetail/${widget.contentIdx}/${widget.oldMemberUuid == "" ? null : widget.oldMemberUuid}");
                 },
                 child: Row(
                   children: [

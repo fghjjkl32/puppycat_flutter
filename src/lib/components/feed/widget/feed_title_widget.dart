@@ -95,7 +95,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
               )
             //TODO
             //Route 다시
-            : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
+            : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid == "" ? "null" : widget.oldMemberUuid}");
       },
       child: Material(
         color: kPreviousNeutralColor100,
