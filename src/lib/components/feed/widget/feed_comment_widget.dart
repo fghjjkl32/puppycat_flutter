@@ -1,7 +1,6 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -42,7 +41,7 @@ class FeedCommentWidget extends ConsumerWidget {
       onTap: () {
         //TODO
         //Route 다시
-        context.push("/home/commentDetail/$contentIdx/$oldMemberUuid");
+        context.push("/home/commentDetail/$contentIdx/${oldMemberUuid == "" ? null : oldMemberUuid}");
       },
       child: Padding(
         padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),

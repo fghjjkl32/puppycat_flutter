@@ -70,7 +70,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
     if (widget.isRouteComment) {
       Future(() {
         print('widget.commentFocusIndex ${widget.commentFocusIndex}');
-        context.push("/home/commentDetail/${widget.contentIdx}/${widget.memberUuid}", extra: {
+        context.push("/home/commentDetail/${widget.contentIdx}/${widget.memberUuid == "" ? null : widget.memberUuid}", extra: {
           "focusIndex": widget.commentFocusIndex,
         });
       });
