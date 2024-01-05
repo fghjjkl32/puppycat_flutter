@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class DefaultOnWillPopScope extends StatelessWidget {
-  const DefaultOnWillPopScope({
+  DefaultOnWillPopScope({
     required this.child,
     this.onWillPop,
     super.key,
@@ -12,16 +12,23 @@ class DefaultOnWillPopScope extends StatelessWidget {
   final Widget child;
   final WillPopCallback? onWillPop;
 
+  final _isProcessing = ValueNotifier<bool>(false);
+
   @override
   Widget build(BuildContext context) {
     return Platform.isIOS
         ? Listener(
-            onPointerMove: (event) {
+            onPointerMove: (event) async {
               if (event.delta.dx > 10 && event.delta.dy >= 0 && event.delta.dy <= 10) {
-                Future.delayed(const Duration(milliseconds: 500), () async {
-                  onWillPop;
-                  await Future.value(true);
-                });
+                // 디바운스 메커니즘을 적용합니다.
+                if (!_isProcessing.value) {
+                  _isProcessing.value = true;
+                  if (onWillPop != null) {
+                    onWillPop!.call();
+                  }
+                  // 플래그를 재설정합니다.
+                  _isProcessing.value = false;
+                }
               }
             },
             child: child,

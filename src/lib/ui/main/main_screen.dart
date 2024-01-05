@@ -533,7 +533,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             if (!isLogined) {
               if (mounted) {
-                context.replace("/loginScreen");
+                context.push('/loginScreen');
               }
             }
 
@@ -550,7 +550,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
               if (await Permissions.getCameraPermissionState()) {
                 if (!isLogined) {
-                  context.go('/loginScreen');
+                  context.push('/loginScreen');
                 }
 
                 final theme = themeData(context);
