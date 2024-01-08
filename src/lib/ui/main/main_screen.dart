@@ -305,203 +305,197 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     print('isBigDevice $isBigDevice / ${MediaQuery.of(context).size.width} / ${MediaQuery.of(context).size.height}');
     print('test333333 main ${GoRouter.of(context).routerDelegate.currentConfiguration}');
 
-    return WillPopScope(
-      onWillPop: () async {
-        bool backResult = onBackPressed();
-        return await Future.value(backResult);
-      },
-      child: Stack(
-        children: [
-          Scaffold(
-            appBar: isBigDevice
-                ? null
-                : PreferredSize(
-                    preferredSize: const Size.fromHeight(30.0),
-                    child: AppBar(
-                      automaticallyImplyLeading: false,
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Image.asset(
-                            'assets/image/logo/logo.png',
-                            width: 107,
-                            height: 39,
-                          ),
-                          _buttonWidget(),
-                        ],
-                      ),
-                      backgroundColor: Colors.transparent,
-                      elevation: 0,
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: isBigDevice
+              ? null
+              : PreferredSize(
+                  preferredSize: const Size.fromHeight(30.0),
+                  child: AppBar(
+                    automaticallyImplyLeading: false,
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset(
+                          'assets/image/logo/logo.png',
+                          width: 107,
+                          height: 39,
+                        ),
+                        _buttonWidget(),
+                      ],
                     ),
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
                   ),
-            body: SafeArea(
-              child: Consumer(builder: (context, ref, _) {
-                return DefaultTabController(
-                  length: isLogined ? 4 : 2,
-                  child: NestedScrollView(
-                    controller: scrollController,
-                    headerSliverBuilder: (context, innerBoxIsScrolled) {
-                      return [
-                        isBigDevice
-                            ? SliverAppBar(
-                                pinned: true,
-                                snap: false,
-                                floating: true,
-                                expandedHeight: 180.0,
-                                centerTitle: false,
-                                leading: null,
-                                titleSpacing: 0,
-                                backgroundColor: kPreviousNeutralColor100,
-                                automaticallyImplyLeading: false,
-                                title: Row(
-                                  children: [
-                                    const Spacer(),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 4.0),
-                                      child: _buttonWidget(),
-                                    ),
-                                  ],
-                                ),
-                                flexibleSpace: FlexibleSpaceBar(
-                                  titlePadding: EdgeInsets.zero,
-                                  expandedTitleScale: 1.0,
-                                  centerTitle: false,
-                                  collapseMode: CollapseMode.pin,
-                                  title: _buildTabbar(innerBoxIsScrolled),
-                                  background: Container(
-                                    color: kPreviousNeutralColor100,
-                                    child: Stack(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 12,
-                                            left: 16,
-                                          ),
-                                          child: Image.asset(
-                                            'assets/image/logo/logo.png',
-                                            width: 107,
-                                            height: 39,
-                                          ),
-                                        ),
-                                        _buildBackGround(),
-                                      ],
-                                    ),
+                ),
+          body: SafeArea(
+            child: Consumer(builder: (context, ref, _) {
+              return DefaultTabController(
+                length: isLogined ? 4 : 2,
+                child: NestedScrollView(
+                  controller: scrollController,
+                  headerSliverBuilder: (context, innerBoxIsScrolled) {
+                    return [
+                      isBigDevice
+                          ? SliverAppBar(
+                              pinned: true,
+                              snap: false,
+                              floating: true,
+                              expandedHeight: 180.0,
+                              centerTitle: false,
+                              leading: null,
+                              titleSpacing: 0,
+                              backgroundColor: kPreviousNeutralColor100,
+                              automaticallyImplyLeading: false,
+                              title: Row(
+                                children: [
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 4.0),
+                                    child: _buttonWidget(),
                                   ),
-                                ),
-                              )
-                            : SliverAppBar(
-                                pinned: true,
-                                snap: false,
-                                floating: true,
-                                expandedHeight: 135.0,
+                                ],
+                              ),
+                              flexibleSpace: FlexibleSpaceBar(
+                                titlePadding: EdgeInsets.zero,
+                                expandedTitleScale: 1.0,
                                 centerTitle: false,
-                                leading: null,
-                                titleSpacing: 0,
-                                backgroundColor: kPreviousNeutralColor100,
-                                automaticallyImplyLeading: false,
-                                flexibleSpace: FlexibleSpaceBar(
-                                  titlePadding: EdgeInsets.zero,
-                                  expandedTitleScale: 1.0,
-                                  centerTitle: false,
-                                  collapseMode: CollapseMode.pin,
-                                  title: _buildTabbar(innerBoxIsScrolled),
-                                  background: Container(
-                                    color: kPreviousNeutralColor100,
-                                    child: Stack(
-                                      children: [
-                                        _buildBackGround(),
-                                      ],
-                                    ),
+                                collapseMode: CollapseMode.pin,
+                                title: _buildTabbar(innerBoxIsScrolled),
+                                background: Container(
+                                  color: kPreviousNeutralColor100,
+                                  child: Stack(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 12,
+                                          left: 16,
+                                        ),
+                                        child: Image.asset(
+                                          'assets/image/logo/logo.png',
+                                          width: 107,
+                                          height: 39,
+                                        ),
+                                      ),
+                                      _buildBackGround(),
+                                    ],
                                   ),
                                 ),
                               ),
-                      ];
+                            )
+                          : SliverAppBar(
+                              pinned: true,
+                              snap: false,
+                              floating: true,
+                              expandedHeight: 135.0,
+                              centerTitle: false,
+                              leading: null,
+                              titleSpacing: 0,
+                              backgroundColor: kPreviousNeutralColor100,
+                              automaticallyImplyLeading: false,
+                              flexibleSpace: FlexibleSpaceBar(
+                                titlePadding: EdgeInsets.zero,
+                                expandedTitleScale: 1.0,
+                                centerTitle: false,
+                                collapseMode: CollapseMode.pin,
+                                title: _buildTabbar(innerBoxIsScrolled),
+                                background: Container(
+                                  color: kPreviousNeutralColor100,
+                                  child: Stack(
+                                    children: [
+                                      _buildBackGround(),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                    ];
+                  },
+                  body: InkWell(
+                    onTap: () {
+                      setState(() {
+                        _isWidgetVisible = false;
+                      });
                     },
-                    body: InkWell(
-                      onTap: () {
-                        setState(() {
-                          _isWidgetVisible = false;
-                        });
-                      },
-                      child: Stack(
-                        children: [
-                          TabBarView(
-                            controller: tabController,
-                            children: [
-                              _firstTab(),
-                              // Container(
-                              //   color: Colors.blue,
-                              // ),
+                    child: Stack(
+                      children: [
+                        TabBarView(
+                          controller: tabController,
+                          children: [
+                            _firstTab(),
+                            // Container(
+                            //   color: Colors.blue,
+                            // ),
 
-                              if (isLogined) ...[
-                                _thirdTab(),
-                              ],
-                              if (isLogined) ...[
-                                _fourthTab(),
-                              ],
+                            if (isLogined) ...[
+                              _thirdTab(),
                             ],
-                          ),
+                            if (isLogined) ...[
+                              _fourthTab(),
+                            ],
+                          ],
+                        ),
 
-                          ///NOTE
-                          ///2023.11.14.
-                          ///산책하기 보류로 주석 처리
-                          // Visibility(
-                          //   visible: _isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking,
-                          //   child: Positioned.fill(
-                          //     bottom: 10,
-                          //     child: Align(
-                          //       alignment: Alignment.bottomCenter,
-                          //       child: Padding(
-                          //         padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 24.0),
-                          //         child: WalkInfoWidget(
-                          //           walkStateModel: ref.watch(singleWalkStateProvider).isEmpty ? null : ref.watch(singleWalkStateProvider).last,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ),
-                          // )
-                          ///산책하기 보류로 주석 처리 완료
-                        ],
-                      ),
+                        ///NOTE
+                        ///2023.11.14.
+                        ///산책하기 보류로 주석 처리
+                        // Visibility(
+                        //   visible: _isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking,
+                        //   child: Positioned.fill(
+                        //     bottom: 10,
+                        //     child: Align(
+                        //       alignment: Alignment.bottomCenter,
+                        //       child: Padding(
+                        //         padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 24.0),
+                        //         child: WalkInfoWidget(
+                        //           walkStateModel: ref.watch(singleWalkStateProvider).isEmpty ? null : ref.watch(singleWalkStateProvider).last,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // )
+                        ///산책하기 보류로 주석 처리 완료
+                      ],
                     ),
                   ),
-                );
-              }),
-            ),
+                ),
+              );
+            }),
+          ),
 
-            ///NOTE
-            ///2023.11.14.
-            ///산책하기 보류로 주석 처리
-            // floatingActionButton: Consumer(builder: (context, ref, _) {
-            //   return !_isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking
-            //       ? FloatingActionButton(
-            //           backgroundColor: kNeutralColor100,
-            //           child: Lottie.asset(
-            //             'assets/lottie/character_03_walking_floating.json',
-            //             repeat: true,
-            //           ),
-            //           onPressed: () {
-            //             setState(() {
-            //               _isWidgetVisible = true;
-            //             });
-            //           },
-            //         )
-            //       : Container();
-            // }),
-            ///산책하기 보류로 주석 처리 완료
+          ///NOTE
+          ///2023.11.14.
+          ///산책하기 보류로 주석 처리
+          // floatingActionButton: Consumer(builder: (context, ref, _) {
+          //   return !_isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking
+          //       ? FloatingActionButton(
+          //           backgroundColor: kNeutralColor100,
+          //           child: Lottie.asset(
+          //             'assets/lottie/character_03_walking_floating.json',
+          //             repeat: true,
+          //           ),
+          //           onPressed: () {
+          //             setState(() {
+          //               _isWidgetVisible = true;
+          //             });
+          //           },
+          //         )
+          //       : Container();
+          // }),
+          ///산책하기 보류로 주석 처리 완료
+        ),
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: MediaQuery.of(context).padding.top,
+          child: GestureDetector(
+            excludeFromSemantics: true,
+            onTap: _handleStatusBarTap,
           ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: MediaQuery.of(context).padding.top,
-            child: GestureDetector(
-              excludeFromSemantics: true,
-              onTap: _handleStatusBarTap,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
