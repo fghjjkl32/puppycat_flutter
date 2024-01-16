@@ -76,7 +76,7 @@ class LoginScreen extends ConsumerWidget {
         if (context.canPop()) {
           context.pop();
         } else {
-          context.go("/home");
+          context.pushReplacement("/home");
         }
         return false;
       },

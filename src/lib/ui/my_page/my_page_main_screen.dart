@@ -184,13 +184,13 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                             showLottieAnimation = false;
                           });
                           if (id == 'myActivity') {
-                            context.go("/home/myPage/myActivity");
+                            context.push("/home/myPage/myActivity");
                           }
                           if (id == 'postsManagement') {
-                            context.go("/home/myPage/myPost");
+                            context.push("/home/myPage/myPost");
                           }
                           if (id == 'setting') {
-                            context.go("/home/myPage/setting");
+                            context.push("/home/myPage/setting");
                           }
                         },
                         shape: const RoundedRectangleBorder(

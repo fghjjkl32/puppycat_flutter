@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -31,7 +32,6 @@ import 'package:pet_mobile_social_flutter/providers/main/user_list/popular_user_
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/popupmenu_with_reddot_widget.dart';
 import 'package:widget_mask/widget_mask.dart';
 
@@ -570,14 +570,16 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                         backgroundColor: kPreviousNeutralColor100,
                       ),
                     ),
+                    useRootNavigator: false,
                     onCompleted: (cropStream) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => FeedWriteScreen(
-                            cropStream: cropStream,
-                          ),
-                        ),
-                      );
+                      context.push('/feed_write', extra: cropStream);
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (context) => FeedWriteScreen(
+                      //       cropStream: cropStream,
+                      //     ),
+                      //   ),
+                      // );
                     },
                   );
                 }
@@ -738,13 +740,15 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                         ),
                       ),
                       onCompleted: (cropStream) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => FeedWriteScreen(
-                              cropStream: cropStream,
-                            ),
-                          ),
-                        );
+                        context.push('/feed_write', extra: cropStream);
+
+                        // Navigator.of(context).push(
+                        //   MaterialPageRoute(
+                        //     builder: (context) => FeedWriteScreen(
+                        //       cropStream: cropStream,
+                        //     ),
+                        //   ),
+                        // );
                       },
                     );
                   }
@@ -1208,13 +1212,15 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                             ),
                                       ),
                                       onCompleted: (cropStream) {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => FeedWriteScreen(
-                                              cropStream: cropStream,
-                                            ),
-                                          ),
-                                        );
+                                        context.push('/feed_write', extra: cropStream);
+
+                                        // Navigator.of(context).push(
+                                        //   MaterialPageRoute(
+                                        //     builder: (context) => FeedWriteScreen(
+                                        //       cropStream: cropStream,
+                                        //     ),
+                                        //   ),
+                                        // );
                                       },
                                     );
                               // : showDialog(
@@ -1323,7 +1329,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: () {
-                        context.go("/home/myPage");
+                        context.push("/home/myPage");
                       },
                       child: Column(
                         children: [

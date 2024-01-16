@@ -20,7 +20,6 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_edit_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 
 class FeedTitleWidget extends ConsumerStatefulWidget {
@@ -328,14 +327,10 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                       final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.writeFeed);
 
                                       if (restrain) {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => FeedEditScreen(
-                                              feedData: widget.feedData,
-                                              contentIdx: widget.contentIdx,
-                                            ),
-                                          ),
-                                        );
+                                        context.push('/feed_edit', extra: {
+                                          "feedData": widget.feedData,
+                                          "contentIdx": widget.contentIdx,
+                                        });
                                       }
                                     },
                                   ),

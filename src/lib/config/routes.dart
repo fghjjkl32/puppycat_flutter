@@ -2,6 +2,9 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/delegates/asset_picker_builder_delegate.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/widget/asset_picker.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_block_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/custom_modal_bottom_sheet_widget.dart';
@@ -14,6 +17,7 @@ import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_pag
 import 'package:pet_mobile_social_flutter/components/route_page/dialog_page.dart';
 import 'package:pet_mobile_social_flutter/components/toast/error_toast.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/models/restrain/restrain_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
@@ -24,6 +28,8 @@ import 'package:pet_mobile_social_flutter/ui/chat/chat_room_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/chat/chat_search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/error/feed_not_follow_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/error/feed_not_found_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/feed_edit_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_complete_screen.dart';
@@ -73,6 +79,7 @@ import 'package:pet_mobile_social_flutter/ui/notification/notification_screen.da
 import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/web_view/webview_widget.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 final routerProvider = Provider<GoRouter>((ref) => AppRouter(ref: ref).router);
 // final routerProvider = StateProvider<GoRouter>((ref) {
@@ -543,6 +550,61 @@ class AppRouter {
           return const SplashScreen();
         },
       ),
+      GoRoute(
+        path: '/feed_write',
+        name: 'feed_write',
+        builder: (BuildContext context, GoRouterState state) {
+          return FeedWriteScreen(cropStream: state.extra as Stream<InstaAssetsExportDetails>);
+        },
+      ),
+      GoRoute(
+        path: '/feed_edit',
+        name: 'feed_edit',
+        builder: (BuildContext context, GoRouterState state) {
+          FeedData? feedData;
+          int? contentIdx;
+          if (state.extra != null) {
+            Map<dynamic, dynamic> extraMap = {};
+            extraMap = state.extra! as Map<String, dynamic>;
+
+            if (extraMap.containsKey('feedData')) {
+              feedData = extraMap['feedData'];
+            }
+
+            if (extraMap.containsKey('contentIdx')) {
+              contentIdx = extraMap['contentIdx'];
+            }
+          }
+          return FeedEditScreen(
+            feedData: feedData!,
+            contentIdx: contentIdx!,
+          );
+        },
+      ),
+      GoRoute(
+        path: '/selectImage',
+        name: 'selectImage',
+        builder: (BuildContext context, GoRouterState state) {
+          Key? key;
+          AssetPickerBuilderDelegate<AssetEntity, AssetPathEntity>? assetPickerBuilderDelegate;
+          if (state.extra != null) {
+            Map<dynamic, dynamic> extraMap = {};
+            extraMap = state.extra! as Map<String, dynamic>;
+
+            if (extraMap.containsKey('key')) {
+              key = extraMap['key'];
+            }
+
+            if (extraMap.containsKey('assetPickerBuilderDelegate')) {
+              assetPickerBuilderDelegate = extraMap['assetPickerBuilderDelegate'];
+            }
+          }
+          return AssetPicker<AssetEntity, AssetPathEntity>(
+            key: key,
+            builder: assetPickerBuilderDelegate!,
+          );
+        },
+      ),
 
       ///NOTE
       ///2023.11.17.
@@ -870,7 +932,6 @@ class AppRouter {
         },
       ),
     ],
-
     redirect: (BuildContext context, GoRouterState state) {
       const homeLocation = '/home';
       const loginLocation = '/loginScreen';

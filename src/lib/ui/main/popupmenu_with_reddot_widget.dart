@@ -57,10 +57,10 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
           showLottieAnimation = false;
         });
         if (id == 'notification') {
-          !isLogined ? context.pushReplacement("/loginScreen") : context.go("/home/notification");
+          !isLogined ? context.pushReplacement("/loginScreen") : context.push("/home/notification");
         }
         if (id == 'search') {
-          context.go("/home/search");
+          context.push("/home/search");
         }
         if (id == 'message') {
           !isLogined ? context.pushReplacement("/loginScreen") : context.push('/chatHome');
