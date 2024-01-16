@@ -19,7 +19,7 @@ import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
-import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -172,7 +172,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
     //   // if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
     //   //   isAppLinkHandled = true;
     //   //   final router = ref.watch(routerProvider);
-    //   //   router.push("/loginScreen/signupScreen/toss");
+    //   //   router.push("/login/signupScreen/toss");
     //   // }
     // });
     //
@@ -180,7 +180,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
     //   if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
     //     isAppLinkHandled = true;
     //     final router = ref.watch(routerProvider);
-    //     router.push("/loginScreen/signupScreen/toss");
+    //     router.push("/login/signupScreen/toss");
     //   }
     // }, onError: (err) {
     //   // Handle the error here
@@ -189,10 +189,10 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
 
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
     print("payload ::: ${payload}");
-    // context.push('/home/notification');
+    // context.push('/notification');
     final router = ref.read(routerProvider);
     final myInfo = ref.read(myInfoStateProvider);
-    // router.go('/home/notification');
+    // router.go('/notification');
 
     PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
 
@@ -200,7 +200,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
 
     switch (pushType) {
       case PushType.follow:
-        router.go('/home/notification');
+        router.go('/notification');
         break;
       case PushType.new_contents:
       case PushType.metion_contents:
@@ -213,8 +213,8 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
           'contentIdx': payload.contentsIdx,
           'contentType': 'notificationContent',
         };
-        router.push('/home/myPage/detail', extra: extraMap);
-        // router.push("/home/myPage/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
+        router.push('/feed/detail', extra: extraMap);
+        // router.push("/feed/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
         break;
 
       case PushType.new_comment:
@@ -230,8 +230,8 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
           'contentIdx': payload.contentsIdx,
           'contentType': 'notificationContent',
         };
-        router.push('/home/myPage/detail', extra: extraMap);
-        // router.push("/home/myPage/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
+        router.push('/feed/detail', extra: extraMap);
+        // router.push("/feed/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
         //   "isRouteComment": true,
         //   "focusIdx": payload.commentIdx,
         // });
@@ -241,7 +241,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
       case PushType.event:
         ref.read(noticeFocusIdxStateProvider.notifier).state = int.parse(payload.contentsIdx);
         ref.read(noticeExpansionIdxStateProvider.notifier).state = int.parse(payload.contentsIdx);
-        router.push("/home/myPage/setting/notice", extra: {
+        router.push("/setting/notice", extra: {
           "contentsIdx": payload.contentsIdx,
         });
         break;
@@ -254,7 +254,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
   //   switch (pushType) {
   //     case PushType.follow:
   //       print('adsasdadads');
-  //       context.go('/home/notification');
+  //       context.go('/notification');
   //     case PushType.new_contents:
   //     case PushType.metion_contents:
   //     case PushType.img_tag:
@@ -266,7 +266,7 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
   //     case PushType.mention_comment:
   //     case PushType.like_comment:
   //       print('adsasdadads22222');
-  //       context.go('/home/notification');
+  //       context.go('/notification');
   //     case PushType.notice:
   //     case PushType.event:
   //     case PushType.unknown:

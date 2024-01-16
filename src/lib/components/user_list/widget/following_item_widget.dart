@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -59,9 +58,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
 
     return InkWell(
       onTap: () {
-        myInfo.uuid == widget.followUuid
-            ? context.push("/home/myPage")
-            : context.push("/home/myPage/followList/${widget.followUuid}/userPage/${widget.userName}/${widget.followUuid}/${widget.oldMemberUuid}");
+        myInfo.uuid == widget.followUuid ? context.push("/member/myPage") : context.push("/member/userPage/${widget.userName}/${widget.followUuid}/${widget.oldMemberUuid}");
         //TODO
         //Route 다시
       },
@@ -150,7 +147,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
                                 if (!isLogined) {
-                                  context.pushReplacement("/loginScreen");
+                                  context.pushReplacement("/login");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                         followUuid: widget.followUuid,
@@ -185,7 +182,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
                                 if (!isLogined) {
-                                  context.pushReplacement("/loginScreen");
+                                  context.pushReplacement("/login");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).postFollow(
                                         followUuid: widget.followUuid,

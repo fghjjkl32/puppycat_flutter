@@ -195,8 +195,8 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
                   //TODO
                   //Route 다시
                   : mention.memberState == 0
-                      ? context.push("/home/myPage/userUnknown")
-                      : context.push("/home/myPage/followList/${mention.uuid}/userPage/${mention.nick}/${mention.uuid}/${oldMemberUuid}");
+                      ? context.push("/member/userUnknown")
+                      : context.push("/member/userPage/${mention.nick}/${mention.uuid}/${oldMemberUuid}");
             },
             child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
           ),
@@ -213,7 +213,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
             onTap: () {
               //TODO
               //Route 다시
-              context.push("/home/search/$hashtagMatched/$oldMemberUuid");
+              context.push("/search/hashtag/$hashtagMatched/$oldMemberUuid");
             },
             child: Text('#' + hashtagMatched, style: tagStyle),
           ),
@@ -386,7 +386,7 @@ void onTapHide({
   required String memberUuid,
 }) async {
   if (!ref.read(loginStatementProvider)) {
-    context.pushReplacement("/loginScreen");
+    context.pushReplacement("/login");
   } else {
     final tempContentIdx = contentIdx;
 

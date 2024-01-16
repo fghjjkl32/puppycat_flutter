@@ -100,7 +100,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                         )
                       //TODO
                       //Route 다시
-                      : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
+                      : context.push("/member/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
                 },
                 child: Container(
                   child: Row(
@@ -153,7 +153,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                           onTap: () async {
                                             if (!ref.watch(followApiIsLoadingStateProvider)) {
                                               if (!isLogined) {
-                                                context.pushReplacement("/loginScreen");
+                                                context.pushReplacement("/login");
                                               } else {
                                                 final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                                       followUuid: widget.memberUuid,
@@ -180,7 +180,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                           onTap: () async {
                                             if (!ref.watch(followApiIsLoadingStateProvider)) {
                                               if (!isLogined) {
-                                                context.pushReplacement("/loginScreen");
+                                                context.pushReplacement("/login");
                                               } else {
                                                 final result = await ref.watch(followStateProvider.notifier).postFollow(
                                                       followUuid: widget.memberUuid,

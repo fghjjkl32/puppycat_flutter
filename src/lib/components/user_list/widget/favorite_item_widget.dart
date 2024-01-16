@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -59,9 +58,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
 
     return InkWell(
       onTap: () {
-        myInfo.uuid == widget.followerUuid
-            ? context.push("/home/myPage")
-            : context.push("/home/myPage/followList/${widget.followerUuid}/userPage/${widget.userName}/${widget.followerUuid}/${widget.oldMemberUuid}");
+        myInfo.uuid == widget.followerUuid ? context.push("/member/myPage") : context.push("/member/userPage/${widget.userName}/${widget.followerUuid}/${widget.oldMemberUuid}");
         //TODO
         //Route 다시
       },
@@ -122,7 +119,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                           onTap: () async {
                             if (!ref.watch(followApiIsLoadingStateProvider)) {
                               if (!isLogined) {
-                                context.pushReplacement("/loginScreen");
+                                context.pushReplacement("/login");
                               } else {
                                 final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                       followUuid: widget.followerUuid,
@@ -176,7 +173,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                           onTap: () async {
                             if (!ref.watch(followApiIsLoadingStateProvider)) {
                               if (!isLogined) {
-                                context.pushReplacement("/loginScreen");
+                                context.pushReplacement("/login");
                               } else {
                                 final result = await ref.watch(followStateProvider.notifier).postFollow(
                                       followUuid: widget.followerUuid,
@@ -191,7 +188,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             }
 
                             // if (ref.read(userInfoProvider).userModel == null) {
-                            //   context.pushReplacement("/loginScreen");
+                            //   context.pushReplacement("/login");
                             // } else {
                             //   setState(() {
                             //     isFollowing = true;

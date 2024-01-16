@@ -246,8 +246,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                               'contentIdx': '${lists[index].idx}',
                               'contentType': 'myDetailContent',
                             };
-                            // final result = await context.push("/home/myPage/detail/null/일상글 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myDetailContent");
-                            final result = await context.push('/home/myPage/detail', extra: extraMap);
+                            // final result = await context.push("/feed/detail/null/일상글 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myDetailContent");
+                            final result = await context.push('/feed/detail', extra: extraMap);
 
                             if (result == null) {
                               await ref.watch(myPostStateProvider.notifier).refreshMyKeeps();
@@ -675,8 +675,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                               if (value == null) {
                                 return;
                               }
-                              // final result = await context.push("/home/myPage/detail/null/보관한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myKeepContent");
-                              final result = await context.push('/home/myPage/detail', extra: extraMap);
+                              // final result = await context.push("/feed/detail/null/보관한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myKeepContent");
+                              final result = await context.push('/feed/detail', extra: extraMap);
 
                               if (result == null) {
                                 await ref.watch(myPostStateProvider.notifier).refreshMyKeeps();

@@ -301,7 +301,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
 
                                           ref.refresh(searchProvider);
 
-                                          context.push("/home/search/${bestList[index].searchWord!}/0");
+                                          context.push("/search/hashtag/${bestList[index].searchWord!}/0");
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: kPreviousPrimaryLightColor,
@@ -535,7 +535,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
 
                                           ref.refresh(searchProvider);
 
-                                          context.push("/home/search/${bestList[index].searchWord!}/0");
+                                          context.push("/search/hashtag/${bestList[index].searchWord!}/0");
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: kPreviousPrimaryLightColor,
@@ -656,7 +656,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
 
                                           ref.refresh(searchProvider);
 
-                                          context.push("/home/search/${bestList[index].searchWord!}/0");
+                                          context.push("/search/hashtag/${bestList[index].searchWord!}/0");
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: kPreviousPrimaryLightColor,
@@ -873,7 +873,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                       } else if (search.content == "hashtag" || search.content == "search") {
                         return InkWell(
                           onTap: () {
-                            search.content == "search" ? _searchController.text = search.name! : context.push("/home/search/${search.name}/0");
+                            search.content == "search" ? _searchController.text = search.name! : context.push("/search/hashtag/${search.name}/0");
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 8, top: 8),

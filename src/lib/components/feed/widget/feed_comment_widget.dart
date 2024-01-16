@@ -41,7 +41,7 @@ class FeedCommentWidget extends ConsumerWidget {
       onTap: () {
         //TODO
         //Route 다시
-        context.push("/home/commentDetail/$contentIdx/${oldMemberUuid == "" ? null : oldMemberUuid}");
+        context.push("/feed/comment/$contentIdx/${oldMemberUuid == "" ? null : oldMemberUuid}");
       },
       child: Padding(
         padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),
@@ -61,7 +61,7 @@ class FeedCommentWidget extends ConsumerWidget {
                       )
                     //TODO
                     //Route 다시
-                    : context.push("/home/myPage/followList/$memberUuid/userPage/$name/$memberUuid/$oldMemberUuid");
+                    : context.push("/member/userPage/$name/$memberUuid/$oldMemberUuid");
               },
               child: getProfileAvatar(profileImage ?? "", 30, 30),
             ),

@@ -180,7 +180,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                       onTap: () async {
                         if (!ref.watch(likeApiIsLoadingStateProvider)) {
                           isLogined == false
-                              ? context.pushReplacement("/loginScreen")
+                              ? context.pushReplacement("/login")
                               : await ref.watch(feedListStateProvider.notifier).postLike(
                                     contentIdx: widget.contentIdx,
                                     contentType: widget.contentType,
@@ -276,7 +276,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
               const SizedBox(width: 12),
               GestureDetector(
                 onTap: () {
-                  context.push("/home/commentDetail/${widget.contentIdx}/${widget.oldMemberUuid == "" ? null : widget.oldMemberUuid}");
+                  context.push("/feed/comment/${widget.contentIdx}/${widget.oldMemberUuid == "" ? null : widget.oldMemberUuid}");
                 },
                 child: Row(
                   children: [
@@ -299,7 +299,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                   onTap: () {
                     if (!ref.watch(likeApiIsLoadingStateProvider)) {
                       isLogined == false
-                          ? context.pushReplacement("/loginScreen")
+                          ? context.pushReplacement("/login")
                           : ref.watch(feedListStateProvider.notifier).deleteSave(
                                 contentIdx: widget.contentIdx,
                                 contentType: widget.contentType,
@@ -328,7 +328,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                   onTap: () async {
                     if (!ref.watch(saveApiIsLoadingStateProvider)) {
                       isLogined == false
-                          ? context.pushReplacement("/loginScreen")
+                          ? context.pushReplacement("/login")
                           : await ref.watch(feedListStateProvider.notifier).postSave(
                                 contentIdx: widget.contentIdx,
                                 contentType: widget.contentType,

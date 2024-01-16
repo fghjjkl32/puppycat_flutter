@@ -54,7 +54,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                           ),
                         ),
                         onCompleted: (cropStream) {
-                          context.push('/feed_write', extra: cropStream);
+                          context.push('/feed/write', extra: cropStream);
 
                           // Navigator.of(context).push(
                           //   MaterialPageRoute(

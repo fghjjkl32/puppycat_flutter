@@ -27,7 +27,7 @@ class RecentSearchesHashTagItemWidgetState extends ConsumerState<RecentSearchesH
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.push("/home/search/${widget.hashTag}/0");
+        context.push("/search/hashtag/${widget.hashTag}/0");
       },
       child: Padding(
         padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 8, top: 8),

@@ -531,7 +531,7 @@
 //               },
 //             ),
 //           ]),
-//       GoRoute(path: '/loginScreen', name: 'loginScreen', builder: (_, state) => const LoginScreen(), routes: [
+//       GoRoute(path: '/login', name: 'loginScreen', builder: (_, state) => const LoginScreen(), routes: [
 //         GoRoute(
 //           path: 'signupScreen/:authType',
 //           name: 'signupScreen/:authType',
@@ -894,7 +894,7 @@
 //     ],
 //     redirect: (BuildContext context, GoRouterState state) {
 //       const homeLocation = '/home';
-//       const loginLocation = '/loginScreen';
+//       const loginLocation = '/login';
 //       const splashLocation = '/splash';
 //       const signUpLocation = '$loginLocation/signupScreen/:authType';
 //       const signUpCompleteLocation = '$signUpLocation/signupCompleteScreen';

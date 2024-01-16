@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
 import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
 import 'package:pet_mobile_social_flutter/models/main/select_button/select_button_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
@@ -76,7 +76,7 @@ class WithdrawalStateNotifier extends StateNotifier<SelectButtonListModel> {
         ref.read(loginStateProvider.notifier).state = LoginStatus.none;
         ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
         // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
-        ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+        ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
         ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
         ref.read(signUpUserInfoProvider.notifier).state = null;
         ref.read(authStateProvider.notifier).state = false;
@@ -84,7 +84,7 @@ class WithdrawalStateNotifier extends StateNotifier<SelectButtonListModel> {
         ref.read(policyStateProvider.notifier).policyStateReset();
         ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
         // ref.read(loginStateProvider.notifier).saveUserModel(null);
-        ref.read(routerProvider).push("/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail/withdrawalSuccess");
+        ref.read(routerProvider).push("/member/myPage/profileEdit/withdrawalSelect/withdrawalDetail/withdrawalSuccess");
         return true;
       } else {
         return false;

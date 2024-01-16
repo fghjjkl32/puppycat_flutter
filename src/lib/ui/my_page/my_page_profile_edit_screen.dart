@@ -136,7 +136,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
   Widget build(BuildContext context) {
     ref.listen(passUrlProvider, (previous, next) {
       final url = Uri.encodeComponent(next);
-      context.pushNamed('webview', pathParameters: {"url": url, "authType": 'pass'});
+      context.push('/webview/$url');
     });
 
     final nickProvider = ref.watch(nickNameProvider);
@@ -1026,7 +1026,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         child: Center(
                           child: TextButton(
                             onPressed: () {
-                              context.push("/home/myPage/profileEdit/withdrawalSelect");
+                              context.push("/member/myPage/profileEdit/withdrawalSelect");
                             },
                             child: Text(
                               "회원 탈퇴",

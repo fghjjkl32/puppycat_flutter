@@ -25,7 +25,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
     return DefaultOnWillPopScope(
       onWillPop: () async {
         print('aaaa?? 2222');
-        context.go('/home');
+        context.pushReplacement('/home');
         return true;
       },
       child: Material(
@@ -120,7 +120,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                         // ref.watch(loginRouteStateProvider.notifier).state = LoginRoute.none;
                         // ref.read(loginStateProvider.notifier).state = LoginStatus.none;
                         print('asd');
-                        context.go('/home');
+                        context.pushReplacement('/home');
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(18.0),

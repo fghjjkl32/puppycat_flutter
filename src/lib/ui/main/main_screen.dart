@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -527,7 +526,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             if (!isLogined) {
               if (mounted) {
-                context.push('/loginScreen');
+                context.push('/login');
               }
             }
 
@@ -544,7 +543,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
               if (await Permissions.getCameraPermissionState()) {
                 if (!isLogined) {
-                  context.push('/loginScreen');
+                  context.push('/login');
                 }
 
                 final theme = themeData(context);
@@ -572,7 +571,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                     ),
                     useRootNavigator: false,
                     onCompleted: (cropStream) {
-                      context.push('/feed_write', extra: cropStream);
+                      context.push('/feed/write', extra: cropStream);
                       // Navigator.of(context).push(
                       //   MaterialPageRoute(
                       //     builder: (context) => FeedWriteScreen(
@@ -675,7 +674,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             // ///산책하기 보류로 주석 처리 완료
             // if (mounted) {
             //   ref.read(userInfoProvider).userModel == null
-            //       ? context.pushReplacement("/loginScreen")
+            //       ? context.pushReplacement("/login")
             //
             //       ///NOTE
             //       ///2023.11.14.
@@ -717,7 +716,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             if (mounted) {
               if (!isLogined) {
-                context.pushReplacement("/loginScreen");
+                context.push("/login");
                 // } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
               } else {
                 print('aaa');
@@ -740,7 +739,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                         ),
                       ),
                       onCompleted: (cropStream) {
-                        context.push('/feed_write', extra: cropStream);
+                        context.push('/feed/write', extra: cropStream);
 
                         // Navigator.of(context).push(
                         //   MaterialPageRoute(
@@ -800,7 +799,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         const PopupMenuWithReddot(),
         GestureDetector(
           onTap: () {
-            context.push("/home/myPage");
+            context.push("/member/myPage");
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
@@ -1198,7 +1197,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                           child: ElevatedButton(
                             onPressed: () {
                               !isLogined
-                                  ? context.pushReplacement("/loginScreen")
+                                  ? context.push("/login")
                                   : InstaAssetPicker.pickAssets(
                                       context,
                                       maxAssets: 12,
@@ -1212,7 +1211,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                                             ),
                                       ),
                                       onCompleted: (cropStream) {
-                                        context.push('/feed_write', extra: cropStream);
+                                        context.push('/feed/write', extra: cropStream);
 
                                         // Navigator.of(context).push(
                                         //   MaterialPageRoute(
@@ -1329,7 +1328,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: () {
-                        context.push("/home/myPage");
+                        context.push("/member/myPage");
                       },
                       child: Column(
                         children: [
@@ -1354,9 +1353,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                           child: GestureDetector(
                             onTap: () {
                               myInfo.uuid == userListLists[index].uuid
-                                  ? context.push("/home/myPage")
-                                  : context
-                                      .push("/home/myPage/followList/${userListLists[index].uuid}/userPage/${userListLists[index].nick}/${userListLists[index].uuid}/${userListLists[index].uuid}");
+                                  ? context.push("/member/myPage")
+                                  : context.push("/member/userPage/${userListLists[index].nick}/${userListLists[index].uuid}/${userListLists[index].uuid}");
                             },
                             child: Column(
                               children: [
@@ -1402,7 +1400,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         : Center(
             child: GestureDetector(
               onTap: () {
-                context.push("/loginScreen");
+                context.push("/login");
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

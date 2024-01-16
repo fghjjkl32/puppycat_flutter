@@ -70,7 +70,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
     if (widget.isRouteComment) {
       Future(() {
         print('widget.commentFocusIndex ${widget.commentFocusIndex}');
-        context.push("/home/commentDetail/${widget.contentIdx}/${widget.memberUuid == "" ? null : widget.memberUuid}", extra: {
+        context.push("/feed/comment/${widget.contentIdx}/${widget.memberUuid == "" ? null : widget.memberUuid}", extra: {
           "focusIndex": widget.commentFocusIndex,
         });
       });
@@ -182,7 +182,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
                                 if (!isLogined) {
-                                  context.pushReplacement("/loginScreen");
+                                  context.pushReplacement("/login");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                         followUuid: widget.memberUuid,
@@ -208,7 +208,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
                                 if (!isLogined) {
-                                  context.pushReplacement("/loginScreen");
+                                  context.pushReplacement("/login");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).postFollow(
                                         followUuid: widget.memberUuid,

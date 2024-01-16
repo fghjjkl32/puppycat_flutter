@@ -184,13 +184,13 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                             showLottieAnimation = false;
                           });
                           if (id == 'myActivity') {
-                            context.push("/home/myPage/myActivity");
+                            context.push("/member/myPage/activity");
                           }
                           if (id == 'postsManagement') {
-                            context.push("/home/myPage/myPost");
+                            context.push("/member/myPage/post");
                           }
                           if (id == 'setting') {
-                            context.push("/home/myPage/setting");
+                            context.push("/setting");
                           }
                         },
                         shape: const RoundedRectangleBorder(
@@ -374,8 +374,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                           if (value == null) {
                             return;
                           }
-                          // context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/피드/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myContent");
-                          context.push('/home/myPage/detail', extra: extraMap);
+                          // context.push("/feed/detail/${ref.watch(myInformationStateProvider).list[0].nick}/피드/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myContent");
+                          context.push('/feed/detail', extra: extraMap);
                         });
                       },
                       child: Center(
@@ -792,8 +792,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                           if (value == null) {
                             return;
                           }
-                          // context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myTagContent");
-                          context.push('/home/myPage/detail', extra: extraMap);
+                          // context.push("/feed/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myTagContent");
+                          context.push('/feed/detail', extra: extraMap);
                         });
                       },
                       child: Center(
@@ -892,7 +892,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                               final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.editMyInfo);
 
                               if (restrain) {
-                                context.push("/home/myPage/profileEdit");
+                                context.push("/member/myPage/profileEdit");
                               }
                             },
                             child: const Padding(
@@ -924,7 +924,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                         onTap: () {
                           //TODO
                           //Route 다시
-                          context.push("/home/myPage/followList/${data.uuid}").then((value) async {
+                          context.push("/member/followList/${data.uuid}").then((value) async {
                             await ref.read(myInformationStateProvider.notifier).getInitUserInformation(memberUuid: data.uuid ?? '');
                           });
                         },
@@ -1431,7 +1431,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
 //                             context.go("/home/myPage/myPost");
 //                           }
 //                           if (id == 'setting') {
-//                             context.go("/home/myPage/setting");
+//                             context.go("/setting");
 //                           }
 //                         },
 //                         shape: const RoundedRectangleBorder(
@@ -1604,7 +1604,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
 //                     margin: const EdgeInsets.all(10.0),
 //                     child: GestureDetector(
 //                       onTap: () {
-//                         context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/피드/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myContent");
+//                         context.push("/feed/detail/${ref.watch(myInformationStateProvider).list[0].nick}/피드/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myContent");
 //                       },
 //                       child: Center(
 //                         child: Stack(
@@ -1956,7 +1956,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
 //                     margin: const EdgeInsets.all(10.0),
 //                     child: GestureDetector(
 //                       onTap: () {
-//                         context.push("/home/myPage/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myTagContent");
+//                         context.push("/feed/detail/${ref.watch(myInformationStateProvider).list[0].nick}/태그됨/${ref.read(userInfoProvider).userModel!.idx}/${item.idx}/myTagContent");
 //                       },
 //                       child: Center(
 //                         child: Stack(
@@ -2044,7 +2044,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
 //                         ),
 //                         GestureDetector(
 //                           onTap: () {
-//                             context.go("/home/myPage/profileEdit");
+//                             context.go("/member/myPage/profileEdit");
 //                           },
 //                           child: const Padding(
 //                             padding: EdgeInsets.all(5.0),

@@ -85,7 +85,7 @@ class PolicyCheckBoxWidget extends ConsumerWidget {
                 'menuName': menuName,
               };
 
-              context.push("/home/myPage/setting/policy", extra: extraMap);
+              context.push("/setting/policy", extra: extraMap);
             },
             child: Text(
               '회원가입.보기'.tr(),
