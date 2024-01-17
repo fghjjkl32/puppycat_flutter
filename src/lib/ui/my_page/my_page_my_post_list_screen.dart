@@ -87,7 +87,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
           ),
           leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              context.pop();
             },
             icon: const Icon(
               Puppycat_social.icon_back,

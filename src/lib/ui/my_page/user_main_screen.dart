@@ -146,7 +146,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         onPressed: () {
                           ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                           ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
-                          Navigator.of(context).pop();
+                          context.pop();
                         },
                         icon: const Icon(
                           Puppycat_social.icon_back,
@@ -357,10 +357,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
-          if (widget.oldMemberUuid != myInfo.uuid) {
-            if (widget.oldMemberUuid == '') return;
-            ref.read(userContentsStateProvider.notifier).memberUuid = widget.oldMemberUuid;
-          }
+          ref.read(userContentsStateProvider.notifier).memberUuid = ref.read(userContentsTempUuidProvider);
 
           _userContentsListPagingController.refresh();
         });
@@ -527,10 +524,13 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
-          if (widget.oldMemberUuid != myInfo.uuid) {
-            if (widget.oldMemberUuid == '') return;
-            ref.read(userTagContentsStateProvider.notifier).memberUuid = widget.oldMemberUuid;
-          }
+          // if (widget.oldMemberUuid != myInfo.uuid) {
+          //   if (widget.oldMemberUuid == '') return;
+          //   ref.read(userTagContentsStateProvider.notifier).memberUuid = widget.memberUuid;
+          // }
+
+          ref.read(userContentsStateProvider.notifier).memberUuid = ref.read(userTagContentsTempUuidProvider);
+
           _userTagContentsListPagingController.refresh();
         });
       },

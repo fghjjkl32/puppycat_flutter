@@ -12,6 +12,9 @@ part 'user_contents_state_provider.g.dart';
 
 final userContentsFeedListEmptyProvider = StateProvider<bool>((ref) => true);
 final userContentsFeedTotalCountProvider = StateProvider<int>((ref) => 0);
+//NOTE 24.01.17
+//마이페이지의 컨텐츠 새로고침 할때 마지막에 봤던 유저를 저장하기 위한 변수
+final userContentsTempUuidProvider = StateProvider<String>((ref) => "");
 
 @Riverpod(keepAlive: true)
 class UserContentsState extends _$UserContentsState {
@@ -39,6 +42,7 @@ class UserContentsState extends _$UserContentsState {
       var result = await FeedRepository(dio: ref.read(dioProvider)).getUserContentList(memberUuid: memberUuid!, page: pageKey);
 
       ref.read(userContentsFeedTotalCountProvider.notifier).state = result.params!.pagination?.totalRecordCount! ?? 0;
+      ref.read(userContentsTempUuidProvider.notifier).state = memberUuid!;
 
       List<ContentImageData> feedList = result.list
           .map(
@@ -78,6 +82,7 @@ class UserContentsState extends _$UserContentsState {
   }
 
   void getStateForUserContent(String memberUuid) {
+    ref.read(userContentsTempUuidProvider.notifier).state = memberUuid;
     state.itemList = userContentStateMap[memberUuid] ?? [const ContentImageData(idx: 0, imgUrl: '', imageCnt: 0)];
   }
 }

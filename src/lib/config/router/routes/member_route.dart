@@ -46,8 +46,17 @@ class MyPageRoute extends GoRouteData {
       path: 'myPage',
       name: 'myPage',
       builder: (BuildContext context, GoRouterState state) {
-        return const MyPageMainScreen(
-          oldMemberUuid: '',
+        String? oldMemberUuid;
+
+        final extraData = state.extra;
+        if (extraData != null) {
+          Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
+          if (extraMap.keys.contains('oldMemberUuid')) {
+            oldMemberUuid = extraMap['oldMemberUuid'];
+          }
+        }
+        return MyPageMainScreen(
+          oldMemberUuid: oldMemberUuid ?? '',
         );
       },
       routes: [
@@ -152,7 +161,7 @@ class UserPageRoute extends GoRouteData {
         return UserMainScreen(
           memberUuid: memberUuid ?? '',
           nick: nick ?? '',
-          oldMemberUuid: oldMemberUuid ?? '',
+          oldMemberUuid: oldMemberUuid == null || oldMemberUuid == "null" ? '' : oldMemberUuid,
         );
       },
     );

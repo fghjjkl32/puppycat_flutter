@@ -17,7 +17,6 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'package:pet_mobile_social_flutter/config/hosts.dart';
@@ -184,19 +183,10 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
           child: GestureDetector(
             onTap: () {
               ref.read(myInfoStateProvider).uuid == mention.uuid
-                  ? Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MyPageMainScreen(
-                          oldMemberUuid: oldMemberUuid!,
-                        ),
-                      ),
-                    )
-                  //TODO
-                  //Route 다시
+                  ? context.push("/member/myPage", extra: {"oldMemberUuid": oldMemberUuid!})
                   : mention.memberState == 0
                       ? context.push("/member/userUnknown")
-                      : context.push("/member/userPage/${mention.nick}/${mention.uuid}/${oldMemberUuid}");
+                      : context.push("/member/userPage/${mention.nick}/${mention.uuid}/$oldMemberUuid");
             },
             child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
           ),

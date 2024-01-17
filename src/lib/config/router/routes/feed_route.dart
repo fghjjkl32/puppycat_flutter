@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/delegates/asset_picker_builder_delegate.dart';
+import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/widget/asset_picker.dart';
 import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/ui/error/feed_not_follow_screen.dart';
@@ -11,6 +13,7 @@ import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/comment/comment_detail_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class FeedRoute extends GoRouteData {
   final Ref ref;
@@ -34,6 +37,7 @@ class FeedRoute extends GoRouteData {
         ReportRoute(ref: ref).createRoute(),
         FeedUnknownRoute().createRoute(),
         NotFollowRoute().createRoute(),
+        SelectImageRoute().createRoute(),
       ],
     );
   }
@@ -50,6 +54,7 @@ class DetailRoute extends GoRouteData {
         String memberUuid = '';
         int contentIdx = 0;
         String contentType = '';
+        String? oldMemberUuid;
 
         bool isRouteComment = false;
         int? commentFocusIndex;
@@ -90,6 +95,9 @@ class DetailRoute extends GoRouteData {
           if (extraMap.keys.contains('contentType')) {
             contentType = extraMap['contentType'];
           }
+          if (extraMap.keys.contains('oldMemberUuid')) {
+            oldMemberUuid = extraMap['oldMemberUuid'];
+          }
         }
 
         print('22');
@@ -101,7 +109,7 @@ class DetailRoute extends GoRouteData {
           contentType: contentType,
           isRouteComment: isRouteComment,
           commentFocusIndex: commentFocusIndex,
-          oldMemberUuid: '',
+          oldMemberUuid: oldMemberUuid ?? '',
         );
       },
     );
@@ -229,6 +237,35 @@ class NotFollowRoute extends GoRouteData {
         return const FeedNotFollowScreen(
           name: '',
           memberidx: 1,
+        );
+      },
+    );
+  }
+}
+
+class SelectImageRoute extends GoRouteData {
+  GoRoute createRoute() {
+    return GoRoute(
+      path: 'selectImage',
+      name: 'selectImage',
+      builder: (BuildContext context, GoRouterState state) {
+        Key? key;
+        AssetPickerBuilderDelegate<AssetEntity, AssetPathEntity>? assetPickerBuilderDelegate;
+        if (state.extra != null) {
+          Map<dynamic, dynamic> extraMap = {};
+          extraMap = state.extra! as Map<String, dynamic>;
+
+          if (extraMap.containsKey('key')) {
+            key = extraMap['key'];
+          }
+
+          if (extraMap.containsKey('assetPickerBuilderDelegate')) {
+            assetPickerBuilderDelegate = extraMap['assetPickerBuilderDelegate'];
+          }
+        }
+        return AssetPicker<AssetEntity, AssetPathEntity>(
+          key: key,
+          builder: assetPickerBuilderDelegate!,
         );
       },
     );

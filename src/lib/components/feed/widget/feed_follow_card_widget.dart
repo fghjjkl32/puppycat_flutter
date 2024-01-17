@@ -11,8 +11,6 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 
 class FeedFollowCardWidget extends ConsumerStatefulWidget {
   const FeedFollowCardWidget({
@@ -90,16 +88,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
               child: InkWell(
                 onTap: () {
                   myInfo.uuid == widget.memberUuid
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MyPageMainScreen(
-                              oldMemberUuid: widget.oldMemberUuid,
-                            ),
-                          ),
-                        )
-                      //TODO
-                      //Route 다시
+                      ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
                       : context.push("/member/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
                 },
                 child: Container(
@@ -224,18 +213,16 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     if (value == null) {
                       return;
                     }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FeedDetailScreen(
-                                firstTitle: widget.userName,
-                                secondTitle: "피드",
-                                memberUuid: widget.memberUuid,
-                                contentIdx: widget.imageList[0].idx!,
-                                contentType: "FollowCardContent",
-                                oldMemberUuid: widget.oldMemberUuid,
-                              )),
-                    );
+                    Map<String, dynamic> extraMap = {
+                      'firstTitle': widget.userName,
+                      'secondTitle': "피드",
+                      'memberUuid': widget.memberUuid,
+                      'contentIdx': widget.imageList[0].idx!,
+                      'contentType': "FollowCardContent",
+                      'oldMemberUuid': widget.oldMemberUuid,
+                    };
+
+                    context.push('/feed/detail', extra: extraMap);
                   });
                 },
                 child: Row(
@@ -290,18 +277,16 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           if (value == null) {
                             return;
                           }
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => FeedDetailScreen(
-                                      firstTitle: widget.userName,
-                                      secondTitle: "피드",
-                                      memberUuid: widget.memberUuid,
-                                      contentIdx: widget.imageList[0].idx!,
-                                      contentType: "FollowCardContent",
-                                      oldMemberUuid: widget.oldMemberUuid,
-                                    )),
-                          );
+                          Map<String, dynamic> extraMap = {
+                            'firstTitle': widget.userName,
+                            'secondTitle': "피드",
+                            'memberUuid': widget.memberUuid,
+                            'contentIdx': widget.imageList[0].idx!,
+                            'contentType': "FollowCardContent",
+                            'oldMemberUuid': widget.oldMemberUuid,
+                          };
+
+                          context.push('/feed/detail', extra: extraMap);
                         });
                       },
                       child: Stack(
@@ -350,18 +335,16 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           if (value == null) {
                             return;
                           }
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => FeedDetailScreen(
-                                      firstTitle: widget.userName,
-                                      secondTitle: "피드",
-                                      memberUuid: widget.memberUuid,
-                                      contentIdx: widget.imageList[1].idx!,
-                                      contentType: "FollowCardContent",
-                                      oldMemberUuid: widget.oldMemberUuid,
-                                    )),
-                          );
+                          Map<String, dynamic> extraMap = {
+                            'firstTitle': widget.userName,
+                            'secondTitle': "피드",
+                            'memberUuid': widget.memberUuid,
+                            'contentIdx': widget.imageList[1].idx!,
+                            'contentType': "FollowCardContent",
+                            'oldMemberUuid': widget.oldMemberUuid,
+                          };
+
+                          context.push('/feed/detail', extra: extraMap);
                         });
                       },
                       child: Stack(
@@ -412,18 +395,16 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           if (value == null) {
                             return;
                           }
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => FeedDetailScreen(
-                                      firstTitle: widget.userName,
-                                      secondTitle: "피드",
-                                      memberUuid: widget.memberUuid,
-                                      contentIdx: widget.imageList[0].idx!,
-                                      contentType: "FollowCardContent",
-                                      oldMemberUuid: widget.oldMemberUuid,
-                                    )),
-                          );
+                          Map<String, dynamic> extraMap = {
+                            'firstTitle': widget.userName,
+                            'secondTitle': "피드",
+                            'memberUuid': widget.memberUuid,
+                            'contentIdx': widget.imageList[0].idx!,
+                            'contentType': "FollowCardContent",
+                            'oldMemberUuid': widget.oldMemberUuid,
+                          };
+
+                          context.push('/feed/detail', extra: extraMap);
                         });
                       },
                       child: Stack(
@@ -474,18 +455,16 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               if (value == null) {
                                 return;
                               }
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FeedDetailScreen(
-                                          firstTitle: widget.userName,
-                                          secondTitle: "피드",
-                                          memberUuid: widget.memberUuid,
-                                          contentIdx: widget.imageList[1].idx!,
-                                          contentType: "FollowCardContent",
-                                          oldMemberUuid: widget.oldMemberUuid,
-                                        )),
-                              );
+                              Map<String, dynamic> extraMap = {
+                                'firstTitle': widget.userName,
+                                'secondTitle': "피드",
+                                'memberUuid': widget.memberUuid,
+                                'contentIdx': widget.imageList[1].idx!,
+                                'contentType': "FollowCardContent",
+                                'oldMemberUuid': widget.oldMemberUuid,
+                              };
+
+                              context.push('/feed/detail', extra: extraMap);
                             });
                           },
                           child: Stack(
@@ -526,18 +505,16 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               if (value == null) {
                                 return;
                               }
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FeedDetailScreen(
-                                          firstTitle: widget.userName,
-                                          secondTitle: "피드",
-                                          memberUuid: widget.memberUuid,
-                                          contentIdx: widget.imageList[2].idx!,
-                                          contentType: "FollowCardContent",
-                                          oldMemberUuid: widget.oldMemberUuid,
-                                        )),
-                              );
+                              Map<String, dynamic> extraMap = {
+                                'firstTitle': widget.userName,
+                                'secondTitle': "피드",
+                                'memberUuid': widget.memberUuid,
+                                'contentIdx': widget.imageList[2].idx!,
+                                'contentType': "FollowCardContent",
+                                'oldMemberUuid': widget.oldMemberUuid,
+                              };
+
+                              context.push('/feed/detail', extra: extraMap);
                             });
                           },
                           child: ClipRRect(

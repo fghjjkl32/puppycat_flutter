@@ -197,7 +197,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                                         context,
                                       );
 
-                                  Navigator.of(context).pop();
+                                  context.pop();
                                 },
                                 child: TagUserItemWidget(
                                   profileImage: lists[index].profileImgUrl!,

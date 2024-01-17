@@ -81,7 +81,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
               onPressed: () {
                 ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                 ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
-                Navigator.of(context).pop();
+                context.pop();
               },
               icon: const Icon(
                 Puppycat_social.icon_back,

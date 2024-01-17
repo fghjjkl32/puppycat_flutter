@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:go_router/go_router.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/mention_tag_widget.dart';
@@ -42,7 +42,7 @@ class TagScreen extends ConsumerWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    context.pop();
                   },
                   icon: const Icon(
                     Puppycat_social.icon_close_large,
@@ -75,7 +75,7 @@ class TagScreen extends ConsumerWidget {
 
                     ref.watch(feedWriteCurrentTagCountProvider.notifier).state = currentTagImage.tag.length;
 
-                    Navigator.of(context).pop();
+                    context.pop();
                   },
                 ),
               ],

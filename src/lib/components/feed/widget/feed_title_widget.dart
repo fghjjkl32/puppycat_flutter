@@ -20,7 +20,6 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 
 class FeedTitleWidget extends ConsumerStatefulWidget {
   const FeedTitleWidget({
@@ -84,16 +83,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
     return GestureDetector(
       onTap: () {
         myInfo.uuid == widget.memberUuid
-            ? Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MyPageMainScreen(
-                    oldMemberUuid: widget.oldMemberUuid,
-                  ),
-                ),
-              )
-            //TODO
-            //Route 다시
+            ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
             : context.push("/member/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid == "" ? "null" : widget.oldMemberUuid}");
       },
       child: Material(
@@ -423,7 +413,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                       if (!isLogined) {
                                         context.pushReplacement("/login");
                                       } else {
-                                        Navigator.of(context).pop();
+                                        context.pop();
 
                                         showDialog(
                                           context: context,

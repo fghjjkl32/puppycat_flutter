@@ -20,7 +20,6 @@ import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_ta
 import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
 
 class FeedDetailScreen extends ConsumerStatefulWidget {
   final String firstTitle;
@@ -164,7 +163,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                     ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                   }
 
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
                 icon: const Icon(
                   Puppycat_social.icon_back,
@@ -260,7 +259,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                     ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                   }
 
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
                 icon: const Icon(
                   Puppycat_social.icon_back,
@@ -394,14 +393,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                             color: kPreviousNeutralColor100,
                                             child: GestureDetector(
                                               onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (_) => PuppyCatMain(
-                                                      initialTabIndex: !isLogined ? 0 : 1,
-                                                    ),
-                                                  ),
-                                                );
+                                                context.pushReplacement("/home", extra: {
+                                                  "initialTabIndex": !isLogined ? 0 : 1,
+                                                });
                                               },
                                               child: Padding(
                                                 padding: const EdgeInsets.all(20.0),
@@ -456,14 +450,9 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                         color: kPreviousNeutralColor100,
                                         child: GestureDetector(
                                           onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) => PuppyCatMain(
-                                                  initialTabIndex: !isLogined ? 0 : 1,
-                                                ),
-                                              ),
-                                            );
+                                            context.pushReplacement("/home", extra: {
+                                              "initialTabIndex": !isLogined ? 0 : 1,
+                                            });
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(20.0),

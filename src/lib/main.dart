@@ -335,6 +335,7 @@ class CustomError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("error debug : ${errorDetails}");
     double deviceWidth = MediaQuery.of(context).size.width;
 
     double image1Width = 131 * 0.9; // 첫 번째 이미지 폭

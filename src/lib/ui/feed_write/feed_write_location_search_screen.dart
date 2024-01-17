@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:go_router/go_router.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/post_feed/location_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -25,7 +25,7 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
         title: const Text('위치 추가'),
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            context.pop();
           },
           icon: const Icon(
             Puppycat_social.icon_close_large,
