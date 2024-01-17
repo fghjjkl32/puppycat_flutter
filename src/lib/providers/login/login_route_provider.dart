@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'login_route_provider.g.dart';
 
-enum LoginRoute {
+enum LoginRouteEnum {
   none,
   loginScreen,
   signUpScreen,
@@ -12,11 +12,11 @@ enum LoginRoute {
 @Riverpod(keepAlive: true)
 class LoginRouteState extends _$LoginRouteState {
   @override
-  LoginRoute build() {
-    return LoginRoute.none;
+  LoginRouteEnum build() {
+    return LoginRouteEnum.none;
   }
 
-  void changeLoginRoute(LoginRoute loginRoute) {
+  void changeLoginRoute(LoginRouteEnum loginRoute) {
     print('changeLoginRoute $state / $loginRoute');
     state = loginRoute;
   }

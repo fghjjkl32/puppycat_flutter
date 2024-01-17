@@ -83,7 +83,7 @@
 //         title: const Text('반려동물 품종 검색'),
 //         leading: IconButton(
 //           onPressed: () {
-//             Navigator.of(context).pop();
+//             context.pop();
 //           },
 //           icon: const Icon(
 //             Puppycat_social.icon_close_large,

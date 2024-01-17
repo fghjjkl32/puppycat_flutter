@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/config/router/router.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
@@ -76,7 +77,7 @@ class LoginScreen extends ConsumerWidget {
         if (context.canPop()) {
           context.pop();
         } else {
-          context.go("/home");
+          context.pushReplacement("/home");
         }
         return false;
       },

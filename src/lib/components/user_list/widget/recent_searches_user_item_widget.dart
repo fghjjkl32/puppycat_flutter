@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -48,9 +47,7 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
 
     return InkWell(
       onTap: () {
-        myInfo.uuid == widget.memberUuid
-            ? context.push("/home/myPage")
-            : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.memberUuid}");
+        myInfo.uuid == widget.memberUuid ? context.push("/member/myPage") : context.push("/member/userPage/${widget.userName}/${widget.memberUuid}/${widget.memberUuid}");
         //TODO
         //Route 다시
       },

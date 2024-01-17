@@ -95,7 +95,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               onPressed: () async {
                 print('isLogined $isLogined');
                 if (await Permissions.getNotificationPermissionState()) {
-                  !isLogined ? context.replace("/loginScreen") : context.push("/home/myPage/setting/settingAlarm");
+                  !isLogined ? context.push("/login") : context.push("/setting/alarm");
                 } else {
                   if (mounted) {
                     showDialog(
@@ -154,7 +154,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
               title: '차단 유저 관리',
               onPressed: () {
-                !isLogined ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/setting/settingBlockedUser");
+                !isLogined ? context.pushReplacement("/login") : context.push("/setting/blockedUser");
               },
             ),
             const Padding(
@@ -201,7 +201,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                           'menuName': data.menuName!,
                         };
 
-                        context.push("/home/myPage/setting/policy", extra: extraMap);
+                        context.push("/setting/policy", extra: extraMap);
                       },
                       child: Container(
                         margin: EdgeInsets.only(right: isLastItem ? 0 : 12),
@@ -567,7 +567,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          context.push("/home/myPage/setting/FAQ");
+                          context.push("/setting/faq");
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -621,8 +621,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          // context.go("/home/myPage/setting/notice");
-                          context.push("/home/myPage/setting/notice");
+                          // context.go("/setting/notice");
+                          context.push("/setting/notice");
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,

@@ -13,12 +13,15 @@ part 'user_tag_contents_state_provider.g.dart';
 
 final userTagContentsFeedListEmptyProvider = StateProvider<bool>((ref) => true);
 final userTagContentsFeedTotalCountProvider = StateProvider<int>((ref) => 0);
+//NOTE 24.01.17
+//마이페이지의 태그 컨텐츠 새로고침 할때 마지막에 봤던 유저를 저장하기 위한 변수
+final userTagContentsTempUuidProvider = StateProvider<String>((ref) => "");
 
 @Riverpod(keepAlive: true)
 class UserTagContentsState extends _$UserTagContentsState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
-  String? memberUuid;
+  String memberUuid = "";
 
   final Map<String, List<ContentImageData>> userTagContentStateMap = {};
 
@@ -37,9 +40,10 @@ class UserTagContentsState extends _$UserTagContentsState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var result = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentList(memberUuid: memberUuid!, page: pageKey);
+      var result = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentList(memberUuid: memberUuid, page: pageKey);
 
       ref.read(userTagContentsFeedTotalCountProvider.notifier).state = result.params!.pagination?.totalRecordCount! ?? 0;
+      ref.read(userTagContentsTempUuidProvider.notifier).state = memberUuid;
 
       List<ContentImageData> feedList = result.list
           .map(
@@ -79,6 +83,8 @@ class UserTagContentsState extends _$UserTagContentsState {
   }
 
   void getStateForUserTagContent(String memberUuid) {
+    ref.read(userTagContentsTempUuidProvider.notifier).state = memberUuid;
+
     state.itemList = userTagContentStateMap[memberUuid] ?? [const ContentImageData(idx: 0, imgUrl: '', imageCnt: 0)];
   }
 }

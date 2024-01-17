@@ -1,7 +1,6 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
@@ -19,7 +18,6 @@ import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_p
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/main/comment/main_comment_header_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 
 class CommentDetailItemWidget extends ConsumerStatefulWidget {
   const CommentDetailItemWidget({
@@ -120,17 +118,8 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
               GestureDetector(
                 onTap: () {
                   myInfo.uuid == widget.memberUuid
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MyPageMainScreen(
-                              oldMemberUuid: widget.oldMemberUuid,
-                            ),
-                          ),
-                        )
-                      //TODO
-                      //Route 다시
-                      : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.name}/${widget.memberUuid}/${widget.oldMemberUuid}");
+                      ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
+                      : context.push("/member/userPage/${widget.name}/${widget.memberUuid}/${widget.oldMemberUuid}");
                 },
                 child: getProfileAvatar(widget.profileImage ?? '', 30, 30),
               ),
@@ -158,7 +147,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                     GestureDetector(
                       onDoubleTap: () {
                         if (!isLogined) {
-                          context.pushReplacement("/loginScreen");
+                          context.pushReplacement("/login");
                         } else {
                           if (!ref.watch(commentLikeApiIsLoadingStateProvider) && widget.isLike) {
                             ref.watch(commentListStateProvider.notifier).postCommentLike(
@@ -186,17 +175,8 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                   child: GestureDetector(
                                     onTap: () {
                                       myInfo.uuid == widget.memberUuid
-                                          ? Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => MyPageMainScreen(
-                                                  oldMemberUuid: widget.oldMemberUuid,
-                                                ),
-                                              ),
-                                            )
-                                          //TODO
-                                          //Route 다시
-                                          : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.name}/${widget.memberUuid}/${widget.oldMemberUuid}");
+                                          ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
+                                          : context.push("/member/userPage/${widget.name}/${widget.memberUuid}/${widget.oldMemberUuid}");
                                     },
                                     child: Row(
                                       children: [
@@ -280,7 +260,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                         context.pop();
 
                                                         isLogined == false
-                                                            ? context.pushReplacement("/loginScreen")
+                                                            ? context.pushReplacement("/login")
                                                             : showDialog(
                                                                 context: context,
                                                                 builder: (BuildContext context) {
@@ -343,7 +323,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                                       onTap: () {
                                                         context.pop();
-                                                        isLogined == false ? context.pushReplacement("/loginScreen") : context.push("/home/report/true/${widget.commentIdx}");
+                                                        isLogined == false ? context.pushReplacement("/login") : context.push("/feed/report/true/${widget.commentIdx}");
                                                       },
                                                     ),
                                                   ],
@@ -414,7 +394,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                               : InkWell(
                                   onTap: () {
                                     if (!isLogined) {
-                                      context.pushReplacement("/loginScreen");
+                                      context.pushReplacement("/login");
                                     } else {
                                       if (!ref.watch(commentLikeApiIsLoadingStateProvider)) {
                                         ref.watch(commentListStateProvider.notifier).postCommentLike(
@@ -442,7 +422,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                         GestureDetector(
                           onTap: () {
                             if (!isLogined) {
-                              context.pushReplacement("/loginScreen");
+                              context.pushReplacement("/login");
                             } else {
                               if (!widget.isReply) {
                                 ref.watch(commentHeaderProvider.notifier).addReplyCommentHeader(widget.name, widget.commentIdx);

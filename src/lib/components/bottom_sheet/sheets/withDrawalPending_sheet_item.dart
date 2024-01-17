@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
@@ -77,7 +77,7 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
                 ref.read(loginStateProvider.notifier).state = LoginStatus.none;
                 ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
                 // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
-                ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+                ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
                 ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
                 ref.read(signUpUserInfoProvider.notifier).state = null;
                 ref.read(authStateProvider.notifier).state = false;

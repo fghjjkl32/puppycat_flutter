@@ -74,7 +74,7 @@
 //               GestureDetector(
 //                 onTap: () {
 //                   ref.read(userInfoProvider).userModel!.idx == memberIdx
-//                       ? context.push("/home/myPage")
+//                       ? context.push("/member/myPage")
 //                       : context.push(
 //                           "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx");
 //                 },
@@ -119,7 +119,7 @@
 //                                   onTap: () {
 //                                     ref.read(userInfoProvider).userModel!.idx ==
 //                                             memberIdx
-//                                         ? context.push("/home/myPage")
+//                                         ? context.push("/member/myPage")
 //                                         : context.push(
 //                                             "/home/myPage/followList/$memberIdx/userPage/$name/$memberIdx");
 //                                   },
@@ -350,7 +350,7 @@
 //                                                       onTap: () {
 //                                                         context.pop();
 //                                                         context.push(
-//                                                             "/home/report/true/$commentIdx");
+//                                                             "/feed/report/true/$commentIdx");
 //                                                       },
 //                                                     ),
 //                                                   ],

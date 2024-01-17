@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/components/appbar/defalut_on_will_pop_scope.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/follower_item_widget.dart';
 import 'package:pet_mobile_social_flutter/components/user_list/widget/following_item_widget.dart';
@@ -8,6 +10,9 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/tag_contents/user_tag_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_contents/user_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/my_page/user_information/user_information_state_provider.dart';
 
 class MyPageFollowListScreen extends ConsumerStatefulWidget {
   const MyPageFollowListScreen({super.key, required this.memberUuid});
@@ -84,79 +89,96 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "팔로우",
-          ),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(
-              Puppycat_social.icon_back,
-              size: 40,
+      child: DefaultOnWillPopScope(
+        onWillPop: () {
+          ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberUuid);
+
+          ref.read(userContentsStateProvider.notifier).getStateForUserContent(widget.memberUuid);
+
+          ref.read(userTagContentsStateProvider.notifier).getStateForUserTagContent(widget.memberUuid);
+
+          return Future.value(true);
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: const Text(
+              "팔로우",
             ),
+            leading: IconButton(
+              onPressed: () {
+                ref.read(userInformationStateProvider.notifier).getStateForUserInformation(widget.memberUuid);
+
+                ref.read(userContentsStateProvider.notifier).getStateForUserContent(widget.memberUuid);
+
+                ref.read(userTagContentsStateProvider.notifier).getStateForUserTagContent(widget.memberUuid);
+
+                context.pop();
+              },
+              icon: const Icon(
+                Puppycat_social.icon_back,
+                size: 40,
+              ),
+            ),
+            bottom: TabBar(
+                controller: tabController,
+                indicatorWeight: 2.4,
+                labelColor: kPreviousNeutralColor600,
+                indicatorColor: kPreviousNeutralColor600,
+                unselectedLabelColor: kPreviousNeutralColor500,
+                indicatorSize: TabBarIndicatorSize.label,
+                tabs: [
+                  Tab(
+                    child: Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "팔로워",
+                            style: kBody14BoldStyle,
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            "${ref.watch(followStateProvider).followerListState.totalCount}",
+                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
+                  Tab(
+                    child: Consumer(builder: (context, ref, child) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "팔로잉",
+                            style: kBody14BoldStyle,
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            "${ref.watch(followStateProvider).followListState.totalCount}",
+                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                          ),
+                        ],
+                      );
+                    }),
+                  ),
+                ]),
           ),
-          bottom: TabBar(
-              controller: tabController,
-              indicatorWeight: 2.4,
-              labelColor: kPreviousNeutralColor600,
-              indicatorColor: kPreviousNeutralColor600,
-              unselectedLabelColor: kPreviousNeutralColor500,
-              indicatorSize: TabBarIndicatorSize.label,
-              tabs: [
-                Tab(
-                  child: Consumer(builder: (context, ref, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "팔로워",
-                          style: kBody14BoldStyle,
-                        ),
-                        const SizedBox(
-                          width: 6,
-                        ),
-                        Text(
-                          "${ref.watch(followStateProvider).followerListState.totalCount}",
-                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
-                        ),
-                      ],
-                    );
-                  }),
-                ),
-                Tab(
-                  child: Consumer(builder: (context, ref, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "팔로잉",
-                          style: kBody14BoldStyle,
-                        ),
-                        const SizedBox(
-                          width: 6,
-                        ),
-                        Text(
-                          "${ref.watch(followStateProvider).followListState.totalCount}",
-                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
-                        ),
-                      ],
-                    );
-                  }),
-                ),
-              ]),
-        ),
-        body: TabBarView(
-          controller: tabController,
-          children: [
-            _firstTabBody(),
-            _secondTabBody(),
-          ],
+          body: TabBarView(
+            controller: tabController,
+            children: [
+              _firstTabBody(),
+              _secondTabBody(),
+            ],
+          ),
         ),
       ),
     );

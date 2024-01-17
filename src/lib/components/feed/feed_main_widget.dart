@@ -66,8 +66,8 @@ class FeedMainWidget extends ConsumerWidget {
           if (value == null) {
             return;
           }
-          // context.push("/home/myPage/detail/$firstTitle/$secondTitle/${feedData.memberIdx}/${feedData.idx}/$contentType");
-          context.push('/home/myPage/detail', extra: extraMap);
+          // context.push("/feed/detail/$firstTitle/$secondTitle/${feedData.memberIdx}/${feedData.idx}/$contentType");
+          context.push('/feed/detail', extra: extraMap);
         });
       },
       child: Material(

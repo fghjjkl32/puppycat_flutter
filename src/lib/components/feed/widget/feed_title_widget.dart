@@ -9,7 +9,7 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/bottom_
 import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
-import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -20,8 +20,6 @@ import 'package:pet_mobile_social_flutter/providers/main/feed/detail/first_feed_
 import 'package:pet_mobile_social_flutter/providers/my_page/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_edit_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 
 class FeedTitleWidget extends ConsumerStatefulWidget {
   const FeedTitleWidget({
@@ -85,17 +83,8 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
     return GestureDetector(
       onTap: () {
         myInfo.uuid == widget.memberUuid
-            ? Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MyPageMainScreen(
-                    oldMemberUuid: widget.oldMemberUuid,
-                  ),
-                ),
-              )
-            //TODO
-            //Route 다시
-            : context.push("/home/myPage/followList/${widget.memberUuid}/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid == "" ? "null" : widget.oldMemberUuid}");
+            ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
+            : context.push("/member/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid == "" ? "null" : widget.oldMemberUuid}");
       },
       child: Material(
         color: kPreviousNeutralColor100,
@@ -155,7 +144,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                     onTap: () async {
                                                       if (!ref.watch(followApiIsLoadingStateProvider)) {
                                                         if (!isLogined) {
-                                                          context.pushReplacement("/loginScreen");
+                                                          context.pushReplacement("/login");
                                                         } else {
                                                           final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                                                 followUuid: widget.memberUuid,
@@ -186,7 +175,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                     onTap: () async {
                                                       if (!ref.watch(followApiIsLoadingStateProvider)) {
                                                         if (!isLogined) {
-                                                          context.pushReplacement("/loginScreen");
+                                                          context.pushReplacement("/login");
                                                         } else {
                                                           final result = await ref.watch(followStateProvider.notifier).postFollow(
                                                                 followUuid: widget.memberUuid,
@@ -328,14 +317,10 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                       final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.writeFeed);
 
                                       if (restrain) {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => FeedEditScreen(
-                                              feedData: widget.feedData,
-                                              contentIdx: widget.contentIdx,
-                                            ),
-                                          ),
-                                        );
+                                        context.push('/feed/edit', extra: {
+                                          "feedData": widget.feedData,
+                                          "contentIdx": widget.contentIdx,
+                                        });
                                       }
                                     },
                                   ),
@@ -426,9 +411,9 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                     onTap: () async {
                                       if (!isLogined) {
-                                        context.pushReplacement("/loginScreen");
+                                        context.pushReplacement("/login");
                                       } else {
-                                        Navigator.of(context).pop();
+                                        context.pop();
 
                                         showDialog(
                                           context: context,
@@ -466,7 +451,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                   if (result.result && mounted) {
                                                     String location = GoRouter.of(context).location();
 
-                                                    if (location.contains("/home/myPage/detail/")) {
+                                                    if (location.contains("/feed/detail/")) {
                                                       context.pop();
                                                     }
 
@@ -500,10 +485,10 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                     onTap: () {
                                       if (!isLogined) {
-                                        context.pushReplacement("/loginScreen");
+                                        context.pushReplacement("/login");
                                       } else {
                                         context.pop();
-                                        context.push("/home/report/false/${widget.contentIdx}");
+                                        context.push("/feed/report/false/${widget.contentIdx}");
                                       }
                                     },
                                   ),

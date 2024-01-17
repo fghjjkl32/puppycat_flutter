@@ -145,7 +145,7 @@ class RestrainDialog extends ConsumerWidget {
                     child: InkWell(
                       borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20)),
                       onTap: () {
-                        isLogined ? context.pushReplacement('/home') : context.pushReplacement('/loginScreen');
+                        isLogined ? context.pushReplacement('/home') : context.pushReplacement('/login');
                       },
                       child: Container(
                         decoration: const BoxDecoration(

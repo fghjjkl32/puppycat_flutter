@@ -315,7 +315,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
 
                             // if (result && mounted) {
                             //   print('withdrawalSuccess');
-                            //   context.push("/home/myPage/profileEdit/withdrawalSelect/withdrawalDetail/withdrawalSuccess");
+                            //   context.push("/member/myPage/profileEdit/withdrawalSelect/withdrawalDetail/withdrawalSuccess");
                             // }
                           }
                         : null,

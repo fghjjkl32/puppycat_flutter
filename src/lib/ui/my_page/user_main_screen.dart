@@ -146,7 +146,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         onPressed: () {
                           ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                           ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
-                          Navigator.of(context).pop();
+                          context.pop();
                         },
                         icon: const Icon(
                           Puppycat_social.icon_back,
@@ -186,7 +186,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     });
                                     if (id == 'block') {
                                       if (!isLogined) {
-                                        context.pushReplacement("/loginScreen");
+                                        context.pushReplacement("/login");
                                       } else {
                                         showDialog(
                                           context: context,
@@ -357,10 +357,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
-          if (widget.oldMemberUuid != myInfo.uuid) {
-            if (widget.oldMemberUuid == '') return;
-            ref.read(userContentsStateProvider.notifier).memberUuid = widget.oldMemberUuid;
-          }
+          ref.read(userContentsStateProvider.notifier).memberUuid = ref.read(userContentsTempUuidProvider);
 
           _userContentsListPagingController.refresh();
         });
@@ -451,8 +448,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           if (value == null) {
                             return;
                           }
-                          // context.push("/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/피드/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userContent");
-                          context.push('/home/myPage/detail', extra: extraMap);
+                          // context.push("/feed/detail/${ref.watch(userInformationStateProvider).list[0].nick}/피드/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userContent");
+                          context.push('/feed/detail', extra: extraMap);
                         });
                       },
                       child: Center(
@@ -527,10 +524,13 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     return RefreshIndicator(
       onRefresh: () {
         return Future(() {
-          if (widget.oldMemberUuid != myInfo.uuid) {
-            if (widget.oldMemberUuid == '') return;
-            ref.read(userTagContentsStateProvider.notifier).memberUuid = widget.oldMemberUuid;
-          }
+          // if (widget.oldMemberUuid != myInfo.uuid) {
+          //   if (widget.oldMemberUuid == '') return;
+          //   ref.read(userTagContentsStateProvider.notifier).memberUuid = widget.memberUuid;
+          // }
+
+          ref.read(userContentsStateProvider.notifier).memberUuid = ref.read(userTagContentsTempUuidProvider);
+
           _userTagContentsListPagingController.refresh();
         });
       },
@@ -620,8 +620,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           if (value == null) {
                             return;
                           }
-                          // context.push('/home/myPage/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userTagContent");
-                          context.push('/home/myPage/detail', extra: extraMap);
+                          // context.push('/feed/detail/${ref.watch(userInformationStateProvider).list[0].nick}/태그됨/${ref.watch(userInformationStateProvider).list[0].memberIdx}/${item.idx}/userTagContent");
+                          context.push('/feed/detail', extra: extraMap);
                         });
                       },
                       child: Center(
@@ -733,7 +733,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       ),
                       GestureDetector(
                         onTap: () {
-                          !isLogined ? context.pushReplacement("/loginScreen") : context.push("/home/myPage/followList/${widget.memberUuid}");
+                          !isLogined ? context.pushReplacement("/login") : context.push("/member/followList/${widget.memberUuid}");
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
@@ -796,7 +796,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 child: GestureDetector(
                                   onTap: () async {
                                     if (!isLogined) {
-                                      context.pushReplacement("/loginScreen");
+                                      context.pushReplacement("/login");
                                     } else {
                                       ref.watch(userInformationStateProvider.notifier).updateUnBlockState(widget.memberUuid);
 
@@ -845,7 +845,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         onTap: () async {
                                           if (!ref.watch(followApiIsLoadingStateProvider)) {
                                             if (!isLogined) {
-                                              context.pushReplacement("/loginScreen");
+                                              context.pushReplacement("/login");
                                             } else {
                                               final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                                     followUuid: widget.memberUuid,
@@ -880,7 +880,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         onTap: () async {
                                           if (!ref.watch(followApiIsLoadingStateProvider)) {
                                             if (!isLogined) {
-                                              context.pushReplacement("/loginScreen");
+                                              context.pushReplacement("/login");
                                             } else {
                                               final result = await ref.watch(followStateProvider.notifier).postFollow(
                                                     followUuid: widget.memberUuid,

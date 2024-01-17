@@ -9,7 +9,6 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
 
 class FeedCommentWidget extends ConsumerWidget {
   const FeedCommentWidget({
@@ -41,7 +40,7 @@ class FeedCommentWidget extends ConsumerWidget {
       onTap: () {
         //TODO
         //Route 다시
-        context.push("/home/commentDetail/$contentIdx/${oldMemberUuid == "" ? null : oldMemberUuid}");
+        context.push("/feed/comment/$contentIdx/${oldMemberUuid == "" ? null : oldMemberUuid}");
       },
       child: Padding(
         padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),
@@ -50,18 +49,7 @@ class FeedCommentWidget extends ConsumerWidget {
           children: [
             GestureDetector(
               onTap: () {
-                myInfo.uuid == memberUuid
-                    ? Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyPageMainScreen(
-                            oldMemberUuid: oldMemberUuid,
-                          ),
-                        ),
-                      )
-                    //TODO
-                    //Route 다시
-                    : context.push("/home/myPage/followList/$memberUuid/userPage/$name/$memberUuid/$oldMemberUuid");
+                myInfo.uuid == memberUuid ? context.push("/member/myPage", extra: {"oldMemberUuid": oldMemberUuid}) : context.push("/member/userPage/$name/$memberUuid/$oldMemberUuid");
               },
               child: getProfileAvatar(profileImage ?? "", 30, 30),
             ),

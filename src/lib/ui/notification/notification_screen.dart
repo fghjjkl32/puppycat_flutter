@@ -272,8 +272,8 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               },
                               onTapProfileButton: () {
                                 myInfo.uuid == item.senderUuid
-                                    ? context.push("/home/myPage")
-                                    : context.push("/home/myPage/followList/${item.senderUuid}/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
+                                    ? context.push("/member/myPage")
+                                    : context.push("/member/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.new_contents) ||
@@ -305,8 +305,8 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   if (value == null) {
                                     return;
                                   }
-                                  // context.push("/home/myPage/detail/null/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent");
-                                  context.push('/home/myPage/detail', extra: extraMap);
+                                  // context.push("/feed/detail/null/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent");
+                                  context.push('/feed/detail', extra: extraMap);
                                 });
                               },
                               onLikeTap: (isLiked) {
@@ -333,16 +333,16 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   if (value == null) {
                                     return;
                                   }
-                                  // context.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
+                                  // context.push("/feed/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
                                   //   "isRouteComment": true,
                                   // });
-                                  context.push('/home/myPage/detail', extra: extraMap);
+                                  context.push('/feed/detail', extra: extraMap);
                                 });
                               },
                               onTapProfileButton: () {
                                 myInfo.uuid == item.senderUuid
-                                    ? context.push("/home/myPage")
-                                    : context.push("/home/myPage/followList/${item.senderUuid}/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
+                                    ? context.push("/member/myPage")
+                                    : context.push("/member/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.new_comment) ||
@@ -370,20 +370,20 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   'focusIdx': item.commentIdx,
                                 };
                                 await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('notificationContent', item.contentsIdx).then((value) {
-                                  // context.push("/home/myPage/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
+                                  // context.push("/feed/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
                                   //   "isRouteComment": true,
                                   //   "focusIdx": item.commentIdx,
                                   // });
                                   if (value == null) {
                                     return;
                                   }
-                                  context.push('/home/myPage/detail', extra: extraMap);
+                                  context.push('/feed/detail', extra: extraMap);
                                 });
                               },
                               onTapProfileButton: () {
                                 myInfo.uuid == item.senderUuid
-                                    ? context.push("/home/myPage")
-                                    : context.push("/home/myPage/followList/${item.senderUuid}/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
+                                    ? context.push("/member/myPage")
+                                    : context.push("/member/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.notice) || item.subType == describeEnum(NotiSubType.event)) {
@@ -396,14 +396,14 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                 print('item.commentIdx ${item.commentIdx} / ${item.contentsIdx}');
                                 ref.read(noticeFocusIdxStateProvider.notifier).state = item.contentsIdx;
                                 ref.read(noticeExpansionIdxStateProvider.notifier).state = item.contentsIdx;
-                                context.push("/home/myPage/setting/notice", extra: {
+                                context.push("/setting/notice", extra: {
                                   "contentsIdx": item.contentsIdx,
                                 });
                               },
                               onTapProfileButton: () {
                                 myInfo.uuid == item.senderUuid
-                                    ? context.push("/home/myPage")
-                                    : context.push("/home/myPage/followList/${item.senderUuid}/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
+                                    ? context.push("/member/myPage")
+                                    : context.push("/member/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
                               },
                             );
                           } else {

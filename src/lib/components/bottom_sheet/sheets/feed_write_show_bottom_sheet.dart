@@ -7,7 +7,6 @@ import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_cu
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
 
 void feedWriteShowBottomSheet({required BuildContext context, required VoidCallback onClose}) {
   showCustomModalBottomSheet(
@@ -55,13 +54,15 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                           ),
                         ),
                         onCompleted: (cropStream) {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => FeedWriteScreen(
-                                cropStream: cropStream,
-                              ),
-                            ),
-                          );
+                          context.push('/feed/write', extra: cropStream);
+
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => FeedWriteScreen(
+                          //       cropStream: cropStream,
+                          //     ),
+                          //   ),
+                          // );
                         },
                       );
                     },

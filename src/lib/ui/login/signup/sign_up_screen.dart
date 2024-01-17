@@ -482,7 +482,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
       }
       final url = Uri.encodeComponent(next);
       // context.go('/webview/$url');
-      context.goNamed('webview', pathParameters: {"url": url, "authType": 'pass'});
+      context.push('/webview/$url');
     });
 
     ref.listen(signUpStateProvider, (previous, next) {
@@ -502,7 +502,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 confirmTap: () {
                   // context.go('/loginScreen');
                   ref.read(loginStateProvider.notifier).state = LoginStatus.none;
-                  ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+                  ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
                   ref.read(signUpStateProvider.notifier).state = SignUpStatus.none;
                   context.pop();
                 },
@@ -527,7 +527,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 ),
                 confirmTap: () {
                   ref.read(loginStateProvider.notifier).state = LoginStatus.none;
-                  ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+                  ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
                   ref.read(signUpStateProvider.notifier).state = SignUpStatus.none;
                   context.pop();
                 },
@@ -545,7 +545,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
         ///NOTE
         ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
         ///로그인 페이지 이동 초기화
-        ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+        ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
         ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
         ref.read(signUpUserInfoProvider.notifier).state = null;
         ref.read(authStateProvider.notifier).state = false;

@@ -48,7 +48,7 @@ class NotificationController {
           if (response.payload != null) {
             print('response.payload ${response.payload}');
             FirebaseCloudMessagePayload payload = FirebaseCloudMessagePayload.fromJson(jsonDecode(response.payload!));
-            // context.go('/home/notification');
+            // context.go('/notification');
             print('onDidReceiveNotificationResponse 1 $payload');
             pushHandler(payload);
 
@@ -220,7 +220,7 @@ class NotificationController {
 //   switch (pushType) {
 //     case PushType.follow:
 //       print('adsasdadads');
-//       context.go('/home/notification');
+//       context.go('/notification');
 //     case PushType.new_contents:
 //     case PushType.metion_contents:
 //     case PushType.img_tag:
@@ -232,7 +232,7 @@ class NotificationController {
 //     case PushType.mention_comment:
 //     case PushType.like_comment:
 //       print('adsasdadads22222');
-//       context.go('/home/notification');
+//       context.go('/notification');
 //     case PushType.notice:
 //     case PushType.event:
 //     case PushType.unknown:

@@ -2,6 +2,7 @@ import 'package:channel_talk_flutter/channel_talk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -98,7 +99,7 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
           ),
           leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              context.pop();
             },
             icon: const Icon(
               Puppycat_social.icon_back,

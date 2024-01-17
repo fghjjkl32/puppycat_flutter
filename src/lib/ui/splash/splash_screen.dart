@@ -7,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_it/get_it.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pet_mobile_social_flutter/config/routes.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
@@ -137,10 +137,10 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
 
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
     print("payload ::: ${payload}");
-    // context.push('/home/notification');
+    // context.push('/notification');
     final router = ref.read(routerProvider);
     final myInfo = ref.read(myInfoStateProvider);
-    // router.go('/home/notification');
+    // router.go('/notification');
 
     PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
 
@@ -148,7 +148,7 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
 
     switch (pushType) {
       case PushType.follow:
-        router.go('/home/notification');
+        router.push('/notification');
         break;
       case PushType.new_contents:
       case PushType.metion_contents:
@@ -161,8 +161,8 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
           'contentIdx': payload.contentsIdx,
           'contentType': 'notificationContent',
         };
-        router.push('/home/myPage/detail', extra: extraMap);
-        // router.push("/home/myPage/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
+        router.push('/feed/detail', extra: extraMap);
+        // router.push("/feed/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
         break;
 
       case PushType.new_comment:
@@ -178,8 +178,8 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
           'contentIdx': payload.contentsIdx,
           'contentType': 'notificationContent',
         };
-        router.push('/home/myPage/detail', extra: extraMap);
-        // router.push("/home/myPage/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
+        router.push('/feed/detail', extra: extraMap);
+        // router.push("/feed/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
         //   "isRouteComment": true,
         //   "focusIdx": payload.commentIdx,
         // });
@@ -189,7 +189,7 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
       case PushType.event:
         ref.read(noticeFocusIdxStateProvider.notifier).state = int.parse(payload.contentsIdx);
         ref.read(noticeExpansionIdxStateProvider.notifier).state = int.parse(payload.contentsIdx);
-        router.push("/home/myPage/setting/notice", extra: {
+        router.push("/setting/notice", extra: {
           "contentsIdx": payload.contentsIdx,
         });
         break;

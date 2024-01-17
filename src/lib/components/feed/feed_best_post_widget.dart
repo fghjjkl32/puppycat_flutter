@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/components/feed/widget/feed_best_post_item_widget.dart';
@@ -50,8 +49,8 @@ class FeedBestPostWidget extends ConsumerWidget {
                             if (value == null) {
                               return;
                             }
-                            // context.push("/home/myPage/detail/null/인기 급상승/${feedData[index].memberInfoList![0].memberIdx}/${feedData[index].idx}/popularWeekContent");
-                            context.push('/home/myPage/detail', extra: extraMap);
+                            // context.push("/feed/detail/null/인기 급상승/${feedData[index].memberInfoList![0].memberIdx}/${feedData[index].idx}/popularWeekContent");
+                            context.push('/feed/detail', extra: extraMap);
                           });
                         },
                         child: FeedBestPostItemWidget(

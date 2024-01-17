@@ -57,16 +57,16 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
           showLottieAnimation = false;
         });
         if (id == 'notification') {
-          !isLogined ? context.pushReplacement("/loginScreen") : context.go("/home/notification");
+          !isLogined ? context.push("/login") : context.push("/notification");
         }
         if (id == 'search') {
-          context.go("/home/search");
+          context.push("/search");
         }
         if (id == 'message') {
-          !isLogined ? context.pushReplacement("/loginScreen") : context.push('/chatHome');
+          !isLogined ? context.push("/login") : context.push('/chatHome');
         }
         if (id == 'setting') {
-          context.push("/home/myPage/setting");
+          context.push("/setting");
         }
       },
       onCanceled: () {

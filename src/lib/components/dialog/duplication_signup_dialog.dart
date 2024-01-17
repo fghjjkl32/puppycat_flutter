@@ -75,7 +75,7 @@ class DuplicationSignUpDialog extends ConsumerWidget {
           ///NOTE
           ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
           ///로그인 페이지 이동 초기화
-          ref.read(loginRouteStateProvider.notifier).state = LoginRoute.none;
+          ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
           ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
           ref.read(signUpUserInfoProvider.notifier).state = null;
           ref.read(authStateProvider.notifier).state = false;

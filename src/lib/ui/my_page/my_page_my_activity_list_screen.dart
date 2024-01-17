@@ -80,7 +80,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
           ),
           leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              context.pop();
             },
             icon: const Icon(
               Puppycat_social.icon_back,
@@ -268,8 +268,8 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                             if (value == null) {
                               return;
                             }
-                            // context.push("/home/myPage/detail/null/좋아요한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myLikeContent");
-                            context.push('/home/myPage/detail', extra: extraMap);
+                            // context.push("/feed/detail/null/좋아요한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myLikeContent");
+                            context.push('/feed/detail', extra: extraMap);
                           });
                         },
                         child: Stack(
@@ -415,8 +415,8 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                             if (value == null) {
                               return;
                             }
-                            // context.push("/home/myPage/detail/null/저장한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/mySaveContent");
-                            context.push('/home/myPage/detail', extra: extraMap);
+                            // context.push("/feed/detail/null/저장한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/mySaveContent");
+                            context.push('/feed/detail', extra: extraMap);
                           });
                         },
                         child: Stack(
