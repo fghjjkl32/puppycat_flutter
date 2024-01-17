@@ -20,7 +20,7 @@ final userContentsTempUuidProvider = StateProvider<String>((ref) => "");
 class UserContentsState extends _$UserContentsState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
-  String? memberUuid;
+  String memberUuid = "";
 
   final Map<String, List<ContentImageData>> userContentStateMap = {};
 
@@ -39,10 +39,10 @@ class UserContentsState extends _$UserContentsState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var result = await FeedRepository(dio: ref.read(dioProvider)).getUserContentList(memberUuid: memberUuid!, page: pageKey);
+      var result = await FeedRepository(dio: ref.read(dioProvider)).getUserContentList(memberUuid: memberUuid, page: pageKey);
 
       ref.read(userContentsFeedTotalCountProvider.notifier).state = result.params!.pagination?.totalRecordCount! ?? 0;
-      ref.read(userContentsTempUuidProvider.notifier).state = memberUuid!;
+      ref.read(userContentsTempUuidProvider.notifier).state = memberUuid;
 
       List<ContentImageData> feedList = result.list
           .map(

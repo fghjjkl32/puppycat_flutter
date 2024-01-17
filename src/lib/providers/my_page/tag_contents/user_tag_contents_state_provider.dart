@@ -21,7 +21,7 @@ final userTagContentsTempUuidProvider = StateProvider<String>((ref) => "");
 class UserTagContentsState extends _$UserTagContentsState {
   int _lastPage = 0;
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
-  String? memberUuid;
+  String memberUuid = "";
 
   final Map<String, List<ContentImageData>> userTagContentStateMap = {};
 
@@ -40,10 +40,10 @@ class UserTagContentsState extends _$UserTagContentsState {
 
       _apiStatus = ListAPIStatus.loading;
 
-      var result = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentList(memberUuid: memberUuid!, page: pageKey);
+      var result = await FeedRepository(dio: ref.read(dioProvider)).getUserTagContentList(memberUuid: memberUuid, page: pageKey);
 
       ref.read(userTagContentsFeedTotalCountProvider.notifier).state = result.params!.pagination?.totalRecordCount! ?? 0;
-      ref.read(userTagContentsTempUuidProvider.notifier).state = memberUuid!;
+      ref.read(userTagContentsTempUuidProvider.notifier).state = memberUuid;
 
       List<ContentImageData> feedList = result.list
           .map(
