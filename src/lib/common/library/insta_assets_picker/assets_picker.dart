@@ -13,9 +13,9 @@ import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/de
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/provider/asset_picker_provider.dart';
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/widget/asset_picker.dart';
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/widget/asset_picker_page_route.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/ui/components/dialog/custom_dialog.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 const _kGridCount = 4;

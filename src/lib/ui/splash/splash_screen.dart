@@ -15,7 +15,7 @@ import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 final splashStateProvider = StateProvider<bool>((ref) => false);

@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/models/jwt/jwt_response_model.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/services/jwt/jwt_service.dart';

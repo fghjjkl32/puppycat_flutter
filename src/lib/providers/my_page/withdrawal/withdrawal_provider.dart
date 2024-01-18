@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
-import 'package:pet_mobile_social_flutter/models/main/select_button/select_button_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
+import 'package:pet_mobile_social_flutter/models/reason/reason_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
@@ -28,12 +28,12 @@ final withdrawalCodeProvider = StateProvider<int>((ref) => 0);
 
 final withdrawalReasonProvider = StateProvider<String?>((ref) => null);
 
-final withdrawalStateProvider = StateNotifierProvider<WithdrawalStateNotifier, SelectButtonListModel>((ref) {
+final withdrawalStateProvider = StateNotifierProvider<WithdrawalStateNotifier, ReasonListModel>((ref) {
   return WithdrawalStateNotifier(ref);
 });
 
-class WithdrawalStateNotifier extends StateNotifier<SelectButtonListModel> {
-  WithdrawalStateNotifier(this.ref) : super(const SelectButtonListModel());
+class WithdrawalStateNotifier extends StateNotifier<ReasonListModel> {
+  WithdrawalStateNotifier(this.ref) : super(const ReasonListModel());
 
   final Ref ref;
 

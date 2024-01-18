@@ -9,16 +9,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+
 // import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+
 // import 'package:location/location.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
-import 'package:pet_mobile_social_flutter/common/util/PackageInfo/package_info_util.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/common/util/package_info/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -28,7 +30,7 @@ import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_c
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
-import 'package:pet_mobile_social_flutter/providers/my_page/setting/notice_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 9723);

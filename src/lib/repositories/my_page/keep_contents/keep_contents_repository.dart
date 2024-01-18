@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/feed/feed_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/my_page/keep_contents/keep_contents_service.dart';

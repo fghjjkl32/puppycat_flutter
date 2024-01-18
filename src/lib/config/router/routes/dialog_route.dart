@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/duplication_signup_dialog.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/error_dialog.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/restrain_dialog.dart';
-import 'package:pet_mobile_social_flutter/components/route_page/dialog_page.dart';
 import 'package:pet_mobile_social_flutter/models/restrain/restrain_item_model.dart';
+import 'package:pet_mobile_social_flutter/ui/components/dialog/duplication_signup_dialog.dart';
+import 'package:pet_mobile_social_flutter/ui/components/dialog/error_dialog.dart';
+import 'package:pet_mobile_social_flutter/ui/components/dialog/restrain_dialog.dart';
+import 'package:pet_mobile_social_flutter/ui/components/route_page/dialog_page.dart';
 
 class DialogRoute extends GoRouteData {
   GoRoute createRoute() {

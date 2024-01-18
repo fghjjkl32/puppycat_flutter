@@ -4,9 +4,9 @@
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 // import 'package:pet_mobile_social_flutter/common/common.dart';
-// import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-// import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-// import 'package:pet_mobile_social_flutter/models/main/feed/feed_data_list_model.dart';
+// import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
+// import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
+// import 'package:pet_mobile_social_flutter/models/feed/feed_data_list_model.dart';
 // import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_data_list_model.dart';
 // import 'package:pet_mobile_social_flutter/models/my_page/my_pet/my_pet_list/my_pet_item_model.dart';
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -14,7 +14,7 @@
 // ///2023.11.14.
 // ///산책하기 보류로 주석 처리
 // // import 'package:pet_mobile_social_flutter/providers/walk/walk_selected_pet_provider.dart';
-// import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
+// import 'package:pet_mobile_social_flutter/repositories/feed/feed_repository.dart';
 // import 'package:pet_mobile_social_flutter/repositories/my_page/my_pet/my_pet_list/my_pet_list_repository.dart';
 // import 'package:pet_mobile_social_flutter/repositories/my_page/save_contents/save_contents_repository.dart';
 // import 'package:riverpod_annotation/riverpod_annotation.dart';

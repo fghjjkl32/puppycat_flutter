@@ -5,7 +5,7 @@
 //
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-// import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+// import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
 // import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_model.dart';
 // import 'package:pet_mobile_social_flutter/models/my_page/my_pet/create_my_pet/item_model.dart';
 // import 'package:pet_mobile_social_flutter/providers/chat/chat_favorite_state_provider.dart';

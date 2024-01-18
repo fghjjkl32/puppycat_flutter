@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/delegates/asset_picker_builder_delegate.dart';
 import 'package:pet_mobile_social_flutter/common/library/wechat_assets_picker/widget/asset_picker.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
-import 'package:pet_mobile_social_flutter/models/main/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/ui/error/feed_not_follow_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/error/feed_not_found_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_edit_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/feed_write/feed_write_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/main/comment/comment_detail_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/ui/feed/comment/comment_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/feed/detail/feed_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/feed/feed_edit/feed_edit_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/feed/feed_unknown/feed_not_found_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/feed/feed_write/feed_write_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/feed/not_follow/feed_not_follow_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/feed/report/main_feed_report_screen.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class FeedRoute extends GoRouteData {

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
 import 'package:rxdart/rxdart.dart';

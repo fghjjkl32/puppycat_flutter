@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/encrypt/encrypt_util.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/authentication/auth_service.dart';
 

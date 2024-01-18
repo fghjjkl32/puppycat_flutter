@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_complete_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/login/signup/signup_complete/sign_up_complete_screen.dart';
 
 class LoginRoute extends GoRouteData {
   @override

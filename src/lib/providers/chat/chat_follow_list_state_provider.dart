@@ -1,12 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_data.dart';
+import 'package:pet_mobile_social_flutter/models/follow/follow_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/follow/follow_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/follow/follow_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_follow_list_state_provider.g.dart';

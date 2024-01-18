@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/follow/follow_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/follow/follow_response_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'follow_service.g.dart';

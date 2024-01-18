@@ -6,10 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/widget/hashtag_item_widget.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/widget/recent_searches_user_item_widget.dart';
-import 'package:pet_mobile_social_flutter/components/user_list/widget/user_item_widget.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -18,6 +14,10 @@ import 'package:pet_mobile_social_flutter/providers/search/profile_search_state_
 import 'package:pet_mobile_social_flutter/providers/search/search_helper_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/tag_search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/services/search/search_db_helper.dart';
+import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/ui/search/widget/hashtag_item_widget.dart';
+import 'package:pet_mobile_social_flutter/ui/search/widget/recent_searches_user_item_widget.dart';
+import 'package:pet_mobile_social_flutter/ui/search/widget/search_item_widget.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 final searchProvider = FutureProvider<List<Searche>>((ref) async {
@@ -361,7 +361,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       // 마지막 항목인지 확인
                                       return Column(
                                         children: [
-                                          UserItemWidget(
+                                          SearchItemWidget(
                                             profileImage: nickList[index - 1].profileImgUrl,
                                             userName: nickList[index - 1].nick!,
                                             content: nickList[index - 1].intro!,
@@ -381,7 +381,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                         ],
                                       );
                                     } else {
-                                      return UserItemWidget(
+                                      return SearchItemWidget(
                                         profileImage: nickList[index - 1].profileImgUrl,
                                         userName: nickList[index - 1].nick!,
                                         content: nickList[index - 1].intro!,
@@ -552,7 +552,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                               controller: profileScrollController,
                               itemCount: profileList.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return UserItemWidget(
+                                return SearchItemWidget(
                                   profileImage: profileList[index].profileImgUrl,
                                   userName: profileList[index].nick!,
                                   content: profileList[index].intro!,

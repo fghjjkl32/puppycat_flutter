@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_post_list_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/user_unknown_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_detail_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_select_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/member/follow_list/my_page_follow_list_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/member/my_page/activity/my_page_my_activity_list_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/member/my_page/my_page_main_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/member/my_page/post/my_page_my_post_list_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/member/my_page/profile_edit/my_page_profile_edit_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/member/my_page/profile_edit/withdrawal_select/my_page_withdrawal_select_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/member/my_page/profile_edit/withdrawal_select/withdrawal_detail/my_page_withdrawal_detail_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/member/my_page/profile_edit/withdrawal_select/withdrawal_detail/withdrawal_success/my_page_withdrawal_success_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/member/user_page/user_main_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/member/user_unknown/user_unknown_screen.dart';
 
 //- /member - 라우트 대분류
 //     - /myPage - 마이페이지

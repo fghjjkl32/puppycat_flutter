@@ -1,15 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/models/comment/comment_data.dart';
+import 'package:pet_mobile_social_flutter/models/comment/comment_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
-import 'package:pet_mobile_social_flutter/models/main/comment/comment_data.dart';
-import 'package:pet_mobile_social_flutter/models/main/comment/comment_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
-import 'package:pet_mobile_social_flutter/repositories/main/comment/comment_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/main/feed/feed_repository.dart';
-import 'package:pet_mobile_social_flutter/repositories/my_page/block/block_repository.dart';
+import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/repositories/block/block_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/comment/comment_repository.dart';
+import 'package:pet_mobile_social_flutter/repositories/feed/feed_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'comment_list_state_provider.g.dart';
