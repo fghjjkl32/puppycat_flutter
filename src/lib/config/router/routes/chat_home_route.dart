@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_block_sheet_item.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/custom_modal_bottom_sheet_widget.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/force_update_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/recommended_update_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_page.dart';
-import 'package:pet_mobile_social_flutter/ui/chat/chat_home_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/chat/chat_room_screen.dart';
-import 'package:pet_mobile_social_flutter/ui/chat/chat_search_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/chat_home/chat_home_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/chat_home/chat_room_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/chat_home/chat_search_screen.dart';
 
 class ChatHomeRoute extends GoRouteData {
   @override

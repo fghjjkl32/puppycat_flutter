@@ -5,7 +5,7 @@
 // // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:flutter_switch/flutter_switch.dart';
 // import 'package:go_router/go_router.dart';
-// import 'package:pet_mobile_social_flutter/config/constanst.dart';
+// import 'package:pet_mobile_social_flutter/config/constants.dart';
 // import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 // import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';

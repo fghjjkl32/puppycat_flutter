@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/user_contents/content_image_data.dart';
+import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/models/params_model.dart';
 
 part 'content_data_list_model.freezed.dart';
@@ -18,6 +18,5 @@ class ContentDataListModel with _$ContentDataListModel {
     @Default(0) int totalCount,
   }) = _ContentDataListModel;
 
-  factory ContentDataListModel.fromJson(Map<String, dynamic> json) =>
-      _$ContentDataListModelFromJson(json);
+  factory ContentDataListModel.fromJson(Map<String, dynamic> json) => _$ContentDataListModelFromJson(json);
 }

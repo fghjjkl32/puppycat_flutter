@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/feed_block_sheet_item.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
-import 'package:pet_mobile_social_flutter/components/bottom_sheet/widget/custom_modal_bottom_sheet_widget.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/force_update_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/dialog/recommended_update_bottom_sheet.dart';
-import 'package:pet_mobile_social_flutter/components/route_page/bottom_sheet_page.dart';
+import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/sheets/feed_block_sheet_item.dart';
+import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
+import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/widget/custom_modal_bottom_sheet_widget.dart';
+import 'package:pet_mobile_social_flutter/ui/components/dialog/force_update_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/ui/components/dialog/recommended_update_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/ui/components/route_page/bottom_sheet_page.dart';
 
 class BottomSheetRoute extends GoRouteData {
   GoRoute createRoute() {

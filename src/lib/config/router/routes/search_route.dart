@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/ui/main/feed_search/feed_search_list_screen.dart';
+import 'package:pet_mobile_social_flutter/ui/search/hashtag/feed_search_list_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
 
 class SearchRoute extends GoRouteData {

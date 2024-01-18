@@ -1,8 +1,8 @@
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

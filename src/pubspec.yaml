@@ -205,7 +205,7 @@ flutter:
     - assets/image/chat/
     - assets/image/character/
     - assets/lottie/
-    - lib/common/web/kakao_postcode.html
+    - assets/web/kakao_postcode.html
 
 
 

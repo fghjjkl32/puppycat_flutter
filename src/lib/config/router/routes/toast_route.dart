@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/components/toast/error_toast.dart';
+import 'package:pet_mobile_social_flutter/ui/components/toast/error_toast.dart';
 
 class ToastRoute extends GoRouteData {
   GoRoute createRoute() {

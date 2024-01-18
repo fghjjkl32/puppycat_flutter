@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
-import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/ui/home/main_screen.dart';
 
 class HomeRoute extends GoRouteData {
   @override

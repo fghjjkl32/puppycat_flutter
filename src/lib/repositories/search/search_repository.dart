@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:pet_mobile_social_flutter/common/library/dio/api_exception.dart';
-import 'package:pet_mobile_social_flutter/config/constanst.dart';
+import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/search/search_service.dart';

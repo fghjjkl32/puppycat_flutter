@@ -3,8 +3,8 @@
 ///산책하기 보류로 전체 주석 처리
 // import 'package:dio/dio.dart';
 // import 'package:image_picker/image_picker.dart';
-// import 'package:pet_mobile_social_flutter/common/library/dio/dio_wrap.dart';
-// import 'package:pet_mobile_social_flutter/config/constanst.dart';
+// import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
+// import 'package:pet_mobile_social_flutter/config/constants.dart';
 // import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 // import 'package:pet_mobile_social_flutter/models/my_page/my_pet/create_my_pet/list_model.dart';
 // import 'package:pet_mobile_social_flutter/models/my_page/my_pet/create_my_pet/list_response_model.dart';

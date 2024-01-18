@@ -7,7 +7,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:pet_mobile_social_flutter/components/toast/toast.dart';
+import 'package:pet_mobile_social_flutter/ui/components/toast/toast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
