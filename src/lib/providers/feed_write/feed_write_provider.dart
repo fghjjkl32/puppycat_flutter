@@ -9,6 +9,7 @@ import 'package:pet_mobile_social_flutter/models/feed_write/tag.dart';
 import 'package:pet_mobile_social_flutter/models/feed_write/tag_images.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/feed/feed_repository.dart';
 
 final feedWriteProvider = StateNotifierProvider<PostFeedWriteNotifier, PostFeedState>((ref) {
@@ -69,6 +70,7 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
   // 태그를 초기화하는 함수입니다.
   void resetTag() {
     state = state.copyWith(tagList: [], tagImage: [], offsetCount: 0);
+    ref.watch(feedWriteCurrentTagCountProvider.notifier).state = 0;
   }
 
   // 특정 태그를 제거하는 함수입니다.
