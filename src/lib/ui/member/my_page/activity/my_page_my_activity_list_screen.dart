@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
@@ -9,11 +9,12 @@ import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_save_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/components/loading_animation_widget.dart';
 
 class MyPageMyActivityListScreen extends ConsumerStatefulWidget {
   const MyPageMyActivityListScreen({super.key});
@@ -212,9 +213,12 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                   ),
                 ),
               )
-            : RefreshIndicator(
+            : CustomRefreshIndicator(
                 onRefresh: () {
                   return ref.read(myLikeStateProvider.notifier).refresh();
+                },
+                builder: (context, child, controller) {
+                  return LoadingAnimationWidget(controller: controller, child: child);
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
@@ -361,9 +365,12 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                   ),
                 ),
               )
-            : RefreshIndicator(
+            : CustomRefreshIndicator(
                 onRefresh: () {
                   return ref.read(mySaveStateProvider.notifier).refresh();
+                },
+                builder: (context, child, controller) {
+                  return LoadingAnimationWidget(controller: controller, child: child);
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
