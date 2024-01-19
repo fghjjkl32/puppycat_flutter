@@ -29,10 +29,20 @@ class MyPageSettingNotifier extends StateNotifier<double> {
 
   Future<void> clearCache(context) async {
     final Directory cacheDir = await getTemporaryDirectory();
+    Directory iosTempDir = Directory("${cacheDir.path}/puppycat");
 
-    if (cacheDir.existsSync()) {
-      cacheDir.deleteSync(recursive: true);
+    int sizeInBytes = 0;
+
+    if (Platform.isIOS) {
+      if (iosTempDir.existsSync()) {
+        iosTempDir.deleteSync(recursive: true);
+      }
+    } else {
+      if (cacheDir.existsSync()) {
+        cacheDir.deleteSync(recursive: true);
+      }
     }
+
     imageCache.clear();
     DefaultCacheManager().emptyCache();
 
@@ -42,7 +52,29 @@ class MyPageSettingNotifier extends StateNotifier<double> {
       type: ToastType.purple,
     );
 
-    getCacheSizeInMB();
+    if (Platform.isIOS) {
+      if (iosTempDir.existsSync()) {
+        final fileStream = iosTempDir.list(recursive: true, followLinks: false);
+        await for (FileSystemEntity file in fileStream) {
+          if (file is File) {
+            final fileSize = await file.length();
+            sizeInBytes += fileSize;
+          }
+        }
+      }
+    } else {
+      if (cacheDir.existsSync()) {
+        final fileStream = cacheDir.list(recursive: true, followLinks: false);
+        await for (FileSystemEntity file in fileStream) {
+          if (file is File) {
+            final fileSize = await file.length();
+            sizeInBytes += fileSize;
+          }
+        }
+      }
+    }
+
+    state = sizeInBytes / (1024 * 1024);
   }
 }
 
