@@ -46,29 +46,29 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
     tagScrollController.addListener(_tagScrollListener);
     profileScrollController.addListener(_profileScrollListener);
 
-    _searchController.addListener(() {
-      ref.watch(fullSearchStateProvider.notifier).searchQuery.add(_searchController.text);
-    });
+    // _searchController.addListener(() {
+    //   ref.watch(fullSearchStateProvider.notifier).searchFullList(_searchController.text);
+    // });
+    //
+    // _searchController.addListener(() {
+    //   ref.watch(tagSearchStateProvider.notifier).searchTagList(_searchController.text);
+    // });
+    //
+    // _searchController.addListener(() {
+    //   ref.watch(profileSearchStateProvider.notifier).searchTagList(_searchController.text);
+    // });
 
-    _searchController.addListener(() {
-      ref.watch(tagSearchStateProvider.notifier).searchQuery.add(_searchController.text);
-    });
-
-    _searchController.addListener(() {
-      ref.watch(profileSearchStateProvider.notifier).searchQuery.add(_searchController.text);
-    });
-
-    _searchController.addListener(() {
-      if (_searchController.text.isNotEmpty && !_showTabs) {
-        setState(() {
-          _showTabs = true;
-        });
-      } else if (_searchController.text.isEmpty && _showTabs) {
-        setState(() {
-          _showTabs = false;
-        });
-      }
-    });
+    // _searchController.addListener(() {
+    // if (_searchController.text.isNotEmpty && !_showTabs) {
+    //   setState(() {
+    //     _showTabs = true;
+    //   });
+    // } else if (_searchController.text.isEmpty && _showTabs) {
+    //   setState(() {
+    //     _showTabs = false;
+    //   });
+    // }
+    // });
   }
 
   void _tagScrollListener() {
@@ -101,7 +101,18 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: TextField(
+            onChanged: (event) {
+              if (_searchController.text.isEmpty) {
+                setState(() {
+                  _showTabs = false;
+                });
+              }
+            },
             onSubmitted: (name) async {
+              setState(() {
+                _showTabs = true;
+              });
+
               final dbHelper = ref.read(dbHelperProvider);
               final search = SearchesCompanion(
                 name: Value(name ?? ""),
@@ -111,6 +122,9 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
 
               // 검색어를 저장합니다.
               await dbHelper.insertSearch(search);
+              ref.watch(fullSearchStateProvider.notifier).searchFullList(_searchController.text);
+              ref.watch(tagSearchStateProvider.notifier).searchTagList(_searchController.text);
+              ref.watch(profileSearchStateProvider.notifier).searchTagList(_searchController.text);
 
               ref.refresh(searchProvider);
             },
