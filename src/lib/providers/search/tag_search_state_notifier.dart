@@ -6,7 +6,6 @@ import 'package:pet_mobile_social_flutter/models/search/search_data_list_model.d
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/repositories/search/search_repository.dart';
-import 'package:rxdart/rxdart.dart';
 
 final tagSearchStateProvider = StateNotifierProvider<TagSearchStateNotifier, SearchDataListModel>((ref) {
   return TagSearchStateNotifier(ref);
@@ -16,9 +15,9 @@ class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
   final Ref ref;
 
   TagSearchStateNotifier(this.ref) : super(const SearchDataListModel()) {
-    searchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
-      await searchTagList(query);
-    });
+    // searchQuery.stream.debounceTime(const Duration(milliseconds: 500)).listen((query) async {
+    //   await searchTagList(query);
+    // });
   }
 
   int searchTagMaxPages = 1;
@@ -26,7 +25,7 @@ class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
   String searchSearchWord = '';
   int searchTagCurrentPage = 1;
 
-  final searchQuery = PublishSubject<String>();
+  // final searchQuery = PublishSubject<String>();
 
   Future<void> searchTagList(String searchWord) async {
     if (searchWord.isEmpty) {
@@ -119,7 +118,7 @@ class TagSearchStateNotifier extends StateNotifier<SearchDataListModel> {
 
   @override
   void dispose() {
-    searchQuery.close();
+    // searchQuery.close();
     super.dispose();
   }
 }

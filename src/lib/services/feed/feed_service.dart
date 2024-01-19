@@ -63,7 +63,7 @@ abstract class FeedService {
 
   @GET('v1/search/tag/contents')
   Future<ContentResponseModel> getUserHashtagContentList(
-    @Path("searchWord") String searchWord,
+    @Query("searchWord") String searchWord,
     @Query("page") int page,
     @Query("limit") int limit,
   );
