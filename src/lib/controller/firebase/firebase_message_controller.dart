@@ -33,7 +33,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   NotificationController notificationController = NotificationController();
-  print("run1  $message");
+  print("run1  ${message.toMap()}");
   // _setupNotificationChannel();
   notificationController.createChannel('puppycat', 'Puppycat Notification', '');
   // notificationController.showFlutterNotification(message);
