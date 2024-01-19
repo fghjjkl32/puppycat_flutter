@@ -1,3 +1,4 @@
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,6 +30,7 @@ import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.
 import 'package:pet_mobile_social_flutter/providers/user_list/favorite_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/dialog/custom_dialog.dart';
+import 'package:pet_mobile_social_flutter/ui/components/loading_animation_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/feed_main_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/home/component/popupmenu_with_reddot_widget.dart';
 import 'package:widget_mask/widget_mask.dart';
@@ -848,7 +850,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     final myInfo = ref.read(myInfoStateProvider);
     final isLogined = ref.read(loginStatementProvider);
 
-    return RefreshIndicator(
+    return CustomRefreshIndicator(
       onRefresh: () {
         return Future(() {
           ref.read(followUserStateProvider.notifier).resetState();
@@ -874,6 +876,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           }
         });
       },
+      builder: (context, child, controller) {
+        return LoadingAnimationWidget(controller: controller, child: child);
+      },
       child: CustomScrollView(
         slivers: <Widget>[
           PagedSliverList<int, FeedData>(
@@ -894,16 +899,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 );
               },
               firstPageProgressIndicatorBuilder: (context) {
-                return Column(
-                  children: [
-                    Lottie.asset(
-                      'assets/lottie/icon_loading.json',
-                      fit: BoxFit.fill,
-                      width: 80,
-                      height: 80,
-                    ),
-                  ],
-                );
+                return Container();
               },
               noItemsFoundIndicatorBuilder: (context) {
                 return Column(
@@ -967,7 +963,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     final myInfo = ref.read(myInfoStateProvider);
     final isLogined = ref.read(loginStatementProvider);
 
-    return RefreshIndicator(
+    return CustomRefreshIndicator(
       onRefresh: () {
         return Future(() {
           ref.read(followUserStateProvider.notifier).resetState();
@@ -994,6 +990,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
           }
         });
       },
+      builder: (context, child, controller) {
+        return LoadingAnimationWidget(controller: controller, child: child);
+      },
       child: CustomScrollView(
         slivers: <Widget>[
           PagedSliverList<int, FeedData>(
@@ -1007,7 +1006,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 return Container();
               },
               firstPageProgressIndicatorBuilder: (context) {
-                return Column(
+                return Container();
+                Column(
                   children: [
                     Lottie.asset(
                       'assets/lottie/icon_loading.json',
@@ -1127,7 +1127,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     final myInfo = ref.read(myInfoStateProvider);
     final isLogined = ref.read(loginStatementProvider);
 
-    return RefreshIndicator(
+    return CustomRefreshIndicator(
       onRefresh: () {
         return Future(() {
           ref.read(followUserStateProvider.notifier).resetState();
@@ -1152,6 +1152,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
           }
         });
+      },
+      builder: (context, child, controller) {
+        return LoadingAnimationWidget(controller: controller, child: child);
       },
       child: CustomScrollView(
         slivers: <Widget>[
@@ -1263,7 +1266,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 );
               },
               firstPageProgressIndicatorBuilder: (context) {
-                return Column(
+                return Container();
+                Column(
                   children: [
                     Lottie.asset(
                       'assets/lottie/icon_loading.json',

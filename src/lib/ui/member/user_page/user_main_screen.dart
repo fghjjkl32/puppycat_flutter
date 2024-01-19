@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -14,11 +14,10 @@ import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/con
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/block/block_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
-
+import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 ///NOTE
 ///2023.11.16.
 ///산책하기 보류로 주석 처리
@@ -30,6 +29,7 @@ import 'package:pet_mobile_social_flutter/providers/user_contents/user_contents_
 import 'package:pet_mobile_social_flutter/providers/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/ui/components/dialog/custom_dialog.dart';
+import 'package:pet_mobile_social_flutter/ui/components/loading_animation_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/components/toast/toast.dart';
 
 class UserMainScreen extends ConsumerStatefulWidget {
@@ -356,13 +356,16 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     final myInfo = ref.read(myInfoStateProvider);
     final isLogined = ref.read(loginStatementProvider);
 
-    return RefreshIndicator(
+    return CustomRefreshIndicator(
       onRefresh: () {
         return Future(() {
           ref.read(userContentsStateProvider.notifier).memberUuid = ref.read(userContentsTempUuidProvider);
 
           _userContentsListPagingController.refresh();
         });
+      },
+      builder: (context, child, controller) {
+        return LoadingAnimationWidget(controller: controller, child: child);
       },
       child: Container(
         color: kPreviousNeutralColor100,
@@ -423,7 +426,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                   );
                 },
                 firstPageProgressIndicatorBuilder: (context) {
-                  return Column(
+                  return Container();
+                  Column(
                     children: [
                       Lottie.asset(
                         'assets/lottie/icon_loading.json',
@@ -523,7 +527,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   Widget _secondTabBody() {
     final myInfo = ref.read(myInfoStateProvider);
 
-    return RefreshIndicator(
+    return CustomRefreshIndicator(
       onRefresh: () {
         return Future(() {
           // if (widget.oldMemberUuid != myInfo.uuid) {
@@ -535,6 +539,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
           _userTagContentsListPagingController.refresh();
         });
+      },
+      builder: (context, child, controller) {
+        return LoadingAnimationWidget(controller: controller, child: child);
       },
       child: Container(
         color: kPreviousNeutralColor100,
@@ -595,7 +602,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                   );
                 },
                 firstPageProgressIndicatorBuilder: (context) {
-                  return Column(
+                  return Container();
+                  Column(
                     children: [
                       Lottie.asset(
                         'assets/lottie/icon_loading.json',
