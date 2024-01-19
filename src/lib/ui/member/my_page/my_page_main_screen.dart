@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,6 +28,7 @@ import 'package:pet_mobile_social_flutter/providers/user_information/my_informat
 import 'package:pet_mobile_social_flutter/providers/user_list/content_like_user_list/content_like_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
+import 'package:pet_mobile_social_flutter/ui/components/loading_animation_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/comment/component/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/comment/component/widget/comment_detail_item_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/widget/favorite_item_widget.dart';
@@ -280,11 +282,14 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   }
 
   Widget _firstTabBody() {
-    return RefreshIndicator(
+    return CustomRefreshIndicator(
       onRefresh: () {
         return Future(() {
           _myContentsListPagingController.refresh();
         });
+      },
+      builder: (context, child, controller) {
+        return LoadingAnimationWidget(controller: controller, child: child);
       },
       child: Container(
         color: kPreviousNeutralColor100,
@@ -332,8 +337,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     ],
                   );
                 },
-                newPageProgressIndicatorBuilder: (context) {
-                  return Column(
+                firstPageProgressIndicatorBuilder: (context) {
+                  return Container();
+                  Column(
                     children: [
                       Lottie.asset(
                         'assets/lottie/icon_loading.json',
@@ -344,7 +350,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     ],
                   );
                 },
-                firstPageProgressIndicatorBuilder: (context) {
+                newPageProgressIndicatorBuilder: (context) {
                   return Column(
                     children: [
                       Lottie.asset(
@@ -693,11 +699,14 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   }
 
   Widget _secondTabBody() {
-    return RefreshIndicator(
+    return CustomRefreshIndicator(
       onRefresh: () {
         return Future(() {
           _myTagContentsListPagingController.refresh();
         });
+      },
+      builder: (context, child, controller) {
+        return LoadingAnimationWidget(controller: controller, child: child);
       },
       child: Container(
         color: kPreviousNeutralColor100,
@@ -745,8 +754,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     ],
                   );
                 },
-                newPageProgressIndicatorBuilder: (context) {
-                  return Column(
+                firstPageProgressIndicatorBuilder: (context) {
+                  return Container();
+                  Column(
                     children: [
                       Lottie.asset(
                         'assets/lottie/icon_loading.json',
@@ -757,7 +767,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                     ],
                   );
                 },
-                firstPageProgressIndicatorBuilder: (context) {
+                newPageProgressIndicatorBuilder: (context) {
                   return Column(
                     children: [
                       Lottie.asset(
@@ -1522,7 +1532,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
 //   }
 //
 //   Widget _firstTabBody() {
-//     return RefreshIndicator(
+//     return CustomRefreshIndicator(
 //       onRefresh: () {
 //         return Future(() {
 //           _myContentsListPagingController.refresh();
@@ -1874,7 +1884,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
 //   }
 //
 //   Widget _secondTabBody() {
-//     return RefreshIndicator(
+//     return CustomRefreshIndicator(
 //       onRefresh: () {
 //         return Future(() {
 //           _myTagContentsListPagingController.refresh();

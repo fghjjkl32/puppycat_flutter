@@ -164,6 +164,8 @@ dependencies:
     path: '../library/flutter_vchat_sdk'
   web_socket_channel: ^2.3.0
 
+  custom_refresh_indicator: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
@@ -28,13 +27,7 @@ class MyPageSettingNotifier extends StateNotifier<double> {
   }
 
   Future<void> clearCache(context) async {
-    final Directory cacheDir = await getTemporaryDirectory();
-
-    if (cacheDir.existsSync()) {
-      cacheDir.deleteSync(recursive: true);
-    }
-    imageCache.clear();
-    DefaultCacheManager().emptyCache();
+    await DefaultCacheManager().emptyCache();
 
     toast(
       context: context,
