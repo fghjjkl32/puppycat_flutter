@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'firebase_cloud_message_payload.freezed.dart';
-
 part 'firebase_cloud_message_payload.g.dart';
 
 enum PushType {
@@ -28,7 +27,7 @@ class FirebaseCloudMessagePayload with _$FirebaseCloudMessagePayload {
     required String type,
     @JsonKey(name: 'contents_type') String? contentsType,
     @JsonKey(name: 'contents_idx') required String contentsIdx,
-    required String image,
+    @JsonKey(name: 'imageUrl') required String image,
     @JsonKey(name: 'comment_idx') String? commentIdx,
   }) = _FirebaseCloudMessagePayload;
 
