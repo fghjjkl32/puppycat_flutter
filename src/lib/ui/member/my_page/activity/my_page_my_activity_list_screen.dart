@@ -14,7 +14,7 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_save_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/components/loading_animation_widget.dart';
+import 'package:pet_mobile_social_flutter/ui/components/refresh_loading_animation_widget.dart';
 
 class MyPageMyActivityListScreen extends ConsumerStatefulWidget {
   const MyPageMyActivityListScreen({super.key});
@@ -218,7 +218,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                   return ref.read(myLikeStateProvider.notifier).refresh();
                 },
                 builder: (context, child, controller) {
-                  return LoadingAnimationWidget(controller: controller, child: child);
+                  return RefreshLoadingAnimationWidget(controller: controller, child: child);
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
@@ -370,7 +370,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                   return ref.read(mySaveStateProvider.notifier).refresh();
                 },
                 builder: (context, child, controller) {
-                  return LoadingAnimationWidget(controller: controller, child: child);
+                  return RefreshLoadingAnimationWidget(controller: controller, child: child);
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
