@@ -23,6 +23,7 @@ import 'package:pet_mobile_social_flutter/providers/feed/my_feed_state_provider.
 import 'package:pet_mobile_social_flutter/providers/feed/popular_hour_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/popular_week_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/recent_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/firebase/firebase_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
@@ -121,6 +122,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     final isLogined = ref.read(loginStatementProvider);
     tabController = TabController(vsync: this, length: getTabs().length);
     tabController.index = widget.initialTabIndex;
+
+    ref.read(firebaseStateProvider.notifier).checkNotificationAppLaunch();
 
     Future(() async {
       ref.read(followUserStateProvider.notifier).resetState();
@@ -300,10 +303,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   @override
   Widget build(BuildContext context) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
-    // final loginState = ref.watch(loginStateProvider);
     final isLogined = ref.watch(loginStatementProvider);
-    print('isBigDevice $isBigDevice / ${MediaQuery.of(context).size.width} / ${MediaQuery.of(context).size.height}');
-    print('test333333 main ${GoRouter.of(context).routerDelegate.currentConfiguration}');
 
     return Stack(
       children: [

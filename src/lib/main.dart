@@ -9,13 +9,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-
 // import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-
 // import 'package:location/location.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -26,12 +24,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
-import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.dart';
-import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
-import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
-import 'package:pet_mobile_social_flutter/providers/setting/notice_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 9723);
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -89,37 +82,16 @@ void main() async {
 
   SystemChrome.setSystemUIOverlayStyle(systemUIOverlayStyle);
 
-  // await LocationUtil.checkLocationPermission();
-  // Location().changeSettings(interval: 500);
-
-  //TODO 11/8 Permission 작업때문에 주석 위치 가져오는 권한을 산책하기 할때로 이동
-  // await GeolocatorUtil.checkLocationPermission();
-
-  ///NOTE
-  ///2023.11.14.
-  ///산책하기 보류로 주석 처리
-  // await NaverMapSdk.instance.initialize(clientId: "omfrw8eeol");
-  // await initializeBackgroundService();
-  ///산책하기 보류로 주석 처리 완료
-
   /// Get It
   /// SingleTon
-  // if (!Platform.isIOS) {
-  GetIt.I.registerSingleton<FireBaseMessageController>(FireBaseMessageController());
-  // }
   GetIt.I.registerSingleton<UuidUtil>(UuidUtil());
   await GetIt.I<UuidUtil>().init();
 
   GetIt.I.registerSingleton<PackageInformationUtil>(PackageInformationUtil());
   await GetIt.I<PackageInformationUtil>().init();
 
-  // print('pkg name ${GetIt.I<PackageInformationUtil>().pkgName}');
-
   GetIt.I.registerSingleton<CookieJar>(CookieJar());
 
-  // GetIt.I.registerSingleton<ChatClientController>(ChatClientController());
-
-  // runAppSpector();
   runApp(
     ProviderScope(
       child: EasyLocalization(
@@ -149,7 +121,6 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    initLocalNotification();
   }
 
   @override
@@ -164,117 +135,6 @@ class PuppycatAppState extends ConsumerState<PuppycatApp> with WidgetsBindingObs
       print('Background!!!!!!!!!!!');
     }
   }
-
-  void initLocalNotification() {
-    NotificationController notificationController = NotificationController();
-    notificationController.initNotification(navigatorHandler);
-    //
-    //
-    // getInitialLink().then((link) {
-    //   // if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
-    //   //   isAppLinkHandled = true;
-    //   //   final router = ref.watch(routerProvider);
-    //   //   router.push("/login/signupScreen/toss");
-    //   // }
-    // });
-    //
-    // linkStream.listen((String? link) {
-    //   if (!isAppLinkHandled && link == "puppycat://auth?authtype=toss") {
-    //     isAppLinkHandled = true;
-    //     final router = ref.watch(routerProvider);
-    //     router.push("/login/signupScreen/toss");
-    //   }
-    // }, onError: (err) {
-    //   // Handle the error here
-    // });
-  }
-
-  void navigatorHandler(FirebaseCloudMessagePayload payload) {
-    print("payload ::: ${payload}");
-    // context.push('/notification');
-    final router = ref.read(routerProvider);
-    final myInfo = ref.read(myInfoStateProvider);
-    // router.go('/notification');
-
-    PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
-
-    print("pushType : ${pushType}");
-
-    switch (pushType) {
-      case PushType.follow:
-        router.go('/notification');
-        break;
-      case PushType.new_contents:
-      case PushType.metion_contents:
-      case PushType.like_contents:
-      case PushType.img_tag:
-        Map<String, dynamic> extraMap = {
-          'firstTitle': myInfo.nick ?? 'nickname',
-          'secondTitle': '피드',
-          'memberUuid': myInfo.uuid,
-          'contentIdx': payload.contentsIdx,
-          'contentType': 'notificationContent',
-        };
-        router.push('/feed/detail', extra: extraMap);
-        // router.push("/feed/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
-        break;
-
-      case PushType.new_comment:
-      case PushType.new_reply:
-      case PushType.mention_comment:
-      case PushType.like_comment:
-        Map<String, dynamic> extraMap = {
-          "isRouteComment": true,
-          "focusIdx": payload.commentIdx,
-          'firstTitle': myInfo.nick ?? 'nickname',
-          'secondTitle': '피드',
-          'memberUuid': myInfo.uuid,
-          'contentIdx': payload.contentsIdx,
-          'contentType': 'notificationContent',
-        };
-        router.push('/feed/detail', extra: extraMap);
-        // router.push("/feed/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
-        //   "isRouteComment": true,
-        //   "focusIdx": payload.commentIdx,
-        // });
-        break;
-
-      case PushType.notice:
-      case PushType.event:
-        ref.read(noticeFocusIdxStateProvider.notifier).state = int.parse(payload.contentsIdx);
-        ref.read(noticeExpansionIdxStateProvider.notifier).state = int.parse(payload.contentsIdx);
-        router.push("/setting/notice", extra: {
-          "contentsIdx": payload.contentsIdx,
-        });
-        break;
-      case PushType.unknown:
-        return;
-    }
-  }
-
-  // void navigatorHandler(BuildContext context, PushType pushType, FirebaseCloudMessagePayload payload) {
-  //   switch (pushType) {
-  //     case PushType.follow:
-  //       print('adsasdadads');
-  //       context.go('/notification');
-  //     case PushType.new_contents:
-  //     case PushType.metion_contents:
-  //     case PushType.img_tag:
-  //     case PushType.like_contents:
-  //
-  //     case PushType.new_comment:
-  //     case PushType.new_reply:
-  //
-  //     case PushType.mention_comment:
-  //     case PushType.like_comment:
-  //       print('adsasdadads22222');
-  //       context.go('/notification');
-  //     case PushType.notice:
-  //     case PushType.event:
-  //     case PushType.unknown:
-  //       return ;
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

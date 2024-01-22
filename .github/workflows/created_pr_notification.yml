@@ -1,0 +1,22 @@
+name: Created PR Notification
+on:
+  pull_request:
+  #나중에 stg, prd 추가
+    branches: [ develop ]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      # Runs the telegram notify action to send a notification
+      - name: send telegram message on push
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            --- [Created PR] ---
+            Repository: ${{ github.repository }}
+            created PR: ${{ github.triggering_actor }}        
+            URL : https://github.com/${{ github.repository }}/pull/${{ github.event.number }}
+            

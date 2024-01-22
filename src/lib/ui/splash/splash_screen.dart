@@ -1,22 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pet_mobile_social_flutter/config/router/routes.dart';
-import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
-import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
-import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/firebase/firebase_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/setting/notice_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 final splashStateProvider = StateProvider<bool>((ref) => false);
 final splashProgressStateProvider = StateProvider<double>((ref) => 0.0);
@@ -24,9 +15,7 @@ final _initStateProvider = StateProvider<bool>((ref) => false);
 
 class InitializationApp {
   static void initialize(Ref ref) async {
-    print('asdasdasdasdasdasdasdasdad');
     if (ref.read(_initStateProvider)) {
-      print('zxczxczxczxczxczx');
       return;
     }
     Permissions.requestPermissions();
@@ -34,7 +23,7 @@ class InitializationApp {
     if (await _checkNetwork()) {
       if (await _checkServers()) {
         await ref.read(chatSocketStateProvider);
-        if (await _initFirebase()) {
+        if (await _initFirebase(ref)) {
           await ref.read(loginStateProvider.notifier).autoLogin();
           ref.read(_initStateProvider.notifier).state = true;
           //업데이트 팝업 로직
@@ -45,12 +34,22 @@ class InitializationApp {
     }
   }
 
-  static Future<bool> _initFirebase() async {
+  static Future<bool> _initFirebase(Ref ref) async {
+    // final firebaseProvider = ref.read(firebaseStateProvider.notifier);
+    ref.read(firebaseStateProvider.notifier).initFirebase();
+
     // var result = Future.delayed(Duration(milliseconds: 300), () async {
+    // FireBaseMessageController fireBaseMessageController = GetIt.I<FireBaseMessageController>();
+
     ///TODO
     ///결과값 제대로 받아서 처리하도록
     // if (!Platform.isIOS) {
-    await GetIt.I<FireBaseMessageController>().init();
+    // await fireBaseMessageController.init();
+    // fireBaseMessageController.setBackgroundMessageOnTapHandler((payload) => navigatorHandler(ref, payload));
+    //
+    // if (fireBaseMessageController.initData != null) {
+    //   navigatorHandler(ref, fireBaseMessageController.initData!);
+    // }
     // }
     return true;
     // });
@@ -92,13 +91,6 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
 
-    // _splashTimer = Timer(const Duration(milliseconds: 3000), () {
-    //   if (ref.read(_initStateProvider)) {
-    //     checkPushAppLaunch();
-    //     print('77777777');
-    //     ref.read(splashStateProvider.notifier).state = true;
-    //   }
-    // });
     _splashTimer = Timer.periodic(const Duration(milliseconds: 1000), (timer) {
       print('splash tick ${timer.tick} / $_splashTimerTick');
 
@@ -109,7 +101,6 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
 
       if (ref.read(_initStateProvider)) {
         print('splash timer 1');
-        checkPushAppLaunch();
         print('splash timer 2');
         _splashTimer.cancel();
         print('splash timer 3');
@@ -118,84 +109,6 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
         _splashTimerTick = 0;
       }
     });
-  }
-
-  void checkPushAppLaunch() async {
-    NotificationAppLaunchDetails? details = await NotificationController().pushController.getNotificationAppLaunchDetails();
-    if (details != null) {
-      if (details.didNotificationLaunchApp) {
-        if (details.notificationResponse != null) {
-          if (details.notificationResponse!.payload != null) {
-            FirebaseCloudMessagePayload payload = FirebaseCloudMessagePayload.fromJson(jsonDecode(details.notificationResponse!.payload!));
-            // navigatorHandler(context, convertStringToPushType(payload.type), payload);
-            navigatorHandler(payload);
-          }
-        }
-      }
-    }
-  }
-
-  void navigatorHandler(FirebaseCloudMessagePayload payload) {
-    print("payload ::: ${payload}");
-    // context.push('/notification');
-    final router = ref.read(routerProvider);
-    final myInfo = ref.read(myInfoStateProvider);
-    // router.go('/notification');
-
-    PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
-
-    print("pushType : ${pushType}");
-
-    switch (pushType) {
-      case PushType.follow:
-        router.push('/notification');
-        break;
-      case PushType.new_contents:
-      case PushType.metion_contents:
-      case PushType.like_contents:
-      case PushType.img_tag:
-        Map<String, dynamic> extraMap = {
-          'firstTitle': myInfo.nick ?? 'nickname',
-          'secondTitle': '피드',
-          'memberUuid': myInfo.uuid,
-          'contentIdx': payload.contentsIdx,
-          'contentType': 'notificationContent',
-        };
-        router.push('/feed/detail', extra: extraMap);
-        // router.push("/feed/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
-        break;
-
-      case PushType.new_comment:
-      case PushType.new_reply:
-      case PushType.mention_comment:
-      case PushType.like_comment:
-        Map<String, dynamic> extraMap = {
-          "isRouteComment": true,
-          "focusIdx": payload.commentIdx,
-          'firstTitle': myInfo.nick ?? 'nickname',
-          'secondTitle': '피드',
-          'memberUuid': myInfo.uuid,
-          'contentIdx': payload.contentsIdx,
-          'contentType': 'notificationContent',
-        };
-        router.push('/feed/detail', extra: extraMap);
-        // router.push("/feed/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
-        //   "isRouteComment": true,
-        //   "focusIdx": payload.commentIdx,
-        // });
-        break;
-
-      case PushType.notice:
-      case PushType.event:
-        ref.read(noticeFocusIdxStateProvider.notifier).state = int.parse(payload.contentsIdx);
-        ref.read(noticeExpansionIdxStateProvider.notifier).state = int.parse(payload.contentsIdx);
-        router.push("/setting/notice", extra: {
-          "contentsIdx": payload.contentsIdx,
-        });
-        break;
-      case PushType.unknown:
-        return;
-    }
   }
 
   @override

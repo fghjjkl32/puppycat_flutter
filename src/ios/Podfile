@@ -113,3 +113,8 @@ post_integrate do |installer|
   end
   project.save()
 end
+
+target 'ImageNotification' do
+  use_frameworks!
+  pod 'Firebase/Messaging'
+end
