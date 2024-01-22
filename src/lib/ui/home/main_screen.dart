@@ -30,7 +30,7 @@ import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.
 import 'package:pet_mobile_social_flutter/providers/user_list/favorite_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user_list/popular_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/dialog/custom_dialog.dart';
-import 'package:pet_mobile_social_flutter/ui/components/loading_animation_widget.dart';
+import 'package:pet_mobile_social_flutter/ui/components/refresh_loading_animation_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/feed_main_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/home/component/popupmenu_with_reddot_widget.dart';
 import 'package:widget_mask/widget_mask.dart';
@@ -877,7 +877,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         });
       },
       builder: (context, child, controller) {
-        return LoadingAnimationWidget(controller: controller, child: child);
+        return RefreshLoadingAnimationWidget(controller: controller, child: child);
       },
       child: CustomScrollView(
         slivers: <Widget>[
@@ -991,7 +991,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         });
       },
       builder: (context, child, controller) {
-        return LoadingAnimationWidget(controller: controller, child: child);
+        return RefreshLoadingAnimationWidget(controller: controller, child: child);
       },
       child: CustomScrollView(
         slivers: <Widget>[
@@ -1154,7 +1154,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         });
       },
       builder: (context, child, controller) {
-        return LoadingAnimationWidget(controller: controller, child: child);
+        return RefreshLoadingAnimationWidget(controller: controller, child: child);
       },
       child: CustomScrollView(
         slivers: <Widget>[

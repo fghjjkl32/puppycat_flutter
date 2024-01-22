@@ -25,7 +25,7 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationItemMode
     state = userInformationStateMap[memberUuid] ?? UserInformationItemModel();
   }
 
-  getInitUserInformation({
+  Future<UserInformationItemModel?> getInitUserInformation({
     required String memberUuid,
   }) async {
     print("memberUuidmemberUuid ${memberUuid}");
@@ -38,12 +38,16 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationItemMode
       userInformationStateMap[memberUuid] = userInformationItemModel;
 
       ref.read(followUserStateProvider.notifier).setFollowState(memberUuid, userInformationItemModel.followState == 1);
+
+      return state;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       state = UserInformationItemModel();
+      return null;
     } catch (e) {
       print('getInitUserInformation error $e');
       state = UserInformationItemModel();
+      return null;
     }
   }
 

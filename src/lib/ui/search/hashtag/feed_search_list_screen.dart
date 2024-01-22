@@ -14,7 +14,7 @@ import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detai
 import 'package:pet_mobile_social_flutter/providers/search/feed_search_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
-import 'package:pet_mobile_social_flutter/ui/components/loading_animation_widget.dart';
+import 'package:pet_mobile_social_flutter/ui/components/refresh_loading_animation_widget.dart';
 import 'package:widget_mask/widget_mask.dart';
 
 class FeedSearchListScreen extends ConsumerStatefulWidget {
@@ -180,7 +180,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                               return ref.read(feedSearchStateProvider.notifier).refresh(widget.searchWord);
                             },
                             builder: (context, child, controller) {
-                              return LoadingAnimationWidget(controller: controller, child: child);
+                              return RefreshLoadingAnimationWidget(controller: controller, child: child);
                             },
                             child: GridView.builder(
                               controller: searchContentController,
