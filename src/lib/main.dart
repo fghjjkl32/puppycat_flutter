@@ -82,37 +82,16 @@ void main() async {
 
   SystemChrome.setSystemUIOverlayStyle(systemUIOverlayStyle);
 
-  // await LocationUtil.checkLocationPermission();
-  // Location().changeSettings(interval: 500);
-
-  //TODO 11/8 Permission 작업때문에 주석 위치 가져오는 권한을 산책하기 할때로 이동
-  // await GeolocatorUtil.checkLocationPermission();
-
-  ///NOTE
-  ///2023.11.14.
-  ///산책하기 보류로 주석 처리
-  // await NaverMapSdk.instance.initialize(clientId: "omfrw8eeol");
-  // await initializeBackgroundService();
-  ///산책하기 보류로 주석 처리 완료
-
   /// Get It
   /// SingleTon
-  // if (!Platform.isIOS) {
-  // GetIt.I.registerSingleton<FireBaseMessageController>(FireBaseMessageController());
-  // }
   GetIt.I.registerSingleton<UuidUtil>(UuidUtil());
   await GetIt.I<UuidUtil>().init();
 
   GetIt.I.registerSingleton<PackageInformationUtil>(PackageInformationUtil());
   await GetIt.I<PackageInformationUtil>().init();
 
-  // print('pkg name ${GetIt.I<PackageInformationUtil>().pkgName}');
-
   GetIt.I.registerSingleton<CookieJar>(CookieJar());
 
-  // GetIt.I.registerSingleton<ChatClientController>(ChatClientController());
-
-  // runAppSpector();
   runApp(
     ProviderScope(
       child: EasyLocalization(

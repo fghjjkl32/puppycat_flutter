@@ -303,10 +303,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   @override
   Widget build(BuildContext context) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
-    // final loginState = ref.watch(loginStateProvider);
     final isLogined = ref.watch(loginStatementProvider);
-    print('isBigDevice $isBigDevice / ${MediaQuery.of(context).size.width} / ${MediaQuery.of(context).size.height}');
-    print('test333333 main ${GoRouter.of(context).routerDelegate.currentConfiguration}');
 
     return Stack(
       children: [
