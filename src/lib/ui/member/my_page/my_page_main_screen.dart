@@ -29,6 +29,7 @@ import 'package:pet_mobile_social_flutter/providers/user_list/content_like_user_
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/ui/components/loading_animation_widget.dart';
+import 'package:pet_mobile_social_flutter/ui/components/refresh_loading_animation_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/comment/component/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/comment/component/widget/comment_detail_item_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/widget/favorite_item_widget.dart';
@@ -78,6 +79,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   late final feedListStateNotifier;
   late final firstFeedStateNotifier;
 
+  late Future _fetchMyDataFuture;
+
   @override
   void initState() {
     scrollController = ScrollController();
@@ -95,10 +98,6 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
       vsync: this,
     );
 
-    _myContentsListPagingController.refresh();
-    _myTagContentsListPagingController.refresh();
-
-    ref.read(myInformationStateProvider.notifier).getInitUserInformation(memberUuid: ref.read(myInfoStateProvider).uuid ?? '');
     super.initState();
   }
 
@@ -128,6 +127,19 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   }
 
   @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _fetchMyDataFuture = _fetchMyData();
+  }
+
+  Future<UserInformationItemModel?> _fetchMyData() {
+    _myContentsListPagingController.refresh();
+    _myTagContentsListPagingController.refresh();
+    return ref.read(myInformationStateProvider.notifier).getInitUserInformation(memberUuid: ref.read(myInfoStateProvider).uuid ?? '');
+  }
+
+  @override
   Widget build(BuildContext context) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
 
@@ -135,148 +147,159 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
       onWillPop: handleFocusLost,
       child: Material(
         child: SafeArea(
-            child: DefaultTabController(
-          length: 2,
-          child: NestedScrollView(
-            controller: scrollController,
-            physics: const ClampingScrollPhysics(),
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                    pinned: true,
-                    floating: false,
-                    backgroundColor: appBarColor,
-                    title: const Text('마이페이지'),
-                    leading: IconButton(
-                      onPressed: () {
-                        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
-                        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
-                        context.pop();
-                      },
-                      icon: const Icon(
-                        Puppycat_social.icon_back,
-                        size: 40,
-                      ),
-                    ),
-                    forceElevated: innerBoxIsScrolled,
-                    actions: [
-                      PopupMenuButton(
-                        padding: EdgeInsets.zero,
-                        offset: const Offset(0, 42),
-                        child: showLottieAnimation
-                            ? Lottie.asset(
-                                'assets/lottie/icon_more_header.json',
-                                repeat: false,
-                              )
-                            : const Padding(
-                                padding: EdgeInsets.only(right: 8.0),
-                                child: Icon(
-                                  Puppycat_social.icon_more_header,
+            child: FutureBuilder(
+                future: _fetchMyDataFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text('error');
+                  }
+
+                  if (!snapshot.hasData) {
+                    return const LoadingAnimationWidget();
+                  }
+                  return DefaultTabController(
+                    length: 2,
+                    child: NestedScrollView(
+                      controller: scrollController,
+                      physics: const ClampingScrollPhysics(),
+                      headerSliverBuilder: (context, innerBoxIsScrolled) {
+                        return [
+                          SliverAppBar(
+                              pinned: true,
+                              floating: false,
+                              backgroundColor: appBarColor,
+                              title: const Text('마이페이지'),
+                              leading: IconButton(
+                                onPressed: () {
+                                  ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                                  ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                                  context.pop();
+                                },
+                                icon: const Icon(
+                                  Puppycat_social.icon_back,
                                   size: 40,
                                 ),
                               ),
-                        onCanceled: () {
-                          setState(() {
-                            showLottieAnimation = false;
-                          });
-                        },
-                        onSelected: (id) {
-                          setState(() {
-                            showLottieAnimation = false;
-                          });
-                          if (id == 'myActivity') {
-                            context.push("/member/myPage/activity");
-                          }
-                          if (id == 'postsManagement') {
-                            context.push("/member/myPage/post");
-                          }
-                          if (id == 'setting') {
-                            context.push("/setting");
-                          }
-                        },
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(16.0),
-                            bottomRight: Radius.circular(16.0),
-                            topLeft: Radius.circular(16.0),
-                            topRight: Radius.circular(16.0),
+                              forceElevated: innerBoxIsScrolled,
+                              actions: [
+                                PopupMenuButton(
+                                  padding: EdgeInsets.zero,
+                                  offset: const Offset(0, 42),
+                                  child: showLottieAnimation
+                                      ? Lottie.asset(
+                                          'assets/lottie/icon_more_header.json',
+                                          repeat: false,
+                                        )
+                                      : const Padding(
+                                          padding: EdgeInsets.only(right: 8.0),
+                                          child: Icon(
+                                            Puppycat_social.icon_more_header,
+                                            size: 40,
+                                          ),
+                                        ),
+                                  onCanceled: () {
+                                    setState(() {
+                                      showLottieAnimation = false;
+                                    });
+                                  },
+                                  onSelected: (id) {
+                                    setState(() {
+                                      showLottieAnimation = false;
+                                    });
+                                    if (id == 'myActivity') {
+                                      context.push("/member/myPage/activity");
+                                    }
+                                    if (id == 'postsManagement') {
+                                      context.push("/member/myPage/post");
+                                    }
+                                    if (id == 'setting') {
+                                      context.push("/setting");
+                                    }
+                                  },
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(16.0),
+                                      bottomRight: Radius.circular(16.0),
+                                      topLeft: Radius.circular(16.0),
+                                      topRight: Radius.circular(16.0),
+                                    ),
+                                  ),
+                                  itemBuilder: (context) {
+                                    Future.delayed(Duration.zero, () {
+                                      setState(() {
+                                        showLottieAnimation = true;
+                                      });
+                                    });
+
+                                    final list = <PopupMenuEntry>[];
+                                    list.add(
+                                      diaryPopUpMenuItem(
+                                        'myActivity',
+                                        '내 활동',
+                                        const Icon(
+                                          Puppycat_social.icon_myactive,
+                                          size: 22,
+                                        ),
+                                        context,
+                                      ),
+                                    );
+                                    list.add(
+                                      const PopupMenuDivider(
+                                        height: 5,
+                                      ),
+                                    );
+                                    list.add(
+                                      diaryPopUpMenuItem(
+                                        'postsManagement',
+                                        '내 글 관리',
+                                        const Icon(
+                                          Puppycat_social.icon_mywrite,
+                                          size: 22,
+                                        ),
+                                        context,
+                                      ),
+                                    );
+                                    list.add(
+                                      const PopupMenuDivider(
+                                        height: 5,
+                                      ),
+                                    );
+                                    list.add(
+                                      diaryPopUpMenuItem(
+                                        'setting',
+                                        '설정',
+                                        const Icon(
+                                          Puppycat_social.icon_set_small,
+                                          size: 22,
+                                        ),
+                                        context,
+                                      ),
+                                    );
+                                    return list;
+                                  },
+                                ),
+                              ],
+                              expandedHeight: 140,
+                              flexibleSpace: Consumer(builder: (context, ref, _) {
+                                final userInformationItemModel = ref.watch(myInformationStateProvider);
+
+                                return _myPageSuccessProfile(userInformationItemModel);
+                              })),
+                          const SliverPersistentHeader(
+                            delegate: TabBarDelegate(),
+                            pinned: true,
                           ),
-                        ),
-                        itemBuilder: (context) {
-                          Future.delayed(Duration.zero, () {
-                            setState(() {
-                              showLottieAnimation = true;
-                            });
-                          });
-
-                          final list = <PopupMenuEntry>[];
-                          list.add(
-                            diaryPopUpMenuItem(
-                              'myActivity',
-                              '내 활동',
-                              const Icon(
-                                Puppycat_social.icon_myactive,
-                                size: 22,
-                              ),
-                              context,
-                            ),
-                          );
-                          list.add(
-                            const PopupMenuDivider(
-                              height: 5,
-                            ),
-                          );
-                          list.add(
-                            diaryPopUpMenuItem(
-                              'postsManagement',
-                              '내 글 관리',
-                              const Icon(
-                                Puppycat_social.icon_mywrite,
-                                size: 22,
-                              ),
-                              context,
-                            ),
-                          );
-                          list.add(
-                            const PopupMenuDivider(
-                              height: 5,
-                            ),
-                          );
-                          list.add(
-                            diaryPopUpMenuItem(
-                              'setting',
-                              '설정',
-                              const Icon(
-                                Puppycat_social.icon_set_small,
-                                size: 22,
-                              ),
-                              context,
-                            ),
-                          );
-                          return list;
-                        },
+                        ];
+                      },
+                      body: TabBarView(
+                        children: [
+                          _firstTabBody(),
+                          _secondTabBody(),
+                        ],
                       ),
-                    ],
-                    expandedHeight: 140,
-                    flexibleSpace: Consumer(builder: (context, ref, _) {
-                      final userInformationItemModel = ref.watch(myInformationStateProvider);
-
-                      return _myPageSuccessProfile(userInformationItemModel);
-                    })),
-                const SliverPersistentHeader(
-                  delegate: TabBarDelegate(),
-                  pinned: true,
-                ),
-              ];
-            },
-            body: TabBarView(
-              children: [
-                _firstTabBody(),
-                _secondTabBody(),
-              ],
-            ),
-          ),
-        )),
+                    ),
+                  );
+                })),
       ),
     );
   }
@@ -289,7 +312,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
         });
       },
       builder: (context, child, controller) {
-        return LoadingAnimationWidget(controller: controller, child: child);
+        return RefreshLoadingAnimationWidget(controller: controller, child: child);
       },
       child: Container(
         color: kPreviousNeutralColor100,
@@ -706,7 +729,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
         });
       },
       builder: (context, child, controller) {
-        return LoadingAnimationWidget(controller: controller, child: child);
+        return RefreshLoadingAnimationWidget(controller: controller, child: child);
       },
       child: Container(
         color: kPreviousNeutralColor100,

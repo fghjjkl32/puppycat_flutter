@@ -30,6 +30,7 @@ import 'package:pet_mobile_social_flutter/providers/user_information/user_inform
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/ui/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/components/loading_animation_widget.dart';
+import 'package:pet_mobile_social_flutter/ui/components/refresh_loading_animation_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/components/toast/toast.dart';
 
 class UserMainScreen extends ConsumerStatefulWidget {
@@ -58,6 +59,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
   late final PagingController<int, ContentImageData> _userTagContentsListPagingController = ref.read(userTagContentsStateProvider);
 
   ScrollController scrollController = ScrollController();
+  late Future _fetchUserDataFuture;
 
   bool showLottieAnimation = false;
 
@@ -90,13 +92,20 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
       vsync: this,
     );
 
-    Future(() async {
-      ref.watch(userInformationStateProvider.notifier).getInitUserInformation(memberUuid: widget.memberUuid);
-      _userContentsListPagingController.refresh();
-      _userTagContentsListPagingController.refresh();
-    });
-
     super.initState();
+  }
+
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _fetchUserDataFuture = _fetchUserData();
+  }
+
+  Future<UserInformationItemModel?> _fetchUserData() {
+    _userContentsListPagingController.refresh();
+    _userTagContentsListPagingController.refresh();
+    return ref.watch(userInformationStateProvider.notifier).getInitUserInformation(memberUuid: widget.memberUuid);
   }
 
   void _scrollListener() {
@@ -131,223 +140,234 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
       },
       child: Material(
         child: SafeArea(
-            child: DefaultTabController(
-          length: 2,
-          child: NestedScrollView(
-            controller: scrollController,
-            physics: const ClampingScrollPhysics(),
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                Consumer(builder: (context, ref, _) {
-                  return SliverAppBar(
-                      pinned: true,
-                      floating: false,
-                      backgroundColor: appBarColor,
-                      title: Text(widget.nick),
-                      leading: IconButton(
-                        onPressed: () {
-                          ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
-                          ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
-                          context.pop();
-                        },
-                        icon: const Icon(
-                          Puppycat_social.icon_back,
-                          size: 40,
-                        ),
-                      ),
-                      forceElevated: innerBoxIsScrolled,
-                      actions: [
-                        Consumer(builder: (context, ref, _) {
-                          final userInformationItemModel = ref.watch(userInformationStateProvider);
+            child: FutureBuilder(
+                future: _fetchUserDataFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text('error');
+                  }
 
-                          return userInformationItemModel.blockedState == 1 || userInformationItemModel.blockedMeState == 1
-                              ? Container()
-                              : PopupMenuButton(
-                                  padding: EdgeInsets.zero,
-                                  offset: const Offset(0, 42),
-                                  child: showLottieAnimation
-                                      ? Lottie.asset(
-                                          'assets/lottie/icon_more_header.json',
-                                          repeat: false,
-                                        )
-                                      : const Padding(
-                                          padding: EdgeInsets.only(right: 8.0),
-                                          child: Icon(
-                                            Puppycat_social.icon_more_header,
-                                            size: 40,
-                                          ),
-                                        ),
-                                  onCanceled: () {
-                                    setState(() {
-                                      showLottieAnimation = false;
-                                    });
+                  if (!snapshot.hasData) {
+                    return const LoadingAnimationWidget();
+                  }
+                  return DefaultTabController(
+                    length: 2,
+                    child: NestedScrollView(
+                      controller: scrollController,
+                      physics: const ClampingScrollPhysics(),
+                      headerSliverBuilder: (context, innerBoxIsScrolled) {
+                        return [
+                          Consumer(builder: (context, ref, _) {
+                            return SliverAppBar(
+                                pinned: true,
+                                floating: false,
+                                backgroundColor: appBarColor,
+                                title: Text(widget.nick),
+                                leading: IconButton(
+                                  onPressed: () {
+                                    ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                                    ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                                    context.pop();
                                   },
-                                  onSelected: (id) {
-                                    setState(() {
-                                      showLottieAnimation = false;
-                                    });
-                                    if (id == 'block') {
-                                      if (!isLogined) {
-                                        context.pushReplacement("/login");
-                                      } else {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return CustomDialog(
-                                              content: Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 24.0),
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      "‘${widget.nick}’님을\n차단할까요?",
-                                                      style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
-                                                      textAlign: TextAlign.center,
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 8,
-                                                    ),
-                                                    Text(
-                                                      "차단하게 되면 더 이상 서로의 피드를 보거나\n메시지 등을 보낼 수 없어요.\n차단 여부는 상대방에게 알리지 않아요.\n차단 풀기는 [마이페이지→설정→차단 유저 관리]에서\n얼마든지 가능해요.",
-                                                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
-                                                      textAlign: TextAlign.center,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              confirmTap: () async {
-                                                context.pop();
-                                                toast(
-                                                  context: context,
-                                                  text: "'${widget.nick.length > 8 ? '${widget.nick.substring(0, 8)}...' : widget.nick}'님을 차단했어요.",
-                                                  type: ToastType.purple,
-                                                );
-                                                final result = await ref.read(userInformationStateProvider.notifier).postBlock(
-                                                      blockUuid: widget.memberUuid,
-                                                    );
-
-                                                if (result.result) {
-                                                  ref.watch(userInformationStateProvider.notifier).updateBlockState();
-                                                }
-                                              },
-                                              cancelTap: () {
-                                                context.pop();
-                                              },
-                                              confirmWidget: Text(
-                                                "차단하기",
-                                                style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      }
-                                    }
-                                  },
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(16.0),
-                                      bottomRight: Radius.circular(16.0),
-                                      topLeft: Radius.circular(16.0),
-                                      topRight: Radius.circular(16.0),
-                                    ),
+                                  icon: const Icon(
+                                    Puppycat_social.icon_back,
+                                    size: 40,
                                   ),
-                                  itemBuilder: (context) {
-                                    Future.delayed(Duration.zero, () {
-                                      setState(() {
-                                        showLottieAnimation = true;
-                                      });
-                                    });
-                                    final list = <PopupMenuEntry>[];
-                                    list.add(
-                                      diaryPopUpMenuItem(
-                                        'block',
-                                        '차단하기',
-                                        const Icon(
-                                          Puppycat_social.icon_user_block_ac,
-                                        ),
-                                        context,
-                                      ),
-                                    );
-                                    return list;
-                                  },
-                                );
-                        }),
-                      ],
+                                ),
+                                forceElevated: innerBoxIsScrolled,
+                                actions: [
+                                  Consumer(builder: (context, ref, _) {
+                                    final userInformationItemModel = ref.watch(userInformationStateProvider);
 
-                      ///NOTE
-                      ///2023.11.16.
-                      ///산책하기 보류로 주석 처리
-                      // expandedHeight: ref.watch(expandedHeightProvider),
-                      expandedHeight: 170,
+                                    return userInformationItemModel.blockedState == 1 || userInformationItemModel.blockedMeState == 1
+                                        ? Container()
+                                        : PopupMenuButton(
+                                            padding: EdgeInsets.zero,
+                                            offset: const Offset(0, 42),
+                                            child: showLottieAnimation
+                                                ? Lottie.asset(
+                                                    'assets/lottie/icon_more_header.json',
+                                                    repeat: false,
+                                                  )
+                                                : const Padding(
+                                                    padding: EdgeInsets.only(right: 8.0),
+                                                    child: Icon(
+                                                      Puppycat_social.icon_more_header,
+                                                      size: 40,
+                                                    ),
+                                                  ),
+                                            onCanceled: () {
+                                              setState(() {
+                                                showLottieAnimation = false;
+                                              });
+                                            },
+                                            onSelected: (id) {
+                                              setState(() {
+                                                showLottieAnimation = false;
+                                              });
+                                              if (id == 'block') {
+                                                if (!isLogined) {
+                                                  context.pushReplacement("/login");
+                                                } else {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return CustomDialog(
+                                                        content: Padding(
+                                                          padding: const EdgeInsets.symmetric(vertical: 24.0),
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                "‘${widget.nick}’님을\n차단할까요?",
+                                                                style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                                                textAlign: TextAlign.center,
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 8,
+                                                              ),
+                                                              Text(
+                                                                "차단하게 되면 더 이상 서로의 피드를 보거나\n메시지 등을 보낼 수 없어요.\n차단 여부는 상대방에게 알리지 않아요.\n차단 풀기는 [마이페이지→설정→차단 유저 관리]에서\n얼마든지 가능해요.",
+                                                                style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                                                textAlign: TextAlign.center,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        confirmTap: () async {
+                                                          context.pop();
+                                                          toast(
+                                                            context: context,
+                                                            text: "'${widget.nick.length > 8 ? '${widget.nick.substring(0, 8)}...' : widget.nick}'님을 차단했어요.",
+                                                            type: ToastType.purple,
+                                                          );
+                                                          final result = await ref.read(userInformationStateProvider.notifier).postBlock(
+                                                                blockUuid: widget.memberUuid,
+                                                              );
 
-                      ///산책하기 보류로 주석 처리 완료
-                      flexibleSpace: Consumer(builder: (context, ref, _) {
+                                                          if (result.result) {
+                                                            ref.watch(userInformationStateProvider.notifier).updateBlockState();
+                                                          }
+                                                        },
+                                                        cancelTap: () {
+                                                          context.pop();
+                                                        },
+                                                        confirmWidget: Text(
+                                                          "차단하기",
+                                                          style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                }
+                                              }
+                                            },
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                bottomLeft: Radius.circular(16.0),
+                                                bottomRight: Radius.circular(16.0),
+                                                topLeft: Radius.circular(16.0),
+                                                topRight: Radius.circular(16.0),
+                                              ),
+                                            ),
+                                            itemBuilder: (context) {
+                                              Future.delayed(Duration.zero, () {
+                                                setState(() {
+                                                  showLottieAnimation = true;
+                                                });
+                                              });
+                                              final list = <PopupMenuEntry>[];
+                                              list.add(
+                                                diaryPopUpMenuItem(
+                                                  'block',
+                                                  '차단하기',
+                                                  const Icon(
+                                                    Puppycat_social.icon_user_block_ac,
+                                                  ),
+                                                  context,
+                                                ),
+                                              );
+                                              return list;
+                                            },
+                                          );
+                                  }),
+                                ],
+
+                                ///NOTE
+                                ///2023.11.16.
+                                ///산책하기 보류로 주석 처리
+                                // expandedHeight: ref.watch(expandedHeightProvider),
+                                expandedHeight: 170,
+
+                                ///산책하기 보류로 주석 처리 완료
+                                flexibleSpace: Consumer(builder: (context, ref, _) {
+                                  final userInformationItemModel = ref.watch(userInformationStateProvider);
+
+                                  final isFollow = ref.watch(followUserStateProvider)[widget.memberUuid] ?? false;
+
+                                  return _myPageSuccessProfile(userInformationItemModel, isFollow);
+                                }));
+                          }),
+                          const SliverPersistentHeader(
+                            delegate: TabBarDelegate(),
+                            pinned: true,
+                          ),
+                        ];
+                      },
+                      body: Consumer(builder: (context, ref, _) {
                         final userInformationItemModel = ref.watch(userInformationStateProvider);
 
-                        final isFollow = ref.watch(followUserStateProvider)[widget.memberUuid] ?? false;
-
-                        return _myPageSuccessProfile(userInformationItemModel, isFollow);
-                      }));
-                }),
-                const SliverPersistentHeader(
-                  delegate: TabBarDelegate(),
-                  pinned: true,
-                ),
-              ];
-            },
-            body: Consumer(builder: (context, ref, _) {
-              final userInformationItemModel = ref.watch(userInformationStateProvider);
-
-              return userInformationItemModel.blockedState == 1
-                  ? Container(
-                      color: kPreviousNeutralColor100,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/image/character/character_07_block_88 (1).png',
-                            height: 68,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            "차단한 유저의 정보는 볼 수 없어요.\n정보를 보려면 차단을 풀어 주세요.",
-                            textAlign: TextAlign.center,
-                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
-                          ),
-                        ],
-                      ),
-                    )
-                  : userInformationItemModel.blockedMeState == 1
-                      ? Container(
-                          color: kPreviousNeutralColor100,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/image/character/character_07_block_me_88.png',
-                                height: 68,
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "정보를 볼 수 없어요.",
-                                textAlign: TextAlign.center,
-                                style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
-                              ),
-                            ],
-                          ),
-                        )
-                      : TabBarView(
-                          children: [
-                            _firstTabBody(),
-                            _secondTabBody(),
-                          ],
-                        );
-            }),
-          ),
-        )),
+                        return userInformationItemModel.blockedState == 1
+                            ? Container(
+                                color: kPreviousNeutralColor100,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/image/character/character_07_block_88 (1).png',
+                                      height: 68,
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      "차단한 유저의 정보는 볼 수 없어요.\n정보를 보려면 차단을 풀어 주세요.",
+                                      textAlign: TextAlign.center,
+                                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : userInformationItemModel.blockedMeState == 1
+                                ? Container(
+                                    color: kPreviousNeutralColor100,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/image/character/character_07_block_me_88.png',
+                                          height: 68,
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          "정보를 볼 수 없어요.",
+                                          textAlign: TextAlign.center,
+                                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : TabBarView(
+                                    children: [
+                                      _firstTabBody(),
+                                      _secondTabBody(),
+                                    ],
+                                  );
+                      }),
+                    ),
+                  );
+                })),
       ),
     );
   }
@@ -365,7 +385,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
         });
       },
       builder: (context, child, controller) {
-        return LoadingAnimationWidget(controller: controller, child: child);
+        return RefreshLoadingAnimationWidget(controller: controller, child: child);
       },
       child: Container(
         color: kPreviousNeutralColor100,
@@ -541,7 +561,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
         });
       },
       builder: (context, child, controller) {
-        return LoadingAnimationWidget(controller: controller, child: child);
+        return RefreshLoadingAnimationWidget(controller: controller, child: child);
       },
       child: Container(
         color: kPreviousNeutralColor100,
