@@ -1,0 +1,39 @@
+name: Closed PR Notification
+on:
+  pull_request:
+    branches: [ develop ]
+    types:
+      - closed
+jobs:
+  if_merged:  
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      # Runs the telegram notify action to send a notification
+      - name: send telegram message on push
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            === [Merged PR] ===
+            Repository: ${{ github.repository }}
+            created PR: ${{ github.triggering_actor }}        
+            URL : https://github.com/${{ github.repository }}/pull/${{ github.event.number }}
+            
+  if_not_merged:  
+    if: github.event.pull_request.merged == false
+    runs-on: ubuntu-latest
+    steps:
+      # Runs the telegram notify action to send a notification
+      - name: send telegram message on push
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            === [Closed PR] ===
+            Repository: ${{ github.repository }}
+            created PR: ${{ github.triggering_actor }}        
+            URL : https://github.com/${{ github.repository }}/pull/${{ github.event.number }}
+            
