@@ -1,992 +1,220 @@
-// import 'package:firebase_analytics/firebase_analytics.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:go_router/go_router.dart';
-// import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/sheets/feed_block_sheet_item.dart';
-// import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
-// import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/widget/custom_modal_bottom_sheet_widget.dart';
-// import 'package:pet_mobile_social_flutter/ui/components/dialog/duplication_signup_dialog.dart';
-// import 'package:pet_mobile_social_flutter/ui/components/dialog/error_dialog.dart';
-// import 'package:pet_mobile_social_flutter/ui/components/dialog/force_update_bottom_sheet.dart';
-// import 'package:pet_mobile_social_flutter/ui/components/dialog/recommended_update_bottom_sheet.dart';
-// import 'package:pet_mobile_social_flutter/ui/components/dialog/restrain_dialog.dart';
-// import 'package:pet_mobile_social_flutter/ui/components/route_page/bottom_sheet_page.dart';
-// import 'package:pet_mobile_social_flutter/ui/components/route_page/dialog_page.dart';
-// import 'package:pet_mobile_social_flutter/ui/components/toast/error_toast.dart';
-// import 'package:pet_mobile_social_flutter/config/constants.dart';
-// import 'package:pet_mobile_social_flutter/models/restrain/restrain_item_model.dart';
-// import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
-// import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
-// import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
-// import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
-// import 'package:pet_mobile_social_flutter/ui/chat_home/chat_home_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/chat_home/chat_room_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/chat_home/chat_search_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/error/feed_not_follow_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/error/feed_not_found_screen.dart';
-// // import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-// import 'package:pet_mobile_social_flutter/ui/login/login_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_complete_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/main/comment/comment_detail_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/main/feed_search/feed_search_list_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/main/main_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/main/report/main_feed_report_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/maintenance/maintenance_screen.dart';
-// ///NOTE
-// ///2023.11.14.
-// ///산책하기 보류로 주석 처리
-// // import 'package:pet_mobile_social_flutter/ui/map/map_screen.dart';
-// ///산책하기 보류로 주석 처리 완료
-// import 'package:pet_mobile_social_flutter/ui/my_page/feed_detail/feed_detail_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/my_page_follow_list_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/my_page_main_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_activity_list_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/my_page_my_post_list_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/my_page_profile_edit_screen.dart';
-// ///NOTE
-// ///2023.11.14.
-// ///산책하기 보류로 주석 처리
-// // import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_breed_search_screen.dart';
-// // import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_edit_screen.dart';
-// // import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_list_screen.dart';
-// // import 'package:pet_mobile_social_flutter/ui/my_page/my_pet/my_pet_registration_screen.dart';
-// ///산책하기 보류로 주석 처리 완료
-// import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_alarm_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_blocked_user_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_faq_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_notice_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_policy_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/setting/my_page_setting_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/user_main_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/user_unknown_screen.dart';
-// ///NOTE
-// ///2023.11.14.
-// ///산책하기 보류로 주석 처리
-// // import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/walk_log_calendar_screen.dart';
-// // import 'package:pet_mobile_social_flutter/ui/my_page/walk_log/write_walk_log_screen.dart';
-// ///산책하기 보류로 주석 처리 완료
-// import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_detail_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_select_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/my_page/withdrawal/my_page_withdrawal_success_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/notification/notification_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/search/search_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
-// import 'package:pet_mobile_social_flutter/ui/web_view/webview_widget.dart';
-// import 'package:riverpod_annotation/riverpod_annotation.dart';
-//
-// part 'router.g.dart';
-//
-// extension GoRouterExtension on GoRouter {
-//   String location() {
-//     final RouteMatch lastMatch = routerDelegate.currentConfiguration.last;
-//     final RouteMatchList matchList = lastMatch is ImperativeRouteMatch ? lastMatch.matches : routerDelegate.currentConfiguration;
-//     final String location = matchList.uri.toString();
-//     return location;
-//   }
-// }
-//
-// @riverpod
-// GoRouter router(Ref ref) {
-//   print('you too?');
-//   var loginRouteState = LoginRoute.none;
-//   var signUpState = SignUpRoute.none;
-//   bool splashState = false;
-//
-//   bool maintenanceState = false;
-//   bool forceUpdateState = false;
-//   bool recommendUpdateState = false;
-//
-//   final isRefresh = ValueNotifier<bool>(false);
-//   ref
-//     ..onDispose(() {
-//       isRefresh.dispose();
-//     })
-//     ..listen(splashStateProvider, (previous, next) {
-//       if (previous == next) {
-//         return;
-//       }
-//       splashState = next;
-//       print('splashState $splashState / isRefresh ${isRefresh.value}');
-//       isRefresh.value = !isRefresh.value;
-//     })
-//     ..listen(loginRouteStateProvider, (previous, next) {
-//       if (previous == next) {
-//         return;
-//       }
-//       loginRouteState = next;
-//
-//       print('loginRouteState $loginRouteState / isRefresh ${isRefresh.value}');
-//       isRefresh.value = !isRefresh.value;
-//     })
-//     ..listen(signUpRouteStateProvider, (previous, next) {
-//       if (previous == next) {
-//         return;
-//       }
-//       signUpState = next;
-//       print('signUpState $signUpState / isRefresh ${isRefresh.value}');
-//       isRefresh.value = !isRefresh.value;
-//     })
-//     ..listen(isInspectProvider, (previous, next) {
-//       if (previous == next) {
-//         return;
-//       }
-//       maintenanceState = next;
-//       print('maintenanceState $maintenanceState / isRefresh ${isRefresh.value}');
-//       isRefresh.value = !isRefresh.value;
-//     })
-//     ..listen(isForceUpdateProvider, (previous, next) {
-//       if (previous == next) {
-//         return;
-//       }
-//       forceUpdateState = next;
-//       print('forceUpdateState $forceUpdateState / isRefresh ${isRefresh.value}');
-//       isRefresh.value = !isRefresh.value;
-//     })
-//     ..listen(isRecommendUpdateProvider, (previous, next) {
-//       if (previous == next) {
-//         return;
-//       }
-//       recommendUpdateState = next;
-//       print('recommendUpdateState $recommendUpdateState / isRefresh ${isRefresh.value}');
-//       isRefresh.value = !isRefresh.value;
-//     });
-//
-//   final GoRouter router = GoRouter(
-//     initialLocation: '/splash',
-//     refreshListenable: isRefresh,
-//     debugLogDiagnostics: true,
-//     observers: [GoRouterObserver(ref: ref), FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)],
-//     routes: <GoRoute>[
-//       GoRoute(
-//           path: '/home',
-//           name: 'home',
-//           builder: (BuildContext context, GoRouterState state) {
-//             return const PuppyCatMain();
-//           },
-//           routes: [
-//             GoRoute(
-//               path: 'report/:isComment/:contentIdx',
-//               name: 'report/:isComment/:contentIdx',
-//               builder: (BuildContext context, GoRouterState state) {
-//                 final isComment = state.pathParameters['isComment']!;
-//                 final contentIdx = state.pathParameters['contentIdx']!;
-//                 return ReportScreen(
-//                   isComment: bool.parse(isComment),
-//                   contentIdx: int.parse(contentIdx),
-//                   onTapReport: () {
-//                     onTapReport(
-//                       context: context,
-//                       ref: ref,
-//                       contentIdx: int.parse(contentIdx),
-//                       reportType: bool.parse(isComment),
-//                     );
-//                   },
-//                 );
-//               },
-//             ),
-//             GoRoute(
-//               path: 'search/:searchWord/:oldMemberUuid',
-//               name: 'search/:searchWord/:oldMemberUuid',
-//               builder: (BuildContext context, GoRouterState state) {
-//                 final searchWord = state.pathParameters['searchWord']!;
-//                 final oldMemberUuid = state.pathParameters['oldMemberUuid']!;
-//                 return FeedSearchListScreen(
-//                   searchWord: searchWord,
-//                   oldMemberUuid: oldMemberUuid,
-//                 );
-//               },
-//             ),
-//             GoRoute(
-//               path: 'commentDetail/:contentIdx/:oldMemberUuid',
-//               name: 'commentDetail/:contentIdx/:oldMemberUuid',
-//               builder: (BuildContext context, GoRouterState state) {
-//                 final contentIdx = state.pathParameters['contentIdx']!;
-//                 final oldMemberUuid = state.pathParameters['oldMemberUuid']!;
-//
-//                 final extraData = state.extra;
-//                 int? commentFocusIndex;
-//                 if (extraData != null) {
-//                   Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
-//                   if (extraMap.keys.contains('focusIndex')) {
-//                     commentFocusIndex = extraMap['focusIndex'];
-//                   }
-//                 }
-//
-//                 return CommentDetailScreen(
-//                   contentsIdx: int.parse(contentIdx),
-//                   commentFocusIndex: commentFocusIndex,
-//                   oldMemberUuid: oldMemberUuid,
-//                 );
-//               },
-//             ),
-//             GoRoute(
-//               path: 'search',
-//               name: 'search',
-//               builder: (BuildContext context, GoRouterState state) {
-//                 return SearchScreen();
-//               },
-//             ),
-//             GoRoute(
-//               path: 'myPage',
-//               name: 'myPage',
-//               builder: (BuildContext context, GoRouterState state) {
-//                 return const MyPageMainScreen(
-//                   oldMemberUuid: '',
-//                 );
-//               },
-//               routes: [
-//                 ///NOTE
-//                 ///2023.11.14.
-//                 ///산책하기 보류로 주석 처리
-//                 // GoRoute(
-//                 //   path: 'myPetList',
-//                 //   name: 'myPetList',
-//                 //   builder: (BuildContext context, GoRouterState state) {
-//                 //     return const MyPetListScreen();
-//                 //   },
-//                 //   routes: [
-//                 //     GoRoute(
-//                 //       path: 'myPetRegistration',
-//                 //       name: 'myPetRegistration',
-//                 //       builder: (BuildContext context, GoRouterState state) {
-//                 //         return const MyPetRegistrationScreen();
-//                 //       },
-//                 //       routes: [
-//                 //         GoRoute(
-//                 //           path: 'myPetEdit/:idx',
-//                 //           name: 'myPetEdit/:idx',
-//                 //           builder: (BuildContext context, GoRouterState state) {
-//                 //             final idx = state.pathParameters['idx']!;
-//                 //             return MyPetEditScreen(idx: int.parse(idx));
-//                 //           },
-//                 //         ),
-//                 //       ],
-//                 //     ),
-//                 //   ],
-//                 // ),
-//                 // GoRoute(
-//                 //   path: 'walkLogCalendar',
-//                 //   name: 'walkLogCalendar',
-//                 //   builder: (BuildContext context, GoRouterState state) {
-//                 //     return const WalkLogCalendarScreen();
-//                 //   },
-//                 //   // routes: [
-//                 //   //   GoRoute(
-//                 //   //     path: 'myPetRegistration',
-//                 //   //     name: 'myPetRegistration',
-//                 //   //     builder: (BuildContext context, GoRouterState state) {
-//                 //   //       return const MyPetRegistrationScreen();
-//                 //   //     },
-//                 //   //   ),
-//                 //   // ],
-//                 // ),
-//                 ///산책하기 보류로 주석 처리 완료
-//                 GoRoute(
-//                   path: 'userUnknown',
-//                   name: 'userUnknown',
-//                   builder: (BuildContext context, GoRouterState state) {
-//                     return const UserUnknownScreen();
-//                   },
-//                 ),
-//                 // GoRoute(
-//                 //   path: 'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
-//                 //   name: 'detail/:firstTitle/:secondTitle/:memberIdx/:contentIdx/:contentType',
-//                 //   builder: (BuildContext context, GoRouterState state) {
-//                 //     final firstTitle = state.pathParameters['firstTitle']!;
-//                 //     final secondTitle = state.pathParameters['secondTitle']!;
-//                 //     final memberIdx = state.pathParameters['memberIdx']!;
-//                 //     final contentIdx = state.pathParameters['contentIdx']!;
-//                 //     final contentType = state.pathParameters['contentType']!;
-//                 //
-//                 //     bool isRouteComment = false;
-//                 //     int? commentFocusIndex;
-//                 //     final extraData = state.extra;
-//                 //     if (extraData != null) {
-//                 //       Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
-//                 //       if (extraMap.keys.contains('isRouteComment')) {
-//                 //         isRouteComment = extraMap['isRouteComment'];
-//                 //       }
-//                 //       if (extraMap.keys.contains('focusIdx')) {
-//                 //         commentFocusIndex = extraMap['focusIdx'];
-//                 //       }
-//                 //     }
-//                 //
-//                 //
-//                 //     return FeedDetailScreen(
-//                 //       firstTitle: firstTitle,
-//                 //       secondTitle: secondTitle,
-//                 //       memberIdx: int.parse(memberIdx == "null" ? "0" : memberIdx),
-//                 //       contentIdx: int.parse(contentIdx),
-//                 //       contentType: contentType,
-//                 //       isRouteComment: isRouteComment,
-//                 //       commentFocusIndex: commentFocusIndex,
-//                 //       oldMemberIdx: 0,
-//                 //     );
-//                 //   },
-//                 // ),
-//                 GoRoute(
-//                   path: 'detail',
-//                   name: 'detail',
-//                   builder: (BuildContext context, GoRouterState state) {
-//                     String firstTitle = '';
-//                     String secondTitle = '';
-//                     String memberUuid = '';
-//                     int contentIdx = 0;
-//                     String contentType = '';
-//
-//                     bool isRouteComment = false;
-//                     int? commentFocusIndex;
-//                     final extraData = state.extra;
-//                     print('11');
-//                     if (extraData != null) {
-//                       Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
-//                       if (extraMap.keys.contains('isRouteComment')) {
-//                         isRouteComment = extraMap['isRouteComment'];
-//                       }
-//                       if (extraMap.keys.contains('focusIdx')) {
-//                         print('33');
-//                         final fIdx = extraMap['focusIdx'];
-//                         if (fIdx is int) {
-//                           commentFocusIndex = extraMap['focusIdx'];
-//                         } else {
-//                           commentFocusIndex = int.parse(extraMap['focusIdx']);
-//                         }
-//                         print('44');
-//                       }
-//                       if (extraMap.keys.contains('firstTitle')) {
-//                         firstTitle = extraMap['firstTitle'];
-//                       }
-//                       if (extraMap.keys.contains('secondTitle')) {
-//                         secondTitle = extraMap['secondTitle'];
-//                       }
-//                       if (extraMap.keys.contains('memberUuid')) {
-//                         memberUuid = extraMap['memberUuid'];
-//                       }
-//                       if (extraMap.keys.contains('contentIdx')) {
-//                         final cIdx = extraMap['contentIdx'];
-//                         if (cIdx is int) {
-//                           contentIdx = extraMap['contentIdx'];
-//                         } else {
-//                           contentIdx = int.parse(extraMap['contentIdx']);
-//                         }
-//                       }
-//                       if (extraMap.keys.contains('contentType')) {
-//                         contentType = extraMap['contentType'];
-//                       }
-//                     }
-//
-//                     print('22');
-//                     return FeedDetailScreen(
-//                       firstTitle: firstTitle,
-//                       secondTitle: secondTitle,
-//                       memberUuid: memberUuid,
-//                       contentIdx: contentIdx,
-//                       contentType: contentType,
-//                       isRouteComment: isRouteComment,
-//                       commentFocusIndex: commentFocusIndex,
-//                       oldMemberUuid: '',
-//                     );
-//                   },
-//                 ),
-//                 GoRoute(
-//                     path: 'profileEdit',
-//                     name: 'profileEdit',
-//                     builder: (BuildContext context, GoRouterState state) {
-//                       return const MyPageProfileEditScreen();
-//                     },
-//                     routes: [
-//                       GoRoute(
-//                           path: 'withdrawalSelect',
-//                           name: 'withdrawalSelect',
-//                           builder: (BuildContext context, GoRouterState state) {
-//                             return const MyPageWithdrawalSelectScreen();
-//                           },
-//                           routes: [
-//                             GoRoute(
-//                                 path: 'withdrawalDetail',
-//                                 name: 'withdrawalDetail',
-//                                 builder: (BuildContext context, GoRouterState state) {
-//                                   return MyPageWithdrawalDetailScreen();
-//                                 },
-//                                 routes: [
-//                                   GoRoute(
-//                                     path: 'withdrawalSuccess',
-//                                     name: 'withdrawalSuccess',
-//                                     builder: (BuildContext context, GoRouterState state) {
-//                                       return const MyPageWithdrawalSuccessScreen();
-//                                     },
-//                                   ),
-//                                 ]),
-//                           ]),
-//                     ]),
-//                 GoRoute(
-//                     path: 'followList/:memberUuid',
-//                     name: 'followList/:memberUuid',
-//                     builder: (BuildContext context, GoRouterState state) {
-//                       final memberUuid = state.pathParameters['memberUuid']!;
-//                       return MyPageFollowListScreen(
-//                         memberUuid: memberUuid,
-//                       );
-//                     },
-//                     routes: [
-//                       GoRoute(
-//                         path: 'userPage/:nick/:memUuid/:oldMemberUuid',
-//                         name: 'userPage/:nick/:memUuid/:oldMemberUuid',
-//                         builder: (BuildContext context, GoRouterState state) {
-//                           final memberUuid = state.pathParameters['memUuid'];
-//                           final nick = state.pathParameters['nick'];
-//                           final oldMemberUuid = state.pathParameters['oldMemberUuid'];
-//                           return UserMainScreen(
-//                             memberUuid: memberUuid ?? '',
-//                             nick: nick ?? '',
-//                             oldMemberUuid: oldMemberUuid ?? '',
-//                           );
-//                         },
-//                       ),
-//                     ]),
-//                 GoRoute(
-//                   path: 'myActivity',
-//                   name: 'myActivity',
-//                   builder: (BuildContext context, GoRouterState state) {
-//                     return const MyPageMyActivityListScreen();
-//                   },
-//                 ),
-//                 GoRoute(
-//                   path: 'myPost',
-//                   name: 'myPost',
-//                   builder: (BuildContext context, GoRouterState state) {
-//                     return const MyPageMyPostListScreen();
-//                   },
-//                 ),
-//                 GoRoute(
-//                   path: 'setting',
-//                   name: 'setting',
-//                   builder: (BuildContext context, GoRouterState state) {
-//                     return const MyPageSettingScreen();
-//                   },
-//                   routes: [
-//                     GoRoute(
-//                       path: 'settingAlarm',
-//                       name: 'settingAlarm',
-//                       builder: (BuildContext context, GoRouterState state) {
-//                         return const MyPageSettingAlarmScreen();
-//                       },
-//                     ),
-//                     GoRoute(
-//                       path: 'settingBlockedUser',
-//                       name: 'settingBlockedUser',
-//                       builder: (BuildContext context, GoRouterState state) {
-//                         return const MyPageSettingBlockedUserScreen();
-//                       },
-//                     ),
-//                     GoRoute(
-//                       path: 'policy',
-//                       name: 'policy',
-//                       builder: (BuildContext context, GoRouterState state) {
-//                         List<String>? dateList = [];
-//                         int idx = 0;
-//                         String menuName = "";
-//
-//                         final extraData = state.extra;
-//                         if (extraData != null) {
-//                           Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
-//                           if (extraMap.keys.contains('dateList')) {
-//                             dateList = extraMap['dateList'];
-//                           }
-//                           if (extraMap.keys.contains('idx')) {
-//                             idx = extraMap['idx'];
-//                           }
-//                           if (extraMap.keys.contains('menuName')) {
-//                             menuName = extraMap['menuName'];
-//                           }
-//                         }
-//
-//                         return MyPageSettingPolicyScreen(idx: idx, dateList: dateList, menuName: menuName);
-//                       },
-//                     ),
-//                     GoRoute(
-//                       path: 'FAQ',
-//                       name: 'FAQ',
-//                       builder: (BuildContext context, GoRouterState state) {
-//                         return const MyPageSettingFaqScreen();
-//                       },
-//                     ),
-//                     GoRoute(
-//                       path: 'notice',
-//                       name: 'notice',
-//                       builder: (BuildContext context, GoRouterState state) {
-//                         return const MyPageSettingNoticeScreen();
-//                       },
-//                     ),
-//                   ],
-//                 ),
-//               ],
-//             ),
-//             GoRoute(
-//               path: 'notification',
-//               name: 'notification',
-//               builder: (BuildContext context, GoRouterState state) {
-//                 return const NotificationScreen();
-//               },
-//             ),
-//           ]),
-//       GoRoute(path: '/login', name: 'loginScreen', builder: (_, state) => const LoginScreen(), routes: [
-//         GoRoute(
-//           path: 'signupScreen/:authType',
-//           name: 'signupScreen/:authType',
-//           builder: (_, state) {
-//             final authType = state.pathParameters['authType'];
-//             return SignUpScreen(authType: authType);
-//           },
-//           routes: <GoRoute>[
-//             GoRoute(
-//               path: 'signupCompleteScreen',
-//               name: 'signupCompleteScreen',
-//               builder: (_, state) {
-//                 return SignUpCompleteScreen();
-//               },
-//             ),
-//             GoRoute(
-//               path: 'webview/:url',
-//               name: 'webview',
-//               builder: (BuildContext context, GoRouterState state) {
-//                 final url = Uri.decodeComponent(state.pathParameters['url']!);
-//                 return WebViewWidget(url: url);
-//               },
-//             ),
-//           ],
-//         ),
-//       ]),
-//       GoRoute(
-//         path: '/splash',
-//         name: 'splash',
-//         builder: (BuildContext context, GoRouterState state) {
-//           return const SplashScreen();
-//         },
-//       ),
-//
-//       ///NOTE
-//       ///2023.11.17.
-//       ///채팅 교체 예정으로 일단 주석 처리
-//       // GoRoute(
-//       //     path: '/chatMain',
-//       //     name: 'chatMain',
-//       //     builder: (BuildContext context, GoRouterState state) {
-//       //       return const ChatMainScreen();
-//       //     },
-//       //     routes: [
-//       //       GoRoute(
-//       //         path: 'chatRoom',
-//       //         name: 'chatRoom',
-//       //         builder: (BuildContext context, GoRouterState state) {
-//       //           if (state.extra is Room) {
-//       //             return ChatRoomScreen(room: state.extra! as Room);
-//       //             // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
-//       //           } else {
-//       //             return const ChatMainScreen();
-//       //           }
-//       //         },
-//       //       ),
-//       //       GoRoute(
-//       //         path: 'chatSearch',
-//       //         name: 'chatSearch',
-//       //         builder: (BuildContext context, GoRouterState state) {
-//       //           return const ChatSearchScreen();
-//       //         },
-//       //       ),
-//       //     ]),
-//       ///여기까지 채팅 교체 주석
-//       GoRoute(
-//         path: '/maintenance',
-//         name: 'maintenance',
-//         builder: (BuildContext context, GoRouterState state) {
-//           return InspectScreen();
-//         },
-//       ),
-//
-//       ///NOTE
-//       ///2023.11.14.
-//       ///산책하기 보류로 주석 처리
-//       // GoRoute(
-//       //   path: '/map',
-//       //   name: 'map',
-//       //   builder: (BuildContext context, GoRouterState state) {
-//       //     String title = '지도';
-//       //     if (state.extra is String) {
-//       //       title = state.extra.toString();
-//       //     }
-//       //     return MapScreen(
-//       //       appBarTitle: title,
-//       //     );
-//       //   },
-//       // ),
-//       // GoRoute(
-//       //   path: '/writeWalkLog',
-//       //   name: 'writeWalkLog',
-//       //   builder: (BuildContext context, GoRouterState state) {
-//       //     return const WriteWalkLogScreen();
-//       //   },
-//       // ),
-//       ///산책하기 보류로 주석 처리 완료
-//       GoRoute(
-//         path: '/error_dialog',
-//         name: 'error_dialog',
-//         // builder: (BuildContext context, GoRouterState state) {
-//         //   return const MaintenanceScreen();
-//         // },
-//         pageBuilder: (BuildContext context, GoRouterState state) {
-//           String errorCode = 'unknown';
-//           if (state.extra != null) {
-//             if (state.extra is String) {
-//               errorCode = state.extra.toString();
-//             }
-//           }
-//           return DialogPage(
-//             builder: (_) => ErrorDialog(
-//               code: errorCode,
-//             ),
-//           );
-//         },
-//       ),
-//       GoRoute(
-//         path: '/error_bottom_sheet',
-//         name: 'error_bottom_sheet',
-//         // builder: (BuildContext context, GoRouterState state) {
-//         //   return const ErrorBottomSheetWidget();
-//         // },
-//         pageBuilder: (BuildContext context, GoRouterState state) {
-//           String errorCode = 'unknown';
-//           if (state.extra != null) {
-//             if (state.extra is String) {
-//               errorCode = state.extra.toString();
-//             }
-//           }
-//
-//           return BottomSheetPage(
-//             builder: (BuildContext context) {
-//               return Padding(
-//                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-//                 child: SingleChildScrollView(
-//                   child: CustomModalBottomSheet(
-//                     widget: const WithDrawalPendingSheetItem(),
-//                     context: context,
-//                   ),
-//                 ),
-//               );
-//             },
-//             isScrollControlled: false,
-//             shape: const RoundedRectangleBorder(
-//               borderRadius: BorderRadius.vertical(
-//                 top: Radius.circular(20.0),
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//       GoRoute(
-//         path: '/error_block_bottom_sheet',
-//         name: 'error_block_bottom_sheet',
-//         // builder: (BuildContext context, GoRouterState state) {
-//         //   return const ErrorBottomSheetWidget();
-//         // },
-//         pageBuilder: (BuildContext context, GoRouterState state) {
-//           String name = 'unknown';
-//           int memberIdx = 0;
-//
-//           return BottomSheetPage(
-//             builder: (BuildContext context) {
-//               return Padding(
-//                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-//                 child: SingleChildScrollView(
-//                   child: CustomModalBottomSheet(
-//                     widget: FeedBlockSheetItem(),
-//                     context: context,
-//                   ),
-//                 ),
-//               );
-//             },
-//             isScrollControlled: false,
-//             shape: const RoundedRectangleBorder(
-//               borderRadius: BorderRadius.vertical(
-//                 top: Radius.circular(20.0),
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//
-//       GoRoute(
-//         path: '/error_toast',
-//         name: 'error_toast',
-//         pageBuilder: (BuildContext context, GoRouterState state) {
-//           return CustomTransitionPage(
-//             fullscreenDialog: true,
-//             opaque: false,
-//             barrierDismissible: true,
-//             transitionsBuilder: (_, __, ___, child) => child,
-//             child: ErrorToast(),
-//           );
-//         },
-//       ),
-//       GoRoute(
-//         path: '/feed_not_found_screen',
-//         name: 'feed_not_found_screen',
-//         builder: (BuildContext context, GoRouterState state) {
-//           return const FeedNotFoundScreen();
-//         },
-//       ),
-//       GoRoute(
-//         path: '/feed_not_follow_screen',
-//         name: 'feed_not_follow_screen',
-//         builder: (BuildContext context, GoRouterState state) {
-//           return const FeedNotFollowScreen(
-//             name: '',
-//             memberidx: 1,
-//           );
-//         },
-//       ),
-//       GoRoute(
-//         path: '/force_update_bottom_sheet',
-//         name: 'force_update_bottom_sheet',
-//         pageBuilder: (BuildContext context, GoRouterState state) {
-//           return BottomSheetPage(
-//             isDismissible: false,
-//             enableDrag: false,
-//             builder: (BuildContext context) {
-//               return WillPopScope(
-//                 onWillPop: () async => false,
-//                 child: Padding(
-//                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-//                   child: SingleChildScrollView(
-//                     child: CustomModalBottomSheet(
-//                       isTopWidget: false,
-//                       widget: ForceUpdateBottomSheet(),
-//                       context: context,
-//                     ),
-//                   ),
-//                 ),
-//               );
-//             },
-//             isScrollControlled: true,
-//             shape: const RoundedRectangleBorder(
-//               borderRadius: BorderRadius.vertical(
-//                 top: Radius.circular(20.0),
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//       GoRoute(
-//         path: '/recommend_update_bottom_sheet',
-//         name: 'recommend_update_bottom_sheet',
-//         pageBuilder: (BuildContext context, GoRouterState state) {
-//           return BottomSheetPage(
-//             isDismissible: false,
-//             enableDrag: false,
-//             builder: (BuildContext context) {
-//               return WillPopScope(
-//                 onWillPop: () async => false,
-//                 child: Padding(
-//                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-//                   child: SingleChildScrollView(
-//                     child: CustomModalBottomSheet(
-//                       isTopWidget: false,
-//                       widget: RecommendedUpdateBottomSheet(),
-//                       context: context,
-//                     ),
-//                   ),
-//                 ),
-//               );
-//             },
-//             isScrollControlled: true,
-//             shape: const RoundedRectangleBorder(
-//               borderRadius: BorderRadius.vertical(
-//                 top: Radius.circular(20.0),
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//       GoRoute(
-//         path: '/duplication_signup_dialog',
-//         name: 'duplication_signup_dialog',
-//         pageBuilder: (BuildContext context, GoRouterState state) {
-//           String simpleType = '';
-//           String email = '';
-//           if (state.extra != null) {
-//             Map<String, dynamic> extraMap = {};
-//             extraMap = state.extra! as Map<String, dynamic>;
-//
-//             if (extraMap.containsKey('simpleType')) {
-//               simpleType = extraMap['simpleType'];
-//             }
-//
-//             if (extraMap.containsKey('id')) {
-//               email = extraMap['id'];
-//             }
-//           }
-//
-//           return DialogPage(
-//             barrierDismissible: false,
-//             builder: (_) => WillPopScope(
-//               onWillPop: () async => false,
-//               child: DuplicationSignUpDialog(simpleType: simpleType, email: email),
-//             ),
-//           );
-//         },
-//       ),
-//       GoRoute(
-//         path: '/chatHome',
-//         name: 'chatHome',
-//         builder: (BuildContext context, GoRouterState state) {
-//           return const ChatHomeScreen();
-//         },
-//         routes: [
-//           GoRoute(
-//             path: 'chatRoom',
-//             name: 'chatRoom',
-//             builder: (BuildContext context, GoRouterState state) {
-//               if (state.extra is Map) {
-//                 Map<String, dynamic> extraMap = state.extra! as Map<String, dynamic>;
-//                 if (extraMap.containsKey('roomId')) {
-//                   print('extraMap roomId ${extraMap['roomId']}');
-//                   String roomId = extraMap['roomId'];
-//                   String nick = extraMap['nick'];
-//                   String? profileImgUrl = extraMap['profileImgUrl'];
-//                   return ChatRoomScreen(
-//                     roomId: roomId,
-//                     nick: nick,
-//                     profileImgUrl: profileImgUrl,
-//                   );
-//                 } else {
-//                   return const ChatHomeScreen();
-//                 }
-//                 // return ChatRoomScreen(titleNick: 'testNick', msgList: [],);
-//               } else {
-//                 return const ChatHomeScreen();
-//               }
-//             },
-//           ),
-//           GoRoute(
-//             path: 'chatSearch',
-//             name: 'chatSearch',
-//             builder: (BuildContext context, GoRouterState state) {
-//               return const ChatSearchScreen();
-//             },
-//           ),
-//         ],
-//       ),
-//       GoRoute(
-//         path: '/restrain_dialog',
-//         name: 'restrain_dialog',
-//         // builder: (BuildContext context, GoRouterState state) {
-//         //   return const MaintenanceScreen();
-//         // },
-//         pageBuilder: (BuildContext context, GoRouterState state) {
-//           return DialogPage(
-//             builder: (_) => RestrainDialog(
-//               restrainItemModel: state.extra as RestrainItemModel,
-//             ),
-//           );
-//         },
-//       ),
-//     ],
-//     redirect: (BuildContext context, GoRouterState state) {
-//       const homeLocation = '/home';
-//       const loginLocation = '/login';
-//       const splashLocation = '/splash';
-//       const signUpLocation = '$loginLocation/signupScreen/:authType';
-//       const signUpCompleteLocation = '$signUpLocation/signupCompleteScreen';
-//       const maintenanceLocation = '/maintenance';
-//       const forceUpdateLocation = '/force_update_bottom_sheet';
-//       const recommendUpdateLocation = '/recommend_update_bottom_sheet';
-//
-//       InitializationApp.initialize(ref);
-//
-//       bool isSplashPage = state.matchedLocation == splashLocation;
-//       if (isSplashPage) {
-//         if (splashState) {
-//           print('_splashState $splashState');
-//
-//           if (maintenanceState) {
-//             return maintenanceLocation;
-//           } else if (forceUpdateState) {
-//             return forceUpdateLocation;
-//           } else if (recommendUpdateState) {
-//             return recommendUpdateLocation;
-//           } else if (loginRouteState == LoginRoute.success) {
-//             return homeLocation;
-//           }
-//           return loginLocation;
-//         } else {
-//           return null;
-//         }
-//       }
-//
-//       bool isLoginPage = state.matchedLocation == loginLocation;
-//       print('isLoginPage 1 $isLoginPage / $loginRouteState / ${state.matchedLocation} / ${state.path} / ${state.fullPath}');
-//       if (isLoginPage) {
-//         print('isLoginPage 2 $isLoginPage');
-//         if (loginRouteState == LoginRoute.success) {
-//           print('isLoginPage 3 $isLoginPage');
-//           return homeLocation;
-//         } else if (loginRouteState == LoginRoute.signUpScreen) {
-//           print('isLoginPage 4 $isLoginPage');
-//           return signUpLocation;
-//         } else {
-//           return null;
-//         }
-//       }
-//
-//       bool isSignUpPage = state.matchedLocation == signUpLocation;
-//       if (isSignUpPage) {
-//         if (signUpState == SignUpRoute.success) {
-//           return signUpCompleteLocation;
-//         } else {
-//           return null;
-//         }
-//       }
-//
-//       return null;
-//     },
-//   );
-//
-//   return router;
-// }
-//
-// class GoRouterObserver extends NavigatorObserver {
-//   final Ref ref;
-//
-//   GoRouterObserver({
-//     required this.ref,
-//   });
-//
-//   @override
-//   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
-//     print('MyTest didPush: $route');
-//     // ref.read(pushPayloadStateProvider.notifier).state = null;
-//   }
-//
-//   @override
-//   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
-//     print('MyTest didPop: $route / $previousRoute');
-//     if (route.settings.name == 'home' || previousRoute?.settings.name == 'home') {
-//       checkNewNotification();
-//     }
-//   }
-//
-//   @override
-//   void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
-//     print('MyTest didRemove: $route');
-//   }
-//
-//   @override
-//   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-//     print('MyTest didReplace: $newRoute');
-//   }
-//
-//   void checkNewNotification() {
-//     ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
-//   }
-// }
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/material.dart' hide DialogRoute;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/bottom_sheet_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/chat_home_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/dialog_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/feed_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/home_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/login_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/maintenance_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/member_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/notification_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/search_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/setting_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/splash_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/toast_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/webview_route.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'router.g.dart';
+
+extension GoRouterExtension on GoRouter {
+  String location() {
+    final RouteMatch lastMatch = routerDelegate.currentConfiguration.last;
+    final RouteMatchList matchList = lastMatch is ImperativeRouteMatch ? lastMatch.matches : routerDelegate.currentConfiguration;
+    final String location = matchList.uri.toString();
+    return location;
+  }
+}
+
+@riverpod
+GoRouter router(Ref ref) {
+  print('you too?');
+  var loginRouteState = LoginRouteEnum.none;
+  var signUpState = SignUpRoute.none;
+  bool splashState = false;
+
+  bool maintenanceState = false;
+  bool forceUpdateState = false;
+  bool recommendUpdateState = false;
+
+  final isRefresh = ValueNotifier<bool>(false);
+  ref
+    ..onDispose(() {
+      isRefresh.dispose();
+    })
+    ..listen(splashStateProvider, (previous, next) {
+      if (previous == next) {
+        return;
+      }
+      splashState = next;
+      print('splashState $splashState / isRefresh ${isRefresh.value}');
+      isRefresh.value = !isRefresh.value;
+    })
+    ..listen(loginRouteStateProvider, (previous, next) {
+      if (previous == next) {
+        return;
+      }
+      loginRouteState = next;
+
+      print('loginRouteState $loginRouteState / isRefresh ${isRefresh.value}');
+      isRefresh.value = !isRefresh.value;
+    })
+    ..listen(signUpRouteStateProvider, (previous, next) {
+      if (previous == next) {
+        return;
+      }
+      signUpState = next;
+      print('signUpState $signUpState / isRefresh ${isRefresh.value}');
+      isRefresh.value = !isRefresh.value;
+    })
+    ..listen(isInspectProvider, (previous, next) {
+      if (previous == next) {
+        return;
+      }
+      maintenanceState = next;
+      print('maintenanceState $maintenanceState / isRefresh ${isRefresh.value}');
+      isRefresh.value = !isRefresh.value;
+    })
+    ..listen(isForceUpdateProvider, (previous, next) {
+      if (previous == next) {
+        return;
+      }
+      forceUpdateState = next;
+      print('forceUpdateState $forceUpdateState / isRefresh ${isRefresh.value}');
+      isRefresh.value = !isRefresh.value;
+    })
+    ..listen(isRecommendUpdateProvider, (previous, next) {
+      if (previous == next) {
+        return;
+      }
+      recommendUpdateState = next;
+      print('recommendUpdateState $recommendUpdateState / isRefresh ${isRefresh.value}');
+      isRefresh.value = !isRefresh.value;
+    });
+
+  final GoRouter router = GoRouter(
+    initialLocation: '/splash',
+    refreshListenable: isRefresh,
+    debugLogDiagnostics: true,
+    observers: [GoRouterObserver(ref: ref), FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)],
+    routes: <GoRoute>[
+      HomeRoute().createRoute(),
+      FeedRoute(ref: ref).createRoute(),
+      SearchRoute().createRoute(),
+      SettingRoute().createRoute(),
+      MemberRoute().createRoute(),
+      NotificationRoute().createRoute(),
+      LoginRoute().createRoute(),
+      WebviewRoute().createRoute(),
+      SplashRoute().createRoute(),
+      MaintenanceRoute().createRoute(),
+      BottomSheetRoute().createRoute(),
+      DialogRoute().createRoute(),
+      ToastRoute().createRoute(),
+      ChatHomeRoute().createRoute(),
+    ],
+    redirect: (BuildContext context, GoRouterState state) {
+      const homeLocation = '/home';
+      const loginLocation = '/login';
+      const splashLocation = '/splash';
+      const signUpLocation = '$loginLocation/signup/:authType';
+      const signUpCompleteLocation = '$signUpLocation/signupComplete';
+      const maintenanceLocation = '/maintenance';
+      const forceUpdateLocation = 'bottomSheet/forceUpdateBottomSheet';
+      const recommendUpdateLocation = 'bottomSheet/recommendUpdateBottomSheet';
+
+      InitializationApp.initialize(ref);
+
+      bool isSplashPage = state.matchedLocation == splashLocation;
+      if (isSplashPage) {
+        if (splashState) {
+          signUpState = ref.watch(signUpRouteStateProvider);
+          maintenanceState = ref.watch(isInspectProvider);
+          forceUpdateState = ref.watch(isForceUpdateProvider);
+          recommendUpdateState = ref.watch(isRecommendUpdateProvider);
+
+          if (maintenanceState) {
+            return maintenanceLocation;
+          } else if (forceUpdateState) {
+            return forceUpdateLocation;
+          } else if (recommendUpdateState) {
+            return recommendUpdateLocation;
+          } else if (loginRouteState == LoginRouteEnum.success) {
+            return homeLocation;
+          }
+          return loginLocation;
+        } else {
+          return null;
+        }
+      }
+
+      bool isLoginPage = state.matchedLocation == loginLocation;
+      if (isLoginPage) {
+        if (loginRouteState == LoginRouteEnum.success) {
+          return homeLocation;
+        } else if (loginRouteState == LoginRouteEnum.signUpScreen) {
+          return signUpLocation;
+        } else {
+          return null;
+        }
+      }
+
+      bool isSignUpPage = state.matchedLocation == signUpLocation;
+      if (isSignUpPage) {
+        if (signUpState == SignUpRoute.success) {
+          return signUpCompleteLocation;
+        } else {
+          return null;
+        }
+      }
+
+      return null;
+    },
+  );
+
+  return router;
+}
+
+class GoRouterObserver extends NavigatorObserver {
+  final Ref ref;
+
+  GoRouterObserver({
+    required this.ref,
+  });
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('MyTest didPush: $route');
+    // ref.read(pushPayloadStateProvider.notifier).state = null;
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('MyTest didPop: $route / $previousRoute');
+    if (route.settings.name == 'home' || previousRoute?.settings.name == 'home') {
+      checkNewNotification();
+    }
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('MyTest didRemove: $route');
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    print('MyTest didReplace: $newRoute');
+  }
+
+  void checkNewNotification() {
+    ref.read(newNotificationStateProvider.notifier).checkNewNotifications();
+  }
+}
