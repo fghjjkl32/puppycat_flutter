@@ -2,11 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get_it/get_it.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/firebase/firebase_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
 
@@ -24,7 +23,7 @@ class InitializationApp {
     if (await _checkNetwork()) {
       if (await _checkServers()) {
         await ref.read(chatSocketStateProvider);
-        if (await _initFirebase()) {
+        if (await _initFirebase(ref)) {
           await ref.read(loginStateProvider.notifier).autoLogin();
           ref.read(_initStateProvider.notifier).state = true;
           //업데이트 팝업 로직
@@ -35,14 +34,17 @@ class InitializationApp {
     }
   }
 
-  static Future<bool> _initFirebase() async {
+  static Future<bool> _initFirebase(Ref ref) async {
+    // final firebaseProvider = ref.read(firebaseStateProvider.notifier);
+    ref.read(firebaseStateProvider.notifier).initFirebase();
+
     // var result = Future.delayed(Duration(milliseconds: 300), () async {
-    FireBaseMessageController fireBaseMessageController = GetIt.I<FireBaseMessageController>();
+    // FireBaseMessageController fireBaseMessageController = GetIt.I<FireBaseMessageController>();
 
     ///TODO
     ///결과값 제대로 받아서 처리하도록
     // if (!Platform.isIOS) {
-    await fireBaseMessageController.init();
+    // await fireBaseMessageController.init();
     // fireBaseMessageController.setBackgroundMessageOnTapHandler((payload) => navigatorHandler(ref, payload));
     //
     // if (fireBaseMessageController.initData != null) {

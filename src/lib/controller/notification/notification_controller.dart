@@ -1,3 +1,23 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+class NotificationController {
+  static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  Future createChannel(
+    String id,
+    String title,
+    String desc,
+  ) async {
+    final channel = AndroidNotificationChannel(
+      id, // id
+      title, // title
+      importance: Importance.high,
+    );
+
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+  }
+}
+
 // import 'dart:convert';
 //
 // import 'package:dio/dio.dart';

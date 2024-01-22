@@ -24,7 +24,6 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
-import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.dart';
 
 InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 9723);
@@ -99,7 +98,7 @@ void main() async {
   /// Get It
   /// SingleTon
   // if (!Platform.isIOS) {
-  GetIt.I.registerSingleton<FireBaseMessageController>(FireBaseMessageController());
+  // GetIt.I.registerSingleton<FireBaseMessageController>(FireBaseMessageController());
   // }
   GetIt.I.registerSingleton<UuidUtil>(UuidUtil());
   await GetIt.I<UuidUtil>().init();
