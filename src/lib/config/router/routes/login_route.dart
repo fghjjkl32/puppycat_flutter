@@ -26,7 +26,7 @@ class SignupRoute extends GoRouteData {
   GoRoute createRoute() {
     return GoRoute(
       path: 'signup/:authType',
-      name: 'signup/:authType',
+      name: 'signup',
       builder: (_, state) {
         final authType = state.pathParameters['authType'];
         return SignUpScreen(authType: authType);

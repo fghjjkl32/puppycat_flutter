@@ -2,17 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
-import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
-import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/jwt/jwt_repository.dart';
-import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'api_error_state_provider.g.dart';
@@ -48,7 +43,8 @@ class APIErrorState extends _$APIErrorState {
             ref.read(signUpUserInfoProvider.notifier).state = loginData;
           }
         }
-        ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.signUpScreen);
+        // ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.signUpScreen);
+        goRouter.pushNamed('signup');
         break;
       case 'ERES-9999': // 제재 상태
       case 'ERES-9998': // 로그인 제재 상태
@@ -169,17 +165,28 @@ class APIErrorState extends _$APIErrorState {
   }
 
   Future logoutLogic() async {
+    final myInfo = ref.read(myInfoStateProvider);
+
+    ref.read(loginStateProvider.notifier).logout(
+          myInfo.simpleType ?? '',
+        );
+
     ///NOTE
     ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
     ///로그인 페이지 이동 초기화
-    await TokenController.clearTokens();
-    ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
-    ref.read(followUserStateProvider.notifier).resetState();
-    ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
-    ref.read(loginStateProvider.notifier).state = LoginStatus.none;
-    ref.read(checkButtonProvider.notifier).state = false;
-    ref.read(policyStateProvider.notifier).policyStateReset();
-    ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
+    // await TokenController.clearTokens();
+    // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
+    // ref.read(followUserStateProvider.notifier).resetState();
+    // ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
+    // ref.read(loginStateProvider.notifier).state = LoginStatus.none;
+    // ref.read(checkButtonProvider.notifier).state = false;
+    // ref.read(policyStateProvider.notifier).policyStateReset();
+    // ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
+    //
+    // ///TODO
+    // ///기획은 로그아웃 시 HOME으로 이동 원함
+    // ///운영 확인 필요 (24 01 23)
+    // ref.read(routerProvider).go('/home');
   }
 
   Future _restrainProc(RestrainType type) async {

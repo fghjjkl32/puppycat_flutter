@@ -16,10 +16,9 @@ import 'package:pet_mobile_social_flutter/config/router/routes/setting_route.dar
 import 'package:pet_mobile_social_flutter/config/router/routes/splash_route.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/toast_route.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/webview_route.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/new_notification_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/splash/splash_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -37,8 +36,8 @@ extension GoRouterExtension on GoRouter {
 @riverpod
 GoRouter router(Ref ref) {
   print('you too?');
-  var loginRouteState = LoginRouteEnum.none;
-  var signUpState = SignUpRoute.none;
+  // var loginRouteState = LoginRouteEnum.none;
+  // var signUpState = SignUpRoute.none;
   bool splashState = false;
 
   bool maintenanceState = false;
@@ -58,23 +57,23 @@ GoRouter router(Ref ref) {
       print('splashState $splashState / isRefresh ${isRefresh.value}');
       isRefresh.value = !isRefresh.value;
     })
-    ..listen(loginRouteStateProvider, (previous, next) {
-      if (previous == next) {
-        return;
-      }
-      loginRouteState = next;
-
-      print('loginRouteState $loginRouteState / isRefresh ${isRefresh.value}');
-      isRefresh.value = !isRefresh.value;
-    })
-    ..listen(signUpRouteStateProvider, (previous, next) {
-      if (previous == next) {
-        return;
-      }
-      signUpState = next;
-      print('signUpState $signUpState / isRefresh ${isRefresh.value}');
-      isRefresh.value = !isRefresh.value;
-    })
+    // ..listen(loginRouteStateProvider, (previous, next) {
+    //   if (previous == next) {
+    //     return;
+    //   }
+    //   loginRouteState = next;
+    //
+    //   print('loginRouteState $loginRouteState / isRefresh ${isRefresh.value}');
+    //   isRefresh.value = !isRefresh.value;
+    // })
+    // ..listen(signUpRouteStateProvider, (previous, next) {
+    //   if (previous == next) {
+    //     return;
+    //   }
+    //   signUpState = next;
+    //   print('signUpState $signUpState / isRefresh ${isRefresh.value}');
+    //   isRefresh.value = !isRefresh.value;
+    // })
     ..listen(isInspectProvider, (previous, next) {
       if (previous == next) {
         return;
@@ -133,10 +132,12 @@ GoRouter router(Ref ref) {
 
       InitializationApp.initialize(ref);
 
+      final isLogined = ref.read(loginStatementProvider);
+
       bool isSplashPage = state.matchedLocation == splashLocation;
       if (isSplashPage) {
         if (splashState) {
-          signUpState = ref.watch(signUpRouteStateProvider);
+          // signUpState = ref.watch(signUpRouteStateProvider);
           maintenanceState = ref.watch(isInspectProvider);
           forceUpdateState = ref.watch(isForceUpdateProvider);
           recommendUpdateState = ref.watch(isRecommendUpdateProvider);
@@ -147,7 +148,7 @@ GoRouter router(Ref ref) {
             return forceUpdateLocation;
           } else if (recommendUpdateState) {
             return recommendUpdateLocation;
-          } else if (loginRouteState == LoginRouteEnum.success) {
+          } else if (isLogined) {
             return homeLocation;
           }
           return loginLocation;
@@ -156,25 +157,25 @@ GoRouter router(Ref ref) {
         }
       }
 
-      bool isLoginPage = state.matchedLocation == loginLocation;
-      if (isLoginPage) {
-        if (loginRouteState == LoginRouteEnum.success) {
-          return homeLocation;
-        } else if (loginRouteState == LoginRouteEnum.signUpScreen) {
-          return signUpLocation;
-        } else {
-          return null;
-        }
-      }
+      // bool isSignUpPage = state.matchedLocation == signUpLocation;
+      // if (isSignUpPage) {
+      //   if (signUpState == SignUpRoute.success) {
+      //     return signUpCompleteLocation;
+      //   } else {
+      //     return null;
+      //   }
+      // }
 
-      bool isSignUpPage = state.matchedLocation == signUpLocation;
-      if (isSignUpPage) {
-        if (signUpState == SignUpRoute.success) {
-          return signUpCompleteLocation;
-        } else {
-          return null;
-        }
-      }
+      // bool isLoginPage = state.matchedLocation == loginLocation;
+      // if (isLoginPage) {
+      //   if (loginRouteState == LoginRouteEnum.success) {
+      //     return homeLocation;
+      //   } else if (loginRouteState == LoginRouteEnum.signUpScreen) {
+      //     return signUpLocation;
+      //   } else {
+      //     return null;
+      //   }
+      // }
 
       return null;
     },

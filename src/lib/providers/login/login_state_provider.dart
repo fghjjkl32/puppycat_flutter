@@ -9,10 +9,13 @@ import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_pr
 import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/jwt/jwt_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
+import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'login_state_provider.g.dart';
@@ -93,13 +96,17 @@ class LoginState extends _$LoginState {
     if (restrain) {
       await ref.read(myInfoStateProvider.notifier).getMyInfo();
       ref.read(signUpUserInfoProvider.notifier).state = null;
-
-      print('ref.read(myInfoStateProvider ${ref.read(myInfoStateProvider)}');
-      print('ref.read(restrainStateProvider ${ref.read(restrainStateProvider)}');
-      print('current route 33 : ${ref.read(routerProvider).location()}');
-
       state = LoginStatus.success;
-      ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.success);
+      // ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.success);
+      final router = ref.read(routerProvider);
+      print('test333333 login ${router.routerDelegate.currentConfiguration}');
+      if (router.canPop()) {
+        print('router can pop?');
+        router.pop();
+      } else {
+        print('router can pop? 2');
+        router.go('/home');
+      }
     }
   }
 
@@ -109,12 +116,26 @@ class LoginState extends _$LoginState {
     try {
       var result = await loginRepository.logout();
       if (result) {
-        await TokenController.clearTokens();
+        // await TokenController.clearTokens();
+        //
+        // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
+        // ref.read(followUserStateProvider.notifier).resetState();
+        // ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
+        // state = LoginStatus.none;
 
-        ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
+        await TokenController.clearTokens();
+        // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
         ref.read(followUserStateProvider.notifier).resetState();
         ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
         state = LoginStatus.none;
+        ref.read(checkButtonProvider.notifier).state = false;
+        ref.read(policyStateProvider.notifier).policyStateReset();
+        ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
+
+        ///TODO
+        ///기획은 로그아웃 시 HOME으로 이동 원함
+        ///운영 확인 필요 (24 01 23)
+        ref.read(routerProvider).go('/home');
       }
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);

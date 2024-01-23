@@ -45,7 +45,7 @@ class PuppyCatMain extends ConsumerStatefulWidget {
   PuppyCatMainState createState() => PuppyCatMainState();
 }
 
-class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerProviderStateMixin {
+class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
   late TabController tabController;
   bool _showIcon = false;
@@ -120,8 +120,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     // Permissions.requestNotificationPermission();
 
     final isLogined = ref.read(loginStatementProvider);
-    tabController = TabController(vsync: this, length: getTabs().length);
-    tabController.index = widget.initialTabIndex;
+    tabController = TabController(vsync: this, length: getTabs().length, initialIndex: widget.initialTabIndex);
 
     ref.read(firebaseStateProvider.notifier).checkNotificationAppLaunch();
 
@@ -145,6 +144,21 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
       }
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant PuppyCatMain oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (getTabs().length != tabController.length) {
+      final oldIndex = tabController.index;
+      tabController.dispose();
+      tabController = TabController(
+        length: getTabs().length,
+        initialIndex: 0,
+        vsync: this,
+      );
+    }
   }
 
   void _myPostScrollListener() {
