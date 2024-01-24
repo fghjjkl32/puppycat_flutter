@@ -31,6 +31,7 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
+  pod 'GoogleUtilities'
   pod 'ChannelIOSDK', podspec: 'https://mobile-static.channel.io/ios/latest/xcframework.podspec'
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
@@ -116,5 +117,6 @@ end
 
 target 'ImageNotification' do
   use_frameworks!
+  pod 'GoogleUtilities'
   pod 'Firebase/Messaging'
 end
