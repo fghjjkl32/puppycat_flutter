@@ -555,7 +555,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
             // ///산책하기 보류로 주석 처리 완료
             // if (mounted) {
             //   ref.read(userInfoProvider).userModel == null
-            //       ? context.pushReplacement("/login")
+            //       ? context.push("/login")
             //
             //       ///NOTE
             //       ///2023.11.14.

@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -9,7 +8,6 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 
@@ -33,7 +31,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
             ///로그인 페이지 이동 초기화
             final userModel = ref.read(signUpUserInfoProvider);
             ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
-            ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
+            // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
             ref.read(authStateProvider.notifier).state = false;
             ref.read(checkButtonProvider.notifier).state = false;
             ref.read(policyStateProvider.notifier).policyStateReset();
@@ -83,7 +81,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                         ///로그인 페이지 이동 초기화
                         final userModel = ref.read(signUpUserInfoProvider);
                         ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
-                        ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
+                        // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
                         ref.read(authStateProvider.notifier).state = false;
                         ref.read(checkButtonProvider.notifier).state = false;
                         ref.read(policyStateProvider.notifier).policyStateReset();

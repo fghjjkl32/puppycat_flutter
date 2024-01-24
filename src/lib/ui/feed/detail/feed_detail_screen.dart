@@ -8,10 +8,10 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/feed_search_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/tag_contents/user_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
@@ -180,7 +180,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
                                 if (!isLogined) {
-                                  context.pushReplacement("/login");
+                                  context.push("/login");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                         followUuid: widget.memberUuid,
@@ -206,7 +206,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
                                 if (!isLogined) {
-                                  context.pushReplacement("/login");
+                                  context.push("/login");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).postFollow(
                                         followUuid: widget.memberUuid,

@@ -8,7 +8,6 @@ import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
@@ -79,7 +78,7 @@ class LoginState extends _$LoginState {
 
     try {
       var loginResult = await loginRepository.loginByUserModel(userModel: userModel);
-      _procLogin(loginResult);
+      _procLogin(loginResult, true);
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       state = LoginStatus.failure;
@@ -100,7 +99,7 @@ class LoginState extends _$LoginState {
       // ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.success);
       final router = ref.read(routerProvider);
       print('test333333 login ${router.routerDelegate.currentConfiguration}');
-      if (router.canPop()) {
+      if (router.canPop() && !isAutoLogin) {
         print('router can pop?');
         router.pop();
       } else {
@@ -153,16 +152,16 @@ class LoginState extends _$LoginState {
         final isValid = await jwtRepository.checkRefreshToken(refreshToken);
         if (isValid) {
           print('auto login 1');
-          ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.success);
+          // ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.success);
           ref.read(myInfoStateProvider.notifier).getMyInfo();
           ref.read(signUpUserInfoProvider.notifier).state = null;
 
           state = LoginStatus.success;
-          ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.success;
+          // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.success;
         } else {
           print('auto login 2');
           state = LoginStatus.none;
-          ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.loginScreen;
+          // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.loginScreen;
         }
       } on APIException catch (apiException) {
         ///checkRefreshToken 응답으로 받을 수 있는 오류라면  ECOM-9999 밖에 없음
@@ -176,7 +175,7 @@ class LoginState extends _$LoginState {
     } else {
       print('AutoLogin Failed. (2)');
       state = LoginStatus.none;
-      ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.loginScreen;
+      // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.loginScreen;
       return;
     }
 

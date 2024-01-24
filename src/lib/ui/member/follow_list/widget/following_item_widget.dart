@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 
 class FollowingItemWidget extends ConsumerStatefulWidget {
@@ -148,7 +147,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
                                 if (!isLogined) {
-                                  context.pushReplacement("/login");
+                                  context.push("/login");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                         followUuid: widget.followUuid,
@@ -183,7 +182,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                             onTap: () async {
                               if (!ref.watch(followApiIsLoadingStateProvider)) {
                                 if (!isLogined) {
-                                  context.pushReplacement("/login");
+                                  context.push("/login");
                                 } else {
                                   final result = await ref.watch(followStateProvider.notifier).postFollow(
                                         followUuid: widget.followUuid,

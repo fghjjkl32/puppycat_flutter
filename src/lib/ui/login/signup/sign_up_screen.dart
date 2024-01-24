@@ -9,10 +9,8 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/ui/components/dialog/custom_dialog.dart';
@@ -23,11 +21,8 @@ final _formKey = GlobalKey<FormState>();
 final checkButtonProvider = StateProvider((ref) => false);
 
 class SignUpScreen extends ConsumerStatefulWidget {
-  final String? authType;
-
   const SignUpScreen({
     Key? key,
-    required this.authType,
   }) : super(key: key);
 
   @override
@@ -502,7 +497,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 confirmTap: () {
                   // context.go('/loginScreen');
                   ref.read(loginStateProvider.notifier).state = LoginStatus.none;
-                  ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
+                  // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
                   ref.read(signUpStateProvider.notifier).state = SignUpStatus.none;
                   context.pop();
                 },
@@ -527,7 +522,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 ),
                 confirmTap: () {
                   ref.read(loginStateProvider.notifier).state = LoginStatus.none;
-                  ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
+                  // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
                   ref.read(signUpStateProvider.notifier).state = SignUpStatus.none;
                   context.pop();
                 },
@@ -545,8 +540,8 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
         ///NOTE
         ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
         ///로그인 페이지 이동 초기화
-        ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
-        ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
+        // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
+        // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
         ref.read(signUpUserInfoProvider.notifier).state = null;
         ref.read(authStateProvider.notifier).state = false;
         ref.read(checkButtonProvider.notifier).state = false;

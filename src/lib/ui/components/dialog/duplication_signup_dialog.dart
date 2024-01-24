@@ -4,10 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
@@ -75,8 +73,8 @@ class DuplicationSignUpDialog extends ConsumerWidget {
           ///NOTE
           ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
           ///로그인 페이지 이동 초기화
-          ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
-          ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
+          // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
+          // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
           ref.read(signUpUserInfoProvider.notifier).state = null;
           ref.read(authStateProvider.notifier).state = false;
           ref.read(checkButtonProvider.notifier).state = false;

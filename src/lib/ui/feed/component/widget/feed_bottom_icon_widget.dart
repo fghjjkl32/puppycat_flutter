@@ -180,7 +180,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                       onTap: () async {
                         if (!ref.watch(likeApiIsLoadingStateProvider)) {
                           isLogined == false
-                              ? context.pushReplacement("/login")
+                              ? context.push("/login")
                               : await ref.watch(feedListStateProvider.notifier).postLike(
                                     contentIdx: widget.contentIdx,
                                     contentType: widget.contentType,
@@ -299,7 +299,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                   onTap: () {
                     if (!ref.watch(likeApiIsLoadingStateProvider)) {
                       isLogined == false
-                          ? context.pushReplacement("/login")
+                          ? context.push("/login")
                           : ref.watch(feedListStateProvider.notifier).deleteSave(
                                 contentIdx: widget.contentIdx,
                                 contentType: widget.contentType,
@@ -328,7 +328,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                   onTap: () async {
                     if (!ref.watch(saveApiIsLoadingStateProvider)) {
                       isLogined == false
-                          ? context.pushReplacement("/login")
+                          ? context.push("/login")
                           : await ref.watch(feedListStateProvider.notifier).postSave(
                                 contentIdx: widget.contentIdx,
                                 contentType: widget.contentType,

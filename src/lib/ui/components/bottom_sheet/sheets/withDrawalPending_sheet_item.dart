@@ -8,10 +8,8 @@ import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/user_restore_state_provider.dart';
@@ -77,8 +75,8 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
                 ref.read(loginStateProvider.notifier).state = LoginStatus.none;
                 ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
                 // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
-                ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
-                ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
+                // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
+                // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
                 ref.read(signUpUserInfoProvider.notifier).state = null;
                 ref.read(authStateProvider.notifier).state = false;
                 ref.read(checkButtonProvider.notifier).state = false;

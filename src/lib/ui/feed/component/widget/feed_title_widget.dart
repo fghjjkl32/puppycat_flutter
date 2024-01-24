@@ -144,7 +144,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                     onTap: () async {
                                                       if (!ref.watch(followApiIsLoadingStateProvider)) {
                                                         if (!isLogined) {
-                                                          context.pushReplacement("/login");
+                                                          context.push("/login");
                                                         } else {
                                                           final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                                                 followUuid: widget.memberUuid,
@@ -175,7 +175,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                     onTap: () async {
                                                       if (!ref.watch(followApiIsLoadingStateProvider)) {
                                                         if (!isLogined) {
-                                                          context.pushReplacement("/login");
+                                                          context.push("/login");
                                                         } else {
                                                           final result = await ref.watch(followStateProvider.notifier).postFollow(
                                                                 followUuid: widget.memberUuid,
@@ -411,7 +411,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                     onTap: () async {
                                       if (!isLogined) {
-                                        context.pushReplacement("/login");
+                                        context.push("/login");
                                       } else {
                                         context.pop();
 
@@ -485,7 +485,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                     onTap: () {
                                       if (!isLogined) {
-                                        context.pushReplacement("/login");
+                                        context.push("/login");
                                       } else {
                                         context.pop();
                                         context.push("/feed/report/false/${widget.contentIdx}");
