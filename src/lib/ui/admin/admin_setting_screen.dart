@@ -143,6 +143,11 @@ class AdminSettingScreenState extends ConsumerState<AdminSettingScreen> {
               ),
               const Text('Walk GPS URL'),
               Text(walkGpsBaseUrl),
+              const Divider(
+                height: 10,
+              ),
+              const Text('Common URL'),
+              Text(commonBaseUrl),
               ElevatedButton(
                 onPressed: () {
                   changeMode(_preRunMode ?? RunningMode.prd);

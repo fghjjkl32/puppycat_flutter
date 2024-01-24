@@ -15,7 +15,7 @@ class CustomerSupportRepository {
   CustomerSupportRepository({
     required this.dio,
   }) {
-    _settingService = CustomerSupportService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
+    _settingService = CustomerSupportService(DioWrap.getDioWithCookie(), baseUrl: commonBaseUrl);
   }
 
   Future<CustomerDataListModel> getFaqList(int page, [int? type, String? searchWord, int limit = 20]) async {
@@ -29,6 +29,7 @@ class CustomerSupportRepository {
     }
     if (searchWord != null) {
       queries['searchWord'] = searchWord;
+      queries['searchType'] = "title";
     }
 
     CustomerSupportResponseModel responseModel = await _settingService.getFaqList(queries);
