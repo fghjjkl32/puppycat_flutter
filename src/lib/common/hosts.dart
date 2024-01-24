@@ -56,6 +56,7 @@ String walkBaseUrl = 'https://walk-api.puppycat.co.kr/';
 String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
 String memberBaseUrl = 'https://member-api.puppycat.co.kr/';
 String chatBaseUrl = "https://chat.puppycat.co.kr/";
+String commonBaseUrl = "https://common.puppycat.co.kr/";
 
 Future setRunningMode(RunningMode mode) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -86,6 +87,7 @@ Future initRunningMode() async {
       walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr/';
       memberBaseUrl = 'https://puppycat-dev-member-api.devlabs.co.kr/';
       chatBaseUrl = 'https://pet-chat.devlabs.co.kr/';
+      commonBaseUrl = 'https://common.devlabs.co.kr/';
       break;
     case RunningMode.stg:
       print('stg');
@@ -98,6 +100,7 @@ Future initRunningMode() async {
       walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
       memberBaseUrl = 'https://member-api.pcstg.co.kr/';
       chatBaseUrl = 'https://chat.pcstg.co.kr/';
+      commonBaseUrl = 'https://common.pcstg.co.kr/';
       break;
     case RunningMode.prd:
       print('prd');
@@ -110,6 +113,7 @@ Future initRunningMode() async {
       walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
       memberBaseUrl = 'https://member-api.puppycat.co.kr/';
       chatBaseUrl = 'https://chat.puppycat.co.kr/';
+      commonBaseUrl = 'https://common.puppycat.co.kr/';
       break;
     default:
   }
