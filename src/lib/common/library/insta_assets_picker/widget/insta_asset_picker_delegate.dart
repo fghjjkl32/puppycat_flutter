@@ -105,7 +105,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   double indexPosition(BuildContext context, int index) {
     final row = (index / gridCount).floor();
     final size = (MediaQuery.of(context).size.width - itemSpacing * (gridCount - 1)) / gridCount;
-    return row * size + (row * itemSpacing);
+    return row * size + (row * itemSpacing) + (index * 15);
   }
 
   /// Expand the crop view size to the maximum
