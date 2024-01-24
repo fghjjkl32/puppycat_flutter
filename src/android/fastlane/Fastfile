@@ -16,23 +16,45 @@
 default_platform(:android)
 
 platform :android do
-  desc "Runs all the tests"
-  lane :test do
-    gradle(task: "test")
+
+def updateVersion(options)
+    if options[:version]
+      version = options[:version]
+    else
+      version = prompt(text: "Enter the version type or specific version\n(major, minor, patch or 1.0.0): ")
+    end
+
+    re = /\d+.\d+.\d+/
+    versionNum = version[re, 0]
+
+    if versionNum
+      increment_version_number(
+        version_number: versionNum
+      )
+    elsif version == 'major' || version == 'minor' || version == 'patch'
+      increment_version_number(
+        bump_type: version
+      )
+    else
+      UI.user_error!('[ERROR] Wrong version!!!!!!')
+    end
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
-  end
+  lane :version do |options|
+    updateVersion(options)
+    increment_build_number(xcodeproj: 'Runner.xcodeproj')
+    end
 
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
-  end
+
+  desc "Push a new beta build with Firebase App Distribution"
+  lane :firebase do
+    gradle(task: "assemble",build_type: "release")
+    firebase_app_distribution(
+  	    app: ENV["APP_KEY"],
+  		firebase_cli_token: ENV["FIREBASE_CLI_TOKEN_KEY"],
+  		groups: "group",
+  		apk_path: ENV["APK_PATH_KEY"],
+  		android_artifact_type: "APK",
+      )
+    end
 end
