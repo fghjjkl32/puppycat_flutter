@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:go_router/go_router.dart';
@@ -13,10 +12,10 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/notification_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/setting/setting_state_provider.dart';
@@ -274,7 +273,9 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               onTapProfileButton: () {
                                 myInfo.uuid == item.senderUuid
                                     ? context.push("/member/myPage")
-                                    : context.push("/member/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
+                                    : item.senderInfo?.first.nick == null
+                                        ? context.push("/member/userUnknown")
+                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.new_contents) ||
@@ -343,7 +344,9 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               onTapProfileButton: () {
                                 myInfo.uuid == item.senderUuid
                                     ? context.push("/member/myPage")
-                                    : context.push("/member/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
+                                    : item.senderInfo?.first.nick == null
+                                        ? context.push("/member/userUnknown")
+                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.new_comment) ||
@@ -384,7 +387,9 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               onTapProfileButton: () {
                                 myInfo.uuid == item.senderUuid
                                     ? context.push("/member/myPage")
-                                    : context.push("/member/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
+                                    : item.senderInfo?.first.nick == null
+                                        ? context.push("/member/userUnknown")
+                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.notice) || item.subType == describeEnum(NotiSubType.event)) {
@@ -404,7 +409,9 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               onTapProfileButton: () {
                                 myInfo.uuid == item.senderUuid
                                     ? context.push("/member/myPage")
-                                    : context.push("/member/userPage/${item.senderInfo?.first.nick ?? 'unknown'}/${item.senderUuid}/${item.senderUuid}");
+                                    : item.senderInfo?.first.nick == null
+                                        ? context.push("/member/userUnknown")
+                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
                               },
                             );
                           } else {
