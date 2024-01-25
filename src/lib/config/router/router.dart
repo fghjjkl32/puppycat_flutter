@@ -34,9 +34,6 @@ extension GoRouterExtension on GoRouter {
 
 @riverpod
 GoRouter router(Ref ref) {
-  print('you too?');
-  // var loginRouteState = LoginRouteEnum.none;
-  // var signUpState = SignUpRoute.none;
   bool splashState = false;
 
   bool maintenanceState = false;
@@ -56,23 +53,6 @@ GoRouter router(Ref ref) {
       print('splashState $splashState / isRefresh ${isRefresh.value}');
       isRefresh.value = !isRefresh.value;
     })
-    // ..listen(loginRouteStateProvider, (previous, next) {
-    //   if (previous == next) {
-    //     return;
-    //   }
-    //   loginRouteState = next;
-    //
-    //   print('loginRouteState $loginRouteState / isRefresh ${isRefresh.value}');
-    //   isRefresh.value = !isRefresh.value;
-    // })
-    // ..listen(signUpRouteStateProvider, (previous, next) {
-    //   if (previous == next) {
-    //     return;
-    //   }
-    //   signUpState = next;
-    //   print('signUpState $signUpState / isRefresh ${isRefresh.value}');
-    //   isRefresh.value = !isRefresh.value;
-    // })
     ..listen(isInspectProvider, (previous, next) {
       if (previous == next) {
         return;
@@ -155,27 +135,6 @@ GoRouter router(Ref ref) {
           return null;
         }
       }
-
-      // bool isSignUpPage = state.matchedLocation == signUpLocation;
-      // if (isSignUpPage) {
-      //   if (signUpState == SignUpRoute.success) {
-      //     return signUpCompleteLocation;
-      //   } else {
-      //     return null;
-      //   }
-      // }
-
-      // bool isLoginPage = state.matchedLocation == loginLocation;
-      // if (isLoginPage) {
-      //   if (loginRouteState == LoginRouteEnum.success) {
-      //     return homeLocation;
-      //   } else if (loginRouteState == LoginRouteEnum.signUpScreen) {
-      //     return signUpLocation;
-      //   } else {
-      //     return null;
-      //   }
-      // }
-
       return null;
     },
   );
