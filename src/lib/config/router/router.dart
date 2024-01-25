@@ -126,8 +126,8 @@ GoRouter router(Ref ref) {
       const signUpLocation = '$loginLocation/signup/:authType';
       const signUpCompleteLocation = '$signUpLocation/signupComplete';
       const maintenanceLocation = '/maintenance';
-      const forceUpdateLocation = 'bottomSheet/forceUpdateBottomSheet';
-      const recommendUpdateLocation = 'bottomSheet/recommendUpdateBottomSheet';
+      const forceUpdateLocation = '/bottomSheet/forceUpdateBottomSheet';
+      const recommendUpdateLocation = '/bottomSheet/recommendUpdateBottomSheet';
 
       InitializationApp.initialize(ref);
 
