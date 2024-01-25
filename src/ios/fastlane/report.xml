@@ -5,47 +5,32 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.00044">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000195">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: latest_testflight_build_number" time="4.489667">
+      <testcase classname="fastlane.lanes" name="1: latest_testflight_build_number" time="2.855675">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: increment_build_number" time="3.788926">
+      <testcase classname="fastlane.lanes" name="2: latest_testflight_build_number" time="4.475106">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: Switch to ios flutter_build_ios lane" time="0.000179">
+      <testcase classname="fastlane.lanes" name="3: increment_build_number" time="0.164499">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: cd .." time="0.010187">
+      <testcase classname="fastlane.lanes" name="4: build_app" time="124.62456">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: flutter clean" time="15.747061">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="6: flutter build ios --no-codesign -t lib/main.dart" time="184.049555">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="7: build_app" time="294.835935">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="8: upload_to_testflight" time="678.273601">
+      <testcase classname="fastlane.lanes" name="5: upload_to_testflight" time="633.168286">
         
       </testcase>
     
