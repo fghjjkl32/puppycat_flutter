@@ -189,6 +189,8 @@ class CroppedImagesListViewState extends ConsumerState<CroppedImagesListView> {
                 child: SizedBox(
                   height: 6,
                   child: LinearProgressIndicator(
+                    backgroundColor: kPrimaryColor600.withOpacity(.5),
+                    color: kPrimaryColor600,
                     value: widget.progress,
                     semanticsLabel: '${widget.progress! * 100}%',
                   ),

@@ -725,7 +725,7 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
 
   /// [Duration] when triggering path switching.
   /// 切换路径时的动画时长
-  Duration get switchingPathDuration => const Duration(milliseconds: 300);
+  Duration get switchingPathDuration => const Duration(milliseconds: 0);
 
   /// [Curve] when triggering path switching.
   /// 切换路径时的动画曲线

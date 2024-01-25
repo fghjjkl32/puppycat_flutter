@@ -14,6 +14,7 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_croppe
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_tag_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_current_view_count_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/ui/components/toast/toast.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/widget/dot_indicator.dart';
@@ -31,97 +32,108 @@ class TagScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     List<File> croppedFiles = ref.watch(feedWriteCroppedFilesProvider);
 
-    return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.8),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    context.pop();
-                  },
-                  icon: const Icon(
-                    Puppycat_social.icon_close_large,
-                    color: kPreviousNeutralColor100,
-                  ),
-                ),
-                Text(
-                  "유저 태그하기",
-                  style: kTitle18BoldStyle.copyWith(color: kPreviousNeutralColor100),
-                ),
-                // "등록" 버튼을 정의합니다. 사용자가 이 버튼을 누르면 태그를 저장하고,
-                // carousel을 현재 보고 있는 이미지로 이동시킵니다. 그리고 태그 개수를
-                // 업데이트하고, 현재 스크린을 종료합니다.
-                TextButton(
-                  child: Text(
-                    '등록',
-                    style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
-                  ),
-                  onPressed: () {
-                    ref.read(feedWriteProvider.notifier).saveTag();
-                    ref.watch(feedWriteCarouselControllerProvider.notifier).jumpToPage(ref.watch(feedWriteCurrentViewCountProvider.notifier).state);
+    return DefaultOnWillPopScope(
+      onWillPop: () {
+        ref.read(feedWriteProvider.notifier).revertToLastSavedState();
+        context.pop();
 
-                    int currentIndex = ref.watch(feedWriteCurrentViewCountProvider.notifier).state;
-                    List<TagImages> tagImages = ref.watch(feedWriteProvider).tagImage;
-
-                    TagImages? currentTagImage = tagImages.firstWhere(
-                      (tagImage) => tagImage.index == currentIndex,
-                      orElse: () => TagImages(index: 0, tag: []),
-                    );
-
-                    ref.watch(feedWriteCurrentTagCountProvider.notifier).state = currentTagImage.tag.length;
-
-                    context.pop();
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 103),
-            Text(
-              "태그 할 위치를 눌러보세요.",
-              style: kBody14BoldStyle.copyWith(color: kPreviousNeutralColor100),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            SizedBox(
-              height: 280,
-              // PageView를 사용하여 사용자가 태그를 추가할 이미지를 넘겨볼 수 있게 합니다.
-              // 사용자가 페이지를 넘길 때마다, counter를 업데이트합니다.
-              child: PageView(
-                padEnds: false,
-                onPageChanged: (index) {
-                  _counter.value = index;
-                  ref.watch(feedWriteCurrentViewCountProvider.notifier).state = index;
-                },
-                controller: PageController(initialPage: ref.watch(feedWriteCurrentViewCountProvider)),
-                scrollDirection: Axis.horizontal,
-                children: croppedFiles.asMap().entries.map((entry) {
-                  var imageIndex = entry.key;
-                  var image = entry.value;
-
-                  return Center(
-                    child: TaggableImage(
-                      image: image,
-                      imagePositionIndex: imageIndex,
-                      imageIdx: 0,
+        return Future.value(true);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black.withOpacity(0.8),
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      ref.read(feedWriteProvider.notifier).revertToLastSavedState();
+                      context.pop();
+                    },
+                    icon: const Icon(
+                      Puppycat_social.icon_close_large,
+                      color: kPreviousNeutralColor100,
                     ),
-                  );
-                }).toList(),
+                  ),
+                  Text(
+                    "유저 태그하기",
+                    style: kTitle18BoldStyle.copyWith(color: kPreviousNeutralColor100),
+                  ),
+                  // "등록" 버튼을 정의합니다. 사용자가 이 버튼을 누르면 태그를 저장하고,
+                  // carousel을 현재 보고 있는 이미지로 이동시킵니다. 그리고 태그 개수를
+                  // 업데이트하고, 현재 스크린을 종료합니다.
+                  TextButton(
+                    child: Text(
+                      '등록',
+                      style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
+                    ),
+                    onPressed: () {
+                      ref.read(feedWriteProvider.notifier).saveTag();
+                      ref.watch(feedWriteCarouselControllerProvider.notifier).jumpToPage(ref.watch(feedWriteCurrentViewCountProvider.notifier).state);
+
+                      int currentIndex = ref.watch(feedWriteCurrentViewCountProvider.notifier).state;
+                      List<TagImages> tagImages = ref.watch(feedWriteProvider).tagImage;
+
+                      TagImages? currentTagImage = tagImages.firstWhere(
+                        (tagImage) => tagImage.index == currentIndex,
+                        orElse: () => TagImages(index: 0, tag: []),
+                      );
+
+                      ref.watch(feedWriteCurrentTagCountProvider.notifier).state = currentTagImage.tag.length;
+
+                      ref.read(feedWriteProvider.notifier).saveState();
+
+                      context.pop();
+                    },
+                  ),
+                ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: DotIndicator(
-                counter: ValueNotifier<int>(ref.watch(feedWriteCurrentViewCountProvider.notifier).state),
-                imageListLength: croppedFiles.length,
+              const SizedBox(height: 103),
+              Text(
+                "태그 할 위치를 눌러보세요.",
+                style: kBody14BoldStyle.copyWith(color: kPreviousNeutralColor100),
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 12,
+              ),
+              SizedBox(
+                height: 280,
+                // PageView를 사용하여 사용자가 태그를 추가할 이미지를 넘겨볼 수 있게 합니다.
+                // 사용자가 페이지를 넘길 때마다, counter를 업데이트합니다.
+                child: PageView(
+                  padEnds: false,
+                  onPageChanged: (index) {
+                    _counter.value = index;
+                    ref.watch(feedWriteCurrentViewCountProvider.notifier).state = index;
+                  },
+                  controller: PageController(initialPage: ref.watch(feedWriteCurrentViewCountProvider)),
+                  scrollDirection: Axis.horizontal,
+                  children: croppedFiles.asMap().entries.map((entry) {
+                    var imageIndex = entry.key;
+                    var image = entry.value;
+
+                    return Center(
+                      child: TaggableImage(
+                        image: image,
+                        imagePositionIndex: imageIndex,
+                        imageIdx: 0,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: DotIndicator(
+                  counter: ValueNotifier<int>(ref.watch(feedWriteCurrentViewCountProvider.notifier).state),
+                  imageListLength: croppedFiles.length,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
