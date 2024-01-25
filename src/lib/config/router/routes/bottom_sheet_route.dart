@@ -100,8 +100,8 @@ class RecommendBottomSheetRoute extends GoRouteData {
 class ErrorBottomSheetRoute extends GoRouteData {
   GoRoute createRoute() {
     return GoRoute(
-      path: 'errorBottomSheet',
-      name: 'errorBottomSheet',
+      path: 'withDrawalPendingBottomSheet',
+      name: 'withDrawalPendingBottomSheet',
       pageBuilder: (BuildContext context, GoRouterState state) {
         String errorCode = 'unknown';
         if (state.extra != null) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/login_route.dart';
 import 'package:pet_mobile_social_flutter/ui/home/main_screen.dart';
 
 class HomeRoute extends GoRouteData {
@@ -21,13 +22,15 @@ class HomeRoute extends GoRouteData {
 
   GoRoute createRoute() {
     return GoRoute(
-      path: '/home',
-      name: 'home',
-      onExit: (BuildContext context) async {
-        bool backResult = onBackPressed();
-        return await Future.value(backResult);
-      },
-      builder: (context, state) => build(context, state),
-    );
+        path: '/home',
+        name: 'home',
+        onExit: (BuildContext context) async {
+          bool backResult = onBackPressed();
+          return await Future.value(backResult);
+        },
+        builder: (context, state) => build(context, state),
+        routes: [
+          LoginRoute().createRoute(),
+        ]);
   }
 }

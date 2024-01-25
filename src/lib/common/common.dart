@@ -294,7 +294,7 @@ void onTapHide({
   required String memberUuid,
 }) async {
   if (!ref.read(loginStatementProvider)) {
-    context.pushReplacement("/login");
+    context.push("/home/login");
   } else {
     final tempContentIdx = contentIdx;
 

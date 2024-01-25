@@ -12,8 +12,9 @@ class UserRestoreState extends _$UserRestoreState {
     return false;
   }
 
-  void restoreAccount() async {
+  Future<bool> restoreAccount() async {
     final loginInfo = ref.read(signUpUserInfoProvider);
     state = await ref.read(userInfoRepositoryProvider(ref.read(dioProvider))).restoreAccount(loginInfo?.simpleId ?? '');
+    return state;
   }
 }

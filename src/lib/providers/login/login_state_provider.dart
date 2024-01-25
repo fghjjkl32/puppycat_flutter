@@ -1,18 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
-import 'package:pet_mobile_social_flutter/config/router/routes.dart';
+import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/jwt/jwt_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/login/login_repository.dart';
+import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'login_state_provider.g.dart';
@@ -60,6 +62,7 @@ class LoginState extends _$LoginState {
 
   void loginByUserModel({
     required UserModel? userModel,
+    bool enableRoutePop = true,
   }) async {
     //
     userModel = userModel ?? ref.read(signUpUserInfoProvider);
@@ -76,7 +79,7 @@ class LoginState extends _$LoginState {
 
     try {
       var loginResult = await loginRepository.loginByUserModel(userModel: userModel);
-      _procLogin(loginResult);
+      _procLogin(loginResult, enableRoutePop);
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       state = LoginStatus.failure;
@@ -86,20 +89,25 @@ class LoginState extends _$LoginState {
     }
   }
 
-  Future<void> _procLogin(UserModel userModel, [bool isAutoLogin = false]) async {
+  Future<void> _procLogin(UserModel userModel, [bool enableRoutePop = true]) async {
     ref.read(restrainStateProvider.notifier).state = userModel.restrainList ?? [];
     final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.login);
 
     if (restrain) {
       await ref.read(myInfoStateProvider.notifier).getMyInfo();
       ref.read(signUpUserInfoProvider.notifier).state = null;
-
-      print('ref.read(myInfoStateProvider ${ref.read(myInfoStateProvider)}');
-      print('ref.read(restrainStateProvider ${ref.read(restrainStateProvider)}');
-      print('current route 33 : ${ref.read(routerProvider).location()}');
-
       state = LoginStatus.success;
-      ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.success);
+      // ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.success);
+      final router = ref.read(routerProvider);
+      print('test333333 login ${router.routerDelegate.currentConfiguration}');
+      print('router locatoin : ${router.location()}');
+      if (router.canPop() && enableRoutePop) {
+        print('router can pop?');
+        router.pop();
+      } else {
+        print('router can pop? 2');
+        router.go('/home');
+      }
     }
   }
 
@@ -109,12 +117,26 @@ class LoginState extends _$LoginState {
     try {
       var result = await loginRepository.logout();
       if (result) {
-        await TokenController.clearTokens();
+        // await TokenController.clearTokens();
+        //
+        // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
+        // ref.read(followUserStateProvider.notifier).resetState();
+        // ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
+        // state = LoginStatus.none;
 
-        ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
+        await TokenController.clearTokens();
+        // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
         ref.read(followUserStateProvider.notifier).resetState();
         ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
         state = LoginStatus.none;
+        ref.read(checkButtonProvider.notifier).state = false;
+        ref.read(policyStateProvider.notifier).policyStateReset();
+        ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
+
+        ///TODO
+        ///기획은 로그아웃 시 HOME으로 이동 원함
+        ///운영 확인 필요 (24 01 23)
+        ref.read(routerProvider).go('/home');
       }
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
@@ -132,16 +154,16 @@ class LoginState extends _$LoginState {
         final isValid = await jwtRepository.checkRefreshToken(refreshToken);
         if (isValid) {
           print('auto login 1');
-          ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.success);
+          // ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.success);
           ref.read(myInfoStateProvider.notifier).getMyInfo();
           ref.read(signUpUserInfoProvider.notifier).state = null;
 
           state = LoginStatus.success;
-          ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.success;
+          // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.success;
         } else {
           print('auto login 2');
           state = LoginStatus.none;
-          ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.loginScreen;
+          // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.loginScreen;
         }
       } on APIException catch (apiException) {
         ///checkRefreshToken 응답으로 받을 수 있는 오류라면  ECOM-9999 밖에 없음
@@ -155,7 +177,7 @@ class LoginState extends _$LoginState {
     } else {
       print('AutoLogin Failed. (2)');
       state = LoginStatus.none;
-      ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.loginScreen;
+      // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.loginScreen;
       return;
     }
 

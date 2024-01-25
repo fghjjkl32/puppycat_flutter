@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pet_mobile_social_flutter/config/router/routes.dart';
+import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_route_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/user_restore_state_provider.dart';
@@ -36,7 +34,7 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
           width: 336,
           height: 46,
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               // final isLogined = ref.read(loginStatementProvider);
               //
               // if (!isLogined) {
@@ -46,7 +44,13 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
               // }
               print('current route  44 : ${ref.read(routerProvider).location()}');
 
-              ref.read(userRestoreStateProvider.notifier).restoreAccount();
+              await ref.read(userRestoreStateProvider.notifier).restoreAccount().then((value) {
+                context.pop();
+                if (value) {
+                  final userModel = ref.read(signUpUserInfoProvider);
+                  ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
+                }
+              });
 
               print('current route 55 : ${ref.read(routerProvider).location()}');
 
@@ -77,8 +81,8 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
                 ref.read(loginStateProvider.notifier).state = LoginStatus.none;
                 ref.read(myInfoStateProvider.notifier).state = UserInformationItemModel();
                 // ref.read(loginRouteStateProvider.notifier).state = LoginRoute.loginScreen;
-                ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
-                ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
+                // ref.read(loginRouteStateProvider.notifier).state = LoginRouteEnum.none;
+                // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
                 ref.read(signUpUserInfoProvider.notifier).state = null;
                 ref.read(authStateProvider.notifier).state = false;
                 ref.read(checkButtonProvider.notifier).state = false;
