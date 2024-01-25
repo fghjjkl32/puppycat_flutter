@@ -16,7 +16,7 @@ class PolicyRepository {
   PolicyRepository({
     required this.dio,
   }) {
-    _policyService = PolicyService(dio, baseUrl: memberBaseUrl);
+    _policyService = PolicyService(dio, baseUrl: commonBaseUrl);
   }
 
   Future<List<PolicyItemModel>> getPolicies() async {

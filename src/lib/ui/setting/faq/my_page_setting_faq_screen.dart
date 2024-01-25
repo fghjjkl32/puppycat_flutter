@@ -125,7 +125,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
             )
           ],
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(110.0),
+            preferredSize: const Size.fromHeight(60.0),
             child: Column(
               children: [
                 Padding(
