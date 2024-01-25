@@ -6,10 +6,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/user/user_restore_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
-import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/sheets/withDrawalPending_sheet_item.dart';
-import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -53,20 +50,20 @@ class LoginScreen extends ConsumerWidget {
     ref.listen(loginStateProvider, (previous, next) {
       if (next == LoginStatus.withdrawalPending) {
         print('test333333 login 22222 ${GoRouter.of(context).routerDelegate.currentConfiguration}');
-        showCustomModalBottomSheet(context: context, widget: const WithDrawalPendingSheetItem());
+        // showCustomModalBottomSheet(context: context, widget: const WithDrawalPendingSheetItem());
         print('current route : ${ref.read(routerProvider).location()}');
-        // context.push('/error_bottom_sheet');
+        context.pushNamed('withDrawalPendingBottomSheet');
       }
     });
 
-    ref.listen(userRestoreStateProvider, (previous, next) {
-      if (next) {
-        print('current route 22 : ${ref.read(routerProvider).location()}');
-
-        final userModel = ref.read(signUpUserInfoProvider);
-        ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
-      }
-    });
+    // ref.listen(userRestoreStateProvider, (previous, next) {
+    //   if (next) {
+    //     print('current route 22 : ${ref.read(routerProvider).location()}');
+    //
+    //     final userModel = ref.read(signUpUserInfoProvider);
+    //     ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
+    //   }
+    // });
 
     print('current route 77 : ${ref.read(routerProvider).location()}');
 

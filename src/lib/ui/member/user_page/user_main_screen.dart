@@ -207,7 +207,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                               });
                                               if (id == 'block') {
                                                 if (!isLogined) {
-                                                  context.push("/login");
+                                                  context.push("/home/login");
                                                 } else {
                                                   showDialog(
                                                     context: context,
@@ -763,7 +763,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       ),
                       GestureDetector(
                         onTap: () {
-                          !isLogined ? context.push("/login") : context.push("/member/followList/${widget.memberUuid}");
+                          !isLogined ? context.push("/home/login") : context.push("/member/followList/${widget.memberUuid}");
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
@@ -826,7 +826,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 child: GestureDetector(
                                   onTap: () async {
                                     if (!isLogined) {
-                                      context.push("/login");
+                                      context.push("/home/login");
                                     } else {
                                       ref.watch(userInformationStateProvider.notifier).updateUnBlockState(widget.memberUuid);
 
@@ -875,7 +875,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         onTap: () async {
                                           if (!ref.watch(followApiIsLoadingStateProvider)) {
                                             if (!isLogined) {
-                                              context.push("/login");
+                                              context.push("/home/login");
                                             } else {
                                               final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                                     followUuid: widget.memberUuid,
@@ -910,7 +910,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         onTap: () async {
                                           if (!ref.watch(followApiIsLoadingStateProvider)) {
                                             if (!isLogined) {
-                                              context.push("/login");
+                                              context.push("/home/login");
                                             } else {
                                               final result = await ref.watch(followStateProvider.notifier).postFollow(
                                                     followUuid: widget.memberUuid,

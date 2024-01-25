@@ -121,7 +121,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                           onTap: () async {
                             if (!ref.watch(followApiIsLoadingStateProvider)) {
                               if (!isLogined) {
-                                context.push("/login");
+                                context.push("/home/login");
                               } else {
                                 final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                       followUuid: widget.followerUuid,
@@ -175,7 +175,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                           onTap: () async {
                             if (!ref.watch(followApiIsLoadingStateProvider)) {
                               if (!isLogined) {
-                                context.push("/login");
+                                context.push("/home/login");
                               } else {
                                 final result = await ref.watch(followStateProvider.notifier).postFollow(
                                       followUuid: widget.followerUuid,
@@ -190,7 +190,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             }
 
                             // if (ref.read(userInfoProvider).userModel == null) {
-                            //   context.push("/login");
+                            //   context.push("/home/login");
                             // } else {
                             //   setState(() {
                             //     isFollowing = true;

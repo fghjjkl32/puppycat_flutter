@@ -34,7 +34,7 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
           width: 336,
           height: 46,
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               // final isLogined = ref.read(loginStatementProvider);
               //
               // if (!isLogined) {
@@ -44,7 +44,13 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
               // }
               print('current route  44 : ${ref.read(routerProvider).location()}');
 
-              ref.read(userRestoreStateProvider.notifier).restoreAccount();
+              await ref.read(userRestoreStateProvider.notifier).restoreAccount().then((value) {
+                context.pop();
+                if (value) {
+                  final userModel = ref.read(signUpUserInfoProvider);
+                  ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
+                }
+              });
 
               print('current route 55 : ${ref.read(routerProvider).location()}');
 

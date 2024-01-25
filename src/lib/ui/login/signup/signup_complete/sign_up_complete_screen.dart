@@ -30,7 +30,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
             ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
             ///로그인 페이지 이동 초기화
             final userModel = ref.read(signUpUserInfoProvider);
-            ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
+            ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel, enableRoutePop: false);
             // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
             ref.read(authStateProvider.notifier).state = false;
             ref.read(checkButtonProvider.notifier).state = false;
@@ -80,7 +80,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                         ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
                         ///로그인 페이지 이동 초기화
                         final userModel = ref.read(signUpUserInfoProvider);
-                        ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel);
+                        ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel, enableRoutePop: false);
                         // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
                         ref.read(authStateProvider.notifier).state = false;
                         ref.read(checkButtonProvider.notifier).state = false;

@@ -12,7 +12,7 @@ class LoginRoute extends GoRouteData {
 
   GoRoute createRoute() {
     return GoRoute(
-      path: '/login',
+      path: 'login',
       name: 'login',
       builder: (context, state) => build(context, state),
       routes: [

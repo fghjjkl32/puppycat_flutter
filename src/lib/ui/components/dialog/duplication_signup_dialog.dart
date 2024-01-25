@@ -80,7 +80,8 @@ class DuplicationSignUpDialog extends ConsumerWidget {
           ref.read(checkButtonProvider.notifier).state = false;
           ref.read(policyStateProvider.notifier).policyStateReset();
           ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
-          context.pop();
+          // context.pop();
+          context.go('/home/login');
         },
         confirmWidget: Text(
           "확인",

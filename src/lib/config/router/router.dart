@@ -7,7 +7,6 @@ import 'package:pet_mobile_social_flutter/config/router/routes/chat_home_route.d
 import 'package:pet_mobile_social_flutter/config/router/routes/dialog_route.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/feed_route.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/home_route.dart';
-import 'package:pet_mobile_social_flutter/config/router/routes/login_route.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/maintenance_route.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/member_route.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/notification_route.dart';
@@ -111,7 +110,7 @@ GoRouter router(Ref ref) {
       SettingRoute().createRoute(),
       MemberRoute().createRoute(),
       NotificationRoute().createRoute(),
-      LoginRoute().createRoute(),
+      // LoginRoute().createRoute(), //home 하위 경로로 이동
       WebviewRoute().createRoute(),
       SplashRoute().createRoute(),
       MaintenanceRoute().createRoute(),
@@ -122,7 +121,7 @@ GoRouter router(Ref ref) {
     ],
     redirect: (BuildContext context, GoRouterState state) {
       const homeLocation = '/home';
-      const loginLocation = '/login';
+      const loginLocation = '/home/login';
       const splashLocation = '/splash';
       const signUpLocation = '$loginLocation/signup/:authType';
       const signUpCompleteLocation = '$signUpLocation/signupComplete';

@@ -62,6 +62,7 @@ class LoginState extends _$LoginState {
 
   void loginByUserModel({
     required UserModel? userModel,
+    bool enableRoutePop = true,
   }) async {
     //
     userModel = userModel ?? ref.read(signUpUserInfoProvider);
@@ -78,7 +79,7 @@ class LoginState extends _$LoginState {
 
     try {
       var loginResult = await loginRepository.loginByUserModel(userModel: userModel);
-      _procLogin(loginResult, true);
+      _procLogin(loginResult, enableRoutePop);
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
       state = LoginStatus.failure;
@@ -88,7 +89,7 @@ class LoginState extends _$LoginState {
     }
   }
 
-  Future<void> _procLogin(UserModel userModel, [bool isAutoLogin = false]) async {
+  Future<void> _procLogin(UserModel userModel, [bool enableRoutePop = true]) async {
     ref.read(restrainStateProvider.notifier).state = userModel.restrainList ?? [];
     final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.login);
 
@@ -99,7 +100,8 @@ class LoginState extends _$LoginState {
       // ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.success);
       final router = ref.read(routerProvider);
       print('test333333 login ${router.routerDelegate.currentConfiguration}');
-      if (router.canPop() && !isAutoLogin) {
+      print('router locatoin : ${router.location()}');
+      if (router.canPop() && enableRoutePop) {
         print('router can pop?');
         router.pop();
       } else {
