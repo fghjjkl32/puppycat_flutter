@@ -8,7 +8,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/package_info/package_info_util.dart';
-import 'package:pet_mobile_social_flutter/config/router/routes.dart';
+import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/controller/token/token_controller.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';

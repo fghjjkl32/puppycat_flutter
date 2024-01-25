@@ -120,7 +120,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                         // ref.watch(loginRouteStateProvider.notifier).state = LoginRoute.none;
                         // ref.read(loginStateProvider.notifier).state = LoginStatus.none;
                         print('asd');
-                        context.pushReplacement('/home');
+                        context.go('/home');
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(18.0),

@@ -12,6 +12,7 @@ import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
+import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -45,7 +46,7 @@ class PuppyCatMain extends ConsumerStatefulWidget {
   PuppyCatMainState createState() => PuppyCatMainState();
 }
 
-class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerProviderStateMixin {
+class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
   late TabController tabController;
   bool _showIcon = false;
@@ -120,18 +121,12 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
     // Permissions.requestNotificationPermission();
 
     final isLogined = ref.read(loginStatementProvider);
-    tabController = TabController(vsync: this, length: getTabs().length);
-    tabController.index = widget.initialTabIndex;
+    tabController = TabController(vsync: this, length: getTabs().length, initialIndex: widget.initialTabIndex);
 
     ref.read(firebaseStateProvider.notifier).checkNotificationAppLaunch();
 
     Future(() async {
       ref.read(followUserStateProvider.notifier).resetState();
-
-      // final loginState = ref.watch(loginStateProvider);
-
-      // ref.read(recentFeedStateProvider.notifier).lastPage = 0;
-      print('not run????');
       _recentFeedListPagingController.refresh();
 
       ref.read(popularUserListStateProvider.notifier).getInitUserList();
@@ -141,12 +136,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
       scrollController.addListener(_myPostScrollListener);
 
       if (isLogined) {
-        ///NOTE
-        ///2023.11.14.
-        ///산책하기 보류로 주석 처리
-        // await ref.read(walkStateProvider.notifier).getWalkResultState(ref.read(userInfoProvider).userModel!.uuid);
-        ///산책하기 보류로 주석 처리 완료
-
         _myFeedListPagingController.refresh();
 
         _popularWeekFeedListPagingController.refresh();
@@ -155,130 +144,47 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
         ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
       }
-
-      ///NOTE
-      ///2023.11.14.
-      ///산책하기 보류로 주석 처리
-      // if (ref.read(walkStatusStateProvider) == WalkStatus.walking && !ref.read(isNavigatedFromMapProvider)) {
-      //   context.push('/map');
-      // } else if (ref.read(walkStatusStateProvider) == WalkStatus.walkEndedWithoutLog) {
-      //   toast(
-      //     context: context,
-      //     text: '',
-      //     type: ToastType.white,
-      //     toastDuration: Duration(days: 1000),
-      //     toastWidget: Row(
-      //       crossAxisAlignment: CrossAxisAlignment.center,
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: [
-      //         Row(
-      //           children: [
-      //             SizedBox(
-      //               width: 14,
-      //             ),
-      //             Column(
-      //               crossAxisAlignment: CrossAxisAlignment.start,
-      //               children: [
-      //                 Text(
-      //                   "산책이 종료되었습니다.",
-      //                   style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-      //                 ),
-      //                 Padding(
-      //                   padding: const EdgeInsets.only(top: 2.0),
-      //                   child: Text(
-      //                     "'확인' 클릭 시 산책 결과 페이지로 이동합니다.",
-      //                     style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //           ],
-      //         ),
-      //         InkWell(
-      //           onTap: () {
-      //             FToast().removeCustomToast();
-      //             context.push('/writeWalkLog');
-      //           },
-      //           child: Container(
-      //             decoration: const BoxDecoration(
-      //               color: kPrimaryLightColor,
-      //               borderRadius: BorderRadius.all(
-      //                 Radius.circular(100.0),
-      //               ),
-      //             ),
-      //             child: Padding(
-      //               padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
-      //               child: Text(
-      //                 "확인",
-      //                 style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
-      //               ),
-      //             ),
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   );
-      // }
-      // else if(ref.read(walkStatusStateProvider) == WalkStatus.walkEndedForce) {
-      //   toast(
-      //     context: context,
-      //     text: '',
-      //     type: ToastType.white,
-      //     toastDuration: Duration(days: 1000),
-      //     toastWidget: Row(
-      //       crossAxisAlignment: CrossAxisAlignment.center,
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: [
-      //         Row(
-      //           children: [
-      //             SizedBox(
-      //               width: 14,
-      //             ),
-      //             Column(
-      //               crossAxisAlignment: CrossAxisAlignment.start,
-      //               children: [
-      //                 Text(
-      //                   "산책이 강제 종료되었습니다.",
-      //                   style: kBody13BoldStyle.copyWith(color: kTextSubTitleColor),
-      //                 ),
-      //                 Padding(
-      //                   padding: const EdgeInsets.only(top: 2.0),
-      //                   child: Text(
-      //                     "'확인' 클릭 시 산책 결과 페이지로 이동합니다.",
-      //                     style: kBody11RegularStyle.copyWith(color: kTextSubTitleColor),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //           ],
-      //         ),
-      //         InkWell(
-      //           onTap: () {
-      //             FToast().removeCustomToast();
-      //             context.push('/writeWalkLog');
-      //           },
-      //           child: Container(
-      //             decoration: const BoxDecoration(
-      //               color: kPrimaryLightColor,
-      //               borderRadius: BorderRadius.all(
-      //                 Radius.circular(100.0),
-      //               ),
-      //             ),
-      //             child: Padding(
-      //               padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10),
-      //               child: Text(
-      //                 "확인",
-      //                 style: kBody11SemiBoldStyle.copyWith(color: kPrimaryColor),
-      //               ),
-      //             ),
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   );
-      // }
-      ///산책하기 보류로 주석 처리 완료
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant PuppyCatMain oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // if (getTabs().length != tabController.length) {
+    //   final oldIndex = tabController.index;
+    //   tabController.dispose();
+    //   print('didUpdateWidget 1');
+    //   tabController = TabController(
+    //     length: getTabs().length,
+    //     initialIndex: 0,
+    //     vsync: this,
+    //   );
+    // }
+  }
+
+  Future<TabController> _initTabContoller() async {
+    final isLogined = ref.read(loginStatementProvider);
+
+    if (isLogined) {
+      _myFeedListPagingController.refresh();
+
+      _popularWeekFeedListPagingController.refresh();
+
+      _followFeedListPagingController.refresh();
+
+      ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
+    }
+
+    if (getTabs().length != tabController.length) {
+      tabController.dispose();
+      tabController = TabController(
+        length: getTabs().length,
+        initialIndex: 0,
+        vsync: this,
+      );
+    }
+    return tabController;
   }
 
   void _myPostScrollListener() {
@@ -304,6 +210,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
   Widget build(BuildContext context) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
     final isLogined = ref.watch(loginStatementProvider);
+    print('build main 1 ${ref.read(routerProvider).routerDelegate.currentConfiguration}');
+    print('test333333 main ${ref.read(routerProvider).location()}');
 
     return Stack(
       children: [
@@ -331,136 +239,152 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                 ),
           body: SafeArea(
             child: Consumer(builder: (context, ref, _) {
-              return DefaultTabController(
-                length: isLogined ? 4 : 2,
-                child: NestedScrollView(
-                  controller: scrollController,
-                  headerSliverBuilder: (context, innerBoxIsScrolled) {
-                    return [
-                      isBigDevice
-                          ? SliverAppBar(
-                              pinned: true,
-                              snap: false,
-                              floating: true,
-                              expandedHeight: 180.0,
-                              centerTitle: false,
-                              leading: null,
-                              titleSpacing: 0,
-                              backgroundColor: kPreviousNeutralColor100,
-                              automaticallyImplyLeading: false,
-                              title: Row(
-                                children: [
-                                  const Spacer(),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 4.0),
-                                    child: _buttonWidget(),
-                                  ),
-                                ],
-                              ),
-                              flexibleSpace: FlexibleSpaceBar(
-                                titlePadding: EdgeInsets.zero,
-                                expandedTitleScale: 1.0,
-                                centerTitle: false,
-                                collapseMode: CollapseMode.pin,
-                                title: _buildTabbar(innerBoxIsScrolled),
-                                background: Container(
-                                  color: kPreviousNeutralColor100,
-                                  child: Stack(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 12,
-                                          left: 16,
+              return FutureBuilder(
+                  future: _initTabContoller(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Text('Error'),
+                      );
+                    }
+
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    return DefaultTabController(
+                      length: isLogined ? 4 : 2,
+                      child: NestedScrollView(
+                        controller: scrollController,
+                        headerSliverBuilder: (context, innerBoxIsScrolled) {
+                          return [
+                            isBigDevice
+                                ? SliverAppBar(
+                                    pinned: true,
+                                    snap: false,
+                                    floating: true,
+                                    expandedHeight: 180.0,
+                                    centerTitle: false,
+                                    leading: null,
+                                    titleSpacing: 0,
+                                    backgroundColor: kPreviousNeutralColor100,
+                                    automaticallyImplyLeading: false,
+                                    title: Row(
+                                      children: [
+                                        const Spacer(),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 4.0),
+                                          child: _buttonWidget(),
                                         ),
-                                        child: Image.asset(
-                                          'assets/image/logo/logo.png',
-                                          width: 107,
-                                          height: 39,
+                                      ],
+                                    ),
+                                    flexibleSpace: FlexibleSpaceBar(
+                                      titlePadding: EdgeInsets.zero,
+                                      expandedTitleScale: 1.0,
+                                      centerTitle: false,
+                                      collapseMode: CollapseMode.pin,
+                                      title: _buildTabbar(innerBoxIsScrolled),
+                                      background: Container(
+                                        color: kPreviousNeutralColor100,
+                                        child: Stack(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 12,
+                                                left: 16,
+                                              ),
+                                              child: Image.asset(
+                                                'assets/image/logo/logo.png',
+                                                width: 107,
+                                                height: 39,
+                                              ),
+                                            ),
+                                            _buildBackGround(),
+                                          ],
                                         ),
                                       ),
-                                      _buildBackGround(),
-                                    ],
+                                    ),
+                                  )
+                                : SliverAppBar(
+                                    pinned: true,
+                                    snap: false,
+                                    floating: true,
+                                    expandedHeight: 135.0,
+                                    centerTitle: false,
+                                    leading: null,
+                                    titleSpacing: 0,
+                                    backgroundColor: kPreviousNeutralColor100,
+                                    automaticallyImplyLeading: false,
+                                    flexibleSpace: FlexibleSpaceBar(
+                                      titlePadding: EdgeInsets.zero,
+                                      expandedTitleScale: 1.0,
+                                      centerTitle: false,
+                                      collapseMode: CollapseMode.pin,
+                                      title: _buildTabbar(innerBoxIsScrolled),
+                                      background: Container(
+                                        color: kPreviousNeutralColor100,
+                                        child: Stack(
+                                          children: [
+                                            _buildBackGround(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            )
-                          : SliverAppBar(
-                              pinned: true,
-                              snap: false,
-                              floating: true,
-                              expandedHeight: 135.0,
-                              centerTitle: false,
-                              leading: null,
-                              titleSpacing: 0,
-                              backgroundColor: kPreviousNeutralColor100,
-                              automaticallyImplyLeading: false,
-                              flexibleSpace: FlexibleSpaceBar(
-                                titlePadding: EdgeInsets.zero,
-                                expandedTitleScale: 1.0,
-                                centerTitle: false,
-                                collapseMode: CollapseMode.pin,
-                                title: _buildTabbar(innerBoxIsScrolled),
-                                background: Container(
-                                  color: kPreviousNeutralColor100,
-                                  child: Stack(
-                                    children: [
-                                      _buildBackGround(),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                    ];
-                  },
-                  body: InkWell(
-                    onTap: () {
-                      setState(() {
-                        _isWidgetVisible = false;
-                      });
-                    },
-                    child: Stack(
-                      children: [
-                        TabBarView(
-                          controller: tabController,
-                          children: [
-                            _firstTab(),
-                            // Container(
-                            //   color: Colors.blue,
-                            // ),
+                          ];
+                        },
+                        body: InkWell(
+                          onTap: () {
+                            setState(() {
+                              _isWidgetVisible = false;
+                            });
+                          },
+                          child: Stack(
+                            children: [
+                              TabBarView(
+                                controller: tabController,
+                                children: [
+                                  _firstTab(),
+                                  // Container(
+                                  //   color: Colors.blue,
+                                  // ),
 
-                            if (isLogined) ...[
-                              _thirdTab(),
+                                  if (isLogined) ...[
+                                    _thirdTab(),
+                                  ],
+                                  if (isLogined) ...[
+                                    _fourthTab(),
+                                  ],
+                                ],
+                              ),
+
+                              ///NOTE
+                              ///2023.11.14.
+                              ///산책하기 보류로 주석 처리
+                              // Visibility(
+                              //   visible: _isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking,
+                              //   child: Positioned.fill(
+                              //     bottom: 10,
+                              //     child: Align(
+                              //       alignment: Alignment.bottomCenter,
+                              //       child: Padding(
+                              //         padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 24.0),
+                              //         child: WalkInfoWidget(
+                              //           walkStateModel: ref.watch(singleWalkStateProvider).isEmpty ? null : ref.watch(singleWalkStateProvider).last,
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // )
+                              ///산책하기 보류로 주석 처리 완료
                             ],
-                            if (isLogined) ...[
-                              _fourthTab(),
-                            ],
-                          ],
+                          ),
                         ),
-
-                        ///NOTE
-                        ///2023.11.14.
-                        ///산책하기 보류로 주석 처리
-                        // Visibility(
-                        //   visible: _isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking,
-                        //   child: Positioned.fill(
-                        //     bottom: 10,
-                        //     child: Align(
-                        //       alignment: Alignment.bottomCenter,
-                        //       child: Padding(
-                        //         padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 24.0),
-                        //         child: WalkInfoWidget(
-                        //           walkStateModel: ref.watch(singleWalkStateProvider).isEmpty ? null : ref.watch(singleWalkStateProvider).last,
-                        //         ),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // )
-                        ///산책하기 보류로 주석 처리 완료
-                      ],
-                    ),
-                  ),
-                ),
-              );
+                      ),
+                    );
+                  });
             }),
           ),
 
@@ -527,7 +451,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             if (!isLogined) {
               if (mounted) {
-                context.push('/login');
+                context.push('/home/login');
               }
             }
 
@@ -544,7 +468,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
               if (await Permissions.getCameraPermissionState()) {
                 if (!isLogined) {
-                  context.push('/login');
+                  context.push('/home/login');
                 }
 
                 final theme = themeData(context);
@@ -675,7 +599,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
             // ///산책하기 보류로 주석 처리 완료
             // if (mounted) {
             //   ref.read(userInfoProvider).userModel == null
-            //       ? context.pushReplacement("/login")
+            //       ? context.push("/home/login")
             //
             //       ///NOTE
             //       ///2023.11.14.
@@ -717,7 +641,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
 
             if (mounted) {
               if (!isLogined) {
-                context.push("/login");
+                context.push("/home/login");
                 // } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
               } else {
                 print('aaa');
@@ -1199,7 +1123,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
                           child: ElevatedButton(
                             onPressed: () {
                               !isLogined
-                                  ? context.push("/login")
+                                  ? context.push("/home/login")
                                   : InstaAssetPicker.pickAssets(
                                       context,
                                       maxAssets: 12,
@@ -1403,7 +1327,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with SingleTickerPro
         : Center(
             child: GestureDetector(
               onTap: () {
-                context.push("/login");
+                context.push("/home/login");
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

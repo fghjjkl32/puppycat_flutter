@@ -63,8 +63,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLogined = ref.watch(loginStatementProvider);
     final myInfo = ref.read(myInfoStateProvider);
-    final isLogined = ref.read(loginStatementProvider);
     final isOldVersion = ref.read(oldVersionStateProvider);
 
     return Material(
@@ -95,7 +95,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               onPressed: () async {
                 print('isLogined $isLogined');
                 if (await Permissions.getNotificationPermissionState()) {
-                  !isLogined ? context.push("/login") : context.push("/setting/alarm");
+                  !isLogined ? context.push("/home/login") : context.push("/setting/alarm");
                 } else {
                   if (mounted) {
                     showDialog(
@@ -154,7 +154,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
               title: '차단 유저 관리',
               onPressed: () {
-                !isLogined ? context.pushReplacement("/login") : context.push("/setting/blockedUser");
+                !isLogined ? context.push("/home/login") : context.push("/setting/blockedUser");
               },
             ),
             const Padding(

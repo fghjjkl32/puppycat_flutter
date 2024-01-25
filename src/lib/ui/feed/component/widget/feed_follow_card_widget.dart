@@ -138,7 +138,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                           onTap: () async {
                                             if (!ref.watch(followApiIsLoadingStateProvider)) {
                                               if (!isLogined) {
-                                                context.pushReplacement("/login");
+                                                context.push("/home/login");
                                               } else {
                                                 final result = await ref.watch(followStateProvider.notifier).deleteFollow(
                                                       followUuid: widget.memberUuid,
@@ -165,7 +165,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                           onTap: () async {
                                             if (!ref.watch(followApiIsLoadingStateProvider)) {
                                               if (!isLogined) {
-                                                context.pushReplacement("/login");
+                                                context.push("/home/login");
                                               } else {
                                                 final result = await ref.watch(followStateProvider.notifier).postFollow(
                                                       followUuid: widget.memberUuid,
