@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -9,10 +8,10 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/sheets/my_feed_delete_bottom_sheet.dart';
@@ -126,7 +125,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                   "${widget.userName}",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                  style: kTitle14BoldStyle.copyWith(color: kTextPrimary),
                                 ),
                               ),
                               if (!widget.isDetailWidget || widget.contentType == "popularWeekContent")
@@ -138,7 +137,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                             ? Row(
                                                 children: [
                                                   Text(
-                                                    " · ",
+                                                    "   ·   ",
                                                     style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                   ),
                                                   InkWell(
@@ -161,7 +160,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                     },
                                                     child: Text(
                                                       "팔로잉",
-                                                      style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor500),
+                                                      style: kTitle14BoldStyle.copyWith(color: kPreviousNeutralColor500),
                                                     ),
                                                   ),
                                                 ],
@@ -192,7 +191,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                     },
                                                     child: Text(
                                                       "팔로우",
-                                                      style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
+                                                      style: kTitle14BoldStyle.copyWith(color: kTextActionPrimary),
                                                     ),
                                                   ),
                                                 ],
@@ -202,7 +201,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                             ],
                           ),
                           const SizedBox(
-                            height: 1,
+                            height: 2,
                           ),
                           Row(
                             children: [
@@ -218,7 +217,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     ),
                               Text(
                                 widget.time,
-                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               widget.isEdit
                                   ? Row(

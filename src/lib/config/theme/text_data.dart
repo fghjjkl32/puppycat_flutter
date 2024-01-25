@@ -22,6 +22,12 @@ TextStyle kTitle18MediumStyle = const TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+TextStyle kTitle16BoldStyle = const TextStyle(
+  fontFamily: pretendard,
+  fontSize: 16,
+  fontWeight: FontWeight.w700,
+);
+
 TextStyle kTitle16ExtraBoldStyle = const TextStyle(
   fontFamily: pretendard,
   fontSize: 16,

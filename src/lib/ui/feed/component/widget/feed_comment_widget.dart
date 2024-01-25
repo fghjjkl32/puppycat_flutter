@@ -85,12 +85,12 @@ class FeedCommentWidget extends ConsumerWidget {
                             : Container(),
                         Text(
                           name,
-                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                          style: kTitle14BoldStyle.copyWith(color: kTextSecondary),
                         ),
                       ],
                     ),
                     const SizedBox(
-                      height: 6,
+                      height: 8,
                     ),
                     Container(
                       alignment: Alignment.centerLeft,
@@ -100,11 +100,11 @@ class FeedCommentWidget extends ConsumerWidget {
                             comment,
                             mentionListData,
                             context,
-                            kBody11RegularStyle.copyWith(color: kPreviousSecondaryColor),
+                            kBody14RegularStyle.copyWith(color: kTextTagSecondary),
                             ref,
                             oldMemberUuid,
                           ),
-                          style: kBody11RegularStyle.copyWith(color: kPreviousTextTitleColor),
+                          style: kBody14RegularStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ),
                     ),
