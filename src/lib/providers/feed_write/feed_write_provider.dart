@@ -21,6 +21,18 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
 
   final Ref ref;
 
+  PostFeedState? _lastSavedState;
+
+  // 등록 버튼을 눌렀을때, 현재 태그 상태를 저장 하는 함수
+  void saveState() {
+    _lastSavedState = state;
+  }
+
+  // 취소 버튼을 눌렀을 때 호출되는 함수
+  void revertToLastSavedState() {
+    state = _lastSavedState ?? state.copyWith(tagList: [], tagImage: [], offsetCount: 0);
+  }
+
   // 이미지에 태그를 추가하는 함수입니다.
   void addTag(Tag tag, int imageIndex, BuildContext context) {
     List<TagImages> newTagImage = List.from(state.tagImage);
@@ -71,6 +83,7 @@ class PostFeedWriteNotifier extends StateNotifier<PostFeedState> {
   void resetTag() {
     state = state.copyWith(tagList: [], tagImage: [], offsetCount: 0);
     ref.watch(feedWriteCurrentTagCountProvider.notifier).state = 0;
+    _lastSavedState = null;
   }
 
   // 특정 태그를 제거하는 함수입니다.
