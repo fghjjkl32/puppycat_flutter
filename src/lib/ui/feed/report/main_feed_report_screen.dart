@@ -28,6 +28,8 @@ class ReportScreen extends ConsumerStatefulWidget {
 }
 
 class ReportScreenState extends ConsumerState<ReportScreen> {
+  TextEditingController textEditingController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +39,12 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
 
   String? directInputText = "";
   int code = 0;
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +88,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                       itemCount: reportLists.length,
                       itemBuilder: (BuildContext context, int i) {
                         return SelectButton(
+                          textController: textEditingController,
                           isDirectInput: reportLists[i].reportCode! == 8,
                           title: reportLists[i].name!,
                           isSelected: code == reportLists[i].reportCode!,

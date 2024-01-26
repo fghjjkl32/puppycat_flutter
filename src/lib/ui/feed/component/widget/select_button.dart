@@ -11,6 +11,7 @@ class SelectButton extends StatelessWidget {
   final bool isSelected;
   final String title;
   final ValueSetter<String?>? onTextChanged;
+  final TextEditingController textController;
 
   const SelectButton({
     super.key,
@@ -18,6 +19,7 @@ class SelectButton extends StatelessWidget {
     required this.title,
     required this.onPressed,
     required this.isSelected,
+    required this.textController,
     this.onTextChanged,
   });
 
@@ -72,6 +74,7 @@ class SelectButton extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 8, left: 4, right: 4, bottom: 4),
                   child: FormBuilderTextField(
+                    controller: textController,
                     onChanged: onTextChanged,
                     scrollPhysics: const ClampingScrollPhysics(),
                     maxLength: 200,

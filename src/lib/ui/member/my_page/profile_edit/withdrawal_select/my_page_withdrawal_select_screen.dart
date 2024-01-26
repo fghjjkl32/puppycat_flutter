@@ -16,6 +16,8 @@ class MyPageWithdrawalSelectScreen extends ConsumerStatefulWidget {
 }
 
 class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSelectScreen> {
+  TextEditingController textEditingController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +27,12 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
 
   String? directInputText = "";
   int code = 0;
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +83,7 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                       itemCount: withdrawalLists.length,
                       itemBuilder: (BuildContext context, int i) {
                         return SelectButton(
+                          textController: textEditingController,
                           isDirectInput: withdrawalLists[i].code! == 7,
                           title: withdrawalLists[i].name!,
                           isSelected: code == withdrawalLists[i].code!,
@@ -166,69 +175,6 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
             ],
           ),
         ),
-        // bottomNavigationBar: Padding(
-        //   padding: const EdgeInsets.only(bottom: 8.0),
-        //   child: Column(
-        //     mainAxisSize: MainAxisSize.min,
-        //     children: [
-        //       code == 0 || (code == 7 && directInputText!.isEmpty)
-        //           ? Container()
-        //           : Row(
-        //               mainAxisAlignment: MainAxisAlignment.center,
-        //               children: [
-        //                 Image.asset(
-        //                   'assets/image/character/character_07_Withdrawal_ing_72.png',
-        //                   height: 40,
-        //                   width: 40,
-        //                 ),
-        //                 Text(
-        //                   "정말 탈퇴하시겠어요?",
-        //                   style: kBody12SemiBoldStyle.copyWith(color: kTextTitleColor),
-        //                 ),
-        //               ],
-        //             ),
-        //       SizedBox(
-        //         height: 10.h,
-        //       ),
-        //       Padding(
-        //         padding: EdgeInsets.only(
-        //           left: 20.0.w,
-        //           right: 20.0.w,
-        //           bottom: 20.0.h,
-        //         ),
-        //         child: SizedBox(
-        //           width: double.infinity,
-        //           child: ElevatedButton(
-        //             style: ElevatedButton.styleFrom(
-        //               disabledBackgroundColor: kNeutralColor400,
-        //               backgroundColor: kPrimaryColor,
-        //               shape: RoundedRectangleBorder(
-        //                 borderRadius: BorderRadius.circular(8.0),
-        //               ),
-        //             ),
-        //             onPressed: code == 0 || (code == 7 && directInputText!.isEmpty)
-        //                 ? null
-        //                 : () {
-        //                     if (directInputText == "") {
-        //                       directInputText = null;
-        //                     }
-        //                     ref.read(withdrawalCodeProvider.notifier).state = code;
-        //                     ref.read(withdrawalReasonProvider.notifier).state = directInputText;
-        //                     context.go("/member/myPage/profileEdit/withdrawalSelect/withdrawalDetail");
-        //                   },
-        //             child: Padding(
-        //               padding: const EdgeInsets.all(18.0),
-        //               child: Text(
-        //                 '다음',
-        //                 style: kBody14BoldStyle.copyWith(color: code == 0 || (code == 7 && directInputText!.isEmpty) ? kTextSubTitleColor : kNeutralColor100),
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
       ),
     );
   }
