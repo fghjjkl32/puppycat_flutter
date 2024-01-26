@@ -85,7 +85,7 @@ class FeedMainWidget extends ConsumerWidget {
                       padding: const EdgeInsets.only(left: 16.0, right: 10, bottom: 12, top: 24),
                       child: Text(
                         "요즘 인기 퍼플루언서",
-                        style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
+                        style: kTitle16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                       ),
                     ),
                     FeedFollowWidget(
@@ -99,7 +99,7 @@ class FeedMainWidget extends ConsumerWidget {
                   padding: const EdgeInsets.only(left: 16.0, right: 10),
                   child: Text(
                     "베스트 댕냥 피드",
-                    style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
+                    style: kTitle16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   ),
                 ),
               if (index == 4 && feedType == "recent")
@@ -146,7 +146,7 @@ class FeedMainWidget extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
-                    final style = kBody13RegularStyle.copyWith(color: kPreviousTextTitleColor);
+                    final style = kBody14RegularStyle.copyWith(color: kTextPrimary);
                     final double maxWidth = constraints.maxWidth * 0.7;
 
                     final TextPainter textPainter = TextPainter(
@@ -171,7 +171,7 @@ class FeedMainWidget extends ConsumerWidget {
                                     feedData.contents!,
                                     feedData.mentionList!,
                                     context,
-                                    kBody13RegularStyle.copyWith(color: kPreviousSecondaryColor),
+                                    kBody14RegularStyle.copyWith(color: kTextTagSecondary),
                                     ref,
                                     oldMemberUuid,
                                   ),

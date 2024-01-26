@@ -17,9 +17,9 @@ import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/authentication/auth_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/edit_my_information/edit_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user_information/my_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/widget/bottom_sheet_button_item_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
@@ -554,7 +554,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           decoration: nickProvider != NickNameStatus.valid
                                               ? InputDecoration(
                                                   hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
-                                                  hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                                                  hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                                                   errorStyle: kBody11RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
                                                   errorText: getNickDescription(nickProvider),
                                                   errorBorder: const OutlineInputBorder(
@@ -570,7 +570,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                 )
                                               : InputDecoration(
                                                   hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
-                                                  hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                                                  hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                                                   errorText: '회원가입.사용 가능한 닉네임입니다'.tr(),
                                                   errorStyle: kBody11RegularStyle.copyWith(color: kPreviousPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
                                                   errorBorder: const OutlineInputBorder(
@@ -742,7 +742,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             decoration: InputDecoration(
                               counterText: "",
                               hintText: "${editMyInfoModel.intro == "" ? '나를 간단하게 소개해 주세요.' : editMyInfoModel.intro}",
-                              hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                              hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                               contentPadding: const EdgeInsets.all(16),
                             ),
                             onChanged: (value) {
@@ -790,7 +790,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               filled: true,
                               fillColor: kPreviousNeutralColor300,
                               counterText: "",
-                              hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                              hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                               // contentPadding: const EdgeInsets.all(16),
                               contentPadding: const EdgeInsets.only(
                                 bottom: 22,
@@ -818,7 +818,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             controller: TextEditingController(text: editMyInfoModel.name),
                             decoration: InputDecoration(
                                 counterText: "",
-                                hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                                hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                                 filled: true,
                                 fillColor: kPreviousNeutralColor300,
                                 contentPadding: const EdgeInsets.all(16)),

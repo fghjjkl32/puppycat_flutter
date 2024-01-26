@@ -76,7 +76,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                   padding: const EdgeInsets.only(
                     right: 10,
                   ),
-                  child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
+                  child: getProfileAvatar(widget.profileImage ?? "", 40, 40),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +98,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             : Container(),
                         Text(
                           widget.userName,
-                          style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                          style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ],
                     ),
@@ -107,7 +107,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                     ),
                     Text(
                       widget.content,
-                      style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],
                 ),

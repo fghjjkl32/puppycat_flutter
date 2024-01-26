@@ -135,14 +135,18 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
               title: widget.firstTitle == "null"
                   ? Text(
                       widget.contentType == "searchContent" ? "#${widget.secondTitle}" : widget.secondTitle,
+                      style: kTitle18BoldStyle,
                     )
                   : Column(
                       children: [
                         Text(
                           widget.contentType != "notificationContent" ? widget.firstTitle : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? '',
-                          style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
-                        Text(widget.secondTitle),
+                        Text(
+                          widget.secondTitle,
+                          style: kTitle16BoldStyle,
+                        ),
                       ],
                     ),
               leading: IconButton(
@@ -198,7 +202,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                               padding: const EdgeInsets.all(20.0),
                               child: Text(
                                 "팔로잉",
-                                style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor500),
+                                style: kTitle14BoldStyle.copyWith(color: kPreviousNeutralColor500),
                               ),
                             ),
                           )
@@ -224,7 +228,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                               padding: const EdgeInsets.all(20.0),
                               child: Text(
                                 "팔로우",
-                                style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
+                                style: kTitle14BoldStyle.copyWith(color: kTextActionPrimary),
                               ),
                             ),
                           )

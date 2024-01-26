@@ -242,7 +242,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                     decoration: InputDecoration(
                         counterText: "",
                         hintText: "내용을 입력해 주세요. (최대 500자)\n\n운영 정책에 위반되는 폭력/선정/욕설 등은\n'${myInfo.nick}'님에게 책임이 있으며 동의 없이 삭제될 수 있어요.",
-                        hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                        hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                         contentPadding: const EdgeInsets.all(16)),
                     // name: 'content',
                     style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),

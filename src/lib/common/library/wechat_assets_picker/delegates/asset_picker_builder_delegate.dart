@@ -7,7 +7,6 @@ import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
 import 'dart:ui' as ui;
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
@@ -1715,6 +1714,7 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             ValueListenableBuilder<PermissionState>(
               valueListenable: permission,
@@ -1733,22 +1733,52 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                   horizontal: 20,
                   vertical: 12,
                 ),
-                child: Text.rich(
-                  TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: "모든 사진에 접근을 허용하면 더 편하게 사진을 공유할 수 있어요.",
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "모든 사진에 접근을 허용하면\n더 편하게 사진을 공유할 수 있어요.",
+                          style: kBody14BoldStyle.copyWith(color: kTextSecondary),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            PhotoManager.presentLimited();
+                          },
+                          child: Text(
+                            "[더 많은 사진 선택]",
+                            style: kBody14BoldStyle.copyWith(color: interactiveTextColor(context)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        openAppSettings();
+                      },
+                      child: Container(
+                        width: 77,
+                        height: 36,
+                        decoration: const BoxDecoration(
+                          color: kBackgroundSecondary,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8.0),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "설정 열기",
+                            style: kTitle14BoldStyle.copyWith(color: kTextSecondary),
+                          ),
+                        ),
                       ),
-                      TextSpan(
-                        text: "[설정 열기]",
-                        style: TextStyle(color: interactiveTextColor(context)),
-                        recognizer: TapGestureRecognizer()..onTap = PhotoManager.presentLimited,
-                      ),
-                    ],
-                  ),
-                  style: context.themeData.textTheme.bodySmall?.copyWith(
-                    fontSize: 14,
-                  ),
+                    )
+                  ],
                 ),
               ),
             ),

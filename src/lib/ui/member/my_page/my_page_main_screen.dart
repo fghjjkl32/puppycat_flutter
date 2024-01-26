@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -33,6 +34,7 @@ import 'package:pet_mobile_social_flutter/ui/components/refresh_loading_animatio
 import 'package:pet_mobile_social_flutter/ui/feed/comment/component/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/comment/component/widget/comment_detail_item_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/widget/favorite_item_widget.dart';
+
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -1200,14 +1202,14 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                         children: [
                           Text(
                             "일상글",
-                            style: kBody14BoldStyle,
+                            style: kTitle16BoldStyle,
                           ),
                           const SizedBox(
                             width: 6,
                           ),
                           Text(
                             "${ref.watch(myContentsFeedTotalCountProvider)}",
-                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                            style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                           ),
                         ],
                       );
@@ -1221,14 +1223,14 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                         children: [
                           Text(
                             "태그됨",
-                            style: kBody14BoldStyle,
+                            style: kTitle16BoldStyle,
                           ),
                           const SizedBox(
                             width: 6,
                           ),
                           Text(
                             "${ref.watch(myTagContentsFeedTotalCountProvider)}",
-                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                            style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                           ),
                         ],
                       );

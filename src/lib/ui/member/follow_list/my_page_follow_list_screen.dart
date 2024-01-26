@@ -6,11 +6,10 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/tag_contents/user_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user_contents/user_contents_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/ui/member/follow_list/widget/follower_item_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/member/follow_list/widget/following_item_widget.dart';
@@ -137,14 +136,14 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                         children: [
                           Text(
                             "팔로워",
-                            style: kBody14BoldStyle,
+                            style: kTitle16BoldStyle,
                           ),
                           const SizedBox(
                             width: 6,
                           ),
                           Text(
                             "${ref.watch(followStateProvider).followerListState.totalCount}",
-                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                            style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                           ),
                         ],
                       );
@@ -158,14 +157,14 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                         children: [
                           Text(
                             "팔로잉",
-                            style: kBody14BoldStyle,
+                            style: kTitle16BoldStyle,
                           ),
                           const SizedBox(
                             width: 6,
                           ),
                           Text(
                             "${ref.watch(followStateProvider).followListState.totalCount}",
-                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                            style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                           ),
                         ],
                       );
@@ -256,7 +255,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                               ),
                             ),
                       hintText: "닉네임으로 검색해 보세요.",
-                      hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                      hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                     ),
                   ),
                 ),
@@ -397,7 +396,7 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                               ),
                             ),
                       hintText: "닉네임으로 검색해 보세요.",
-                      hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                      hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                     ),
                   ),
                 ),

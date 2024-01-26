@@ -94,8 +94,8 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
               style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4, letterSpacing: 0.2),
             ),
             Text(
-              '*',
-              style: kBody13RegularStyle.copyWith(color: kPreviousErrorColor, height: 1.4, letterSpacing: 0.2),
+              ' *',
+              style: kBody13RegularStyle.copyWith(color: kTextActionPrimary, height: 1.4, letterSpacing: 0.2),
             ),
           ],
         ),
@@ -252,7 +252,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   decoration: nickProvider != NickNameStatus.valid
                       ? InputDecoration(
                           hintText: '회원가입.2~20자로 입력해 주세요'.tr(),
-                          hintStyle: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                          hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                           errorStyle: kBody11RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
                           errorText: getNickDescription(nickProvider),
                           errorBorder: const OutlineInputBorder(
@@ -378,6 +378,9 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Checkbox(
+                activeColor: kPreviousPrimaryLightColor,
+                visualDensity: VisualDensity.standard,
+                checkColor: kPreviousPrimaryColor,
                 value: ref.watch(policyAllAgreeStateProvider),
                 onChanged: (value) {
                   _nickFocusNode.unfocus();

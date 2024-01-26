@@ -7,7 +7,6 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/feed_write/location_item.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_location_search_provider.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/feed_write/component/location_item_widget.dart';
 
@@ -96,7 +95,7 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                   ),
                                 ),
                           hintText: "장소를 입력해 주세요.",
-                          hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                          hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                         ),
                       ),
                     ),

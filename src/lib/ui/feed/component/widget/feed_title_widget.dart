@@ -125,7 +125,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                   "${widget.userName}",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                  style: kTitle14BoldStyle.copyWith(color: kTextPrimary),
                                 ),
                               ),
                               if (!widget.isDetailWidget || widget.contentType == "popularWeekContent")
@@ -137,7 +137,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                             ? Row(
                                                 children: [
                                                   Text(
-                                                    " · ",
+                                                    "   ·   ",
                                                     style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                   ),
                                                   InkWell(
@@ -160,7 +160,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                     },
                                                     child: Text(
                                                       "팔로잉",
-                                                      style: kBody12SemiBoldStyle.copyWith(color: kPreviousNeutralColor500),
+                                                      style: kTitle14BoldStyle.copyWith(color: kPreviousNeutralColor500),
                                                     ),
                                                   ),
                                                 ],
@@ -191,7 +191,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                     },
                                                     child: Text(
                                                       "팔로우",
-                                                      style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
+                                                      style: kTitle14BoldStyle.copyWith(color: kTextActionPrimary),
                                                     ),
                                                   ),
                                                 ],
@@ -201,7 +201,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                             ],
                           ),
                           const SizedBox(
-                            height: 1,
+                            height: 2,
                           ),
                           Row(
                             children: [
@@ -217,7 +217,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     ),
                               Text(
                                 widget.time,
-                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               widget.isEdit
                                   ? Row(

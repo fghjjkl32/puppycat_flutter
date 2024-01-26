@@ -135,7 +135,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                   ),
                                 ),
                           hintText: "닉네임으로 검색해 보세요.",
-                          hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                          hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                         ),
                       ),
                     ),

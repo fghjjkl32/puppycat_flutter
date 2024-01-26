@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -75,7 +76,7 @@ class UserItemWidgetState extends ConsumerState<SearchItemWidget> {
                   padding: const EdgeInsets.only(
                     right: 10,
                   ),
-                  child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
+                  child: getProfileAvatar(widget.profileImage ?? "", 36, 36),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,7 +98,7 @@ class UserItemWidgetState extends ConsumerState<SearchItemWidget> {
                             : Container(),
                         Text(
                           widget.userName,
-                          style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                          style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ],
                     ),

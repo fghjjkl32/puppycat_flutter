@@ -98,7 +98,7 @@
 //                             enabled: false,
 //                             initialValue: "${widget.itemModel.name}",
 //                             decoration: InputDecoration(
-//                                 counterText: "", hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500), filled: true, fillColor: kNeutralColor300, contentPadding: const EdgeInsets.all(16)),
+//                                 counterText: "", hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy12RegularStyle.copyWith(color: kNeutralColor500), filled: true, fillColor: kNeutralColor300, contentPadding: const EdgeInsets.all(16)),
 //                             name: 'content',
 //                             style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
 //                             textAlignVertical: TextAlignVertical.center,
@@ -121,7 +121,7 @@
 //                           enabled: false,
 //                           initialValue: "${widget.itemModel.breedIdx == 1 || widget.itemModel.breedIdx == 2 ? widget.itemModel.breedNameEtc : widget.itemModel.breedName}",
 //                           decoration: InputDecoration(
-//                               counterText: "", hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500), filled: true, fillColor: kNeutralColor300, contentPadding: const EdgeInsets.all(16)),
+//                               counterText: "", hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy12RegularStyle.copyWith(color: kNeutralColor500), filled: true, fillColor: kNeutralColor300, contentPadding: const EdgeInsets.all(16)),
 //                           name: 'content',
 //                           style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
 //                           textAlignVertical: TextAlignVertical.center,
@@ -265,7 +265,7 @@
 //                           enabled: false,
 //                           initialValue: DateFormat('yyyy-MM-dd').format(DateTime.parse(widget.itemModel.birth!)),
 //                           decoration: InputDecoration(
-//                               counterText: "", hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500), filled: true, fillColor: kNeutralColor300, contentPadding: const EdgeInsets.all(16)),
+//                               counterText: "", hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy12RegularStyle.copyWith(color: kNeutralColor500), filled: true, fillColor: kNeutralColor300, contentPadding: const EdgeInsets.all(16)),
 //                           name: 'content',
 //                           style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
 //                           textAlignVertical: TextAlignVertical.center,
@@ -281,7 +281,7 @@
 //                           enabled: false,
 //                           initialValue: "${widget.itemModel.personalityIdx == 7 ? widget.itemModel.personalityEtc : widget.itemModel.personality}",
 //                           decoration: InputDecoration(
-//                               counterText: "", hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500), filled: true, fillColor: kNeutralColor300, contentPadding: const EdgeInsets.all(16)),
+//                               counterText: "", hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy12RegularStyle.copyWith(color: kNeutralColor500), filled: true, fillColor: kNeutralColor300, contentPadding: const EdgeInsets.all(16)),
 //                           name: 'content',
 //                           style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
 //                           textAlignVertical: TextAlignVertical.center,

@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -68,7 +67,7 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
                     ),
                     child: SvgPicture.asset(
                       'assets/image/feed/image/squircle.svg',
-                      height: 32,
+                      height: 36,
                     ),
                   ),
                 ),
@@ -77,13 +76,13 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
                   children: [
                     Text(
                       widget.hashTag,
-                      style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                      style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
                     const SizedBox(
                       height: 4,
                     ),
                     Text(
-                      "${widget.hashTagCnt}+",
+                      "게시물 ${widget.hashTagCnt}+",
                       style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],

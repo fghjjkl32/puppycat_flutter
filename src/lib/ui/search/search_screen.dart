@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -176,7 +177,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                       ),
                     ),
               hintText: "프로필이나 피드를 검색해 보세요.",
-              hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
+              hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
             ),
           ),
           leading: IconButton(
@@ -205,15 +206,15 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                 tabs: [
                   Text(
                     "전체",
-                    style: kBody16MediumStyle,
+                    style: kTitle16BoldStyle,
                   ),
                   Text(
                     "프로필",
-                    style: kBody16MediumStyle,
+                    style: kTitle16BoldStyle,
                   ),
                   Text(
                     "해시태그",
-                    style: kBody16MediumStyle,
+                    style: kTitle16BoldStyle,
                   ),
                   // Text(
                   //   "산책",
@@ -863,7 +864,19 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                             } else if (search.content == "hashtag" || search.content == "search") {
                               return InkWell(
                                 onTap: () {
-                                  search.content == "search" ? _searchController.text = search.name! : context.push("/search/hashtag/${search.name}/0");
+                                  if (search.content == "search") {
+                                    setState(() {
+                                      _showTabs = true;
+                                    });
+
+                                    _searchController.text = search.name!;
+
+                                    ref.watch(fullSearchStateProvider.notifier).searchFullList(_searchController.text);
+                                    ref.watch(tagSearchStateProvider.notifier).searchTagList(_searchController.text);
+                                    ref.watch(profileSearchStateProvider.notifier).searchTagList(_searchController.text);
+                                  } else {
+                                    context.push("/search/hashtag/${search.name}/0");
+                                  }
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 8, top: 8),
@@ -895,7 +908,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                 ),
                                                 child: SvgPicture.asset(
                                                   'assets/image/feed/image/squircle.svg',
-                                                  height: 32,
+                                                  height: 36,
                                                 ),
                                               )),
                                           Column(
@@ -903,7 +916,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                             children: [
                                               Text(
                                                 search.name!,
-                                                style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                                style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                               ),
                                             ],
                                           ),

@@ -268,7 +268,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                   Flexible(
                     child: Text(
                       isPermissionLimited && p.path.isAll ? textDelegate.accessiblePathName : p.path.name,
-                      style: theme.textTheme.bodyLarge?.copyWith(fontSize: 16),
+                      style: kTitle18BoldStyle.copyWith(color: kTextPrimary),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -282,10 +282,10 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 angle: isSwitchingPath ? math.pi : 0,
                 child: w,
               ),
-              child: Icon(
+              child: const Icon(
                 Puppycat_social.icon_down,
                 size: 20,
-                color: theme.iconTheme.color,
+                color: kPreviousTextBodyColor,
               ),
             ),
           ),

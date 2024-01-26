@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -83,7 +82,7 @@ class SelectButton extends StatelessWidget {
                       border: InputBorder.none,
                       counterText: "",
                       hintText: '이유를 입력해주세요',
-                      hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                      hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                       contentPadding: const EdgeInsets.all(16),
                       enabledBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.zero,

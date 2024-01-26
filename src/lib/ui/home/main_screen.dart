@@ -65,7 +65,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
     List<Widget> tabs = [
       Text(
         "전체",
-        style: kBody16MediumStyle,
+        style: kTitle16BoldStyle,
       ),
       // Text(
       //   "산책",
@@ -77,11 +77,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
       tabs.addAll([
         Text(
           "팔로잉",
-          style: kBody16MediumStyle,
+          style: kTitle16BoldStyle,
         ),
         Text(
           "내 피드",
-          style: kBody16MediumStyle,
+          style: kTitle16BoldStyle,
         ),
       ]);
     }
@@ -1264,7 +1264,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                           const SizedBox(height: 4.0),
                           Text(
                             "my",
-                            style: kBody12RegularStyle.copyWith(color: kPreviousTextTitleColor),
+                            style: kBody12ExtraBoldStyle.copyWith(color: kTextPrimary),
                           ),
                         ],
                       ),
@@ -1308,7 +1308,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.center,
-                                        style: kBody12RegularStyle.copyWith(color: kPreviousTextTitleColor),
+                                        style: kBody12RegularStyle.copyWith(color: kTextPrimary),
                                       ),
                                     ),
                                   ],

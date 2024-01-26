@@ -83,11 +83,11 @@ class FeedDetailWidget extends ConsumerWidget {
                   feedData.contents!,
                   feedData.mentionList!,
                   context,
-                  kBody13RegularStyle.copyWith(color: kPreviousSecondaryColor),
+                  kBody14RegularStyle.copyWith(color: kTextTagSecondary),
                   ref,
                   memberUuid,
                 ),
-                style: kBody13RegularStyle.copyWith(color: kPreviousTextTitleColor),
+                style: kBody14RegularStyle.copyWith(color: kPreviousTextTitleColor),
               ),
             ),
           ),
@@ -104,22 +104,24 @@ class FeedDetailWidget extends ConsumerWidget {
         feedData.comment == null
             ? Container()
             : FeedCommentWidget(
-                memberUuid: feedData.comment!.memberUuid!,
-                profileImage: feedData.comment!.profileImgUrl,
-                name: feedData.comment!.nick!,
-                comment: feedData.comment!.contents!,
-                isSpecialUser: feedData.comment!.isBadge! == 1,
-                mentionListData: feedData.comment!.mentionList ?? [],
-                contentIdx: feedData.idx,
-                oldMemberUuid: memberUuid,
-              ),
+          memberUuid: feedData.comment!.memberUuid!,
+          profileImage: feedData.comment!.profileImgUrl,
+          name: feedData.comment!.nick!,
+          comment: feedData.comment!.contents!,
+          isSpecialUser: feedData.comment!.isBadge! == 1,
+          mentionListData: feedData.comment!.mentionList ?? [],
+          contentIdx: feedData.idx,
+          oldMemberUuid: memberUuid,
+        ),
         const Padding(
           padding: EdgeInsets.all(12.0),
           child: Divider(),
         ),
         if (index != 0 && index == 4)
           FeedFollowWidget(
-            popularUserListData: ref.watch(popularUserListStateProvider).list,
+            popularUserListData: ref
+                .watch(popularUserListStateProvider)
+                .list,
             oldMemberUuid: memberUuid,
           ),
       ],
