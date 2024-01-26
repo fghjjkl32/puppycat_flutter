@@ -34,8 +34,6 @@ class PostFeedView extends ConsumerStatefulWidget {
 }
 
 class PostFeedViewState extends ConsumerState<PostFeedView> {
-  final ScrollController _scrollController = ScrollController();
-
   @override
   Widget build(BuildContext context) {
     final buttonSelected = ref.watch(feedWriteButtonSelectedProvider);
@@ -50,10 +48,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
           AnimatedContainer(
             duration: kThemeChangeDuration,
             curve: Curves.easeInOut,
-            height: getImageHeightCalculateValue(MediaQuery
-                .of(context)
-                .size
-                .width),
+            height: getImageHeightCalculateValue(MediaQuery.of(context).size.width),
             child: Column(
               children: <Widget>[
                 CroppedImagesListView(
@@ -151,9 +146,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
             ],
             fieldViewBuilder: (context, controller, focusNode) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                ref
-                    .watch(feedWriteContentProvider.notifier)
-                    .state = controller;
+                ref.watch(feedWriteContentProvider.notifier).state = controller;
               });
 
               return Padding(
@@ -163,10 +156,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                     focusNode: focusNode,
                     controller: controller,
                     onChanged: (text) {
-                      int cursorPos = ref
-                          .watch(feedWriteContentProvider)
-                          .selection
-                          .baseOffset;
+                      int cursorPos = ref.watch(feedWriteContentProvider).selection.baseOffset;
                       if (cursorPos > 0) {
                         int from = text!.lastIndexOf('@', cursorPos);
                         if (from != -1) {
@@ -182,10 +172,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
 
                             if (toSearch.isNotEmpty) {
                               if (toSearch.length >= 1) {
-                                ref
-                                    .watch(searchStateProvider.notifier)
-                                    .searchQuery
-                                    .add(toSearch);
+                                ref.watch(searchStateProvider.notifier).searchQuery.add(toSearch);
                               }
                             } else {
                               ref.watch(searchStateProvider.notifier).getMentionRecommendList(initPage: 1);
@@ -195,7 +182,6 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                       }
                     },
                     scrollPhysics: const ClampingScrollPhysics(),
-                    scrollController: _scrollController,
                     maxLength: 500,
                     scrollPadding: const EdgeInsets.only(bottom: 500),
                     maxLines: 6,
@@ -225,19 +211,17 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                 ref.watch(feedWriteLocationInformationProvider) == ""
                     ? Container()
                     : GestureDetector(
-                  onTap: () {
-                    ref
-                        .watch(feedWriteLocationInformationProvider.notifier)
-                        .state = "";
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 12, bottom: 8, top: 12, left: 12),
-                    child: Text(
-                      "삭제",
-                      style: kBadge10MediumStyle.copyWith(color: kTextTertiary),
-                    ),
-                  ),
-                ),
+                        onTap: () {
+                          ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 12, bottom: 8, top: 12, left: 12),
+                          child: Text(
+                            "삭제",
+                            style: kBadge10MediumStyle.copyWith(color: kTextTertiary),
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),
@@ -256,18 +240,15 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                 await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          KpostalView(
-                            useLocalServer: true,
-                            localPort: 9723,
-                            kakaoKey: 'e70ed9e481a7927e0adc8647263bf6a5',
-                            callback: (Kpostal result) {
-                              print('location result $result');
-                              ref
-                                  .watch(feedWriteLocationInformationProvider.notifier)
-                                  .state = result.buildingName == "" ? result.roadAddress : result.buildingName;
-                            },
-                          ),
+                      builder: (_) => KpostalView(
+                        useLocalServer: true,
+                        localPort: 9723,
+                        kakaoKey: 'e70ed9e481a7927e0adc8647263bf6a5',
+                        callback: (Kpostal result) {
+                          print('location result $result');
+                          ref.watch(feedWriteLocationInformationProvider.notifier).state = result.buildingName == "" ? result.roadAddress : result.buildingName;
+                        },
+                      ),
                     ));
               },
               child: Container(
@@ -280,19 +261,19 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                   children: [
                     ref.watch(feedWriteLocationInformationProvider) == ""
                         ? Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
-                      child: Text(
-                        "위치를 추가해 주세요.",
-                        style: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
-                      ),
-                    )
+                            padding: const EdgeInsets.only(left: 16.0),
+                            child: Text(
+                              "위치를 추가해 주세요.",
+                              style: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                            ),
+                          )
                         : Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
-                      child: Text(
-                        ref.watch(feedWriteLocationInformationProvider),
-                        style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
-                      ),
-                    ),
+                            padding: const EdgeInsets.only(left: 16.0),
+                            child: Text(
+                              ref.watch(feedWriteLocationInformationProvider),
+                              style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                            ),
+                          ),
                     IconButton(
                       onPressed: () {},
                       icon: const Icon(
@@ -320,20 +301,18 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      ref
-                          .watch(feedWriteButtonSelectedProvider.notifier)
-                          .state = 1;
+                      ref.watch(feedWriteButtonSelectedProvider.notifier).state = 1;
                     },
                     child: Container(
                       decoration: buttonSelected == 1
                           ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: kPreviousPrimaryLightColor,
-                      )
+                              borderRadius: BorderRadius.circular(10),
+                              color: kPreviousPrimaryLightColor,
+                            )
                           : BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: kPreviousNeutralColor400),
-                      ),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: kPreviousNeutralColor400),
+                            ),
                       height: 44,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -361,20 +340,18 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      ref
-                          .watch(feedWriteButtonSelectedProvider.notifier)
-                          .state = 2;
+                      ref.watch(feedWriteButtonSelectedProvider.notifier).state = 2;
                     },
                     child: Container(
                       decoration: buttonSelected == 2
                           ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: kPreviousPrimaryLightColor,
-                      )
+                              borderRadius: BorderRadius.circular(10),
+                              color: kPreviousPrimaryLightColor,
+                            )
                           : BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: kPreviousNeutralColor400),
-                      ),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: kPreviousNeutralColor400),
+                            ),
                       height: 44,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -402,20 +379,18 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      ref
-                          .watch(feedWriteButtonSelectedProvider.notifier)
-                          .state = 0;
+                      ref.watch(feedWriteButtonSelectedProvider.notifier).state = 0;
                     },
                     child: Container(
                       decoration: buttonSelected == 0
                           ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: kPreviousPrimaryLightColor,
-                      )
+                              borderRadius: BorderRadius.circular(10),
+                              color: kPreviousPrimaryLightColor,
+                            )
                           : BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: kPreviousNeutralColor400),
-                      ),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: kPreviousNeutralColor400),
+                            ),
                       height: 44,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -441,7 +416,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
             ),
           ),
           const SizedBox(
-            height: 100,
+            height: 20,
           ),
         ],
       ),

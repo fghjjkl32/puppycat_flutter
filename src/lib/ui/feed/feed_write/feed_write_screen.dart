@@ -67,7 +67,6 @@ class FeedWriteScreen extends ConsumerWidget {
         return false;
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text('새로운 피드'),
