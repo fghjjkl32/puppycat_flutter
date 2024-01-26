@@ -94,8 +94,8 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
               style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4, letterSpacing: 0.2),
             ),
             Text(
-              '*',
-              style: kBody13RegularStyle.copyWith(color: kPreviousErrorColor, height: 1.4, letterSpacing: 0.2),
+              ' *',
+              style: kBody13RegularStyle.copyWith(color: kTextActionPrimary, height: 1.4, letterSpacing: 0.2),
             ),
           ],
         ),
@@ -378,6 +378,9 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Checkbox(
+                activeColor: kPreviousPrimaryLightColor,
+                visualDensity: VisualDensity.standard,
+                checkColor: kPreviousPrimaryColor,
                 value: ref.watch(policyAllAgreeStateProvider),
                 onChanged: (value) {
                   _nickFocusNode.unfocus();

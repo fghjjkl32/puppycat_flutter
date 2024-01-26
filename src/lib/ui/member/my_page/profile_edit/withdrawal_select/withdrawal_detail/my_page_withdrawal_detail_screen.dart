@@ -69,9 +69,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                     width: 20,
                   ),
                   Text(
-                    '''활동한 정보는 돌아오실 경우를 위해 
-                    7일간 유지하고 그 이후엔 전부 삭제돼요.
-                    ''',
+                    '활동한 정보는 돌아오실 경우를 위해\n7일간 유지하고 그 이후엔 전부 삭제돼요.',
                     style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   ),
                 ],
