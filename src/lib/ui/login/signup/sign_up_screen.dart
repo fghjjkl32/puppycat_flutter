@@ -252,7 +252,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   decoration: nickProvider != NickNameStatus.valid
                       ? InputDecoration(
                           hintText: '회원가입.2~20자로 입력해 주세요'.tr(),
-                          hintStyle: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                          hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                           errorStyle: kBody11RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
                           errorText: getNickDescription(nickProvider),
                           errorBorder: const OutlineInputBorder(

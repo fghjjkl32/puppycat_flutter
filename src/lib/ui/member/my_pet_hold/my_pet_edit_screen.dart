@@ -596,7 +596,7 @@
 //                             controller: nameController,
 //                             decoration: InputDecoration(
 //                               hintText: '이름을 입력해주세요',
-//                               hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+//                               hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy12RegularStyle.copyWith(color: kNeutralColor500),
 //                               errorStyle: kBody11RegularStyle.copyWith(color: kBadgeColor, fontWeight: FontWeight.w400, height: 1.2),
 //                               errorText: getNickDescription(nameProvider),
 //                               errorBorder: const OutlineInputBorder(
@@ -741,7 +741,7 @@
 //           },
 //           decoration: InputDecoration(
 //             hintText: '품종 검색',
-//             hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+//             hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy12RegularStyle.copyWith(color: kNeutralColor500),
 //             errorMaxLines: 2,
 //             counterText: '',
 //             isDense: true,
@@ -925,7 +925,7 @@
 //           },
 //           decoration: InputDecoration(
 //             hintText: '생년월일',
-//             hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+//             hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy12RegularStyle.copyWith(color: kNeutralColor500),
 //             errorMaxLines: 2,
 //             counterText: '',
 //             isDense: true,
@@ -975,7 +975,7 @@
 //             controller: personalityController,
 //             decoration: InputDecoration(
 //               hintText: '우리 아이 성격은 어떤가요?',
-//               hintStyle: kBody12RegularStyle.copyWith(color: kNeutralColor500),
+//               hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy12RegularStyle.copyWith(color: kNeutralColor500),
 //               errorMaxLines: 2,
 //               counterText: '',
 //               isDense: true,

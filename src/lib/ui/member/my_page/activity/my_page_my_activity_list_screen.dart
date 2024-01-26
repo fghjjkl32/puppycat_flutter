@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
@@ -105,14 +106,14 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       children: [
                         Text(
                           "좋아요",
-                          style: kBody14BoldStyle,
+                          style: kTitle16BoldStyle,
                         ),
                         const SizedBox(
                           width: 6,
                         ),
                         Text(
                           "${ref.watch(myLikeStateProvider).totalCount}",
-                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                          style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                         ),
                       ],
                     );
@@ -126,14 +127,14 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       children: [
                         Text(
                           "저장",
-                          style: kBody14BoldStyle,
+                          style: kTitle16BoldStyle,
                         ),
                         const SizedBox(
                           width: 6,
                         ),
                         Text(
                           "${ref.watch(mySaveStateProvider).totalCount}",
-                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                          style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                         ),
                       ],
                     );

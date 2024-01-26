@@ -184,7 +184,7 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
                           .map(
                             (e) => Text(
                               e.menuName ?? 'unknown',
-                              style: kBody14BoldStyle,
+                              style: kTitle16BoldStyle,
                             ),
                           )
                           .toList(),

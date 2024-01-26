@@ -9,8 +9,8 @@ import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/sheets/my_feed_delete_bottom_sheet.dart';
@@ -111,14 +111,14 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                       children: [
                         Text(
                           "일상글",
-                          style: kBody14BoldStyle,
+                          style: kTitle16BoldStyle,
                         ),
                         const SizedBox(
                           width: 6,
                         ),
                         Text(
                           "${ref.watch(myPostStateProvider).myPostState.totalCount}",
-                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                          style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                         ),
                       ],
                     );
@@ -132,14 +132,14 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                       children: [
                         Text(
                           "보관글",
-                          style: kBody14BoldStyle,
+                          style: kTitle16BoldStyle,
                         ),
                         const SizedBox(
                           width: 6,
                         ),
                         Text(
                           "${ref.watch(myPostStateProvider).myKeepState.totalCount}",
-                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                          style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                         ),
                       ],
                     );

@@ -529,7 +529,7 @@
 //               focusNode: _inputFocus,
 //               decoration: InputDecoration(
 //                 hintText: '메시지.메시지를 입력해 주세요'.tr(),
-//                 hintStyle: kBody12RegularStyle400.copyWith(color: kNeutralColor500),
+//                 hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy12RegularStyle400.copyWith(color: kNeutralColor500),
 //                 contentPadding: const EdgeInsets.fromLTRB(20, 15, 12, 15),
 //                 suffixIcon: Padding(
 //                   padding: const EdgeInsets.only(left: 24.0, right: 12),

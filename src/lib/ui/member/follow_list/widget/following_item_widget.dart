@@ -75,7 +75,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                     padding: const EdgeInsets.only(
                       right: 10,
                     ),
-                    child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
+                    child: getProfileAvatar(widget.profileImage ?? "", 40, 40),
                   ),
                   Expanded(
                     child: Column(

@@ -177,7 +177,7 @@
 //                         ),
 //                       ),
 //                 hintText: "품종을 입력해주세요.",
-//                 hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+//                 hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy11RegularStyle.copyWith(color: kNeutralColor500),
 //               ),
 //             ),
 //           ),

@@ -190,7 +190,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                               ),
                             ),
                       hintText: "궁금한 내용을 검색해 보세요.",
-                      hintStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                      hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                     ),
                   ),
                 ),
@@ -234,7 +234,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                           .map(
                             (e) => Text(
                               e.menuName ?? 'unknown',
-                              style: kBody14BoldStyle,
+                              style: kTitle16BoldStyle,
                             ),
                           )
                           .toList(),
@@ -495,7 +495,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
 //                                     ),
 //                                   ),
 //                         hintText: "검색어를 입력해 주세요.",
-//                         hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+//                         hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy11RegularStyle.copyWith(color: kNeutralColor500),
 //                       ),
 //                     ),
 //                   ),

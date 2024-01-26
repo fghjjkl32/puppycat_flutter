@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -8,8 +7,8 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/main_comment_header_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/search/search_state_notifier.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
@@ -206,7 +205,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                             border: InputBorder.none,
                             counterText: "",
                             hintText: !isLogined ? "로그인 하면 쓸 수 있어요." : '댓글을 남겨 보세요.',
-                            hintStyle: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
+                            hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                             contentPadding: const EdgeInsets.all(16),
                             suffixIcon: ref.read(commentHeaderProvider).hasInput
                                 ? IconButton(

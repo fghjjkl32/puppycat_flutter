@@ -373,7 +373,7 @@
 //                         ),
 //                       ),
 //                 hintText: "메시지.닉네임을 검색해주세요".tr(),
-//                 hintStyle: kBody11RegularStyle.copyWith(color: kNeutralColor500),
+//                 hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),dy11RegularStyle.copyWith(color: kNeutralColor500),
 //               ),
 //             ),
 //           ),

@@ -64,7 +64,7 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
                     padding: const EdgeInsets.only(
                       right: 10,
                     ),
-                    child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
+                    child: getProfileAvatar(widget.profileImage ?? "", 36, 36),
                   ),
                   Expanded(
                     child: Column(
@@ -90,7 +90,7 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
                                 widget.userName,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                               ),
                             ),
                           ],
@@ -100,7 +100,7 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
                         ),
                         Text(
                           widget.content,
-                          style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ],
                     ),

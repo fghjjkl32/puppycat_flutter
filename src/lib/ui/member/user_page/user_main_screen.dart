@@ -296,7 +296,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 ///2023.11.16.
                                 ///산책하기 보류로 주석 처리
                                 // expandedHeight: ref.watch(expandedHeightProvider),
-                                expandedHeight: 170,
+                                expandedHeight: 180,
 
                                 ///산책하기 보류로 주석 처리 완료
                                 flexibleSpace: Consumer(builder: (context, ref, _) {
@@ -498,7 +498,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                               left: 0,
                               right: 0,
                               child: Container(
-                                height: 30,
+                                height: 40,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   gradient: LinearGradient(
@@ -803,7 +803,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
               child: data.blockedMeState == 1
                   ? Expanded(
                       child: Container(
-                        height: 30,
+                        height: 40,
                         decoration: const BoxDecoration(
                           color: kPreviousNeutralColor300,
                           borderRadius: BorderRadius.all(
@@ -853,7 +853,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     // }
                                   },
                                   child: Container(
-                                    height: 30,
+                                    height: 40,
                                     decoration: const BoxDecoration(
                                       color: kPreviousPrimaryColor,
                                       borderRadius: BorderRadius.all(
@@ -891,7 +891,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           }
                                         },
                                         child: Container(
-                                          height: 30,
+                                          height: 40,
                                           decoration: const BoxDecoration(
                                             color: kPreviousNeutralColor300,
                                             borderRadius: BorderRadius.all(
@@ -933,7 +933,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           // }
                                         },
                                         child: Container(
-                                          height: 30,
+                                          height: 40,
                                           decoration: const BoxDecoration(
                                             color: kPreviousPrimaryColor,
                                             borderRadius: BorderRadius.all(
@@ -975,7 +975,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                               }
                             },
                             child: Container(
-                              height: 30,
+                              height: 40,
                               decoration: const BoxDecoration(
                                 color: kPreviousPrimaryLightColor,
                                 borderRadius: BorderRadius.all(
@@ -1197,14 +1197,14 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                 children: [
                                   Text(
                                     "일상글",
-                                    style: kBody14BoldStyle,
+                                    style: kTitle16BoldStyle,
                                   ),
                                   const SizedBox(
                                     width: 6,
                                   ),
                                   Text(
                                     "${ref.watch(userContentsFeedTotalCountProvider)}",
-                                    style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                                    style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                                   ),
                                 ],
                               );
@@ -1218,14 +1218,14 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                 children: [
                                   Text(
                                     "태그됨",
-                                    style: kBody14BoldStyle,
+                                    style: kTitle16BoldStyle,
                                   ),
                                   const SizedBox(
                                     width: 6,
                                   ),
                                   Text(
                                     "${ref.watch(userTagContentsFeedTotalCountProvider)}",
-                                    style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                                    style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                                   ),
                                 ],
                               );

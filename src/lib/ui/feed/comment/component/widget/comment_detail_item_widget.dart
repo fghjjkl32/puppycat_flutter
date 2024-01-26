@@ -138,7 +138,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                         },
                         child: Center(
                           child: Text(
-                            "이전 답글 더보기",
+                            "이전 답글 더 보기",
                             style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ),
@@ -349,11 +349,11 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                     widget.comment,
                                     widget.mentionListData,
                                     context,
-                                    kBody11RegularStyle.copyWith(color: kPreviousSecondaryColor),
+                                    kBody13RegularStyle.copyWith(color: kPreviousSecondaryColor),
                                     ref,
                                     widget.oldMemberUuid,
                                   ),
-                                  style: kBody11RegularStyle.copyWith(color: kPreviousTextTitleColor),
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextTitleColor),
                                 ),
                               ),
                             ),
@@ -456,10 +456,23 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                             widget.onMoreChildComment!(widget.pageNumber);
                           }
                         },
-                        child: Center(
-                          child: Text(
-                            "답글 더보기",
-                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0, right: 8.0),
+                                child: Container(
+                                  width: 32,
+                                  height: 1,
+                                  color: kNeutralColor500,
+                                ),
+                              ),
+                              Text(
+                                "답글 더 보기",
+                                style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                              ),
+                            ],
                           ),
                         ),
                       ),

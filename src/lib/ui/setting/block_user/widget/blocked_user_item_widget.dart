@@ -42,7 +42,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
                 padding: const EdgeInsets.only(
                   right: 10,
                 ),
-                child: getProfileAvatar(widget.profileImage ?? "", 32, 32),
+                child: getProfileAvatar(widget.profileImage ?? "", 40, 40),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +96,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
               }
             },
             child: Container(
-              width: 56,
+              width: 74,
               height: 32,
               decoration: const BoxDecoration(
                 color: kPreviousPrimaryLightColor,
@@ -107,7 +107,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
               child: Center(
                 child: Text(
                   "차단 풀기",
-                  style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
+                  style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                 ),
               ),
             ),

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
-import 'package:widget_mask/widget_mask.dart';
 
 class TagUserItemWidget extends StatelessWidget {
   const TagUserItemWidget({
@@ -35,7 +31,7 @@ class TagUserItemWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(
                   right: 10,
                 ),
-                child: getProfileAvatar(profileImage ?? "", 32, 32),
+                child: getProfileAvatar(profileImage ?? "", 40, 40),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +53,7 @@ class TagUserItemWidget extends StatelessWidget {
                           : Container(),
                       Text(
                         userName,
-                        style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                        style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                       ),
                     ],
                   ),
@@ -66,7 +62,7 @@ class TagUserItemWidget extends StatelessWidget {
                   ),
                   Text(
                     content,
-                    style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                    style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   ),
                 ],
               ),

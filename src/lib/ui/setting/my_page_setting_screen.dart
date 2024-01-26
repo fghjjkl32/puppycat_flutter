@@ -162,7 +162,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               child: Divider(),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16),
               child: Row(
                 children: [
                   const Icon(
@@ -182,7 +182,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               ),
             ),
             SizedBox(
-              height: 30,
+              height: 46,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: ListView.builder(
@@ -688,7 +688,7 @@ class ProfileButton extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
