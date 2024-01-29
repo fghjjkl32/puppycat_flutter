@@ -63,7 +63,8 @@ class FireBaseMessageController {
         if (message.data.isNotEmpty) {
           notificationMap.addAll(message.data);
         }
-        notificationMap['imageUrl'] = message.notification?.android?.imageUrl ?? message.notification?.apple?.imageUrl;
+        String? imageUrl = message.notification?.android?.imageUrl ?? message.notification?.apple?.imageUrl;
+        notificationMap['imageUrl'] = imageUrl ?? '';
         print(notificationMap);
         _initData = FirebaseCloudMessagePayload.fromJson(notificationMap);
       }
@@ -110,7 +111,8 @@ class FireBaseMessageController {
         if (message.data.isNotEmpty) {
           notificationMap.addAll(message.data);
         }
-        notificationMap['imageUrl'] = message.notification?.android?.imageUrl ?? message.notification?.apple?.imageUrl;
+        String? imageUrl = message.notification?.android?.imageUrl ?? message.notification?.apple?.imageUrl;
+        notificationMap['imageUrl'] = imageUrl ?? '';
         print(notificationMap);
         handler(FirebaseCloudMessagePayload.fromJson(notificationMap));
       }
