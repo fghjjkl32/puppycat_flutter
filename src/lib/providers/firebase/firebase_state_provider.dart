@@ -13,11 +13,11 @@ part 'firebase_state_provider.g.dart';
 class FirebaseState extends _$FirebaseState {
   @override
   FireBaseMessageController build() {
+    GetIt.I.registerSingleton<FireBaseMessageController>(FireBaseMessageController());
     return GetIt.I<FireBaseMessageController>();
   }
 
   Future initFirebase() async {
-    GetIt.I.registerSingleton<FireBaseMessageController>(FireBaseMessageController());
     final fireBaseMessageController = GetIt.I<FireBaseMessageController>();
     await fireBaseMessageController.init();
 
@@ -33,7 +33,7 @@ class FirebaseState extends _$FirebaseState {
   }
 
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
-    print("payload ::: ${payload}");
+    print("payload ::: ${payload.toJson()}");
     // context.push('/notification');
     final router = ref.read(routerProvider);
     final myInfo = ref.read(myInfoStateProvider);
@@ -48,7 +48,7 @@ class FirebaseState extends _$FirebaseState {
         router.push('/notification');
         break;
       case PushType.new_contents:
-      case PushType.metion_contents:
+      case PushType.mention_contents:
       case PushType.like_contents:
       case PushType.img_tag:
         Map<String, dynamic> extraMap = {

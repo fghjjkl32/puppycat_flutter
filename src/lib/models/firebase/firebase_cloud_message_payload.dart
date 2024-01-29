@@ -7,7 +7,7 @@ enum PushType {
   unknown,
   follow,
   new_contents,
-  metion_contents,
+  mention_contents,
   img_tag,
   like_contents,
   new_comment,
