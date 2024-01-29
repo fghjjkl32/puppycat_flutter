@@ -71,7 +71,6 @@ class FeedEditScreen extends ConsumerWidget {
         return false;
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text('피드 수정'),

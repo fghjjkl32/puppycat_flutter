@@ -480,7 +480,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
             ),
           ),
           const SizedBox(
-            height: 100,
+            height: 20,
           ),
         ],
       ),
