@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -533,7 +534,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           ],
                         ),
                       ),
-                    ),
+                    ).throttle(),
                   );
                 },
               ),
@@ -690,7 +691,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           ],
                         ),
                       ),
-                    ),
+                    ).throttle(),
                   );
                 },
               ),

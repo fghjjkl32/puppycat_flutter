@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user_list/popular_user_list/popular_user_list_data.dart';
@@ -200,7 +201,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     ],
                   ),
                 ),
-              ),
+              ).throttle(),
             ),
             if (widget.imageList.length == 1) ...[
               GestureDetector(
@@ -262,7 +263,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     ),
                   ],
                 ),
-              ),
+              ).throttle(),
             ] else if (widget.imageList.length == 2) ...[
               Row(
                 children: [
@@ -320,7 +321,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           ),
                         ],
                       ),
-                    ),
+                    ).throttle(),
                   ),
                   const SizedBox(
                     width: 1,
@@ -379,7 +380,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           ),
                         ],
                       ),
-                    ),
+                    ).throttle(),
                   ),
                 ],
               ),
@@ -440,7 +441,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           ),
                         ],
                       ),
-                    ),
+                    ).throttle(),
                   ),
                   const SizedBox(
                     width: 1,
@@ -496,7 +497,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               ),
                             ],
                           ),
-                        ),
+                        ).throttle(),
                         const SizedBox(
                           height: 1,
                         ),
@@ -552,7 +553,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               ],
                             ),
                           ),
-                        ),
+                        ).throttle(),
                       ],
                     ),
                   ),

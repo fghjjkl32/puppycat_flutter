@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -268,7 +269,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                                       Puppycat_social.icon_send,
                                       color: kPreviousPrimaryColor,
                                     ),
-                                  )
+                                  ).throttle()
                                 : const Icon(
                                     Puppycat_social.icon_send,
                                     color: Colors.grey,

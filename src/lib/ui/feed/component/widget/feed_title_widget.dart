@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -503,11 +504,11 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                   color: kPreviousTextBodyColor,
                   size: 26,
                 ),
-              ),
+              ).throttle(),
             ],
           ),
         ),
       ),
-    );
+    ).throttle();
   }
 }

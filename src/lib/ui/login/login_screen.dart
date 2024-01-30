@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -136,7 +137,7 @@ class LoginScreen extends ConsumerWidget {
                         height: 20,
                         width: 20,
                       ),
-                    ),
+                    ).throttle(),
                   ),
                   SizedBox(
                     width: 264,
@@ -160,7 +161,7 @@ class LoginScreen extends ConsumerWidget {
                         height: 20,
                         width: 20,
                       ),
-                    ),
+                    ).throttle(),
                   ),
                   SizedBox(
                     width: 264,
@@ -190,7 +191,7 @@ class LoginScreen extends ConsumerWidget {
                         height: 20,
                         width: 20,
                       ),
-                    ),
+                    ).throttle(),
                   ),
                   SizedBox(
                     width: 264,
@@ -214,7 +215,7 @@ class LoginScreen extends ConsumerWidget {
                         height: 20,
                         width: 20,
                       ),
-                    ),
+                    ).throttle(),
                   ),
                 ],
               ),
