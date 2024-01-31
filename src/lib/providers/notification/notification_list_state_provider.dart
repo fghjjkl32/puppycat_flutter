@@ -4,7 +4,6 @@ import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
-import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/comment/comment_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/follow/follow_repository.dart';
 import 'package:pet_mobile_social_flutter/repositories/notification/notification_repository.dart';
@@ -153,37 +152,27 @@ class NotificationListState extends _$NotificationListState {
 
   void setFollow(String followUuid) async {
     try {
-      ref.read(followApiIsLoadingStateProvider.notifier).state = true;
-
       final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(followUuid: followUuid);
       if (result.result) {
         changedFollowState(followUuid, true);
       }
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
     } catch (e) {
       print('setFollow error $e');
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
     }
   }
 
   void unSetFollow(String followUuid) async {
     try {
-      ref.read(followApiIsLoadingStateProvider.notifier).state = true;
-
       final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(followUuid: followUuid);
       if (result.result) {
         changedFollowState(followUuid, false);
       }
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
     } catch (e) {
       print('unSetFollow error $e');
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
     }
   }
 

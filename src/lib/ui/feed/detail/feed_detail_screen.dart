@@ -182,20 +182,12 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                     ? isFollow
                         ? InkWell(
                             onTap: () async {
-                              if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                if (!isLogined) {
-                                  context.push("/home/login");
-                                } else {
-                                  final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                        followUuid: widget.memberUuid,
-                                      );
-
-                                  if (result.result) {
-                                    setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
-                                    });
-                                  }
-                                }
+                              if (!isLogined) {
+                                context.push("/home/login");
+                              } else {
+                                setState(() {
+                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                });
                               }
                             },
                             child: Padding(
@@ -208,20 +200,12 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                           )
                         : InkWell(
                             onTap: () async {
-                              if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                if (!isLogined) {
-                                  context.push("/home/login");
-                                } else {
-                                  final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                        followUuid: widget.memberUuid,
-                                      );
-
-                                  if (result.result) {
-                                    setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
-                                    });
-                                  }
-                                }
+                              if (!isLogined) {
+                                context.push("/home/login");
+                              } else {
+                                setState(() {
+                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
+                                });
                               }
                             },
                             child: Padding(

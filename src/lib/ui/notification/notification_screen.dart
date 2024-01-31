@@ -14,7 +14,6 @@ import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/notification_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/setting/notice_list_state_provider.dart';
@@ -262,12 +261,10 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
                               isFollowed: item.followState == 1 ? true : false,
                               onTapFollowButton: (isFollowed) {
-                                if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                  if (isFollowed) {
-                                    ref.read(notificationListStateProvider.notifier).unSetFollow(item.senderUuid);
-                                  } else {
-                                    ref.read(notificationListStateProvider.notifier).setFollow(item.senderUuid);
-                                  }
+                                if (isFollowed) {
+                                  ref.read(notificationListStateProvider.notifier).unSetFollow(item.senderUuid);
+                                } else {
+                                  ref.read(notificationListStateProvider.notifier).setFollow(item.senderUuid);
                                 }
                               },
                               onTapProfileButton: () {

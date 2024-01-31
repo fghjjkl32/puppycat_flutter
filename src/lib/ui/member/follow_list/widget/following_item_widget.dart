@@ -145,20 +145,12 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                     return isFollow
                         ? GestureDetector(
                             onTap: () async {
-                              if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                if (!isLogined) {
-                                  context.push("/home/login");
-                                } else {
-                                  final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                        followUuid: widget.followUuid,
-                                      );
-
-                                  if (result.result) {
-                                    setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followUuid, false);
-                                    });
-                                  }
-                                }
+                              if (!isLogined) {
+                                context.push("/home/login");
+                              } else {
+                                setState(() {
+                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.followUuid, false);
+                                });
                               }
                             },
                             child: Container(
@@ -180,20 +172,12 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                           )
                         : GestureDetector(
                             onTap: () async {
-                              if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                if (!isLogined) {
-                                  context.push("/home/login");
-                                } else {
-                                  final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                        followUuid: widget.followUuid,
-                                      );
-
-                                  if (result.result) {
-                                    setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followUuid, true);
-                                    });
-                                  }
-                                }
+                              if (!isLogined) {
+                                context.push("/home/login");
+                              } else {
+                                setState(() {
+                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.followUuid, true);
+                                });
                               }
                             },
                             child: Container(

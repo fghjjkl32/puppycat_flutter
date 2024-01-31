@@ -137,21 +137,12 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                         padding: const EdgeInsets.only(right: 8.0),
                                         child: InkWell(
                                           onTap: () async {
-                                            if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                              if (!isLogined) {
-                                                context.push("/home/login");
-                                              } else {
-                                                final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                      followUuid: widget.memberUuid,
-                                                    );
-
-                                                if (result.result) {
-                                                  setState(() {
-                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
-                                                  });
-                                                }
-                                                print(ref.read(followUserStateProvider));
-                                              }
+                                            if (!isLogined) {
+                                              context.push("/home/login");
+                                            } else {
+                                              setState(() {
+                                                ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                              });
                                             }
                                           },
                                           child: Text(
@@ -164,20 +155,12 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                         padding: const EdgeInsets.only(right: 8.0),
                                         child: InkWell(
                                           onTap: () async {
-                                            if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                              if (!isLogined) {
-                                                context.push("/home/login");
-                                              } else {
-                                                final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                      followUuid: widget.memberUuid,
-                                                    );
-
-                                                if (result.result) {
-                                                  setState(() {
-                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
-                                                  });
-                                                }
-                                              }
+                                            if (!isLogined) {
+                                              context.push("/home/login");
+                                            } else {
+                                              setState(() {
+                                                ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
+                                              });
                                             }
                                           },
                                           child: Text(

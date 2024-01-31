@@ -143,20 +143,12 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                   ),
                                                   InkWell(
                                                     onTap: () async {
-                                                      if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                                        if (!isLogined) {
-                                                          context.push("/home/login");
-                                                        } else {
-                                                          final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                                followUuid: widget.memberUuid,
-                                                              );
-
-                                                          if (result.result) {
-                                                            setState(() {
-                                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
-                                                            });
-                                                          }
-                                                        }
+                                                      if (!isLogined) {
+                                                        context.push("/home/login");
+                                                      } else {
+                                                        setState(() {
+                                                          ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                                        });
                                                       }
                                                     },
                                                     child: Text(
@@ -169,25 +161,17 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                             : Row(
                                                 children: [
                                                   Text(
-                                                    " · ",
+                                                    "   ·   ",
                                                     style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                   ),
                                                   InkWell(
                                                     onTap: () async {
-                                                      if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                                        if (!isLogined) {
-                                                          context.push("/home/login");
-                                                        } else {
-                                                          final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                                followUuid: widget.memberUuid,
-                                                              );
-
-                                                          if (result.result) {
-                                                            setState(() {
-                                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
-                                                            });
-                                                          }
-                                                        }
+                                                      if (!isLogined) {
+                                                        context.push("/home/login");
+                                                      } else {
+                                                        setState(() {
+                                                          ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
+                                                        });
                                                       }
                                                     },
                                                     child: Text(
@@ -381,26 +365,11 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                           title: '팔로우 취소하기',
                                           titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                           onTap: () async {
-                                            if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                              context.pop();
+                                            context.pop();
 
-                                              // ref.watch(feedListStateProvider.notifier).deleteFollow(
-                                              //       memberIdx: ref.read(userInfoProvider).userModel!.idx,
-                                              //       followIdx: widget.feedData.memberIdx,
-                                              //       contentsIdx: widget.feedData.idx,
-                                              //       contentType: widget.contentType,
-                                              //     );
-
-                                              final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                    followUuid: widget.memberUuid,
-                                                  );
-
-                                              if (result.result) {
-                                                setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
-                                                });
-                                              }
-                                            }
+                                            setState(() {
+                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                            });
                                           },
                                         )
                                       : Container(),

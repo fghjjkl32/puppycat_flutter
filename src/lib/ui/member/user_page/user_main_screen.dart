@@ -874,21 +874,13 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 child: isFollow
                                     ? GestureDetector(
                                         onTap: () async {
-                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                            if (!isLogined) {
-                                              context.push("/home/login");
-                                            } else {
-                                              final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                    followUuid: widget.memberUuid,
-                                                  );
-                                              ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
-
-                                              if (result.result) {
-                                                setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
-                                                });
-                                              }
-                                            }
+                                          if (!isLogined) {
+                                            context.push("/home/login");
+                                          } else {
+                                            ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
+                                            setState(() {
+                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                            });
                                           }
                                         },
                                         child: Container(
@@ -909,21 +901,14 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                       )
                                     : GestureDetector(
                                         onTap: () async {
-                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                            if (!isLogined) {
-                                              context.push("/home/login");
-                                            } else {
-                                              final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                    followUuid: widget.memberUuid,
-                                                  );
-                                              ref.watch(userInformationStateProvider.notifier).updateFollowState();
+                                          if (!isLogined) {
+                                            context.push("/home/login");
+                                          } else {
+                                            ref.watch(userInformationStateProvider.notifier).updateFollowState();
 
-                                              if (result.result) {
-                                                setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
-                                                });
-                                              }
-                                            }
+                                            setState(() {
+                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
+                                            });
                                           }
 
                                           // if (result.result) {
