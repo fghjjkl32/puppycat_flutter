@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -13,6 +16,7 @@ import 'package:pet_mobile_social_flutter/providers/feed/my_feed_state_provider.
 import 'package:pet_mobile_social_flutter/providers/feed/popular_hour_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/popular_week_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/recent_feed_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/notification/notification_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/tag_contents/my_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/tag_contents/user_tag_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user_contents/my_contents_state_provider.dart';
@@ -27,7 +31,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'feed_list_state_provider.g.dart';
 
-final likeApiIsLoadingStateProvider = StateProvider<bool>((ref) => false);
 final saveApiIsLoadingStateProvider = StateProvider<bool>((ref) => false);
 
 final feedListEmptyProvider = StateProvider<bool>((ref) => true);
@@ -39,7 +42,7 @@ class FeedListState extends _$FeedListState {
 
   String? contentType;
   String? searchWord;
-  int? idxToRemove;
+  int? firstFeedIdx;
   String? memberUuid;
   MemberInfoData? memberInfo;
 
@@ -130,7 +133,7 @@ class FeedListState extends _$FeedListState {
         return feedDetail;
       }).toList();
 
-      searchList.removeWhere((element) => element.idx == idxToRemove);
+      searchList.removeWhere((element) => element.idx == firstFeedIdx);
 
       try {
         _lastPage = feedResult.data!.params!.pagination?.totalPageCount! ?? 0;
@@ -179,17 +182,7 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(myFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        if (type == "postLike") {
-          ref.read(myFeedStateProvider).itemList![targetIdx] = ref.read(myFeedStateProvider).itemList![targetIdx].copyWith(
-                likeState: 1,
-                likeCnt: ref.read(myFeedStateProvider).itemList![targetIdx].likeCnt! + 1,
-              );
-        } else if (type == "deleteLike") {
-          ref.read(myFeedStateProvider).itemList![targetIdx] = ref.read(myFeedStateProvider).itemList![targetIdx].copyWith(
-                likeState: 0,
-                likeCnt: ref.read(myFeedStateProvider).itemList![targetIdx].likeCnt! - 1,
-              );
-        } else if (type == "postSave") {
+        if (type == "postSave") {
           ref.read(myFeedStateProvider).itemList![targetIdx] = ref.read(myFeedStateProvider).itemList![targetIdx].copyWith(
                 saveState: 1,
               );
@@ -236,17 +229,7 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(recentFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        if (type == "postLike") {
-          ref.read(recentFeedStateProvider).itemList![targetIdx] = ref.read(recentFeedStateProvider).itemList![targetIdx].copyWith(
-                likeState: 1,
-                likeCnt: ref.read(recentFeedStateProvider).itemList![targetIdx].likeCnt! + 1,
-              );
-        } else if (type == "deleteLike") {
-          ref.read(recentFeedStateProvider).itemList![targetIdx] = ref.read(recentFeedStateProvider).itemList![targetIdx].copyWith(
-                likeState: 0,
-                likeCnt: ref.read(recentFeedStateProvider).itemList![targetIdx].likeCnt! - 1,
-              );
-        } else if (type == "postSave") {
+        if (type == "postSave") {
           ref.read(recentFeedStateProvider).itemList![targetIdx] = ref.read(recentFeedStateProvider).itemList![targetIdx].copyWith(
                 saveState: 1,
               );
@@ -293,17 +276,7 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(followFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        if (type == "postLike") {
-          ref.read(followFeedStateProvider).itemList![targetIdx] = ref.read(followFeedStateProvider).itemList![targetIdx].copyWith(
-                likeState: 1,
-                likeCnt: ref.read(followFeedStateProvider).itemList![targetIdx].likeCnt! + 1,
-              );
-        } else if (type == "deleteLike") {
-          ref.read(followFeedStateProvider).itemList![targetIdx] = ref.read(followFeedStateProvider).itemList![targetIdx].copyWith(
-                likeState: 0,
-                likeCnt: ref.read(followFeedStateProvider).itemList![targetIdx].likeCnt! - 1,
-              );
-        } else if (type == "postSave") {
+        if (type == "postSave") {
           ref.read(followFeedStateProvider).itemList![targetIdx] = ref.read(followFeedStateProvider).itemList![targetIdx].copyWith(
                 saveState: 1,
               );
@@ -350,17 +323,7 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(popularWeekFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        if (type == "postLike") {
-          ref.read(popularWeekFeedStateProvider).itemList![targetIdx] = ref.read(popularWeekFeedStateProvider).itemList![targetIdx].copyWith(
-                likeState: 1,
-                likeCnt: ref.read(popularWeekFeedStateProvider).itemList![targetIdx].likeCnt! + 1,
-              );
-        } else if (type == "deleteLike") {
-          ref.read(popularWeekFeedStateProvider).itemList![targetIdx] = ref.read(popularWeekFeedStateProvider).itemList![targetIdx].copyWith(
-                likeState: 0,
-                likeCnt: ref.read(popularWeekFeedStateProvider).itemList![targetIdx].likeCnt! - 1,
-              );
-        } else if (type == "postSave") {
+        if (type == "postSave") {
           ref.read(popularWeekFeedStateProvider).itemList![targetIdx] = ref.read(popularWeekFeedStateProvider).itemList![targetIdx].copyWith(
                 saveState: 1,
               );
@@ -398,17 +361,7 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(myContentsStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        if (type == "postLike") {
-          ref.read(myContentsStateProvider).itemList![targetIdx] = ref.read(myContentsStateProvider).itemList![targetIdx].copyWith(
-                selfLike: 1,
-                likeCnt: ref.read(myContentsStateProvider).itemList![targetIdx].likeCnt! + 1,
-              );
-        } else if (type == "deleteLike") {
-          ref.read(myContentsStateProvider).itemList![targetIdx] = ref.read(myContentsStateProvider).itemList![targetIdx].copyWith(
-                selfLike: 0,
-                likeCnt: ref.read(myContentsStateProvider).itemList![targetIdx].likeCnt! - 1,
-              );
-        } else if (type == "postKeepContents") {
+        if (type == "postKeepContents") {
           ref.read(myContentsStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneContents") {
           ref.read(myContentsStateProvider).itemList!.removeAt(targetIdx);
@@ -482,55 +435,16 @@ class FeedListState extends _$FeedListState {
 
   Future<ResponseModel> postLike({
     required contentIdx,
-    required String contentType,
   }) async {
-    ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
-
     try {
       final result = await FeedRepository(dio: ref.read(dioProvider)).postLike(contentIdx: contentIdx);
-
-      int targetIdx = -1;
-
-      if (state.itemList != null) {
-        if (idxToRemove == contentIdx) {
-          final firstFeedData = ref.read(firstFeedDetailStateProvider);
-          if (firstFeedData != null) {
-            if (firstFeedData.idx == contentIdx) {
-              ref.read(firstFeedDetailStateProvider.notifier).state = firstFeedData.copyWith(
-                likeState: 1,
-                likeCnt: firstFeedData.likeCnt! + 1,
-              );
-            }
-          }
-        }
-
-        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
-
-        if (targetIdx != -1) {
-          state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-            likeState: 1,
-            likeCnt: state.itemList![targetIdx].likeCnt! + 1,
-          );
-          state.notifyListeners();
-        }
-      }
-
-      feedRefresh(
-        contentIdx,
-        "postLike",
-      );
-
-      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
 
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
 
       throw apiException.toString();
     } catch (e) {
-      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
-
       print('postLike error $e');
       rethrow;
     }
@@ -538,55 +452,16 @@ class FeedListState extends _$FeedListState {
 
   Future<ResponseModel> deleteLike({
     required contentIdx,
-    required String contentType,
   }) async {
-    ref.read(likeApiIsLoadingStateProvider.notifier).state = true;
-
     try {
       final result = await FeedRepository(dio: ref.read(dioProvider)).deleteLike(contentsIdx: contentIdx);
-
-      int targetIdx = -1;
-
-      if (state.itemList != null) {
-        if (idxToRemove == contentIdx) {
-          final firstFeedData = ref.read(firstFeedDetailStateProvider);
-          if (firstFeedData != null) {
-            if (firstFeedData.idx == contentIdx) {
-              ref.read(firstFeedDetailStateProvider.notifier).state = firstFeedData.copyWith(
-                likeState: 0,
-                likeCnt: firstFeedData.likeCnt! - 1,
-              );
-            }
-          }
-        }
-
-        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
-
-        if (targetIdx != -1) {
-          state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-            likeState: 0,
-            likeCnt: state.itemList![targetIdx].likeCnt! - 1,
-          );
-          state.notifyListeners();
-        }
-      }
-
-      feedRefresh(
-        contentIdx,
-        "deleteLike",
-      );
-
-      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
 
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
 
       throw apiException.toString();
     } catch (e) {
-      ref.read(likeApiIsLoadingStateProvider.notifier).state = false;
-
       print('deleteLike error $e');
       rethrow;
     }
@@ -604,7 +479,7 @@ class FeedListState extends _$FeedListState {
       int targetIdx = -1;
 
       if (state.itemList != null) {
-        if (idxToRemove == contentIdx) {
+        if (firstFeedIdx == contentIdx) {
           final firstFeedData = ref.read(firstFeedDetailStateProvider);
           if (firstFeedData != null) {
             if (firstFeedData.idx == contentIdx) {
@@ -656,7 +531,7 @@ class FeedListState extends _$FeedListState {
       int targetIdx = -1;
 
       if (state.itemList != null) {
-        if (idxToRemove == contentIdx) {
+        if (firstFeedIdx == contentIdx) {
           final firstFeedData = ref.read(firstFeedDetailStateProvider);
           if (firstFeedData != null) {
             if (firstFeedData.idx == contentIdx) {
@@ -707,7 +582,7 @@ class FeedListState extends _$FeedListState {
       int targetIdx = -1;
 
       if (state.itemList != null) {
-        if (idxToRemove == contentIdxList[0]) {
+        if (firstFeedIdx == contentIdxList[0]) {
           final firstFeedData = ref.read(firstFeedDetailStateProvider);
           if (firstFeedData != null) {
             if (firstFeedData.idx == contentIdxList[0]) {
@@ -750,7 +625,7 @@ class FeedListState extends _$FeedListState {
       int targetIdx = -1;
 
       if (state.itemList != null) {
-        if (idxToRemove == contentIdx) {
+        if (firstFeedIdx == contentIdx) {
           final firstFeedData = ref.read(firstFeedDetailStateProvider);
           if (firstFeedData != null) {
             if (firstFeedData.idx == contentIdx) {
@@ -793,7 +668,7 @@ class FeedListState extends _$FeedListState {
       int targetIdx = -1;
 
       if (state.itemList != null) {
-        if (idxToRemove == contentIdx) {
+        if (firstFeedIdx == contentIdx) {
           final firstFeedData = ref.read(firstFeedDetailStateProvider);
           if (firstFeedData != null) {
             if (firstFeedData.idx == contentIdx) {
@@ -840,7 +715,7 @@ class FeedListState extends _$FeedListState {
       ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
       if (state.itemList != null) {
-        if (idxToRemove == contentIdx) {
+        if (firstFeedIdx == contentIdx) {
           final firstFeedData = ref.read(firstFeedDetailStateProvider);
           if (firstFeedData != null) {
             if (firstFeedData.idx == contentIdx) {
@@ -984,7 +859,7 @@ class FeedListState extends _$FeedListState {
       int targetIdx = -1;
 
       if (state.itemList != null) {
-        if (idxToRemove == contentIdx) {
+        if (firstFeedIdx == contentIdx) {
           final firstFeedData = ref.read(firstFeedDetailStateProvider);
           if (firstFeedData != null) {
             if (firstFeedData.idx == contentIdx) {
@@ -1080,5 +955,166 @@ class FeedListState extends _$FeedListState {
   void saveStateForUser(String memberUuid) {
     feedStateMap[memberUuid] = state.itemList;
     feedMemberInfoStateMap[memberUuid] = memberInfo;
+  }
+
+  Map<int, bool> _initialLikeStates = {};
+  int? saveLike;
+
+  Future<void> toggleLikes({
+    required int contentIdx,
+  }) async {
+    List<FeedData>? currentList = state.itemList;
+    int targetIdx = -1;
+
+    if (ref.read(firstFeedDetailStateProvider) != null && currentList != null) {
+      if (firstFeedIdx == contentIdx) {
+        // 좋아요 상태를 변경하기 전의 상태를 저장합니다.
+        if (!_initialLikeStates.containsKey(contentIdx)) {
+          _initialLikeStates[contentIdx] = ref.read(firstFeedDetailStateProvider)!.likeState == 1;
+        }
+
+        bool isFirstFeedCurrentlyLiked = ref.read(firstFeedDetailStateProvider)!.likeState == 1;
+
+        if (ref.read(firstFeedDetailStateProvider)!.idx == contentIdx) {
+          // 좋아요 상태를 토글합니다.
+          ref.read(firstFeedDetailStateProvider.notifier).state = ref.read(firstFeedDetailStateProvider)!.copyWith(
+                likeState: isFirstFeedCurrentlyLiked ? 0 : 1,
+                likeCnt: isFirstFeedCurrentlyLiked ? ref.read(firstFeedDetailStateProvider)!.likeCnt! - 1 : ref.read(firstFeedDetailStateProvider)!.likeCnt! + 1,
+              );
+
+          state.notifyListeners();
+
+          saveLike = ref.read(firstFeedDetailStateProvider)!.likeState;
+        }
+      }
+
+      targetIdx = currentList.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        // 좋아요 상태를 변경하기 전의 상태를 저장합니다.
+        if (!_initialLikeStates.containsKey(contentIdx)) {
+          _initialLikeStates[contentIdx] = currentList[targetIdx].likeState == 1;
+        }
+
+        bool isCurrentlyLiked = currentList[targetIdx].likeState == 1;
+        currentList[targetIdx] = currentList[targetIdx].copyWith(
+          likeState: isCurrentlyLiked ? 0 : 1,
+          likeCnt: isCurrentlyLiked ? currentList[targetIdx].likeCnt! - 1 : currentList[targetIdx].likeCnt! + 1,
+        );
+
+        state.notifyListeners();
+
+        saveLike = currentList[targetIdx].likeState;
+      }
+    }
+
+    // 각 프로바이더에 대해 추출된 함수 호출
+    updateLikeStateForProvider(myFeedStateProvider, contentIdx);
+    updateLikeStateForProvider(recentFeedStateProvider, contentIdx);
+    updateLikeStateForProvider(followFeedStateProvider, contentIdx);
+    updateLikeStateForProvider(popularWeekFeedStateProvider, contentIdx);
+    updateLikeStateForProvider(myContentsStateProvider, contentIdx);
+    updateLikeStateForProvider(notificationListStateProvider, contentIdx);
+
+    handleLikeAction(
+      contentIdx: contentIdx,
+      likeState: saveLike,
+    );
+  }
+
+  // 각 프로바이더에 대해 반복되는 로직을 처리하는 함수
+  void updateLikeStateForProvider(
+    ProviderBase provider,
+    int contentIdx,
+  ) {
+    // myContentsStateProvider의 경우 selfLike 필드를 업데이트합니다.
+    // notificationListStateProvider의 경우 contentsLikeState 필드를 업데이트합니다.
+
+    var itemList = ref.read(provider).itemList;
+    if (itemList != null) {
+      int targetIdx;
+
+      if (provider == notificationListStateProvider) {
+        targetIdx = itemList.indexWhere((element) => element.contentsIdx == contentIdx);
+      } else {
+        targetIdx = itemList.indexWhere((element) => element.idx == contentIdx);
+      }
+
+      if (targetIdx != -1) {
+        if (!_initialLikeStates.containsKey(contentIdx)) {
+          if (provider == myContentsStateProvider) {
+            _initialLikeStates[contentIdx] = itemList[targetIdx].selfLike == 1;
+          } else if (provider == notificationListStateProvider) {
+            _initialLikeStates[contentIdx] = itemList[targetIdx].contentsLikeState == 1;
+          } else {
+            _initialLikeStates[contentIdx] = itemList[targetIdx].likeState == 1;
+          }
+        }
+
+        bool isCurrentlyLiked;
+
+        if (provider == myContentsStateProvider) {
+          isCurrentlyLiked = itemList[targetIdx].selfLike == 1;
+        } else if (provider == notificationListStateProvider) {
+          isCurrentlyLiked = itemList[targetIdx].contentsLikeState == 1;
+        } else {
+          isCurrentlyLiked = itemList[targetIdx].likeState == 1;
+        }
+
+        if (provider == myContentsStateProvider) {
+          itemList[targetIdx] = itemList[targetIdx].copyWith(
+            selfLike: isCurrentlyLiked ? 0 : 1,
+            likeCnt: isCurrentlyLiked ? itemList[targetIdx].likeCnt - 1 : itemList[targetIdx].likeCnt + 1,
+          );
+        } else if (provider == notificationListStateProvider) {
+          itemList[targetIdx] = itemList[targetIdx].copyWith(
+            contentsLikeState: isCurrentlyLiked ? 0 : 1,
+          );
+        } else {
+          itemList[targetIdx] = itemList[targetIdx].copyWith(
+            likeState: isCurrentlyLiked ? 0 : 1,
+            likeCnt: isCurrentlyLiked ? itemList[targetIdx].likeCnt - 1 : itemList[targetIdx].likeCnt + 1,
+          );
+        }
+
+        ref.read(provider).notifyListeners();
+
+        if (provider == myContentsStateProvider) {
+          saveLike = itemList[targetIdx].selfLike;
+        } else if (provider == notificationListStateProvider) {
+          saveLike = itemList[targetIdx].contentsLikeState;
+        } else {
+          saveLike = itemList[targetIdx].likeState;
+        }
+      }
+    }
+  }
+
+  void handleLikeAction({
+    required int contentIdx,
+    required int? likeState,
+  }) {
+    // 디바운스 타이머 설정
+
+    EasyDebounce.debounce(
+      'handleLikeAction',
+      const Duration(
+        milliseconds: 500,
+      ),
+      () async {
+        // 초기 상태와 현재 상태를 비교합니다.
+        bool initialLikeState = _initialLikeStates[contentIdx] ?? false;
+        if (likeState == 1 && !initialLikeState) {
+          // 좋아요 상태가 되었다면 API 호출
+          await postLike(contentIdx: contentIdx);
+        } else if (likeState == 0 && initialLikeState) {
+          // 좋아요 취소 상태가 되었다면 API 호출
+          await deleteLike(contentIdx: contentIdx);
+        }
+        // 처리 후 초기 상태 정보 삭제
+        _initialLikeStates.remove(contentIdx);
+        saveLike = null;
+      },
+    );
   }
 }

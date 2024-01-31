@@ -312,13 +312,9 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                 });
                               },
                               onLikeTap: (isLiked) {
-                                if (!ref.watch(likeApiIsLoadingStateProvider)) {
-                                  if (isLiked) {
-                                    ref.read(notificationListStateProvider.notifier).unSetFeedLike(item.contentsIdx);
-                                  } else {
-                                    ref.read(notificationListStateProvider.notifier).setFeedLike(item.contentsIdx);
-                                  }
-                                }
+                                ref.read(feedListStateProvider.notifier).toggleLikes(
+                                      contentIdx: item.contentsIdx,
+                                    );
                               },
                               onCommentTap: () async {
                                 ///TODO

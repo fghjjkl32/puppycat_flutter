@@ -55,7 +55,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
     ref.read(feedListStateProvider.notifier).contentType = widget.contentType;
     ref.read(feedListStateProvider.notifier).memberUuid = widget.memberUuid;
     ref.read(feedListStateProvider.notifier).searchWord = widget.secondTitle;
-    ref.read(feedListStateProvider.notifier).idxToRemove = widget.contentIdx;
+    ref.read(feedListStateProvider.notifier).firstFeedIdx = widget.contentIdx;
 
     _fetchFirstFeedDataFuture = _fetchFirstFeedData();
 

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
-class NotificationPostItem extends StatelessWidget {
+class NotificationPostItem extends StatefulWidget {
   const NotificationPostItem({
     Key? key,
     required this.name,
@@ -36,11 +38,36 @@ class NotificationPostItem extends StatelessWidget {
   final Function? onTap;
 
   @override
+  State<NotificationPostItem> createState() => _NotificationPostItemState();
+}
+
+class _NotificationPostItemState extends State<NotificationPostItem> with TickerProviderStateMixin {
+  bool showLikeLottieAnimation = false;
+
+  late final AnimationController likeController;
+
+  @override
+  void initState() {
+    likeController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    likeController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if (onTap != null) {
-          onTap!();
+        if (widget.onTap != null) {
+          widget.onTap!();
         }
       },
       child: Padding(
@@ -55,19 +82,19 @@ class NotificationPostItem extends StatelessWidget {
                 width: 8.0,
                 height: 8.0,
                 decoration: BoxDecoration(
-                  color: isRead ? kPreviousPrimaryLightColor : kPreviousErrorColor,
+                  color: widget.isRead ? kPreviousPrimaryLightColor : kPreviousErrorColor,
                   shape: BoxShape.circle,
                 ),
               ),
             ),
             GestureDetector(
               onTap: () {
-                if (onTapProfileButton != null) {
-                  onTapProfileButton!();
+                if (widget.onTapProfileButton != null) {
+                  widget.onTapProfileButton!();
                 }
               },
               child: getProfileAvatar(
-                profileImgUrl,
+                widget.profileImgUrl,
               ),
             ),
             Expanded(
@@ -82,11 +109,11 @@ class NotificationPostItem extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            notificationType,
+                            widget.notificationType,
                             style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                           Text(
-                            regDate,
+                            widget.regDate,
                             style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ],
@@ -104,10 +131,10 @@ class NotificationPostItem extends StatelessWidget {
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextTitleColor),
                                   children: <TextSpan>[
                                     TextSpan(
-                                      text: name.length > 13 ? '${name.substring(0, 13)}...' : name,
+                                      text: widget.name.length > 13 ? '${widget.name.substring(0, 13)}...' : widget.name,
                                       style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                     ),
-                                    TextSpan(text: content),
+                                    TextSpan(text: widget.content),
                                   ],
                                 ),
                               ),
@@ -117,39 +144,69 @@ class NotificationPostItem extends StatelessWidget {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        print('isLiked 1 $isLiked');
-                                        if (onLikeTap != null) {
-                                          onLikeTap!(isLiked);
+                                        if (!widget.isLiked) {
+                                          setState(() {
+                                            showLikeLottieAnimation = true;
+                                          });
+
+                                          likeController.forward(from: 0);
+                                        }
+
+                                        if (widget.onLikeTap != null) {
+                                          widget.onLikeTap!(widget.isLiked);
                                         }
                                       },
-                                      child: Image.asset(
-                                        'assets/image/feed/icon/small_size/icon_comment_like_off.png',
-                                        height: 20,
-                                        color: isLiked ? kPreviousPrimaryColor : kPreviousTextBodyColor,
+                                      child: Row(
+                                        children: [
+                                          widget.isLiked
+                                              ? showLikeLottieAnimation
+                                                  ? Lottie.asset(
+                                                      'assets/lottie/icon_like.json',
+                                                      controller: likeController,
+                                                      onLoaded: (composition) {
+                                                        likeController.duration = composition.duration;
+                                                        likeController.forward();
+                                                      },
+                                                    )
+                                                  : const Icon(
+                                                      Puppycat_social.icon_like_ac,
+                                                      color: kPreviousPrimaryColor,
+                                                      size: 32,
+                                                    )
+                                              : Icon(
+                                                  Puppycat_social.icon_like_de,
+                                                  color: kPreviousTextBodyColor,
+                                                  size: 32,
+                                                ),
+                                          Text(
+                                            '좋아요',
+                                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    Text(
-                                      '좋아요',
-                                      style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
                                     const SizedBox(
                                       width: 10,
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        if (onCommentTap != null) {
-                                          onCommentTap!();
+                                        if (widget.onCommentTap != null) {
+                                          widget.onCommentTap!();
                                         }
                                       },
-                                      child: Image.asset(
-                                        'assets/image/feed/icon/small_size/icon_comment_comment.png',
-                                        height: 20,
+                                      child: Row(
+                                        children: [
+                                          Image.asset(
+                                            'assets/image/feed/icon/small_size/icon_comment_comment.png',
+                                            height: 20,
+                                          ),
+                                          Text(
+                                            '댓글쓰기',
+                                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    Text(
-                                      '댓글쓰기',
-                                      style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
-                                    ),
+                                    ).throttle(),
                                   ],
                                 ),
                               ),
@@ -161,12 +218,12 @@ class NotificationPostItem extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: const BorderRadius.all(Radius.circular(8)),
                             child: Image.network(
-                              thumborUrl(imgUrl ?? ''),
+                              thumborUrl(widget.imgUrl ?? ''),
                               fit: BoxFit.cover,
                               height: 52,
                               width: 52,
                               errorBuilder: (context, e, stackTrace) {
-                                print('error imgUrl $imgUrl');
+                                print('error imgUrl ${widget.imgUrl}');
                                 return const SizedBox(
                                   height: 52,
                                   width: 52,
