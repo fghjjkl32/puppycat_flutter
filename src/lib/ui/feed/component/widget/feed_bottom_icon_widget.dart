@@ -50,9 +50,11 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
   void initState() {
     likeController = AnimationController(
       vsync: this,
+      duration: const Duration(seconds: 1),
     );
     saveController = AnimationController(
       vsync: this,
+      duration: const Duration(seconds: 1),
     );
 
     super.initState();
@@ -80,12 +82,9 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
               widget.isLike
                   ? GestureDetector(
                       onTap: () {
-                        if (!ref.watch(likeApiIsLoadingStateProvider)) {
-                          ref.watch(feedListStateProvider.notifier).deleteLike(
-                                contentIdx: widget.contentIdx,
-                                contentType: widget.contentType,
-                              );
-                        }
+                        ref.watch(feedListStateProvider.notifier).toggleLike(
+                              contentIdx: widget.contentIdx,
+                            );
                       },
                       child: Row(
                         children: [
@@ -178,20 +177,17 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                     )
                   : GestureDetector(
                       onTap: () async {
-                        if (!ref.watch(likeApiIsLoadingStateProvider)) {
-                          isLogined == false
-                              ? context.push("/home/login")
-                              : await ref.watch(feedListStateProvider.notifier).postLike(
-                                    contentIdx: widget.contentIdx,
-                                    contentType: widget.contentType,
-                                  );
+                        isLogined == false
+                            ? context.push("/home/login")
+                            : ref.watch(feedListStateProvider.notifier).toggleLike(
+                                  contentIdx: widget.contentIdx,
+                                );
 
-                          setState(() {
-                            showLikeLottieAnimation = true;
-                          });
+                        setState(() {
+                          showLikeLottieAnimation = true;
+                        });
 
-                          likeController.forward(from: 0);
-                        }
+                        likeController.forward(from: 0);
                       },
                       child: Row(
                         children: [
@@ -297,14 +293,11 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
           widget.isSave
               ? GestureDetector(
                   onTap: () {
-                    if (!ref.watch(likeApiIsLoadingStateProvider)) {
-                      isLogined == false
-                          ? context.push("/home/login")
-                          : ref.watch(feedListStateProvider.notifier).deleteSave(
-                                contentIdx: widget.contentIdx,
-                                contentType: widget.contentType,
-                              );
-                    }
+                    isLogined == false
+                        ? context.push("/home/login")
+                        : ref.watch(feedListStateProvider.notifier).toggleSave(
+                              contentIdx: widget.contentIdx,
+                            );
                   },
                   child: showSaveLottieAnimation
                       ? Lottie.asset(
@@ -326,20 +319,17 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                 )
               : GestureDetector(
                   onTap: () async {
-                    if (!ref.watch(saveApiIsLoadingStateProvider)) {
-                      isLogined == false
-                          ? context.push("/home/login")
-                          : await ref.watch(feedListStateProvider.notifier).postSave(
-                                contentIdx: widget.contentIdx,
-                                contentType: widget.contentType,
-                              );
+                    isLogined == false
+                        ? context.push("/home/login")
+                        : await ref.watch(feedListStateProvider.notifier).toggleSave(
+                              contentIdx: widget.contentIdx,
+                            );
 
-                      setState(() {
-                        showSaveLottieAnimation = true;
-                      });
+                    setState(() {
+                      showSaveLottieAnimation = true;
+                    });
 
-                      saveController.forward(from: 0);
-                    }
+                    saveController.forward(from: 0);
                   },
                   child: const Icon(
                     Puppycat_social.icon_bookmark,

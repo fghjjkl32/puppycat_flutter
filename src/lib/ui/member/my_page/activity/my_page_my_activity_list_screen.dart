@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -320,7 +320,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                             ),
                           ],
                         ),
-                      );
+                      ).throttle();
                     },
                   ),
                 ),
@@ -470,7 +470,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                             ),
                           ],
                         ),
-                      );
+                      ).throttle();
                     },
                   ),
                 ),

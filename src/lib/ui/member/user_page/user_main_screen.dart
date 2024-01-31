@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -533,7 +534,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           ],
                         ),
                       ),
-                    ),
+                    ).throttle(),
                   );
                 },
               ),
@@ -690,7 +691,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           ],
                         ),
                       ),
-                    ),
+                    ).throttle(),
                   );
                 },
               ),
@@ -873,21 +874,13 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 child: isFollow
                                     ? GestureDetector(
                                         onTap: () async {
-                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                            if (!isLogined) {
-                                              context.push("/home/login");
-                                            } else {
-                                              final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                    followUuid: widget.memberUuid,
-                                                  );
-                                              ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
-
-                                              if (result.result) {
-                                                setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
-                                                });
-                                              }
-                                            }
+                                          if (!isLogined) {
+                                            context.push("/home/login");
+                                          } else {
+                                            ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
+                                            setState(() {
+                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                            });
                                           }
                                         },
                                         child: Container(
@@ -908,21 +901,14 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                       )
                                     : GestureDetector(
                                         onTap: () async {
-                                          if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                            if (!isLogined) {
-                                              context.push("/home/login");
-                                            } else {
-                                              final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                    followUuid: widget.memberUuid,
-                                                  );
-                                              ref.watch(userInformationStateProvider.notifier).updateFollowState();
+                                          if (!isLogined) {
+                                            context.push("/home/login");
+                                          } else {
+                                            ref.watch(userInformationStateProvider.notifier).updateFollowState();
 
-                                              if (result.result) {
-                                                setState(() {
-                                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
-                                                });
-                                              }
-                                            }
+                                            setState(() {
+                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
+                                            });
                                           }
 
                                           // if (result.result) {
