@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:credit_card_scanner/credit_card_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -17,6 +18,27 @@ class _TestViewState extends State<TestView> {
   String _authorized = '인증되지 않음';
 
   bool _isAuthenticating = false;
+
+  CardDetails? _cardDetails;
+  CardScanOptions scanOptions = const CardScanOptions(
+    scanCardHolderName: true,
+    validCardsToScanBeforeFinishingScan: 10,
+  );
+
+  Future<void> scanCard() async {
+    final CardDetails? cardDetails = await CardScanner.scanCard(scanOptions: scanOptions);
+
+    print("cardDetails : ${cardDetails}");
+    print("${cardDetails!.cardHolderName}");
+    print("${cardDetails!.cardIssuer}");
+    print("${cardDetails!.expiryDate}");
+    print("${cardDetails!.cardNumber}");
+
+    if (!mounted || cardDetails == null) return;
+    setState(() {
+      _cardDetails = cardDetails;
+    });
+  }
 
   @override
   void initState() {
@@ -137,6 +159,19 @@ class _TestViewState extends State<TestView> {
                       ),
                     ],
                   ),
+              ],
+            ),
+            Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    scanCard();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Card Scan Test"),
+                  ),
+                )
               ],
             ),
           ],

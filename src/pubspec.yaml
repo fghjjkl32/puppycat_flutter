@@ -167,6 +167,7 @@ dependencies:
   custom_refresh_indicator: ^3.0.0
 
   local_auth: ^2.1.8
+  credit_card_scanner: ^1.0.5
 
 dev_dependencies:
   flutter_test:
