@@ -18,21 +18,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 part 'chat_room_state_provider.g.dart';
 
 final chatRoomListEmptyProvider = StateProvider<bool>((ref) => false);
-// final chatBroadCastStateProvider = StateProvider<Future<Channel>>((ref) async {
-//   final socket = await ref.read(chatSocketStateProvider);
-//   Channel channel = Channel(socket, CustomHandler());
-//
-//   print('channel $channel');
-//   var user = UserModel(
-//     roomId: '60CFA203FC623D5547F13B1C27A2F6FA',
-//     nickName: '60CFA203FC623D5547F13B1C27A2F6FA',
-//     userInfo: {},
-//     clientKey: '60CFA203FC623D5547F13B1C27A2F6FA',
-//   );
-//
-//   channel.user = user;
-//   return channel;
-// });
 
 final chatSocketStateProvider = StateProvider<Future<WebSocketChannel>>((ref) async {
   final socket = await VChatCloud.connectSocket();
@@ -97,7 +82,7 @@ class ChatRoomState extends _$ChatRoomState {
     required String targetMemberUuid,
   }) async {
     try {
-      final roomId = await _chatRepository.getChatRoomId(targetMemberUuid: targetMemberUuid, maxUser: 3);
+      final roomId = await _chatRepository.createRoom(targetMemberUuid: targetMemberUuid, maxUser: 2);
       return roomId;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);

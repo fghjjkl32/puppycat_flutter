@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_response_model.dart';
@@ -8,7 +7,7 @@ import 'package:pet_mobile_social_flutter/models/chat/chat_room_response_model.d
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
 import 'package:pet_mobile_social_flutter/services/chat/chat_service.dart';
 
-final chatRepositoryProvider = StateProvider.family<ChatRepository, Dio>((ref, dio) => ChatRepository(dio: dio));
+// final chatRepositoryProvider = StateProvider.family<ChatRepository, Dio>((ref, dio) => ChatRepository(dio: dio));
 
 class ChatRepository {
   late final ChatService _chatService; // = ChatService(DioWrap.getDioWithCookie(), baseUrl: baseUrl);
@@ -25,7 +24,7 @@ class ChatRepository {
     int page = 1,
     int recordSize = 10,
   }) async {
-    ChatRoomResponseModel responseModel = await _chatService.getChatRooms(page: page, recordSize: recordSize);
+    ChatRoomResponseModel responseModel = await _chatService.getChatRoomList(page: page, recordSize: recordSize);
 
     if (!responseModel.result) {
       throw APIException(
@@ -50,7 +49,7 @@ class ChatRepository {
     return rooms;
   }
 
-  Future<String> getChatRoomId({
+  Future<String> createRoom({
     required String targetMemberUuid,
     int maxUser = 2,
     int type = 0, //0 : DM, 1 : Group
@@ -61,7 +60,7 @@ class ChatRepository {
       'type': type,
     };
 
-    ResponseModel responseModel = await _chatService.getRoomId(body: body);
+    ResponseModel responseModel = await _chatService.createRoom(body: body);
 
     if (!responseModel.result) {
       throw APIException(

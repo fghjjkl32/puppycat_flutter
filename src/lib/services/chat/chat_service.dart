@@ -10,21 +10,21 @@ part 'chat_service.g.dart';
 abstract class ChatService {
   factory ChatService(Dio dio, {String baseUrl}) = _ChatService;
 
-  @GET('v1/chat/room')
-  @Headers(<String, dynamic>{
-    "Content-Type": "application/json",
-  })
-  Future<ChatRoomResponseModel> getChatRooms({
-    @Query('page') required int page,
-    @Query('recordSize') required int recordSize, //limit
-  });
-
   @POST('v1/chat/room')
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
-  Future<ResponseModel> getRoomId({
+  Future<ResponseModel> createRoom({
     @Body() required Map<String, dynamic> body,
+  });
+
+  @GET('v1/chat/room')
+  @Headers(<String, dynamic>{
+    "Content-Type": "application/json",
+  })
+  Future<ChatRoomResponseModel> getChatRoomList({
+    @Query('page') required int page,
+    @Query('recordSize') required int recordSize, //limit
   });
 
   @DELETE('v1/chat/room/{roomUuid}')
