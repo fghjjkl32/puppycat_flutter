@@ -88,7 +88,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
           onDoubleTap: () {
             widget.isLike
                 ? null
-                : ref.watch(feedListStateProvider.notifier).toggleLikes(
+                : ref.watch(feedListStateProvider.notifier).toggleLike(
                       contentIdx: widget.contentIdx,
                     );
           },

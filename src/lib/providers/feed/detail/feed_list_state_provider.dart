@@ -31,8 +31,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'feed_list_state_provider.g.dart';
 
-final saveApiIsLoadingStateProvider = StateProvider<bool>((ref) => false);
-
 final feedListEmptyProvider = StateProvider<bool>((ref) => true);
 
 @Riverpod(keepAlive: true)
@@ -59,6 +57,12 @@ class FeedListState extends _$FeedListState {
   int? tempPopularWeekFeedDataIndex;
   int? tempContentImageDataIndex;
   int? tempTagContentImageDataIndex;
+
+  Map<int, bool> _initialLikeStates = {};
+  int? saveLike;
+
+  Map<int, bool> _initialKeepStates = {};
+  int? saveKeep;
 
   @override
   PagingController<int, FeedData> build() {
@@ -182,15 +186,7 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(myFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        if (type == "postSave") {
-          ref.read(myFeedStateProvider).itemList![targetIdx] = ref.read(myFeedStateProvider).itemList![targetIdx].copyWith(
-                saveState: 1,
-              );
-        } else if (type == "deleteSave") {
-          ref.read(myFeedStateProvider).itemList![targetIdx] = ref.read(myFeedStateProvider).itemList![targetIdx].copyWith(
-                saveState: 0,
-              );
-        } else if (type == "postKeepContents") {
+        if (type == "postKeepContents") {
           ref.read(myFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
           ref.read(myFeedStateProvider).itemList![targetIdx] = ref.read(myFeedStateProvider).itemList![targetIdx].copyWith(
@@ -229,15 +225,7 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(recentFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        if (type == "postSave") {
-          ref.read(recentFeedStateProvider).itemList![targetIdx] = ref.read(recentFeedStateProvider).itemList![targetIdx].copyWith(
-                saveState: 1,
-              );
-        } else if (type == "deleteSave") {
-          ref.read(recentFeedStateProvider).itemList![targetIdx] = ref.read(recentFeedStateProvider).itemList![targetIdx].copyWith(
-                saveState: 0,
-              );
-        } else if (type == "postKeepContents") {
+        if (type == "postKeepContents") {
           ref.read(recentFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
           ref.read(recentFeedStateProvider).itemList![targetIdx] = ref.read(recentFeedStateProvider).itemList![targetIdx].copyWith(
@@ -276,15 +264,7 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(followFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        if (type == "postSave") {
-          ref.read(followFeedStateProvider).itemList![targetIdx] = ref.read(followFeedStateProvider).itemList![targetIdx].copyWith(
-                saveState: 1,
-              );
-        } else if (type == "deleteSave") {
-          ref.read(followFeedStateProvider).itemList![targetIdx] = ref.read(followFeedStateProvider).itemList![targetIdx].copyWith(
-                saveState: 0,
-              );
-        } else if (type == "postKeepContents") {
+        if (type == "postKeepContents") {
           ref.read(followFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
           ref.read(followFeedStateProvider).itemList![targetIdx] = ref.read(followFeedStateProvider).itemList![targetIdx].copyWith(
@@ -323,15 +303,7 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(popularWeekFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        if (type == "postSave") {
-          ref.read(popularWeekFeedStateProvider).itemList![targetIdx] = ref.read(popularWeekFeedStateProvider).itemList![targetIdx].copyWith(
-                saveState: 1,
-              );
-        } else if (type == "deleteSave") {
-          ref.read(popularWeekFeedStateProvider).itemList![targetIdx] = ref.read(popularWeekFeedStateProvider).itemList![targetIdx].copyWith(
-                saveState: 0,
-              );
-        } else if (type == "postKeepContents") {
+        if (type == "postKeepContents") {
           ref.read(popularWeekFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
           ref.read(popularWeekFeedStateProvider).itemList![targetIdx] = ref.read(popularWeekFeedStateProvider).itemList![targetIdx].copyWith(
@@ -469,51 +441,15 @@ class FeedListState extends _$FeedListState {
 
   Future<ResponseModel> postSave({
     required contentIdx,
-    required String contentType,
   }) async {
-    ref.read(saveApiIsLoadingStateProvider.notifier).state = true;
-
     try {
       final result = await FeedRepository(dio: ref.read(dioProvider)).postSave(contentIdx: contentIdx);
-
-      int targetIdx = -1;
-
-      if (state.itemList != null) {
-        if (firstFeedIdx == contentIdx) {
-          final firstFeedData = ref.read(firstFeedDetailStateProvider);
-          if (firstFeedData != null) {
-            if (firstFeedData.idx == contentIdx) {
-              ref.read(firstFeedDetailStateProvider.notifier).state = firstFeedData.copyWith(
-                saveState: 1,
-              );
-            }
-          }
-        }
-
-        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
-
-        if (targetIdx != -1) {
-          state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-            saveState: 1,
-          );
-          state.notifyListeners();
-        }
-      }
-
-      feedRefresh(
-        contentIdx,
-        "postSave",
-      );
-
-      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
 
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
       throw apiException.toString();
     } catch (e) {
-      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
       print('postSave error $e');
       rethrow;
     }
@@ -521,52 +457,15 @@ class FeedListState extends _$FeedListState {
 
   Future<ResponseModel> deleteSave({
     required contentIdx,
-    required String contentType,
   }) async {
-    ref.read(saveApiIsLoadingStateProvider.notifier).state = true;
-
     try {
       final result = await FeedRepository(dio: ref.read(dioProvider)).deleteSave(contentsIdx: contentIdx);
-
-      int targetIdx = -1;
-
-      if (state.itemList != null) {
-        if (firstFeedIdx == contentIdx) {
-          final firstFeedData = ref.read(firstFeedDetailStateProvider);
-          if (firstFeedData != null) {
-            if (firstFeedData.idx == contentIdx) {
-              ref.read(firstFeedDetailStateProvider.notifier).state = firstFeedData.copyWith(
-                saveState: 0,
-              );
-            }
-          }
-        }
-
-        targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
-
-        if (targetIdx != -1) {
-          state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
-            saveState: 0,
-          );
-          state.notifyListeners();
-        }
-      }
-
-      feedRefresh(
-        contentIdx,
-        "deleteSave",
-      );
-
-      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
 
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
       throw apiException.toString();
     } catch (e) {
-      ref.read(saveApiIsLoadingStateProvider.notifier).state = false;
-
       print('delete save error $e');
       rethrow;
     }
@@ -957,10 +856,7 @@ class FeedListState extends _$FeedListState {
     feedMemberInfoStateMap[memberUuid] = memberInfo;
   }
 
-  Map<int, bool> _initialLikeStates = {};
-  int? saveLike;
-
-  Future<void> toggleLikes({
+  Future<void> toggleLike({
     required int contentIdx,
   }) async {
     List<FeedData>? currentList = state.itemList;
@@ -1114,6 +1010,123 @@ class FeedListState extends _$FeedListState {
         // 처리 후 초기 상태 정보 삭제
         _initialLikeStates.remove(contentIdx);
         saveLike = null;
+      },
+    );
+  }
+
+  Future<void> toggleSave({
+    required int contentIdx,
+  }) async {
+    List<FeedData>? currentList = state.itemList;
+    int targetIdx = -1;
+
+    if (ref.read(firstFeedDetailStateProvider) != null && currentList != null) {
+      if (firstFeedIdx == contentIdx) {
+        // 저장 상태를 변경하기 전의 상태를 저장합니다.
+        if (!_initialKeepStates.containsKey(contentIdx)) {
+          _initialKeepStates[contentIdx] = ref.read(firstFeedDetailStateProvider)!.saveState == 1;
+        }
+
+        bool isFirstFeedCurrentlySaved = ref.read(firstFeedDetailStateProvider)!.saveState == 1;
+
+        if (ref.read(firstFeedDetailStateProvider)!.idx == contentIdx) {
+          // 저장 상태를 토글합니다.
+          ref.read(firstFeedDetailStateProvider.notifier).state = ref.read(firstFeedDetailStateProvider)!.copyWith(
+                saveState: isFirstFeedCurrentlySaved ? 0 : 1,
+              );
+
+          state.notifyListeners();
+
+          saveKeep = ref.read(firstFeedDetailStateProvider)!.saveState;
+        }
+      }
+
+      targetIdx = currentList.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        // 저장 상태를 변경하기 전의 상태를 저장합니다.
+        if (!_initialKeepStates.containsKey(contentIdx)) {
+          _initialKeepStates[contentIdx] = currentList[targetIdx].saveState == 1;
+        }
+
+        bool isCurrentlySaved = currentList[targetIdx].saveState == 1;
+        currentList[targetIdx] = currentList[targetIdx].copyWith(
+          saveState: isCurrentlySaved ? 0 : 1,
+        );
+
+        state.notifyListeners();
+
+        saveKeep = currentList[targetIdx].saveState;
+      }
+    }
+
+    // 각 프로바이더에 대해 추출된 함수 호출
+    updateSaveStateForProvider(myFeedStateProvider, contentIdx);
+    updateSaveStateForProvider(recentFeedStateProvider, contentIdx);
+    updateSaveStateForProvider(followFeedStateProvider, contentIdx);
+    updateSaveStateForProvider(popularWeekFeedStateProvider, contentIdx);
+
+    handleSaveAction(
+      contentIdx: contentIdx,
+      saveState: saveKeep,
+    );
+  }
+
+  // 각 프로바이더에 대해 반복되는 로직을 처리하는 함수
+  void updateSaveStateForProvider(
+    ProviderBase provider,
+    int contentIdx,
+  ) {
+    var itemList = ref.read(provider).itemList;
+    if (itemList != null) {
+      int targetIdx;
+
+      targetIdx = itemList.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        if (!_initialKeepStates.containsKey(contentIdx)) {
+          _initialKeepStates[contentIdx] = itemList[targetIdx].saveState == 1;
+        }
+
+        bool isCurrentlySaved;
+
+        isCurrentlySaved = itemList[targetIdx].saveState == 1;
+
+        itemList[targetIdx] = itemList[targetIdx].copyWith(
+          saveState: isCurrentlySaved ? 0 : 1,
+        );
+
+        ref.read(provider).notifyListeners();
+
+        saveKeep = itemList[targetIdx].saveState;
+      }
+    }
+  }
+
+  void handleSaveAction({
+    required int contentIdx,
+    required int? saveState,
+  }) {
+    // 디바운스 타이머 설정
+
+    EasyDebounce.debounce(
+      'handleSaveAction',
+      const Duration(
+        milliseconds: 500,
+      ),
+      () async {
+        // 초기 상태와 현재 상태를 비교합니다.
+        bool initialKeepState = _initialKeepStates[contentIdx] ?? false;
+        if (saveState == 1 && !initialKeepState) {
+          // 저장 상태가 되었다면 API 호출
+          await postSave(contentIdx: contentIdx);
+        } else if (saveState == 0 && initialKeepState) {
+          // 저장 취소 상태가 되었다면 API 호출
+          await deleteSave(contentIdx: contentIdx);
+        }
+        // 처리 후 초기 상태 정보 삭제
+        _initialKeepStates.remove(contentIdx);
+        saveKeep = null;
       },
     );
   }

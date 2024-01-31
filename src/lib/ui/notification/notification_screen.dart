@@ -312,7 +312,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                 });
                               },
                               onLikeTap: (isLiked) {
-                                ref.read(feedListStateProvider.notifier).toggleLikes(
+                                ref.read(feedListStateProvider.notifier).toggleLike(
                                       contentIdx: item.contentsIdx,
                                     );
                               },
