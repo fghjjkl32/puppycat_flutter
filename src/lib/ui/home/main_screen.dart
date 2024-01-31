@@ -127,7 +127,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
 
     Future(() async {
       ref.read(followUserStateProvider.notifier).resetState();
-      _recentFeedListPagingController.refresh();
 
       ref.read(popularUserListStateProvider.notifier).getInitUserList();
 
@@ -167,6 +166,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
     final isLogined = ref.read(loginStatementProvider);
 
     if (getTabs().length != tabController.length) {
+      _recentFeedListPagingController.refresh();
+
       if (isLogined) {
         _myFeedListPagingController.refresh();
 

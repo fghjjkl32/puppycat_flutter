@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -10,8 +9,8 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/widget/dot_indicator.dart';
@@ -87,14 +86,11 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
             _isTagVisible.value = !_isTagVisible.value;
           },
           onDoubleTap: () {
-            if (!ref.watch(likeApiIsLoadingStateProvider)) {
-              widget.isLike
-                  ? null
-                  : ref.watch(feedListStateProvider.notifier).postLike(
-                        contentIdx: widget.contentIdx,
-                        contentType: widget.contentType,
-                      );
-            }
+            widget.isLike
+                ? null
+                : ref.watch(feedListStateProvider.notifier).toggleLike(
+                      contentIdx: widget.contentIdx,
+                    );
           },
           child: CarouselSlider(
             options: CarouselOptions(

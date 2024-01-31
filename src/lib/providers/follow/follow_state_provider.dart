@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -10,13 +11,42 @@ import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
 import 'package:pet_mobile_social_flutter/repositories/follow/follow_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-final followApiIsLoadingStateProvider = StateProvider<bool>((ref) => false);
-
 class FollowUserStateNotifier extends StateNotifier<Map<String, bool>> {
-  FollowUserStateNotifier() : super({});
+  final Ref ref;
+
+  FollowUserStateNotifier(this.ref) : super({});
+
+  Map<String, bool> _initialFollowStates = {}; // 초기 상태를 저장할 맵
 
   void setFollowState(String memberUuid, bool followState) {
+    //상태 변경
     state = {...state, memberUuid: followState};
+
+    // 초기 상태가 설정되지 않았으면 현재 상태를 저장합니다.
+    _initialFollowStates.putIfAbsent(memberUuid, () => followState);
+
+    EasyDebounce.debounce(
+      'setFollowState',
+      const Duration(
+        milliseconds: 500,
+      ),
+      () async {
+        // 초기 상태와 현재 상태가 다른 경우에만 API 호출
+        if (_initialFollowStates[memberUuid] != followState) {
+          if (followState) {
+            // 팔로우 API 호출
+            await ref.read(followStateProvider.notifier).postFollow(followUuid: memberUuid);
+            print("팔로우 API 호출");
+          } else {
+            // 언팔로우 API 호출
+            await ref.read(followStateProvider.notifier).deleteFollow(followUuid: memberUuid);
+            print("언팔로우 API 호출");
+          }
+          // API 호출 후 초기 상태 업데이트
+          _initialFollowStates[memberUuid] = followState;
+        }
+      },
+    );
   }
 
   void resetState() {
@@ -29,7 +59,7 @@ class FollowUserStateNotifier extends StateNotifier<Map<String, bool>> {
 }
 
 final followUserStateProvider = StateNotifierProvider<FollowUserStateNotifier, Map<String, bool>>(
-  (ref) => FollowUserStateNotifier(),
+  (ref) => FollowUserStateNotifier(ref),
 );
 
 final followStateProvider = StateNotifierProvider<FollowStateNotifier, FollowState>((ref) {
@@ -362,14 +392,11 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required String followUuid,
   }) async {
     try {
-      ref.read(followApiIsLoadingStateProvider.notifier).state = true;
       final result = await FollowRepository(dio: ref.read(dioProvider)).postFollow(followUuid: followUuid);
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
 
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
 
       throw apiException.toString();
     } catch (e) {
@@ -382,14 +409,11 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required String followUuid,
   }) async {
     try {
-      ref.read(followApiIsLoadingStateProvider.notifier).state = true;
       final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollow(followUuid: followUuid);
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
 
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
 
       throw apiException.toString();
     } catch (e) {
@@ -402,14 +426,11 @@ class FollowStateNotifier extends StateNotifier<FollowState> {
     required String followUuid,
   }) async {
     try {
-      ref.read(followApiIsLoadingStateProvider.notifier).state = true;
       final result = await FollowRepository(dio: ref.read(dioProvider)).deleteFollower(followUuid: followUuid);
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
 
       return result;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      ref.read(followApiIsLoadingStateProvider.notifier).state = false;
 
       throw apiException.toString();
     } catch (e) {
