@@ -20,6 +20,7 @@ import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.
 import 'package:pet_mobile_social_flutter/ui/Admin/password_screen.dart';
 import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/ui/components/dialog/custom_dialog.dart';
+import 'package:pet_mobile_social_flutter/ui/setting/local_test_screen.dart';
 import 'package:uni_links/uni_links.dart';
 
 class MyPageSettingScreen extends ConsumerStatefulWidget {
@@ -155,6 +156,24 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
               title: '차단 유저 관리',
               onPressed: () {
                 !isLogined ? context.push("/home/login") : context.push("/setting/blockedUser");
+              },
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(),
+            ),
+            ProfileButton(
+              icon: const Icon(
+                Puppycat_social.icon_bell,
+                size: 20,
+              ),
+              title: 'local_auth',
+              onPressed: () async {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => TestView(),
+                    ));
               },
             ),
             const Padding(
