@@ -130,32 +130,22 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
 
     tabController = TabController(vsync: this, length: getTabs().length, initialIndex: widget.initialTabIndex);
 
-    _fetchFeedDataFuture = _initTabContoller();
+    _fetchFeedDataFuture = _initTabController();
 
     ref.read(firebaseStateProvider.notifier).checkNotificationAppLaunch();
 
     Future(() async {
+      refreshFeedList();
+
       ref.read(followUserStateProvider.notifier).resetState();
       ref.read(popularUserListStateProvider.notifier).getInitUserList();
       ref.read(popularHourFeedStateProvider.notifier).initPosts();
     });
   }
 
-  Future<TabController> _initTabContoller() async {
-    final isLogined = ref.read(loginStatementProvider);
-
+  Future<TabController> _initTabController() async {
     if (getTabs().length != tabController.length) {
-      _recentFeedListPagingController.refresh();
-
-      if (isLogined) {
-        _myFeedListPagingController.refresh();
-
-        _popularWeekFeedListPagingController.refresh();
-
-        _followFeedListPagingController.refresh();
-
-        ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
-      }
+      refreshFeedList();
 
       tabController.dispose();
       tabController = TabController(
@@ -172,6 +162,22 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
     scrollController.dispose();
     tabController.dispose();
     super.dispose();
+  }
+
+  void refreshFeedList() {
+    final isLogined = ref.read(loginStatementProvider);
+
+    _recentFeedListPagingController.refresh();
+
+    if (isLogined) {
+      _myFeedListPagingController.refresh();
+
+      _popularWeekFeedListPagingController.refresh();
+
+      _followFeedListPagingController.refresh();
+
+      ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
+    }
   }
 
   @override
@@ -506,21 +512,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
         return Future(() {
           ref.read(followUserStateProvider.notifier).resetState();
 
-          _recentFeedListPagingController.refresh();
-
           ref.read(popularUserListStateProvider.notifier).getInitUserList();
 
           ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
-          if (isLogined) {
-            _myFeedListPagingController.refresh();
-
-            _popularWeekFeedListPagingController.refresh();
-
-            _followFeedListPagingController.refresh();
-
-            ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
-          }
+          refreshFeedList();
         });
       },
       builder: (context, child, controller) {
