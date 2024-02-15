@@ -136,10 +136,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
 
     Future(() async {
       refreshFeedList();
-
-      ref.read(followUserStateProvider.notifier).resetState();
-      ref.read(popularUserListStateProvider.notifier).getInitUserList();
-      ref.read(popularHourFeedStateProvider.notifier).initPosts();
     });
   }
 
@@ -165,6 +161,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
   }
 
   void refreshFeedList() {
+    ref.read(followUserStateProvider.notifier).resetState();
+    ref.read(popularUserListStateProvider.notifier).getInitUserList();
+    ref.read(popularHourFeedStateProvider.notifier).initPosts();
+
     final isLogined = ref.read(loginStatementProvider);
 
     _recentFeedListPagingController.refresh();
@@ -510,12 +510,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
     return CustomRefreshIndicator(
       onRefresh: () {
         return Future(() {
-          ref.read(followUserStateProvider.notifier).resetState();
-
-          ref.read(popularUserListStateProvider.notifier).getInitUserList();
-
-          ref.read(popularHourFeedStateProvider.notifier).initPosts();
-
           refreshFeedList();
         });
       },
