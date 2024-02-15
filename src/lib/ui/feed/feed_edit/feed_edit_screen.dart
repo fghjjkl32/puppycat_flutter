@@ -189,16 +189,17 @@ class FeedEditScreen extends ConsumerWidget {
                           contentIdx,
                           "postKeepContents",
                         );
+
+                    context.pop();
                   } else {
-                    await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("myContent", contentIdx).then((value) {
+                    await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("myContent", contentIdx, isUpdateState: false).then((value) {
                       if (value == null) {
                         return;
                       }
 
-                      ref.read(feedListStateProvider.notifier).feedRefresh(
-                            contentIdx,
-                            "editContent",
+                      ref.read(feedListStateProvider.notifier).editFeedRefresh(
                             editData: value,
+                            contentIdx: contentIdx,
                           );
 
                       ref.read(feedWriteProvider.notifier).resetTag();

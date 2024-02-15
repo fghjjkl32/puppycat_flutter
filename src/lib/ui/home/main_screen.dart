@@ -17,6 +17,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/my_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/popular_hour_feed_state_provider.dart';
@@ -626,69 +627,31 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                       );
               },
               itemBuilder: (context, item, index) {
-                if (isMyFeedList) {
-                  return FeedMainWidget(
-                    feedData: item,
-                    contentType: 'myContent',
-                    userName: ref.read(myFeedStateProvider.notifier).memberInfo!.nick!,
-                    profileImage: ref.read(myFeedStateProvider.notifier).memberInfo!.profileImgUrl ?? "",
-                    oldMemberUuid: myInfo.uuid ?? '',
-                    firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo!.nick!,
-                    secondTitle: '피드',
-                    index: index,
-                    feedType: 'my',
-                    isSpecialUser: ref.read(myFeedStateProvider.notifier).memberInfo!.isBadge == 1,
-                    onTapHideButton: () async {
-                      onTapHide(
-                        context: context,
-                        ref: ref,
-                        contentType: 'myContent',
-                        contentIdx: item.idx,
-                        memberUuid: item.memberUuid!,
-                      );
-                    },
-                  );
-                } else if (isFollowFeedList) {
-                  return FeedMainWidget(
-                    feedData: item,
-                    contentType: 'userContent',
-                    userName: ref.read(followFeedStateProvider.notifier).memberInfo?.nick ?? item.memberInfo!.nick!,
-                    profileImage: ref.read(followFeedStateProvider.notifier).memberInfo?.profileImgUrl ?? item.memberInfo!.profileImgUrl! ?? "",
-                    oldMemberUuid: myInfo.uuid ?? '',
-                    firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?.nick ?? item.memberInfo!.nick!,
-                    secondTitle: '피드',
-                    index: index,
-                    feedType: 'follow',
-                    isSpecialUser: ref.read(followFeedStateProvider.notifier).memberInfo?.isBadge == 1,
-                    onTapHideButton: () async {
-                      onTapHide(
-                        context: context,
-                        ref: ref,
-                        contentType: 'userContent',
-                        contentIdx: item.idx,
-                        memberUuid: item.memberUuid!,
-                      );
-                    },
-                  );
-                }
+                //게시글을 수정하고 나면 FeedData 형태가 memberInfo로 들어오기 때문에 ref.read(recentFeedStateProvider.notifier).memberInfo 사용
                 return FeedMainWidget(
                   feedData: item,
-                  contentType: 'userContent',
-                  userName: item.memberInfo?.nick ?? '',
-                  profileImage: item.memberInfo?.profileImgUrl ?? "",
+                  contentType: isMyFeedList ? 'myContent' : 'userContent',
+                  userName: item.memberInfo?.nick ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? '',
+                  profileImage: item.memberInfo?.profileImgUrl ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
                   oldMemberUuid: myInfo.uuid ?? '',
-                  firstTitle: item.memberInfo?.nick ?? 'unknown',
+                  firstTitle: item.memberInfo?.nick ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? 'unknown',
                   secondTitle: '피드',
                   index: index,
-                  feedType: 'recent',
-                  isSpecialUser: item.memberInfo?.isBadge == 1,
+                  feedType: isMyFeedList
+                      ? 'my'
+                      : isFollowFeedList
+                          ? 'follow'
+                          : isRecentFeedList
+                              ? 'recent'
+                              : "",
+                  isSpecialUser: item.memberInfo?.isBadge == 1 ? true : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
                   onTapHideButton: () async {
                     onTapHide(
                       context: context,
                       ref: ref,
-                      contentType: 'userContent',
+                      contentType: isMyFeedList ? 'myContent' : 'userContent',
                       contentIdx: item.idx,
-                      memberUuid: item.memberUuid ?? '',
+                      memberUuid: item.memberUuid ?? "",
                     );
                   },
                 );
@@ -746,14 +709,14 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                       return FeedMainWidget(
                         feedData: item,
                         contentType: 'userContent',
-                        userName: item.memberInfo!.nick!,
-                        profileImage: item.memberInfo!.profileImgUrl! ?? "",
+                        userName: item.memberInfo?.nick ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? '',
+                        profileImage: item.memberInfo?.profileImgUrl ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? '',
                         oldMemberUuid: myInfo.uuid ?? '',
-                        firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?.nick ?? item.memberInfo!.nick!,
+                        firstTitle: item.memberInfo?.nick ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? '',
                         secondTitle: '피드',
                         index: index,
                         feedType: 'popular',
-                        isSpecialUser: item.memberInfo?.isBadge == 1,
+                        isSpecialUser: item.memberInfo?.isBadge == 1 ? true : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
                         onTapHideButton: () async {
                           onTapHide(
                             context: context,

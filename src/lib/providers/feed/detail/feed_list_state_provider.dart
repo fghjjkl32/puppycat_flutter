@@ -72,17 +72,12 @@ class FeedListState extends _$FeedListState {
   }
 
   Future<void> _fetchPage(int pageKey) async {
-    print("pageKey ${pageKey}");
     try {
-      print("apiStatus1 ${apiStatus}");
-
       if (apiStatus == ListAPIStatus.loading) {
         return;
       }
 
       apiStatus = ListAPIStatus.loading;
-
-      print("apiStatus2 ${apiStatus}");
 
       FeedResponseModel? feedResult; // = feedNullResponseModel;
 
@@ -129,7 +124,6 @@ class FeedListState extends _$FeedListState {
       }
 
       memberInfo = feedResult.data!.memberInfo;
-      print('feedResult.data!.list ${feedResult.data!.list.runtimeType}');
 
       List<dynamic> resultList = feedResult.data!.list;
       List<FeedData> searchList = resultList.map((e) {
@@ -145,12 +139,7 @@ class FeedListState extends _$FeedListState {
         _lastPage = 1;
       }
 
-      print("_lastPage ${_lastPage}");
-
       final nextPageKey = searchList.isEmpty ? null : pageKey + 1;
-
-      print("nextPageKey ${nextPageKey}");
-      print("pageKey ${pageKey}");
 
       if (pageKey == _lastPage) {
         state.appendLastPage(searchList);
@@ -186,10 +175,6 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(myFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        if (type == "editContent" && editData != null) {
-          ref.read(myFeedStateProvider).itemList![targetIdx] = editData;
-        }
-
         if (type == "postKeepContents") {
           ref.read(myFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
@@ -229,10 +214,6 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(recentFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
-        if (type == "editContent" && editData != null) {
-          ref.read(recentFeedStateProvider).itemList![targetIdx] = editData;
-        }
-
         if (type == "postKeepContents") {
           ref.read(recentFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
@@ -410,6 +391,72 @@ class FeedListState extends _$FeedListState {
       }
 
       ref.read(userTagContentsStateProvider).notifyListeners();
+    }
+  }
+
+  void editFeedRefresh({
+    required int contentIdx,
+    required FeedData editData,
+  }) async {
+    int targetIdx = -1;
+
+    if (state.itemList != null) {
+      if (firstFeedIdx == contentIdx) {
+        final firstFeedData = ref.read(firstFeedDetailStateProvider);
+        if (firstFeedData != null) {
+          if (firstFeedData.idx == contentIdx) {
+            ref.read(firstFeedDetailStateProvider.notifier).state = editData;
+          }
+        }
+      }
+
+      targetIdx = state.itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        state.itemList![targetIdx] = editData;
+
+        state.notifyListeners();
+      }
+    }
+
+    if (ref.read(myFeedStateProvider).itemList != null) {
+      targetIdx = ref.read(myFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        ref.read(myFeedStateProvider).itemList![targetIdx] = editData;
+
+        ref.read(myFeedStateProvider).notifyListeners();
+      }
+    }
+
+    if (ref.read(recentFeedStateProvider).itemList != null) {
+      targetIdx = ref.read(recentFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        ref.read(recentFeedStateProvider).itemList![targetIdx] = editData;
+
+        ref.read(recentFeedStateProvider).notifyListeners();
+      }
+    }
+
+    if (ref.read(followFeedStateProvider).itemList != null) {
+      targetIdx = ref.read(followFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        ref.read(followFeedStateProvider).itemList![targetIdx] = editData;
+
+        ref.read(followFeedStateProvider).notifyListeners();
+      }
+    }
+
+    if (ref.read(popularWeekFeedStateProvider).itemList != null) {
+      targetIdx = ref.read(popularWeekFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
+
+      if (targetIdx != -1) {
+        ref.read(popularWeekFeedStateProvider).itemList![targetIdx] = editData;
+
+        ref.read(popularWeekFeedStateProvider).notifyListeners();
+      }
     }
   }
 

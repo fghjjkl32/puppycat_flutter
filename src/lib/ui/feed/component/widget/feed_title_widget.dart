@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -229,7 +228,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
               ),
               GestureDetector(
                 onTap: () async {
-                  await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(widget.contentType, widget.feedData.idx).then(
+                  await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(widget.contentType, widget.feedData.idx, isUpdateState: false).then(
                     (value) {
                       if (value == null) {
                         return;
@@ -286,7 +285,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                 if (result.result && mounted) {
                                                   toast(
                                                     context: context,
-                                                    text: '피드 보관 완료!.',
+                                                    text: '피드 보관 완료!',
                                                     type: ToastType.purple,
                                                   );
                                                 }

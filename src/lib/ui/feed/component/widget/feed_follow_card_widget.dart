@@ -8,6 +8,7 @@ import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extensi
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user_list/popular_user_list/popular_user_list_data.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -189,7 +190,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
             if (widget.imageList.length == 1) ...[
               GestureDetector(
                 onTap: () async {
-                  await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!).then((value) {
+                  ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                  ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                  await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!, isUpdateState: false).then((value) {
                     if (value == null) {
                       return;
                     }
@@ -254,7 +258,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     flex: 1,
                     child: GestureDetector(
                       onTap: () async {
-                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!).then((value) {
+                        ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                        ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!, isUpdateState: false).then((value) {
                           if (value == null) {
                             return;
                           }
@@ -313,7 +320,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     flex: 1,
                     child: GestureDetector(
                       onTap: () async {
-                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[1].idx!).then((value) {
+                        ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                        ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[1].idx!, isUpdateState: false).then((value) {
                           if (value == null) {
                             return;
                           }
@@ -374,7 +384,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     flex: 10,
                     child: GestureDetector(
                       onTap: () async {
-                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!).then((value) {
+                        ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                        ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!, isUpdateState: false).then((value) {
                           if (value == null) {
                             return;
                           }
@@ -435,7 +448,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[1].idx!).then((value) {
+                            ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                            ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                            await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[1].idx!, isUpdateState: false).then((value) {
                               if (value == null) {
                                 return;
                               }
@@ -486,7 +502,10 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                         ),
                         GestureDetector(
                           onTap: () async {
-                            await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[2].idx!).then((value) {
+                            ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                            ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                            await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[2].idx!, isUpdateState: false).then((value) {
                               if (value == null) {
                                 return;
                               }

@@ -63,8 +63,6 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
     super.initState();
 
-    print('11111111111111111111111111111');
-
     if (widget.isRouteComment) {
       Future(() {
         print('widget.commentFocusIndex ${widget.commentFocusIndex}');
