@@ -227,22 +227,25 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                           return Column(
                             children: [
                               isViewDateBlock ? _buildDateBlock(item.dateTime) : const SizedBox.shrink(),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 2.0),
-                                child: AutoScrollTag(
-                                  key: UniqueKey(),
-                                  controller: _scrollController,
-                                  index: index,
-                                  child: ChatMessageItem(
-                                    chatMessageModel: item.copyWith(
-                                      isViewTime: isViewMsgTime,
-                                      isConsecutively: isConsecutively,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: AutoScrollTag(
+                                      key: UniqueKey(),
+                                      controller: _scrollController,
+                                      index: index,
+                                      child: ChatMessageItem(
+                                        chatMessageModel: item.copyWith(
+                                          isViewTime: isViewMsgTime,
+                                          isConsecutively: isConsecutively,
+                                        ),
+                                        isError: false,
+                                        isSending: false,
+                                        isRedacted: false,
+                                      ),
                                     ),
-                                    isError: false,
-                                    isSending: false,
-                                    isRedacted: false,
                                   ),
-                                ),
+                                ],
                               ),
                             ],
                           );

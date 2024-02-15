@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -497,9 +496,9 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
           //   DateTime.parse(chatMessageModel.dateTime).timeOfDay(),
           //   style: kBadge10MediumStyle.copyWith(color: kNeutralColor500),
           // ),
-          const SizedBox(
-            width: 4,
-          ),
+          // const SizedBox(
+          //   width: 4,
+          // ),
           isEdit
               ? Padding(
                   padding: const EdgeInsets.only(left: 4.0),
@@ -512,9 +511,9 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
       rows = Row(
         children: [
           isEdit ? Text('메시지.수정됨'.tr(), style: kBadge10MediumStyle.copyWith(color: kNeutralColor500)) : const SizedBox.shrink(),
-          const SizedBox(
-            width: 4,
-          ),
+          // const SizedBox(
+          //   width: 4,
+          // ),
           chatMessageModel.isViewTime
               ? Text(
                   dateTime.timeOfDay(),
@@ -591,8 +590,30 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
     );
   }
 
+  Widget _buildProfile() {
+    if (isMineXorReply) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 4.0),
+      child: InkWell(
+        onTap: () {
+          print('move user page');
+        },
+        child: SizedBox(
+          // color: Colors.red,
+          width: 28,
+          height: 28,
+          child: isAvatarCondition ? getProfileAvatar(chatMessageModel.avatarUrl) : const SizedBox.shrink(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool isBigDevice = MediaQuery.of(context).size.width >= 345;
     _updateData();
 
     ref.listen(chatBubbleFocusProvider, (previous, next) {
@@ -614,144 +635,96 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
       ref.read(chatBubbleFocusProvider.notifier).state = 0;
     });
 
-    return Listener(
-      onPointerDown: (details) => _lastPointerDownPosition = details.position,
-      // child: Swipeable(
-      //   key: const ValueKey(0),
-      //   direction: SwipeDirection.endToStart,
-      //   onSwipe: (direction) {
-      //     if (direction == SwipeDirection.startToEnd) {
-      //       // do something
-      //       print('start to end');
-      //     } else {
-      //       // do something else
-      //       print('end to start');
-      //       // ref
-      //       //     .read(chatReplyProvider.notifier)
-      //       //     .state = chatMessageModel;
-      //       if (widget.onReply != null) {
-      //         widget.onReply!(chatMessageModel);
-      //       }
-      //     }
-      //   },
-      //   background: const Center(
-      //     child: Icon(
-      //       Icons.reply,
-      //       color: kNeutralColor600,
-      //     ),
-      //   ),
-      //   secondaryBackground: const Center(
-      //     child: Icon(
-      //       Icons.reply,
-      //       color: kNeutralColor600,
-      //     ),
-      //   ),
-      //   confirmSwipe: (direction) async {
-      //     if (widget.isRedacted) {
-      //       return false;
-      //     }
-      //     return true;
-      //   },
-      child: Padding(
-        padding: EdgeInsets.only(bottom: widget.bottomPadding),
-        child: Row(
-          mainAxisAlignment: isMineXorReply ? MainAxisAlignment.end : MainAxisAlignment.start,
-          // crossAxisAlignment: isMineXorReply ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            isMineXorReply
-                ? const SizedBox.shrink()
-                : Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: InkWell(
-                      onTap: () {
-                        print('move user page');
-                      },
-                      child: SizedBox(
-                        // color: Colors.red,
-                        width: isAvatarCondition ? 28 : 35,
-                        height: 28,
-                        child: isAvatarCondition ? getProfileAvatar(chatMessageModel.avatarUrl) : const SizedBox.shrink(),
-                      ),
-                    ),
-                  ),
-            Flexible(
-              child: Padding(
-                padding: EdgeInsets.only(right: isMineXorReply && chatMessageModel.isConsecutively ? 8.0 : 0),
-                // child: _buildMsgWidget(chatMessageModel.msg, chatMessageModel.isRead, isMineXorReply),
-                child: Column(
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Bubble(
-                      color: _bubbleColor,
-                      onHighlightChanged: (_) {
-                        // _updateBubbleColor(true);
-                      },
-                      //isMineXorReply ? kPrimaryLightColor : kNeutralColor200,
-                      onDoubleTap: () => _reaction('assets/lottie/character_05_1_Good_24.json'),
-                      onLongPress: () {
-                        if (widget.isRedacted) {
-                          return;
-                        }
-                        _updateBubbleColor(true);
-                        if (widget.onLongPress != null) {
-                          widget.onLongPress!(_lastPointerDownPosition);
-                        } else {
-                          _showMenu(context, _lastPointerDownPosition!, isMineXorReply);
-                        }
-                      },
-                      radius: const Radius.circular(10),
-                      borderColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                      padding: const BubbleEdges.fromLTRB(12, 8, 12, 8),
-                      alignment: isMineXorReply ? Alignment.topRight : Alignment.topLeft,
-                      nip: chatMessageModel.isConsecutively
-                          ? BubbleNip.no
-                          : isMineXorReply
-                              ? BubbleNip.rightTop
-                              : BubbleNip.leftTop,
-                      nipOffset: 16.0,
-                      leftChild: isMineXorReply
-                          ? [
-                              widget.isError ? _buildErrorArea() : _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply),
-                              // _buildErrorArea(),
-                            ]
-                          : [],
-                      rightChild: !isMineXorReply
-                          ? [
-                              _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply),
-                            ]
-                          : [],
-                      mainAxisAlignment: isMineXorReply ? MainAxisAlignment.end : MainAxisAlignment.start,
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+      return Listener(
+        onPointerDown: (details) => _lastPointerDownPosition = details.position,
+        child: Padding(
+          padding: EdgeInsets.only(bottom: widget.bottomPadding),
+          child: Row(
+            mainAxisAlignment: isMineXorReply ? MainAxisAlignment.end : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildProfile(),
+              // Row(
+              //   crossAxisAlignment: CrossAxisAlignment.end,
+              //   children: [
+              //     isMineXorReply
+              //         ? widget.isError
+              //             ? _buildErrorArea()
+              //             : _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply)
+              //         : const SizedBox.shrink(),
+              //   ],
+              // ),
+              Column(
+                // mainAxisSize: MainAxisSize.min,
+                children: [
+                  Bubble(
+                    color: _bubbleColor,
+                    onHighlightChanged: (_) {
+                      // _updateBubbleColor(true);
+                    },
+                    //isMineXorReply ? kPrimaryLightColor : kNeutralColor200,
+                    // onDoubleTap: () => _reaction('assets/lottie/character_05_1_Good_24.json'),
+                    onLongPress: () {
+                      if (widget.isRedacted) {
+                        return;
+                      }
+                      _updateBubbleColor(true);
+                      if (widget.onLongPress != null) {
+                        widget.onLongPress!(_lastPointerDownPosition);
+                      } else {
+                        _showMenu(context, _lastPointerDownPosition!, isMineXorReply);
+                      }
+                    },
+                    radius: const Radius.circular(10),
+                    borderColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: const BubbleEdges.fromLTRB(12, 8, 12, 8),
+                    alignment: isMineXorReply ? Alignment.topRight : Alignment.topLeft,
+                    nip: isMineXorReply ? BubbleNip.rightTop : BubbleNip.leftTop,
+                    showNip: !chatMessageModel.isConsecutively,
+                    nipOffset: 16.0,
+                    // leftChild: isMineXorReply
+                    //     ? [
+                    //         widget.isError ? _buildErrorArea() : _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply),
+                    //         // _buildErrorArea(),
+                    //       ]
+                    //     : [],
+                    // rightChild: !isMineXorReply
+                    //     ? [
+                    //         _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply),
+                    //       ]
+                    //     : [],
+                    mainAxisAlignment: isMineXorReply ? MainAxisAlignment.end : MainAxisAlignment.start,
+                    child: ConstrainedBox(
+                      // constraints: BoxConstraints(maxWidth: constraints.maxWidth * (isBigDevice ? 0.7 : 0.55)),
+                      constraints: BoxConstraints(maxWidth: constraints.maxWidth - 48),
                       child: Container(
-                        constraints: BoxConstraints(
-                          maxWidth: isMineXorReply ? 0.6.sw : 0.50.sw, // Maximum width for the Bubble widget.
-                        ),
                         child: _buildMsgArea(chatMessageModel.isReply, msg, isMineXorReply),
                       ),
                     ),
-                    hasReaction
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 2.0, left: 8, right: 8),
-                            child: Align(
-                                alignment: isMineXorReply ? Alignment.centerRight : Alignment.centerLeft,
-                                child: Lottie.asset(
-                                  chatMessageModel.reactions.first,
-                                  repeat: false,
-                                )),
-                          )
-                        : const SizedBox.shrink(),
-                  ],
-                ),
+                  ),
+                  hasReaction
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 2.0, left: 8, right: 8),
+                          child: Align(
+                              alignment: isMineXorReply ? Alignment.centerRight : Alignment.centerLeft,
+                              child: Lottie.asset(
+                                chatMessageModel.reactions.first,
+                                repeat: false,
+                              )),
+                        )
+                      : const SizedBox.shrink(),
+                ],
               ),
-            ),
-
-            // isError ? Text('error') : const SizedBox.shrink(),
-            // isSending ? const CircularProgressIndicator() : const SizedBox.shrink(),
-          ],
+              // !isMineXorReply ? _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply) : const SizedBox.shrink(),
+              // isError ? Text('error') : const SizedBox.shrink(),
+              // isSending ? const CircularProgressIndicator() : const SizedBox.shrink(),
+            ],
+          ),
         ),
-      ),
-      // ),
-    ).animate(autoPlay: false, controller: _animationController).shakeY();
+        // ),
+      ).animate(autoPlay: false, controller: _animationController).shakeY();
+    });
   }
 }

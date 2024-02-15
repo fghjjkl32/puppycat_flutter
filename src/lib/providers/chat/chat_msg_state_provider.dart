@@ -146,9 +146,6 @@ class ChatMessageState extends _$ChatMessageState {
       /// NOTE
       /// Next 가 이전 메시지
 
-      print('curMsg ${chatList[index].msg}');
-      print('nextMsg ${chatList[index + 1].msg}');
-
       DateTime curMsgDateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(chatList[index].dateTime) * 1000);
       DateTime nextMsgDateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(chatList[index + 1].dateTime) * 1000);
 
