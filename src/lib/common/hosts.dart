@@ -1,46 +1,5 @@
 part of 'common.dart';
 
-// Future<String> getBaseUrl() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('selectedURL') ?? baseUrl;
-// }
-//
-// Future<String> getBaseWalkUrl() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('selectedWalkURL') ?? walkBaseUrl;
-// }
-//
-// Future<String> getBaseWalkGpsUrl() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('selectedWalkGpsURL') ?? walkGpsBaseUrl;
-// }
-//
-// Future<String> getThumborHostUrl() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('thumborHostUrl') ?? thumborHostUrl;
-// }
-//
-// Future<String> getThumborKey() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('thumborKey') ?? thumborKey;
-// }
-//
-// Future<String> getThumborDomain() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('thumborDomain') ?? '';
-// }
-//
-// Future<String> getInspectS3Domain() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('selectedInspectS3URL') ?? inspectS3BaseUrl;
-// }
-//
-// Future<String> getUpdateS3Domain() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('selectedUpdateS3URL') ?? updateS3BaseUrl;
-// }
-//
-
 enum RunningMode {
   dev,
   stg,
@@ -57,6 +16,7 @@ String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
 String memberBaseUrl = 'https://member-api.puppycat.co.kr/';
 String chatBaseUrl = "https://chat.puppycat.co.kr/";
 String commonBaseUrl = "https://common.puppycat.co.kr/";
+String chatWSBaseUrl = 'https://pet-chat-ws.devlabs.co.kr/ws/chat';
 
 Future setRunningMode(RunningMode mode) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();

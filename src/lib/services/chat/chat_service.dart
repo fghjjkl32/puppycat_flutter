@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart' hide Headers;
+import 'package:pet_mobile_social_flutter/models/chat/chat_enter_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_room_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -14,7 +15,7 @@ abstract class ChatService {
   @Headers(<String, dynamic>{
     "Content-Type": "application/json",
   })
-  Future<ResponseModel> createRoom({
+  Future<ChatEnterResponseModel> createRoom({
     @Body() required Map<String, dynamic> body,
   });
 

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_enter_model.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_enter_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_room_data_list_model.dart';
@@ -20,7 +22,7 @@ class ChatRepository {
     _chatService = ChatService(dio, baseUrl: chatBaseUrl);
   }
 
-  Future<ChatRoomDataListModel> getChatRooms({
+  Future<ChatRoomDataListModel> getChatRoomList({
     int page = 1,
     int recordSize = 10,
   }) async {
@@ -31,7 +33,7 @@ class ChatRepository {
         msg: responseModel.message ?? '',
         code: responseModel.code,
         refer: 'ChatRepository',
-        caller: 'getChatRooms',
+        caller: 'getChatRoomList',
       );
     }
 
@@ -40,7 +42,7 @@ class ChatRepository {
         msg: 'data is null',
         code: responseModel.code,
         refer: 'ChatRepository',
-        caller: 'getChatRooms',
+        caller: 'getChatRoomList',
       );
     }
 
@@ -49,7 +51,7 @@ class ChatRepository {
     return rooms;
   }
 
-  Future<String> createRoom({
+  Future<ChatEnterModel> createRoom({
     required String targetMemberUuid,
     int maxUser = 2,
     int type = 0, //0 : DM, 1 : Group
@@ -60,7 +62,7 @@ class ChatRepository {
       'type': type,
     };
 
-    ResponseModel responseModel = await _chatService.createRoom(body: body);
+    ChatEnterResponseModel responseModel = await _chatService.createRoom(body: body);
 
     if (!responseModel.result) {
       throw APIException(
@@ -80,18 +82,18 @@ class ChatRepository {
       );
     }
 
-    if (!responseModel.data!.containsKey('room_id')) {
-      throw APIException(
-        msg: 'room_id data is null',
-        code: responseModel.code,
-        refer: 'ChatRepository',
-        caller: 'getChatRoomId',
-      );
-    }
+    // if (!responseModel.data!.containsKey('room_id')) {
+    //   throw APIException(
+    //     msg: 'room_id data is null',
+    //     code: responseModel.code,
+    //     refer: 'ChatRepository',
+    //     caller: 'getChatRoomId',
+    //   );
+    // }
 
-    final String rooms = responseModel.data!['room_id'];
+    // final String rooms = responseModel.data!['room_id'];
 
-    return rooms;
+    return responseModel.data!;
   }
 
   Future<bool> exitChatRoom({

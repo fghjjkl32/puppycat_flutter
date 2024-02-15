@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_favorite_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_room_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat_home/widget/chat_empty_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/chat_home/widget/chat_favorite_widget.dart';
@@ -41,9 +41,6 @@ class ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
             IconButton(
               onPressed: () async {
                 context.push('/chatHome/chatSearch');
-                // context.push('/chatHome/chatSearch').then((value) async {
-                //   print('chat Search value $value');
-                // });
               },
               icon: Image.asset('assets/image/chat/icon_choice.png'),
               iconSize: 40,

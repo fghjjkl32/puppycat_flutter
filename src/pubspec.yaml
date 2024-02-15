@@ -160,13 +160,12 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_secure_storage: ^9.0.0
   store_redirect: ^2.0.1
-  vchatcloud_flutter_sdk:
-    path: '../library/flutter_vchat_sdk'
   web_socket_channel: ^2.3.0
 
   custom_refresh_indicator: ^3.0.0
 
   easy_debounce: ^2.0.3
+  stomp_dart_client: ^1.0.2
 
 dev_dependencies:
   flutter_test:

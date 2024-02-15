@@ -1,31 +1,30 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:math';
-
+import 'package:bubble/bubble.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
-import 'package:pet_mobile_social_flutter/common/library/chat/anchor.dart';
-import 'package:pet_mobile_social_flutter/common/library/chat/store/channel_store.dart';
-import 'package:pet_mobile_social_flutter/common/library/chat/util/util.dart';
-import 'package:pet_mobile_social_flutter/common/library/chat/vo/chat_item.dart';
-import 'package:pet_mobile_social_flutter/common/library/chat/widget/chat_top_date.dart';
-import 'package:pet_mobile_social_flutter/common/library/chat/widget/text_chat_item.dart';
-import 'package:pet_mobile_social_flutter/common/library/chat/widget/user_join_item.dart';
-import 'package:pet_mobile_social_flutter/common/library/chat/widget/user_leave_item.dart';
-import 'package:vchatcloud_flutter_sdk/vchatcloud_flutter_sdk.dart';
+import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/controller/chat/chat_controller.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_enter_model.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_msg_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_room_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/chat_home/widget/chat_msg_item.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ChatRoomScreen extends ConsumerStatefulWidget {
   final String roomId;
-  final String? profileImgUrl;
   final String nick;
+  final String targetMemberUuid;
+  final String? profileImgUrl;
 
   const ChatRoomScreen({
     super.key,
     required this.roomId,
     required this.nick,
+    required this.targetMemberUuid,
     this.profileImgUrl,
   });
 
@@ -34,325 +33,231 @@ class ChatRoomScreen extends ConsumerStatefulWidget {
 }
 
 class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
-  late final Channel channel;
-  var inputController = TextEditingController();
-  final _scrollController = ScrollController();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _focus = FocusNode();
-  var currentScrollPosition = false;
-  var emojiActive = false;
-  var rowHeight = 50.0;
+  late final chatProviderNotifier = ref.read(chatRoomListStateProvider.notifier);
+  late final _chatHistoryPagingController = ref.read(chatMessageStateProvider);
+  final AutoScrollController _scrollController = AutoScrollController();
+  final TextEditingController _sendController = TextEditingController();
+  final FocusNode _inputFocus = FocusNode();
+  late Future _initChatFuture;
+  late ChatController _chatController;
+  bool _scrolledUp = false;
 
   @override
   void initState() {
-    channel = ref.read(chatChannelStateProvider).channelMap[widget.roomId]!;
-    inputController.addListener(() {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        setState(() {
-          rowHeight = rowKey.currentContext?.size?.height ?? 50.0;
-        });
-      });
-    });
-    _focus.onKey = (node, event) {
-      if (event is RawKeyDownEvent && !Util.isMobile) {
-        if (event.isShiftPressed && event.logicalKey.keyLabel == 'Enter') {
-          return KeyEventResult.ignored;
-        } else if (event.logicalKey.keyLabel == 'Enter') {
-          sendMessage();
-          return KeyEventResult.handled;
-        }
-      }
-      return KeyEventResult.ignored;
-    };
-    _scrollController.addListener(() {
-      scrollController();
-    });
     super.initState();
+    _scrollController.addListener(_updateScrollController);
+
+    _initChatFuture = _initChat();
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
-    _focus.dispose();
-    channel.leave();
+    _chatController.disconnect();
     super.dispose();
   }
 
-  void scrollController() {
-    if (_scrollController.offset <= 300) {
-      setState(() {
-        currentScrollPosition = false;
+  Future<ChatEnterModel> _initChat() async {
+    try {
+      final chatEnterModel = await chatProviderNotifier.createChatRoom(targetMemberUuid: widget.targetMemberUuid);
+
+      _chatController = ChatController(roomUuid: chatEnterModel.roomId, token: chatEnterModel.generateToken);
+      _chatController.connect(chatWSBaseUrl, (chatMessageModel) {
+        ref.read(chatMessageStateProvider.notifier).addChatMessage(chatMessageModel);
       });
-    } else if (currentScrollPosition == false) {
-      setState(() {
-        currentScrollPosition = true;
-      });
+      return chatEnterModel;
+    } catch (e) {
+      rethrow;
     }
   }
 
-  void backHandler() {
-    Navigator.pop(context);
-  }
-
-  // void emojiHandler() {
-  //   _focus.unfocus();
-  //   setState(() {
-  //     emojiActive = !emojiActive;
-  //   });
-  // }
-
-  void moveScrollBottom() {
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      _scrollController.jumpTo(0);
-    });
-  }
-
-  void unfocus() {
-    _focus.unfocus();
-    setState(() {
-      emojiActive = false;
-    });
-  }
-
-  void sendMessage() {
-    if (!Util.isMobile) {
-      _focus.requestFocus();
+  void _updateScrollController() {
+    if (!mounted) {
+      return;
     }
-    if (inputController.text.trim().isEmpty) return;
-
-    channel.sendMessage(inputController.text);
-    inputController.clear();
-
-    moveScrollBottom();
+    if (!_scrollController.hasClients) return;
+    if (_scrollController.position.pixels > 0 && _scrolledUp == false) {
+      setState(() => _scrolledUp = true);
+      // _scrolledUp = true;
+    } else if (_scrollController.position.pixels == 0 && _scrolledUp == true) {
+      setState(() => _scrolledUp = false);
+      // _scrolledUp = false;
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    var chatLog = ref.watch(chatChannelStateProvider).chatLogMap[widget.roomId]!;
+  void scrollDown() async {
+    _scrollController.jumpTo(0);
+  }
 
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          toolbarHeight: 50,
-          titleTextStyle: const TextStyle(
-            color: Color(0xff999999),
+  void _send(String msg) async {
+    if (msg.isEmpty) {
+      return;
+    }
+
+    _chatController.send(msg);
+
+    _sendController.clear();
+    _inputFocus.unfocus();
+  }
+
+  Widget _buildTextField([bool isBlock = false]) {
+    return Container(
+      decoration: const BoxDecoration(
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: kNeutralColor100,
+            blurRadius: 18.0,
+            spreadRadius: 35,
+            offset: Offset(0.0, 20),
           ),
-          iconTheme: const IconThemeData(
-            color: Color(
-              0xff666666,
-            ),
-          ),
-          automaticallyImplyLeading: false,
-          leadingWidth: 0,
-          titleSpacing: 0,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              IconButton(
-                iconSize: 20,
-                alignment: Alignment.center,
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.blue.shade900,
-                  size: 20,
-                ),
-                splashRadius: 20,
-                onPressed: backHandler,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.nick,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Color(0xff666666),
-                      ),
+        ],
+        color: kNeutralColor100,
+      ),
+      child: Column(
+        children: [
+          // _buildReplyOrEdit(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 8.0),
+            child: TextField(
+              controller: _sendController,
+              focusNode: _inputFocus,
+              decoration: InputDecoration(
+                hintText: '메시지.메시지를 입력해 주세요'.tr(),
+                hintStyle: kBody12RegularStyle400.copyWith(color: kNeutralColor500),
+                contentPadding: const EdgeInsets.fromLTRB(20, 15, 12, 15),
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(left: 24.0, right: 12),
+                  child: IconButton(
+                    onPressed: () => _send(_sendController.text.trim()),
+                    icon: ImageIcon(
+                      const AssetImage('assets/image/chat/icon_send_de.png'),
+                      color: _inputFocus.hasFocus ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        body: Container(
-          color: const Color(0xffdfe6f2),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: unfocus,
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      chatBuilder(chatLog),
-                      if (currentScrollPosition)
-                        Positioned(
-                          bottom: 10,
-                          right: 10,
-                          child: FloatingActionButton.small(
-                            onPressed: () {
-                              _scrollController.jumpTo(0);
-                              setState(() {
-                                currentScrollPosition = false;
-                              });
-                            },
-                            tooltip: "Scroll to Bottom",
-                            child: const Icon(Icons.arrow_downward),
-                          ),
-                        ),
-                    ],
                   ),
                 ),
               ),
-              bottomBarBuilder(),
-              // if (emojiActive) emojiBuilder(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Widget emojiBuilder() {
-  //   var emoji = Provider.of<EmojiStore>(context);
-  //   emoji.initEmojiList();
-  //   emoji.initChildEmojiList();
-  //
-  //   return Column(
-  //     children: const [
-  //       EmojiImages(),
-  //       EmojiList(),
-  //     ],
-  //   );
-  // }
-
-  Container bottomBarBuilder() {
-    return Container(
-      color: Colors.white,
-      child: Row(
-        children: [
-          Flexible(
-            child: TextField(
-              key: rowKey,
-              focusNode: _focus,
-              controller: inputController,
-              minLines: 1,
-              maxLines: 5,
-              textInputAction: TextInputAction.newline,
-              keyboardType: TextInputType.multiline,
-              cursorColor: const Color(0xff2a61be),
-              // textAlignVertical: TextAlignVertical.center,
-              onTap: () {},
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-              ),
             ),
           ),
-          Anchor(
-            onTap: sendMessage,
-            child: Container(
-              width: 50,
-              constraints: BoxConstraints(maxHeight: max(rowHeight, 50)),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 17,
-                vertical: 10,
-              ),
-              alignment: Alignment.bottomCenter,
-              decoration: inputController.text.trim().isEmpty
-                  ? const BoxDecoration(
-                      color: Color(0xff919191),
-                    )
-                  : const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xff2A61BE),
-                          Color(0xff5D48C6),
-                        ],
-                        transform: GradientRotation(pi * -0.25),
-                      ),
-                    ),
-              child: Transform.rotate(
-                angle: pi * -0.25,
-                child: Icon(
-                  Icons.send,
-                  size: 25,
-                  color: inputController.text.trim().isEmpty ? Colors.white.withOpacity(0.7) : Colors.white,
-                ),
-              ),
-            ),
-          )
         ],
       ),
     );
   }
 
-  Widget chatBuilder(List<ChatItem> chatLog) {
-    bool isUnSupported = Util.isWeb || (!Util.isWeb && Util.isWindows || Util.isIOS || Util.isMacOS || Platform.isLinux || Platform.isFuchsia);
-    return Scrollbar(
-      controller: _scrollController,
-      child: SingleChildScrollView(
-        controller: _scrollController,
-        padding: const EdgeInsets.all(15),
-        reverse: true,
-        child: Column(
-          children: [
-            ...chatLog.asMap().entries.expand(
-              (entry) {
-                var index = entry.key;
-                var log = entry.value;
-                FileModel? file;
-                if (log.mimeType == MimeType.file) {
-                  try {
-                    if (log.message is String) {
-                      file = FileModel.fromJson(json.decode(log.message)[0]);
-                    } else {
-                      file = FileModel.fromJson(log.message[0]);
-                    }
-                  } catch (e) {
-                    if (log.message is String) {
-                      file = FileModel.fromHistoryJson(json.decode(log.message)[0]);
-                    } else {
-                      file = FileModel.fromHistoryJson(log.message[0]);
-                    }
-                  }
-                }
+  Widget _buildDateBlock(String msgDateTime) {
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(msgDateTime) * 1000);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Bubble(
+          radius: const Radius.circular(100.0),
+          padding: const BubbleEdges.fromLTRB(16, 10, 16, 10),
+          mainAxisAlignment: MainAxisAlignment.center,
+          alignment: Alignment.center,
+          color: kNeutralColor500,
+          child: Text(
+            DateFormat("yyyy-MM-dd").format(dateTime),
+            style: kBody11SemiBoldStyle.copyWith(color: kNeutralColor100),
+          ),
+        ),
+      ),
+    );
+  }
 
-                return [
-                  if (index == 0) ...[
-                    ChatTopDate(log),
-                  ] else if (chatLog[index - 1].messageDt.toIso8601String().substring(0, 10) != log.messageDt.toIso8601String().substring(0, 10)) ...[
-                    SizedBox(height: log.profileNameCondition || log.myProfileNameCondition || [MessageType.join, MessageType.leave, MessageType.notice].contains(log.messageType) ? 20 : 8),
-                    ChatTopDate(log),
-                  ],
-                  SizedBox(height: log.profileNameCondition || log.myProfileNameCondition || [MessageType.join, MessageType.leave, MessageType.notice].contains(log.messageType) ? 20 : 8),
-                  if (log.messageType == MessageType.join)
-                    UserJoinItem(log)
-                  else if (log.messageType == MessageType.leave)
-                    UserLeaveItem(log)
-                  else if (log.messageType == MessageType.notice)
-                    const Text("공지")
-                  else if (log.messageType == MessageType.custom)
-                    const Text("커스텀")
-                  else
-                    TextChatItem(
-                      log,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.nick),
+        backgroundColor: kPreviousNeutralColor100,
+      ),
+      floatingActionButton: _scrolledUp
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: 56.0),
+              child: FloatingActionButton.small(
+                  backgroundColor: kNeutralColor100,
+                  foregroundColor: kPreviousTextBodyColor,
+                  onPressed: scrollDown,
+                  elevation: 4,
+                  child: const ImageIcon(
+                    AssetImage('assets/image/chat/icon_down.png'),
+                    size: 20,
+                  )),
+            )
+          : null,
+      body: SafeArea(
+        child: FutureBuilder(
+          future: _initChatFuture,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Center(
+                child: Text('Error'),
+              );
+            }
+
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            ChatEnterModel chatEnterModel = snapshot.data;
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: PagedListView<int, ChatMessageModel>(
+                      pagingController: _chatHistoryPagingController,
+                      scrollController: _scrollController,
+                      reverse: true,
+                      builderDelegate: PagedChildBuilderDelegate<ChatMessageModel>(
+                        noItemsFoundIndicatorBuilder: (context) {
+                          return const SizedBox.shrink();
+                        },
+                        firstPageProgressIndicatorBuilder: (context) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                        itemBuilder: (context, item, index) {
+                          bool isViewDateBlock = ref.read(chatMessageStateProvider.notifier).checkViewDateBlock(index);
+                          bool isViewMsgTime = ref.read(chatMessageStateProvider.notifier).checkNeedViewTime(index);
+                          bool isConsecutively = ref.read(chatMessageStateProvider.notifier).checkConsecutively(index);
+
+                          return Column(
+                            children: [
+                              isViewDateBlock ? _buildDateBlock(item.dateTime) : const SizedBox.shrink(),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                child: AutoScrollTag(
+                                  key: UniqueKey(),
+                                  controller: _scrollController,
+                                  index: index,
+                                  child: ChatMessageItem(
+                                    chatMessageModel: item.copyWith(
+                                      isViewTime: isViewMsgTime,
+                                      isConsecutively: isConsecutively,
+                                    ),
+                                    isError: false,
+                                    isSending: false,
+                                    isRedacted: false,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
-                ];
-              },
-            ),
-          ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: _scrolledUp ? 0.0 : 18.0),
+                    child: _buildTextField(),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

@@ -33,13 +33,16 @@ class ChatRoomRoute extends GoRouteData {
           Map<String, dynamic> extraMap = state.extra! as Map<String, dynamic>;
           if (extraMap.containsKey('roomId')) {
             print('extraMap roomId ${extraMap['roomId']}');
-            String roomId = extraMap['roomId'];
-            String nick = extraMap['nick'];
+            String roomId = extraMap['roomId'] ?? '';
+            String nick = extraMap['nick'] ?? 'unknown';
             String? profileImgUrl = extraMap['profileImgUrl'];
+            String targetMemberUuid = extraMap['targetMemberUuid'];
+
             return ChatRoomScreen(
               roomId: roomId,
               nick: nick,
               profileImgUrl: profileImgUrl,
+              targetMemberUuid: targetMemberUuid,
             );
           } else {
             return const ChatHomeScreen();

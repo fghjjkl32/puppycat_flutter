@@ -14,7 +14,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/block/block_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_room_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
@@ -941,23 +941,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         Expanded(
                           child: GestureDetector(
                             onTap: () async {
-                              ///NOTE
-                              ///2023.11.17.
-                              ///채팅 교체 예정으로 일단 주석 처리
-                              // if (data.chatMemberId != null) {
-                              //   ChatController chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${data.memberIdx}')));
-                              //
-                              //   var roomId = await chatController.client.startDirectChat(data.chatMemberId!, enableEncryption: false);
-                              //
-                              //   Room? room = chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
-                              //
-                              //   if (mounted) {
-                              //     ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain/chatRoom', extra: room);
-                              //   }
-                              // }
-                              ///여기까지 채팅 교체 주석
                               if (data.uuid != null) {
-                                await ref.read(chatRoomStateProvider.notifier).createChatRoom(targetMemberUuid: data.uuid!);
+                                await ref.read(chatRoomListStateProvider.notifier).createChatRoom(targetMemberUuid: data.uuid!);
                               }
                             },
                             child: Container(

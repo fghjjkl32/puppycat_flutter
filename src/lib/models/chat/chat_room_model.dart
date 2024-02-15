@@ -34,7 +34,6 @@ part 'chat_room_model.g.dart';
 class ChatRoomModel with _$ChatRoomModel {
   factory ChatRoomModel({
     required String regDateTz,
-    @JsonKey(name: 'result_cd') required int resultCd,
     required String regDate,
     required int sort,
     required int type,

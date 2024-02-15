@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_room_model.dart';
-import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_room_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat_home/widget/chat_room_list_item.dart';
 
 class ChatRoomWidget extends ConsumerStatefulWidget {
@@ -18,7 +18,7 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
 
   @override
   void initState() {
-    _pagingController = ref.read(chatRoomStateProvider);
+    _pagingController = ref.read(chatRoomListStateProvider);
     _pagingController.refresh();
     super.initState();
   }
@@ -30,7 +30,7 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
 
   @override
   Widget build(BuildContext context) {
-    _pagingController = ref.watch(chatRoomStateProvider);
+    _pagingController = ref.watch(chatRoomListStateProvider);
     return Column(
       children: [
         Expanded(
@@ -49,6 +49,7 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
                       'roomId': item.roomId,
                       'nick': item.nick,
                       'profileImgUrl': item.profileImgUrl,
+                      'targetMemberUuid': item.targetMemberUuid,
                     });
                   },
                 );
