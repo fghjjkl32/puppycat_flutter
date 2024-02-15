@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -233,6 +234,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                       if (value == null) {
                         return;
                       }
+
                       widget.memberUuid == myInfo.uuid
                           ? showCustomModalBottomSheet(
                               context: context,
@@ -300,6 +302,8 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                     onTap: () async {
                                       final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.writeFeed);
+
+                                      context.pop();
 
                                       if (restrain) {
                                         context.push('/feed/edit', extra: {

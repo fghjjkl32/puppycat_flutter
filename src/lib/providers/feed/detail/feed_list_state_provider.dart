@@ -170,7 +170,7 @@ class FeedListState extends _$FeedListState {
     }
   }
 
-  void feedRefresh(contentIdx, String type) {
+  void feedRefresh(contentIdx, String type, {FeedData? editData}) {
     int targetIdx = -1;
 
     if (ref.read(myFeedStateProvider).itemList != null) {
@@ -186,6 +186,10 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(myFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
+        if (type == "editContent" && editData != null) {
+          ref.read(myFeedStateProvider).itemList![targetIdx] = editData;
+        }
+
         if (type == "postKeepContents") {
           ref.read(myFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
@@ -225,6 +229,10 @@ class FeedListState extends _$FeedListState {
       targetIdx = ref.read(recentFeedStateProvider).itemList!.indexWhere((element) => element.idx == contentIdx);
 
       if (targetIdx != -1) {
+        if (type == "editContent" && editData != null) {
+          ref.read(recentFeedStateProvider).itemList![targetIdx] = editData;
+        }
+
         if (type == "postKeepContents") {
           ref.read(recentFeedStateProvider).itemList!.removeAt(targetIdx);
         } else if (type == "deleteOneKeepContents") {
