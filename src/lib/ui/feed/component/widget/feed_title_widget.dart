@@ -228,11 +228,12 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
               ),
               GestureDetector(
                 onTap: () async {
-                  await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(widget.contentType, widget.feedData.idx).then(
+                  await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(widget.contentType, widget.feedData.idx, isUpdateState: false).then(
                     (value) {
                       if (value == null) {
                         return;
                       }
+
                       widget.memberUuid == myInfo.uuid
                           ? showCustomModalBottomSheet(
                               context: context,
@@ -284,7 +285,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                 if (result.result && mounted) {
                                                   toast(
                                                     context: context,
-                                                    text: '피드 보관 완료!.',
+                                                    text: '피드 보관 완료!',
                                                     type: ToastType.purple,
                                                   );
                                                 }
@@ -300,6 +301,8 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                     onTap: () async {
                                       final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.writeFeed);
+
+                                      context.pop();
 
                                       if (restrain) {
                                         context.push('/feed/edit', extra: {
