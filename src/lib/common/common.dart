@@ -1,5 +1,6 @@
 import 'package:app_install_date/app_install_date.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -149,18 +150,18 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
     if (mentionMatched.isNotEmpty) {
       if (mentionList.any((mention) => mention.uuid == mentionMatched)) {
         var mention = mentionList.firstWhere((m) => m.uuid == mentionMatched);
-        spans.add(WidgetSpan(
-          child: GestureDetector(
-            onTap: () {
-              ref.read(myInfoStateProvider).uuid == mention.uuid
-                  ? context.push("/member/myPage", extra: {"oldMemberUuid": oldMemberUuid!})
-                  : mention.memberState == 0
-                      ? context.push("/member/userUnknown")
-                      : context.push("/member/userPage", extra: {"nick": mention.nick, "memberUuid": mention.uuid, "oldMemberUuid": oldMemberUuid});
-            },
-            child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
-          ),
-        ));
+
+        spans.add(TextSpan(
+            text: '@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')),
+            style: tagStyle,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                ref.read(myInfoStateProvider).uuid == mention.uuid
+                    ? context.push("/member/myPage", extra: {"oldMemberUuid": oldMemberUuid!})
+                    : mention.memberState == 0
+                        ? context.push("/member/userUnknown")
+                        : context.push("/member/userPage", extra: {"nick": mention.nick, "memberUuid": mention.uuid, "oldMemberUuid": oldMemberUuid});
+              }));
       } else {
         spans.add(TextSpan(text: '@' + mentionMatched));
       }
@@ -168,16 +169,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
       if (hashtagMatched.contains('*')) {
         spans.add(TextSpan(text: '#' + hashtagMatched));
       } else {
-        spans.add(WidgetSpan(
-          child: GestureDetector(
-            onTap: () {
-              //TODO
-              //Route 다시
-              context.push("/search/hashtag/$hashtagMatched/$oldMemberUuid");
-            },
-            child: Text('#' + hashtagMatched, style: tagStyle),
-          ),
-        ));
+        spans.add(TextSpan(text: '#' + hashtagMatched, style: tagStyle, recognizer: TapGestureRecognizer()..onTap = () => context.push("/search/hashtag/$hashtagMatched/$oldMemberUuid")));
       }
     }
 
