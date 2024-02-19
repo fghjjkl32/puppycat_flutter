@@ -545,4 +545,19 @@ class CommentListState extends _$CommentListState {
 
     return result;
   }
+
+  final Map<int, List<CommentData>?> feedStateMap = {};
+
+  void getStateForUser(int contentIdx) {
+    state.itemList = feedStateMap[contentIdx] ??
+        [
+          CommentData(idx: 0, isBadge: 0, memberUuid: '', regDate: '', likeState: 0, uuid: '', nick: '', contents: '', parentIdx: 0, contentsIdx: 0, state: 0),
+        ];
+
+    state.notifyListeners();
+  }
+
+  void saveStateForUser(int contentIdx) {
+    feedStateMap[contentIdx] = state.itemList;
+  }
 }

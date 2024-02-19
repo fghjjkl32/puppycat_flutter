@@ -1,3 +1,4 @@
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,7 @@ import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.
 import 'package:pet_mobile_social_flutter/providers/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
+import 'package:pet_mobile_social_flutter/ui/components/refresh_loading_animation_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/feed_detail_widget.dart';
 
 class FeedDetailScreen extends ConsumerStatefulWidget {
@@ -279,72 +281,147 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                 //   return const Text('error2');
                 // }
 
-                return CustomScrollView(
-                  slivers: <Widget>[
-                    if (firstFeedData != null)
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            return FeedDetailWidget(
-                              feedData: firstFeedData,
-                              nick: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.nick : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick,
-                              profileImage:
-                                  firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.profileImgUrl : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
-                              memberUuid: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.uuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.uuid ?? '',
-                              contentType: widget.contentType,
-                              index: 0,
-                              isSpecialUser: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.isBadge == 1 : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
-                              onTapHideButton: () async {
-                                onTapHide(
-                                  context: context,
-                                  ref: ref,
-                                  contentType: widget.contentType,
-                                  contentIdx: widget.contentIdx,
+                return CustomRefreshIndicator(
+                  onRefresh: () {
+                    return Future(() {
+                      ref.read(feedListStateProvider.notifier).contentType = widget.contentType;
+                      ref.read(feedListStateProvider.notifier).memberUuid = widget.memberUuid;
+                      ref.read(feedListStateProvider.notifier).searchWord = widget.secondTitle;
+                      ref.read(feedListStateProvider.notifier).firstFeedIdx = widget.contentIdx;
+
+                      _fetchFirstFeedDataFuture = _fetchFirstFeedData();
+
+                      _feedListPagingController.refresh();
+                    });
+                  },
+                  builder: (context, child, controller) {
+                    return RefreshLoadingAnimationWidget(controller: controller, child: child);
+                  },
+                  child: Container(
+                    color: kPreviousNeutralColor100,
+                    child: CustomScrollView(
+                      slivers: <Widget>[
+                        if (firstFeedData != null)
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                                return FeedDetailWidget(
+                                  feedData: firstFeedData,
+                                  nick: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.nick : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick,
+                                  profileImage:
+                                      firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.profileImgUrl : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
                                   memberUuid: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.uuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.uuid ?? '',
+                                  contentType: widget.contentType,
+                                  index: 0,
+                                  isSpecialUser: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.isBadge == 1 : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
+                                  onTapHideButton: () async {
+                                    onTapHide(
+                                      context: context,
+                                      ref: ref,
+                                      contentType: widget.contentType,
+                                      contentIdx: widget.contentIdx,
+                                      memberUuid: firstFeedData.memberInfo != null ? firstFeedData.memberInfo!.uuid! : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.uuid ?? '',
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
-                          childCount: 1,
-                        ),
-                      ),
-                    PagedSliverList<int, FeedData>(
-                      // shrinkWrapFirstPageIndicators: true,
-                      // physics: const NeverScrollableScrollPhysics(),
-                      // shrinkWrap: true,
-                      pagingController: _feedListPagingController,
-                      builderDelegate: PagedChildBuilderDelegate<FeedData>(
-                        noItemsFoundIndicatorBuilder: (context) {
-                          return ref.watch(firstFeedEmptyProvider)
-                              ? Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 100.0),
-                                      child: Column(
-                                        children: [
-                                          Image.asset(
-                                            'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                                            width: 88,
-                                            height: 88,
+                              childCount: 1,
+                            ),
+                          ),
+                        PagedSliverList<int, FeedData>(
+                          // shrinkWrapFirstPageIndicators: true,
+                          // physics: const NeverScrollableScrollPhysics(),
+                          // shrinkWrap: true,
+                          pagingController: _feedListPagingController,
+                          builderDelegate: PagedChildBuilderDelegate<FeedData>(
+                            noItemsFoundIndicatorBuilder: (context) {
+                              return ref.watch(firstFeedEmptyProvider)
+                                  ? Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 100.0),
+                                          child: Column(
+                                            children: [
+                                              Image.asset(
+                                                'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                                width: 88,
+                                                height: 88,
+                                              ),
+                                              const SizedBox(
+                                                height: 12,
+                                              ),
+                                              Text(
+                                                '피드가 없어요.',
+                                                textAlign: TextAlign.center,
+                                                style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(
-                                            height: 12,
-                                          ),
-                                          Text(
-                                            '피드가 없어요.',
-                                            textAlign: TextAlign.center,
-                                            style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : widget.memberUuid != myInfo.uuid && widget.contentType != "searchContent"
+                                        ),
+                                      ],
+                                    )
+                                  : widget.memberUuid != myInfo.uuid && widget.contentType != "searchContent"
+                                      ? Column(
+                                          children: [
+                                            const SizedBox(
+                                              height: 12,
+                                            ),
+                                            Lottie.asset(
+                                              'assets/lottie/feed_end.json',
+                                              width: 48,
+                                              height: 48,
+                                              fit: BoxFit.fill,
+                                              repeat: false,
+                                            ),
+                                            const SizedBox(
+                                              height: 12,
+                                            ),
+                                            Text(
+                                              "대단해요!\n${ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick}님의 피드를 모두 확인했어요!",
+                                              textAlign: TextAlign.center,
+                                              style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                            ),
+                                            const SizedBox(
+                                              height: 8,
+                                            ),
+                                            Text(
+                                              "다른 유저의 피드도 보러 갈까요?",
+                                              textAlign: TextAlign.center,
+                                              style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                            ),
+                                            const SizedBox(
+                                              height: 12,
+                                            ),
+                                            Material(
+                                              child: Container(
+                                                color: kPreviousNeutralColor100,
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    context.pushReplacement("/home", extra: {
+                                                      "initialTabIndex": !isLogined ? 0 : 1,
+                                                    });
+                                                  },
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(20.0),
+                                                    child: Text(
+                                                      "다른 피드 보러 가기",
+                                                      textAlign: TextAlign.center,
+                                                      style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Container();
+                            },
+                            noMoreItemsIndicatorBuilder: (context) {
+                              return widget.memberUuid != myInfo.uuid && widget.contentType != "searchContent"
                                   ? Column(
                                       children: [
-                                        const SizedBox(
+                                        SizedBox(
                                           height: 12,
                                         ),
                                         Lottie.asset(
@@ -354,7 +431,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                           fit: BoxFit.fill,
                                           repeat: false,
                                         ),
-                                        const SizedBox(
+                                        SizedBox(
                                           height: 12,
                                         ),
                                         Text(
@@ -362,7 +439,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                           textAlign: TextAlign.center,
                                           style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                         ),
-                                        const SizedBox(
+                                        SizedBox(
                                           height: 8,
                                         ),
                                         Text(
@@ -370,7 +447,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                           textAlign: TextAlign.center,
                                           style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                         ),
-                                        const SizedBox(
+                                        SizedBox(
                                           height: 12,
                                         ),
                                         Material(
@@ -396,106 +473,51 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                       ],
                                     )
                                   : Container();
-                        },
-                        noMoreItemsIndicatorBuilder: (context) {
-                          return widget.memberUuid != myInfo.uuid && widget.contentType != "searchContent"
-                              ? Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 12,
-                                    ),
-                                    Lottie.asset(
-                                      'assets/lottie/feed_end.json',
-                                      width: 48,
-                                      height: 48,
-                                      fit: BoxFit.fill,
-                                      repeat: false,
-                                    ),
-                                    SizedBox(
-                                      height: 12,
-                                    ),
-                                    Text(
-                                      "대단해요!\n${ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick}님의 피드를 모두 확인했어요!",
-                                      textAlign: TextAlign.center,
-                                      style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
-                                    ),
-                                    SizedBox(
-                                      height: 8,
-                                    ),
-                                    Text(
-                                      "다른 유저의 피드도 보러 갈까요?",
-                                      textAlign: TextAlign.center,
-                                      style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                    ),
-                                    SizedBox(
-                                      height: 12,
-                                    ),
-                                    Material(
-                                      child: Container(
-                                        color: kPreviousNeutralColor100,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            context.pushReplacement("/home", extra: {
-                                              "initialTabIndex": !isLogined ? 0 : 1,
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: Text(
-                                              "다른 피드 보러 가기",
-                                              textAlign: TextAlign.center,
-                                              style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : Container();
-                        },
-                        newPageProgressIndicatorBuilder: (context) {
-                          return Column(
-                            children: [
-                              Lottie.asset(
-                                'assets/lottie/icon_loading.json',
-                                fit: BoxFit.fill,
-                                width: 80,
-                                height: 80,
-                              ),
-                            ],
-                          );
-                        },
-                        firstPageProgressIndicatorBuilder: (context) {
-                          return Container();
-                        },
-                        itemBuilder: (context, item, index) {
-                          return Column(
-                            children: [
-                              FeedDetailWidget(
-                                feedData: item,
-                                nick: (item.memberInfo != null) ? item.memberInfo!.nick : ref.read(feedListStateProvider.notifier).memberInfo?.nick,
-                                profileImage: (item.memberInfo != null) ? item.memberInfo!.profileImgUrl : ref.watch(feedListStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
-                                memberUuid: (item.memberInfo != null) ? item.memberInfo!.uuid! : ref.read(feedListStateProvider.notifier).memberInfo?.uuid ?? '',
-                                contentType: widget.contentType,
-                                index: index,
-                                isSpecialUser: (item.memberInfo != null) ? item.memberInfo!.isBadge == 1 : ref.read(feedListStateProvider.notifier).memberInfo?.isBadge == 1,
-                                onTapHideButton: () async {
-                                  onTapHide(
-                                    context: context,
-                                    ref: ref,
-                                    contentType: widget.contentType,
-                                    contentIdx: item.idx,
+                            },
+                            newPageProgressIndicatorBuilder: (context) {
+                              return Column(
+                                children: [
+                                  Lottie.asset(
+                                    'assets/lottie/icon_loading.json',
+                                    fit: BoxFit.fill,
+                                    width: 80,
+                                    height: 80,
+                                  ),
+                                ],
+                              );
+                            },
+                            firstPageProgressIndicatorBuilder: (context) {
+                              return Container();
+                            },
+                            itemBuilder: (context, item, index) {
+                              return Column(
+                                children: [
+                                  FeedDetailWidget(
+                                    feedData: item,
+                                    nick: (item.memberInfo != null) ? item.memberInfo!.nick : ref.read(feedListStateProvider.notifier).memberInfo?.nick,
+                                    profileImage: (item.memberInfo != null) ? item.memberInfo!.profileImgUrl : ref.watch(feedListStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
                                     memberUuid: (item.memberInfo != null) ? item.memberInfo!.uuid! : ref.read(feedListStateProvider.notifier).memberInfo?.uuid ?? '',
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      ),
+                                    contentType: widget.contentType,
+                                    index: index,
+                                    isSpecialUser: (item.memberInfo != null) ? item.memberInfo!.isBadge == 1 : ref.read(feedListStateProvider.notifier).memberInfo?.isBadge == 1,
+                                    onTapHideButton: () async {
+                                      onTapHide(
+                                        context: context,
+                                        ref: ref,
+                                        contentType: widget.contentType,
+                                        contentIdx: item.idx,
+                                        memberUuid: (item.memberInfo != null) ? item.memberInfo!.uuid! : ref.read(feedListStateProvider.notifier).memberInfo?.uuid ?? '',
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 );
               }),
         );

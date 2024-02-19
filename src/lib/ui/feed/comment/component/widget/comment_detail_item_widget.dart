@@ -117,8 +117,8 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
               GestureDetector(
                 onTap: () {
                   myInfo.uuid == widget.memberUuid
-                      ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
-                      : context.push("/member/userPage/${widget.name}/${widget.memberUuid}/${widget.oldMemberUuid}");
+                      ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid, "feedContentIdx": widget.contentIdx})
+                      : context.push("/member/userPage", extra: {"nick": widget.name, "memberUuid": widget.memberUuid, "oldMemberUuid": widget.oldMemberUuid, "feedContentIdx": widget.contentIdx});
                 },
                 child: getProfileAvatar(widget.profileImage ?? '', 30, 30),
               ),
@@ -174,8 +174,9 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                   child: GestureDetector(
                                     onTap: () {
                                       myInfo.uuid == widget.memberUuid
-                                          ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
-                                          : context.push("/member/userPage/${widget.name}/${widget.memberUuid}/${widget.oldMemberUuid}");
+                                          ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid, "feedContentIdx": widget.contentIdx})
+                                          : context.push("/member/userPage",
+                                              extra: {"nick": widget.name, "memberUuid": widget.memberUuid, "oldMemberUuid": widget.oldMemberUuid, "feedContentIdx": widget.contentIdx});
                                     },
                                     child: Row(
                                       children: [

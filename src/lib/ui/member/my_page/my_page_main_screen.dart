@@ -47,9 +47,11 @@ class MyPageMainScreen extends ConsumerStatefulWidget {
   const MyPageMainScreen({
     super.key,
     required this.oldMemberUuid,
+    required this.feedContentIdx,
   });
 
   final String oldMemberUuid;
+  final int feedContentIdx;
 
   @override
   MyPageMainState createState() => MyPageMainState();
@@ -92,6 +94,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
     ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+    ref.read(commentListStateProvider.notifier).saveStateForUser(widget.feedContentIdx);
 
     tabController = TabController(
       initialIndex: 0,
@@ -124,6 +127,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   Future<bool> handleFocusLost() {
     feedListStateNotifier.getStateForUser(widget.oldMemberUuid);
     firstFeedStateNotifier.getStateForUser(widget.oldMemberUuid);
+    ref.read(commentListStateProvider.notifier).getStateForUser(widget.feedContentIdx);
+
     return Future.value(true);
   }
 
@@ -174,6 +179,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                 onPressed: () {
                                   ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                                   ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                                  ref.read(commentListStateProvider.notifier).getStateForUser(widget.feedContentIdx);
+
                                   context.pop();
                                 },
                                 icon: const Icon(

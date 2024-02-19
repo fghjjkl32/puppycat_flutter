@@ -60,7 +60,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
       onTap: () {
         myInfo.uuid == widget.followerUuid
             ? context.push("/member/myPage")
-            : context.push("/member/userPage/${widget.userName}/${widget.followerUuid}/${widget.oldMemberUuid == "" ? null : widget.oldMemberUuid}");
+            : context.push("/member/userPage", extra: {"nick": widget.userName, "memberUuid": widget.followerUuid, "oldMemberUuid": widget.oldMemberUuid == "" ? null : widget.oldMemberUuid});
         //TODO
         //Route 다시
       },

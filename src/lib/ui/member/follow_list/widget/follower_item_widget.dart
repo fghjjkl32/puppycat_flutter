@@ -59,7 +59,10 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
 
     return InkWell(
       onTap: () {
-        myInfo.uuid == widget.followerUuid ? context.push("/member/myPage") : context.push("/member/userPage/${widget.userName}/${widget.followerUuid}/${widget.oldMemberUuid}");
+        myInfo.uuid == widget.followerUuid
+            ? context.push("/member/myPage")
+            : context.push("/member/userPage", extra: {"nick": widget.userName, "memberUuid": widget.followerUuid, "oldMemberUuid": widget.oldMemberUuid});
+
         //TODO
         //Route 다시
       },

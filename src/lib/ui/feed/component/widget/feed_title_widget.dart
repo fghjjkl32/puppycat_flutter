@@ -85,7 +85,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
       onTap: () {
         myInfo.uuid == widget.memberUuid
             ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
-            : context.push("/member/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid == "" ? "null" : widget.oldMemberUuid}");
+            : context.push("/member/userPage", extra: {"nick": widget.userName, "memberUuid": widget.memberUuid, "oldMemberUuid": widget.oldMemberUuid});
       },
       child: Material(
         color: kPreviousNeutralColor100,

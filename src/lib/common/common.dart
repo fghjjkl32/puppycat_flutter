@@ -156,7 +156,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
                   ? context.push("/member/myPage", extra: {"oldMemberUuid": oldMemberUuid!})
                   : mention.memberState == 0
                       ? context.push("/member/userUnknown")
-                      : context.push("/member/userPage/${mention.nick}/${mention.uuid}/$oldMemberUuid");
+                      : context.push("/member/userPage", extra: {"nick": mention.nick, "memberUuid": mention.uuid, "oldMemberUuid": oldMemberUuid});
             },
             child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
           ),

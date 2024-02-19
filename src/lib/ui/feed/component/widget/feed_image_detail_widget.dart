@@ -137,7 +137,9 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                           return isTagVisible
                                               ? GestureDetector(
                                                   onTap: () {
-                                                    myInfo.uuid == tag.memberUuid ? context.push("/member/myPage") : context.push("/member/userPage/${tag.nick!}/${tag.memberUuid}/${tag.memberUuid}");
+                                                    myInfo.uuid == tag.memberUuid
+                                                        ? context.push("/member/myPage")
+                                                        : context.push("/member/userPage", extra: {"nick": tag.nick!, "memberUuid": tag.memberUuid, "oldMemberUuid": tag.memberUuid});
                                                   },
                                                   child: MentionTagWidget(
                                                     isCanClose: false,

@@ -15,6 +15,7 @@ import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/con
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/block/block_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
@@ -40,11 +41,13 @@ class UserMainScreen extends ConsumerStatefulWidget {
     required this.memberUuid,
     required this.nick,
     required this.oldMemberUuid,
+    required this.feedContentIdx,
   });
 
   final String memberUuid;
   final String nick;
   final String oldMemberUuid;
+  final int feedContentIdx;
 
   @override
   UserMainScreenState createState() => UserMainScreenState();
@@ -86,6 +89,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
     ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+    ref.read(commentListStateProvider.notifier).saveStateForUser(widget.feedContentIdx);
 
     tabController = TabController(
       initialIndex: 0,
@@ -137,6 +141,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
       onWillPop: () async {
         ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
         ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+        ref.read(commentListStateProvider.notifier).getStateForUser(widget.feedContentIdx);
+
         return Future.value(true);
       },
       child: Material(
@@ -168,6 +174,8 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   onPressed: () {
                                     ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                                     ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                                    ref.read(commentListStateProvider.notifier).getStateForUser(widget.feedContentIdx);
+
                                     context.pop();
                                   },
                                   icon: const Icon(

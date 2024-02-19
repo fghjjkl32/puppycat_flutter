@@ -459,42 +459,45 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
           }),
         ),
         const PopupMenuWithReddot(),
-        GestureDetector(
-          onTap: () {
-            context.push("/member/myPage");
-          },
-          child: myInfo.profileImgUrl == null || myInfo.profileImgUrl!.isEmpty
-              ? WidgetMask(
-                  blendMode: BlendMode.srcATop,
-                  childSaveLayer: true,
-                  mask: const Center(
-                    child: Icon(
-                      Puppycat_social.icon_profile_small,
-                      size: 22,
-                      color: kPreviousNeutralColor400,
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0, left: 4.0),
+          child: GestureDetector(
+            onTap: () {
+              context.push("/member/myPage");
+            },
+            child: myInfo.profileImgUrl == null || myInfo.profileImgUrl!.isEmpty
+                ? WidgetMask(
+                    blendMode: BlendMode.srcATop,
+                    childSaveLayer: true,
+                    mask: const Center(
+                      child: Icon(
+                        Puppycat_social.icon_profile_small,
+                        size: 22,
+                        color: kPreviousNeutralColor400,
+                      ),
                     ),
-                  ),
-                  child: SvgPicture.asset(
-                    'assets/image/feed/image/squircle.svg',
-                    height: 22,
-                  ),
-                )
-              : WidgetMask(
-                  blendMode: BlendMode.srcATop,
-                  childSaveLayer: true,
-                  mask: Center(
-                    child: Image.network(
-                      thumborUrl(myInfo.profileImgUrl ?? ''),
+                    child: SvgPicture.asset(
+                      'assets/image/feed/image/squircle.svg',
                       height: 22,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+                    ),
+                  )
+                : WidgetMask(
+                    blendMode: BlendMode.srcATop,
+                    childSaveLayer: true,
+                    mask: Center(
+                      child: Image.network(
+                        thumborUrl(myInfo.profileImgUrl ?? ''),
+                        height: 22,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/image/feed/image/squircle.svg',
+                      height: 22,
                     ),
                   ),
-                  child: SvgPicture.asset(
-                    'assets/image/feed/image/squircle.svg',
-                    height: 22,
-                  ),
-                ),
+          ),
         ),
       ],
     );
@@ -784,7 +787,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                             onTap: () {
                               myInfo.uuid == userListLists[index].uuid
                                   ? context.push("/member/myPage")
-                                  : context.push("/member/userPage/${userListLists[index].nick}/${userListLists[index].uuid}/${userListLists[index].uuid}");
+                                  : context.push("/member/userPage", extra: {"nick": userListLists[index].nick, "memberUuid": userListLists[index].uuid, "oldMemberUuid": userListLists[index].uuid});
                             },
                             child: Column(
                               children: [
