@@ -942,7 +942,21 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           child: GestureDetector(
                             onTap: () async {
                               if (data.uuid != null) {
-                                await ref.read(chatRoomListStateProvider.notifier).createChatRoom(targetMemberUuid: data.uuid!);
+                                final chatEnterModel = await ref.read(chatRoomListStateProvider.notifier).enterChatRoom(
+                                      targetMemberUuid: data.uuid!,
+                                      titleName: data.nick ?? 'unknown',
+                                      targetProfileImgUrl: data.profileImgUrl ?? '',
+                                    );
+                                // final chatEnterModel = await ref.read(chatRoomListStateProvider.notifier).createChatRoom(targetMemberUuid: data.uuid!);
+                                //
+                                // if (mounted) {
+                                //   context.push('/chatHome/chatRoom', extra: {
+                                //     'roomId': chatEnterModel.roomId,
+                                //     'nick': data.nick,
+                                //     'profileImgUrl': data.profileImgUrl,
+                                //     'targetMemberUuid': data.uuid,
+                                //   });
+                                // }
                               }
                             },
                             child: Container(

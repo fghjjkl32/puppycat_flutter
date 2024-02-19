@@ -64,88 +64,70 @@ class ChatRoomItem extends ConsumerWidget {
       return <PopupMenuEntry<RoomContextMenuType>>[
         PopupMenuItem<RoomContextMenuType>(
           value: RoomContextMenuType.pin,
-          child: SizedBox(
-            width: 212,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
-              child: Row(
-                children: [
-                  Text(
-                    roomModel.fixState == 1 ? '메시지.고정 해제'.tr() : '메시지.고정'.tr(),
-                    style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                  ),
-                  const Spacer(),
-                  roomModel.fixState == 1
-                      ? Image.asset(
-                          'assets/image/chat/icon_fix_ac.png',
-                          color: kPreviousTextSubTitleColor,
-                          width: 20,
-                          height: 20,
-                        )
-                      : Image.asset(
-                          'assets/image/chat/icon_fix_de.png',
-                          color: kPreviousTextSubTitleColor,
-                          width: 20,
-                          height: 20,
-                        ),
-                ],
+          child: Row(
+            children: [
+              Text(
+                roomModel.fixState == 1 ? '메시지.고정 해제'.tr() : '메시지.고정'.tr(),
+                style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
               ),
-            ),
+              const Spacer(),
+              roomModel.fixState == 1
+                  ? Image.asset(
+                      'assets/image/chat/icon_fix_ac.png',
+                      color: kPreviousTextSubTitleColor,
+                      width: 20,
+                      height: 20,
+                    )
+                  : Image.asset(
+                      'assets/image/chat/icon_fix_de.png',
+                      color: kPreviousTextSubTitleColor,
+                      width: 20,
+                      height: 20,
+                    ),
+            ],
           ),
         ),
         PopupMenuItem<RoomContextMenuType>(
           value: RoomContextMenuType.favorite,
-          child: SizedBox(
-            width: 212,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
-              child: Row(
-                children: [
-                  Text(
-                    roomModel.favoriteState == 1 ? '메시지.즐겨찾기 해제'.tr() : '메시지.즐겨찾기'.tr(),
-                    style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                  ),
-                  const Spacer(),
-                  roomModel.favoriteState == 1
-                      ? Image.asset(
-                          'assets/image/chat/icon_star_s_on.png',
-                          color: kPreviousTextSubTitleColor,
-                          width: 20,
-                          height: 20,
-                        )
-                      : Image.asset(
-                          'assets/image/chat/icon_star_s_off.png',
-                          color: kPreviousTextSubTitleColor,
-                          width: 20,
-                          height: 20,
-                        ),
-                ],
+          child: Row(
+            children: [
+              Text(
+                roomModel.favoriteState == 1 ? '메시지.즐겨찾기 해제'.tr() : '메시지.즐겨찾기'.tr(),
+                style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
               ),
-            ),
+              const Spacer(),
+              roomModel.favoriteState == 1
+                  ? Image.asset(
+                      'assets/image/chat/icon_star_s_on.png',
+                      color: kPreviousTextSubTitleColor,
+                      width: 20,
+                      height: 20,
+                    )
+                  : Image.asset(
+                      'assets/image/chat/icon_star_s_off.png',
+                      color: kPreviousTextSubTitleColor,
+                      width: 20,
+                      height: 20,
+                    ),
+            ],
           ),
         ),
         PopupMenuItem<RoomContextMenuType>(
           value: RoomContextMenuType.leave,
-          child: SizedBox(
-            width: 212,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
-              child: Row(
-                children: [
-                  Text(
-                    '메시지.나가기'.tr(),
-                    style: kBody12SemiBoldStyle.copyWith(color: kPreviousErrorColor),
-                  ),
-                  const Spacer(),
-                  Image.asset(
-                    'assets/image/chat/icon_exit.png',
-                    color: kPreviousErrorColor,
-                    width: 20,
-                    height: 20,
-                  ),
-                ],
+          child: Row(
+            children: [
+              Text(
+                '메시지.나가기'.tr(),
+                style: kBody12SemiBoldStyle.copyWith(color: kPreviousErrorColor),
               ),
-            ),
+              const Spacer(),
+              Image.asset(
+                'assets/image/chat/icon_exit.png',
+                color: kPreviousErrorColor,
+                width: 20,
+                height: 20,
+              ),
+            ],
           ),
         ),
       ];

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_enter_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_room_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
@@ -70,6 +71,33 @@ class ChatRoomListState extends _$ChatRoomListState {
     try {
       final ChatEnterModel chatEnterModel = await _chatRepository.createRoom(targetMemberUuid: targetMemberUuid, maxUser: 2);
       ref.read(chatMessageStateProvider.notifier).setInitialChatHistory(chatEnterModel.log ?? []);
+      return chatEnterModel;
+    } on APIException catch (apiException) {
+      await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      rethrow;
+    } catch (e) {
+      print('createChatRoom Error $e');
+      rethrow;
+    }
+  }
+
+  Future<ChatEnterModel> enterChatRoom({
+    required String targetMemberUuid,
+    required String titleName,
+    required String targetProfileImgUrl,
+  }) async {
+    try {
+      final ChatEnterModel chatEnterModel = await _chatRepository.createRoom(targetMemberUuid: targetMemberUuid, maxUser: 2);
+      ref.read(chatMessageStateProvider.notifier).setInitialChatHistory(chatEnterModel.log ?? []);
+
+      final router = ref.read(routerProvider);
+      router.push('/chatHome/chatRoom', extra: {
+        'roomId': chatEnterModel.roomId,
+        'nick': titleName,
+        'profileImgUrl': targetProfileImgUrl,
+        'targetMemberUuid': targetMemberUuid,
+      });
+
       return chatEnterModel;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);

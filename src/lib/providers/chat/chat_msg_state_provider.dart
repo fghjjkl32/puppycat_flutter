@@ -244,4 +244,35 @@ class ChatMessageState extends _$ChatMessageState {
       return false;
     }
   }
+
+  double getChatMsgBottomPadding(int index) {
+    final chatList = state.itemList;
+
+    if (chatList == null) {
+      return 2.0;
+    }
+
+    if (index < 0) {
+      return 2.0;
+    }
+
+    // if (chatList[index] == chatList.first) {
+    //   return 20.0;
+    // }
+
+    try {
+      /// NOTE
+      /// Next 가 다음 메시지
+      ChatMessageModel curChatMsg = chatList[index];
+      ChatMessageModel nextChatMsg = chatList[index - 1];
+
+      if (curChatMsg.userID == nextChatMsg.userID) {
+        return 2.0;
+      }
+
+      return 16.0;
+    } catch (e) {
+      return 16.0;
+    }
+  }
 }

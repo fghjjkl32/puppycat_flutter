@@ -19,6 +19,7 @@ class ChatRoomScreen extends ConsumerStatefulWidget {
   final String nick;
   final String targetMemberUuid;
   final String? profileImgUrl;
+  final ChatEnterModel? chatEnterModel;
 
   const ChatRoomScreen({
     super.key,
@@ -26,6 +27,7 @@ class ChatRoomScreen extends ConsumerStatefulWidget {
     required this.nick,
     required this.targetMemberUuid,
     this.profileImgUrl,
+    this.chatEnterModel,
   });
 
   @override
@@ -41,12 +43,14 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   late Future _initChatFuture;
   late ChatController _chatController;
   bool _scrolledUp = false;
+  late ChatEnterModel? _chatEnterModel;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_updateScrollController);
 
+    _chatEnterModel = widget.chatEnterModel;
     _initChatFuture = _initChat();
   }
 
@@ -58,13 +62,18 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   Future<ChatEnterModel> _initChat() async {
     try {
-      final chatEnterModel = await chatProviderNotifier.createChatRoom(targetMemberUuid: widget.targetMemberUuid);
+      _chatEnterModel ??= await chatProviderNotifier.createChatRoom(targetMemberUuid: widget.targetMemberUuid);
 
-      _chatController = ChatController(roomUuid: chatEnterModel.roomId, token: chatEnterModel.generateToken);
+      if (_chatEnterModel == null) {
+        print('error??');
+        throw 'Chat Enter Model is Null';
+      }
+
+      _chatController = ChatController(roomUuid: _chatEnterModel!.roomId, token: _chatEnterModel!.generateToken);
       _chatController.connect(chatWSBaseUrl, (chatMessageModel) {
         ref.read(chatMessageStateProvider.notifier).addChatMessage(chatMessageModel);
       });
-      return chatEnterModel;
+      return _chatEnterModel!;
     } catch (e) {
       rethrow;
     }
@@ -97,6 +106,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
     _sendController.clear();
     _inputFocus.unfocus();
+    scrollDown();
   }
 
   Widget _buildTextField([bool isBlock = false]) {
@@ -150,9 +160,9 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         child: Bubble(
           radius: const Radius.circular(100.0),
           padding: const BubbleEdges.fromLTRB(16, 10, 16, 10),
-          mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
           alignment: Alignment.center,
-          color: kNeutralColor500,
+          color: kPreviousNeutralColor500,
           child: Text(
             DateFormat("yyyy-MM-dd").format(dateTime),
             style: kBody11SemiBoldStyle.copyWith(color: kNeutralColor100),
@@ -161,6 +171,47 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       ),
     );
   }
+
+  Widget _buildProfile(bool isViewProfileImg, String url) {
+    if (!isViewProfileImg) {
+      return const SizedBox(
+        width: 34,
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 6.0),
+      child: InkWell(
+        onTap: () {
+          print('move user page');
+        },
+        child: SizedBox(
+          // color: Colors.red,
+          width: 28,
+          height: 28,
+          child: getProfileAvatar(url),
+        ),
+      ),
+    );
+  }
+
+  // Widget _hashTagText(String text) {
+  //   return DetectableText(
+  //     text: text,
+  //     detectionRegExp: detectionRegExp(atSign: false) ??
+  //         RegExp(
+  //           "(?!\\n)(?:^|\\s)([#]([$detectionContentLetters]+))|$urlRegexContent",
+  //           multiLine: true,
+  //         ),
+  //     detectedStyle: kBody13RegularStyle.copyWith(color: kSecondaryColor500),
+  //     basicStyle: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
+  //     onTap: (tappedText) {
+  //       ///TODO
+  //       /// 해시태그 검색 페이지 이동
+  //       /// 밖에서 함수 받아오기
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -188,8 +239,8 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           future: _initChatFuture,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const Center(
-                child: Text('Error'),
+              return Center(
+                child: Text('Error ${snapshot.error}'),
               );
             }
 
@@ -223,38 +274,49 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                           bool isViewDateBlock = ref.read(chatMessageStateProvider.notifier).checkViewDateBlock(index);
                           bool isViewMsgTime = ref.read(chatMessageStateProvider.notifier).checkNeedViewTime(index);
                           bool isConsecutively = ref.read(chatMessageStateProvider.notifier).checkConsecutively(index);
+                          bool isMine = item.isMine;
+                          bool isViewProfileImg = !isMine & !isConsecutively; //상대방이 보낸 메시지이면서 연속적이지 않는 메시지일 때
+                          double chatMsgBottomPadding = ref.read(chatMessageStateProvider.notifier).getChatMsgBottomPadding(index);
+                          // double chatMsgPadding = isViewMsgTime ? 16.0 : 2.0;
 
-                          return Column(
-                            children: [
-                              isViewDateBlock ? _buildDateBlock(item.dateTime) : const SizedBox.shrink(),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: AutoScrollTag(
-                                      key: UniqueKey(),
-                                      controller: _scrollController,
-                                      index: index,
-                                      child: ChatMessageItem(
-                                        chatMessageModel: item.copyWith(
-                                          isViewTime: isViewMsgTime,
-                                          isConsecutively: isConsecutively,
+                          final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(item.dateTime) * 1000);
+
+                          return Padding(
+                            padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, chatMsgBottomPadding),
+                            child: Column(
+                              children: [
+                                isViewDateBlock ? _buildDateBlock(item.dateTime) : const SizedBox.shrink(),
+                                Row(
+                                  // mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+                                  children: [
+                                    _buildProfile(isViewProfileImg, ''),
+                                    Expanded(
+                                      child: AutoScrollTag(
+                                        key: UniqueKey(),
+                                        controller: _scrollController,
+                                        index: index,
+                                        child: ChatMessageItem(
+                                          chatMessageModel: item.copyWith(
+                                            isViewTime: isViewMsgTime,
+                                            isConsecutively: isConsecutively,
+                                          ),
+                                          isError: false,
+                                          isSending: false,
+                                          isRedacted: false,
                                         ),
-                                        isError: false,
-                                        isSending: false,
-                                        isRedacted: false,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           );
                         },
                       ),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: _scrolledUp ? 0.0 : 18.0),
+                    padding: EdgeInsets.only(top: _scrolledUp ? 0.0 : 2.0),
                     child: _buildTextField(),
                   ),
                 ],

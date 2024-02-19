@@ -16,6 +16,7 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_msg_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/chat_home/widget/chat_bubble_widget.dart';
 
 enum ContextMenuType {
   reply,
@@ -24,6 +25,7 @@ enum ContextMenuType {
   delete,
   reaction,
   resend,
+  report,
 }
 
 class ChatMessageItem extends ConsumerStatefulWidget {
@@ -38,6 +40,7 @@ class ChatMessageItem extends ConsumerStatefulWidget {
   final void Function(ChatMessageModel)? onDelete;
   final void Function(ChatMessageModel, String reactionKey)? onReaction;
   final void Function(ChatMessageModel)? onError;
+  final void Function(ChatMessageModel)? onReport;
   final bool isError;
   final bool isSending;
   final bool isRedacted;
@@ -58,6 +61,7 @@ class ChatMessageItem extends ConsumerStatefulWidget {
     this.onDelete,
     this.onReaction,
     this.onError,
+    this.onReport,
     required this.isError,
     required this.isSending,
     required this.isRedacted,
@@ -181,26 +185,45 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
     menuItems.add(
       PopupMenuItem<ContextMenuType>(
         value: ContextMenuType.copy,
-        child: SizedBox(
-          width: 212,
+        child: Row(
+          children: [
+            Text(
+              '메시지.복사'.tr(),
+              style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+            ),
+            const Spacer(),
+            Image.asset(
+              'assets/image/chat/icon_copy.png',
+              color: kPreviousTextSubTitleColor,
+              width: 20,
+              height: 20,
+            ),
+          ],
+        ),
+      ),
+    ); //copy
+    if (!isMine) {
+      menuItems.add(
+        PopupMenuItem<ContextMenuType>(
+          value: ContextMenuType.report,
           child: Row(
             children: [
               Text(
-                '메시지.복사'.tr(),
-                style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                '메시지.신고'.tr(),
+                style: kBody12SemiBoldStyle.copyWith(color: kErrorColor400),
               ),
               const Spacer(),
               Image.asset(
-                'assets/image/chat/icon_copy.png',
-                color: kPreviousTextSubTitleColor,
+                'assets/image/chat/icon_report.png',
+                color: kErrorColor400,
                 width: 20,
                 height: 20,
               ),
             ],
           ),
         ),
-      ),
-    ); //copy
+      ); //report
+    }
     // menuItems.add(
     //   PopupMenuItem<ContextMenuType>(
     //     value: ContextMenuType.delete,
@@ -348,6 +371,9 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
           return;
         case ContextMenuType.reaction:
           return;
+        case ContextMenuType.report:
+          _report();
+          return;
       }
     });
   }
@@ -392,6 +418,12 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
   void _resend() {
     if (widget.onError != null) {
       widget.onError!(chatMessageModel);
+    }
+  }
+
+  void _report() {
+    if (widget.onReport != null) {
+      widget.onReport!(chatMessageModel);
     }
   }
 
@@ -635,96 +667,56 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
       ref.read(chatBubbleFocusProvider.notifier).state = 0;
     });
 
-    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-      return Listener(
-        onPointerDown: (details) => _lastPointerDownPosition = details.position,
-        child: Padding(
-          padding: EdgeInsets.only(bottom: widget.bottomPadding),
-          child: Row(
-            mainAxisAlignment: isMineXorReply ? MainAxisAlignment.end : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildProfile(),
-              // Row(
-              //   crossAxisAlignment: CrossAxisAlignment.end,
-              //   children: [
-              //     isMineXorReply
-              //         ? widget.isError
-              //             ? _buildErrorArea()
-              //             : _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply)
-              //         : const SizedBox.shrink(),
-              //   ],
-              // ),
-              Column(
-                // mainAxisSize: MainAxisSize.min,
-                children: [
-                  Bubble(
-                    color: _bubbleColor,
-                    onHighlightChanged: (_) {
-                      // _updateBubbleColor(true);
-                    },
-                    //isMineXorReply ? kPrimaryLightColor : kNeutralColor200,
-                    // onDoubleTap: () => _reaction('assets/lottie/character_05_1_Good_24.json'),
-                    onLongPress: () {
-                      if (widget.isRedacted) {
-                        return;
-                      }
-                      _updateBubbleColor(true);
-                      if (widget.onLongPress != null) {
-                        widget.onLongPress!(_lastPointerDownPosition);
-                      } else {
-                        _showMenu(context, _lastPointerDownPosition!, isMineXorReply);
-                      }
-                    },
-                    radius: const Radius.circular(10),
-                    borderColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    padding: const BubbleEdges.fromLTRB(12, 8, 12, 8),
-                    alignment: isMineXorReply ? Alignment.topRight : Alignment.topLeft,
-                    nip: isMineXorReply ? BubbleNip.rightTop : BubbleNip.leftTop,
-                    showNip: !chatMessageModel.isConsecutively,
-                    nipOffset: 16.0,
-                    // leftChild: isMineXorReply
-                    //     ? [
-                    //         widget.isError ? _buildErrorArea() : _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply),
-                    //         // _buildErrorArea(),
-                    //       ]
-                    //     : [],
-                    // rightChild: !isMineXorReply
-                    //     ? [
-                    //         _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply),
-                    //       ]
-                    //     : [],
-                    mainAxisAlignment: isMineXorReply ? MainAxisAlignment.end : MainAxisAlignment.start,
-                    child: ConstrainedBox(
-                      // constraints: BoxConstraints(maxWidth: constraints.maxWidth * (isBigDevice ? 0.7 : 0.55)),
-                      constraints: BoxConstraints(maxWidth: constraints.maxWidth - 48),
-                      child: Container(
-                        child: _buildMsgArea(chatMessageModel.isReply, msg, isMineXorReply),
-                      ),
-                    ),
-                  ),
-                  hasReaction
-                      ? Padding(
-                          padding: const EdgeInsets.only(top: 2.0, left: 8, right: 8),
-                          child: Align(
-                              alignment: isMineXorReply ? Alignment.centerRight : Alignment.centerLeft,
-                              child: Lottie.asset(
-                                chatMessageModel.reactions.first,
-                                repeat: false,
-                              )),
-                        )
-                      : const SizedBox.shrink(),
-                ],
-              ),
-              // !isMineXorReply ? _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply) : const SizedBox.shrink(),
-              // isError ? Text('error') : const SizedBox.shrink(),
-              // isSending ? const CircularProgressIndicator() : const SizedBox.shrink(),
-            ],
+    return Listener(
+      onPointerDown: (details) => _lastPointerDownPosition = details.position,
+      child: Column(
+        // mainAxisSize: MainAxisSize.min,
+        children: [
+          ChatBubbleWidget(
+            color: _bubbleColor,
+            onHighlightChanged: (_) {
+              // _updateBubbleColor(true);
+            },
+            onDoubleTap: () => _reaction('assets/lottie/character_05_1_Good_24.json'),
+            onLongPress: () {
+              if (widget.isRedacted) {
+                return;
+              }
+              _updateBubbleColor(true);
+              if (widget.onLongPress != null) {
+                widget.onLongPress!(_lastPointerDownPosition);
+              } else {
+                _showMenu(context, _lastPointerDownPosition!, isMineXorReply);
+              }
+            },
+            nipWidth: 6,
+            // radius: const Radius.circular(10),
+            borderRadius: 10.0,
+            borderColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            padding: const BubbleEdges.fromLTRB(12, 8, 12, 8),
+            // alignment: isMineXorReply ? Alignment.topRight : Alignment.topLeft,
+            nip: isMineXorReply ? BubbleNip.rightTop : BubbleNip.leftTop,
+            showNip: !chatMessageModel.isConsecutively,
+            nipOffset: 16.0,
+            chatBubbleAlignment: isMineXorReply ? ChatBubbleAlignment.right : ChatBubbleAlignment.left,
+            sideWidget: _buildDateTimeArea(chatMessageModel.isRead, chatMessageModel.isEdited, isMineXorReply),
+            child: _buildMsgArea(chatMessageModel.isReply, msg, isMineXorReply),
           ),
-        ),
-        // ),
-      ).animate(autoPlay: false, controller: _animationController).shakeY();
-    });
+          hasReaction
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 2.0, left: 8, right: 8),
+                  child: Align(
+                      alignment: isMineXorReply ? Alignment.centerRight : Alignment.centerLeft,
+                      child: Lottie.asset(
+                        chatMessageModel.reactions.first,
+                        repeat: false,
+                      )),
+                )
+              : const SizedBox.shrink(),
+        ],
+      ),
+      // ),
+    ).animate(autoPlay: false, controller: _animationController).shakeY();
   }
 }
