@@ -1,3 +1,4 @@
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'package:pet_mobile_social_flutter/providers/tag_contents/user_tag_conten
 import 'package:pet_mobile_social_flutter/providers/user_contents/user_contents_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user_information/user_information_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
+import 'package:pet_mobile_social_flutter/ui/components/refresh_loading_animation_widget.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/ui/member/follow_list/widget/follower_item_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/member/follow_list/widget/following_item_widget.dart';
@@ -293,31 +295,42 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                             ),
                           ),
                         )
-                      : ListView.builder(
-                          itemCount: lists.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index == lists.length) {
-                              if (isLoadMoreError) {
-                                return const Center(
-                                  child: Text('Error'),
-                                );
-                              }
-                              if (isLoadMoreDone) {
+                      : CustomRefreshIndicator(
+                          onRefresh: () {
+                            return Future(() {
+                              ref.read(followStateProvider.notifier).refreshFollowerList(memberUuid);
+                              ref.read(followStateProvider.notifier).refreshFollowerList(memberUuid);
+                            });
+                          },
+                          builder: (context, child, controller) {
+                            return RefreshLoadingAnimationWidget(controller: controller, child: child);
+                          },
+                          child: ListView.builder(
+                            itemCount: lists.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index == lists.length) {
+                                if (isLoadMoreError) {
+                                  return const Center(
+                                    child: Text('Error'),
+                                  );
+                                }
+                                if (isLoadMoreDone) {
+                                  return Container();
+                                }
                                 return Container();
                               }
-                              return Container();
-                            }
-                            return FollowerItemWidget(
-                              profileImage: "${lists[index].profileImgUrl}",
-                              userName: lists[index].followerNick!,
-                              content: lists[index].intro == "" ? '소개글이 없어요.' : lists[index].intro!,
-                              isSpecialUser: lists[index].isBadge! == 1,
-                              isFollow: lists[index].isFollow == 1,
-                              followerUuid: lists[index].followerUuid!,
-                              memberUuid: lists[index].memberUuid!,
-                              oldMemberUuid: widget.memberUuid,
-                            );
-                          },
+                              return FollowerItemWidget(
+                                profileImage: "${lists[index].profileImgUrl}",
+                                userName: lists[index].followerNick!,
+                                content: lists[index].intro == "" ? '소개글이 없어요.' : lists[index].intro!,
+                                isSpecialUser: lists[index].isBadge! == 1,
+                                isFollow: lists[index].isFollow == 1,
+                                followerUuid: lists[index].followerUuid!,
+                                memberUuid: lists[index].memberUuid!,
+                                oldMemberUuid: widget.memberUuid,
+                              );
+                            },
+                          ),
                         ),
                 ),
               ],
@@ -434,32 +447,43 @@ class MyPageFollowListScreenState extends ConsumerState<MyPageFollowListScreen> 
                             ),
                           ),
                         )
-                      : ListView.builder(
-                          itemCount: lists.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index == lists.length) {
-                              if (isLoadMoreError) {
-                                return const Center(
-                                  child: Text('Error'),
-                                );
-                              }
-                              if (isLoadMoreDone) {
+                      : CustomRefreshIndicator(
+                          onRefresh: () {
+                            return Future(() {
+                              ref.read(followStateProvider.notifier).refreshFollowerList(memberUuid);
+                              ref.read(followStateProvider.notifier).refreshFollowerList(memberUuid);
+                            });
+                          },
+                          builder: (context, child, controller) {
+                            return RefreshLoadingAnimationWidget(controller: controller, child: child);
+                          },
+                          child: ListView.builder(
+                            itemCount: lists.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index == lists.length) {
+                                if (isLoadMoreError) {
+                                  return const Center(
+                                    child: Text('Error'),
+                                  );
+                                }
+                                if (isLoadMoreDone) {
+                                  return Container();
+                                }
                                 return Container();
                               }
-                              return Container();
-                            }
-                            return FollowingItemWidget(
-                              profileImage: "${lists[index].profileImgUrl}",
-                              userName: lists[index].followNick!,
-                              content: lists[index].intro == "" || lists[index].intro == null ? '소개글이 없어요.' : lists[index].intro!,
-                              isSpecialUser: lists[index].isBadge! == 1,
-                              isFollow: lists[index].isFollow == 1,
-                              isNewUser: lists[index].newState! == 1,
-                              followUuid: lists[index].followUuid!,
-                              memberUuid: lists[index].memberUuid!,
-                              oldMemberUuid: widget.memberUuid,
-                            );
-                          },
+                              return FollowingItemWidget(
+                                profileImage: "${lists[index].profileImgUrl}",
+                                userName: lists[index].followNick!,
+                                content: lists[index].intro == "" || lists[index].intro == null ? '소개글이 없어요.' : lists[index].intro!,
+                                isSpecialUser: lists[index].isBadge! == 1,
+                                isFollow: lists[index].isFollow == 1,
+                                isNewUser: lists[index].newState! == 1,
+                                followUuid: lists[index].followUuid!,
+                                memberUuid: lists[index].memberUuid!,
+                                oldMemberUuid: widget.memberUuid,
+                              );
+                            },
+                          ),
                         ),
                 ),
               ],

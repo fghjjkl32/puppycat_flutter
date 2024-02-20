@@ -184,6 +184,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                               return RefreshLoadingAnimationWidget(controller: controller, child: child);
                             },
                             child: GridView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
                               controller: searchContentController,
                               gridDelegate: SliverQuiltedGridDelegate(
                                 crossAxisCount: 3,
