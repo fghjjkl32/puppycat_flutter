@@ -57,6 +57,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
 
   late final PagingController<int, FeedData> _popularWeekFeedListPagingController = ref.watch(popularWeekFeedStateProvider);
 
+  bool _showIcon = false;
+
   List<Widget> getTabs() {
     final isLogined = ref.read(loginStatementProvider);
 
@@ -136,7 +138,15 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
     ref.read(firebaseStateProvider.notifier).checkNotificationAppLaunch();
 
     Future(() async {
+      scrollController.addListener(_myPostScrollListener);
+
       refreshFeedList();
+    });
+  }
+
+  void _myPostScrollListener() {
+    setState(() {
+      ref.read(loginStatementProvider) == false ? _showIcon = false : _showIcon = scrollController.offset > 100;
     });
   }
 
@@ -465,38 +475,45 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
             onTap: () {
               context.push("/member/myPage");
             },
-            child: myInfo.profileImgUrl == null || myInfo.profileImgUrl!.isEmpty
-                ? WidgetMask(
-                    blendMode: BlendMode.srcATop,
-                    childSaveLayer: true,
-                    mask: const Center(
-                      child: Icon(
-                        Puppycat_social.icon_profile_small,
-                        size: 22,
-                        color: kPreviousNeutralColor400,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: _showIcon ? 36.0 : 0.0,
+              child: Opacity(
+                opacity: _showIcon ? 1.0 : 0.0,
+                child: myInfo.profileImgUrl == null || myInfo.profileImgUrl!.isEmpty
+                    ? WidgetMask(
+                        blendMode: BlendMode.srcATop,
+                        childSaveLayer: true,
+                        mask: const Center(
+                          child: Icon(
+                            Puppycat_social.icon_profile_small,
+                            size: 22,
+                            color: kPreviousNeutralColor400,
+                          ),
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/image/feed/image/squircle.svg',
+                          height: 22,
+                        ),
+                      )
+                    : WidgetMask(
+                        blendMode: BlendMode.srcATop,
+                        childSaveLayer: true,
+                        mask: Center(
+                          child: Image.network(
+                            thumborUrl(myInfo.profileImgUrl ?? ''),
+                            height: 22,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/image/feed/image/squircle.svg',
+                          height: 22,
+                        ),
                       ),
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/image/feed/image/squircle.svg',
-                      height: 22,
-                    ),
-                  )
-                : WidgetMask(
-                    blendMode: BlendMode.srcATop,
-                    childSaveLayer: true,
-                    mask: Center(
-                      child: Image.network(
-                        thumborUrl(myInfo.profileImgUrl ?? ''),
-                        height: 22,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/image/feed/image/squircle.svg',
-                      height: 22,
-                    ),
-                  ),
+              ),
+            ),
           ),
         ),
       ],
