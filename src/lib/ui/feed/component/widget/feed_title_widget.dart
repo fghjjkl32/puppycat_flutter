@@ -70,7 +70,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
     Future(() {
       final currentFollowState = ref.read(followUserStateProvider)[widget.memberUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid!, widget.feedData.followState == 1);
+        ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: widget.feedData.followState == 1, isActionButton: false);
       }
     });
   }
@@ -147,7 +147,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                         context.push("/home/login");
                                                       } else {
                                                         setState(() {
-                                                          ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                                          ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: false, isActionButton: true);
                                                         });
                                                       }
                                                     },
@@ -170,7 +170,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                         context.push("/home/login");
                                                       } else {
                                                         setState(() {
-                                                          ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
+                                                          ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: true, isActionButton: true);
                                                         });
                                                       }
                                                     },
@@ -371,7 +371,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                             context.pop();
 
                                             setState(() {
-                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                              ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: false, isActionButton: true);
                                             });
                                           },
                                         )

@@ -887,7 +887,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           } else {
                                             ref.watch(userInformationStateProvider.notifier).updateUnFollowState();
                                             setState(() {
-                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                              ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: false, isActionButton: true);
                                             });
                                           }
                                         },
@@ -915,7 +915,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                             ref.watch(userInformationStateProvider.notifier).updateFollowState();
 
                                             setState(() {
-                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
+                                              ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: true, isActionButton: true);
                                             });
                                           }
 

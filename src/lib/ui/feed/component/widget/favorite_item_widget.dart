@@ -45,7 +45,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
     Future(() {
       final currentFollowState = ref.read(followUserStateProvider)[widget.followerUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, widget.isFollow);
+        ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followerUuid, followState: widget.isFollow, isActionButton: false);
       }
     });
   }
@@ -123,7 +123,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                               context.push("/home/login");
                             } else {
                               setState(() {
-                                ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, false);
+                                ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followerUuid, followState: false, isActionButton: true);
                               });
                             }
                             // setState(() {
@@ -168,7 +168,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                               context.push("/home/login");
                             } else {
                               setState(() {
-                                ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, true);
+                                ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followerUuid, followState: true, isActionButton: true);
                               });
                             }
                             // if (ref.read(userInfoProvider).userModel == null) {

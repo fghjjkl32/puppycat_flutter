@@ -186,7 +186,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                 context.push("/home/login");
                               } else {
                                 setState(() {
-                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                  ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: false, isActionButton: true);
                                 });
                               }
                             },
@@ -204,7 +204,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                 context.push("/home/login");
                               } else {
                                 setState(() {
-                                  ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
+                                  ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: true, isActionButton: true);
                                 });
                               }
                             },

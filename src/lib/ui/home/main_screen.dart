@@ -49,8 +49,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
   ScrollController scrollController = ScrollController();
   late TabController tabController;
 
-  late Future _fetchFeedDataFuture;
-
   late final PagingController<int, FeedData> _myFeedListPagingController = ref.watch(myFeedStateProvider);
   late final PagingController<int, FeedData> _recentFeedListPagingController = ref.watch(recentFeedStateProvider);
   late final PagingController<int, FeedData> _followFeedListPagingController = ref.watch(followFeedStateProvider);
@@ -133,8 +131,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
 
     tabController = TabController(vsync: this, length: getTabs().length, initialIndex: widget.initialTabIndex);
 
-    _fetchFeedDataFuture = _initTabController();
-
     ref.read(firebaseStateProvider.notifier).checkNotificationAppLaunch();
 
     Future(() async {
@@ -172,7 +168,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
   }
 
   void refreshFeedList() {
-    ref.read(followUserStateProvider.notifier).resetState();
+    Future(() {
+      ref.read(followUserStateProvider.notifier).resetState();
+    });
     ref.read(popularUserListStateProvider.notifier).getInitUserList();
     ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
@@ -223,7 +221,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
           body: SafeArea(
             child: Consumer(builder: (context, ref, _) {
               return FutureBuilder(
-                  future: _fetchFeedDataFuture,
+                  future: _initTabController(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return const Center(

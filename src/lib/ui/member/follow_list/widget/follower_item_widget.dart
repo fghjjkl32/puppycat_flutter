@@ -46,7 +46,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
     Future(() {
       final currentFollowState = ref.read(followUserStateProvider)[widget.followerUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, widget.isFollow);
+        ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followerUuid, followState: widget.isFollow, isActionButton: false);
       }
     });
   }
@@ -135,7 +135,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                     context.push("/home/login");
                                   } else {
                                     setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, false);
+                                      ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followerUuid, followState: false, isActionButton: true);
                                     });
                                   }
                                 },
@@ -162,7 +162,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                     context.push("/home/login");
                                   } else {
                                     setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, true);
+                                      ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followerUuid, followState: true, isActionButton: true);
                                     });
                                   }
                                 },
