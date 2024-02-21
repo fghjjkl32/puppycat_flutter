@@ -45,7 +45,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
     Future(() {
       final currentFollowState = ref.read(followUserStateProvider)[widget.memberUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+        ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: false, isActionButton: false);
       }
     });
   }
@@ -87,7 +87,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                 onTap: () {
                   myInfo.uuid == widget.memberUuid
                       ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
-                      : context.push("/member/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
+                      : context.push("/member/userPage", extra: {"nick": widget.userName, "memberUuid": widget.memberUuid, "oldMemberUuid": widget.oldMemberUuid});
                 },
                 child: Container(
                   child: Row(
@@ -142,7 +142,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                               context.push("/home/login");
                                             } else {
                                               setState(() {
-                                                ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                                ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: false, isActionButton: true);
                                               });
                                             }
                                           },
@@ -160,7 +160,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                               context.push("/home/login");
                                             } else {
                                               setState(() {
-                                                ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
+                                                ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: true, isActionButton: true);
                                               });
                                             }
                                           },

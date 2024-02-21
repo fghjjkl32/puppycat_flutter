@@ -544,107 +544,104 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                           children: [
                             isProfileEdit
                                 ? Expanded(
-                                    child: SizedBox(
-                                      height: 44,
-                                      child: Form(
-                                        key: _formKey,
-                                        child: TextFormField(
-                                          controller: nickController,
-                                          focusNode: _nickFocusNode,
-                                          decoration: nickProvider != NickNameStatus.valid
-                                              ? InputDecoration(
-                                                  hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
-                                                  hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
-                                                  errorStyle: kBody11RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
-                                                  errorText: getNickDescription(nickProvider),
-                                                  errorBorder: const OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      width: 1,
-                                                      color: kPreviousErrorColor,
-                                                    ),
+                                    child: Form(
+                                      key: _formKey,
+                                      child: TextFormField(
+                                        controller: nickController,
+                                        focusNode: _nickFocusNode,
+                                        decoration: nickProvider != NickNameStatus.valid
+                                            ? InputDecoration(
+                                                hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
+                                                hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
+                                                errorStyle: kBody11RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
+                                                errorText: getNickDescription(nickProvider),
+                                                errorBorder: const OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    width: 1,
+                                                    color: kPreviousErrorColor,
                                                   ),
-                                                  errorMaxLines: 2,
-                                                  counterText: '',
-                                                  isDense: true,
-                                                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                                                )
-                                              : InputDecoration(
-                                                  hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
-                                                  hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
-                                                  errorText: '회원가입.사용 가능한 닉네임입니다'.tr(),
-                                                  errorStyle: kBody11RegularStyle.copyWith(color: kPreviousPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
-                                                  errorBorder: const OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      width: 1,
-                                                      color: kPreviousPrimaryColor,
-                                                    ),
-                                                  ),
-                                                  focusedErrorBorder: const OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      width: 1,
-                                                      color: kPreviousPrimaryColor,
-                                                    ),
-                                                  ),
-                                                  errorMaxLines: 2,
-                                                  counterText: '',
-                                                  isDense: true,
-                                                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                                                 ),
-                                          style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                          maxLength: 20,
-                                          autovalidateMode: AutovalidateMode.always,
-                                          inputFormatters: [
-                                            FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                                          ],
-                                          onChanged: (value) {
-                                            checkNextStep();
-                                            if (value.isNotEmpty) {
-                                              if (value.length > 1) {
-                                                setState(() {
-                                                  ref.read(checkButtonProvider.notifier).state = true;
-                                                  isNextStep = true;
-                                                });
-                                              }
-                                              if (value == editMyInfoModel.nick) {
-                                                setState(() {
-                                                  ref.read(checkButtonProvider.notifier).state = false;
-                                                });
-                                              }
-                                            } else {
+                                                errorMaxLines: 2,
+                                                counterText: '',
+                                                isDense: true,
+                                                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                              )
+                                            : InputDecoration(
+                                                hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
+                                                hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
+                                                errorText: '회원가입.사용 가능한 닉네임입니다'.tr(),
+                                                errorStyle: kBody11RegularStyle.copyWith(color: kPreviousPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
+                                                errorBorder: const OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    width: 1,
+                                                    color: kPreviousPrimaryColor,
+                                                  ),
+                                                ),
+                                                focusedErrorBorder: const OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    width: 1,
+                                                    color: kPreviousPrimaryColor,
+                                                  ),
+                                                ),
+                                                errorMaxLines: 2,
+                                                counterText: '',
+                                                isDense: true,
+                                                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                              ),
+                                        style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                        maxLength: 20,
+                                        autovalidateMode: AutovalidateMode.always,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                                        ],
+                                        onChanged: (value) {
+                                          checkNextStep();
+                                          if (value.isNotEmpty) {
+                                            if (value.length > 1) {
                                               setState(() {
-                                                ref.read(checkButtonProvider.notifier).state = false;
-                                                isNextStep = false;
+                                                ref.read(checkButtonProvider.notifier).state = true;
+                                                isNextStep = true;
                                               });
                                             }
-                                            ref.read(nickNameProvider.notifier).state = NickNameStatus.nonValid;
-                                          },
-                                          validator: (value) {
-                                            if (value != null) {
-                                              if (value.isNotEmpty) {
-                                                if (_letterRegExp.allMatches(value).length != value.length) {
-                                                  Future(() {
-                                                    ref.watch(nickNameProvider.notifier).state = NickNameStatus.invalidLetter;
-                                                  });
-                                                  return getNickDescription(NickNameStatus.invalidLetter);
-                                                } else if (value.isNotEmpty && value.length < 2) {
-                                                  Future(() {
-                                                    ref.watch(nickNameProvider.notifier).state = NickNameStatus.minLength;
-                                                  });
-                                                  return getNickDescription(NickNameStatus.minLength);
-                                                } else {
-                                                  isCheckableNickName = true;
-                                                  return null;
-                                                }
+                                            if (value == editMyInfoModel.nick) {
+                                              setState(() {
+                                                ref.read(checkButtonProvider.notifier).state = false;
+                                              });
+                                            }
+                                          } else {
+                                            setState(() {
+                                              ref.read(checkButtonProvider.notifier).state = false;
+                                              isNextStep = false;
+                                            });
+                                          }
+                                          ref.read(nickNameProvider.notifier).state = NickNameStatus.nonValid;
+                                        },
+                                        validator: (value) {
+                                          if (value != null) {
+                                            if (value.isNotEmpty) {
+                                              if (_letterRegExp.allMatches(value).length != value.length) {
+                                                Future(() {
+                                                  ref.watch(nickNameProvider.notifier).state = NickNameStatus.invalidLetter;
+                                                });
+                                                return getNickDescription(NickNameStatus.invalidLetter);
+                                              } else if (value.isNotEmpty && value.length < 2) {
+                                                Future(() {
+                                                  ref.watch(nickNameProvider.notifier).state = NickNameStatus.minLength;
+                                                });
+                                                return getNickDescription(NickNameStatus.minLength);
+                                              } else {
+                                                isCheckableNickName = true;
+                                                return null;
                                               }
                                             }
-                                            return null;
-                                          },
-                                          onSaved: (val) {
-                                            if (isCheckableNickName) {
-                                              ref.read(signUpStateProvider.notifier).checkNickName(val!);
-                                            }
-                                          },
-                                        ),
+                                          }
+                                          return null;
+                                        },
+                                        onSaved: (val) {
+                                          if (isCheckableNickName) {
+                                            ref.read(signUpStateProvider.notifier).checkNickName(val!);
+                                          }
+                                        },
                                       ),
                                     ),
                                   )

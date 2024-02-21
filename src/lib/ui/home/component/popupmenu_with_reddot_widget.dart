@@ -50,7 +50,7 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
     final isLogined = ref.read(loginStatementProvider);
 
     return PopupMenuButton(
-      offset: Offset(0, 40),
+      offset: Offset(50, 40),
       padding: EdgeInsets.zero,
       onSelected: (id) {
         setState(() {

@@ -305,7 +305,12 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                     } else {
                       ref.read(checkButtonProvider.notifier).state = false;
                     }
-                    // ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
+
+                    if (isValidNickName) {
+                      isValidNickName = false;
+                    }
+
+                    ref.read(nickNameProvider.notifier).state = NickNameStatus.none;
                   },
                   validator: (value) {
                     if (value != null) {

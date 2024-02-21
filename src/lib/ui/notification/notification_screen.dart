@@ -272,7 +272,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                     ? context.push("/member/myPage")
                                     : item.senderInfo?.first.nick == null
                                         ? context.push("/member/userUnknown")
-                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
+                                        : context.push("/member/userPage", extra: {"nick": item.senderInfo?.first.nick, "memberUuid": item.senderUuid, "oldMemberUuid": item.senderUuid});
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.new_contents) ||
@@ -339,7 +339,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                     ? context.push("/member/myPage")
                                     : item.senderInfo?.first.nick == null
                                         ? context.push("/member/userUnknown")
-                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
+                                        : context.push("/member/userPage", extra: {"nick": item.senderInfo?.first.nick, "memberUuid": item.senderUuid, "oldMemberUuid": item.senderUuid});
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.new_comment) ||
@@ -382,7 +382,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                     ? context.push("/member/myPage")
                                     : item.senderInfo?.first.nick == null
                                         ? context.push("/member/userUnknown")
-                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
+                                        : context.push("/member/userPage", extra: {"nick": item.senderInfo?.first.nick, "memberUuid": item.senderUuid, "oldMemberUuid": item.senderUuid});
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.notice) || item.subType == describeEnum(NotiSubType.event)) {
@@ -404,7 +404,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                     ? context.push("/member/myPage")
                                     : item.senderInfo?.first.nick == null
                                         ? context.push("/member/userUnknown")
-                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
+                                        : context.push("/member/userPage", extra: {"nick": item.senderInfo?.first.nick, "memberUuid": item.senderUuid, "oldMemberUuid": item.senderUuid});
                               },
                             );
                           } else {

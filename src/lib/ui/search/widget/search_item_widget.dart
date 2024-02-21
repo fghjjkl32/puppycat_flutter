@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -60,7 +59,10 @@ class UserItemWidgetState extends ConsumerState<SearchItemWidget> {
 
         ref.refresh(searchProvider);
 
-        myInfo.uuid == widget.memberUuid ? context.push("/member/myPage") : context.push("/member/userPage/${widget.userName}/${widget.memberUuid}/${widget.memberUuid}");
+        myInfo.uuid == widget.memberUuid
+            ? context.push("/member/myPage")
+            : context.push("/member/userPage", extra: {"nick": widget.userName, "memberUuid": widget.memberUuid, "oldMemberUuid": widget.memberUuid});
+
         //TODO
         //Route 다시
       },

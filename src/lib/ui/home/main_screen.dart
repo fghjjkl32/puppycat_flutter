@@ -49,13 +49,13 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
   ScrollController scrollController = ScrollController();
   late TabController tabController;
 
-  late Future _fetchFeedDataFuture;
-
   late final PagingController<int, FeedData> _myFeedListPagingController = ref.watch(myFeedStateProvider);
   late final PagingController<int, FeedData> _recentFeedListPagingController = ref.watch(recentFeedStateProvider);
   late final PagingController<int, FeedData> _followFeedListPagingController = ref.watch(followFeedStateProvider);
 
   late final PagingController<int, FeedData> _popularWeekFeedListPagingController = ref.watch(popularWeekFeedStateProvider);
+
+  bool _showIcon = false;
 
   List<Widget> getTabs() {
     final isLogined = ref.read(loginStatementProvider);
@@ -131,12 +131,18 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
 
     tabController = TabController(vsync: this, length: getTabs().length, initialIndex: widget.initialTabIndex);
 
-    _fetchFeedDataFuture = _initTabController();
-
     ref.read(firebaseStateProvider.notifier).checkNotificationAppLaunch();
 
     Future(() async {
+      scrollController.addListener(_myPostScrollListener);
+
       refreshFeedList();
+    });
+  }
+
+  void _myPostScrollListener() {
+    setState(() {
+      ref.read(loginStatementProvider) == false ? _showIcon = false : _showIcon = scrollController.offset > 100;
     });
   }
 
@@ -162,7 +168,9 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
   }
 
   void refreshFeedList() {
-    ref.read(followUserStateProvider.notifier).resetState();
+    Future(() {
+      ref.read(followUserStateProvider.notifier).resetState();
+    });
     ref.read(popularUserListStateProvider.notifier).getInitUserList();
     ref.read(popularHourFeedStateProvider.notifier).initPosts();
 
@@ -213,7 +221,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
           body: SafeArea(
             child: Consumer(builder: (context, ref, _) {
               return FutureBuilder(
-                  future: _fetchFeedDataFuture,
+                  future: _initTabController(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return const Center(
@@ -459,42 +467,52 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
           }),
         ),
         const PopupMenuWithReddot(),
-        GestureDetector(
-          onTap: () {
-            context.push("/member/myPage");
-          },
-          child: myInfo.profileImgUrl == null || myInfo.profileImgUrl!.isEmpty
-              ? WidgetMask(
-                  blendMode: BlendMode.srcATop,
-                  childSaveLayer: true,
-                  mask: const Center(
-                    child: Icon(
-                      Puppycat_social.icon_profile_small,
-                      size: 22,
-                      color: kPreviousNeutralColor400,
-                    ),
-                  ),
-                  child: SvgPicture.asset(
-                    'assets/image/feed/image/squircle.svg',
-                    height: 22,
-                  ),
-                )
-              : WidgetMask(
-                  blendMode: BlendMode.srcATop,
-                  childSaveLayer: true,
-                  mask: Center(
-                    child: Image.network(
-                      thumborUrl(myInfo.profileImgUrl ?? ''),
-                      height: 22,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: SvgPicture.asset(
-                    'assets/image/feed/image/squircle.svg',
-                    height: 22,
-                  ),
-                ),
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0, left: 4.0),
+          child: GestureDetector(
+            onTap: () {
+              context.push("/member/myPage");
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: _showIcon ? 36.0 : 0.0,
+              child: Opacity(
+                opacity: _showIcon ? 1.0 : 0.0,
+                child: myInfo.profileImgUrl == null || myInfo.profileImgUrl!.isEmpty
+                    ? WidgetMask(
+                        blendMode: BlendMode.srcATop,
+                        childSaveLayer: true,
+                        mask: const Center(
+                          child: Icon(
+                            Puppycat_social.icon_profile_small,
+                            size: 22,
+                            color: kPreviousNeutralColor400,
+                          ),
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/image/feed/image/squircle.svg',
+                          height: 22,
+                        ),
+                      )
+                    : WidgetMask(
+                        blendMode: BlendMode.srcATop,
+                        childSaveLayer: true,
+                        mask: Center(
+                          child: Image.network(
+                            thumborUrl(myInfo.profileImgUrl ?? ''),
+                            height: 22,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/image/feed/image/squircle.svg',
+                          height: 22,
+                        ),
+                      ),
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -784,7 +802,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                             onTap: () {
                               myInfo.uuid == userListLists[index].uuid
                                   ? context.push("/member/myPage")
-                                  : context.push("/member/userPage/${userListLists[index].nick}/${userListLists[index].uuid}/${userListLists[index].uuid}");
+                                  : context.push("/member/userPage", extra: {"nick": userListLists[index].nick, "memberUuid": userListLists[index].uuid, "oldMemberUuid": userListLists[index].uuid});
                             },
                             child: Column(
                               children: [
