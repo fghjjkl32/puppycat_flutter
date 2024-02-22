@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
 
-class FeedNotFollowScreen extends StatelessWidget {
+class FeedNotFollowScreen extends ConsumerWidget {
   final String name;
-  final int memberidx;
+  final String memberUuid;
 
   const FeedNotFollowScreen({
     super.key,
     required this.name,
-    required this.memberidx,
+    required this.memberUuid,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Material(
       child: Scaffold(
         appBar: AppBar(
@@ -85,7 +86,11 @@ class FeedNotFollowScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
+                      // 팔로우 api 연결
+                      await ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: memberUuid, followState: true, isActionButton: false);
+
+                      // api 연결
                       context.pop();
                     },
                     child: Padding(

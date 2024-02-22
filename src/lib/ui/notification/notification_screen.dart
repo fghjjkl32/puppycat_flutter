@@ -300,6 +300,8 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   'contentType': 'notificationContent',
                                 };
 
+                                ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                                 await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('notificationContent', item.contentsIdx).then((value) {
                                   if (value == null) {
                                     return;
@@ -324,6 +326,9 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   'contentType': 'notificationContent',
                                   'isRouteComment': true,
                                 };
+
+                                ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                                 await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('notificationContent', item.contentsIdx).then((value) {
                                   if (value == null) {
                                     return;
@@ -366,6 +371,9 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                   'isRouteComment': true,
                                   'focusIdx': item.commentIdx,
                                 };
+
+                                ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                                 await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('notificationContent', item.contentsIdx).then((value) {
                                   // context.push("/feed/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
                                   //   "isRouteComment": true,

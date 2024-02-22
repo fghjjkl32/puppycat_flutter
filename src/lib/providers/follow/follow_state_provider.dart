@@ -19,7 +19,7 @@ class FollowUserStateNotifier extends StateNotifier<Map<String, bool>> {
 
   Map<String, bool> _initialFollowStates = {}; // 초기 상태를 저장할 맵
 
-  void setFollowState({required String memberUuid, required bool followState, required bool isActionButton}) {
+  Future<void> setFollowState({required String memberUuid, required bool followState, required bool isActionButton}) async {
     //상태 변경
     state = {...state, memberUuid: followState};
 

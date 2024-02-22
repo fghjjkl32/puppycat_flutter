@@ -9,6 +9,7 @@ import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extensi
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
@@ -261,6 +262,9 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                           'contentIdx': '${lists[index].idx}',
                           'contentType': 'myLikeContent',
                         };
+
+                        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                         await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myLikeContent', lists[index].idx).then((value) {
                           if (value == null) {
                             return;
@@ -403,6 +407,9 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                           'contentIdx': '${lists[index].idx}',
                           'contentType': 'mySaveContent',
                         };
+
+                        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                         await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('mySaveContent', lists[index].idx).then((value) {
                           if (value == null) {
                             return;

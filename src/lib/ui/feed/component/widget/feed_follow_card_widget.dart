@@ -206,6 +206,8 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                       'oldMemberUuid': widget.oldMemberUuid,
                     };
 
+                    ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                     context.push('/feed/detail', extra: extraMap);
                   });
                 },
@@ -274,6 +276,8 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                             'oldMemberUuid': widget.oldMemberUuid,
                           };
 
+                          ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                           context.push('/feed/detail', extra: extraMap);
                         });
                       },
@@ -335,6 +339,8 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                             'contentType': "FollowCardContent",
                             'oldMemberUuid': widget.oldMemberUuid,
                           };
+
+                          ref.read(feedDetailParameterProvider.notifier).state = extraMap;
 
                           context.push('/feed/detail', extra: extraMap);
                         });
@@ -400,6 +406,8 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                             'oldMemberUuid': widget.oldMemberUuid,
                           };
 
+                          ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                           context.push('/feed/detail', extra: extraMap);
                         });
                       },
@@ -464,6 +472,8 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                 'oldMemberUuid': widget.oldMemberUuid,
                               };
 
+                              ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                               context.push('/feed/detail', extra: extraMap);
                             });
                           },
@@ -517,6 +527,8 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                 'contentType': "FollowCardContent",
                                 'oldMemberUuid': widget.oldMemberUuid,
                               };
+
+                              ref.read(feedDetailParameterProvider.notifier).state = extraMap;
 
                               context.push('/feed/detail', extra: extraMap);
                             });

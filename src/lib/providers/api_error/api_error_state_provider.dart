@@ -112,9 +112,19 @@ class APIErrorState extends _$APIErrorState {
         caller == "getContentDetail" ? goRouter.push('/feed/feedUnknown') : goRouter.push('/toast/errorToast');
         break;
       case 'ECON-3986': //팔로우 공개 게시물, 페이지 이동
-        //TODO 테스트 필요
+
         goRouter.push('/toast/errorToast');
-        // goRouter.pushNamed('feed_not_found_screen');
+
+        // if (apiException.arguments != null) {
+        //   final argsMap = apiException.arguments!.first as Map<String, dynamic>;
+        //   final Map<String, dynamic> extraMap = {
+        //     'name': argsMap['name'],
+        //     'memberUuid': argsMap['memberUuid'],
+        //   };
+        //   goRouter.push('/feed/notFollow', extra: extraMap);
+        // } else {
+        //   goRouter.push('/toast/errorToast');
+        // }
         break;
       case 'ECON-3982': //팔로우 공개 게시물, 페이지 이동, 미로그인 시 로그인 화면으로
         goRouter.pushReplacement("/home/login");

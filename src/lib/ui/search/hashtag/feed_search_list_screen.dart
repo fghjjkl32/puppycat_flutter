@@ -230,10 +230,13 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                       'contentType': 'searchContent',
                                     };
 
+                                    ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                                     await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('searchContent', lists[index].idx).then((value) {
                                       if (value == null) {
                                         return;
                                       }
+
                                       // context.push("/feed/detail/null/${widget.searchWord}/${ref.read(userInfoProvider).userModel?.idx}/${lists[index].idx}/searchContent");
                                       context.push('/feed/detail', extra: extraMap);
                                     });

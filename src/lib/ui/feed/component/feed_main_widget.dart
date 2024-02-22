@@ -6,6 +6,7 @@ import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extensi
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/popular_hour_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user_list/popular_user_list_state_provider.dart';
@@ -60,6 +61,8 @@ class FeedMainWidget extends ConsumerWidget {
           'contentIdx': '${feedData.idx}',
           'contentType': contentType,
         };
+
+        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
 
         await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(contentType, feedData.idx).then((value) {
           if (value == null) {

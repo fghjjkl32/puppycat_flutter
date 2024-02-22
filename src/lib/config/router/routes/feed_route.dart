@@ -234,9 +234,24 @@ class NotFollowRoute extends GoRouteData {
       path: 'notFollow',
       name: 'notFollow',
       builder: (BuildContext context, GoRouterState state) {
-        return const FeedNotFollowScreen(
-          name: '',
-          memberidx: 1,
+        String name = '';
+        String memberUuid = '';
+        if (state.extra != null) {
+          Map<String, dynamic> extraMap = {};
+          extraMap = state.extra! as Map<String, dynamic>;
+
+          if (extraMap.containsKey('memberUuid')) {
+            memberUuid = extraMap['memberUuid'];
+          }
+
+          if (extraMap.containsKey('name')) {
+            name = extraMap['name'];
+          }
+        }
+
+        return FeedNotFollowScreen(
+          name: name,
+          memberUuid: memberUuid,
         );
       },
     );
