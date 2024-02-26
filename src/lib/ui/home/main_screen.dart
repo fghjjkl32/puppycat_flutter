@@ -1,8 +1,6 @@
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -12,13 +10,14 @@ import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/assets_picker.dart';
-import 'package:pet_mobile_social_flutter/config/router/router.dart';
+import 'package:pet_mobile_social_flutter/common/library/insta_assets_picker/insta_assets_crop_controller.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
 import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/follow_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/my_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/popular_hour_feed_state_provider.dart';
@@ -49,15 +48,14 @@ class PuppyCatMain extends ConsumerStatefulWidget {
 class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
   late TabController tabController;
-  bool _showIcon = false;
 
   late final PagingController<int, FeedData> _myFeedListPagingController = ref.watch(myFeedStateProvider);
   late final PagingController<int, FeedData> _recentFeedListPagingController = ref.watch(recentFeedStateProvider);
   late final PagingController<int, FeedData> _followFeedListPagingController = ref.watch(followFeedStateProvider);
+
   late final PagingController<int, FeedData> _popularWeekFeedListPagingController = ref.watch(popularWeekFeedStateProvider);
 
-  // bool showLottieAnimation = false;
-  bool _isWidgetVisible = true;
+  bool _showIcon = false;
 
   List<Widget> getTabs() {
     final isLogined = ref.read(loginStatementProvider);
@@ -67,10 +65,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
         "전체",
         style: kTitle16BoldStyle,
       ),
-      // Text(
-      //   "산책",
-      //   style: kBody16MediumStyle,
-      // ),
     ];
 
     if (isLogined) {
@@ -91,7 +85,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
 
   List<Widget> getTabSpacer() {
     final isLogined = ref.read(loginStatementProvider);
-    // final loginState = ref.read(loginStateProvider);
 
     if (isLogined) {
       return [const SizedBox.shrink()];
@@ -112,71 +105,50 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
     );
   }
 
+  void openAssetPicker(BuildContext context, dynamic Function(Stream<InstaAssetsExportDetails>) onCompleted) {
+    final theme = themeData(context);
+
+    InstaAssetPicker.pickAssets(
+      context,
+      maxAssets: 12,
+      pickerTheme: theme.copyWith(
+        canvasColor: kPreviousNeutralColor100,
+        colorScheme: theme.colorScheme.copyWith(
+          background: kPreviousNeutralColor100,
+        ),
+        appBarTheme: theme.appBarTheme.copyWith(
+          backgroundColor: kPreviousNeutralColor100,
+        ),
+      ),
+      useRootNavigator: false,
+      onCompleted: onCompleted,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
 
-    print('aaaaaaaaaaaaaaaaaaaaa');
-
-    // Permissions.requestNotificationPermission();
-
-    final isLogined = ref.read(loginStatementProvider);
     tabController = TabController(vsync: this, length: getTabs().length, initialIndex: widget.initialTabIndex);
 
     ref.read(firebaseStateProvider.notifier).checkNotificationAppLaunch();
 
     Future(() async {
-      ref.read(followUserStateProvider.notifier).resetState();
-
-      ref.read(popularUserListStateProvider.notifier).getInitUserList();
-
-      ref.read(popularHourFeedStateProvider.notifier).initPosts();
-
       scrollController.addListener(_myPostScrollListener);
 
-      if (isLogined) {
-        _myFeedListPagingController.refresh();
-
-        _popularWeekFeedListPagingController.refresh();
-
-        _followFeedListPagingController.refresh();
-
-        ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
-      }
+      refreshFeedList();
     });
   }
 
-  @override
-  void didUpdateWidget(covariant PuppyCatMain oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // if (getTabs().length != tabController.length) {
-    //   final oldIndex = tabController.index;
-    //   tabController.dispose();
-    //   print('didUpdateWidget 1');
-    //   tabController = TabController(
-    //     length: getTabs().length,
-    //     initialIndex: 0,
-    //     vsync: this,
-    //   );
-    // }
+  void _myPostScrollListener() {
+    setState(() {
+      ref.read(loginStatementProvider) == false ? _showIcon = false : _showIcon = scrollController.offset > 100;
+    });
   }
 
-  Future<TabController> _initTabContoller() async {
-    final isLogined = ref.read(loginStatementProvider);
-
+  Future<TabController> _initTabController() async {
     if (getTabs().length != tabController.length) {
-      _recentFeedListPagingController.refresh();
-
-      if (isLogined) {
-        _myFeedListPagingController.refresh();
-
-        _popularWeekFeedListPagingController.refresh();
-
-        _followFeedListPagingController.refresh();
-
-        ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
-      }
+      refreshFeedList();
 
       tabController.dispose();
       tabController = TabController(
@@ -188,31 +160,39 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
     return tabController;
   }
 
-  void _myPostScrollListener() {
-    setState(() {
-      ref.read(loginStatementProvider) == false ? _showIcon = false : _showIcon = scrollController.offset > 100;
-    });
-    if (scrollController.position.userScrollDirection != ScrollDirection.idle) {
-      setState(() {
-        _isWidgetVisible = false;
-      });
-    }
-  }
-
   @override
   void dispose() {
-    scrollController.removeListener(_myPostScrollListener);
     scrollController.dispose();
     tabController.dispose();
     super.dispose();
+  }
+
+  void refreshFeedList() {
+    Future(() {
+      ref.read(followUserStateProvider.notifier).resetState();
+    });
+    ref.read(popularUserListStateProvider.notifier).getInitUserList();
+    ref.read(popularHourFeedStateProvider.notifier).initPosts();
+
+    final isLogined = ref.read(loginStatementProvider);
+
+    _recentFeedListPagingController.refresh();
+
+    if (isLogined) {
+      _myFeedListPagingController.refresh();
+
+      _popularWeekFeedListPagingController.refresh();
+
+      _followFeedListPagingController.refresh();
+
+      ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
     final isLogined = ref.watch(loginStatementProvider);
-    print('build main 1 ${ref.read(routerProvider).routerDelegate.currentConfiguration}');
-    print('test333333 main ${ref.read(routerProvider).location()}');
 
     return Stack(
       children: [
@@ -241,7 +221,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
           body: SafeArea(
             child: Consumer(builder: (context, ref, _) {
               return FutureBuilder(
-                  future: _initTabContoller(),
+                  future: _initTabController(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return const Center(
@@ -256,7 +236,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                     }
 
                     return DefaultTabController(
-                      length: isLogined ? 4 : 2,
+                      length: isLogined ? 3 : 1,
                       child: NestedScrollView(
                         controller: scrollController,
                         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -336,79 +316,25 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                                   ),
                           ];
                         },
-                        body: InkWell(
-                          onTap: () {
-                            setState(() {
-                              _isWidgetVisible = false;
-                            });
-                          },
-                          child: Stack(
-                            children: [
-                              TabBarView(
-                                controller: tabController,
-                                children: [
-                                  _firstTab(),
-                                  // Container(
-                                  //   color: Colors.blue,
-                                  // ),
-
-                                  if (isLogined) ...[
-                                    _thirdTab(),
-                                  ],
-                                  if (isLogined) ...[
-                                    _fourthTab(),
-                                  ],
+                        body: Stack(
+                          children: [
+                            TabBarView(
+                              controller: tabController,
+                              children: [
+                                _tab(_recentFeedListPagingController),
+                                if (isLogined) ...[
+                                  _tab(_followFeedListPagingController),
+                                  _tab(_myFeedListPagingController),
                                 ],
-                              ),
-
-                              ///NOTE
-                              ///2023.11.14.
-                              ///산책하기 보류로 주석 처리
-                              // Visibility(
-                              //   visible: _isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking,
-                              //   child: Positioned.fill(
-                              //     bottom: 10,
-                              //     child: Align(
-                              //       alignment: Alignment.bottomCenter,
-                              //       child: Padding(
-                              //         padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 24.0),
-                              //         child: WalkInfoWidget(
-                              //           walkStateModel: ref.watch(singleWalkStateProvider).isEmpty ? null : ref.watch(singleWalkStateProvider).last,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                              // )
-                              ///산책하기 보류로 주석 처리 완료
-                            ],
-                          ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     );
                   });
             }),
           ),
-
-          ///NOTE
-          ///2023.11.14.
-          ///산책하기 보류로 주석 처리
-          // floatingActionButton: Consumer(builder: (context, ref, _) {
-          //   return !_isWidgetVisible && ref.read(walkStatusStateProvider) == WalkStatus.walking
-          //       ? FloatingActionButton(
-          //           backgroundColor: kNeutralColor100,
-          //           child: Lottie.asset(
-          //             'assets/lottie/character_03_walking_floating.json',
-          //             repeat: true,
-          //           ),
-          //           onPressed: () {
-          //             setState(() {
-          //               _isWidgetVisible = true;
-          //             });
-          //           },
-          //         )
-          //       : Container();
-          // }),
-          ///산책하기 보류로 주석 처리 완료
         ),
         Positioned(
           top: 0,
@@ -434,45 +360,15 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
       children: [
         GestureDetector(
           onTap: () async {
-            ///NOTE
-            ///2023.11.14.
-            ///산책하기 보류로 주석 처리
-            // if (ref.read(userInfoProvider).userModel != null && !(ref.read(walkStatusStateProvider) == WalkStatus.walking)) {
-            //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
-            // }
-            ///TODO
-            ///제재 상태 체크
-            ///로직 변경으로 수정 필요
-            // if (!isLogined) {
-            //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
-            // }
-
-            ///위 코드로 변경
-            ///산책하기 보류로 주석 처리 완료
-
             if (!isLogined) {
               if (mounted) {
                 context.push('/home/login');
               }
-            }
-
-            ///NOTE
-            ///2023.11.14.
-            ///산책하기 보류로 주석 처리
-            // else if (ref.read(walkStatusStateProvider) == WalkStatus.walking) {
-            //   return;
-            // }
-            ///산책하기 보류로 주석 처리 완료
-            // else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
-            else {
-              print('aaaaazzz');
-
+            } else {
               if (await Permissions.getCameraPermissionState()) {
                 if (!isLogined) {
                   context.push('/home/login');
                 }
-
-                final theme = themeData(context);
 
                 final ImagePicker picker = ImagePicker();
 
@@ -481,30 +377,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                 if (pickedFile != null) {
                   await ImageGallerySaver.saveFile(pickedFile.path);
 
-                  // ignore: use_build_context_synchronously
-                  InstaAssetPicker.pickAssets(
+                  openAssetPicker(
                     context,
-                    maxAssets: 12,
-                    // ignore: use_build_context_synchronously
-                    pickerTheme: themeData(context).copyWith(
-                      canvasColor: kPreviousNeutralColor100,
-                      colorScheme: theme.colorScheme.copyWith(
-                        background: kPreviousNeutralColor100,
-                      ),
-                      appBarTheme: theme.appBarTheme.copyWith(
-                        backgroundColor: kPreviousNeutralColor100,
-                      ),
-                    ),
-                    useRootNavigator: false,
-                    onCompleted: (cropStream) {
+                    (cropStream) {
                       context.push('/feed/write', extra: cropStream);
-                      // Navigator.of(context).push(
-                      //   MaterialPageRoute(
-                      //     builder: (context) => FeedWriteScreen(
-                      //       cropStream: cropStream,
-                      //     ),
-                      //   ),
-                      // );
                     },
                   );
                 }
@@ -552,218 +428,89 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                 );
               }
             }
-            // else {
-            //   showDialog(
-            //     barrierDismissible: false,
-            //     context: context,
-            //     builder: (context) => RestrictionDialog(
-            //       isForever: false,
-            //       date: ref.watch(restrainWriteStateProvider).restrain.date,
-            //       restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-            //       startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-            //       endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-            //     ),
-            //   );
-            // }
           },
           child: Consumer(builder: (context, ref, _) {
             return const Icon(
               Puppycat_social.icon_camera,
-
-              ///NOTE
-              ///2023.11.14.
-              ///산책하기 보류로 주석 처리
-              // color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
-              ///산책하기 보류로 주석 처리 완료
               color: kPreviousNeutralColor600,
-
-              ///주석 대신 위 코드로 변경
-              ///const도 추가
               size: 40,
             );
           }),
         ),
         GestureDetector(
           onTap: () async {
-            ///NOTE
-            ///2023.11.14.
-            ///산책하기 보류로 주석 처리
-            // if (ref.read(userInfoProvider).userModel != null && !(ref.read(walkStatusStateProvider) == WalkStatus.walking)) {
-            //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
-            // }
-            ///
-            // if (ref.read(userInfoProvider).userModel != null) {
-            //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
-            // }
-            //
-            // ///위 코드로 변경
-            // ///산책하기 보류로 주석 처리 완료
-            // if (mounted) {
-            //   ref.read(userInfoProvider).userModel == null
-            //       ? context.push("/home/login")
-            //
-            //       ///NOTE
-            //       ///2023.11.14.
-            //       ///산책하기 보류로 주석 처리
-            //       //     : ref.read(walkStatusStateProvider) == WalkStatus.walking
-            //       //         ? null
-            //       //         : ref.watch(restrainWriteStateProvider).restrain.state == null
-            //       ///
-            //       : ref.watch(restrainWriteStateProvider).restrain.state == null
-            //
-            //           ///위 코드로 변경
-            //           ///산책하기 보류로 주석 처리 완료
-            //           ? feedWriteShowBottomSheet(
-            //               context: context,
-            //               onClose: () {
-            //                 setState(() {
-            //                   showLottieAnimation = false;
-            //                 });
-            //               },
-            //             )
-            //           : showDialog(
-            //               barrierDismissible: false,
-            //               context: context,
-            //               builder: (context) => RestrictionDialog(
-            //                 isForever: false,
-            //                 date: ref.watch(restrainWriteStateProvider).restrain.date,
-            //                 restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-            //                 startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-            //                 endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-            //               ),
-            //             );
-            // }
-            ///TODO
-            ///제재 상태 체크
-            ///로직 변경으로 수정 필요
-            // if (ref.read(userInfoProvider).userModel != null) {
-            //   await ref.watch(restrainWriteStateProvider.notifier).getWriteRestrain(ref.read(userInfoProvider).userModel!.idx);
-            // }
-
             if (mounted) {
               if (!isLogined) {
                 context.push("/home/login");
-                // } else if (ref.watch(restrainWriteStateProvider).restrain.state == null) {
               } else {
-                print('aaa');
                 final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.writeFeed);
 
                 if (restrain) {
                   if (mounted) {
-                    final theme = themeData(context); //InstaAssetPicker.themeData(Theme.of(context).primaryColor);
-
-                    InstaAssetPicker.pickAssets(
+                    openAssetPicker(
                       context,
-                      maxAssets: 12,
-                      pickerTheme: themeData(context).copyWith(
-                        canvasColor: kPreviousNeutralColor100,
-                        colorScheme: theme.colorScheme.copyWith(
-                          background: kPreviousNeutralColor100,
-                        ),
-                        appBarTheme: theme.appBarTheme.copyWith(
-                          backgroundColor: kPreviousNeutralColor100,
-                        ),
-                      ),
-                      onCompleted: (cropStream) {
+                      (cropStream) {
                         context.push('/feed/write', extra: cropStream);
-
-                        // Navigator.of(context).push(
-                        //   MaterialPageRoute(
-                        //     builder: (context) => FeedWriteScreen(
-                        //       cropStream: cropStream,
-                        //     ),
-                        //   ),
-                        // );
                       },
                     );
                   }
                 }
               }
-              // else {
-              //   showDialog(
-              //     barrierDismissible: false,
-              //     context: context,
-              //     builder: (context) => RestrictionDialog(
-              //       isForever: false,
-              //       date: ref.watch(restrainWriteStateProvider).restrain.date,
-              //       restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-              //       startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-              //       endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-              //     ),
-              //   );
-              // }
             }
-            // setState(() {
-            //   showLottieAnimation = true;
-            // });
           },
-          child:
-              // showLottieAnimation
-              //     ? Lottie.asset(
-              //         'assets/lottie/icon_feed.json',
-              //         repeat: false,
-              //       )
-              //     :
-              Consumer(builder: (context, ref, _) {
+          child: Consumer(builder: (context, ref, _) {
             return const Icon(
               Puppycat_social.icon_feed,
-
-              ///NOTE
-              ///2023.11.14.
-              ///산책하기 보류로 주석 처리
-              // color: ref.watch(walkStatusStateProvider) == WalkStatus.walking ? kTextBodyColor : kNeutralColor600,
-              ///
               color: kPreviousNeutralColor600,
-
-              ///위 코드로 변경
-              ///const 추가
-              ///산책하기 보류로 주석 처리 완료
               size: 40,
             );
           }),
         ),
         const PopupMenuWithReddot(),
-        GestureDetector(
-          onTap: () {
-            context.push("/member/myPage");
-          },
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: _showIcon ? 36.0 : 0.0,
-            child: Opacity(
-              opacity: _showIcon ? 1.0 : 0.0,
-              child: myInfo.profileImgUrl == null || myInfo.profileImgUrl!.isEmpty
-                  ? WidgetMask(
-                      blendMode: BlendMode.srcATop,
-                      childSaveLayer: true,
-                      mask: const Center(
-                        child: Icon(
-                          Puppycat_social.icon_profile_small,
-                          size: 22,
-                          color: kPreviousNeutralColor400,
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0, left: 4.0),
+          child: GestureDetector(
+            onTap: () {
+              context.push("/member/myPage");
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: _showIcon ? 36.0 : 0.0,
+              child: Opacity(
+                opacity: _showIcon ? 1.0 : 0.0,
+                child: myInfo.profileImgUrl == null || myInfo.profileImgUrl!.isEmpty
+                    ? WidgetMask(
+                        blendMode: BlendMode.srcATop,
+                        childSaveLayer: true,
+                        mask: const Center(
+                          child: Icon(
+                            Puppycat_social.icon_profile_small,
+                            size: 22,
+                            color: kPreviousNeutralColor400,
+                          ),
                         ),
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/image/feed/image/squircle.svg',
-                        height: 22,
-                      ),
-                    )
-                  : WidgetMask(
-                      blendMode: BlendMode.srcATop,
-                      childSaveLayer: true,
-                      mask: Center(
-                        child: Image.network(
-                          thumborUrl(myInfo.profileImgUrl ?? ''),
+                        child: SvgPicture.asset(
+                          'assets/image/feed/image/squircle.svg',
                           height: 22,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : WidgetMask(
+                        blendMode: BlendMode.srcATop,
+                        childSaveLayer: true,
+                        mask: Center(
+                          child: Image.network(
+                            thumborUrl(myInfo.profileImgUrl ?? ''),
+                            height: 22,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/image/feed/image/squircle.svg',
+                          height: 22,
                         ),
                       ),
-                      child: SvgPicture.asset(
-                        'assets/image/feed/image/squircle.svg',
-                        height: 22,
-                      ),
-                    ),
+              ),
             ),
           ),
         ),
@@ -771,34 +518,18 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
     );
   }
 
-  Widget _firstTab() {
+  Widget _tab(PagingController<int, FeedData> pagingController) {
     final myInfo = ref.read(myInfoStateProvider);
     final isLogined = ref.read(loginStatementProvider);
+
+    final isRecentFeedList = pagingController == _recentFeedListPagingController;
+    final isFollowFeedList = pagingController == _followFeedListPagingController;
+    final isMyFeedList = pagingController == _myFeedListPagingController;
 
     return CustomRefreshIndicator(
       onRefresh: () {
         return Future(() {
-          ref.read(followUserStateProvider.notifier).resetState();
-
-          // final loginState = ref.watch(loginStateProvider);
-
-          _recentFeedListPagingController.refresh();
-
-          ref.read(popularUserListStateProvider.notifier).getInitUserList();
-
-          ref.read(popularHourFeedStateProvider.notifier).initPosts();
-
-          scrollController.addListener(_myPostScrollListener);
-
-          if (isLogined) {
-            _myFeedListPagingController.refresh();
-
-            _popularWeekFeedListPagingController.refresh();
-
-            _followFeedListPagingController.refresh();
-
-            ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
-          }
+          refreshFeedList();
         });
       },
       builder: (context, child, controller) {
@@ -807,9 +538,8 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
       child: CustomScrollView(
         slivers: <Widget>[
           PagedSliverList<int, FeedData>(
-            // shrinkWrap: true,
             shrinkWrapFirstPageIndicators: true,
-            pagingController: _recentFeedListPagingController,
+            pagingController: pagingController,
             builderDelegate: PagedChildBuilderDelegate<FeedData>(
               newPageProgressIndicatorBuilder: (context) {
                 return Column(
@@ -827,407 +557,199 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                 return Container();
               },
               noItemsFoundIndicatorBuilder: (context) {
-                return Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 100.0),
-                      child: Column(
+                return isMyFeedList
+                    ? Column(
+                        mainAxisSize: MainAxisSize.max,
                         children: [
-                          Image.asset(
-                            'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                            width: 88,
-                            height: 88,
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Text(
-                            '피드가 없어요.',
-                            textAlign: TextAlign.center,
-                            style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              },
-              itemBuilder: (context, item, index) {
-                return FeedMainWidget(
-                  feedData: item,
-                  contentType: 'userContent',
-                  userName: item.memberInfo?.nick ?? '',
-                  profileImage: item.memberInfo?.profileImgUrl ?? "",
-                  oldMemberUuid: myInfo.uuid ?? '',
-                  firstTitle: item.memberInfo?.nick ?? 'unknown',
-                  secondTitle: '피드',
-                  // imageDomain: ref.read(recentFeedStateProvider.notifier).imgDomain!,
-                  index: index,
-                  feedType: 'recent',
-                  isSpecialUser: item.memberInfo?.isBadge == 1,
-                  onTapHideButton: () async {
-                    onTapHide(
-                      context: context,
-                      ref: ref,
-                      contentType: 'userContent',
-                      contentIdx: item.idx,
-                      memberUuid: item.memberUuid ?? '',
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _thirdTab() {
-    final myInfo = ref.read(myInfoStateProvider);
-    final isLogined = ref.read(loginStatementProvider);
-
-    return CustomRefreshIndicator(
-      onRefresh: () {
-        return Future(() {
-          ref.read(followUserStateProvider.notifier).resetState();
-
-          // final loginState = ref.watch(loginStateProvider);
-          print('aaaaaaaaaaaaaaaaaaaaa44444');
-
-          _recentFeedListPagingController.refresh();
-
-          ref.read(popularUserListStateProvider.notifier).getInitUserList();
-
-          ref.read(popularHourFeedStateProvider.notifier).initPosts();
-
-          scrollController.addListener(_myPostScrollListener);
-
-          if (isLogined) {
-            _myFeedListPagingController.refresh();
-
-            _popularWeekFeedListPagingController.refresh();
-
-            _followFeedListPagingController.refresh();
-
-            ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
-          }
-        });
-      },
-      builder: (context, child, controller) {
-        return RefreshLoadingAnimationWidget(controller: controller, child: child);
-      },
-      child: CustomScrollView(
-        slivers: <Widget>[
-          PagedSliverList<int, FeedData>(
-            shrinkWrapFirstPageIndicators: true,
-            pagingController: _followFeedListPagingController,
-            builderDelegate: PagedChildBuilderDelegate<FeedData>(
-              noItemsFoundIndicatorBuilder: (context) {
-                return const SizedBox.shrink();
-              },
-              newPageProgressIndicatorBuilder: (context) {
-                return Container();
-              },
-              firstPageProgressIndicatorBuilder: (context) {
-                return Container();
-                Column(
-                  children: [
-                    Lottie.asset(
-                      'assets/lottie/icon_loading.json',
-                      fit: BoxFit.fill,
-                      width: 80,
-                      height: 80,
-                    ),
-                  ],
-                );
-              },
-              itemBuilder: (context, item, index) {
-                return FeedMainWidget(
-                  feedData: item,
-                  contentType: 'userContent',
-                  userName: ref.read(followFeedStateProvider.notifier).memberInfo?.nick ?? item.memberInfo!.nick!,
-                  profileImage: ref.read(followFeedStateProvider.notifier).memberInfo?.profileImgUrl ?? item.memberInfo!.profileImgUrl! ?? "",
-                  oldMemberUuid: myInfo.uuid ?? '',
-                  firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?.nick ?? item.memberInfo!.nick!,
-                  secondTitle: '피드',
-                  index: index,
-                  feedType: 'follow',
-                  isSpecialUser: ref.read(followFeedStateProvider.notifier).memberInfo?.isBadge == 1,
-                  onTapHideButton: () async {
-                    onTapHide(
-                      context: context,
-                      ref: ref,
-                      contentType: 'userContent',
-                      contentIdx: item.idx,
-                      memberUuid: item.memberUuid!,
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-          PagedSliverList<int, FeedData>(
-            shrinkWrapFirstPageIndicators: true,
-            pagingController: _popularWeekFeedListPagingController,
-            builderDelegate: PagedChildBuilderDelegate<FeedData>(
-              noItemsFoundIndicatorBuilder: (context) {
-                return Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 100.0),
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                            width: 88,
-                            height: 88,
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Text(
-                            '피드가 없어요.',
-                            textAlign: TextAlign.center,
-                            style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              },
-              newPageProgressIndicatorBuilder: (context) {
-                return Column(
-                  children: [
-                    Lottie.asset(
-                      'assets/lottie/icon_loading.json',
-                      fit: BoxFit.fill,
-                      width: 80,
-                      height: 80,
-                    ),
-                  ],
-                );
-              },
-              firstPageProgressIndicatorBuilder: (context) {
-                return Container();
-              },
-              itemBuilder: (context, item, index) {
-                return FeedMainWidget(
-                  feedData: item,
-                  // contentType: 'popularWeekContent',
-                  contentType: 'userContent',
-                  userName: item.memberInfo!.nick!,
-                  profileImage: item.memberInfo!.profileImgUrl! ?? "",
-                  oldMemberUuid: myInfo.uuid ?? '',
-                  // firstTitle: "null",
-                  firstTitle: ref.read(followFeedStateProvider.notifier).memberInfo?.nick ?? item.memberInfo!.nick!,
-                  // secondTitle: '인기 급상승',
-                  secondTitle: '피드',
-                  index: index,
-                  feedType: 'popular',
-                  isSpecialUser: item.memberInfo?.isBadge == 1,
-                  onTapHideButton: () async {
-                    onTapHide(
-                      context: context,
-                      ref: ref,
-                      contentType: 'userContent',
-                      contentIdx: item.idx,
-                      memberUuid: item.memberUuid!,
-                    );
-                  },
-                  // feedType: 'follow',
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _fourthTab() {
-    final myInfo = ref.read(myInfoStateProvider);
-    final isLogined = ref.read(loginStatementProvider);
-
-    return CustomRefreshIndicator(
-      onRefresh: () {
-        return Future(() {
-          ref.read(followUserStateProvider.notifier).resetState();
-
-          print('aaaaaaaaaaaaaaaaaaaaa 5555');
-
-          _recentFeedListPagingController.refresh();
-
-          ref.read(popularUserListStateProvider.notifier).getInitUserList();
-
-          ref.read(popularHourFeedStateProvider.notifier).initPosts();
-
-          scrollController.addListener(_myPostScrollListener);
-
-          if (isLogined) {
-            _myFeedListPagingController.refresh();
-
-            _popularWeekFeedListPagingController.refresh();
-
-            _followFeedListPagingController.refresh();
-
-            ref.read(favoriteUserListStateProvider.notifier).getInitUserList();
-          }
-        });
-      },
-      builder: (context, child, controller) {
-        return RefreshLoadingAnimationWidget(controller: controller, child: child);
-      },
-      child: CustomScrollView(
-        slivers: <Widget>[
-          PagedSliverList<int, FeedData>(
-            shrinkWrapFirstPageIndicators: true,
-            pagingController: _myFeedListPagingController,
-            builderDelegate: PagedChildBuilderDelegate<FeedData>(
-              noItemsFoundIndicatorBuilder: (context) {
-                return Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 100.0),
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                            width: 88,
-                            height: 88,
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Text(
-                            '피드가 없어요.\n피드를 올려 볼까요?',
-                            textAlign: TextAlign.center,
-                            style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 70,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: SizedBox(
-                          width: 320,
-                          height: 48,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              !isLogined
-                                  ? context.push("/home/login")
-                                  : InstaAssetPicker.pickAssets(
-                                      context,
-                                      maxAssets: 12,
-                                      pickerTheme: themeData(context).copyWith(
-                                        canvasColor: kPreviousNeutralColor100,
-                                        colorScheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).colorScheme.copyWith(
-                                              background: kPreviousNeutralColor100,
-                                            ),
-                                        appBarTheme: InstaAssetPicker.themeData(Theme.of(context).primaryColor).appBarTheme.copyWith(
-                                              backgroundColor: kPreviousNeutralColor100,
-                                            ),
-                                      ),
-                                      onCompleted: (cropStream) {
-                                        context.push('/feed/write', extra: cropStream);
-
-                                        // Navigator.of(context).push(
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) => FeedWriteScreen(
-                                        //       cropStream: cropStream,
-                                        //     ),
-                                        //   ),
-                                        // );
-                                      },
-                                    );
-                              // : showDialog(
-                              //     barrierDismissible: false,
-                              //     context: context,
-                              //     builder: (context) => RestrictionDialog(
-                              //       isForever: false,
-                              //       date: ref.watch(restrainWriteStateProvider).restrain.date,
-                              //       restrainName: ref.watch(restrainWriteStateProvider).restrain.restrainName,
-                              //       startDate: ref.watch(restrainWriteStateProvider).restrain.startDate,
-                              //       endDate: ref.watch(restrainWriteStateProvider).restrain.endDate,
-                              //     ),
-                              //   );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: kPreviousPrimaryColor,
-                              disabledBackgroundColor: kPreviousNeutralColor400,
-                              disabledForegroundColor: kPreviousTextBodyColor,
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              '피드 올리기',
-                              style: kButton14MediumStyle,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 100.0),
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                  width: 88,
+                                  height: 88,
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                Text(
+                                  '피드가 없어요.\n피드를 올려 볼까요?',
+                                  textAlign: TextAlign.center,
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-              newPageProgressIndicatorBuilder: (context) {
-                return Column(
-                  children: [
-                    Lottie.asset(
-                      'assets/lottie/icon_loading.json',
-                      fit: BoxFit.fill,
-                      width: 80,
-                      height: 80,
-                    ),
-                  ],
-                );
-              },
-              firstPageProgressIndicatorBuilder: (context) {
-                return Container();
-                Column(
-                  children: [
-                    Lottie.asset(
-                      'assets/lottie/icon_loading.json',
-                      fit: BoxFit.fill,
-                      width: 80,
-                      height: 80,
-                    ),
-                  ],
-                );
+                          const SizedBox(
+                            height: 70,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: SizedBox(
+                                width: 320,
+                                height: 48,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    !isLogined
+                                        ? context.push("/home/login")
+                                        : openAssetPicker(
+                                            context,
+                                            (cropStream) {
+                                              context.push('/feed/write', extra: cropStream);
+                                            },
+                                          );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: kPreviousPrimaryColor,
+                                    disabledBackgroundColor: kPreviousNeutralColor400,
+                                    disabledForegroundColor: kPreviousTextBodyColor,
+                                    elevation: 0,
+                                  ),
+                                  child: Text(
+                                    '피드 올리기',
+                                    style: kButton14MediumStyle,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 100.0),
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                  width: 88,
+                                  height: 88,
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                Text(
+                                  '피드가 없어요.',
+                                  textAlign: TextAlign.center,
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
               },
               itemBuilder: (context, item, index) {
+                //게시글을 수정하고 나면 FeedData 형태가 memberInfo로 들어오기 때문에 ref.read(recentFeedStateProvider.notifier).memberInfo 사용
                 return FeedMainWidget(
                   feedData: item,
-                  contentType: 'myContent',
-                  userName: ref.read(myFeedStateProvider.notifier).memberInfo!.nick!,
-                  profileImage: ref.read(myFeedStateProvider.notifier).memberInfo!.profileImgUrl ?? "",
+                  contentType: isMyFeedList ? 'myContent' : 'userContent',
+                  userName: item.memberInfo?.nick ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? '',
+                  profileImage: item.memberInfo?.profileImgUrl ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
                   oldMemberUuid: myInfo.uuid ?? '',
-                  firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo!.nick!,
+                  firstTitle: item.memberInfo?.nick ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? 'unknown',
                   secondTitle: '피드',
                   index: index,
-                  feedType: 'my',
-                  isSpecialUser: ref.read(myFeedStateProvider.notifier).memberInfo!.isBadge == 1,
+                  feedType: isMyFeedList
+                      ? 'my'
+                      : isFollowFeedList
+                          ? 'follow'
+                          : isRecentFeedList
+                              ? 'recent'
+                              : "",
+                  isSpecialUser: item.memberInfo?.isBadge == 1 ? true : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
                   onTapHideButton: () async {
                     onTapHide(
                       context: context,
                       ref: ref,
-                      contentType: 'myContent',
+                      contentType: isMyFeedList ? 'myContent' : 'userContent',
                       contentIdx: item.idx,
-                      memberUuid: item.memberUuid!,
+                      memberUuid: item.memberUuid ?? "",
                     );
                   },
                 );
               },
             ),
           ),
+          isFollowFeedList
+              ? PagedSliverList<int, FeedData>(
+                  shrinkWrapFirstPageIndicators: true,
+                  pagingController: _popularWeekFeedListPagingController,
+                  builderDelegate: PagedChildBuilderDelegate<FeedData>(
+                    noItemsFoundIndicatorBuilder: (context) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 100.0),
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                  width: 88,
+                                  height: 88,
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                Text(
+                                  '피드가 없어요.',
+                                  textAlign: TextAlign.center,
+                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    newPageProgressIndicatorBuilder: (context) {
+                      return Column(
+                        children: [
+                          Lottie.asset(
+                            'assets/lottie/icon_loading.json',
+                            fit: BoxFit.fill,
+                            width: 80,
+                            height: 80,
+                          ),
+                        ],
+                      );
+                    },
+                    firstPageProgressIndicatorBuilder: (context) {
+                      return Container();
+                    },
+                    itemBuilder: (context, item, index) {
+                      return FeedMainWidget(
+                        feedData: item,
+                        contentType: 'userContent',
+                        userName: item.memberInfo?.nick ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? '',
+                        profileImage: item.memberInfo?.profileImgUrl ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? '',
+                        oldMemberUuid: myInfo.uuid ?? '',
+                        firstTitle: item.memberInfo?.nick ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? '',
+                        secondTitle: '피드',
+                        index: index,
+                        feedType: 'popular',
+                        isSpecialUser: item.memberInfo?.isBadge == 1 ? true : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
+                        onTapHideButton: () async {
+                          onTapHide(
+                            context: context,
+                            ref: ref,
+                            contentType: 'userContent',
+                            contentIdx: item.idx,
+                            memberUuid: item.memberUuid!,
+                          );
+                        },
+                        // feedType: 'follow',
+                      );
+                    },
+                  ),
+                )
+              : const SliverToBoxAdapter(child: SizedBox.shrink()),
         ],
       ),
     );
@@ -1236,7 +758,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
   Widget _buildBackGround() {
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
 
-    // final loginState = ref.watch(loginStateProvider);
     final myInfo = ref.read(myInfoStateProvider);
     final isLogined = ref.watch(loginStatementProvider);
 
@@ -1260,7 +781,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                       },
                       child: Column(
                         children: [
-                          // buildWidgetMask(myInfo.profileImgUrl ?? "", myInfo.isBadge, null),
                           getProfileAvatarWithBadge(myInfo.profileImgUrl ?? '', myInfo.isBadge == 1, 54, 54),
                           const SizedBox(height: 4.0),
                           Text(
@@ -1282,11 +802,10 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                             onTap: () {
                               myInfo.uuid == userListLists[index].uuid
                                   ? context.push("/member/myPage")
-                                  : context.push("/member/userPage/${userListLists[index].nick}/${userListLists[index].uuid}/${userListLists[index].uuid}");
+                                  : context.push("/member/userPage", extra: {"nick": userListLists[index].nick, "memberUuid": userListLists[index].uuid, "oldMemberUuid": userListLists[index].uuid});
                             },
                             child: Column(
                               children: [
-                                // buildWidgetMask(userListLists[index].profileImgUrl, userListLists[index].isBadge, userListLists[index].redDotState),
                                 getProfileAvatarWithBadge(userListLists[index].profileImgUrl ?? '', userListLists[index].isBadge == 1, 54, 54),
                                 const SizedBox(height: 4.0),
                                 Stack(
@@ -1351,47 +870,6 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
             ),
           );
   }
-
-  // Widget buildWidgetMask(String? profileImgUrl, int? isBadge, int? isRedDot) {
-  //   return Stack(
-  //     children: [
-  //       WidgetMask(
-  //         blendMode: BlendMode.srcATop,
-  //         childSaveLayer: true,
-  //         mask: Center(
-  //           child: Image.network(
-  //             Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$profileImgUrl").toUrl(),
-  //             height: 46,
-  //             fit: BoxFit.cover,
-  //             width: double.infinity,
-  //             errorBuilder: (context, exception, stackTrace) {
-  //               return const Icon(
-  //                 Puppycat_social.icon_profile_small,
-  //                 size: 46,
-  //                 color: kPreviousNeutralColor400,
-  //               );
-  //             },
-  //           ),
-  //         ),
-  //         child: SvgPicture.asset(
-  //           'assets/image/feed/image/squircle.svg',
-  //           height: 46,
-  //           fit: BoxFit.fill,
-  //         ),
-  //       ),
-  //       isBadge == 1
-  //           ? Positioned(
-  //               right: 0,
-  //               top: 0,
-  //               child: Image.asset(
-  //                 'assets/image/feed/icon/small_size/icon_special.png',
-  //                 height: 13,
-  //               ),
-  //             )
-  //           : Container(),
-  //     ],
-  //   );
-  // }
 
   Widget _buildTabbar(bool innerBoxIsScrolled) {
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;

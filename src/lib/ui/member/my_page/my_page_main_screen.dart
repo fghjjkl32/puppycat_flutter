@@ -47,9 +47,11 @@ class MyPageMainScreen extends ConsumerStatefulWidget {
   const MyPageMainScreen({
     super.key,
     required this.oldMemberUuid,
+    required this.feedContentIdx,
   });
 
   final String oldMemberUuid;
+  final int feedContentIdx;
 
   @override
   MyPageMainState createState() => MyPageMainState();
@@ -92,6 +94,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
     ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+    ref.read(commentListStateProvider.notifier).saveStateForUser(widget.feedContentIdx);
 
     tabController = TabController(
       initialIndex: 0,
@@ -124,6 +127,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   Future<bool> handleFocusLost() {
     feedListStateNotifier.getStateForUser(widget.oldMemberUuid);
     firstFeedStateNotifier.getStateForUser(widget.oldMemberUuid);
+    ref.read(commentListStateProvider.notifier).getStateForUser(widget.feedContentIdx);
+
     return Future.value(true);
   }
 
@@ -174,6 +179,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                 onPressed: () {
                                   ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                                   ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                                  ref.read(commentListStateProvider.notifier).getStateForUser(widget.feedContentIdx);
+
                                   context.pop();
                                 },
                                 icon: const Icon(
@@ -457,61 +464,71 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
 
                                         showCustomModalBottomSheet(
                                           context: context,
-                                          widget: Consumer(builder: (context, ref, child) {
-                                            return SizedBox(
-                                              height: 500,
-                                              child: PagedListView<int, ContentLikeUserListData>(
-                                                pagingController: _contentLikeUserPagingController,
-                                                builderDelegate: PagedChildBuilderDelegate<ContentLikeUserListData>(
-                                                  // animateTransitions: true,
-                                                  noItemsFoundIndicatorBuilder: (context) {
-                                                    // return const Text('No Comments');
-                                                    return Column(
-                                                      mainAxisSize: MainAxisSize.max,
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.symmetric(vertical: 100.0),
-                                                          child: Column(
-                                                            children: [
-                                                              Image.asset(
-                                                                'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                                                                width: 88,
-                                                                height: 88,
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 12,
-                                                              ),
-                                                              Text(
-                                                                "아직 '좋아요'가 없어요.",
-                                                                textAlign: TextAlign.center,
-                                                                style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                                                              ),
-                                                            ],
+                                          widget: CustomRefreshIndicator(
+                                            onRefresh: () {
+                                              return Future(() {
+                                                _contentLikeUserPagingController.refresh();
+                                              });
+                                            },
+                                            builder: (context, child, controller) {
+                                              return RefreshLoadingAnimationWidget(controller: controller, child: child);
+                                            },
+                                            child: Consumer(builder: (context, ref, child) {
+                                              return SizedBox(
+                                                height: 500,
+                                                child: PagedListView<int, ContentLikeUserListData>(
+                                                  pagingController: _contentLikeUserPagingController,
+                                                  builderDelegate: PagedChildBuilderDelegate<ContentLikeUserListData>(
+                                                    // animateTransitions: true,
+                                                    noItemsFoundIndicatorBuilder: (context) {
+                                                      // return const Text('No Comments');
+                                                      return Column(
+                                                        mainAxisSize: MainAxisSize.max,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.symmetric(vertical: 100.0),
+                                                            child: Column(
+                                                              children: [
+                                                                Image.asset(
+                                                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                                                  width: 88,
+                                                                  height: 88,
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 12,
+                                                                ),
+                                                                Text(
+                                                                  "아직 '좋아요'가 없어요.",
+                                                                  textAlign: TextAlign.center,
+                                                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  },
-                                                  firstPageProgressIndicatorBuilder: (context) {
-                                                    // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
-                                                    return const Center(child: CircularProgressIndicator());
-                                                  },
-                                                  itemBuilder: (context, contentLikeUserItem, index) {
-                                                    return FavoriteItemWidget(
-                                                      profileImage: contentLikeUserItem.profileImgUrl,
-                                                      userName: contentLikeUserItem.nick!,
-                                                      content: contentLikeUserItem.intro!,
-                                                      isSpecialUser: contentLikeUserItem.isBadge == 1,
-                                                      isFollow: contentLikeUserItem.followState == 1,
-                                                      followerUuid: contentLikeUserItem.uuid!,
-                                                      contentsIdx: item.idx,
-                                                      oldMemberUuid: '',
-                                                    );
-                                                  },
+                                                        ],
+                                                      );
+                                                    },
+                                                    firstPageProgressIndicatorBuilder: (context) {
+                                                      // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+                                                      return const Center(child: CircularProgressIndicator());
+                                                    },
+                                                    itemBuilder: (context, contentLikeUserItem, index) {
+                                                      return FavoriteItemWidget(
+                                                        profileImage: contentLikeUserItem.profileImgUrl,
+                                                        userName: contentLikeUserItem.nick!,
+                                                        content: contentLikeUserItem.intro!,
+                                                        isSpecialUser: contentLikeUserItem.isBadge == 1,
+                                                        isFollow: contentLikeUserItem.followState == 1,
+                                                        followerUuid: contentLikeUserItem.uuid!,
+                                                        contentsIdx: item.idx,
+                                                        oldMemberUuid: '',
+                                                      );
+                                                    },
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          }),
+                                              );
+                                            }),
+                                          ),
                                         );
                                       },
                                       child: item.selfLike == 1
@@ -541,138 +558,151 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                           // ignore: use_build_context_synchronously
                                           showCustomModalBottomSheet(
                                             context: context,
-                                            widget: Consumer(builder: (context, ref, child) {
-                                              return GestureDetector(
-                                                onTap: () {
-                                                  FocusScope.of(context).requestFocus(FocusNode());
-                                                },
-                                                child: SizedBox(
-                                                  height: 500,
-                                                  child: Column(
-                                                    children: [
-                                                      Expanded(
-                                                        child: PagedListView<int, CommentData>(
-                                                          pagingController: _commentPagingController,
-                                                          builderDelegate: PagedChildBuilderDelegate<CommentData>(
-                                                            // animateTransitions: true,
-                                                            noItemsFoundIndicatorBuilder: (context) {
-                                                              // return const Text('No Comments');
-                                                              return Column(
-                                                                mainAxisSize: MainAxisSize.max,
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.symmetric(vertical: 100.0),
-                                                                    child: Column(
-                                                                      children: [
-                                                                        Image.asset(
-                                                                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                                                                          width: 88,
-                                                                          height: 88,
-                                                                        ),
-                                                                        const SizedBox(
-                                                                          height: 12,
-                                                                        ),
-                                                                        Text(
-                                                                          '아직 댓글이 없어요.\n피드에 댓글을 남겨 보세요.',
-                                                                          textAlign: TextAlign.center,
-                                                                          style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                                                                        ),
-                                                                      ],
+                                            widget: CustomRefreshIndicator(
+                                              onRefresh: () {
+                                                return Future(() {
+                                                  ref.read(commentListStateProvider.notifier).getComments(item.idx);
+                                                });
+                                              },
+                                              builder: (context, child, controller) {
+                                                return RefreshLoadingAnimationWidget(controller: controller, child: child);
+                                              },
+                                              child: Consumer(builder: (context, ref, child) {
+                                                return GestureDetector(
+                                                  onTap: () {
+                                                    FocusScope.of(context).requestFocus(FocusNode());
+                                                  },
+                                                  child: SizedBox(
+                                                    height: 500,
+                                                    child: Column(
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Expanded(
+                                                          child: PagedListView<int, CommentData>(
+                                                            pagingController: _commentPagingController,
+                                                            builderDelegate: PagedChildBuilderDelegate<CommentData>(
+                                                              // animateTransitions: true,
+                                                              noItemsFoundIndicatorBuilder: (context) {
+                                                                // return const Text('No Comments');
+                                                                return Column(
+                                                                  mainAxisSize: MainAxisSize.max,
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.symmetric(vertical: 100.0),
+                                                                      child: Column(
+                                                                        children: [
+                                                                          Image.asset(
+                                                                            'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                                                            width: 88,
+                                                                            height: 88,
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            height: 12,
+                                                                          ),
+                                                                          Text(
+                                                                            '아직 댓글이 없어요.\n피드에 댓글을 남겨 보세요.',
+                                                                            textAlign: TextAlign.center,
+                                                                            style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                                          ),
+                                                                        ],
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                ],
-                                                              );
-                                                            },
-                                                            firstPageProgressIndicatorBuilder: (context) {
-                                                              // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
-                                                              return const Center(child: CircularProgressIndicator());
-                                                            },
-                                                            itemBuilder: (context, item, index) {
-                                                              return AutoScrollTag(
-                                                                key: UniqueKey(),
-                                                                controller: _autoScrollController,
-                                                                index: index,
-                                                                child: CommentDetailItemWidget(
+                                                                  ],
+                                                                );
+                                                              },
+                                                              firstPageProgressIndicatorBuilder: (context) {
+                                                                // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+                                                                return const Center(child: CircularProgressIndicator());
+                                                              },
+                                                              itemBuilder: (context, item, index) {
+                                                                return AutoScrollTag(
                                                                   key: UniqueKey(),
-                                                                  parentIdx: item.parentIdx,
-                                                                  commentIdx: item.idx,
-                                                                  profileImage: item.profileImgUrl ?? 'assets/image/feed/image/sample_image1.png',
-                                                                  name: item.nick,
-                                                                  comment: item.contents,
-                                                                  isSpecialUser: item.isBadge == 1,
-                                                                  time: DateTime.parse(item.regDate),
-                                                                  isReply: item.isReply,
-                                                                  likeCount: item.commentLikeCnt ?? 0,
-                                                                  // replies: item.childCommentData,
-                                                                  contentIdx: item.contentsIdx,
-                                                                  isLike: item.likeState == 1,
-                                                                  memberUuid: item.memberUuid,
-                                                                  mentionListData: item.mentionList ?? [],
-                                                                  oldMemberUuid: widget.oldMemberUuid,
-                                                                  isLastDisPlayChild: item.isLastDisPlayChild,
-                                                                  // remainChildCount: item.remainChildCount,
-                                                                  onMoreChildComment: (page) {
-                                                                    print('load more child comment');
-                                                                    ref.read(commentListStateProvider.notifier).getChildComments(
-                                                                          item.contentsIdx,
-                                                                          item.parentIdx,
-                                                                          item.idx,
-                                                                          page,
-                                                                          true,
-                                                                        );
-                                                                  },
-                                                                  pageNumber: item.pageNumber,
-                                                                  isDisplayPreviousMore: item.isDisplayPreviousMore,
-                                                                  onPrevMoreChildComment: (page) {
-                                                                    print('load prev more child comment');
-                                                                    ref.read(commentListStateProvider.notifier).getChildComments(
-                                                                          item.contentsIdx,
-                                                                          item.parentIdx,
-                                                                          item.idx,
-                                                                          page,
-                                                                          false,
-                                                                        );
-                                                                  },
-                                                                  onTapRemoveButton: () async {
-                                                                    final result = await ref.read(commentListStateProvider.notifier).deleteContents(
-                                                                          contentsIdx: item.contentsIdx,
-                                                                          commentIdx: item.idx,
-                                                                          parentIdx: item.parentIdx,
-                                                                        );
+                                                                  controller: _autoScrollController,
+                                                                  index: index,
+                                                                  child: CommentDetailItemWidget(
+                                                                    key: UniqueKey(),
+                                                                    parentIdx: item.parentIdx,
+                                                                    commentIdx: item.idx,
+                                                                    profileImage: item.profileImgUrl ?? 'assets/image/feed/image/sample_image1.png',
+                                                                    name: item.nick,
+                                                                    comment: item.contents,
+                                                                    isSpecialUser: item.isBadge == 1,
+                                                                    time: DateTime.parse(item.regDate),
+                                                                    isReply: item.isReply,
+                                                                    likeCount: item.commentLikeCnt ?? 0,
+                                                                    // replies: item.childCommentData,
+                                                                    contentIdx: item.contentsIdx,
+                                                                    isLike: item.likeState == 1,
+                                                                    memberUuid: item.memberUuid,
+                                                                    mentionListData: item.mentionList ?? [],
+                                                                    oldMemberUuid: widget.oldMemberUuid,
+                                                                    isLastDisPlayChild: item.isLastDisPlayChild,
+                                                                    // remainChildCount: item.remainChildCount,
+                                                                    onMoreChildComment: (page) {
+                                                                      print('load more child comment');
+                                                                      ref.read(commentListStateProvider.notifier).getChildComments(
+                                                                            item.contentsIdx,
+                                                                            item.parentIdx,
+                                                                            item.idx,
+                                                                            page,
+                                                                            true,
+                                                                          );
+                                                                    },
+                                                                    pageNumber: item.pageNumber,
+                                                                    isDisplayPreviousMore: item.isDisplayPreviousMore,
+                                                                    onPrevMoreChildComment: (page) {
+                                                                      print('load prev more child comment');
+                                                                      ref.read(commentListStateProvider.notifier).getChildComments(
+                                                                            item.contentsIdx,
+                                                                            item.parentIdx,
+                                                                            item.idx,
+                                                                            page,
+                                                                            false,
+                                                                          );
+                                                                    },
+                                                                    onTapRemoveButton: () async {
+                                                                      final result = await ref.read(commentListStateProvider.notifier).deleteContents(
+                                                                            contentsIdx: item.contentsIdx,
+                                                                            commentIdx: item.idx,
+                                                                            parentIdx: item.parentIdx,
+                                                                          );
 
-                                                                    if (result.result) {
+                                                                      if (result.result) {
+                                                                        context.pop();
+                                                                      }
+                                                                    },
+                                                                    onTapEditButton: () {
+                                                                      final commentHeaderState = ref.watch(commentHeaderProvider.notifier);
+
+                                                                      // context.pop();
+
+                                                                      commentHeaderState.addEditCommentHeader(item.contents, item.idx);
+
+                                                                      commentHeaderState.setHasInput(true);
+
+                                                                      ref.read(hashtagListProvider.notifier).state = getHashtagList(item.contents);
+                                                                      ref.read(mentionListProvider.notifier).state = item.mentionList ?? [];
+
+                                                                      commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(item.contents, item.mentionList ?? []));
                                                                       context.pop();
-                                                                    }
-                                                                  },
-                                                                  onTapEditButton: () {
-                                                                    final commentHeaderState = ref.watch(commentHeaderProvider.notifier);
-
-                                                                    // context.pop();
-
-                                                                    commentHeaderState.addEditCommentHeader(item.contents, item.idx);
-
-                                                                    commentHeaderState.setHasInput(true);
-
-                                                                    ref.read(hashtagListProvider.notifier).state = getHashtagList(item.contents);
-                                                                    ref.read(mentionListProvider.notifier).state = item.mentionList ?? [];
-
-                                                                    commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(item.contents, item.mentionList ?? []));
-                                                                    context.pop();
-                                                                  },
-                                                                ),
-                                                              );
-                                                            },
+                                                                    },
+                                                                  ),
+                                                                );
+                                                              },
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      CommentCustomTextField(
-                                                        contentIdx: item.idx,
-                                                      ),
-                                                    ],
+                                                        CommentCustomTextField(
+                                                          contentIdx: item.idx,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            }),
+                                                );
+                                              }),
+                                            ),
                                           );
                                         },
                                         child: const Icon(

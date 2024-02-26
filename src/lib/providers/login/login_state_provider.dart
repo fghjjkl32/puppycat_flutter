@@ -96,6 +96,10 @@ class LoginState extends _$LoginState {
     if (restrain) {
       await ref.read(myInfoStateProvider.notifier).getMyInfo();
       ref.read(signUpUserInfoProvider.notifier).state = null;
+
+      print("restrain ${restrain}");
+      print("state ${state}");
+
       state = LoginStatus.success;
       // ref.read(loginRouteStateProvider.notifier).changeLoginRoute(LoginRouteEnum.success);
       final router = ref.read(routerProvider);

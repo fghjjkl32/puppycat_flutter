@@ -47,6 +47,7 @@ class MyPageRoute extends GoRouteData {
       name: 'myPage',
       builder: (BuildContext context, GoRouterState state) {
         String? oldMemberUuid;
+        int? feedContentIdx;
 
         final extraData = state.extra;
         if (extraData != null) {
@@ -54,9 +55,13 @@ class MyPageRoute extends GoRouteData {
           if (extraMap.keys.contains('oldMemberUuid')) {
             oldMemberUuid = extraMap['oldMemberUuid'];
           }
+          if (extraMap.keys.contains('feedContentIdx')) {
+            feedContentIdx = extraMap['feedContentIdx'];
+          }
         }
         return MyPageMainScreen(
           oldMemberUuid: oldMemberUuid ?? '',
+          feedContentIdx: feedContentIdx ?? 0,
         );
       },
       routes: [
@@ -152,16 +157,36 @@ class PostRoute extends GoRouteData {
 class UserPageRoute extends GoRouteData {
   GoRoute createRoute() {
     return GoRoute(
-      path: 'userPage/:nick/:memUuid/:oldMemberUuid',
-      name: 'userPage/:nick/:memUuid/:oldMemberUuid',
+      path: 'userPage',
+      name: 'userPage',
       builder: (BuildContext context, GoRouterState state) {
-        final memberUuid = state.pathParameters['memUuid'];
-        final nick = state.pathParameters['nick'];
-        final oldMemberUuid = state.pathParameters['oldMemberUuid'];
+        String? memberUuid;
+        String? nick;
+        String? oldMemberUuid;
+        int? feedContentIdx;
+
+        final extraData = state.extra;
+        if (extraData != null) {
+          Map<String, dynamic> extraMap = extraData as Map<String, dynamic>;
+          if (extraMap.keys.contains('memberUuid')) {
+            memberUuid = extraMap['memberUuid'];
+          }
+          if (extraMap.keys.contains('nick')) {
+            nick = extraMap['nick'];
+          }
+          if (extraMap.keys.contains('oldMemberUuid')) {
+            oldMemberUuid = extraMap['oldMemberUuid'];
+          }
+          if (extraMap.keys.contains('feedContentIdx')) {
+            feedContentIdx = extraMap['feedContentIdx'];
+          }
+        }
+
         return UserMainScreen(
           memberUuid: memberUuid ?? '',
           nick: nick ?? '',
           oldMemberUuid: oldMemberUuid == null || oldMemberUuid == "null" ? '' : oldMemberUuid,
+          feedContentIdx: feedContentIdx ?? 0,
         );
       },
     );

@@ -70,7 +70,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
     Future(() {
       final currentFollowState = ref.read(followUserStateProvider)[widget.memberUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid!, widget.feedData.followState == 1);
+        ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: widget.feedData.followState == 1, isActionButton: false);
       }
     });
   }
@@ -85,7 +85,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
       onTap: () {
         myInfo.uuid == widget.memberUuid
             ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
-            : context.push("/member/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid == "" ? "null" : widget.oldMemberUuid}");
+            : context.push("/member/userPage", extra: {"nick": widget.userName, "memberUuid": widget.memberUuid, "oldMemberUuid": widget.oldMemberUuid});
       },
       child: Material(
         color: kPreviousNeutralColor100,
@@ -147,7 +147,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                         context.push("/home/login");
                                                       } else {
                                                         setState(() {
-                                                          ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                                          ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: false, isActionButton: true);
                                                         });
                                                       }
                                                     },
@@ -170,7 +170,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                         context.push("/home/login");
                                                       } else {
                                                         setState(() {
-                                                          ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
+                                                          ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: true, isActionButton: true);
                                                         });
                                                       }
                                                     },
@@ -228,11 +228,12 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
               ),
               GestureDetector(
                 onTap: () async {
-                  await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(widget.contentType, widget.feedData.idx).then(
+                  await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(widget.contentType, widget.feedData.idx, isUpdateState: false).then(
                     (value) {
                       if (value == null) {
                         return;
                       }
+
                       widget.memberUuid == myInfo.uuid
                           ? showCustomModalBottomSheet(
                               context: context,
@@ -284,7 +285,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                                 if (result.result && mounted) {
                                                   toast(
                                                     context: context,
-                                                    text: '피드 보관 완료!.',
+                                                    text: '피드 보관 완료!',
                                                     type: ToastType.purple,
                                                   );
                                                 }
@@ -300,6 +301,8 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                     titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                     onTap: () async {
                                       final restrain = await ref.read(restrainStateProvider.notifier).checkRestrainStatus(RestrainCheckType.writeFeed);
+
+                                      context.pop();
 
                                       if (restrain) {
                                         context.push('/feed/edit', extra: {
@@ -368,7 +371,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                             context.pop();
 
                                             setState(() {
-                                              ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+                                              ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: false, isActionButton: true);
                                             });
                                           },
                                         )

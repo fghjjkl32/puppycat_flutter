@@ -201,7 +201,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
             : Stack(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
+                    padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12, bottom: 70),
                     child: GridView.builder(
                       controller: myPostContentController,
                       gridDelegate: SliverQuiltedGridDelegate(
@@ -627,7 +627,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
             : Stack(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
+                    padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12, bottom: 70),
                     child: GridView.builder(
                       controller: myKeepContentController,
                       gridDelegate: SliverQuiltedGridDelegate(

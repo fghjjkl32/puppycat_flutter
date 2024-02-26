@@ -25,13 +25,13 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
     return null;
   }
 
-  Future<FeedData?> getFirstFeedState(String contentType, int contentIdx) async {
+  Future<FeedData?> getFirstFeedState(String contentType, int contentIdx, {bool isUpdateState = true}) async {
     try {
       Future(() {
         ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.loading;
       });
 
-      FeedResponseModel? searchResult; // = feedNullResponseModel;
+      FeedResponseModel? searchResult;
 
       if (contentType == "myContent" || contentType == "myDetailContent") {
         searchResult = await FeedRepository(dio: ref.read(dioProvider)).getMyContentsDetail(contentIdx: contentIdx);
@@ -66,7 +66,12 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
       });
       if (!isResponseDataEmpty) {
         FeedData firstFeed = FeedData.fromJson(searchResult.data!.list);
-        state = firstFeed;
+
+        //게시글 수정한 뒤 해당 함수를 사용하는데, 업데이트 하지않고 단순 데이터만 필요하기 때문에 아래 코드를 분기 태워야함
+        //또는 첫번쨰 피드가 바뀌지 않아야할때 사용
+        if (isUpdateState) {
+          state = firstFeed;
+        }
         return firstFeed;
       } else {
         state = null;
@@ -82,7 +87,6 @@ class FirstFeedDetailState extends _$FirstFeedDetailState {
       Future(() {
         ref.read(firstFeedStatusProvider.notifier).state = ListAPIStatus.error;
       });
-      print('fetchFirstFeedState error $e');
       state = null;
     }
     return null;

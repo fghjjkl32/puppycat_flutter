@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
@@ -62,12 +61,10 @@ class FeedMainWidget extends ConsumerWidget {
           'contentType': contentType,
         };
 
-        print("feedData.memberIdx ${feedData.memberUuid}");
         await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(contentType, feedData.idx).then((value) {
           if (value == null) {
             return;
           }
-          // context.push("/feed/detail/$firstTitle/$secondTitle/${feedData.memberIdx}/${feedData.idx}/$contentType");
           context.push('/feed/detail', extra: extraMap);
         });
       },
@@ -140,9 +137,6 @@ class FeedMainWidget extends ConsumerWidget {
                 imageList: feedData.imgList!,
                 // imageDomain: imageDomain,
               ),
-              // FeedWalkInfoWidget(
-              //   walkData: feedData.walkResultList,
-              // ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: LayoutBuilder(

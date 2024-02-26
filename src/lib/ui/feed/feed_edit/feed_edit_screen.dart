@@ -8,6 +8,8 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button_selected_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_content_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_cropped_files_provider.dart';
@@ -182,14 +184,34 @@ class FeedEditScreen extends ConsumerWidget {
                 context.pop();
 
                 if (result.result) {
-                  ref.read(feedWriteProvider.notifier).resetTag();
-                  ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
-                  ref.watch(feedEditContentProvider.notifier).state = TextEditingController(text: "");
-                  ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
-                  ref.read(hashtagListProvider.notifier).state = [];
-                  ref.read(mentionListProvider.notifier).state = [];
+                  if (ref.watch(feedWriteButtonSelectedProvider) == 0) {
+                    ref.read(feedListStateProvider.notifier).feedRefresh(
+                          contentIdx,
+                          "postKeepContents",
+                        );
 
-                  context.pushReplacement("/home");
+                    context.pop();
+                  } else {
+                    await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("myContent", contentIdx, isUpdateState: false).then((value) {
+                      if (value == null) {
+                        return;
+                      }
+
+                      ref.read(feedListStateProvider.notifier).editFeedRefresh(
+                            editData: value,
+                            contentIdx: contentIdx,
+                          );
+
+                      ref.read(feedWriteProvider.notifier).resetTag();
+                      ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+                      ref.watch(feedEditContentProvider.notifier).state = TextEditingController(text: "");
+                      ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
+                      ref.read(hashtagListProvider.notifier).state = [];
+                      ref.read(mentionListProvider.notifier).state = [];
+
+                      context.pop();
+                    });
+                  }
                 } else {
                   showDialog(
                     barrierDismissible: false,

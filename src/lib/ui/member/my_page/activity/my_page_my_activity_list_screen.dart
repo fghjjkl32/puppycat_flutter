@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,7 +14,6 @@ import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.d
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_like_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_activity/my_save_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/components/refresh_loading_animation_widget.dart';
 
 class MyPageMyActivityListScreen extends ConsumerStatefulWidget {
   const MyPageMyActivityListScreen({super.key});
@@ -214,115 +212,107 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                   ),
                 ),
               )
-            : CustomRefreshIndicator(
-                onRefresh: () {
-                  return ref.read(myLikeStateProvider.notifier).refresh();
-                },
-                builder: (context, child, controller) {
-                  return RefreshLoadingAnimationWidget(controller: controller, child: child);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
-                  child: GridView.builder(
-                    controller: myLikeContentController,
-                    addAutomaticKeepAlives: false,
-                    addRepaintBoundaries: false,
-                    gridDelegate: SliverQuiltedGridDelegate(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 4,
-                      crossAxisSpacing: 4,
-                      repeatPattern: QuiltedGridRepeatPattern.same,
-                      pattern: [
-                        const QuiltedGridTile(2, 2),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(2, 2),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                      ],
-                    ),
-                    itemCount: lists.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == lists.length) {
-                        if (isLoadMoreError) {
-                          return const Center(
-                            child: Text('Error'),
-                          );
-                        }
-                        if (isLoadMoreDone) {
-                          return Container();
-                        }
+            : Padding(
+                padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
+                child: GridView.builder(
+                  controller: myLikeContentController,
+                  addAutomaticKeepAlives: false,
+                  addRepaintBoundaries: false,
+                  gridDelegate: SliverQuiltedGridDelegate(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
+                    repeatPattern: QuiltedGridRepeatPattern.same,
+                    pattern: [
+                      const QuiltedGridTile(2, 2),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(2, 2),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                    ],
+                  ),
+                  itemCount: lists.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == lists.length) {
+                      if (isLoadMoreError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      }
+                      if (isLoadMoreDone) {
                         return Container();
                       }
+                      return Container();
+                    }
 
-                      return GestureDetector(
-                        onTap: () async {
-                          Map<String, dynamic> extraMap = {
-                            'firstTitle': 'null',
-                            'secondTitle': '좋아요한 피드',
-                            'memberUuid': myInfo.uuid,
-                            'contentIdx': '${lists[index].idx}',
-                            'contentType': 'myLikeContent',
-                          };
-                          await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myLikeContent', lists[index].idx).then((value) {
-                            if (value == null) {
-                              return;
-                            }
-                            // context.push("/feed/detail/null/좋아요한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myLikeContent");
-                            context.push('/feed/detail', extra: extraMap);
-                          });
-                        },
-                        child: Stack(
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl: thumborUrl(lists[index].imgUrl ?? ''),
-                              imageBuilder: (context, imageProvider) => Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: (index == 0)
-                                      ? const BorderRadius.only(topLeft: Radius.circular(10))
-                                      : index == 1
-                                          ? const BorderRadius.only(topRight: Radius.circular(10))
-                                          : BorderRadius.circular(0),
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              placeholder: (context, url) => Container(
-                                color: kPreviousNeutralColor300,
-                              ),
-                              errorWidget: (context, url, error) => const Icon(Icons.error),
-                            ),
-                            Positioned(
-                              right: 4,
-                              top: 4,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff414348).withOpacity(0.75),
-                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                                width: 18,
-                                height: 14,
-                                child: Center(
-                                  child: Text(
-                                    "${lists[index].imageCnt}",
-                                    style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
-                                  ),
+                    return GestureDetector(
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': 'null',
+                          'secondTitle': '좋아요한 피드',
+                          'memberUuid': myInfo.uuid,
+                          'contentIdx': '${lists[index].idx}',
+                          'contentType': 'myLikeContent',
+                        };
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myLikeContent', lists[index].idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push("/feed/detail/null/좋아요한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myLikeContent");
+                          context.push('/feed/detail', extra: extraMap);
+                        });
+                      },
+                      child: Stack(
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: thumborUrl(lists[index].imgUrl ?? ''),
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                borderRadius: (index == 0)
+                                    ? const BorderRadius.only(topLeft: Radius.circular(10))
+                                    : index == 1
+                                        ? const BorderRadius.only(topRight: Radius.circular(10))
+                                        : BorderRadius.circular(0),
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ).throttle();
-                    },
-                  ),
+                            placeholder: (context, url) => Container(
+                              color: kPreviousNeutralColor300,
+                            ),
+                            errorWidget: (context, url, error) => const Icon(Icons.error),
+                          ),
+                          Positioned(
+                            right: 4,
+                            top: 4,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xff414348).withOpacity(0.75),
+                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                              width: 18,
+                              height: 14,
+                              child: Center(
+                                child: Text(
+                                  "${lists[index].imageCnt}",
+                                  style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ).throttle();
+                  },
                 ),
               );
       },
@@ -366,113 +356,105 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                   ),
                 ),
               )
-            : CustomRefreshIndicator(
-                onRefresh: () {
-                  return ref.read(mySaveStateProvider.notifier).refresh();
-                },
-                builder: (context, child, controller) {
-                  return RefreshLoadingAnimationWidget(controller: controller, child: child);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
-                  child: GridView.builder(
-                    controller: mySaveContentController,
-                    gridDelegate: SliverQuiltedGridDelegate(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 4,
-                      crossAxisSpacing: 4,
-                      repeatPattern: QuiltedGridRepeatPattern.same,
-                      pattern: [
-                        const QuiltedGridTile(2, 2),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(2, 2),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                        const QuiltedGridTile(1, 1),
-                      ],
-                    ),
-                    itemCount: lists.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == lists.length) {
-                        if (isLoadMoreError) {
-                          return const Center(
-                            child: Text('Error'),
-                          );
-                        }
-                        if (isLoadMoreDone) {
-                          return Container();
-                        }
+            : Padding(
+                padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
+                child: GridView.builder(
+                  controller: mySaveContentController,
+                  gridDelegate: SliverQuiltedGridDelegate(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
+                    repeatPattern: QuiltedGridRepeatPattern.same,
+                    pattern: [
+                      const QuiltedGridTile(2, 2),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(2, 2),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                      const QuiltedGridTile(1, 1),
+                    ],
+                  ),
+                  itemCount: lists.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == lists.length) {
+                      if (isLoadMoreError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      }
+                      if (isLoadMoreDone) {
                         return Container();
                       }
+                      return Container();
+                    }
 
-                      return GestureDetector(
-                        onTap: () async {
-                          Map<String, dynamic> extraMap = {
-                            'firstTitle': 'null',
-                            'secondTitle': '저장한 피드',
-                            'memberUuid': myInfo.uuid,
-                            'contentIdx': '${lists[index].idx}',
-                            'contentType': 'mySaveContent',
-                          };
-                          await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('mySaveContent', lists[index].idx).then((value) {
-                            if (value == null) {
-                              return;
-                            }
-                            // context.push("/feed/detail/null/저장한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/mySaveContent");
-                            context.push('/feed/detail', extra: extraMap);
-                          });
-                        },
-                        child: Stack(
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl: thumborUrl(lists[index].imgUrl ?? ''),
-                              imageBuilder: (context, imageProvider) => Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: (index == 0)
-                                      ? const BorderRadius.only(topLeft: Radius.circular(10))
-                                      : index == 1
-                                          ? const BorderRadius.only(topRight: Radius.circular(10))
-                                          : BorderRadius.circular(0),
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              placeholder: (context, url) => Container(
-                                color: kPreviousNeutralColor300,
-                              ),
-                              errorWidget: (context, url, error) => const Icon(Icons.error),
-                            ),
-                            Positioned(
-                              right: 4,
-                              top: 4,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff414348).withOpacity(0.75),
-                                  borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                ),
-                                width: 18,
-                                height: 14,
-                                child: Center(
-                                  child: Text(
-                                    "${lists[index].imageCnt}",
-                                    style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
-                                  ),
+                    return GestureDetector(
+                      onTap: () async {
+                        Map<String, dynamic> extraMap = {
+                          'firstTitle': 'null',
+                          'secondTitle': '저장한 피드',
+                          'memberUuid': myInfo.uuid,
+                          'contentIdx': '${lists[index].idx}',
+                          'contentType': 'mySaveContent',
+                        };
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('mySaveContent', lists[index].idx).then((value) {
+                          if (value == null) {
+                            return;
+                          }
+                          // context.push("/feed/detail/null/저장한 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/mySaveContent");
+                          context.push('/feed/detail', extra: extraMap);
+                        });
+                      },
+                      child: Stack(
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: thumborUrl(lists[index].imgUrl ?? ''),
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                borderRadius: (index == 0)
+                                    ? const BorderRadius.only(topLeft: Radius.circular(10))
+                                    : index == 1
+                                        ? const BorderRadius.only(topRight: Radius.circular(10))
+                                        : BorderRadius.circular(0),
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ).throttle();
-                    },
-                  ),
+                            placeholder: (context, url) => Container(
+                              color: kPreviousNeutralColor300,
+                            ),
+                            errorWidget: (context, url, error) => const Icon(Icons.error),
+                          ),
+                          Positioned(
+                            right: 4,
+                            top: 4,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xff414348).withOpacity(0.75),
+                                borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                              width: 18,
+                              height: 14,
+                              child: Center(
+                                child: Text(
+                                  "${lists[index].imageCnt}",
+                                  style: kBadge9RegularStyle.copyWith(color: kPreviousNeutralColor100),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ).throttle();
+                  },
                 ),
               );
       },

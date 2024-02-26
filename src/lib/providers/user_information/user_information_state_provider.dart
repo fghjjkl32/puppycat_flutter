@@ -37,7 +37,11 @@ class UserInformationStateNotifier extends StateNotifier<UserInformationItemMode
 
       userInformationStateMap[memberUuid] = userInformationItemModel;
 
-      ref.read(followUserStateProvider.notifier).setFollowState(memberUuid, userInformationItemModel.followState == 1);
+      ref.read(followUserStateProvider.notifier).setFollowState(
+            memberUuid: memberUuid,
+            followState: userInformationItemModel.followState == 1,
+            isActionButton: false,
+          );
 
       return state;
     } on APIException catch (apiException) {
