@@ -2,6 +2,7 @@ import 'package:bubble/bubble.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -212,6 +213,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       child: InkWell(
         onTap: () {
           print('move user page');
+          context.push('/member/userPage/${widget.nick}/${widget.targetMemberUuid}/null');
         },
         child: SizedBox(
           // color: Colors.red,
