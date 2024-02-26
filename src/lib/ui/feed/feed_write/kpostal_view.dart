@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:geocoding/geocoding.dart';
@@ -12,8 +13,6 @@ class KpostalView extends StatefulWidget {
 
   /// AppBar's title
   ///
-  /// 앱바 타이틀
-  final String title;
 
   /// AppBar's background color
   ///
@@ -67,7 +66,6 @@ class KpostalView extends StatefulWidget {
 
   KpostalView({
     Key? key,
-    this.title = '주소검색',
     this.appBarColor = Colors.white,
     this.titleColor = Colors.black,
     this.appBar,
@@ -124,7 +122,7 @@ class _KpostalViewState extends State<KpostalView> {
           AppBar(
             backgroundColor: widget.appBarColor,
             title: Text(
-              widget.title,
+              '피드.주소검색'.tr(),
               style: TextStyle(
                 color: widget.titleColor,
               ),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -27,18 +28,18 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "피드를 보관할까요?",
+                "공통.피드를 보관할까요?".tr(),
                 style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
               ),
             ],
           ),
         ),
         Text(
-          "보관된 피드는",
+          "공통.보관된 피드는".tr(),
           style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
         ),
         Text(
-          "[마이페이지 → 내 글 관리 → 보관피드]에서 볼 수 있어요.",
+          "공통.[마이페이지 → 내 글 관리 → 보관피드]에서 볼 수 있어요".tr(),
           style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
         ),
         const SizedBox(height: 20),
@@ -60,7 +61,7 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
                 ),
                 child: Center(
                   child: Text(
-                    "닫기",
+                    "공통.닫기".tr(),
                     style: kButton14BoldStyle.copyWith(color: kTextSecondary),
                   ),
                 ),
@@ -82,7 +83,7 @@ void myFeedKeepBottomSheet({required BuildContext context, required VoidCallback
                 ),
                 child: Center(
                   child: Text(
-                    "보관하기",
+                    "공통.보관하기".tr(),
                     style: kButton14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                   ),
                 ),

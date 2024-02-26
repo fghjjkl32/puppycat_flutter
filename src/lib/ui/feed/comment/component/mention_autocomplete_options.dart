@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -118,7 +119,7 @@ class MentionAutocompleteOptionsState extends ConsumerState<MentionAutocompleteO
                           ),
                         ),
                   title: Text(user.nick ?? ''),
-                  subtitle: user.intro == null || user.intro == "" ? Text('소개 글이 없어요.') : Text('${user.intro}'),
+                  subtitle: user.intro == null || user.intro == "" ? Text('댓글.소개 글이 없어요'.tr()) : Text('${user.intro}'),
                   onTap: () => widget.onMentionUserTap(user),
                 );
               },

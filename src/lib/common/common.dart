@@ -55,13 +55,13 @@ double getViewportFractionCalculateValue(double width) {
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
   var seconds = milliSeconds / 1000;
-  if (seconds < 60) return '방금 전';
+  if (seconds < 60) return '방금 전'.tr();
   var minutes = seconds / 60;
-  if (minutes < 60) return '${minutes.floor()}분 전';
+  if (minutes < 60) return '분 전'.tr(args: ["${minutes.floor()}"]);
   var hours = minutes / 60;
-  if (hours < 24) return '${hours.floor()}시간 전';
+  if (hours < 24) return '시간 전'.tr(args: ["${hours.floor()}"]);
   var days = hours / 24;
-  if (days < 7) return '${days.floor()}일 전';
+  if (days < 7) return '일 전'.tr(args: ["${days.floor()}"]);
 
   return DateFormat('yyyy-MM-dd').format(time);
 }
@@ -152,7 +152,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
         var mention = mentionList.firstWhere((m) => m.uuid == mentionMatched);
 
         spans.add(TextSpan(
-            text: '@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')),
+            text: '@' + (mention.memberState == 0 ? "공통.알 수 없음".tr() : (mention.nick ?? '')),
             style: tagStyle,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
@@ -189,7 +189,7 @@ String replaceMentionsWithNicknamesInContentAsString(String content, List<Mentio
 
     if (mentionList.any((mention) => mention.uuid == matchedString)) {
       var mention = mentionList.firstWhere((m) => m.uuid == matchedString);
-      return '@' + (mention.memberState == 0 ? "(알 수 없음)" : mention.nick!);
+      return '@' + (mention.memberState == 0 ? "공통.알 수 없음".tr() : mention.nick!);
     } else {
       return '@' + matchedString;
     }
@@ -210,7 +210,7 @@ String replaceMentionsWithNicknamesInContentAsTextFieldString(String content, Li
 
     if (mentionList.any((mention) => mention.uuid == matchedString)) {
       var mention = mentionList.firstWhere((m) => m.uuid == matchedString);
-      return '@' + (mention.memberState == 0 ? "(알 수 없음)" : mention.nick!);
+      return '@' + (mention.memberState == 0 ? "공통.알 수 없음".tr() : mention.nick!);
     } else {
       return '@' + matchedString;
     }
@@ -250,7 +250,7 @@ bool onBackPressed() {
   if (currentBackPressTime == null || now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
     currentBackPressTime = now;
     Fluttertoast.showToast(
-      msg: "한번 더 누르시면 종료됩니다.",
+      msg: "공통.한번 더 누르시면 종료됩니다".tr(),
       gravity: ToastGravity.BOTTOM,
       backgroundColor: kPreviousNeutralColor500,
       fontSize: 14,
@@ -303,9 +303,9 @@ void onTapHide({
     if (result.result && context.mounted) {
       toast(
         context: context,
-        text: '피드를 숨겼어요.',
+        text: '공통.피드를 숨겼어요'.tr(),
         type: ToastType.purple,
-        buttonText: "되돌리기",
+        buttonText: "공통.되돌리기".tr(),
         buttonOnTap: () async {
           final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
                 contentType: contentType,
@@ -315,7 +315,7 @@ void onTapHide({
           if (result.result && context.mounted) {
             toast(
               context: context,
-              text: '피드를 되돌렸어요.',
+              text: '공통.피드를 되돌렸어요'.tr(),
               type: ToastType.purple,
             );
           }
@@ -333,9 +333,9 @@ void onTapReport({
 }) async {
   toast(
     context: context,
-    text: '신고 접수 완료!',
+    text: '공통.신고 접수 완료!'.tr(),
     type: ToastType.purple,
-    buttonText: "되돌리기",
+    buttonText: "공통.되돌리기".tr(),
     buttonOnTap: () async {
       final result = reportType
           ? await ref.read(commentListStateProvider.notifier).deleteCommentReport(
@@ -350,7 +350,7 @@ void onTapReport({
       if (result.result && context.mounted) {
         toast(
           context: context,
-          text: '신고 접수를 취소했어요.',
+          text: '공통.신고 접수를 취소했어요'.tr(),
           type: ToastType.grey,
         );
       }

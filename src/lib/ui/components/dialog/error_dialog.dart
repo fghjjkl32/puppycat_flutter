@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -20,11 +21,11 @@ class ErrorDialog extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                '문제가 생겼어요.',
+                '공통.문제가 생겼어요'.tr(),
                 style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
               ),
               Text(
-                '잠시 후에 다시 시도해 주세요.',
+                '공통.잠시 후에 다시 시도해 주세요'.tr(),
                 style: kBody12RegularStyle400.copyWith(color: kPreviousTextBodyColor),
               ),
               Visibility(
@@ -41,7 +42,7 @@ class ErrorDialog extends StatelessWidget {
           context.pop();
         },
         confirmWidget: Text(
-          "확인",
+          "공통.확인".tr(),
           style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
         ));
   }

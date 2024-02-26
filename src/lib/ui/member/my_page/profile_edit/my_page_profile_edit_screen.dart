@@ -158,7 +158,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                 child: Column(
                   children: [
                     Text(
-                      "잠깐! 지금 나가면\n수정한 내용이 저장되지 않아요.",
+                      "회원.정보 수정 나가기 경고".tr(),
                       textAlign: TextAlign.center,
                       style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
@@ -174,11 +174,11 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                 ref.watch(editStateProvider.notifier).resetState();
               },
               confirmWidget: Text(
-                "이어서 하기",
+                "회원.이어서 하기".tr(),
                 style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
               ),
               cancelWidget: Text(
-                "닫기",
+                "회원.닫기".tr(),
                 style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
               ),
             );
@@ -190,8 +190,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: const Text(
-              "내 정보 수정",
+            title: Text(
+              "회원.내 정보 수정".tr(),
             ),
             leading: IconButton(
               onPressed: () {
@@ -204,7 +204,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         child: Column(
                           children: [
                             Text(
-                              "잠깐! 지금 나가면\n수정한 내용이 저장되지 않아요.",
+                              "회원.정보 수정 나가기 경고".tr(),
                               textAlign: TextAlign.center,
                               style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                             ),
@@ -220,11 +220,11 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         ref.watch(editStateProvider.notifier).resetState();
                       },
                       confirmWidget: Text(
-                        "이어서 하기",
+                        "회원.이어서 하기".tr(),
                         style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
                       ),
                       cancelWidget: Text(
-                        "닫기",
+                        "회원.닫기".tr(),
                         style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                     );
@@ -328,7 +328,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       }
                     : null,
                 child: Text(
-                  '완료',
+                  '회원.완료'.tr(),
                   style: kButton12BoldStyle.copyWith(
                     color: isTotalNextStep ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                   ),
@@ -404,7 +404,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       icon: const Icon(
                                         Puppycat_social.icon_photo,
                                       ),
-                                      title: '앨범에서 선택하기',
+                                      title: '회원.앨범에서 선택하기'.tr(),
                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                       onTap: () async {
                                         context.pop();
@@ -422,7 +422,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                       child: Column(
                                                         children: [
                                                           Text(
-                                                            "피드를 올리거나 프로필을 설정하려면\n사진 권한이 필요해요.",
+                                                            "회원.사진권한".tr(),
                                                             style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                                             textAlign: TextAlign.center,
                                                           ),
@@ -430,7 +430,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                             height: 4,
                                                           ),
                                                           Text(
-                                                            "언제든지 설정을 바꿀 수 있어요.",
+                                                            "회원.언제든지 설정을 바꿀 수 있어요".tr(),
                                                             style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                             textAlign: TextAlign.center,
                                                           ),
@@ -445,11 +445,11 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                       context.pop();
                                                     },
                                                     confirmWidget: Text(
-                                                      "설정 열기",
+                                                      "회원.설정 열기".tr(),
                                                       style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                                                     ),
                                                     cancelWidget: Text(
-                                                      "닫기",
+                                                      "회원.닫기".tr(),
                                                       style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                                                     ));
                                               },
@@ -463,7 +463,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                         Puppycat_social.icon_delete_small,
                                         color: kPreviousErrorColor,
                                       ),
-                                      title: '프로필 사진 삭제하기',
+                                      title: '회원.프로필 사진 삭제하기'.tr(),
                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                       onTap: () {
                                         setState(() {
@@ -525,14 +525,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.only(top: 32, left: 12.0, bottom: 8),
                         child: Text(
-                          "프로필 정보",
+                          "회원.프로필 정보".tr(),
                           style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 24.0, bottom: 8),
                         child: Text(
-                          "닉네임",
+                          "회원.닉네임".tr(),
                           style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
@@ -686,7 +686,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                         ),
                                         child: Center(
                                           child: Text(
-                                            "중복확인",
+                                            "회원.중복확인".tr(),
                                             style: kButton12BoldStyle.copyWith(
                                               color: ref.watch(checkButtonProvider) ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                                             ),
@@ -713,7 +713,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       ),
                                       child: Center(
                                         child: Text(
-                                          "변경",
+                                          "회원.변경".tr(),
                                           style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                                         ),
                                       ),
@@ -725,7 +725,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.only(left: 24.0, bottom: 8, top: 8),
                         child: Text(
-                          "한 줄 소개",
+                          "회원.한 줄 소개".tr(),
                           style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
@@ -738,7 +738,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             maxLength: 30,
                             decoration: InputDecoration(
                               counterText: "",
-                              hintText: "${editMyInfoModel.intro == "" ? '나를 간단하게 소개해 주세요.' : editMyInfoModel.intro}",
+                              hintText: "${editMyInfoModel.intro == "" ? '회원.나를 간단하게 소개해 주세요'.tr() : editMyInfoModel.intro}",
                               hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                               contentPadding: const EdgeInsets.all(16),
                             ),
@@ -755,14 +755,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.only(top: 16, left: 12.0, bottom: 8),
                         child: Text(
-                          "로그인 정보",
+                          "회원.로그인 정보".tr(),
                           style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 24.0, bottom: 8),
                         child: Text(
-                          "이메일",
+                          "회원.이메일".tr(),
                           style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
@@ -801,7 +801,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.only(left: 24.0, bottom: 8, top: 8),
                         child: Text(
-                          "이름",
+                          "회원.이름".tr(),
                           style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
@@ -828,7 +828,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.only(left: 24.0, bottom: 8, top: 8),
                         child: Text(
-                          "휴대폰 번호",
+                          "회원.휴대폰 번호".tr(),
                           style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
@@ -897,7 +897,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           ),
                                           child: Center(
                                             child: Text(
-                                              "취소",
+                                              "회원.취소".tr(),
                                               style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                                             ),
                                           ),
@@ -920,7 +920,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           ),
                                           child: Center(
                                             child: Text(
-                                              "변경",
+                                              "회원.변경".tr(),
                                               style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                                             ),
                                           ),
@@ -937,7 +937,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                     ),
                                     child: Center(
                                       child: Text(
-                                        "인증완료",
+                                        "회원.인증완료".tr(),
                                         style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                                       ),
                                     ),
@@ -1025,7 +1025,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               context.push("/member/myPage/profileEdit/withdrawalSelect");
                             },
                             child: Text(
-                              "회원 탈퇴",
+                              "회원.회원탈퇴".tr(),
                               style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                             ),
                           ),

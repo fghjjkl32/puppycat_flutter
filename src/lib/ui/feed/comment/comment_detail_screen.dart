@@ -1,4 +1,5 @@
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -112,8 +113,8 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "댓글",
+          title: Text(
+            "댓글.댓글".tr(),
           ),
           leading: IconButton(
             onPressed: () async {
@@ -183,7 +184,7 @@ class CommentDetailScreenState extends ConsumerState<CommentDetailScreen> {
                                       height: 12,
                                     ),
                                     Text(
-                                      '아직 댓글이 없어요.\n피드에 댓글을 남겨 보세요.',
+                                      '댓글.댓글 빈리스트'.tr(),
                                       textAlign: TextAlign.center,
                                       style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                     ),

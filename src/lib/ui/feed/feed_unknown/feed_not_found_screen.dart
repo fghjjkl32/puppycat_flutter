@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -85,14 +85,14 @@ class FeedNotFoundScreen extends StatelessWidget {
               height: 12,
             ),
             Text(
-              "피드를 찾을 수 없어요.",
+              "피드.피드를 찾을 수 없어요".tr(),
               style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
             ),
             const SizedBox(
               height: 8,
             ),
             Text(
-              "피드가 삭제되었거나\n공개 범위가 바뀌었을 수 있어요.",
+              "피드.피드 에러 문구".tr(),
               style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
               textAlign: TextAlign.center,
             ),
@@ -126,7 +126,7 @@ class FeedNotFoundScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
-                        '홈으로 이동',
+                        '홈으로 이동'.tr(),
                         style: kBody14BoldStyle.copyWith(
                           color: kPreviousPrimaryColor,
                         ),

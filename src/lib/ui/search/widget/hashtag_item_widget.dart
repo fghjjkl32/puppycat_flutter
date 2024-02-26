@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart' hide Column;
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -82,7 +83,7 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
                       height: 4,
                     ),
                     Text(
-                      "게시물 ${widget.hashTagCnt}+",
+                      "검색.게시물 개수".tr(args: [(widget.hashTagCnt)]),
                       style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],

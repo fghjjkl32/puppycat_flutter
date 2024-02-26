@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,7 +68,7 @@ class ForceUpdateBottomSheet extends ConsumerWidget {
                 ),
                 child: Center(
                     child: Text(
-                  "확인",
+                  "공통.확인".tr(),
                   style: kButton14MediumStyle.copyWith(color: kWhiteColor),
                 )),
               ),

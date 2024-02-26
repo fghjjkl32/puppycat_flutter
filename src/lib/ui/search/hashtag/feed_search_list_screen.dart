@@ -1,4 +1,5 @@
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -77,8 +78,8 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: const Text(
-              "해시태그",
+            title: Text(
+              "검색.해시태그".tr(),
             ),
             leading: IconButton(
               onPressed: () {
@@ -122,7 +123,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                   height: 12,
                                 ),
                                 Text(
-                                  "'${widget.searchWord}'에 대한 피드가 없어요",
+                                  "검색.에 대한 피드가 없어요".tr(args: [(widget.searchWord)]),
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),

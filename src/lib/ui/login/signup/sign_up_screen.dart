@@ -498,7 +498,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 content: Padding(
                   padding: EdgeInsets.symmetric(vertical: 24.0),
                   child: Text(
-                    "본인 인증에 실패하였습니다.",
+                    "회원가입.본인 인증에 실패하였습니다".tr(),
                     style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   ),
                 ),
@@ -510,7 +510,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   context.pop();
                 },
                 confirmWidget: Text(
-                  "확인",
+                  '회원가입.확인'.tr(),
                   style: kButton14MediumStyle.copyWith(color: kPreviousErrorColor),
                 ));
           },
@@ -524,7 +524,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 content: Padding(
                   padding: EdgeInsets.symmetric(vertical: 24.0),
                   child: Text(
-                    "이미 퍼피캣에 가입된 계정이 있습니다.",
+                    "회원가입.이미 퍼피캣에 가입된 계정이 있습니다".tr(),
                     style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   ),
                 ),
@@ -535,7 +535,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   context.pop();
                 },
                 confirmWidget: Text(
-                  "확인",
+                  "회원가입.확인".tr(),
                   style: kButton14MediumStyle.copyWith(color: kPreviousErrorColor),
                 ));
           },
@@ -609,7 +609,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                               ),
                             ),
                             child: Text(
-                              '확인'.tr(),
+                              '회원가입.확인'.tr(),
                               style: kBody16MediumStyle.copyWith(height: 1.4, letterSpacing: -0.5),
                             ),
                           ),

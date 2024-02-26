@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -56,7 +57,7 @@ class SelectButton extends StatelessWidget {
                           ? Padding(
                               padding: const EdgeInsets.only(right: 8.0),
                               child: Text(
-                                "최대 200자",
+                                "피드.최대 200자".tr(),
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             )
@@ -84,7 +85,7 @@ class SelectButton extends StatelessWidget {
                       fillColor: kPreviousNeutralColor100,
                       border: InputBorder.none,
                       counterText: "",
-                      hintText: '이유를 입력해주세요',
+                      hintText: '피드.이유를 입력해주세요'.tr(),
                       hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                       contentPadding: const EdgeInsets.all(16),
                       enabledBorder: const OutlineInputBorder(

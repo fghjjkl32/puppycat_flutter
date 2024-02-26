@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +23,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
               child: Text(
-                "공유할 추억을 선택하세요!",
+                "공통.공유할 추억을 선택하세요!".tr(),
                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
               ),
             ),
@@ -83,7 +84,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Text(
-                              "일상공유",
+                              "공통.일상공유".tr(),
                               style: kButton14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                             ),
                           ),
@@ -118,7 +119,7 @@ void feedWriteShowBottomSheet({required BuildContext context, required VoidCallb
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
-                            "산책하기",
+                            "공통.산책하기".tr(),
                             style: kButton14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                           ),
                         ),

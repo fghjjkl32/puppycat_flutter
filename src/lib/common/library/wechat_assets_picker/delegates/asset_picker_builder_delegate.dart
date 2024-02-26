@@ -7,6 +7,7 @@ import 'dart:math' as math;
 import 'dart:typed_data' as typed_data;
 import 'dart:ui' as ui;
 
+import 'package:easy_localization/easy_localization.dart' as intl;
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
@@ -1175,7 +1176,7 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                                     child: Column(
                                       children: [
                                         Text(
-                                          "피드를 올리거나 프로필을 설정하려면\n사진 권한이 필요해요.",
+                                          "피드.사진 권한".tr(),
                                           style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                           textAlign: TextAlign.center,
                                         ),
@@ -1183,7 +1184,7 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                                           height: 4,
                                         ),
                                         Text(
-                                          "언제든지 설정을 바꿀 수 있어요.",
+                                          "피드.언제든지 설정을 바꿀 수 있어요".tr(),
                                           style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                           textAlign: TextAlign.center,
                                         ),
@@ -1198,11 +1199,11 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                                     context.pop();
                                   },
                                   confirmWidget: Text(
-                                    "설정 열기",
+                                    "피드.설정 열기".tr(),
                                     style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                                   ),
                                   cancelWidget: Text(
-                                    "닫기",
+                                    "피드.닫기".tr(),
                                     style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ));
                             },
@@ -1740,7 +1741,7 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "모든 사진에 접근을 허용하면\n더 편하게 사진을 공유할 수 있어요.",
+                          "피드.모든 사진 접근 허용".tr(),
                           style: kBody14BoldStyle.copyWith(color: kTextSecondary),
                         ),
                         SizedBox(
@@ -1751,7 +1752,7 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                             PhotoManager.presentLimited();
                           },
                           child: Text(
-                            "[더 많은 사진 선택]",
+                            "피드.[더 많은 사진 선택]".tr(),
                             style: kBody14BoldStyle.copyWith(color: interactiveTextColor(context)),
                           ),
                         ),
@@ -1772,7 +1773,7 @@ class DefaultAssetPickerBuilderDelegate extends AssetPickerBuilderDelegate<Asset
                         ),
                         child: Center(
                           child: Text(
-                            "설정 열기",
+                            "피드.설정 열기".tr(),
                             style: kTitle14BoldStyle.copyWith(color: kTextSecondary),
                           ),
                         ),

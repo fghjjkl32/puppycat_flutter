@@ -1,9 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -54,8 +54,8 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "알림",
+          title: Text(
+            "설정.알림".tr(),
           ),
           leading: IconButton(
             onPressed: () {
@@ -79,7 +79,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "광고성 정보 수신 동의",
+                            "설정.광고성 정보 수신 동의".tr(),
                             style: kBody14BoldStyle.copyWith(
                               color: kPreviousTextSubTitleColor,
                             ),
@@ -97,9 +97,18 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                               onTap('main_2', value);
 
                               if (value) {
-                                toast(context: context, text: '광고성 정보 수신을 ‘동의’했어요.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                toast(
+                                    context: context,
+                                    text: '설정.광고성 정보 수신을 ‘동의’했어요'.tr(),
+                                    type: ToastType.purple,
+                                    secondText: "설정.수신 동의일".tr(args: [(DateFormat('yyyy-MM-dd').format(DateTime.now()))]));
                               } else {
-                                toast(context: context, text: '광고성 정보 수신을 ‘거부’했어요.', type: ToastType.grey, secondText: "수신 거부일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                toast(
+                                  context: context,
+                                  text: '설정.광고성 정보 수신을 ‘거부’했어요'.tr(),
+                                  type: ToastType.grey,
+                                  secondText: "설정.수신 거부일".tr(args: [(DateFormat('yyyy-MM-dd').format(DateTime.now()))]),
+                                );
                               }
                             },
                           ),
@@ -122,7 +131,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "야간 알림",
+                                      "설정.야간 알림".tr(),
                                       style: kBody13RegularStyle.copyWith(
                                         color: kPreviousTextSubTitleColor,
                                       ),
@@ -131,7 +140,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                       height: 4,
                                     ),
                                     Text(
-                                      "밤 9시부터 아침 8시까지 알림 받기",
+                                      "설정.밤 9시부터 아침 8시까지 알림 받기".tr(),
                                       style: kBody11RegularStyle.copyWith(
                                         color: kPreviousTextBodyColor,
                                       ),
@@ -149,10 +158,20 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                                   borderRadius: 50.0,
                                   onToggle: (value) async {
                                     onTap('main_3', value);
+
                                     if (value) {
-                                      toast(context: context, text: '야간 알림을 ‘동의’했어요.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                      toast(
+                                          context: context,
+                                          text: '설정.야간 알림을 ‘동의’했어요'.tr(),
+                                          type: ToastType.purple,
+                                          secondText: "설정.수신 동의일".tr(args: [(DateFormat('yyyy-MM-dd').format(DateTime.now()))]));
                                     } else {
-                                      toast(context: context, text: '야간 알림을 ‘거부’했어요.', type: ToastType.grey, secondText: "수신 거부일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                      toast(
+                                        context: context,
+                                        text: '설정.야간 알림을 ‘거부’했어요'.tr(),
+                                        type: ToastType.grey,
+                                        secondText: "설정.수신 거부일".tr(args: [(DateFormat('yyyy-MM-dd').format(DateTime.now()))]),
+                                      );
                                     }
                                   },
                                 ),
@@ -172,7 +191,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "커뮤니티 알림",
+                            "설정.커뮤니티 알림".tr(),
                             style: kBody14BoldStyle.copyWith(
                               color: kPreviousTextSubTitleColor,
                             ),
@@ -206,7 +225,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "새로운 팔로워",
+                                  "설정.새로운 팔로워".tr(),
                                   style: kBody13RegularStyle.copyWith(
                                     color: kPreviousTextSubTitleColor,
                                   ),
@@ -233,7 +252,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "내 글(댓글) 좋아요",
+                                  "설정.내 글(댓글) 좋아요".tr(),
                                   style: kBody13RegularStyle.copyWith(
                                     color: kPreviousTextSubTitleColor,
                                   ),
@@ -260,7 +279,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "멘션(태그)",
+                                  "설정.멘션(태그)".tr(),
                                   style: kBody13RegularStyle.copyWith(
                                     color: kPreviousTextSubTitleColor,
                                   ),
@@ -287,7 +306,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "댓글",
+                                  "설정.댓글".tr(),
                                   style: kBody13RegularStyle.copyWith(
                                     color: kPreviousTextSubTitleColor,
                                   ),
@@ -314,7 +333,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "팔로잉 새 글 알림",
+                                  "설정.팔로잉 새 글 알림".tr(),
                                   style: kBody13RegularStyle.copyWith(
                                     color: kPreviousTextSubTitleColor,
                                   ),
@@ -341,7 +360,7 @@ class MyPageSettingAlarmScreenState extends ConsumerState<MyPageSettingAlarmScre
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "채팅 알림",
+                                  "설정.채팅 알림".tr(),
                                   style: kBody13RegularStyle.copyWith(
                                     color: kPreviousTextSubTitleColor,
                                   ),

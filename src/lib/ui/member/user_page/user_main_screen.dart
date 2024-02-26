@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -227,7 +228,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                           child: Column(
                                                             children: [
                                                               Text(
-                                                                "‘${widget.nick}’님을\n차단할까요?",
+                                                                "회원.차단 제목".tr(args: [widget.nick]),
                                                                 style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                                                 textAlign: TextAlign.center,
                                                               ),
@@ -235,7 +236,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                                 height: 8,
                                                               ),
                                                               Text(
-                                                                "차단하게 되면 더 이상 서로의 피드를 보거나\n메시지 등을 보낼 수 없어요.\n차단 여부는 상대방에게 알리지 않아요.\n차단 풀기는 [마이페이지→설정→차단 유저 관리]에서\n얼마든지 가능해요.",
+                                                                "회원.차단 내용".tr(),
                                                                 style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                                 textAlign: TextAlign.center,
                                                               ),
@@ -246,7 +247,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                           context.pop();
                                                           toast(
                                                             context: context,
-                                                            text: "'${widget.nick.length > 8 ? '${widget.nick.substring(0, 8)}...' : widget.nick}'님을 차단했어요.",
+                                                            text: "회원.차단 완료".tr(args: [(widget.nick.length > 8 ? '${widget.nick.substring(0, 8)}...' : widget.nick)]),
                                                             type: ToastType.purple,
                                                           );
                                                           final result = await ref.read(userInformationStateProvider.notifier).postBlock(
@@ -261,7 +262,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                                           context.pop();
                                                         },
                                                         confirmWidget: Text(
-                                                          "차단하기",
+                                                          "회원.차단하기".tr(),
                                                           style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
                                                         ),
                                                       );
@@ -288,7 +289,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                               list.add(
                                                 diaryPopUpMenuItem(
                                                   'block',
-                                                  '차단하기',
+                                                  "회원.차단하기".tr(),
                                                   const Icon(
                                                     Puppycat_social.icon_user_block_ac,
                                                   ),
@@ -339,7 +340,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                       height: 10,
                                     ),
                                     Text(
-                                      "차단한 유저의 정보는 볼 수 없어요.\n정보를 보려면 차단을 풀어 주세요.",
+                                      "회원.정보를 보려면 차단을 풀어 주세요".tr(),
                                       textAlign: TextAlign.center,
                                       style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
@@ -360,7 +361,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           height: 10,
                                         ),
                                         Text(
-                                          "정보를 볼 수 없어요.",
+                                          "회원.정보를 볼 수 없어요".tr(),
                                           textAlign: TextAlign.center,
                                           style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                         ),
@@ -430,7 +431,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없어요.',
+                                  '회원.피드가 없어요'.tr(),
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -474,7 +475,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
                           'firstTitle': '${ref.watch(userInformationStateProvider).nick}',
-                          'secondTitle': '피드',
+                          'secondTitle': '회원.피드'.tr(),
                           'memberUuid': ref.watch(userInformationStateProvider).uuid,
                           'contentIdx': '${item.idx}',
                           'contentType': 'userContent',
@@ -606,7 +607,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없어요.',
+                                  '회원.피드가 없어요.'.tr(),
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -650,7 +651,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
                           'firstTitle': '${ref.watch(userInformationStateProvider).nick}',
-                          'secondTitle': '태그됨',
+                          'secondTitle': '회원.태그됨'.tr(),
                           'memberUuid': ref.watch(userInformationStateProvider).uuid,
                           'contentIdx': '${item.idx}',
                           'contentType': 'userTagContent',
@@ -779,7 +780,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           child: Row(
                             children: [
                               Text(
-                                "팔로워 ",
+                                "회원.팔로워 띄어쓰기".tr(),
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
@@ -791,7 +792,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
-                                "팔로잉 ",
+                                "회원.팔로잉 띄어쓰기".tr(),
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
@@ -821,7 +822,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         ),
                         child: Center(
                           child: Text(
-                            "유저를 찾을 수 없어요.",
+                            "회원.유저를 찾을 수 없어요".tr(),
                             style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ),
@@ -847,7 +848,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                         if (mounted) {
                                           toast(
                                             context: context,
-                                            text: "'${data.nick!.length > 8 ? '${data.nick!.substring(0, 8)}...' : data.nick}'님 차단을 풀었어요.",
+                                            text: "회원.차단을 풀었어요".tr(args: ["${data.nick!.length > 8 ? '${data.nick!.substring(0, 8)}...' : data.nick}"]),
                                             type: ToastType.grey,
                                           );
                                         }
@@ -871,7 +872,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                     ),
                                     child: Center(
                                       child: Text(
-                                        "차단 풀기",
+                                        "회원.차단 풀기".tr(),
                                         style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                       ),
                                     ),
@@ -901,7 +902,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           ),
                                           child: Center(
                                             child: Text(
-                                              "팔로잉",
+                                              "회원.팔로잉".tr(),
                                               style: kButton12BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                             ),
                                           ),
@@ -936,7 +937,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                           ),
                                           child: Center(
                                             child: Text(
-                                              "팔로우",
+                                              "회원.팔로우".tr(),
                                               style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                             ),
                                           ),
@@ -977,7 +978,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                               ),
                               child: Center(
                                 child: Text(
-                                  "메시지",
+                                  "회원.메시지".tr(),
                                   style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                                 ),
                               ),
@@ -1072,7 +1073,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "일상글",
+                                    "회원.일상글".tr(),
                                     style: kTitle16BoldStyle,
                                   ),
                                   const SizedBox(
@@ -1093,7 +1094,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "태그됨",
+                                    "회원.태그됨".tr(),
                                     style: kTitle16BoldStyle,
                                   ),
                                   const SizedBox(

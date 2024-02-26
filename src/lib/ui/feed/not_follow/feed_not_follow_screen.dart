@@ -1,5 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -50,14 +50,14 @@ class FeedNotFollowScreen extends StatelessWidget {
               height: 12,
             ),
             Text(
-              "$name님의\n팔로우 공개 피드예요!",
+              "피드.팔로우 공개 피드 제목".tr(args: [name]),
               style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
             ),
             const SizedBox(
               height: 8,
             ),
             Text(
-              "팔로우하면 피드를 볼 수 있어요.",
+              "피드.팔로우하면 피드를 볼 수 있어요".tr(),
               style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
               textAlign: TextAlign.center,
             ),
@@ -91,7 +91,7 @@ class FeedNotFollowScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
-                        '팔로우하고 피드보기',
+                        '피드.팔로우하고 피드보기'.tr(),
                         style: kBody14BoldStyle.copyWith(
                           color: kPreviousPrimaryColor,
                         ),
