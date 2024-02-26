@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,7 +54,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(
-            widget.isComment ? "댓글 신고" : "피드 신고",
+            widget.isComment ? "피드.댓글 신고".tr() : "피드.피드 신고".tr(),
           ),
           leading: IconButton(
             onPressed: () {
@@ -76,7 +77,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "어떤 점이 불편하신가요?",
+                      "피드.어떤 점이 불편하신가요?".tr(),
                       style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
                     const SizedBox(
@@ -188,7 +189,7 @@ class ReportScreenState extends ConsumerState<ReportScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
-                        '신고하기',
+                        '피드.신고하기'.tr(),
                         style: kBody14BoldStyle.copyWith(color: code == 0 || (code == 8 && directInputText!.isEmpty) ? kPreviousTextBodyColor : kPreviousNeutralColor100),
                       ),
                     ),

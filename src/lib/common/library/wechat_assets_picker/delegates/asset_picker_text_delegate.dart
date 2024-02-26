@@ -4,6 +4,7 @@
 
 import 'dart:io' show Platform;
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/rendering.dart';
 import 'package:photo_manager/photo_manager.dart' show AssetType;
 
@@ -75,7 +76,7 @@ class AssetPickerTextDelegate {
 
   /// Empty list string for empty asset list.
   /// 资源列表为空时的占位字段
-  String get emptyList => '이미지가 없어요.';
+  String get emptyList => '피드.이미지가 없어요'.tr();
 
   /// Un-supported asset type string for assets that
   /// belongs to [AssetType.other].
@@ -97,7 +98,7 @@ class AssetPickerTextDelegate {
   /// "Continue accessing some assets".
   String get accessLimitedAssets => '继续访问部分资源';
 
-  String get accessiblePathName => '접근 가능한 폴더';
+  String get accessiblePathName => '피드.접근 가능한 폴더'.tr();
 
   /// This is used in video asset item in the picker, in order
   /// to display the duration of the video or audio type of asset.

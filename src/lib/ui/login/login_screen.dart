@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -105,7 +106,7 @@ class LoginScreen extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 12.0, bottom: 94),
                 child: Text(
-                  'Close to you PUPPCAT\n더 가깝고🐱 더 사랑스럽개🐶',
+                  '로그인.인트로 문구'.tr(),
                   style: kTitle18BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4),
                   textAlign: TextAlign.center,
                 ),
@@ -129,7 +130,7 @@ class LoginScreen extends ConsumerWidget {
                         ref.read(loginStateProvider.notifier).login(provider: 'kakao');
                       },
                       label: Text(
-                        "카카오로 계속하기",
+                        "로그인.카카오로 계속하기".tr(),
                         style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       icon: Image.asset(
@@ -153,7 +154,7 @@ class LoginScreen extends ConsumerWidget {
                         ref.read(loginStateProvider.notifier).login(provider: 'naver');
                       },
                       label: Text(
-                        "네이버로 계속하기",
+                        "로그인.네이버로 계속하기".tr(),
                         style: kButton14MediumStyle.copyWith(color: kPreviousNeutralColor100),
                       ),
                       icon: Image.asset(
@@ -183,7 +184,7 @@ class LoginScreen extends ConsumerWidget {
                         ref.read(loginStateProvider.notifier).login(provider: 'google');
                       },
                       label: Text(
-                        "구글로 계속하기",
+                        "로그인.구글로 계속하기".tr(),
                         style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       icon: Image.asset(
@@ -207,7 +208,7 @@ class LoginScreen extends ConsumerWidget {
                         ref.read(loginStateProvider.notifier).login(provider: 'apple');
                       },
                       label: Text(
-                        "애플로 계속하기",
+                        "로그인.애플로 계속하기".tr(),
                         style: kButton14MediumStyle.copyWith(color: kPreviousNeutralColor100),
                       ),
                       icon: Image.asset(

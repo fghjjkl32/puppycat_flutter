@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -42,14 +43,14 @@ class UserUnknownScreen extends StatelessWidget {
               height: 12,
             ),
             Text(
-              "유저를 찾을 수 없어요.",
+              "회원.유저를 찾을 수 없어요".tr(),
               style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
             ),
             const SizedBox(
               height: 8,
             ),
             Text(
-              "닉네임이 바뀌었거나 탈퇴한 유저일 수 있어요.",
+              "회원.닉네임이 바뀌었거나 탈퇴한 유저일 수 있어요".tr(),
               style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
               textAlign: TextAlign.center,
             ),
@@ -83,7 +84,7 @@ class UserUnknownScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
-                        '홈으로 가기',
+                        '회원.홈으로 가기'.tr(),
                         style: kBody14BoldStyle.copyWith(
                           color: kPreviousPrimaryColor,
                         ),

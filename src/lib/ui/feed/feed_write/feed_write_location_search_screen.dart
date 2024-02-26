@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +23,7 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('위치 추가'),
+        title: Text('피드.위치 추가'.tr()),
         leading: IconButton(
           onPressed: () {
             context.pop();
@@ -94,7 +95,7 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                     ),
                                   ),
                                 ),
-                          hintText: "장소를 입력해 주세요.",
+                          hintText: "피드.장소를 입력해 주세요".tr(),
                           hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                         ),
                       ),
@@ -112,11 +113,11 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "최근 검색어",
+                                      "피드.최근 검색어".tr(),
                                       style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                                     ),
                                     Text(
-                                      "전체 삭제",
+                                      "피드.전체 삭제".tr(),
                                       style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
                                   ],
@@ -145,7 +146,7 @@ class FeedWriteLocationSearchScreen extends ConsumerWidget {
                                       height: 12,
                                     ),
                                     Text(
-                                      '장소를 찾을 수 없어요.',
+                                      '피드.장소를 찾을 수 없어요'.tr(),
                                       textAlign: TextAlign.center,
                                       style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                     ),

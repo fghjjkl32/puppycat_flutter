@@ -1,4 +1,5 @@
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -62,7 +63,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
 
     List<Widget> tabs = [
       Text(
-        "전체",
+        "피드.전체".tr(),
         style: kTitle16BoldStyle,
       ),
     ];
@@ -70,11 +71,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
     if (isLogined) {
       tabs.addAll([
         Text(
-          "팔로잉",
+          "피드.팔로잉".tr(),
           style: kTitle16BoldStyle,
         ),
         Text(
-          "내 피드",
+          "피드.내 피드".tr(),
           style: kTitle16BoldStyle,
         ),
       ]);
@@ -394,7 +395,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                           child: Column(
                             children: [
                               Text(
-                                "피드를 올리거나 프로필을 설정하려면\n사진 권한이 필요해요.",
+                                "피드.사진 권한".tr(),
                                 style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                 textAlign: TextAlign.center,
                               ),
@@ -402,7 +403,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                                 height: 4,
                               ),
                               Text(
-                                "언제든지 설정을 바꿀 수 있어요.",
+                                "피드.언제든지 설정을 바꿀 수 있어요".tr(),
                                 style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                 textAlign: TextAlign.center,
                               ),
@@ -417,11 +418,11 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                           context.pop();
                         },
                         confirmWidget: Text(
-                          "설정 열기",
+                          "피드.설정 열기".tr(),
                           style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                         ),
                         cancelWidget: Text(
-                          "닫기",
+                          "피드.닫기".tr(),
                           style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ));
                   },
@@ -574,7 +575,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없어요.\n피드를 올려 볼까요?',
+                                  '피드.내 피드 없음'.tr(),
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -609,7 +610,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                                     elevation: 0,
                                   ),
                                   child: Text(
-                                    '피드 올리기',
+                                    '피드.피드 올리기'.tr(),
                                     style: kButton14MediumStyle,
                                   ),
                                 ),
@@ -634,7 +635,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없어요.',
+                                  '피드.피드가 없어요'.tr(),
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -646,28 +647,49 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
               },
               itemBuilder: (context, item, index) {
                 //게시글을 수정하고 나면 FeedData 형태가 memberInfo로 들어오기 때문에 ref.read(recentFeedStateProvider.notifier).memberInfo 사용
+                if (isMyFeedList) {
+                  return FeedMainWidget(
+                    feedData: item,
+                    contentType: 'myContent',
+                    userName: ref.read(myFeedStateProvider.notifier).memberInfo!.nick!,
+                    profileImage: ref.read(myFeedStateProvider.notifier).memberInfo!.profileImgUrl ?? "",
+                    oldMemberUuid: myInfo.uuid ?? '',
+                    firstTitle: ref.read(myFeedStateProvider.notifier).memberInfo!.nick!,
+                    secondTitle: '피드',
+                    index: index,
+                    feedType: 'my',
+                    isSpecialUser: ref.read(myFeedStateProvider.notifier).memberInfo!.isBadge == 1,
+                    onTapHideButton: () async {
+                      onTapHide(
+                        context: context,
+                        ref: ref,
+                        contentType: 'myContent',
+                        contentIdx: item.idx,
+                        memberUuid: item.memberUuid!,
+                      );
+                    },
+                  );
+                }
                 return FeedMainWidget(
                   feedData: item,
-                  contentType: isMyFeedList ? 'myContent' : 'userContent',
+                  contentType: 'userContent',
                   userName: item.memberInfo?.nick ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? '',
                   profileImage: item.memberInfo?.profileImgUrl ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? "",
                   oldMemberUuid: myInfo.uuid ?? '',
                   firstTitle: item.memberInfo?.nick ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? 'unknown',
-                  secondTitle: '피드',
+                  secondTitle: '피드.피드'.tr(),
                   index: index,
-                  feedType: isMyFeedList
-                      ? 'my'
-                      : isFollowFeedList
-                          ? 'follow'
-                          : isRecentFeedList
-                              ? 'recent'
-                              : "",
+                  feedType: isFollowFeedList
+                      ? 'follow'
+                      : isRecentFeedList
+                          ? 'recent'
+                          : "",
                   isSpecialUser: item.memberInfo?.isBadge == 1 ? true : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
                   onTapHideButton: () async {
                     onTapHide(
                       context: context,
                       ref: ref,
-                      contentType: isMyFeedList ? 'myContent' : 'userContent',
+                      contentType: 'userContent',
                       contentIdx: item.idx,
                       memberUuid: item.memberUuid ?? "",
                     );
@@ -698,7 +720,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없어요.',
+                                  '피드.피드가 없어요'.tr(),
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -731,7 +753,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                         profileImage: item.memberInfo?.profileImgUrl ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.profileImgUrl ?? '',
                         oldMemberUuid: myInfo.uuid ?? '',
                         firstTitle: item.memberInfo?.nick ?? ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick ?? '',
-                        secondTitle: '피드',
+                        secondTitle: '피드.피드'.tr(),
                         index: index,
                         feedType: 'popular',
                         isSpecialUser: item.memberInfo?.isBadge == 1 ? true : ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.isBadge == 1,
@@ -862,7 +884,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                     width: 12,
                   ),
                   Text(
-                    "로그인하고 일상 공유하기",
+                    "피드.로그인하고 일상 공유하기".tr(),
                     style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   ),
                 ],

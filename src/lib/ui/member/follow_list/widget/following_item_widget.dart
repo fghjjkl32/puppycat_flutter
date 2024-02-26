@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -167,7 +168,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                               ),
                               child: Center(
                                 child: Text(
-                                  "팔로잉",
+                                  "회원.팔로잉".tr(),
                                   style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                                 ),
                               ),
@@ -194,7 +195,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                               ),
                               child: Center(
                                 child: Text(
-                                  "팔로우",
+                                  "회원.팔로우".tr(),
                                   style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                 ),
                               ),

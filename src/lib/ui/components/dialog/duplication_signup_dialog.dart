@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -35,8 +36,8 @@ class DuplicationSignUpDialog extends ConsumerWidget {
                       text: simpleType,
                       style: kBody16BoldStyle.copyWith(color: getSimpleTypeColor(simpleType), height: 1.4),
                     ),
-                    const TextSpan(
-                      text: '로 가입된 계정이 있어요!',
+                    TextSpan(
+                      text: '공통.로 가입된 계정이 있어요!'.tr(),
                       style: TextStyle(height: 1.4),
                     ),
                   ],
@@ -46,7 +47,7 @@ class DuplicationSignUpDialog extends ConsumerWidget {
                 height: 8,
               ),
               Text(
-                '아래 계정으로 로그인해 주세요.',
+                '공통.아래 계정으로 로그인해 주세요'.tr(),
                 style: kBody13RegularStyle.copyWith(color: kNeutralColor500),
               ),
               const SizedBox(
@@ -84,7 +85,7 @@ class DuplicationSignUpDialog extends ConsumerWidget {
           context.go('/home/login');
         },
         confirmWidget: Text(
-          "확인",
+          "공통.확인".tr(),
           style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
         ));
   }
