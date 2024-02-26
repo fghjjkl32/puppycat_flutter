@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -150,7 +151,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      "팔로잉",
+                                      "회원.팔로잉".tr(),
                                       style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
                                   ),
@@ -177,7 +178,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      "팔로우",
+                                      "회원.팔로우".tr(),
                                       style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                     ),
                                   ),
@@ -211,18 +212,20 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "${widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName}님의 팔로우를 끊을까요?",
+                                              "회원.팔로우 끊기 질문".tr(args: [(widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName)]),
                                               style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                             ),
                                           ],
                                         ),
                                       ),
                                       Text(
-                                        "내 팔로워 목록에서는 삭제되지만",
+                                        "회원.내 팔로워 목록에서는 삭제되지만".tr(),
                                         style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                       ),
                                       Text(
-                                        "${widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName}님이 ${myInfo.nick!.length > 8 ? '${myInfo.nick?.substring(0, 8)}...' : myInfo.nick}님을 다시 팔로우할 수 있어요.",
+                                        "회원.다시 팔로우 가능".tr(args: [
+                                          "${widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName}님이 ${myInfo.nick!.length > 8 ? '${myInfo.nick?.substring(0, 8)}...' : myInfo.nick}"
+                                        ]),
                                         style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                       ),
                                       const SizedBox(height: 20),
@@ -244,7 +247,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                               ),
                                               child: Center(
                                                 child: Text(
-                                                  "닫기",
+                                                  "회원.닫기".tr(),
                                                   style: kButton14BoldStyle.copyWith(color: kTextSecondary),
                                                 ),
                                               ),
@@ -271,7 +274,7 @@ class FollowerItemWidgetState extends ConsumerState<FollowerItemWidget> {
                                               ),
                                               child: Center(
                                                 child: Text(
-                                                  "팔로우 끊기",
+                                                  "회원.팔로우 끊기".tr(),
                                                   style: kButton14BoldStyle.copyWith(color: kTextWhite),
                                                 ),
                                               ),

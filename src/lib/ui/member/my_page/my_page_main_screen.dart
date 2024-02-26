@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -174,7 +175,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                               pinned: true,
                               floating: false,
                               backgroundColor: appBarColor,
-                              title: const Text('마이페이지'),
+                              title: Text('회원.마이페이지'.tr()),
                               leading: IconButton(
                                 onPressed: () {
                                   ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
@@ -243,7 +244,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                     list.add(
                                       diaryPopUpMenuItem(
                                         'myActivity',
-                                        '내 활동',
+                                        '회원.내 활동'.tr(),
                                         const Icon(
                                           Puppycat_social.icon_myactive,
                                           size: 22,
@@ -259,7 +260,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                     list.add(
                                       diaryPopUpMenuItem(
                                         'postsManagement',
-                                        '내 글 관리',
+                                        '회원.내 글 관리'.tr(),
                                         const Icon(
                                           Puppycat_social.icon_mywrite,
                                           size: 22,
@@ -275,7 +276,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                     list.add(
                                       diaryPopUpMenuItem(
                                         'setting',
-                                        '설정',
+                                        '회원.설정'.tr(),
                                         const Icon(
                                           Puppycat_social.icon_set_small,
                                           size: 22,
@@ -356,7 +357,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없어요.',
+                                  '회원.피드가 없어요'.tr(),
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -400,7 +401,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
                           'firstTitle': '${ref.watch(myInformationStateProvider).nick}',
-                          'secondTitle': '피드',
+                          'secondTitle': '회원.피드'.tr(),
                           'memberUuid': ref.read(myInformationStateProvider).uuid ?? '',
                           'contentIdx': '${item.idx}',
                           'contentType': 'myContent',
@@ -498,7 +499,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                   height: 12,
                                                                 ),
                                                                 Text(
-                                                                  "아직 '좋아요'가 없어요.",
+                                                                  "회원.아직 '좋아요'가 없어요".tr(),
                                                                   textAlign: TextAlign.center,
                                                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                                                 ),
@@ -602,7 +603,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                                                             height: 12,
                                                                           ),
                                                                           Text(
-                                                                            '아직 댓글이 없어요.\n피드에 댓글을 남겨 보세요.',
+                                                                            '회원.댓글 빈리스트'.tr(),
                                                                             textAlign: TextAlign.center,
                                                                             style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                                                           ),
@@ -796,7 +797,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없어요.',
+                                  '회원.피드가 없어요'.tr(),
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -840,7 +841,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
                           'firstTitle': ref.read(myInformationStateProvider).nick ?? 'unknown',
-                          'secondTitle': '태그됨',
+                          'secondTitle': '회원.태그됨'.tr(),
                           'memberUuid': ref.read(myInfoStateProvider).uuid,
                           'contentIdx': '${item.idx}',
                           'contentType': 'myTagContent',
@@ -996,7 +997,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                           child: Row(
                             children: [
                               Text(
-                                "팔로워 ",
+                                "회원.팔로워 띄어쓰기".tr(),
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
@@ -1008,7 +1009,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
-                                "팔로잉 ",
+                                "회원.팔로잉 띄어쓰기".tr(),
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
@@ -1230,7 +1231,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "일상글",
+                            "회원.일상글".tr(),
                             style: kTitle16BoldStyle,
                           ),
                           const SizedBox(
@@ -1251,7 +1252,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "태그됨",
+                            "회원.태그됨".tr(),
                             style: kTitle16BoldStyle,
                           ),
                           const SizedBox(

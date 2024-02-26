@@ -1,9 +1,8 @@
 import 'package:channel_talk_flutter/channel_talk_flutter.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -60,7 +59,7 @@ class InspectScreenState extends ConsumerState<InspectScreen> {
                         child: Column(
                           children: [
                             Text(
-                              "서비스 점검 중",
+                              "점검.서비스 점검 중".tr(),
                               style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                               textAlign: TextAlign.center,
                             ),
@@ -71,6 +70,7 @@ class InspectScreenState extends ConsumerState<InspectScreen> {
                               ),
                               child: Column(
                                 children: [
+                                  //TODO: 번역 어떻게 적용 해야 할지 고민 필요
                                   Text(
                                     DateFormat('yyyy년 MM월 dd일 (EEE) hh:mm', 'ko_KR').format(DateTime.parse(ref.watch(inspectProvider).startDate)),
                                     style: kBody13BoldStyle.copyWith(color: kPreviousErrorColor),
@@ -96,7 +96,7 @@ class InspectScreenState extends ConsumerState<InspectScreen> {
                             ),
                             ref.watch(inspectProvider).message == null || ref.watch(inspectProvider).message == ''
                                 ? Text(
-                                    "이용에 불편을 드려 죄송해요.\n안정적인 서비스를 위해 서버를 점검하고 있어요.\n더 좋은 모습으로 돌아올게요.",
+                                    "점검.점검 문구".tr(),
                                     style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     textAlign: TextAlign.center,
                                   )
@@ -159,7 +159,7 @@ class InspectScreenState extends ConsumerState<InspectScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Text(
-                            '1:1 채널톡',
+                            '점검.1:1 채널톡'.tr(),
                             style: kBody14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                           ),
                         ),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,7 +26,7 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
           child: Text(
-            '다시 만나 반가워요!\n이전 활동을 이어서 할까요?',
+            '공통.환영문구'.tr(),
             style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4),
             textAlign: TextAlign.center,
           ),
@@ -63,7 +64,7 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
               backgroundColor: MaterialStateProperty.all<Color>(kPreviousPrimaryColor),
             ),
             child: Text(
-              '이어서 하기',
+              '공통.이어서 하기'.tr(),
               style: kBody14BoldStyle.copyWith(
                 color: kPreviousNeutralColor100,
               ),
@@ -91,7 +92,7 @@ class WithDrawalPendingSheetItem extends ConsumerWidget {
                 context.pop();
               },
               child: Text(
-                '다른 계정으로 로그인하기',
+                '공통.다른 계정으로 로그인하기'.tr(),
                 style: kBody12SemiBoldStyle.copyWith(
                   color: kPreviousTextBodyColor,
                 ),

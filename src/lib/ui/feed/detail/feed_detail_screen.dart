@@ -1,4 +1,5 @@
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -193,7 +194,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Text(
-                                "팔로잉",
+                                "피드.팔로잉".tr(),
                                 style: kTitle14BoldStyle.copyWith(color: kPreviousNeutralColor500),
                               ),
                             ),
@@ -211,7 +212,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Text(
-                                "팔로우",
+                                "피드.팔로우".tr(),
                                 style: kTitle14BoldStyle.copyWith(color: kTextActionPrimary),
                               ),
                             ),
@@ -352,7 +353,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                                 height: 12,
                                               ),
                                               Text(
-                                                '피드가 없어요.',
+                                                '피드.피드가 없어요'.tr(),
                                                 textAlign: TextAlign.center,
                                                 style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                               ),
@@ -378,7 +379,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                               height: 12,
                                             ),
                                             Text(
-                                              "대단해요!\n${ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick}님의 피드를 모두 확인했어요!",
+                                              "피드.피드 모두 확인 제목".tr(args: ["${ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick}"]),
                                               textAlign: TextAlign.center,
                                               style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                             ),
@@ -386,7 +387,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                               height: 8,
                                             ),
                                             Text(
-                                              "다른 유저의 피드도 보러 갈까요?",
+                                              "피드.다른 유저의 피드도 보러 갈까요?".tr(),
                                               textAlign: TextAlign.center,
                                               style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                             ),
@@ -405,7 +406,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.all(20.0),
                                                     child: Text(
-                                                      "다른 피드 보러 가기",
+                                                      "피드.다른 피드 보러 가기".tr(),
                                                       textAlign: TextAlign.center,
                                                       style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
                                                     ),
@@ -435,7 +436,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                           height: 12,
                                         ),
                                         Text(
-                                          "대단해요!\n${ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick}님의 피드를 모두 확인했어요!",
+                                          "피드.피드 모두 확인 제목".tr(args: ["${ref.read(firstFeedDetailStateProvider.notifier).memberInfo?.nick}"]),
                                           textAlign: TextAlign.center,
                                           style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                         ),
@@ -443,7 +444,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                           height: 8,
                                         ),
                                         Text(
-                                          "다른 유저의 피드도 보러 갈까요?",
+                                          "피드.다른 유저의 피드도 보러 갈까요?".tr(),
                                           textAlign: TextAlign.center,
                                           style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                                         ),
@@ -462,7 +463,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
                                               child: Padding(
                                                 padding: const EdgeInsets.all(20.0),
                                                 child: Text(
-                                                  "다른 피드 보러 가기",
+                                                  "피드.다른 피드 보러 가기".tr(),
                                                   textAlign: TextAlign.center,
                                                   style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
                                                 ),

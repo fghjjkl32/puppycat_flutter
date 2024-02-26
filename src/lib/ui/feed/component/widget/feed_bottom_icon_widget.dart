@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -135,7 +137,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                                       height: 12,
                                                     ),
                                                     Text(
-                                                      "아직 ‘좋아요'가 없어요.",
+                                                      "피드.아직 ‘좋아요'가 없어요".tr(),
                                                       textAlign: TextAlign.center,
                                                       style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                                     ),
@@ -229,7 +231,7 @@ class MyPageMainState extends ConsumerState<FeedBottomIconWidget> with TickerPro
                                                       height: 12,
                                                     ),
                                                     Text(
-                                                      "아직 ‘좋아요'가 없어요.",
+                                                      "피드.아직 ‘좋아요'가 없어요".tr(),
                                                       textAlign: TextAlign.center,
                                                       style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                                     ),

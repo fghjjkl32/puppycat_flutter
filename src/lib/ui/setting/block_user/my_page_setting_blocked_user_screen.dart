@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,8 +58,8 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "차단 유저 관리",
+          title: Text(
+            "설정.차단 유저 관리".tr(),
           ),
           leading: IconButton(
             onPressed: () {
@@ -134,7 +135,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                     ),
                                   ),
                                 ),
-                          hintText: "닉네임으로 검색해 보세요.",
+                          hintText: "설정.닉네임으로 검색해 보세요".tr(),
                           hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                         ),
                       ),
@@ -165,7 +166,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                       height: 12,
                                     ),
                                     Text(
-                                      blockSearchController.text == "" ? '차단한 유저가 없어요.' : '유저를 찾을 수 없어요.\n닉네임을 다시 확인해 주세요.',
+                                      blockSearchController.text == "" ? '설정.차단한 유저가 없어요'.tr() : '설정.유저를 찾을 수 없어요'.tr(),
                                       textAlign: TextAlign.center,
                                       style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                     ),
@@ -191,7 +192,7 @@ class MyPageSettingBlockedUserScreenState extends ConsumerState<MyPageSettingBlo
                                 return BlockUserItemWidget(
                                   profileImage: lists[index].profileImgUrl,
                                   userName: lists[index].nick!,
-                                  content: lists[index].intro! == "" ? "소개글이 없어요." : lists[index].intro!,
+                                  content: lists[index].intro! == "" ? "설정.소개글이 없어요".tr() : lists[index].intro!,
                                   isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
                                   memberUuid: lists[index].memberUuid!,
                                 );

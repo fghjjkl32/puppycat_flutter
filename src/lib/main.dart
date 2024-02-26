@@ -272,14 +272,14 @@ class CustomError extends StatelessWidget {
               height: 12,
             ),
             Text(
-              "요청하신 페이지를 찾을 수 없어요.",
+              "요청하신 페이지를 찾을 수 없어요".tr(),
               style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
             ),
             const SizedBox(
               height: 8,
             ),
             Text(
-              "입력한 주소가 잘못되었거나\n페이지를 찾을 수 없어요.",
+              "페이지를 찾을 수 없어요".tr(),
               style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
               textAlign: TextAlign.center,
             ),
@@ -313,7 +313,7 @@ class CustomError extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
-                        '홈으로 이동',
+                        '홈으로 이동'.tr(),
                         style: kBody14BoldStyle.copyWith(
                           color: kPreviousPrimaryColor,
                         ),
