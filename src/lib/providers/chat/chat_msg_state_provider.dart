@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -16,6 +17,7 @@ part 'chat_msg_state_provider.g.dart';
 ///TODO
 ///안쓸 수도 있음
 final chatBubbleFocusProvider = StateProvider<int>((ref) => 0);
+final chatReadStatusProvider = StateProvider<Map<String, dynamic>>((ref) => {});
 
 @Riverpod(keepAlive: true)
 class ChatMessageState extends _$ChatMessageState {
@@ -39,25 +41,32 @@ class ChatMessageState extends _$ChatMessageState {
       List<ChatMessageModel> chatMsgList = [];
 
       int idxCnt = 0;
+
       for (var msg in _initialChatHistoryList) {
-        List<String> msgSplit = msg.split('|');
+        Map<String, dynamic> msgMap = jsonDecode(msg);
+
+        if (msgMap['type'] == 'READ') {
+          return;
+        }
 
         ChatMessageModel chatMessageModel = ChatMessageModel(
           idx: idxCnt++,
           id: '',
-          isMine: msgSplit[2] == _myInfo.uuid,
-          userID: msgSplit[2],
-          nick: msgSplit[1],
+          type: msgMap['type'],
+          isMine: msgMap['senderMemberUuid'] == _myInfo.uuid,
+          userID: msgMap['senderMemberUuid'] ?? '',
+          nick: msgMap['senderNick'] ?? 'unknown',
           avatarUrl: '',
-          msg: msgSplit[3],
-          dateTime: '1707853394',
-          //DateTime(2024, 02, 14).millisecondsSinceEpoch.toString(),
-          // msgSplit[4],
+          msg: msgMap['message'] ?? '',
+          dateTime: msgMap['regDate'],
+          score: msgMap['score'],
+          isRead: _checkReadState(msgMap['score']),
+
+          ///TODO
           isEdited: false,
           reaction: 0,
           hasReaction: false,
           isReply: false,
-          isRead: false,
           isConsecutively: false,
           isViewTime: true,
         );
@@ -99,7 +108,33 @@ class ChatMessageState extends _$ChatMessageState {
     }
   }
 
+  bool _checkReadState(String score) {
+    final chatMemeberScores = ref.read(chatReadStatusProvider);
+    if (chatMemeberScores.isEmpty) {
+      return false;
+    }
+
+    bool isRead = false;
+
+    ///NOTE
+    ///일단 1명이라도 읽었으면 읽음 처리 되도록 (텔레그램 처럼)
+    chatMemeberScores.forEach((key, value) {
+      print('int.parse(value) ${int.parse(value)} / int.parse(score) ${int.parse(score)}');
+      if (int.parse(value) >= int.parse(score)) {
+        isRead = true;
+      }
+    });
+
+    print('isRead $isRead');
+    return isRead;
+  }
+
   void addChatMessage(ChatMessageModel chatMessageModel) {
+    if (chatMessageModel.type == 'READ') {
+      _changeReadStatus(chatMessageModel);
+      return;
+    }
+
     int idxCnt = 1;
 
     if (state.itemList != null) {
@@ -120,6 +155,37 @@ class ChatMessageState extends _$ChatMessageState {
       state.itemList!.insert(0, msg);
       // List<ChatMessageModel> msgList = List.from(state.itemList!.reversed);
     }
+
+    state.notifyListeners();
+  }
+
+  void _changeReadStatus(ChatMessageModel chatMessageModel) {
+    if (state.itemList == null) {
+      return;
+    }
+
+    final myInfo = ref.read(myInfoStateProvider);
+
+    if (myInfo.uuid == chatMessageModel.userID) {
+      return;
+    }
+
+    List<ChatMessageModel> chatList = state.itemList!;
+    List<ChatMessageModel> unReadChatList = chatList.where((e) => e.isRead == false).toList();
+
+    for (var chatModel in unReadChatList) {
+      final targetIdx = chatList.indexWhere((element) => element.score == chatModel.score);
+
+      if (targetIdx < 0) {
+        continue;
+      }
+
+      state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+        isRead: true,
+      );
+    }
+
+    ref.read(chatReadStatusProvider.notifier).state[chatMessageModel.userID] = chatMessageModel.score;
 
     state.notifyListeners();
   }

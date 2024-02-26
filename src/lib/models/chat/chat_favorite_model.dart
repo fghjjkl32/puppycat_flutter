@@ -56,7 +56,6 @@ class ChatFavoriteModel with _$ChatFavoriteModel {
   factory ChatFavoriteModel({
     required String regDateTz,
     required String memberUuid,
-    @JsonKey(name: 'result_cd') required String resultCd,
     required String regDate,
     required int sort,
     required int type,

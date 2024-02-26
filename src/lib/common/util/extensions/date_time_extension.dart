@@ -56,7 +56,6 @@ extension DateTimeExtension on DateTime {
   /// Returns a simple time String.
   /// TODO: Add localization
   String timeOfDay() {
-    print('this time $this / $hour / $minute');
     return '${hour > 11 ? "pm" : "am"} ${_z(hour % 12 == 0 ? 12 : hour % 12)}:${_z(minute)}'.toUpperCase();
   }
 
@@ -92,6 +91,7 @@ extension DateTimeExtension on DateTime {
   }
 
   String localizedTimeDayDiff() {
+    print('this time : $this');
     final now = DateTime.now();
     final targetDT = DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
 
@@ -103,6 +103,8 @@ extension DateTimeExtension on DateTime {
     int hours = difference.inHours.abs();
     int minutes = difference.inMinutes.abs();
     int seconds = difference.inSeconds.abs();
+
+    print('days $days / hours $hours / minutes $minutes / seconds $seconds');
 
     if (sameDay) {
       if (hours > 0) {
@@ -122,6 +124,9 @@ extension DateTimeExtension on DateTime {
       if (days > 30) {
         return '${year.toString()}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
       } else {
+        if (days <= 0) {
+          days = 1;
+        }
         return '$days${'메시지.일 전'.tr()}';
       }
     }

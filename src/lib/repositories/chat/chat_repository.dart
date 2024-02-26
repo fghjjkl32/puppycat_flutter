@@ -120,12 +120,12 @@ class ChatRepository {
     ResponseModel responseModel;
 
     if (isPin) {
+      responseModel = await _chatService.unSetPinRoom(roomUuid: roomUuid);
+    } else {
       Map<String, dynamic> body = {
-        'uuid': roomUuid,
+        'roomUuid': roomUuid,
       };
       responseModel = await _chatService.setPinRoom(body: body);
-    } else {
-      responseModel = await _chatService.unSetPinRoom(roomUuid: roomUuid);
     }
 
     if (!responseModel.result) {
@@ -133,7 +133,7 @@ class ChatRepository {
         msg: responseModel.message ?? '',
         code: responseModel.code,
         refer: 'ChatRepository',
-        caller: 'exitChatRoom',
+        caller: 'pinChatRoom',
         arguments: [roomUuid, isPin],
       );
     }
@@ -177,12 +177,12 @@ class ChatRepository {
     ResponseModel responseModel;
 
     if (isFavorite) {
+      responseModel = await _chatService.unSetChatFavoriteMember(targetMemberUuid: targetMemberUuid);
+    } else {
       Map<String, dynamic> body = {
         'targetMemberUuid': targetMemberUuid,
       };
       responseModel = await _chatService.setChatFavoriteMember(body: body);
-    } else {
-      responseModel = await _chatService.unSetChatFavoriteMember(targetMemberUuid: targetMemberUuid);
     }
 
     if (!responseModel.result) {
@@ -190,7 +190,7 @@ class ChatRepository {
         msg: responseModel.message ?? '',
         code: responseModel.code,
         refer: 'ChatRepository',
-        caller: 'exitChatRoom',
+        caller: 'favoriteChatMember',
         arguments: [targetMemberUuid, isFavorite],
       );
     }

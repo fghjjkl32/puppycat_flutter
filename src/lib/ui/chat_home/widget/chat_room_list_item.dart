@@ -298,9 +298,11 @@ class ChatRoomItem extends ConsumerWidget {
                           ),
                           const Spacer(),
                           Padding(
-                            padding: EdgeInsets.only(left: 4.0),
+                            padding: const EdgeInsets.only(left: 4.0),
                             child: Text(
-                              DateTime.parse(roomModel.regDate).localizedTimeDayDiff(),
+                              roomModel.lastMessage == null
+                                  ? DateTime.fromMillisecondsSinceEpoch(DateTime.parse(roomModel.regDate).toLocal().millisecondsSinceEpoch).localizedTimeDayDiff()
+                                  : DateTime.fromMillisecondsSinceEpoch(int.parse(roomModel.lastMessage!.regDate) * 1000).localizedTimeDayDiff(),
                               style: kBadge10MediumStyle.copyWith(color: kNeutralColor500),
                             ),
                           ),
@@ -310,7 +312,7 @@ class ChatRoomItem extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              roomModel.lastMsg ?? '',
+                              roomModel.lastMessage?.message ?? '새로운 채팅이 생성되었습니다.',
                               style: kBody12RegularStyle400.copyWith(color: kPreviousTextBodyColor, height: 1.3),
                               softWrap: false,
                               maxLines: 2,
@@ -321,20 +323,20 @@ class ChatRoomItem extends ConsumerWidget {
                             width: 32.0,
                           ),
                           //TODO 수정 필요
-                          // if (roomModel.newCount > 0)
-                          //   Container(
-                          //     width: 20.w,
-                          //     height: 20.h,
-                          //     decoration: const BoxDecoration(color: kBadgeColor, shape: BoxShape.circle),
-                          //     child: Center(
-                          //       child: roomModel.newCount > 0
-                          //           ? Text(
-                          //               roomModel.newCount.toString(),
-                          //               style: kBadge8RegularStyle.copyWith(color: kNeutralColor100),
-                          //             )
-                          //           : const SizedBox.shrink(),
-                          //     ),
-                          //   ),
+                          if (roomModel.noReadCount > 0)
+                            Container(
+                              width: 20,
+                              height: 20,
+                              decoration: const BoxDecoration(color: kErrorColor400, shape: BoxShape.circle),
+                              child: Center(
+                                child: roomModel.noReadCount > 0
+                                    ? Text(
+                                        roomModel.noReadCount.toString(),
+                                        style: kBadge8RegularStyle.copyWith(color: kNeutralColor100),
+                                      )
+                                    : const SizedBox.shrink(),
+                              ),
+                            ),
                         ],
                       ),
                     ],

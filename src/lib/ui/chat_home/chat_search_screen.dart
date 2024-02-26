@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_debounce/easy_throttle.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -9,10 +10,12 @@ import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_model.dart';
 import 'package:pet_mobile_social_flutter/models/follow/follow_data.dart';
 import 'package:pet_mobile_social_flutter/models/search/search_data.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_favorite_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_follow_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_room_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_search_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
@@ -37,15 +40,19 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
 
   late PagingController<int, SearchData> _searchPagingController; // = PagingController(firstPageKey: 1);
   late PagingController<int, FollowData> _followListPagingController;
+  late PagingController<int, ChatFavoriteModel> _favoriteListPagingController;
 
   @override
   void initState() {
     _searchPagingController = ref.read(chatUserSearchStateProvider);
     _followListPagingController = ref.read(chatFollowUserStateProvider);
+    _favoriteListPagingController = ref.read(chatFavoriteStateProvider);
+
     ref.read(followStateProvider.notifier).initFollowList(memberUuid: ref.read(myInfoStateProvider).uuid ?? '');
     super.initState();
 
     _searchPagingController.refresh();
+    _favoriteListPagingController.refresh();
     _followListPagingController.refresh();
   }
 
@@ -54,10 +61,28 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
     super.dispose();
   }
 
-  void _onTabListItem(String targetMemberUuid) {
-    print('targetMemberUuid $targetMemberUuid');
-    ref.read(chatUserSearchStateProvider.notifier).searchUser('');
-    context.pop(targetMemberUuid);
+  Future<void> _onTabListItem({
+    required String targetMemberUuid,
+    required String titleName,
+    required String targetProfileImgUrl,
+  }) async {
+    print('targetMemberUuid $targetMemberUuid / titleName $titleName / targetProfileImgUrl $targetProfileImgUrl');
+    EasyThrottle.throttle(
+      'elevatedButtonThrottle',
+      const Duration(
+        milliseconds: 2500,
+      ),
+      () async {
+        await ref
+            .read(chatRoomListStateProvider.notifier)
+            .enterChatRoom(
+              targetMemberUuid: targetMemberUuid,
+              titleName: titleName,
+              targetProfileImgUrl: targetProfileImgUrl,
+            )
+            .then((value) => ref.read(chatRoomListStateProvider).refresh());
+      },
+    );
   }
 
   Widget _buildNoItemsFound(String text) {
@@ -106,10 +131,42 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
               nick: item.nick ?? 'unknown',
               intro: item.intro ?? '',
               profileImgUrl: item.profileImgUrl ?? '',
-              onTab: _onTabListItem,
+              onTab: () => _onTabListItem(
+                targetMemberUuid: item.memberUuid ?? '',
+                titleName: item.nick ?? 'unknown',
+                targetProfileImgUrl: item.profileImgUrl ?? '',
+              ),
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildFavoriteUsers() {
+    return PagedSliverList<int, ChatFavoriteModel>(
+      // shrinkWrap: true,
+      shrinkWrapFirstPageIndicators: true,
+      pagingController: _favoriteListPagingController,
+      // physics: const NeverScrollableScrollPhysics(),
+      builderDelegate: PagedChildBuilderDelegate<ChatFavoriteModel>(
+        noItemsFoundIndicatorBuilder: (context) {
+          return const SizedBox.shrink();
+        },
+        itemBuilder: (context, item, index) {
+          return ChatSearchListItem(
+            memberUuid: item.targetMemberUuid ?? '',
+            nick: item.nick ?? 'unknown',
+            intro: '',
+            //TODO
+            profileImgUrl: item.profileImgUrl ?? '',
+            onTab: () => _onTabListItem(
+              targetMemberUuid: item.targetMemberUuid ?? '',
+              titleName: item.nick ?? 'unknown',
+              targetProfileImgUrl: item.profileImgUrl ?? '',
+            ),
+          );
+        },
       ),
     );
   }
@@ -125,11 +182,15 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
         },
         itemBuilder: (context, item, index) {
           return ChatSearchListItem(
-            memberUuid: item.memberUuid ?? '',
+            memberUuid: item.followUuid ?? '',
             nick: item.followNick ?? 'unknown',
             intro: item.intro ?? '',
             profileImgUrl: item.profileImgUrl ?? '',
-            onTab: _onTabListItem,
+            onTab: () => _onTabListItem(
+              targetMemberUuid: item.followUuid ?? '',
+              titleName: item.followNick ?? 'unknown',
+              targetProfileImgUrl: item.profileImgUrl ?? '',
+            ),
           );
         },
       ),
@@ -176,6 +237,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
                         ),
                 ),
               ),
+              if (_isFavoriteExpanded) _buildFavoriteUsers(),
               const SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.only(top: 20.0, bottom: 20.0),

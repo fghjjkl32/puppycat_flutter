@@ -11,6 +11,7 @@ import 'package:pet_mobile_social_flutter/models/chat/chat_enter_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_msg_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat_home/widget/chat_msg_item.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -69,10 +70,37 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         throw 'Chat Enter Model is Null';
       }
 
-      _chatController = ChatController(roomUuid: _chatEnterModel!.roomId, token: _chatEnterModel!.generateToken);
-      _chatController.connect(chatWSBaseUrl, (chatMessageModel) {
-        ref.read(chatMessageStateProvider.notifier).addChatMessage(chatMessageModel);
-      });
+      // ref.read(chatRoomListStateProvider).refresh();
+
+      final myInfo = ref.read(myInfoStateProvider);
+      final targetMemberList = [widget.targetMemberUuid, myInfo.uuid ?? ''];
+
+      // print('1 targetMemberList $targetMemberList');
+      // // targetMemberList.remove(myInfo.uuid);
+      // print('2 targetMemberList $targetMemberList');
+
+      _chatController = ChatController(roomUuid: _chatEnterModel!.roomId, token: _chatEnterModel!.generateToken, memberUuid: myInfo.uuid ?? '', targetMemberUuidList: targetMemberList);
+      await _chatController.connect(
+          url: chatWSBaseUrl,
+          onConnected: () {
+            if (_chatHistoryPagingController.itemList == null) {
+              print('_chatHistoryPagingController.itemList == null');
+              return;
+            }
+
+            if (_chatHistoryPagingController.itemList!.isEmpty) {
+              print('_chatHistoryPagingController.itemList.length <= 0');
+              return;
+            }
+
+            final lastChatModel = _chatHistoryPagingController.itemList!.first;
+            _chatController.read(msg: lastChatModel.msg, score: lastChatModel.score, memberUuid: myInfo.uuid ?? '');
+            print('1111111111111');
+          },
+          onSubscribeCallBack: (chatMessageModel) {
+            ref.read(chatMessageStateProvider.notifier).addChatMessage(chatMessageModel);
+          });
+
       return _chatEnterModel!;
     } catch (e) {
       rethrow;
@@ -215,6 +243,8 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final myInfo = ref.read(myInfoStateProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.nick),
@@ -279,7 +309,12 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                           double chatMsgBottomPadding = ref.read(chatMessageStateProvider.notifier).getChatMsgBottomPadding(index);
                           // double chatMsgPadding = isViewMsgTime ? 16.0 : 2.0;
 
-                          final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(item.dateTime) * 1000);
+                          // final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(item.dateTime) * 1000);
+                          //
+                          // if (index == 0) {
+                          //   print('last item $item');
+                          //   _chatController.read(msg: item.msg, score: item.score, memberUuid: myInfo.uuid ?? '');
+                          // }
 
                           return Padding(
                             padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, chatMsgBottomPadding),
@@ -289,7 +324,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                 Row(
                                   // mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
                                   children: [
-                                    _buildProfile(isViewProfileImg, ''),
+                                    _buildProfile(isViewProfileImg, widget.profileImgUrl ?? ''),
                                     Expanded(
                                       child: AutoScrollTag(
                                         key: UniqueKey(),

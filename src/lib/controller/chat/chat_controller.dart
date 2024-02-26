@@ -11,10 +11,14 @@ class ChatController {
   late AbstractChatController _chatController;
   final String roomUuid;
   final String? token;
+  final String memberUuid;
+  final List<String> targetMemberUuidList;
 
   ChatController({
     required this.roomUuid,
+    required this.memberUuid,
     this.token,
+    required this.targetMemberUuidList,
     ChatType type = ChatType.stomp,
   }) {
     _chatController = createChatController(type);
@@ -25,18 +29,19 @@ class ChatController {
     switch (type) {
       case ChatType.stomp:
       default:
-        abstractChatController = StompController(token: token ?? '', roomUuid: roomUuid);
+        abstractChatController = StompController(token: token ?? '', roomUuid: roomUuid, memberUuid: memberUuid, targetMemberUuidList: targetMemberUuidList);
         break;
     }
 
     return abstractChatController;
   }
 
-  Future<void> connect(
+  Future<void> connect({
     String? url,
+    Function()? onConnected,
     Function(ChatMessageModel)? onSubscribeCallBack,
-  ) async {
-    _chatController.connect(url: url ?? chatWSBaseUrl, onSubscribeCallBack: onSubscribeCallBack);
+  }) async {
+    await _chatController.connect(url: url ?? chatWSBaseUrl, onConnected: onConnected, onSubscribeCallBack: onSubscribeCallBack);
   }
 
   Future<void> disconnect() async {
@@ -45,5 +50,13 @@ class ChatController {
 
   Future<void> send(String msg) async {
     _chatController.send(msg: msg);
+  }
+
+  Future<void> read({
+    required String msg,
+    required String score,
+    required String memberUuid,
+  }) async {
+    _chatController.read(msg: msg, score: score, memberUuid: memberUuid);
   }
 }

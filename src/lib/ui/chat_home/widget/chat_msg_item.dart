@@ -505,19 +505,19 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
         children: [
           ///TODO
           ///읽음,안읽음 처리
-          // isMine
-          //     ? isRead
-          //         ? const ImageIcon(
-          //             AssetImage('assets/image/chat/icon_check_pair.png'),
-          //             // size: 10.w,
-          //             color: kNeutralColor500,
-          //           )
-          //         : const ImageIcon(
-          //             AssetImage('assets/image/chat/icon_check_single.png'),
-          //             // size: 10.w,
-          //             color: kNeutralColor500,
-          //           )
-          //     : const SizedBox.shrink(),
+          isMine
+              ? isRead
+                  ? const ImageIcon(
+                      AssetImage('assets/image/chat/icon_check_pair.png'),
+                      // size: 10.w,
+                      color: kNeutralColor500,
+                    )
+                  : const ImageIcon(
+                      AssetImage('assets/image/chat/icon_check_single.png'),
+                      // size: 10.w,
+                      color: kNeutralColor500,
+                    )
+              : const SizedBox.shrink(),
           chatMessageModel.isViewTime
               ? Text(
                   dateTime.timeOfDay(),

@@ -9,6 +9,7 @@ class ChatEnterModel with _$ChatEnterModel {
     required String roomId,
     required String generateToken,
     List<String>? log,
+    Map<String, dynamic>? memberScore,
   }) = _ChatEnterModel;
 
   factory ChatEnterModel.fromJson(Map<String, dynamic> json) => _$ChatEnterModelFromJson(json);
