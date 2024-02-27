@@ -113,18 +113,15 @@ class APIErrorState extends _$APIErrorState {
         break;
       case 'ECON-3986': //팔로우 공개 게시물, 페이지 이동
 
-        goRouter.push('/toast/errorToast');
-
-        // if (apiException.arguments != null) {
-        //   final argsMap = apiException.arguments!.first as Map<String, dynamic>;
-        //   final Map<String, dynamic> extraMap = {
-        //     'name': argsMap['name'],
-        //     'memberUuid': argsMap['memberUuid'],
-        //   };
-        //   goRouter.push('/feed/notFollow', extra: extraMap);
-        // } else {
-        //   goRouter.push('/toast/errorToast');
-        // }
+        if (apiException.arguments != null) {
+          final Map<String, dynamic> extraMap = {
+            'nick': apiException.arguments!.first.nick,
+            'memberUuid': apiException.arguments!.first.memberUuid,
+          };
+          goRouter.push('/feed/notFollow', extra: extraMap);
+        } else {
+          goRouter.push('/toast/errorToast');
+        }
         break;
       case 'ECON-3982': //팔로우 공개 게시물, 페이지 이동, 미로그인 시 로그인 화면으로
         goRouter.pushReplacement("/home/login");

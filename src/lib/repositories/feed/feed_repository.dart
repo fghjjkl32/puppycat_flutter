@@ -233,12 +233,15 @@ class FeedRepository {
   }) async {
     FeedResponseModel responseModel = await _feedService.getMyContentDetail(contentIdx, imgLimit);
 
+    print("responseModel.data ${responseModel.data}");
+
     if (!responseModel.result) {
       throw APIException(
         msg: responseModel.message ?? '',
         code: responseModel.code,
         refer: 'FeedRepository',
         caller: 'getMyContentsDetail',
+        arguments: [responseModel.data],
       );
     }
 
@@ -276,6 +279,7 @@ class FeedRepository {
         code: responseModel.code,
         refer: 'FeedRepository',
         caller: 'getContentDetail',
+        arguments: [responseModel.data],
       );
     }
 

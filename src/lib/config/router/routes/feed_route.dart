@@ -234,7 +234,7 @@ class NotFollowRoute extends GoRouteData {
       path: 'notFollow',
       name: 'notFollow',
       builder: (BuildContext context, GoRouterState state) {
-        String name = '';
+        String nick = '';
         String memberUuid = '';
         if (state.extra != null) {
           Map<String, dynamic> extraMap = {};
@@ -244,13 +244,13 @@ class NotFollowRoute extends GoRouteData {
             memberUuid = extraMap['memberUuid'];
           }
 
-          if (extraMap.containsKey('name')) {
-            name = extraMap['name'];
+          if (extraMap.containsKey('nick')) {
+            nick = extraMap['nick'];
           }
         }
 
         return FeedNotFollowScreen(
-          name: name,
+          nick: nick,
           memberUuid: memberUuid,
         );
       },

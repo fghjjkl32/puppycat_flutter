@@ -45,7 +45,7 @@ class FollowUserStateNotifier extends StateNotifier<Map<String, bool>> {
               print("언팔로우 API 호출");
             }
             // API 호출 후 초기 상태 업데이트
-            _initialFollowStates[memberUuid] = followState;
+            setInitFollowState(memberUuid, followState);
           }
         },
       );
@@ -54,6 +54,10 @@ class FollowUserStateNotifier extends StateNotifier<Map<String, bool>> {
 
   void resetState() {
     state = {};
+  }
+
+  void setInitFollowState(String memberUuid, bool followState) {
+    _initialFollowStates[memberUuid] = followState;
   }
 }
 
