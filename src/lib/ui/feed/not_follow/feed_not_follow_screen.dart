@@ -1,6 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -54,7 +54,7 @@ class FeedNotFollowScreen extends ConsumerWidget {
               height: 12,
             ),
             Text(
-              "$nick님의\n팔로우 공개 피드예요!",
+              "피드.팔로우 공개 피드 제목".tr(args: [nick]),
               style: kTitle18BoldStyle.copyWith(color: kPreviousTextTitleColor),
               textAlign: TextAlign.center,
             ),
@@ -62,7 +62,7 @@ class FeedNotFollowScreen extends ConsumerWidget {
               height: 8,
             ),
             Text(
-              "팔로우하면 피드를 볼 수 있어요.",
+              "피드.팔로우하면 피드를 볼 수 있어요".tr(),
               style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
               textAlign: TextAlign.center,
             ),
@@ -113,7 +113,7 @@ class FeedNotFollowScreen extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
-                        '팔로우하고 피드보기',
+                        '피드.팔로우하고 피드보기'.tr(),
                         style: kBody16MediumStyle.copyWith(
                           color: kPreviousPrimaryColor,
                         ),

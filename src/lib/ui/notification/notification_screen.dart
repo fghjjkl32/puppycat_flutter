@@ -82,8 +82,8 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "알림함",
+          title: Text(
+            "알림함.알림함".tr(),
           ),
           leading: IconButton(
             onPressed: () {
@@ -115,14 +115,14 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "필수 혜택 정보를 알려 드릴까요?",
+                                  "알림함.필수 혜택 정보를 알려 드릴까요?".tr(),
                                   style: kBody11RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                                 const SizedBox(
                                   height: 2,
                                 ),
                                 Text(
-                                  "'${myInfo.nick!.length > 8 ? '${myInfo.nick?.substring(0, 8)}...' : myInfo.nick}'님에게 꼭 필요한 정보만 보내 드릴게요.",
+                                  "알림함.님에게 꼭 필요한 정보만 보내 드릴게요".tr(args: ['${myInfo.nick!.length > 8 ? '${myInfo.nick?.substring(0, 8)}...' : myInfo.nick}']),
                                   style: kBody11RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
@@ -138,9 +138,17 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               borderRadius: 50.0,
                               onToggle: (value) async {
                                 if (value) {
-                                  toast(context: context, text: '광고성 정보 수신을 ‘동의’했어요.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                  toast(
+                                      context: context,
+                                      text: '알림함.광고성 정보 수신을 ‘동의’했어요'.tr(),
+                                      type: ToastType.purple,
+                                      secondText: "알림함.수신 동의일".tr(args: [(DateFormat('yyyy-MM-dd').format(DateTime.now()))]));
                                 } else {
-                                  toast(context: context, text: '광고성 정보 수신을 ‘거부’했어요.', type: ToastType.grey, secondText: "수신 거부일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                  toast(
+                                      context: context,
+                                      text: '알림함.광고성 정보 수신을 ‘거부’했어요'.tr(),
+                                      type: ToastType.grey,
+                                      secondText: "알림함.수신 거부일".tr(args: [(DateFormat('yyyy-MM-dd').format(DateTime.now()))]));
                                 }
 
                                 _onTap('main_2', value);
@@ -242,7 +250,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                       height: 12,
                                     ),
                                     Text(
-                                      '알림이 없어요.',
+                                      '알림함.알림이 없어요'.tr(),
                                       textAlign: TextAlign.center,
                                       style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                     ),
@@ -294,7 +302,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
 
                                 Map<String, dynamic> extraMap = {
                                   'firstTitle': 'nickname',
-                                  'secondTitle': '피드',
+                                  'secondTitle': '알림함.피드'.tr(),
                                   'memberUuid': myInfo.uuid,
                                   'contentIdx': item.contentsIdx,
                                   'contentType': 'notificationContent',
@@ -320,7 +328,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                 ///route 정리 필요
                                 Map<String, dynamic> extraMap = {
                                   'firstTitle': 'nickname',
-                                  'secondTitle': '피드',
+                                  'secondTitle': '알림함.피드'.tr(),
                                   'memberUuid': myInfo.uuid,
                                   'contentIdx': item.contentsIdx,
                                   'contentType': 'notificationContent',
@@ -364,7 +372,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               onTap: () async {
                                 Map<String, dynamic> extraMap = {
                                   'firstTitle': 'nickname',
-                                  'secondTitle': '피드',
+                                  'secondTitle': '알림함.피드'.tr(),
                                   'memberUuid': myInfo.uuid,
                                   'contentIdx': item.contentsIdx,
                                   'contentType': 'notificationContent',
@@ -435,7 +443,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                           child: const Divider(),
                         ),
                         Text(
-                          "최근 30일간의 알림만 볼 수 있어요.",
+                          "알림함.최근 30일간의 알림만 볼 수 있어요".tr(),
                           style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ],

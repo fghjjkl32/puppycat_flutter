@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -77,8 +78,8 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "내 활동",
+          title: Text(
+            "회원.내 활동".tr(),
           ),
           leading: IconButton(
             onPressed: () {
@@ -104,7 +105,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "좋아요",
+                          "회원.좋아요".tr(),
                           style: kTitle16BoldStyle,
                         ),
                         const SizedBox(
@@ -125,7 +126,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "저장",
+                          "회원.저장".tr(),
                           style: kTitle16BoldStyle,
                         ),
                         const SizedBox(
@@ -205,7 +206,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         height: 12,
                       ),
                       Text(
-                        '아직 ‘좋아요’한 피드가 없어요.\n피드를 ‘좋아요’해 보세요.',
+                        "회원.좋아요한 피드 없음".tr(),
                         textAlign: TextAlign.center,
                         style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
@@ -257,7 +258,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
                           'firstTitle': 'null',
-                          'secondTitle': '좋아요한 피드',
+                          'secondTitle': '회원.좋아요한 피드'.tr(),
                           'memberUuid': myInfo.uuid,
                           'contentIdx': '${lists[index].idx}',
                           'contentType': 'myLikeContent',
@@ -352,7 +353,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                         height: 12,
                       ),
                       Text(
-                        '아직 저장한 피드가 없어요.\n피드를 저장해 보세요.',
+                        '회원.저장한 피드 없음'.tr(),
                         textAlign: TextAlign.center,
                         style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
@@ -402,7 +403,7 @@ class MyPageMyActivityListScreenState extends ConsumerState<MyPageMyActivityList
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
                           'firstTitle': 'null',
-                          'secondTitle': '저장한 피드',
+                          'secondTitle': '회원.저장한 피드'.tr(),
                           'memberUuid': myInfo.uuid,
                           'contentIdx': '${lists[index].idx}',
                           'contentType': 'mySaveContent',

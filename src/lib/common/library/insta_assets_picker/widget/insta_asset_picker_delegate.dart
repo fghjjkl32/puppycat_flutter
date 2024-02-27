@@ -2,6 +2,7 @@
 
 import 'dart:math' as math;
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -481,7 +482,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                                                       width: 5,
                                                     ),
                                                     Text(
-                                                      "사진 비율을 선택해 주세요.",
+                                                      "피드.사진 비율을 선택해 주세요".tr(),
                                                       style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                     ),
                                                   ],

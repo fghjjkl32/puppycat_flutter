@@ -1,8 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -147,7 +147,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                             }
                                           },
                                           child: Text(
-                                            "팔로잉",
+                                            "피드.팔로잉".tr(),
                                             style: kTitle14BoldStyle.copyWith(color: kPreviousNeutralColor500),
                                           ),
                                         ),
@@ -165,7 +165,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                             }
                                           },
                                           child: Text(
-                                            "팔로우",
+                                            "피드.팔로우".tr(),
                                             style: kTitle14BoldStyle.copyWith(color: kTextActionPrimary),
                                           ),
                                         ),
@@ -176,7 +176,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               height: 3,
                             ),
                             Text(
-                              "팔로워 ${NumberFormat('###,###,###,###').format(widget.followCount)}",
+                              "피드.팔로워 카운트".tr(args: [NumberFormat('###,###,###,###').format(widget.followCount)]),
                               style: kBody12RegularStyle.copyWith(color: kTextTertiary),
                             ),
                           ],
@@ -199,7 +199,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     }
                     Map<String, dynamic> extraMap = {
                       'firstTitle': widget.userName,
-                      'secondTitle': "피드",
+                      'secondTitle': "피드.피드".tr(),
                       'memberUuid': widget.memberUuid,
                       'contentIdx': widget.imageList[0].idx!,
                       'contentType': "FollowCardContent",
@@ -269,7 +269,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           }
                           Map<String, dynamic> extraMap = {
                             'firstTitle': widget.userName,
-                            'secondTitle': "피드",
+                            'secondTitle': "피드.피드".tr(),
                             'memberUuid': widget.memberUuid,
                             'contentIdx': widget.imageList[0].idx!,
                             'contentType': "FollowCardContent",
@@ -333,7 +333,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           }
                           Map<String, dynamic> extraMap = {
                             'firstTitle': widget.userName,
-                            'secondTitle': "피드",
+                            'secondTitle': "피드.피드".tr(),
                             'memberUuid': widget.memberUuid,
                             'contentIdx': widget.imageList[1].idx!,
                             'contentType': "FollowCardContent",
@@ -399,7 +399,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           }
                           Map<String, dynamic> extraMap = {
                             'firstTitle': widget.userName,
-                            'secondTitle': "피드",
+                            'secondTitle': "피드.피드".tr(),
                             'memberUuid': widget.memberUuid,
                             'contentIdx': widget.imageList[0].idx!,
                             'contentType': "FollowCardContent",
@@ -465,7 +465,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               }
                               Map<String, dynamic> extraMap = {
                                 'firstTitle': widget.userName,
-                                'secondTitle': "피드",
+                                'secondTitle': "피드.피드".tr(),
                                 'memberUuid': widget.memberUuid,
                                 'contentIdx': widget.imageList[1].idx!,
                                 'contentType': "FollowCardContent",
@@ -521,7 +521,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               }
                               Map<String, dynamic> extraMap = {
                                 'firstTitle': widget.userName,
-                                'secondTitle': "피드",
+                                'secondTitle': "피드.피드".tr(),
                                 'memberUuid': widget.memberUuid,
                                 'contentIdx': widget.imageList[2].idx!,
                                 'contentType': "FollowCardContent",

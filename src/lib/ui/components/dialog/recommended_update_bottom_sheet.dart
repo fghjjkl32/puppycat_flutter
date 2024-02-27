@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -74,7 +75,7 @@ class RecommendedUpdateBottomSheet extends ConsumerWidget {
                 ),
                 child: Center(
                   child: Text(
-                    "다음에하기",
+                    "공통.다음에하기".tr(),
                     style: kButton14MediumStyle.copyWith(color: kPreviousTextTitleColor),
                   ),
                 ),
@@ -102,7 +103,7 @@ class RecommendedUpdateBottomSheet extends ConsumerWidget {
                 ),
                 child: Center(
                   child: Text(
-                    "지금 업데이트",
+                    "공통.지금 업데이트".tr(),
                     style: kButton14MediumStyle.copyWith(color: kWhiteColor),
                   ),
                 ),

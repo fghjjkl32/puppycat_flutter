@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -77,7 +78,7 @@ class CustomDialog extends StatelessWidget {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    "취소",
+                                    "공통.취소".tr(),
                                     style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                                   ),
                                 ),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,8 +40,8 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "회원 탈퇴",
+          title: Text(
+            "회원.회원 탈퇴".tr(),
           ),
           leading: IconButton(
             onPressed: () {
@@ -69,7 +70,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                     width: 20,
                   ),
                   Text(
-                    '활동한 정보는 돌아오실 경우를 위해\n7일간 유지하고 그 이후엔 전부 삭제돼요.',
+                    '회원.활동한 정보 설명'.tr(),
                     style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   ),
                 ],
@@ -91,21 +92,21 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${myInfo.nick}님이",
+                          "회원.님이".tr(args: ["${myInfo.nick}"]),
                           style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                         Row(
                           children: [
                             Text(
-                              "퍼피캣과 함께한 ",
+                              "회원.퍼피캣과 함께한 띄어쓰기".tr(),
                               style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
                             Text(
-                              "활동 정보",
+                              "회원.활동 정보".tr(),
                               style: kBody14BoldStyle.copyWith(color: kPreviousPrimaryColor),
                             ),
                             Text(
-                              "예요.",
+                              "회원.예요".tr(),
                               style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
                           ],
@@ -119,11 +120,11 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "작성한 피드",
+                                "회원.작성한 피드".tr(),
                                 style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                               ),
                               Text(
-                                "${withdrawalInfo?.totalContentsCnt ?? 0}개",
+                                "회원.개".tr(args: ["${withdrawalInfo?.totalContentsCnt ?? 0}"]),
                                 style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                               ),
                             ],
@@ -135,11 +136,11 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "저장한 피드",
+                                "회원.저장한 피드".tr(),
                                 style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                               ),
                               Text(
-                                "${withdrawalInfo?.totalSaveCnt ?? 0}개",
+                                "회원.개".tr(args: ["${withdrawalInfo?.totalSaveCnt ?? 0}"]),
                                 style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                               ),
                             ],
@@ -151,11 +152,11 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "태그된 피드",
+                                "회원.태그된 피드".tr(),
                                 style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                               ),
                               Text(
-                                "${withdrawalInfo?.totalTagCnt ?? 0}개",
+                                "회원.개".tr(args: ["${withdrawalInfo?.totalTagCnt ?? 0}"]),
                                 style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                               ),
                             ],
@@ -167,7 +168,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "포레스트와 함께한",
+                                "회원.퍼피캣과 함께한".tr(),
                                 style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                               ),
                               Text(
@@ -281,7 +282,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                         },
                       ),
                       Text(
-                        "모든 정보 삭제 동의하기",
+                        "회원.모든 정보 삭제 동의하기".tr(),
                         style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ],
@@ -320,7 +321,7 @@ class MyPageWithdrawalDetailScreenState extends ConsumerState<MyPageWithdrawalDe
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
-                        '탈퇴하기',
+                        '회원.탈퇴하기'.tr(),
                         style: kBody14BoldStyle.copyWith(color: isAgree ? kPreviousNeutralColor100 : kPreviousTextSubTitleColor),
                       ),
                     ),

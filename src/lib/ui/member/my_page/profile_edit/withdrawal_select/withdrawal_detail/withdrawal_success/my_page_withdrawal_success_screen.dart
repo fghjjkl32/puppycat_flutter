@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -32,8 +33,8 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: const Text(
-              "회원 탈퇴",
+            title: Text(
+              "회원.회원 탈퇴".tr(),
             ),
             automaticallyImplyLeading: false,
           ),
@@ -48,7 +49,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                   height: 10,
                 ),
                 Text(
-                  "지금은 퍼피캣을 떠나시지만,\n다시 만나길 바랄게요!",
+                  "회원.퍼피캣 회원탈퇴 제목".tr(),
                   style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   textAlign: TextAlign.center,
                 ),
@@ -66,17 +67,17 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "새 계정은 ",
+                          "회원.새 계정은".tr(),
                           style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          "7일이 지나면",
+                          "회원.7일이 지나면".tr(),
                           style: kBody12SemiBoldStyle.copyWith(color: kPreviousPrimaryColor),
                           textAlign: TextAlign.center,
                         ),
                         Text(
-                          " 만들 수 있어요.",
+                          "회원. 만들 수 있어요".tr(),
                           style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                           textAlign: TextAlign.center,
                         ),
@@ -88,7 +89,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                   height: 12,
                 ),
                 Text(
-                  "더 나은 퍼피캣을 위해 의견을 남겨 주셔서 감사해요.\n모든 기기에서 안전하게 로그아웃 처리할게요.",
+                  "화원.모든 기기에서 안전하게 로그아웃 처리할게요".tr(),
                   style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   textAlign: TextAlign.center,
                 ),
@@ -125,7 +126,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                       child: Padding(
                         padding: const EdgeInsets.all(18.0),
                         child: Text(
-                          '확인',
+                          '회원.확인'.tr(),
                           style: kBody14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                         ),
                       ),

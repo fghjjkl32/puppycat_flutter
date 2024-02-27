@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -179,7 +180,7 @@ class _NotificationPostItemState extends State<NotificationPostItem> with Ticker
                                                   size: 32,
                                                 ),
                                           Text(
-                                            '좋아요',
+                                            '알림함.좋아요'.tr(),
                                             style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                                           ),
                                         ],
@@ -201,7 +202,7 @@ class _NotificationPostItemState extends State<NotificationPostItem> with Ticker
                                             height: 20,
                                           ),
                                           Text(
-                                            '댓글쓰기',
+                                            '알림함.댓글쓰기'.tr(),
                                             style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
                                           ),
                                         ],

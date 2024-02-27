@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -27,14 +28,14 @@ void myFeedDeleteBottomSheet({required BuildContext context, required VoidCallba
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "피드를 삭제할까요?",
+                "공통.피드를 삭제할까요?".tr(),
                 style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
               ),
             ],
           ),
         ),
         Text(
-          "삭제된 피드는 되돌릴 수 없어요.",
+          "공통.삭제된 피드는 되돌릴 수 없어요".tr(),
           style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
         ),
         const SizedBox(height: 20),
@@ -56,7 +57,7 @@ void myFeedDeleteBottomSheet({required BuildContext context, required VoidCallba
                 ),
                 child: Center(
                   child: Text(
-                    "닫기",
+                    "공통.닫기".tr(),
                     style: kButton14BoldStyle.copyWith(color: kTextSecondary),
                   ),
                 ),
@@ -78,7 +79,7 @@ void myFeedDeleteBottomSheet({required BuildContext context, required VoidCallba
                 ),
                 child: Center(
                   child: Text(
-                    "삭제하기",
+                    "공통.삭제하기".tr(),
                     style: kButton14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                   ),
                 ),

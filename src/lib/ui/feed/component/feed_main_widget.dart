@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart' as intl;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -85,7 +86,7 @@ class FeedMainWidget extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 16.0, right: 10, bottom: 12, top: 24),
                       child: Text(
-                        "요즘 인기 퍼플루언서",
+                        "피드.요즘 인기 퍼플루언서".tr(),
                         style: kTitle16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                       ),
                     ),
@@ -99,7 +100,7 @@ class FeedMainWidget extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0, right: 10),
                   child: Text(
-                    "베스트 댕냥 피드",
+                    "피드.베스트 댕냥 피드".tr(),
                     style: kTitle16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                   ),
                 ),
@@ -182,7 +183,7 @@ class FeedMainWidget extends ConsumerWidget {
                           ),
                           const SizedBox(width: 8.0),
                           Text(
-                            "...더보기",
+                            "피드.더보기".tr(),
                             style: kBody13RegularStyle.copyWith(
                               color: kPreviousTextBodyColor,
                             ),

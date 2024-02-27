@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -156,7 +157,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             ),
                             child: Center(
                               child: Text(
-                                "팔로잉",
+                                "피드.팔로잉".tr(),
                                 style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ),
@@ -204,7 +205,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             ),
                             child: Center(
                               child: Text(
-                                "팔로우",
+                                "피드.팔로우".tr(),
                                 style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                               ),
                             ),
