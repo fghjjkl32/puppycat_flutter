@@ -19,7 +19,7 @@ class FollowUserStateNotifier extends StateNotifier<Map<String, bool>> {
 
   Map<String, bool> _initialFollowStates = {}; // 초기 상태를 저장할 맵
 
-  void setFollowState({required String memberUuid, required bool followState, required bool isActionButton}) {
+  Future<void> setFollowState({required String memberUuid, required bool followState, required bool isActionButton}) async {
     //상태 변경
     state = {...state, memberUuid: followState};
 
@@ -45,7 +45,7 @@ class FollowUserStateNotifier extends StateNotifier<Map<String, bool>> {
               print("언팔로우 API 호출");
             }
             // API 호출 후 초기 상태 업데이트
-            _initialFollowStates[memberUuid] = followState;
+            setInitFollowState(memberUuid, followState);
           }
         },
       );
@@ -54,6 +54,10 @@ class FollowUserStateNotifier extends StateNotifier<Map<String, bool>> {
 
   void resetState() {
     state = {};
+  }
+
+  void setInitFollowState(String memberUuid, bool followState) {
+    _initialFollowStates[memberUuid] = followState;
   }
 }
 
