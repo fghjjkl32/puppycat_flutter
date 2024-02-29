@@ -52,7 +52,7 @@ class SignUpState extends _$SignUpState {
       if (result == SignUpStatus.success) {
         // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.success;
         // ref.read(chatRegisterStateProvider.notifier).register(userModel);
-        ref.read(routerProvider).goNamed('signupComplete');
+        ref.read(routerProvider).goNamed('signupComplete/${userModel.nick}');
       }
       state = result;
       // state = SignUpStatus.failedAuth;

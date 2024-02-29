@@ -91,11 +91,11 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
           children: [
             Text(
               '회원가입.본인 인증'.tr(),
-              style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4, letterSpacing: 0.2),
+              style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4, letterSpacing: 0.2),
             ),
             Text(
               ' *',
-              style: kBody13RegularStyle.copyWith(color: kTextActionPrimary, height: 1.4, letterSpacing: 0.2),
+              style: kTitle14BoldStyle.copyWith(color: kPreviousErrorColor, height: 1.4, letterSpacing: 0.2),
             ),
           ],
         ),
@@ -168,6 +168,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                           ),
+                          elevation: MaterialStateProperty.all<double>(0),
                           backgroundColor: MaterialStateProperty.all<Color>(kSignUpPassColor),
                           padding: MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.only(left: 5, right: 5)),
                         ),
@@ -176,7 +177,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                         },
                         label: Text(
                           '회원가입.휴대폰 인증'.tr(),
-                          style: kBody14RegularStyle.copyWith(color: kPreviousNeutralColor100, fontWeight: FontWeight.w500, height: 1.4, letterSpacing: 0.2),
+                          style: kButton14MediumStyle.copyWith(color: kPreviousNeutralColor100, fontWeight: FontWeight.w500, height: 1.4, letterSpacing: 0.2),
                         ),
                         icon: Image.asset('assets/image/signUpScreen/pass_icon.png'),
                       ),
@@ -206,7 +207,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                         ),
                         child: Text(
                           '회원가입.인증 완료'.tr(),
-                          style: kButton12BoldStyle.copyWith(color: kNeutralColor500, fontWeight: FontWeight.w600),
+                          style: kButton14MediumStyle.copyWith(color: kNeutralColor500, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ),
@@ -229,11 +230,11 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
           children: [
             Text(
               '회원가입.닉네임'.tr(),
-              style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4, letterSpacing: 0.2),
+              style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4, letterSpacing: 0.2),
             ),
             Text(
               ' *',
-              style: kBody14BoldStyle.copyWith(color: kPreviousErrorColor, height: 1.4, letterSpacing: 0.2),
+              style: kTitle14BoldStyle.copyWith(color: kPreviousErrorColor, height: 1.4, letterSpacing: 0.2),
             ),
           ],
         ),
@@ -253,7 +254,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                       ? InputDecoration(
                           hintText: '회원가입.2~20자로 입력해 주세요'.tr(),
                           hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
-                          errorStyle: kBody11RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
+                          errorStyle: kBody13RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
                           errorText: getNickDescription(nickProvider),
                           errorBorder: const OutlineInputBorder(
                             borderSide: BorderSide(
@@ -264,7 +265,10 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                           errorMaxLines: 2,
                           counterText: '',
                           isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 13.0),
+                          prefix: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          ),
                           //Vertical 이 13인 이유는 정확하진 않은데 border까지 고려해야할듯
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
@@ -273,7 +277,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                       : InputDecoration(
                           hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
                           errorText: '회원가입.사용 가능한 닉네임입니다'.tr(),
-                          errorStyle: kBody11RegularStyle.copyWith(color: kPreviousPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
+                          errorStyle: kBody13RegularStyle.copyWith(color: kPreviousPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
                           errorBorder: const OutlineInputBorder(
                             borderSide: BorderSide(
                               width: 1,
@@ -289,7 +293,10 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                           errorMaxLines: 2,
                           counterText: '',
                           isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 13.0, horizontal: 16.0),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 13.0),
+                          prefix: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -361,7 +368,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                 ),
                 child: Text(
                   '회원가입.중복확인'.tr(),
-                  style: kBody16MediumStyle.copyWith(height: 1.4, letterSpacing: -0.5), //.copyWith(color: kPrimaryColor),
+                  style: kBody13MediumStyle.copyWith(height: 1.4, letterSpacing: -0.5), //.copyWith(color: kPrimaryColor),
                 ),
               ),
             ),
@@ -394,7 +401,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
               ),
               Text(
                 '회원가입.전체 동의하기'.tr(),
-                style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
               ),
             ],
           ),

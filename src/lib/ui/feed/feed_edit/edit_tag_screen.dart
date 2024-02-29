@@ -16,6 +16,7 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_curren
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/ui/components/toast/toast.dart';
+
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/feed_write/component/mention_tag_widget.dart';
@@ -69,7 +70,7 @@ class EditTagScreen extends ConsumerWidget {
                   TextButton(
                     child: Text(
                       '피드.등록'.tr(),
-                      style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
+                      style: kTitle14BoldStyle.copyWith(color: kPreviousPrimaryColor),
                     ),
                     onPressed: () {
                       ref.read(feedWriteProvider.notifier).saveTag();

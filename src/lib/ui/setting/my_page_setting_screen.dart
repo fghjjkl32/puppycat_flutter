@@ -267,7 +267,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         padding: const EdgeInsets.only(top: 10.0, bottom: 4.0),
                         child: Text(
                           '설정.원활한 퍼피캣 앱 이용을 위해 접근 권한을 허용해 주세요'.tr(),
-                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                          style: kTitle14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -357,7 +357,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                             child: Center(
                               child: Text(
                                 '설정.앱 권한 설정하러 가기'.tr(),
-                                style: kBody14BoldStyle.copyWith(
+                                style: kBody16MediumStyle.copyWith(
                                   color: kPreviousNeutralColor100,
                                 ),
                               ),
@@ -376,7 +376,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   children: [
                     Text(
                       "설정.앱 권한 설정".tr(),
-                      style: kBody13RegularStyle.copyWith(
+                      style: kBody14RegularStyle.copyWith(
                         color: kPreviousTextSubTitleColor,
                       ),
                     ),
@@ -424,7 +424,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   children: [
                     Text(
                       "설정.저장 공간 정리".tr(),
-                      style: kBody13RegularStyle.copyWith(
+                      style: kBody14RegularStyle.copyWith(
                         color: kPreviousTextSubTitleColor,
                       ),
                     ),
@@ -445,7 +445,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 children: [
                   Text(
                     "설정.최초 설치일".tr(),
-                    style: kBody13RegularStyle.copyWith(
+                    style: kBody14RegularStyle.copyWith(
                       color: kPreviousTextSubTitleColor,
                     ),
                   ),
@@ -465,7 +465,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 children: [
                   Text(
                     "설정.앱 버전".tr(),
-                    style: kBody13RegularStyle.copyWith(
+                    style: kBody14RegularStyle.copyWith(
                       color: kPreviousTextSubTitleColor,
                     ),
                   ),

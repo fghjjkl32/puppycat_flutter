@@ -109,6 +109,7 @@ class MyPageMainState extends ConsumerState<FeedDetailScreen> {
 
     return DefaultOnWillPopScope(
       onWillPop: () {
+        print("adsdasdas");
         ref.read(firstFeedDetailStateProvider.notifier).state = null;
 
         ref.read(feedSearchStateProvider.notifier).getStateForContent(widget.secondTitle ?? "");

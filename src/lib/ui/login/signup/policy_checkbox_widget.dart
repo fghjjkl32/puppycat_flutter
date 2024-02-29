@@ -40,25 +40,9 @@ class PolicyCheckBoxWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
-        // Theme(
-        //   data: Theme.of(context).copyWith(
-        //     unselectedWidgetColor:  Colors.transparent,
-        //     disabledColor: Colors.transparent,
-        //   ),
-        //   child: Checkbox(
-        //     value: isAgreed,
-        //     onChanged: (value) {
-        //       if (onChanged != null) {
-        //         onChanged!(value!);
-        //       }
-        //     },
-        //     side: const BorderSide(color: Colors.transparent),
-        //     checkColor: isAgreed ? kSignUpPrimaryColor: Colors.red,
-        //     activeColor: Colors.transparent,
-        //     // fillColor: Colors.transparent,
-        //   ),
-        // ),
         IconButton(
+          padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+          constraints: BoxConstraints(),
           onPressed: () {
             if (onChanged != null) {
               onChanged!(!isAgreed);
@@ -77,8 +61,8 @@ class PolicyCheckBoxWidget extends ConsumerWidget {
         const Spacer(),
         Visibility(
           visible: idx != 0,
-          child: TextButton(
-            onPressed: () {
+          child: GestureDetector(
+            onTap: () {
               Map<String, dynamic> extraMap = {
                 'dateList': null,
                 'idx': menuIdx,
@@ -87,9 +71,12 @@ class PolicyCheckBoxWidget extends ConsumerWidget {
 
               context.push("/setting/policy", extra: extraMap);
             },
-            child: Text(
-              '회원가입.보기'.tr(),
-              style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+              child: Text(
+                '회원가입.보기'.tr(),
+                style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+              ),
             ),
           ),
         ),

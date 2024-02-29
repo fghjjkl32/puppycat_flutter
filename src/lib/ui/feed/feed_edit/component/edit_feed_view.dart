@@ -157,19 +157,19 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                                 ),
                                 Text(
                                   "피드.유저 태그하기 띄어쓰기".tr(),
-                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                  style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                                 ),
                                 Text(
                                   "(",
-                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                                  style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                                 ),
                                 Text(
                                   "${ref.watch(feedWriteCurrentTagCountProvider)}",
-                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                  style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                 ),
                                 Text(
                                   "/10)",
-                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                                  style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                                 ),
                               ],
                             ),
@@ -260,8 +260,8 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "피드.위치정보".tr(),
-                  style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                  "피드.위치 정보".tr(),
+                  style: kTitle16BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                 ),
                 ref.watch(feedWriteLocationInformationProvider) == ""
                     ? Container()
@@ -273,7 +273,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                           padding: const EdgeInsets.only(right: 12, bottom: 8, top: 12, left: 12),
                           child: Text(
                             "피드.삭제".tr(),
-                            style: kBadge10MediumStyle.copyWith(color: kTextTertiary),
+                            style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                           ),
                         ),
                       ),
@@ -356,7 +356,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
             padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 12),
             child: Text(
               "피드.공개 범위".tr(),
-              style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+              style: kTitle16BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
             ),
           ),
           Padding(
@@ -392,7 +392,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                           ),
                           Text(
                             "피드.전체 공개".tr(),
-                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 1 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
+                            style: kTitle14BoldStyle.copyWith(color: buttonSelected == 1 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
                           ),
                         ],
                       ),
@@ -431,7 +431,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                           ),
                           Text(
                             "피드.팔로우 공개".tr(),
-                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 2 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
+                            style: kTitle14BoldStyle.copyWith(color: buttonSelected == 2 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
                           ),
                         ],
                       ),
@@ -470,7 +470,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                           ),
                           Text(
                             "피드.피드 보관".tr(),
-                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 0 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
+                            style: kTitle14BoldStyle.copyWith(color: buttonSelected == 0 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
                           ),
                         ],
                       ),

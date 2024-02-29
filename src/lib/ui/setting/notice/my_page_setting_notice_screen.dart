@@ -136,7 +136,7 @@ class MyPageSettingNoticeScreenState extends ConsumerState<MyPageSettingNoticeSc
                       padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
                       child: Text(
                         "설정.1:1 채널톡".tr(),
-                        style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
+                        style: kTitle14BoldStyle.copyWith(color: kPreviousPrimaryColor),
                       ),
                     ),
                   ),
