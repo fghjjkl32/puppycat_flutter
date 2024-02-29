@@ -407,6 +407,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                           'contentType': 'myContent',
                         };
 
+                        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                         await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myContent', item.idx).then((value) {
                           if (value == null) {
                             return;
@@ -846,6 +848,9 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                           'contentIdx': '${item.idx}',
                           'contentType': 'myTagContent',
                         };
+
+                        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                         await ref
                             .read(firstFeedDetailStateProvider.notifier)
                             .getFirstFeedState(

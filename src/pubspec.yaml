@@ -177,9 +177,10 @@ dev_dependencies:
   json_serializable: ^6.7.0
   retrofit_generator: ^7.0.1
   riverpod_generator: ^2.2.3
-  riverpod_lint: ^2.3.7
+  riverpod_lint: ^2.3.9
   drift_dev: ^2.9.0
   analyzer: ^6.2.0
+  custom_lint:
 
 flutter:
 

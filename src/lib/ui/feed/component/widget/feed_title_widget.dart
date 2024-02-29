@@ -130,7 +130,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                   style: kTitle14BoldStyle.copyWith(color: kTextPrimary),
                                 ),
                               ),
-                              if (!widget.isDetailWidget || widget.contentType == "popularWeekContent")
+                              if (!widget.isDetailWidget || widget.contentType == "popularWeekContent" || widget.contentType == "searchContent")
                                 if (widget.feedType != "follow")
                                   Consumer(builder: (context, ref, child) {
                                     print('feed myInfo.uuid ${myInfo.uuid} /  widget.memberUuid ${widget.memberUuid} ');

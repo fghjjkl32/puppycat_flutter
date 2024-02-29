@@ -480,6 +480,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           'contentIdx': '${item.idx}',
                           'contentType': 'userContent',
                         };
+
+                        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                         await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('userContent', item.idx).then((value) {
                           if (value == null) {
                             return;
@@ -656,6 +659,9 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           'contentIdx': '${item.idx}',
                           'contentType': 'userTagContent',
                         };
+
+                        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                         await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('userTagContent', item.idx).then((value) {
                           if (value == null) {
                             return;
