@@ -314,7 +314,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                   ),
                                                   Text(
                                                     bestList[index].searchWord!,
-                                                    style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                                    style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                                                   ),
                                                 ],
                                               ),
@@ -361,7 +361,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                         },
                                                         child: Text(
                                                           "검색.전체보기".tr(),
-                                                          style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                                                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                         ),
                                                       ),
                                                     ],
@@ -439,7 +439,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                         },
                                                         child: Text(
                                                           "검색.전체보기".tr(),
-                                                          style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                                                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                         ),
                                                       ),
                                                     ],

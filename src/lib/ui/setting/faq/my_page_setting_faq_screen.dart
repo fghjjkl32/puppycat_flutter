@@ -7,7 +7,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -118,7 +117,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                       padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
                       child: Text(
                         "설정.1:1 채널톡".tr(),
-                        style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
+                        style: kTitle14BoldStyle.copyWith(color: kPreviousPrimaryColor),
                       ),
                     ),
                   ),
@@ -295,7 +294,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14.0),
                       child: Text(
                         itemModel.menuName ?? 'unknown',
-                        style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                        style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ),
                   ),
@@ -305,7 +304,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                   Expanded(
                     child: Text(
                       itemModel.title ?? 'unknown',
-                      style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                      style: kBody14RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

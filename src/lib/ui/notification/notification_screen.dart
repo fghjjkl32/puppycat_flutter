@@ -116,24 +116,24 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               children: [
                                 Text(
                                   "알림함.필수 혜택 정보를 알려 드릴까요?".tr(),
-                                  style: kBody11RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
+                                  style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                                 const SizedBox(
                                   height: 2,
                                 ),
                                 Text(
                                   "알림함.님에게 꼭 필요한 정보만 보내 드릴게요".tr(args: ['${myInfo.nick!.length > 8 ? '${myInfo.nick?.substring(0, 8)}...' : myInfo.nick}']),
-                                  style: kBody11RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
+                                  style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
                             FlutterSwitch(
                               padding: 4,
-                              width: 38,
-                              height: 20,
+                              width: 50,
+                              height: 30,
                               activeColor: Theme.of(context).primaryColor,
                               inactiveColor: kPreviousNeutralColor500,
-                              toggleSize: 12.0,
+                              toggleSize: 24.0,
                               value: switchState['main_2'] == 1,
                               borderRadius: 50.0,
                               onToggle: (value) async {
@@ -217,7 +217,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                           : const BoxDecoration(),
                       child: Text(
                         itemTitle,
-                        style: kButton14BoldStyle.copyWith(
+                        style: kTitle16BoldStyle.copyWith(
                           color: selected ? kPreviousTextTitleColor : kPreviousNeutralColor500,
                         ),
                       ),

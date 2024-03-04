@@ -109,7 +109,7 @@ class UserItemWidgetState extends ConsumerState<SearchItemWidget> {
                     ),
                     Text(
                       widget.content,
-                      style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],
                 ),
