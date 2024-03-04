@@ -130,7 +130,7 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                   style: kTitle14BoldStyle.copyWith(color: kTextPrimary),
                                 ),
                               ),
-                              if (!widget.isDetailWidget || widget.contentType == "popularWeekContent")
+                              if (!widget.isDetailWidget || widget.contentType == "popularWeekContent" || widget.contentType == "searchContent")
                                 if (widget.feedType != "follow")
                                   Consumer(builder: (context, ref, child) {
                                     print('feed myInfo.uuid ${myInfo.uuid} /  widget.memberUuid ${widget.memberUuid} ');
@@ -193,13 +193,13 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                             children: [
                               Text(
                                 widget.address,
-                                style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               widget.address == ""
                                   ? Container()
                                   : Text(
                                       " · ",
-                                      style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
                               Text(
                                 widget.time,
@@ -210,11 +210,11 @@ class FeedTitleWidgetState extends ConsumerState<FeedTitleWidget> {
                                       children: [
                                         Text(
                                           " · ",
-                                          style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                         ),
                                         Text(
                                           "피드.수정됨".tr(),
-                                          style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                         ),
                                       ],
                                     )

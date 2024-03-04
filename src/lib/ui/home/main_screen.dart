@@ -619,31 +619,33 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                           ),
                         ],
                       )
-                    : Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 100.0),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                                  width: 88,
-                                  height: 88,
+                    : isRecentFeedList
+                        ? Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 100.0),
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                      width: 88,
+                                      height: 88,
+                                    ),
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Text(
+                                      '피드.피드가 없어요'.tr(),
+                                      textAlign: TextAlign.center,
+                                      style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(
-                                  height: 12,
-                                ),
-                                Text(
-                                  '피드.피드가 없어요'.tr(),
-                                  textAlign: TextAlign.center,
-                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
+                              ),
+                            ],
+                          )
+                        : Container();
               },
               itemBuilder: (context, item, index) {
                 //게시글을 수정하고 나면 FeedData 형태가 memberInfo로 들어오기 때문에 ref.read(recentFeedStateProvider.notifier).memberInfo 사용
@@ -704,31 +706,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                   pagingController: _popularWeekFeedListPagingController,
                   builderDelegate: PagedChildBuilderDelegate<FeedData>(
                     noItemsFoundIndicatorBuilder: (context) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 100.0),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                                  width: 88,
-                                  height: 88,
-                                ),
-                                const SizedBox(
-                                  height: 12,
-                                ),
-                                Text(
-                                  '피드.피드가 없어요'.tr(),
-                                  textAlign: TextAlign.center,
-                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
+                      return Container();
                     },
                     newPageProgressIndicatorBuilder: (context) {
                       return Column(
@@ -772,6 +750,33 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                   ),
                 )
               : const SliverToBoxAdapter(child: SizedBox.shrink()),
+          if ((_followFeedListPagingController.itemList?.isEmpty ?? false) && (_popularWeekFeedListPagingController.itemList?.isEmpty ?? false) && isFollowFeedList)
+            SliverToBoxAdapter(
+                child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 100.0),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                        width: 88,
+                        height: 88,
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Text(
+                        '피드.피드가 없어요'.tr(),
+                        textAlign: TextAlign.center,
+                        style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )),
         ],
       ),
     );

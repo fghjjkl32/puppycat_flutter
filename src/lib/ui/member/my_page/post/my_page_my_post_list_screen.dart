@@ -10,6 +10,7 @@ import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extensi
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
@@ -248,6 +249,9 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                               'contentIdx': '${lists[index].idx}',
                               'contentType': 'myDetailContent',
                             };
+
+                            ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                             // final result = await context.push("/feed/detail/null/일상글 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myDetailContent");
                             final result = await context.push('/feed/detail', extra: extraMap);
 
@@ -673,6 +677,9 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                               'contentIdx': '${lists[index].idx}',
                               'contentType': 'myKeepContent',
                             };
+
+                            ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                             await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myKeepContent', lists[index].idx).then((value) async {
                               if (value == null) {
                                 return;

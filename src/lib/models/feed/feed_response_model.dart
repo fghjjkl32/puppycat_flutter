@@ -10,6 +10,7 @@ class FeedResponseModel with _$FeedResponseModel {
     required bool result,
     required String code,
     required FeedDataListModel? data,
+    // @Default(null) Map<String, dynamic>? data,
     String? message,
   }) = _FeedResponseModel;
 

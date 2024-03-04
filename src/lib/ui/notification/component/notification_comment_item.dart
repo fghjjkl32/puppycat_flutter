@@ -123,11 +123,11 @@ class NotificationCommentItem extends StatelessWidget {
                         children: [
                           Text(
                             notificationType,
-                            style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                           Text(
                             regDate,
-                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ],
                       ),

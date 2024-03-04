@@ -6,6 +6,7 @@ import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -62,6 +63,9 @@ class FirebaseState extends _$FirebaseState {
           'contentIdx': payload.contentsIdx,
           'contentType': 'notificationContent',
         };
+
+        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
         router.push('/feed/detail', extra: extraMap);
         // router.push("/feed/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
         break;
@@ -79,6 +83,9 @@ class FirebaseState extends _$FirebaseState {
           'contentIdx': payload.contentsIdx,
           'contentType': 'notificationContent',
         };
+
+        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
         router.push('/feed/detail', extra: extraMap);
         // router.push("/feed/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
         //   "isRouteComment": true,

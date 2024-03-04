@@ -166,6 +166,7 @@ dependencies:
 
   easy_debounce: ^2.0.3
   stomp_dart_client: ^1.0.2
+  ios_willpop_transition_theme: ^0.0.6
 
 dev_dependencies:
   flutter_test:
@@ -175,9 +176,10 @@ dev_dependencies:
   json_serializable: ^6.7.0
   retrofit_generator: ^7.0.1
   riverpod_generator: ^2.2.3
-  riverpod_lint: ^2.3.7
+  riverpod_lint: ^2.3.9
   drift_dev: ^2.9.0
   analyzer: ^6.2.0
+  custom_lint:
 
 flutter:
 

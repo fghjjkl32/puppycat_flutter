@@ -77,6 +77,12 @@ TextStyle kBody13BoldStyle = const TextStyle(
   fontWeight: FontWeight.w700,
 );
 
+TextStyle kBody13MediumStyle = const TextStyle(
+  fontFamily: pretendard,
+  fontSize: 13,
+  fontWeight: FontWeight.w500,
+);
+
 TextStyle kBody13RegularStyle = const TextStyle(
   fontFamily: pretendard,
   fontSize: 13,

@@ -12,7 +12,9 @@ import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provide
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 
 class SignUpCompleteScreen extends ConsumerWidget {
-  const SignUpCompleteScreen({Key? key}) : super(key: key);
+  final String nick;
+
+  const SignUpCompleteScreen({required this.nick, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,16 +54,21 @@ class SignUpCompleteScreen extends ConsumerWidget {
                       height: 12,
                     ),
                     Text(
-                      '회원가입.퍼피캣의 가족이 되신 걸 환영해요'.tr(),
-                      style: kTitle14BoldStyle.copyWith(height: 1.4, color: kPreviousTextTitleColor),
+                      '회원가입.회원가입 완료!'.tr(),
+                      style: kTitle18BoldStyle.copyWith(height: 1.4, color: kPreviousTextTitleColor),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      '회원가입.회원가입 환영 메시지'.tr(args: [nick]),
+                      style: kTitle18BoldStyle.copyWith(height: 1.3, color: kPreviousTextTitleColor),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(
                       height: 8,
                     ),
                     Text(
-                      '회원가입.회원가입 환영 메시지'.tr(),
-                      style: kBody12RegularStyle.copyWith(height: 1.3, color: kPreviousTextBodyColor),
+                      "회원가입.퍼피캣과 함께 일상을 공유해 보세요!",
+                      style: kBody13RegularStyle.copyWith(height: 1.3, color: kPreviousTextBodyColor),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -94,7 +101,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                         elevation: 0,
                       ),
                       child: Text(
-                        '회원가입.퍼피캣 이용하기'.tr(),
+                        '회원가입.퍼피캣 시작하기'.tr(),
                         style: kButton14BoldStyle,
                       ),
                     ),

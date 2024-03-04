@@ -32,6 +32,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'feed_list_state_provider.g.dart';
 
 final feedListEmptyProvider = StateProvider<bool>((ref) => true);
+final feedDetailParameterProvider = StateProvider<Map<String, dynamic>>((ref) => {});
 
 @Riverpod(keepAlive: true)
 class FeedListState extends _$FeedListState {

@@ -7,6 +7,7 @@ import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extensi
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/popular_hour_feed_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user_list/popular_user_list_state_provider.dart';
@@ -62,6 +63,8 @@ class FeedMainWidget extends ConsumerWidget {
           'contentType': contentType,
         };
 
+        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
         await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState(contentType, feedData.idx).then((value) {
           if (value == null) {
             return;
@@ -76,12 +79,15 @@ class FeedMainWidget extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              SizedBox(
+                height: 12,
+              ),
               if (index == 0 && feedType == "follow" && popularUserList.isNotEmpty)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 16.0, right: 10, bottom: 12, top: 24),
+                      padding: const EdgeInsets.only(left: 16.0, right: 10, bottom: 12, top: 12),
                       child: Text(
                         "피드.요즘 인기 퍼플루언서".tr(),
                         style: kTitle16BoldStyle.copyWith(color: kPreviousTextTitleColor),
@@ -95,7 +101,7 @@ class FeedMainWidget extends ConsumerWidget {
                 ),
               if (index == 0 && feedType == "popular")
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 10),
+                  padding: const EdgeInsets.only(left: 16.0, right: 10, bottom: 16),
                   child: Text(
                     "피드.베스트 댕냥 피드".tr(),
                     style: kTitle16BoldStyle.copyWith(color: kPreviousTextTitleColor),
@@ -110,11 +116,6 @@ class FeedMainWidget extends ConsumerWidget {
                 FeedBestPostWidget(
                   feedData: ref.watch(popularHourFeedStateProvider).list,
                 ),
-              index == 0
-                  ? const SizedBox(
-                      height: 20,
-                    )
-                  : Container(),
               FeedTitleWidget(
                 profileImage: profileImage,
                 userName: userName,
@@ -143,66 +144,67 @@ class FeedMainWidget extends ConsumerWidget {
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     final style = kBody14RegularStyle.copyWith(color: kTextPrimary);
-                    final double maxWidth = constraints.maxWidth * 0.7;
+                    final maxWidth = constraints.maxWidth;
 
-                    final TextPainter textPainter = TextPainter(
-                      text: TextSpan(
-                        text: feedData.contents,
-                        style: style,
-                      ),
+                    final textPainter = TextPainter(
+                      text: TextSpan(text: feedData.contents, style: style),
                       maxLines: 2,
                       textDirection: TextDirection.ltr,
                     )..layout(maxWidth: maxWidth);
 
                     if (textPainter.didExceedMaxLines) {
-                      return Row(
-                        children: [
-                          ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: maxWidth),
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: RichText(
-                                text: TextSpan(
-                                  children: replaceMentionsWithNicknamesInContent(
-                                    feedData.contents!,
-                                    feedData.mentionList!,
-                                    context,
-                                    kBody14RegularStyle.copyWith(color: kTextTagSecondary),
-                                    ref,
-                                    oldMemberUuid,
-                                  ),
-                                  style: style,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
+                      // "더보기" 텍스트와 함께 텍스트가 어떻게 보일지 예측하기 위해 미리 계산
+                      final endingTextPainter = TextPainter(
+                        text: TextSpan(text: "...더보기  ", style: style),
+                        maxLines: 1,
+                        textDirection: TextDirection.ltr,
+                      )..layout();
+
+                      // 끝에서 "더보기"를 포함하기 위해 필요한 길이를 계산
+                      int endIndex = textPainter
+                          .getPositionForOffset(
+                            Offset(maxWidth - endingTextPainter.width, textPainter.height),
+                          )
+                          .offset;
+
+                      return RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              children: replaceMentionsWithNicknamesInContent(
+                                feedData.contents!.substring(0, endIndex),
+                                feedData.mentionList!,
+                                context,
+                                kBody14RegularStyle.copyWith(color: kTextTagSecondary),
+                                ref,
+                                oldMemberUuid,
+                              ),
+                              style: style,
+                            ),
+                            TextSpan(
+                              text: "피드.더보기".tr(),
+                              style: kBody13RegularStyle.copyWith(
+                                color: kPreviousTextBodyColor,
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          Text(
-                            "피드.더보기".tr(),
-                            style: kBody13RegularStyle.copyWith(
-                              color: kPreviousTextBodyColor,
-                            ),
-                          )
-                        ],
+                          ],
+                        ),
                       );
                     } else {
-                      return Container(
-                        alignment: Alignment.centerLeft,
-                        child: RichText(
-                          text: TextSpan(
-                            children: replaceMentionsWithNicknamesInContent(
-                              feedData.contents!,
-                              feedData.mentionList!,
-                              context,
-                              kBody13RegularStyle.copyWith(color: kPreviousSecondaryColor),
-                              ref,
-                              oldMemberUuid,
-                            ),
-                            style: style,
+                      return RichText(
+                        text: TextSpan(
+                          children: replaceMentionsWithNicknamesInContent(
+                            feedData.contents!,
+                            feedData.mentionList!,
+                            context,
+                            kBody14RegularStyle.copyWith(color: kTextTagSecondary),
+                            ref,
+                            oldMemberUuid,
                           ),
+                          style: style,
                         ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                       );
                     }
                   },
@@ -218,7 +220,7 @@ class FeedMainWidget extends ConsumerWidget {
                 oldMemberUuid: oldMemberUuid,
               ),
               const Padding(
-                padding: EdgeInsets.all(12.0),
+                padding: EdgeInsets.only(top: 12.0, left: 12.0, right: 12.0),
                 child: Divider(),
               ),
             ],

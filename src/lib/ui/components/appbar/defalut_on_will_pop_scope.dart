@@ -19,6 +19,7 @@ class DefaultOnWillPopScope extends StatelessWidget {
     return Platform.isIOS
         ? Listener(
             onPointerMove: (event) async {
+              print("event.delta ${event.delta}");
               if (event.delta.dx > 10 && event.delta.dy >= 0 && event.delta.dy <= 10) {
                 // 디바운스 메커니즘을 적용합니다.
                 if (!_isProcessing.value) {

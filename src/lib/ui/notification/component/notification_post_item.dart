@@ -111,11 +111,11 @@ class _NotificationPostItemState extends State<NotificationPostItem> with Ticker
                         children: [
                           Text(
                             widget.notificationType,
-                            style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                           Text(
                             widget.regDate,
-                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ],
                       ),

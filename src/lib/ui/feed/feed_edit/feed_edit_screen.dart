@@ -132,7 +132,7 @@ class FeedEditScreen extends ConsumerWidget {
             TextButton(
               child: Text(
                 '피드.등록'.tr(),
-                style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
+                style: kTitle14BoldStyle.copyWith(color: kPreviousPrimaryColor),
               ),
               onPressed: () async {
                 showDialog(

@@ -84,7 +84,7 @@ class HashTagItemWidgetState extends ConsumerState<HashTagItemWidget> {
                     ),
                     Text(
                       "검색.게시물 개수".tr(args: [(widget.hashTagCnt)]),
-                      style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
+                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                   ],
                 ),

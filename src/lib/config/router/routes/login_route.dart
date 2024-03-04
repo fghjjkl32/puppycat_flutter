@@ -40,10 +40,11 @@ class SignupRoute extends GoRouteData {
 class SignupCompleteRoute extends GoRouteData {
   GoRoute createRoute() {
     return GoRoute(
-      path: 'signupComplete',
-      name: 'signupComplete',
+      path: 'signupComplete/:nick',
+      name: 'signupComplete/:nick',
       builder: (_, state) {
-        return const SignUpCompleteScreen();
+        final nick = state.pathParameters['nick']!;
+        return SignUpCompleteScreen(nick: nick);
       },
     );
   }

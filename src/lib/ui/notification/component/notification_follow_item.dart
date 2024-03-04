@@ -68,11 +68,11 @@ class NotificationFollowItem extends StatelessWidget {
                       children: [
                         Text(
                           "알림함.새로운 팔로우".tr(),
-                          style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                         Text(
                           regDate,
-                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ],
                     ),

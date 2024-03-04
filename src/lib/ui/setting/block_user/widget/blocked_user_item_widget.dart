@@ -100,7 +100,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
               width: 74,
               height: 32,
               decoration: const BoxDecoration(
-                color: kPreviousPrimaryLightColor,
+                color: kBackgroundSecondary,
                 borderRadius: BorderRadius.all(
                   Radius.circular(8.0),
                 ),
@@ -108,7 +108,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
               child: Center(
                 child: Text(
                   "설정.차단 풀기".tr(),
-                  style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
+                  style: kButton14MediumStyle.copyWith(color: kTextSecondary),
                 ),
               ),
             ),
