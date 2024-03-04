@@ -12,7 +12,7 @@ class ChatLastMessageInfoModel with _$ChatLastMessageInfoModel {
     required String senderNick,
     required String message,
     required String type,
-    required String roomId,
+    required String roomUuid,
     // required String target,
   }) = _ChatLastMessageInfoModel;
 

@@ -38,8 +38,8 @@ class ChatRoomModel with _$ChatRoomModel {
     required String regDate,
     required int sort,
     required int type,
-    required String uuid,
-    required String roomId,
+    required String uuid, //room uuid
+    required String roomId, //room id
     required String roomName,
     required int fixState,
     required int favoriteState,

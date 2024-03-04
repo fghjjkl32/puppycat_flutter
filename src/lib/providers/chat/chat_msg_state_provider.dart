@@ -14,6 +14,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_msg_state_provider.g.dart';
 
+enum ChatMessageType {
+  enter,
+  quit,
+  talk,
+  read,
+  del,
+  modify,
+  report,
+}
+
 ///TODO
 ///안쓸 수도 있음
 final chatBubbleFocusProvider = StateProvider<int>((ref) => 0);
@@ -46,7 +56,13 @@ class ChatMessageState extends _$ChatMessageState {
         Map<String, dynamic> msgMap = jsonDecode(msg);
 
         if (msgMap['type'] == 'READ') {
-          return;
+          continue;
+        }
+
+        String msgText = msgMap['message'] ?? '';
+
+        if (msgMap['type'] == 'REPORT') {
+          msgText = '신고한 메시지입니다.';
         }
 
         ChatMessageModel chatMessageModel = ChatMessageModel(
@@ -57,10 +73,12 @@ class ChatMessageState extends _$ChatMessageState {
           userID: msgMap['senderMemberUuid'] ?? '',
           nick: msgMap['senderNick'] ?? 'unknown',
           avatarUrl: '',
-          msg: msgMap['message'] ?? '',
+          msg: msgText,
+          //msgMap['message'] ?? '',
           dateTime: msgMap['regDate'],
           score: msgMap['score'],
           isRead: _checkReadState(msgMap['score']),
+          originData: msg,
 
           ///TODO
           isEdited: false,
@@ -135,6 +153,12 @@ class ChatMessageState extends _$ChatMessageState {
       return;
     }
 
+    if (chatMessageModel.type == 'REPORT') {
+      print('aaaaaaaaaa ');
+      _changeReportStatus(chatMessageModel);
+      return;
+    }
+
     int idxCnt = 1;
 
     if (state.itemList != null) {
@@ -185,7 +209,44 @@ class ChatMessageState extends _$ChatMessageState {
       );
     }
 
-    ref.read(chatReadStatusProvider.notifier).state[chatMessageModel.userID] = chatMessageModel.score;
+    final readScore = ref.read(chatReadStatusProvider.notifier).state[chatMessageModel.userID];
+    if (readScore != null && (int.parse(readScore) < int.parse(chatMessageModel.score))) {
+      ref.read(chatReadStatusProvider.notifier).state[chatMessageModel.userID] = chatMessageModel.score;
+    }
+
+    state.notifyListeners();
+  }
+
+  void _changeReportStatus(ChatMessageModel chatMessageModel) {
+    if (state.itemList == null) {
+      return;
+    }
+
+    final myInfo = ref.read(myInfoStateProvider);
+
+    Map<String, dynamic> originJson = jsonDecode(chatMessageModel.originData);
+    print('1 originJson $originJson');
+    if (originJson.containsKey('actionMemberUuid')) {
+      print('2 originJson $originJson');
+      if (myInfo.uuid != originJson['actionMemberUuid']) {
+        print('3 originJson $originJson');
+        return;
+      }
+    }
+
+    List<ChatMessageModel> chatList = state.itemList!;
+
+    final targetIdx = chatList.indexWhere((element) => element.score == chatMessageModel.score);
+
+    if (targetIdx < 0) {
+      return;
+    }
+
+    // state.itemList!.remove(state.itemList![targetIdx]);
+    state.itemList![targetIdx] = state.itemList![targetIdx].copyWith(
+      type: 'REPORT',
+      msg: '신고한 메시지입니다.',
+    );
 
     state.notifyListeners();
   }
@@ -339,6 +400,30 @@ class ChatMessageState extends _$ChatMessageState {
       return 16.0;
     } catch (e) {
       return 16.0;
+    }
+  }
+
+  Future<bool> reportChatMessage({
+    required String roomUuid,
+    // required String memberUuid,
+    required String message,
+    required String score,
+    required String targetMemberUuid,
+  }) async {
+    try {
+      return await _chatRepository.reportChatMessage(
+        roomUuid: roomUuid,
+        memberUuid: _myInfo.uuid ?? '',
+        message: message,
+        score: score,
+        targetMemberUuid: targetMemberUuid,
+      );
+    } on APIException catch (apiException) {
+      ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
+      return false;
+    } catch (e) {
+      print('reportChatMessage error $e');
+      return false;
     }
   }
 }

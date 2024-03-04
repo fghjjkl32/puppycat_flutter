@@ -76,4 +76,12 @@ abstract class ChatService {
   Future<ResponseModel> unSetChatFavoriteMember({
     @Path('targetMemberUuid') required String targetMemberUuid,
   });
+
+  @POST('v1/chat/message/report')
+  @Headers(<String, dynamic>{
+    "Content-Type": "application/json",
+  })
+  Future<ResponseModel> reportChatMessage({
+    @Body() required Map<String, dynamic> body,
+  });
 }

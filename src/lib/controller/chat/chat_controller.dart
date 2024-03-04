@@ -29,7 +29,12 @@ class ChatController {
     switch (type) {
       case ChatType.stomp:
       default:
-        abstractChatController = StompController(token: token ?? '', roomUuid: roomUuid, memberUuid: memberUuid, targetMemberUuidList: targetMemberUuidList);
+        abstractChatController = StompController(
+          token: token ?? '',
+          roomUuid: roomUuid,
+          memberUuid: memberUuid,
+          targetMemberUuidList: targetMemberUuidList,
+        );
         break;
     }
 
@@ -40,16 +45,23 @@ class ChatController {
     String? url,
     Function()? onConnected,
     Function(ChatMessageModel)? onSubscribeCallBack,
+    Function()? onWebSocketDone,
   }) async {
-    await _chatController.connect(url: url ?? chatWSBaseUrl, onConnected: onConnected, onSubscribeCallBack: onSubscribeCallBack);
+    await _chatController.connect(
+      url: url ?? chatWSBaseUrl,
+      onConnected: onConnected,
+      onSubscribeCallBack: onSubscribeCallBack,
+      onWebSocketDone: onWebSocketDone,
+    );
   }
 
   Future<void> disconnect() async {
+    print('2 - _chatController.disconnect();');
     _chatController.disconnect();
   }
 
-  Future<void> send(String msg) async {
-    _chatController.send(msg: msg);
+  Future<void> send(String msg, String? profileImg) async {
+    _chatController.send(msg: msg, profileImg: profileImg);
   }
 
   Future<void> read({
@@ -58,5 +70,14 @@ class ChatController {
     required String memberUuid,
   }) async {
     _chatController.read(msg: msg, score: score, memberUuid: memberUuid);
+  }
+
+  Future<void> report({
+    required String msg,
+    required String score,
+    required String memberUuid,
+  }) async {
+    print('2 - report run?');
+    _chatController.report(msg: msg, score: score, memberUuid: memberUuid);
   }
 }

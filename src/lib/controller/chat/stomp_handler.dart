@@ -43,7 +43,7 @@ class StompHandler {
           onDisconnect: (reason) => onDisconnect,
           onDebugMessage: (value) => onDebugMessage,
           onStompError: (reason) => onStompError,
-          onWebSocketDone: () => print('onWebSocketDone'),
+          onWebSocketDone: onWebSocketDone ?? () => print('onWebSocketDone'),
           onUnhandledMessage: (reason) => print('onUnhandledMessage $reason'),
           heartbeatIncoming: const Duration(seconds: 25),
           heartbeatOutgoing: const Duration(seconds: 25),

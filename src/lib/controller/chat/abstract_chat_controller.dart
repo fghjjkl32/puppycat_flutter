@@ -5,11 +5,18 @@ abstract class AbstractChatController {
     required String url,
     Function()? onConnected,
     Function(ChatMessageModel)? onSubscribeCallBack,
+    Function()? onWebSocketDone,
   });
 
-  Future<void> send({required String msg});
+  Future<void> send({required String msg, String? profileImg});
 
   Future<void> read({
+    required String msg,
+    required String score,
+    required String memberUuid,
+  });
+
+  Future<void> report({
     required String msg,
     required String score,
     required String memberUuid,

@@ -16,6 +16,7 @@ enum PushType {
   like_comment,
   notice,
   event,
+  chatting,
 }
 
 @freezed
@@ -29,6 +30,7 @@ class FirebaseCloudMessagePayload with _$FirebaseCloudMessagePayload {
     @JsonKey(name: 'contents_idx') required String contentsIdx,
     @JsonKey(name: 'imageUrl') required String image,
     @JsonKey(name: 'comment_idx') String? commentIdx,
+    String? chat,
   }) = _FirebaseCloudMessagePayload;
 
   factory FirebaseCloudMessagePayload.fromJson(Map<String, dynamic> json) => _$FirebaseCloudMessagePayloadFromJson(json);

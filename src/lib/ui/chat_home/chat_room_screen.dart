@@ -17,7 +17,7 @@ import 'package:pet_mobile_social_flutter/ui/chat_home/widget/chat_msg_item.dart
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ChatRoomScreen extends ConsumerStatefulWidget {
-  final String roomId;
+  final String roomUuid;
   final String nick;
   final String targetMemberUuid;
   final String? profileImgUrl;
@@ -25,7 +25,7 @@ class ChatRoomScreen extends ConsumerStatefulWidget {
 
   const ChatRoomScreen({
     super.key,
-    required this.roomId,
+    required this.roomUuid,
     required this.nick,
     required this.targetMemberUuid,
     this.profileImgUrl,
@@ -58,6 +58,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   @override
   void dispose() {
+    print('1 - _chatController.disconnect();');
     _chatController.disconnect();
     super.dispose();
   }
@@ -79,28 +80,39 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       // print('1 targetMemberList $targetMemberList');
       // // targetMemberList.remove(myInfo.uuid);
       // print('2 targetMemberList $targetMemberList');
+      print('_chatEnterModel!.roomUuid, ${_chatEnterModel!.roomUuid}');
 
-      _chatController = ChatController(roomUuid: _chatEnterModel!.roomId, token: _chatEnterModel!.generateToken, memberUuid: myInfo.uuid ?? '', targetMemberUuidList: targetMemberList);
+      _chatController = ChatController(
+        roomUuid: _chatEnterModel!.roomUuid,
+        token: _chatEnterModel!.generateToken,
+        memberUuid: myInfo.uuid ?? '',
+        targetMemberUuidList: targetMemberList,
+      );
+
       await _chatController.connect(
-          url: chatWSBaseUrl,
-          onConnected: () {
-            if (_chatHistoryPagingController.itemList == null) {
-              print('_chatHistoryPagingController.itemList == null');
-              return;
-            }
+        url: chatWSBaseUrl,
+        onConnected: () {
+          if (_chatHistoryPagingController.itemList == null) {
+            print('_chatHistoryPagingController.itemList == null');
+            return;
+          }
 
-            if (_chatHistoryPagingController.itemList!.isEmpty) {
-              print('_chatHistoryPagingController.itemList.length <= 0');
-              return;
-            }
+          if (_chatHistoryPagingController.itemList!.isEmpty) {
+            print('_chatHistoryPagingController.itemList.length <= 0');
+            return;
+          }
 
-            final lastChatModel = _chatHistoryPagingController.itemList!.first;
+          final lastChatModel = _chatHistoryPagingController.itemList!.first;
+          if (lastChatModel.type != 'REPORT') {
             _chatController.read(msg: lastChatModel.msg, score: lastChatModel.score, memberUuid: myInfo.uuid ?? '');
-            print('1111111111111');
-          },
-          onSubscribeCallBack: (chatMessageModel) {
-            ref.read(chatMessageStateProvider.notifier).addChatMessage(chatMessageModel);
-          });
+          }
+          print('1111111111111');
+        },
+        onSubscribeCallBack: (chatMessageModel) {
+          ref.read(chatMessageStateProvider.notifier).addChatMessage(chatMessageModel);
+        },
+        onWebSocketDone: () {},
+      );
 
       return _chatEnterModel!;
     } catch (e) {
@@ -131,7 +143,10 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       return;
     }
 
-    _chatController.send(msg);
+    final myInfo = ref.read(myInfoStateProvider);
+
+    final String profileImg = myInfo.profileImgUrl ?? '';
+    _chatController.send(msg, profileImg);
 
     _sendController.clear();
     _inputFocus.unfocus();
@@ -340,6 +355,26 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                           isError: false,
                                           isSending: false,
                                           isRedacted: false,
+                                          onReport: (chatMsgModel) async {
+                                            await ref
+                                                .read(chatMessageStateProvider.notifier)
+                                                .reportChatMessage(
+                                                  roomUuid: widget.roomUuid,
+                                                  message: chatMsgModel.msg,
+                                                  score: chatMsgModel.score,
+                                                  targetMemberUuid: widget.targetMemberUuid,
+                                                )
+                                                .then((value) {
+                                              if (value) {
+                                                print('1 - report run?');
+                                                _chatController.report(
+                                                  msg: chatMsgModel.originData,
+                                                  score: chatMsgModel.score,
+                                                  memberUuid: myInfo.uuid ?? '',
+                                                );
+                                              }
+                                            });
+                                          },
                                         ),
                                       ),
                                     ),

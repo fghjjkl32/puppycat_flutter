@@ -55,11 +55,13 @@ class ChatRepository {
     required String targetMemberUuid,
     int maxUser = 2,
     int type = 0, //0 : DM, 1 : Group
+    int limit = 10,
   }) async {
     Map<String, dynamic> body = {
       'targetMemberUuid': targetMemberUuid,
       'maxUser': maxUser,
       'type': type,
+      'limit': limit,
     };
 
     ChatEnterResponseModel responseModel = await _chatService.createRoom(body: body);
@@ -192,6 +194,36 @@ class ChatRepository {
         refer: 'ChatRepository',
         caller: 'favoriteChatMember',
         arguments: [targetMemberUuid, isFavorite],
+      );
+    }
+
+    return true;
+  }
+
+  Future<bool> reportChatMessage({
+    required String roomUuid,
+    required String memberUuid,
+    required String message,
+    required String score,
+    required String targetMemberUuid,
+  }) async {
+    Map<String, dynamic> body = {
+      'roomUuid': roomUuid,
+      'memberUuid': memberUuid,
+      'message': message,
+      'score': score,
+      'targetMemberUuid': targetMemberUuid,
+    };
+
+    ResponseModel responseModel = await _chatService.reportChatMessage(body: body);
+
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'reportChatMessage',
+        arguments: [body],
       );
     }
 

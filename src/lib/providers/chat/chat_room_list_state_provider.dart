@@ -109,7 +109,7 @@ class ChatRoomListState extends _$ChatRoomListState {
       final ChatEnterModel chatEnterModel = await _chatRepository.createRoom(targetMemberUuid: targetMemberUuid, maxUser: 2);
       ref.read(chatMessageStateProvider.notifier).setInitialChatHistory(chatEnterModel.log ?? []);
       print('chatEnterModel ${chatEnterModel.memberScore}');
-      Map<String, dynamic> memberScore = chatEnterModel.memberScore ?? {};
+      Map<String, dynamic> memberScore = Map.from(chatEnterModel.memberScore ?? {});
       print('memberScore $memberScore');
       if (memberScore.isNotEmpty) {
         final myInfo = ref.read(myInfoStateProvider);
@@ -120,7 +120,7 @@ class ChatRoomListState extends _$ChatRoomListState {
       }
       final router = ref.read(routerProvider);
       router.push('/chatHome/chatRoom', extra: {
-        'roomId': chatEnterModel.roomId,
+        'roomUuid': chatEnterModel.roomUuid,
         'nick': titleName,
         'profileImgUrl': targetProfileImgUrl,
         'targetMemberUuid': targetMemberUuid,

@@ -6,7 +6,7 @@ part 'chat_enter_model.g.dart';
 @freezed
 class ChatEnterModel with _$ChatEnterModel {
   factory ChatEnterModel({
-    required String roomId,
+    required String roomUuid,
     required String generateToken,
     List<String>? log,
     Map<String, dynamic>? memberScore,

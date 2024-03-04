@@ -1025,7 +1025,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               context.push("/member/myPage/profileEdit/withdrawalSelect");
                             },
                             child: Text(
-                              "회원.회원탈퇴".tr(),
+                              "회원.회원 탈퇴".tr(),
                               style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                             ),
                           ),

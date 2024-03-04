@@ -26,6 +26,7 @@ class ChatMessageModel with _$ChatMessageModel {
     required bool isViewTime,
     required String score,
     required String type, //일단은 String으로, 나중에 enum
+    required String originData,
   }) = _ChatMessageModel;
 
   factory ChatMessageModel.fromJson(Map<String, dynamic> json) => _$ChatMessageModelFromJson(json);

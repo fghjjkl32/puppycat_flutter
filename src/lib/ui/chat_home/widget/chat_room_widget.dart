@@ -43,6 +43,7 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
             pagingController: _pagingController,
             builderDelegate: PagedChildBuilderDelegate<ChatRoomModel>(
               noItemsFoundIndicatorBuilder: (context) {
+                print('why??????');
                 ref.read(chatRoomListEmptyProvider.notifier).state = true;
                 return ChatEmptyWidget(
                   nick: myInfo.nick,
@@ -67,7 +68,7 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
                   onTap: () {
                     print('item.profileImgUrl ${item.profileImgUrl}');
                     context.push('/chatHome/chatRoom', extra: {
-                      'roomId': item.roomId,
+                      'roomUuid': item.roomId,
                       'nick': item.nick,
                       'profileImgUrl': item.profileImgUrl,
                       'targetMemberUuid': item.targetMemberUuid,
