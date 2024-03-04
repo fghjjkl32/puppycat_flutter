@@ -157,8 +157,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
           return ChatSearchListItem(
             memberUuid: item.targetMemberUuid ?? '',
             nick: item.nick ?? 'unknown',
-            intro: '',
-            //TODO
+            intro: item.intro,
             profileImgUrl: item.profileImgUrl ?? '',
             onTab: () => _onTabListItem(
               targetMemberUuid: item.targetMemberUuid ?? '',

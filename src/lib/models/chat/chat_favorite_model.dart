@@ -65,6 +65,7 @@ class ChatFavoriteModel with _$ChatFavoriteModel {
     required int state,
     required int idx,
     required int maxUser,
+    required String intro,
   }) = _ChatFavoriteModel;
 
   factory ChatFavoriteModel.fromJson(Map<String, dynamic> json) => _$ChatFavoriteModelFromJson(json);

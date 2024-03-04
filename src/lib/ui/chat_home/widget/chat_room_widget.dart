@@ -43,8 +43,6 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
             pagingController: _pagingController,
             builderDelegate: PagedChildBuilderDelegate<ChatRoomModel>(
               noItemsFoundIndicatorBuilder: (context) {
-                print('why??????');
-                ref.read(chatRoomListEmptyProvider.notifier).state = true;
                 return ChatEmptyWidget(
                   nick: myInfo.nick,
                 );

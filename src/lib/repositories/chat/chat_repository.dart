@@ -4,6 +4,8 @@ import 'package:pet_mobile_social_flutter/models/chat/chat_enter_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_enter_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_favorite_response_model.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_history_model.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_history_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_room_data_list_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_room_response_model.dart';
 import 'package:pet_mobile_social_flutter/models/default_response_model.dart';
@@ -55,13 +57,14 @@ class ChatRepository {
     required String targetMemberUuid,
     int maxUser = 2,
     int type = 0, //0 : DM, 1 : Group
-    int limit = 10,
+    int limit = 30,
   }) async {
     Map<String, dynamic> body = {
       'targetMemberUuid': targetMemberUuid,
       'maxUser': maxUser,
       'type': type,
       'limit': limit,
+      'page': 1,
     };
 
     ChatEnterResponseModel responseModel = await _chatService.createRoom(body: body);
@@ -228,5 +231,35 @@ class ChatRepository {
     }
 
     return true;
+  }
+
+  Future<ChatHistoryModel> getChatHistory({
+    required String roomUuid,
+    int page = 1,
+    int limit = 30,
+  }) async {
+    ChatHistoryResponseModel responseModel = await _chatService.getChatHistory(roomUuid: roomUuid, page: page, limit: limit);
+
+    if (!responseModel.result) {
+      throw APIException(
+        msg: responseModel.message ?? '',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'getChatHistory',
+      );
+    }
+
+    if (responseModel.data == null) {
+      throw APIException(
+        msg: 'data is null',
+        code: responseModel.code,
+        refer: 'ChatRepository',
+        caller: 'getChatHistory',
+      );
+    }
+
+    final historyModel = responseModel.data!;
+
+    return historyModel;
   }
 }

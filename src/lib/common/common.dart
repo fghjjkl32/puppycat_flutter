@@ -87,7 +87,13 @@ String convertToJsonStringQuotes({required String raw}) {
 }
 
 String thumborUrl(String url) {
-  return Thumbor(host: thumborHostUrl, key: thumborKey).buildImage(url).toUrl();
+  final resultUrl = Thumbor(host: thumborHostUrl, key: thumborKey).buildImage(url);
+
+  ///TODO: 이미지 사이즈 조절
+  resultUrl.resize(width: 300, height: 300);
+
+  print('thumborUrl: ${resultUrl.toUrl()}');
+  return resultUrl.toUrl();
 }
 
 List<String> getHashtagList(textData) {

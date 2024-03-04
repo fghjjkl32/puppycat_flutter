@@ -74,7 +74,9 @@ class ChatRoomListState extends _$ChatRoomListState {
   }) async {
     try {
       final ChatEnterModel chatEnterModel = await _chatRepository.createRoom(targetMemberUuid: targetMemberUuid, maxUser: 2);
-      ref.read(chatMessageStateProvider.notifier).setInitialChatHistory(chatEnterModel.log ?? []);
+      int chatLastPage = chatEnterModel.params?.pagination?.totalPageCount ?? 1;
+
+      ref.read(chatMessageStateProvider.notifier).setInitialChatHistory(chatEnterModel.log ?? [], chatEnterModel.roomUuid, chatLastPage);
       print('chatEnterModel ${chatEnterModel.memberScore}');
       Map<String, dynamic> memberScore = Map.from(chatEnterModel.memberScore ?? {});
       print('memberScore $memberScore');
@@ -107,7 +109,9 @@ class ChatRoomListState extends _$ChatRoomListState {
   }) async {
     try {
       final ChatEnterModel chatEnterModel = await _chatRepository.createRoom(targetMemberUuid: targetMemberUuid, maxUser: 2);
-      ref.read(chatMessageStateProvider.notifier).setInitialChatHistory(chatEnterModel.log ?? []);
+      int chatLastPage = chatEnterModel.params?.pagination?.totalPageCount ?? 1;
+
+      ref.read(chatMessageStateProvider.notifier).setInitialChatHistory(chatEnterModel.log ?? [], chatEnterModel.roomUuid, chatLastPage);
       print('chatEnterModel ${chatEnterModel.memberScore}');
       Map<String, dynamic> memberScore = Map.from(chatEnterModel.memberScore ?? {});
       print('memberScore $memberScore');

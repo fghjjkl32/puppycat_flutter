@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/date_time_extension.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_history_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
@@ -31,7 +32,8 @@ final chatReadStatusProvider = StateProvider<Map<String, dynamic>>((ref) => {});
 
 @Riverpod(keepAlive: true)
 class ChatMessageState extends _$ChatMessageState {
-  int _lastPage = 0;
+  int _lastPage = 1;
+  String _roomUuid = '';
   ListAPIStatus _apiStatus = ListAPIStatus.idle;
   List<String> _initialChatHistoryList = [];
   late final ChatRepository _chatRepository = ChatRepository(dio: ref.read(dioProvider));
@@ -46,13 +48,31 @@ class ChatMessageState extends _$ChatMessageState {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      ///TODO
-      ///여기에 히스토리 가져오는 로직 필요
       List<ChatMessageModel> chatMsgList = [];
+      List<String> rawChatMsgList = [];
+      int chatLastPage = _lastPage;
 
-      int idxCnt = 0;
+      if (pageKey == 1) {
+        rawChatMsgList = _initialChatHistoryList;
+      } else {
+        final ChatHistoryModel chatHistoryModel = await _chatRepository.getChatHistory(
+          roomUuid: _roomUuid,
+          page: pageKey,
+        );
 
-      for (var msg in _initialChatHistoryList) {
+        chatLastPage = chatHistoryModel.params?.pagination?.totalPageCount ?? 1;
+        rawChatMsgList = chatHistoryModel.log ?? [];
+      }
+
+      int idxCnt = 1;
+
+      if (state.itemList != null) {
+        if (state.itemList!.isNotEmpty) {
+          idxCnt = state.itemList!.last.idx + 1;
+        }
+      }
+
+      for (var msg in rawChatMsgList) {
         Map<String, dynamic> msgMap = jsonDecode(msg);
 
         if (msgMap['type'] == 'READ') {
@@ -99,13 +119,18 @@ class ChatMessageState extends _$ChatMessageState {
       // try {
       //   _lastPage = pagination?.totalPageCount! ?? 0;
       // } catch (_) {
-      _lastPage = 1;
+      // https://pet-chat.devlabs.co.kr/v1/chat/room/log?roomUuid=roomUuid&page=2&limit=20
+
+      _lastPage = chatLastPage;
       // }
 
       final nextPageKey = pageKey + 1;
 
-      if (pageKey == _lastPage) {
+      print('pagekey $pageKey / chatLastPage $chatLastPage / nextPageKey $nextPageKey');
+
+      if (pageKey == chatLastPage) {
         state.appendLastPage(chatMsgList);
+        print('state.itemList!.length ${state.itemList!.length}');
       } else {
         state.appendPage(chatMsgList, nextPageKey);
       }
@@ -118,9 +143,12 @@ class ChatMessageState extends _$ChatMessageState {
     }
   }
 
-  void setInitialChatHistory(List<String> history) {
+  void setInitialChatHistory(List<String> history, String roomUuid, int lastPage) {
     _initialChatHistoryList = [];
     _initialChatHistoryList = history;
+    print('lastPage $lastPage');
+    _roomUuid = roomUuid;
+    _lastPage = lastPage == 0 ? 1 : lastPage;
     if (state.itemList != null) {
       state.refresh();
     }
