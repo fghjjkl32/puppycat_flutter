@@ -12,12 +12,11 @@ import 'package:pet_mobile_social_flutter/providers/signUp/sign_up_state_provide
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 
 class SignUpCompleteScreen extends ConsumerWidget {
-  final String nick;
-
-  const SignUpCompleteScreen({required this.nick, Key? key}) : super(key: key);
+  const SignUpCompleteScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final userModel = ref.read(signUpUserInfoProvider);
     return Scaffold(
       body: SafeArea(
         child: PopScope(
@@ -31,7 +30,6 @@ class SignUpCompleteScreen extends ConsumerWidget {
             ///NOTE
             ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
             ///로그인 페이지 이동 초기화
-            final userModel = ref.read(signUpUserInfoProvider);
             ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel, enableRoutePop: false);
             // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
             ref.read(authStateProvider.notifier).state = false;
@@ -59,7 +57,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      '회원가입.회원가입 환영 메시지'.tr(args: [nick]),
+                      '회원가입.회원가입 환영 메시지'.tr(args: [userModel!.nick]),
                       style: kTitle18BoldStyle.copyWith(height: 1.3, color: kPreviousTextTitleColor),
                       textAlign: TextAlign.center,
                     ),
@@ -67,7 +65,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                       height: 8,
                     ),
                     Text(
-                      "회원가입.퍼피캣과 함께 일상을 공유해 보세요!",
+                      "회원가입.퍼피캣과 함께 일상을 공유해 보세요!".tr(),
                       style: kBody13RegularStyle.copyWith(height: 1.3, color: kPreviousTextBodyColor),
                       textAlign: TextAlign.center,
                     ),
@@ -86,7 +84,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                         ///NOTE
                         ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
                         ///로그인 페이지 이동 초기화
-                        final userModel = ref.read(signUpUserInfoProvider);
+
                         ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel, enableRoutePop: false);
                         // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
                         ref.read(authStateProvider.notifier).state = false;

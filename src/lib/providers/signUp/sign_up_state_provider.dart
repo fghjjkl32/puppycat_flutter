@@ -4,6 +4,7 @@ import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/policy/policy_state_provider.dart';
 import 'package:pet_mobile_social_flutter/repositories/signUp/sign_up_repository.dart';
 import 'package:riverpod/riverpod.dart';
@@ -50,9 +51,11 @@ class SignUpState extends _$SignUpState {
       var result = await _signUpRepository.socialSignUp(userModel, idxList);
 
       if (result == SignUpStatus.success) {
+        ref.read(signUpUserInfoProvider.notifier).state = userModel;
         // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.success;
         // ref.read(chatRegisterStateProvider.notifier).register(userModel);
-        ref.read(routerProvider).goNamed('signupComplete/${userModel.nick}');
+
+        ref.read(routerProvider).goNamed('signupComplete');
       }
       state = result;
       // state = SignUpStatus.failedAuth;

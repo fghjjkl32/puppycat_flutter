@@ -208,7 +208,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
     List<Tag> tags = tagImages.tag;
 
     return GestureDetector(
-      onTapDown: (details) {
+      onTapUp: (details) {
         RenderBox box = context.findRenderObject() as RenderBox; // 현재 위젯의 렌더링 박스
 
         // 탭된 위치를 상대적인 이미지 위치로 변환합니다.

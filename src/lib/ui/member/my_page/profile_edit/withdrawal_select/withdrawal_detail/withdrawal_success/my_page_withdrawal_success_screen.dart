@@ -89,7 +89,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                   height: 12,
                 ),
                 Text(
-                  "화원.모든 기기에서 안전하게 로그아웃 처리할게요".tr(),
+                  "회원.모든 기기에서 안전하게 로그아웃 처리할게요".tr(),
                   style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                   textAlign: TextAlign.center,
                 ),
@@ -120,8 +120,7 @@ class MyPageWithdrawalSuccessScreenState extends ConsumerState<MyPageWithdrawalS
                       onPressed: () async {
                         // ref.watch(loginRouteStateProvider.notifier).state = LoginRoute.none;
                         // ref.read(loginStateProvider.notifier).state = LoginStatus.none;
-                        print('asd');
-                        context.go('/home');
+                        context.pushReplacement('/home');
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(18.0),
