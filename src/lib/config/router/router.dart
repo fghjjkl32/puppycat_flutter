@@ -103,8 +103,6 @@ GoRouter router(Ref ref) {
       const homeLocation = '/home';
       const loginLocation = '/home/login';
       const splashLocation = '/splash';
-      const signUpLocation = '$loginLocation/signup/:authType';
-      const signUpCompleteLocation = '$signUpLocation/signupComplete';
       const maintenanceLocation = '/maintenance';
       const forceUpdateLocation = '/bottomSheet/forceUpdateBottomSheet';
       const recommendUpdateLocation = '/bottomSheet/recommendUpdateBottomSheet';

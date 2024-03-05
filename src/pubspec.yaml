@@ -168,6 +168,7 @@ dependencies:
 
   easy_debounce: ^2.0.3
   ios_willpop_transition_theme: ^0.0.6
+  image_tag: ^0.0.2
 
 dev_dependencies:
   flutter_test:

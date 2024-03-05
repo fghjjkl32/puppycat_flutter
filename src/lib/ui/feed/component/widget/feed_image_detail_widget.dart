@@ -47,6 +47,8 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
 
   late AnimationController _fadeController;
 
+  final controller = PageController(viewportFraction: 0.8, keepPage: true);
+
   double width = 0.0;
   double height = 0.0;
 
@@ -72,6 +74,25 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
 
   @override
   Widget build(BuildContext context) {
+    final pages = List.generate(
+      40,
+      (index) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.grey.shade300,
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: SizedBox(
+          height: 280,
+          child: Center(
+            child: Text(
+              "Page $index",
+              style: const TextStyle(color: Colors.blueAccent),
+            ),
+          ),
+        ),
+      ),
+    );
     final myInfo = ref.read(myInfoStateProvider);
     final isLogined = ref.read(loginStatementProvider);
 
