@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/config/router/router.dart';
@@ -26,7 +24,7 @@ class FirebaseState extends _$FirebaseState {
     await fireBaseMessageController.init();
 
     fireBaseMessageController.setBackgroundMessageOnTapHandler((payload) => navigatorHandler(payload));
-    fireBaseMessageController.setForegroundMessageOnTapHandler((payload) => navigatorHandler(payload));
+    fireBaseMessageController.setForegroundMessageOnTapHandler((payload) => updateChatRoomList(payload));
 
     state = fireBaseMessageController;
   }
@@ -35,6 +33,25 @@ class FirebaseState extends _$FirebaseState {
     if (state.initData != null) {
       navigatorHandler(state.initData!);
     }
+  }
+
+  void updateChatRoomList(FirebaseCloudMessagePayload payload) {
+    PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
+
+    if (pushType != PushType.chatting) {
+      print('1 updateChatRoomList $payload');
+
+      return;
+    }
+
+    print('2 updateChatRoomList $payload');
+    // ref.read(chatRoomListStateProvider).refresh();
+    // Map<String, dynamic> chatMap = jsonDecode(payload.chat ?? '{}');
+    ref.read(chatRoomListStateProvider.notifier).updateChatRoom(
+          roomUuid: payload.chat?.roomUuid ?? '',
+          isUpdate: true,
+          chatData: payload.chat,
+        );
   }
 
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
@@ -105,12 +122,12 @@ class FirebaseState extends _$FirebaseState {
         if (payload.chat == null) {
           break;
         }
-        final Map<String, dynamic> chatData = jsonDecode(payload.chat!);
+        // final Map<String, dynamic> chatData = jsonDecode(payload.chat!);
 
         ref.read(chatRoomListStateProvider.notifier).enterChatRoom(
-              targetMemberUuid: chatData['targetUuid'] ?? '',
+              targetMemberUuid: payload.chat?.targetMemberUuid ?? '',
               titleName: payload.title ?? 'unknown',
-              targetProfileImgUrl: chatData['senderMemberProfileImg'] ?? '',
+              targetProfileImgUrl: payload.chat?.senderMemberProfileImg ?? '',
             );
         break;
       case PushType.unknown:

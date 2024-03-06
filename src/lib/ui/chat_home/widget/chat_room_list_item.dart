@@ -188,6 +188,12 @@ class ChatRoomItem extends ConsumerWidget {
     var favoriteBackgroundColor = roomModel.favoriteState == 1 ? kPreviousTextBodyColor : kPreviousPrimaryColor;
     var favoriteForegroundColor = kNeutralColor100;
 
+    // print('roomModel $roomModel');
+    // final test = DateTime.fromMillisecondsSinceEpoch(int.parse(roomModel.lastMessage!.regDate) * 1000).toString().substring(0, 19) + 'Z';
+    // print('last reg date ${DateTime.parse(test).toLocal()}');
+    // print(
+    //     'roomModel.regDate ${roomModel.regDate} / DateTime.parse(roomModel.regDate).toLocal() ${DateTime.parse(roomModel.regDate).toLocal()} / ${DateTime.parse(roomModel.regDate).toLocal().millisecondsSinceEpoch}');
+
     return Slidable(
       key: const ValueKey(0),
       startActionPane: ActionPane(
@@ -302,7 +308,7 @@ class ChatRoomItem extends ConsumerWidget {
                             child: Text(
                               roomModel.lastMessage == null
                                   ? DateTime.fromMillisecondsSinceEpoch(DateTime.parse(roomModel.regDate).toLocal().millisecondsSinceEpoch).localizedTimeDayDiff()
-                                  : DateTime.fromMillisecondsSinceEpoch(int.parse(roomModel.lastMessage!.regDate) * 1000).localizedTimeDayDiff(),
+                                  : DateTime.fromMillisecondsSinceEpoch(int.parse(roomModel.lastMessage!.regDate) * 1000).toLocal().localizedTimeDayDiff(),
                               style: kBadge10MediumStyle.copyWith(color: kNeutralColor500),
                             ),
                           ),
@@ -312,7 +318,7 @@ class ChatRoomItem extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              roomModel.lastMessage?.message ?? '새로운 채팅이 생성되었습니다.',
+                              roomModel.lastMessage?.message ?? '채팅방이 개설 되었습니다.',
                               style: kBody12RegularStyle400.copyWith(color: kPreviousTextBodyColor, height: 1.3),
                               softWrap: false,
                               maxLines: 2,

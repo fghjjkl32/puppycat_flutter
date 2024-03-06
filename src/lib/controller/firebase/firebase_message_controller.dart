@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
@@ -116,6 +118,9 @@ class FireBaseMessageController {
         String? imageUrl = message.notification?.android?.imageUrl ?? message.notification?.apple?.imageUrl;
         notificationMap['imageUrl'] = imageUrl ?? '';
         print(notificationMap);
+        if (notificationMap.containsKey('chat')) {
+          notificationMap['chat'] = jsonDecode(notificationMap['chat']);
+        }
         handler(FirebaseCloudMessagePayload.fromJson(notificationMap));
       }
     });
@@ -123,7 +128,7 @@ class FireBaseMessageController {
 
   void setForegroundMessageOnTapHandler(Function(FirebaseCloudMessagePayload payload) handler) {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('onMessageOpenedApp ${message.toMap().toString()}');
+      print('onMessage ${message.toMap().toString()}');
       if (message.notification != null) {
         Map<String, dynamic> notificationMap = message.notification!.toMap();
         if (message.data.isNotEmpty) {
@@ -132,7 +137,12 @@ class FireBaseMessageController {
         String? imageUrl = message.notification?.android?.imageUrl ?? message.notification?.apple?.imageUrl;
         notificationMap['imageUrl'] = imageUrl ?? '';
         print(notificationMap);
-        // handler(FirebaseCloudMessagePayload.fromJson(notificationMap));
+        if (notificationMap.containsKey('chat')) {
+          notificationMap['chat'] = jsonDecode(notificationMap['chat']);
+        }
+
+        print('notificationMap chat ${notificationMap['chat'].runtimeType}');
+        handler(FirebaseCloudMessagePayload.fromJson(notificationMap));
       }
     });
   }

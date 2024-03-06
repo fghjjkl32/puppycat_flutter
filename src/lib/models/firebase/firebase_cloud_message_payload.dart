@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:pet_mobile_social_flutter/models/firebase/firebase_chat_data_model.dart';
 
 part 'firebase_cloud_message_payload.freezed.dart';
 part 'firebase_cloud_message_payload.g.dart';
@@ -30,7 +31,7 @@ class FirebaseCloudMessagePayload with _$FirebaseCloudMessagePayload {
     @JsonKey(name: 'contents_idx') required String contentsIdx,
     @JsonKey(name: 'imageUrl') required String image,
     @JsonKey(name: 'comment_idx') String? commentIdx,
-    String? chat,
+    FirebaseChatDataModel? chat,
   }) = _FirebaseCloudMessagePayload;
 
   factory FirebaseCloudMessagePayload.fromJson(Map<String, dynamic> json) => _$FirebaseCloudMessagePayloadFromJson(json);
