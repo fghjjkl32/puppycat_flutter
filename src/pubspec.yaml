@@ -167,6 +167,7 @@ dependencies:
   custom_refresh_indicator: ^3.0.0
 
   easy_debounce: ^2.0.3
+  crop_your_image: ^1.0.2
 
 dev_dependencies:
   flutter_test:
