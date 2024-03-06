@@ -39,12 +39,9 @@ class FirebaseState extends _$FirebaseState {
     PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
 
     if (pushType != PushType.chatting) {
-      print('1 updateChatRoomList $payload');
-
       return;
     }
 
-    print('2 updateChatRoomList $payload');
     // ref.read(chatRoomListStateProvider).refresh();
     // Map<String, dynamic> chatMap = jsonDecode(payload.chat ?? '{}');
     ref.read(chatRoomListStateProvider.notifier).updateChatRoom(
@@ -126,7 +123,7 @@ class FirebaseState extends _$FirebaseState {
 
         ref.read(chatRoomListStateProvider.notifier).enterChatRoom(
               targetMemberUuid: payload.chat?.targetMemberUuid ?? '',
-              titleName: payload.title ?? 'unknown',
+              titleName: payload.chat?.senderNick ?? 'unknown',
               targetProfileImgUrl: payload.chat?.senderMemberProfileImg ?? '',
             );
         break;

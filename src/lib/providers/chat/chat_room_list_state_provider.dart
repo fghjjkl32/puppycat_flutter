@@ -142,14 +142,11 @@ class ChatRoomListState extends _$ChatRoomListState {
     }
   }
 
-  Future<bool> pinChatRoom({
-    required String roomUuid,
-    required bool isPin,
-  }) async {
+  Future<bool> pinChatRoom({required String roomUuid, required bool isPin, bool isRefresh = false}) async {
     try {
       final pinResult = await _chatRepository.pinChatRoom(roomUuid: roomUuid, isPin: isPin);
 
-      if (pinResult) {
+      if (pinResult && isRefresh) {
         state.refresh();
       }
 

@@ -52,16 +52,24 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
                 return ChatRoomItem(
                   roomModel: item,
                   onPin: (isPin) async {
-                    await ref.read(chatRoomListStateProvider.notifier).pinChatRoom(roomUuid: item.uuid, isPin: isPin);
-                    // await ref.read(chatRoomListStateProvider.notifier).updateChatRoom(roomUuid: item.uuid, isPin: !isPin);
+                    await ref.read(chatRoomListStateProvider.notifier).pinChatRoom(roomUuid: item.uuid, isPin: isPin, isRefresh: true);
                   },
                   onFavorite: (isFavorite) async {
                     await ref.read(chatFavoriteStateProvider.notifier).favoriteChatMember(targetMemberUuid: item.targetMemberUuid, isFavorite: isFavorite);
                     await ref.read(chatRoomListStateProvider.notifier).updateChatRoom(roomUuid: item.uuid, isFavorite: !isFavorite);
                   },
-                  onLeave: () async {
+                  onLeave: (roomModel) async {
                     await ref.read(chatRoomListStateProvider.notifier).exitChatRoom(roomUuid: item.uuid);
                     await ref.read(chatRoomListStateProvider.notifier).updateChatRoom(roomUuid: item.uuid, isDelete: true);
+
+                    //즐겨찾기 상태면 해제
+                    if (roomModel.favoriteState == 1) {
+                      await ref.read(chatFavoriteStateProvider.notifier).favoriteChatMember(targetMemberUuid: item.targetMemberUuid, isFavorite: true);
+                    }
+                    //고정 상태면 해제
+                    if (roomModel.fixState == 1) {
+                      await ref.read(chatRoomListStateProvider.notifier).pinChatRoom(roomUuid: item.uuid, isPin: true, isRefresh: false);
+                    }
                   },
                   onTap: () {
                     print('item.profileImgUrl ${item.profileImgUrl}');

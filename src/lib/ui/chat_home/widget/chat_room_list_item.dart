@@ -20,7 +20,7 @@ enum RoomContextMenuType {
 class ChatRoomItem extends ConsumerWidget {
   final void Function()? onTap;
   final void Function(Offset?)? onLongPress;
-  final void Function()? onLeave;
+  final void Function(ChatRoomModel)? onLeave;
   final void Function(bool)? onPin;
   final void Function(bool)? onFavorite;
 
@@ -170,7 +170,7 @@ class ChatRoomItem extends ConsumerWidget {
 
   void _onLeave() {
     if (onLeave != null) {
-      onLeave!();
+      onLeave!(roomModel);
     }
   }
 
