@@ -23,13 +23,37 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 
 
-### android firebase
+### android firebase_android
 
 ```sh
-[bundle exec] fastlane android firebase
+[bundle exec] fastlane android firebase_android
 ```
 
 Push a new beta build with Firebase App Distribution
+
+### android firebase_one
+
+```sh
+[bundle exec] fastlane android firebase_one
+```
+
+Push a new beta build with Firebase App Distribution
+
+### android flutter_build_android
+
+```sh
+[bundle exec] fastlane android flutter_build_android
+```
+
+
+
+### android flutter_build_one
+
+```sh
+[bundle exec] fastlane android flutter_build_one
+```
+
+
 
 ----
 

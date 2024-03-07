@@ -17,6 +17,7 @@ import 'package:go_router/go_router.dart';
 // import 'package:location/location.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/flavor_config.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/package_info/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/config/router/router.dart';
@@ -47,7 +48,10 @@ class ScrollBehaviorModified extends ScrollBehavior {
   }
 }
 
-void main() async {
+void mainCommon() async {
+  print("FlavorConfig ${FlavorConfig.instance.values?.name}");
+  print("isAndroid ${FlavorConfig.isAndroid()}");
+
   WidgetsFlutterBinding.ensureInitialized();
 
   // baseUrl = await Constants.getBaseUrl();
