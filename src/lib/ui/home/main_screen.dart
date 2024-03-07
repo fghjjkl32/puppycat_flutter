@@ -220,6 +220,7 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
                   ),
                 ),
           body: SafeArea(
+            bottom: false,
             child: Consumer(builder: (context, ref, _) {
               return FutureBuilder(
                   future: _initTabController(),

@@ -23,10 +23,34 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 
 
-### ios beta
+### ios beta_apple
 
 ```sh
-[bundle exec] fastlane ios beta
+[bundle exec] fastlane ios beta_apple
+```
+
+
+
+### ios beta_one
+
+```sh
+[bundle exec] fastlane ios beta_one
+```
+
+
+
+### ios flutter_build_apple
+
+```sh
+[bundle exec] fastlane ios flutter_build_apple
+```
+
+
+
+### ios flutter_build_one
+
+```sh
+[bundle exec] fastlane ios flutter_build_one
 ```
 
 
