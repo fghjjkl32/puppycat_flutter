@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/social_login_service.dart';
@@ -10,7 +11,7 @@ class KakaoLoginService implements SocialLoginService {
 
   KakaoLoginService() {
     KakaoSdk.init(
-      nativeAppKey: 'cd91822133ce9bf5f822d84832752658',
+      nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY']!,
       loggingEnabled: false,
     );
   }

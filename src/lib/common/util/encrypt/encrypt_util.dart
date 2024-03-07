@@ -4,13 +4,14 @@ import 'dart:typed_data';
 
 import 'package:asn1lib/asn1lib.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pointycastle/export.dart' as pc;
 import 'package:uuid/uuid.dart';
 
 class EncryptUtil {
-  static String getPassAPIEncrypt(String plainText, [String key = 'dmhjlpgljhkthkjw', iv = 'dmhjlpgljhkthkjw']) {
-    final keyValue = Key.fromUtf8(key);
-    final ivValue = IV.fromUtf8(iv);
+  static String getPassAPIEncrypt(String plainText, {String? key, String? iv}) {
+    final keyValue = Key.fromUtf8(key ?? dotenv.env['PASS_KEY']!);
+    final ivValue = IV.fromUtf8(iv ?? dotenv.env['PASS_IV']!);
 
     final encrypter = Encrypter(AES(keyValue, mode: AESMode.cbc, padding: 'PKCS7'));
 

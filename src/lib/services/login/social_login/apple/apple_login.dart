@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/social_login_service.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -68,10 +69,8 @@ class AppleLoginService implements SocialLoginService {
           AppleIDAuthorizationScopes.fullName,
         ],
         webAuthenticationOptions: WebAuthenticationOptions(
-          clientId: "io.services",
-          redirectUri: Uri.parse(
-            "https://lime-peppermint-poppy.glitch.me/callbacks/sign_in_with_apple",
-          ),
+          clientId: dotenv.env['APPLE_CLIENT_ID']!,
+          redirectUri: Uri.parse(dotenv.env['APPLE_REDIRECT_URI']!),
         ),
       );
       print('tokenaaaa : $token');

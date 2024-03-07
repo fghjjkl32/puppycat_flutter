@@ -212,6 +212,7 @@ flutter:
     - assets/image/character/
     - assets/lottie/
     - assets/web/kakao_postcode.html
+    - .env
 
 
 
