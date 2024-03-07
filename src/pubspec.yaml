@@ -47,8 +47,6 @@ dependencies:
   image_picker: ^0.8.7+5
   flutter_form_builder: ^9.1.1
   rxdart: ^0.27.7
-  flutter_social_textfield: ^0.1.2
-  sliding_up_panel: ^2.0.0+1
   path_provider: ^2.0.15
   image_gallery_saver: ^2.0.2
 
@@ -95,8 +93,6 @@ dependencies:
   dio_smart_retry: ^5.0.0
 
   drift: ^2.9.0
-  sqlite3_flutter_libs: ^0.5.15
-
 
   #chat
   #  matrix: ^0.22.6
@@ -122,26 +118,21 @@ dependencies:
 
   shared_preferences: ^2.2.0
   thumbor: ^1.0.4
-  zoom_pinch_overlay: ^1.4.1+3
   lottie: ^2.6.0
   flutter_html: ^3.0.0-beta.2
   ua_client_hints: ^1.1.3
-  firebase_remote_config: ^4.2.5
   cached_network_image: ^3.3.0
   app_install_date: ^0.1.2
   focus_detector: ^2.0.1
   cupertino_will_pop_scope: ^1.2.1
   geocoding: ^2.1.0
   just_the_tooltip: ^0.0.12
-  table_calendar: ^3.0.9
   screenshot: ^2.1.0
   dropdown_button2: ^2.3.9
   pointycastle: ^3.7.3
   uuid: ^3.0.6
   channel_talk_flutter: ^2.4.0
-  crypto: ^3.0.3
   asn1lib: ^1.5.0
-  tosspayments_sdk_flutter: ^0.1.11
   uni_links: ^0.5.1
   numberpicker: ^2.1.2
 
@@ -154,8 +145,6 @@ dependencies:
   #  pedometer: ^4.0.1
 
   xml: ^6.3.0 # 버전 충돌로 이전 버전 사용
-  #  xml_map_converter: ^1.0.0+1
-  xml2json: ^6.2.0
 
   flutter_launcher_icons: ^0.13.1
   flutter_secure_storage: ^9.0.0
@@ -181,6 +170,7 @@ dev_dependencies:
   drift_dev: ^2.9.0
   analyzer: ^6.2.0
   custom_lint:
+  dependency_validator: ^3.2.3
 
 flutter:
 
@@ -192,7 +182,6 @@ flutter:
     - assets/image/feed/icon/
     - assets/image/feed/icon/large_size/
     - assets/image/feed/icon/small_size/
-    - assets/image/camera/icon/
     - assets/image/etc/icon/large_size/
     - assets/image/etc/icon/small_size/
     - assets/image/header/icon/large_size/
