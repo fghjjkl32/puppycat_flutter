@@ -7,10 +7,11 @@ import 'package:stomp_dart_client/stomp.dart';
 
 class StompController implements AbstractChatController {
   late StompClient _stompClient;
-  final String token;
+  String token;
   final String roomUuid;
   final String memberUuid;
   final List<String> targetMemberUuidList;
+  int _retryCount = 0;
 
   StompClient get client => _stompClient;
 
@@ -26,7 +27,7 @@ class StompController implements AbstractChatController {
     required String url,
     Function()? onConnected,
     Function(ChatMessageModel)? onSubscribeCallBack,
-    Function()? onWebSocketDone,
+    Function(dynamic)? onError,
   }) async {
     print('call????');
     _stompClient = await StompHandler().connect(
@@ -34,6 +35,7 @@ class StompController implements AbstractChatController {
       useSockJS: true,
       onConnect: (frame) {
         print('onCooooooooooonnected! $roomUuid');
+        _retryCount = 0;
         _stompClient.subscribe(
             destination: '/topic/chat/room/$roomUuid',
             callback: (frame) {
@@ -81,22 +83,17 @@ class StompController implements AbstractChatController {
       },
       onDisconnect: (reason) => print('socket disconnect $reason'),
       onDebugMessage: (value) => print('socket debug msg $value'),
-      onStompError: (reason) => print('socket stomp error $reason'),
+      onStompError: onError ?? (frame) => print('socket error $frame'),
       onWebSocketError: (dynamic error) => print('socket error $error'),
       beforeConnect: () async {
         print('waiting to connect...');
         await Future.delayed(const Duration(milliseconds: 200));
-        print('connecting...');
+        _retryCount++;
+
+        print('connecting... $token');
       },
       stompConnectHeaders: {'token': token},
       webSocketConnectHeaders: {'token': token},
-      onWebSocketDone: () {
-        if (_stompClient.isActive) {
-          if (onWebSocketDone != null) {
-            onWebSocketDone();
-          }
-        }
-      },
     );
 
     _stompClient.activate();
@@ -136,6 +133,10 @@ class StompController implements AbstractChatController {
     required String memberUuid,
   }) async {
     print('msg $msg / score $score / memberUuid $memberUuid');
+    if (_stompClient.isActive == false) {
+      print('stomp client is not active');
+      return;
+    }
     _stompClient.send(
       destination: '/app/chat/read/message',
       body: json.encode({
@@ -166,5 +167,10 @@ class StompController implements AbstractChatController {
       body: json.encode(msgMap),
       headers: {'token': token},
     );
+  }
+
+  @override
+  Future<bool> isConnected() async {
+    return _stompClient.isActive;
   }
 }

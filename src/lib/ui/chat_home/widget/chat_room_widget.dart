@@ -1,3 +1,4 @@
+import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -72,13 +73,21 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
                     }
                   },
                   onTap: () {
-                    print('item.profileImgUrl ${item.profileImgUrl}');
-                    context.push('/chatHome/chatRoom', extra: {
-                      'roomUuid': item.roomId,
-                      'nick': item.nick,
-                      'profileImgUrl': item.profileImgUrl,
-                      'targetMemberUuid': item.targetMemberUuid,
-                    }).then((value) => ref.read(chatRoomListStateProvider).refresh());
+                    EasyThrottle.throttle(
+                      'elevatedButtonThrottle',
+                      const Duration(
+                        milliseconds: 2500,
+                      ),
+                      () async {
+                        print('item.profileImgUrl ${item.profileImgUrl}');
+                        context.push('/chatHome/chatRoom', extra: {
+                          'roomUuid': item.roomId,
+                          'nick': item.nick,
+                          'profileImgUrl': item.profileImgUrl,
+                          'targetMemberUuid': item.targetMemberUuid,
+                        }).then((value) => ref.read(chatRoomListStateProvider).refresh());
+                      },
+                    );
                   },
                 );
               },

@@ -121,10 +121,12 @@ class FirebaseState extends _$FirebaseState {
         }
         // final Map<String, dynamic> chatData = jsonDecode(payload.chat!);
 
+        print('payload $payload');
+
         ref.read(chatRoomListStateProvider.notifier).enterChatRoom(
-              targetMemberUuid: payload.chat?.targetMemberUuid ?? '',
+              targetMemberUuid: payload.chat?.senderMemberUuid ?? '',
               titleName: payload.chat?.senderNick ?? 'unknown',
-              targetProfileImgUrl: payload.chat?.senderMemberProfileImg ?? '',
+              targetProfileImgUrl: payload.chat?.targetMemberUuid ?? '',
             );
         break;
       case PushType.unknown:

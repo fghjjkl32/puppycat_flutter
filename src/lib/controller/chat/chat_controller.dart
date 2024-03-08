@@ -45,13 +45,13 @@ class ChatController {
     String? url,
     Function()? onConnected,
     Function(ChatMessageModel)? onSubscribeCallBack,
-    Function()? onWebSocketDone,
+    Function(dynamic)? onError,
   }) async {
     await _chatController.connect(
       url: url ?? chatWSBaseUrl,
       onConnected: onConnected,
       onSubscribeCallBack: onSubscribeCallBack,
-      onWebSocketDone: onWebSocketDone,
+      onError: onError,
     );
   }
 
@@ -79,5 +79,9 @@ class ChatController {
   }) async {
     print('2 - report run?');
     _chatController.report(msg: msg, score: score, memberUuid: memberUuid);
+  }
+
+  Future<bool> isConnected() async {
+    return _chatController.isConnected();
   }
 }

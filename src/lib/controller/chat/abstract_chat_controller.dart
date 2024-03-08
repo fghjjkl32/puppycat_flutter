@@ -5,7 +5,7 @@ abstract class AbstractChatController {
     required String url,
     Function()? onConnected,
     Function(ChatMessageModel)? onSubscribeCallBack,
-    Function()? onWebSocketDone,
+    Function(dynamic)? onError,
   });
 
   Future<void> send({required String msg, String? profileImg});
@@ -23,4 +23,6 @@ abstract class AbstractChatController {
   });
 
   Future<void> disconnect();
+
+  Future<bool> isConnected();
 }

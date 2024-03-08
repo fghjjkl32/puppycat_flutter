@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:easy_debounce/easy_throttle.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -957,11 +958,22 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                           child: GestureDetector(
                             onTap: () async {
                               if (data.uuid != null) {
-                                final chatEnterModel = await ref.read(chatRoomListStateProvider.notifier).enterChatRoom(
-                                      targetMemberUuid: data.uuid!,
-                                      titleName: data.nick ?? 'unknown',
-                                      targetProfileImgUrl: data.profileImgUrl ?? '',
-                                    );
+                                EasyThrottle.throttle(
+                                  'enterChatRoom_userPage',
+                                  const Duration(
+                                    milliseconds: 2500,
+                                  ),
+                                  () async {
+                                    final chatEnterModel = await ref
+                                        .read(chatRoomListStateProvider.notifier)
+                                        .enterChatRoom(
+                                          targetMemberUuid: data.uuid!,
+                                          titleName: data.nick ?? 'unknown',
+                                          targetProfileImgUrl: data.profileImgUrl ?? '',
+                                        )
+                                        .then((value) => ref.read(chatRoomListStateProvider).refresh());
+                                  },
+                                );
                                 // final chatEnterModel = await ref.read(chatRoomListStateProvider.notifier).createChatRoom(targetMemberUuid: data.uuid!);
                                 //
                                 // if (mounted) {

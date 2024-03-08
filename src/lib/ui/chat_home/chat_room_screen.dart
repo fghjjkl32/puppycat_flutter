@@ -10,6 +10,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/chat_controller.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_enter_model.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_controller_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_msg_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
@@ -72,25 +73,13 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         throw 'Chat Enter Model is Null';
       }
 
-      // ref.read(chatRoomListStateProvider).refresh();
-
       final myInfo = ref.read(myInfoStateProvider);
       final targetMemberList = [widget.targetMemberUuid, myInfo.uuid ?? ''];
 
-      // print('1 targetMemberList $targetMemberList');
-      // // targetMemberList.remove(myInfo.uuid);
-      // print('2 targetMemberList $targetMemberList');
-      print('_chatEnterModel!.roomUuid, ${_chatEnterModel!.roomUuid}');
-
-      _chatController = ChatController(
-        roomUuid: _chatEnterModel!.roomUuid,
-        token: _chatEnterModel!.generateToken,
-        memberUuid: myInfo.uuid ?? '',
-        targetMemberUuidList: targetMemberList,
-      );
-
-      await _chatController.connect(
-        url: chatWSBaseUrl,
+      final chatControllerProvider = ref.read(chatControllerStateProvider.notifier);
+      final chatController = await chatControllerProvider.connect(
+        chatEnterModel: _chatEnterModel!,
+        targetMemberList: targetMemberList,
         onConnected: () {
           if (_chatHistoryPagingController.itemList == null) {
             print('_chatHistoryPagingController.itemList == null');
@@ -106,13 +95,27 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           if (lastChatModel.type != 'REPORT') {
             _chatController.read(msg: lastChatModel.msg, score: lastChatModel.score, memberUuid: myInfo.uuid ?? '');
           }
-          print('1111111111111');
         },
         onSubscribeCallBack: (chatMessageModel) {
           ref.read(chatMessageStateProvider.notifier).addChatMessage(chatMessageModel);
         },
-        onWebSocketDone: () {},
+        onError: (dynamic data) async {
+          print('onError ${data.toString()}');
+          // _chatEnterModel = null;
+          // _initChat();
+          _chatEnterModel = await chatProviderNotifier.reEnterChatRoom(targetMemberUuid: widget.targetMemberUuid);
+          await chatControllerProvider.reConnection(token: _chatEnterModel!.generateToken).then((value) {
+            if (value) {
+              _chatController = ref.read(chatControllerStateProvider)!;
+            }
+          });
+        },
       );
+
+      if (chatController != null) {
+        print('not run?');
+        _chatController = chatController;
+      }
 
       return _chatEnterModel!;
     } catch (e) {
@@ -140,6 +143,11 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
   void _send(String msg) async {
     if (msg.isEmpty) {
+      return;
+    }
+
+    if (!await _chatController.isConnected()) {
+      context.push('/dialog/errorDialog', extra: '네트워크가 불안정합니다.');
       return;
     }
 

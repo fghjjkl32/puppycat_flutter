@@ -92,7 +92,6 @@ String thumborUrl(String url) {
   ///TODO: 이미지 사이즈 조절
   resultUrl.resize(width: 300, height: 300);
 
-  print('thumborUrl: ${resultUrl.toUrl()}');
   return resultUrl.toUrl();
 }
 

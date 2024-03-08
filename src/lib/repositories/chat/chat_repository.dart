@@ -26,7 +26,7 @@ class ChatRepository {
 
   Future<ChatRoomDataListModel> getChatRoomList({
     int page = 1,
-    int recordSize = 10,
+    int recordSize = 20,
   }) async {
     ChatRoomResponseModel responseModel = await _chatService.getChatRoomList(page: page, recordSize: recordSize);
 
