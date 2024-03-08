@@ -27,9 +27,9 @@ class AuthState extends _$AuthState {
     return false;
   }
 
-  void getPassAuthUrl() async {
+  void getPassAuthUrl({required bool isEditProfile}) async {
     try {
-      String passUrl = await _authRepository.getPassAuthUrl();
+      String passUrl = await _authRepository.getPassAuthUrl(isEditProfile: isEditProfile);
       ref.read(passUrlProvider.notifier).state = passUrl;
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);

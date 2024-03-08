@@ -44,6 +44,10 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
 
     // ref.read(policyStateProvider.notifier).getPolicies();
     _getPolicyListFuture = _getPolicyList();
+
+    Future(() {
+      ref.read(authStateProvider.notifier).state = false;
+    });
   }
 
   @override
@@ -173,7 +177,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                           padding: MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.only(left: 5, right: 5)),
                         ),
                         onPressed: () {
-                          ref.read(authStateProvider.notifier).getPassAuthUrl();
+                          ref.read(authStateProvider.notifier).getPassAuthUrl(isEditProfile: false);
                         },
                         label: Text(
                           '회원가입.휴대폰 인증'.tr(),

@@ -14,4 +14,11 @@ abstract class AuthService {
     @Query('appKey') required String appKey,
     @Query('token', encoded: false) required String token,
   });
+
+  @GET('v1/certification/popup/my/info')
+  // Future<ResponseModel?> getPassAuthUrl(@Queries(encoded: false) Map<String, dynamic> queries);
+  Future<ResponseModel> getMyInfoPassAuthUrl({
+    @Query('appKey') required String appKey,
+    @Query('token', encoded: false) required String token,
+  });
 }

@@ -59,6 +59,18 @@ class WebViewWidgetState extends ConsumerState<WebViewWidget> {
           }
           return true;
         });
+
+    controller.addJavaScriptHandler(
+        handlerName: 'setErrorPassAuthToken',
+        callback: (args) {
+          String? data = args.first;
+          if (data != null) {
+            context.pop();
+          } else {
+            return false;
+          }
+          return true;
+        });
   }
 
   void webViewOnCloseWindow(InAppWebViewController controller) {
