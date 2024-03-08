@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/models/restrain/restrain_item_model.dart';
 import 'package:pet_mobile_social_flutter/ui/components/dialog/duplication_signup_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/components/dialog/error_dialog.dart';
+import 'package:pet_mobile_social_flutter/ui/components/dialog/error_reason_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/components/dialog/restrain_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/components/route_page/dialog_page.dart';
 
@@ -18,6 +19,7 @@ class DialogRoute extends GoRouteData {
         DuplicationSignupDialogRoute().createRoute(),
         RestrainDialogRoute().createRoute(),
         ErrorDialogRoute().createRoute(),
+        ErrorReasonDialogRoute().createRoute(),
       ],
     );
   }
@@ -87,6 +89,28 @@ class ErrorDialogRoute extends GoRouteData {
         return DialogPage(
           builder: (_) => ErrorDialog(
             code: errorCode,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ErrorReasonDialogRoute extends GoRouteData {
+  GoRoute createRoute() {
+    return GoRoute(
+      path: 'errorReasonDialog',
+      name: 'errorReasonDialog',
+      pageBuilder: (BuildContext context, GoRouterState state) {
+        String errorReason = 'unknown';
+        if (state.extra != null) {
+          if (state.extra is String) {
+            errorReason = state.extra.toString();
+          }
+        }
+        return DialogPage(
+          builder: (_) => ErrorReasonDialog(
+            code: errorReason,
           ),
         );
       },

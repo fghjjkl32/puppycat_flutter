@@ -1038,7 +1038,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.only(left: 5, right: 5)),
                                     ),
                                     onPressed: () {
-                                      ref.read(authStateProvider.notifier).getPassAuthUrl();
+                                      ref.read(authStateProvider.notifier).getPassAuthUrl(isEditProfile: true);
                                     },
                                     label: Text(
                                       '회원가입.휴대폰 인증'.tr(),
