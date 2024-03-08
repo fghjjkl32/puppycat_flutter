@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
@@ -244,7 +245,7 @@ class PostFeedViewState extends ConsumerState<PostFeedView> {
                       builder: (_) => KpostalView(
                         useLocalServer: true,
                         localPort: 9723,
-                        kakaoKey: 'e70ed9e481a7927e0adc8647263bf6a5',
+                        kakaoKey: dotenv.env['KAKAO_JAVASCRIPT_APP_KEY']!,
                         callback: (Kpostal result) {
                           print('location result $result');
                           ref.watch(feedWriteLocationInformationProvider.notifier).state = result.buildingName == "" ? result.roadAddress : result.buildingName;
