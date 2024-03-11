@@ -34,6 +34,7 @@ class ChatFavoriteState extends _$ChatFavoriteState {
 
       var chatFavoriteDataListModel = await _chatRepository.getChatFavoriteMembers(page: pageKey);
       final chatFavoriteList = chatFavoriteDataListModel.list;
+      print('chatFavoriteList $chatFavoriteList');
       final pagination = chatFavoriteDataListModel.params.pagination;
 
       try {

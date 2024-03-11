@@ -8,7 +8,7 @@ class ChatSearchListItem extends StatefulWidget {
   final String nick;
   final String intro;
   final String profileImgUrl;
-  final Function? onTab;
+  final Future<void> Function()? onTab;
   final Function? onTabProfileImg;
 
   const ChatSearchListItem({
@@ -50,7 +50,7 @@ class _ChatSearchListItemState extends State<ChatSearchListItem> with TickerProv
     return InkWell(
       onTap: () {
         if (widget.onTab != null) {
-          widget.onTab!(widget.memberUuid);
+          widget.onTab!();
         }
       },
       child: Padding(

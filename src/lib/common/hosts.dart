@@ -1,46 +1,5 @@
 part of 'common.dart';
 
-// Future<String> getBaseUrl() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('selectedURL') ?? baseUrl;
-// }
-//
-// Future<String> getBaseWalkUrl() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('selectedWalkURL') ?? walkBaseUrl;
-// }
-//
-// Future<String> getBaseWalkGpsUrl() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('selectedWalkGpsURL') ?? walkGpsBaseUrl;
-// }
-//
-// Future<String> getThumborHostUrl() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('thumborHostUrl') ?? thumborHostUrl;
-// }
-//
-// Future<String> getThumborKey() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('thumborKey') ?? thumborKey;
-// }
-//
-// Future<String> getThumborDomain() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('thumborDomain') ?? '';
-// }
-//
-// Future<String> getInspectS3Domain() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('selectedInspectS3URL') ?? inspectS3BaseUrl;
-// }
-//
-// Future<String> getUpdateS3Domain() async {
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   return prefs.getString('selectedUpdateS3URL') ?? updateS3BaseUrl;
-// }
-//
-
 enum RunningMode {
   dev,
   stg,
@@ -57,6 +16,8 @@ String walkGpsBaseUrl = dotenv.env['PRD_WALK_GPS_BASE_URL']!;
 String memberBaseUrl = dotenv.env['PRD_MEMBER_BASE_URL']!;
 String chatBaseUrl = dotenv.env['PRD_CHAT_BASE_URL']!;
 String commonBaseUrl = dotenv.env['PRD_COMMON_BASE_URL']!;
+String chatWSBaseUrl = 'https://pet-chat-ws.devlabs.co.kr/ws/puppycat';
+
 
 Future setRunningMode(RunningMode mode) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -72,7 +33,7 @@ Future<RunningMode> getRunningMode() async {
 
 Future initRunningMode() async {
   final RunningMode mode = await getRunningMode();
-  // const RunningMode mode = RunningMode.stg;
+  // const RunningMode mode = RunningMode.dev;
 
   print('current mode : $mode');
   switch (mode) {
@@ -88,6 +49,8 @@ Future initRunningMode() async {
       memberBaseUrl = dotenv.env['DEV_MEMBER_BASE_URL']!;
       chatBaseUrl = dotenv.env['DEV_CHAT_BASE_URL']!;
       commonBaseUrl = dotenv.env['DEV_COMMON_BASE_URL']!;
+      chatWSBaseUrl = 'https://pet-chat-ws.devlabs.co.kr/ws/puppycat';
+
       break;
     case RunningMode.stg:
       print('stg');
@@ -101,6 +64,8 @@ Future initRunningMode() async {
       memberBaseUrl = dotenv.env['STG_MEMBER_BASE_URL']!;
       chatBaseUrl = dotenv.env['STG_CHAT_BASE_URL']!;
       commonBaseUrl = dotenv.env['STG_COMMON_BASE_URL']!;
+      chatWSBaseUrl = 'https://ws.pcstg.co.kr/ws/puppycat';
+
       break;
     case RunningMode.prd:
       print('prd');
@@ -114,6 +79,8 @@ Future initRunningMode() async {
       memberBaseUrl = dotenv.env['PRD_MEMBER_BASE_URL']!;
       chatBaseUrl = dotenv.env['PRD_CHAT_BASE_URL']!;
       commonBaseUrl = dotenv.env['PRD_COMMON_BASE_URL']!;
+      chatWSBaseUrl = 'https://ws.pcstg.co.kr/ws/puppycat';
+
       break;
     default:
   }

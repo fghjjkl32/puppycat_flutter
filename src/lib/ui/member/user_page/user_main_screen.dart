@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:easy_debounce/easy_throttle.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +16,7 @@ import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/content_list_models/content_image_data.dart';
 import 'package:pet_mobile_social_flutter/models/my_page/user_information/user_information_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/block/block_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_room_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/comment/comment_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
@@ -133,6 +134,12 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
     super.dispose();
   }
 
+  void _refresh() {
+    ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+    ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+    ref.read(commentListStateProvider.notifier).getStateForUser(widget.feedContentIdx);
+  }
+
   @override
   Widget build(BuildContext context) {
     final myInfo = ref.read(myInfoStateProvider);
@@ -140,10 +147,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
 
     return DefaultOnWillPopScope(
       onWillPop: () async {
-        ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
-        ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
-        ref.read(commentListStateProvider.notifier).getStateForUser(widget.feedContentIdx);
-
+        _refresh();
         return Future.value(true);
       },
       child: Material(
@@ -173,10 +177,7 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                                 title: Text(widget.nick),
                                 leading: IconButton(
                                   onPressed: () {
-                                    ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
-                                    ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
-                                    ref.read(commentListStateProvider.notifier).getStateForUser(widget.feedContentIdx);
-
+                                    _refresh();
                                     context.pop();
                                   },
                                   icon: const Icon(
@@ -956,23 +957,33 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                         Expanded(
                           child: GestureDetector(
                             onTap: () async {
-                              ///NOTE
-                              ///2023.11.17.
-                              ///채팅 교체 예정으로 일단 주석 처리
-                              // if (data.chatMemberId != null) {
-                              //   ChatController chatController = ref.read(chatControllerProvider(ChatControllerInfo(provider: 'matrix', clientName: 'puppycat_${data.memberIdx}')));
-                              //
-                              //   var roomId = await chatController.client.startDirectChat(data.chatMemberId!, enableEncryption: false);
-                              //
-                              //   Room? room = chatController.client.rooms.firstWhereOrNull((element) => element.id == roomId);
-                              //
-                              //   if (mounted) {
-                              //     ref.read(userInfoProvider).userModel == null ? context.pushReplacement("/loginScreen") : context.push('/chatMain/chatRoom', extra: room);
-                              //   }
-                              // }
-                              ///여기까지 채팅 교체 주석
                               if (data.uuid != null) {
-                                await ref.read(chatRoomStateProvider.notifier).createChatRoom(targetMemberUuid: data.uuid!);
+                                EasyThrottle.throttle(
+                                  'enterChatRoom_userPage',
+                                  const Duration(
+                                    milliseconds: 2500,
+                                  ),
+                                  () async {
+                                    final chatEnterModel = await ref
+                                        .read(chatRoomListStateProvider.notifier)
+                                        .enterChatRoom(
+                                          targetMemberUuid: data.uuid!,
+                                          titleName: data.nick ?? 'unknown',
+                                          targetProfileImgUrl: data.profileImgUrl ?? '',
+                                        )
+                                        .then((value) => ref.read(chatRoomListStateProvider).refresh());
+                                  },
+                                );
+                                // final chatEnterModel = await ref.read(chatRoomListStateProvider.notifier).createChatRoom(targetMemberUuid: data.uuid!);
+                                //
+                                // if (mounted) {
+                                //   context.push('/chatHome/chatRoom', extra: {
+                                //     'roomId': chatEnterModel.roomId,
+                                //     'nick': data.nick,
+                                //     'profileImgUrl': data.profileImgUrl,
+                                //     'targetMemberUuid': data.uuid,
+                                //   });
+                                // }
                               }
                             },
                             child: Container(
@@ -995,123 +1006,6 @@ class UserMainScreenState extends ConsumerState<UserMainScreen> with SingleTicke
                       ],
                     ),
             ),
-
-            ///NOTE
-            ///2023.11.16.
-            ///산책하기 보류로 주석 처리
-            // ref.watch(myPetListStateProvider).itemList == null
-            //     ? Container()
-            //     : Padding(
-            //         padding: const EdgeInsets.only(left: 12.0, bottom: 10, top: 6),
-            //         child: Row(
-            //           children: [
-            //             Text(
-            //               widget.nick.length > 15 ? '${widget.nick.substring(0, 15)}...님의 아이들' : "${widget.nick}님의 아이들",
-            //               maxLines: 1,
-            //               overflow: TextOverflow.ellipsis,
-            //               style: kTitle16ExtraBoldStyle.copyWith(color: kTextTitleColor),
-            //             ),
-            //             SizedBox(
-            //               width: 10,
-            //             ),
-            //             Text(
-            //               ref.watch(myPetListStateProvider).itemList!.length > 99 ? "99+" : "${ref.watch(myPetListStateProvider).itemList?.length}",
-            //               style: kBody13RegularStyle.copyWith(color: kTextBodyColor),
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            // Expanded(
-            //   child: Padding(
-            //     padding: const EdgeInsets.only(left: 8.0),
-            //     child: PagedListView<int, MyPetItemModel>(
-            //       scrollDirection: Axis.horizontal,
-            //       pagingController: _myPetListPagingController,
-            //       builderDelegate: PagedChildBuilderDelegate<MyPetItemModel>(
-            //         noItemsFoundIndicatorBuilder: (context) {
-            //           return const SizedBox.shrink();
-            //         },
-            //         noMoreItemsIndicatorBuilder: (context) {
-            //           return const SizedBox.shrink();
-            //         },
-            //         newPageProgressIndicatorBuilder: (context) {
-            //           return Column(
-            //             children: [
-            //               Lottie.asset(
-            //                 'assets/lottie/icon_loading.json',
-            //                 fit: BoxFit.fill,
-            //                 width: 80,
-            //                 height: 80,
-            //               ),
-            //             ],
-            //           );
-            //         },
-            //         firstPageProgressIndicatorBuilder: (context) {
-            //           return Container();
-            //         },
-            //         itemBuilder: (context, item, index) {
-            //           return InkWell(
-            //             onTap: () {
-            //               ///NOTE
-            //               ///2023.11.14.
-            //               ///산책하기 보류로 주석 처리
-            //               // Navigator.push(
-            //               //   context,
-            //               //   MaterialPageRoute(
-            //               //     builder: (_) => UserPetDetailScreen(
-            //               //       itemModel: item,
-            //               //     ),
-            //               //   ),
-            //               // );
-            //               ///산책하기 보류로 주석 처리 완료
-            //             },
-            //             child: Column(
-            //               children: [
-            //                 Padding(
-            //                   padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-            //                   child: WidgetMask(
-            //                     blendMode: BlendMode.srcATop,
-            //                     childSaveLayer: true,
-            //                     mask: Center(
-            //                       child: item.url == null || item.url == ""
-            //                           ? const Center(
-            //                               child: Icon(
-            //                                 Puppycat_social.icon_profile_large,
-            //                                 size: 48,
-            //                                 color: kNeutralColor500,
-            //                               ),
-            //                             )
-            //                           : Image.network(
-            //                               Thumbor(host: thumborHostUrl, key: thumborKey).buildImage("$imgDomain${item.url}").toUrl(),
-            //                               width: 48,
-            //                               height: 48,
-            //                               fit: BoxFit.cover,
-            //                             ),
-            //                     ),
-            //                     child: SvgPicture.asset(
-            //                       'assets/image/feed/image/squircle.svg',
-            //                       height: 48,
-            //                     ),
-            //                   ),
-            //                 ),
-            //                 Padding(
-            //                   padding: const EdgeInsets.only(top: 6.0),
-            //                   child: Text(
-            //                     "${item.name!.length > 5 ? item.name!.substring(0, 5) + '...' : item.name}",
-            //                     maxLines: 1,
-            //                     overflow: TextOverflow.ellipsis,
-            //                     style: kBody11RegularStyle.copyWith(color: kTextTitleColor),
-            //                   ),
-            //                 )
-            //               ],
-            //             ),
-            //           );
-            //         },
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            ///산책하기 보류로 주석 처리 완료
           ],
         ),
       ),

@@ -157,7 +157,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                         }
                       },
                       child: Bubble(
-                        isComment: true,
+                        // isComment: true,
                         radius: const Radius.circular(10),
                         elevation: 0,
                         alignment: Alignment.topLeft,

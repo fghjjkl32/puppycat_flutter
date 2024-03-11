@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart';
-import 'package:pet_mobile_social_flutter/providers/chat/chat_room_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/firebase/firebase_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/maintenance/maintenance_state_provider.dart';
@@ -22,7 +21,6 @@ class InitializationApp {
 
     if (await _checkNetwork()) {
       if (await _checkServers()) {
-        await ref.read(chatSocketStateProvider);
         if (await _initFirebase(ref)) {
           await ref.read(loginStateProvider.notifier).autoLogin();
           ref.read(_initStateProvider.notifier).state = true;

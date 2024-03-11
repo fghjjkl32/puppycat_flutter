@@ -26,6 +26,7 @@
 // }
 
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:pet_mobile_social_flutter/models/chat/chat_last_message_info_model.dart';
 
 part 'chat_room_model.freezed.dart';
 part 'chat_room_model.g.dart';
@@ -34,12 +35,11 @@ part 'chat_room_model.g.dart';
 class ChatRoomModel with _$ChatRoomModel {
   factory ChatRoomModel({
     required String regDateTz,
-    @JsonKey(name: 'result_cd') required int resultCd,
     required String regDate,
     required int sort,
     required int type,
-    required String uuid,
-    required String roomId,
+    required String uuid, //room uuid
+    required String roomId, //room id
     required String roomName,
     required int fixState,
     required int favoriteState,
@@ -49,7 +49,8 @@ class ChatRoomModel with _$ChatRoomModel {
     required int state,
     required int idx,
     required int maxUser,
-    String? lastMsg,
+    required int noReadCount,
+    required ChatLastMessageInfoModel? lastMessage,
   }) = _ChatRoomModel;
 
   factory ChatRoomModel.fromJson(Map<String, dynamic> json) => _$ChatRoomModelFromJson(json);

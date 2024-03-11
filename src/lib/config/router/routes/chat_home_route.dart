@@ -31,15 +31,18 @@ class ChatRoomRoute extends GoRouteData {
       builder: (BuildContext context, GoRouterState state) {
         if (state.extra is Map) {
           Map<String, dynamic> extraMap = state.extra! as Map<String, dynamic>;
-          if (extraMap.containsKey('roomId')) {
-            print('extraMap roomId ${extraMap['roomId']}');
-            String roomId = extraMap['roomId'];
-            String nick = extraMap['nick'];
+          if (extraMap.containsKey('roomUuid')) {
+            print('extraMap roomUuid ${extraMap['roomUuid']}');
+            String roomUuid = extraMap['roomUuid'] ?? '';
+            String nick = extraMap['nick'] ?? 'unknown';
             String? profileImgUrl = extraMap['profileImgUrl'];
+            String targetMemberUuid = extraMap['targetMemberUuid'];
+
             return ChatRoomScreen(
-              roomId: roomId,
+              roomUuid: roomUuid,
               nick: nick,
               profileImgUrl: profileImgUrl,
+              targetMemberUuid: targetMemberUuid,
             );
           } else {
             return const ChatHomeScreen();

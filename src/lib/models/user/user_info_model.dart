@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:pet_mobile_social_flutter/models/chat/chat_user_model.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 
 part 'user_info_model.freezed.dart';
