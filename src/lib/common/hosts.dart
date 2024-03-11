@@ -6,17 +6,18 @@ enum RunningMode {
   prd,
 }
 
-String baseUrl = "https://api.puppycat.co.kr/";
-String thumborHostUrl = "https://tb.puppycat.co.kr/";
-String thumborKey = "vjvlzotvldkfel";
-String inspectS3BaseUrl = "https://mnt.puppycat.co.kr/maintenance/prd"; //prd
-String updateS3BaseUrl = "https://mnt.puppycat.co.kr/update/"; //prd
-String walkBaseUrl = 'https://walk-api.puppycat.co.kr/';
-String walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
-String memberBaseUrl = 'https://member-api.puppycat.co.kr/';
-String chatBaseUrl = "https://chat.puppycat.co.kr/";
-String commonBaseUrl = "https://common.puppycat.co.kr/";
+String baseUrl = dotenv.env['PRD_API_BASE_URL']!;
+String thumborHostUrl = dotenv.env['PRD_THUMBOR_HOST_URL']!;
+String thumborKey = dotenv.env['PRD_THUMBOR_KEY']!;
+String inspectS3BaseUrl = dotenv.env['PRD_INSPECT_S3_BASE_URL']!; //prd
+String updateS3BaseUrl = dotenv.env['PRD_UPDATE_S3_BASE_URL']!; //prd
+String walkBaseUrl = dotenv.env['PRD_WALK_BASE_URL']!;
+String walkGpsBaseUrl = dotenv.env['PRD_WALK_GPS_BASE_URL']!;
+String memberBaseUrl = dotenv.env['PRD_MEMBER_BASE_URL']!;
+String chatBaseUrl = dotenv.env['PRD_CHAT_BASE_URL']!;
+String commonBaseUrl = dotenv.env['PRD_COMMON_BASE_URL']!;
 String chatWSBaseUrl = 'https://pet-chat-ws.devlabs.co.kr/ws/puppycat';
+
 
 Future setRunningMode(RunningMode mode) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -38,46 +39,48 @@ Future initRunningMode() async {
   switch (mode) {
     case RunningMode.dev:
       print('dev');
-      baseUrl = 'https://pet-api.devlabs.co.kr/';
-      thumborHostUrl = 'https://tb.pcstg.co.kr/';
-      thumborKey = 'Tjaqhvpt';
-      inspectS3BaseUrl = 'https://mnt.puppycat.co.kr/maintenance/prd'; //prd
-      updateS3BaseUrl = 'https://mnt.puppycat.co.kr/update/prd'; //prd
-      walkBaseUrl = 'https://pet-walk-dev-api.devlabs.co.kr/';
-      walkGpsBaseUrl = 'https://pet-walk-dev-gps.devlabs.co.kr/';
-      memberBaseUrl = 'https://puppycat-dev-member-api.devlabs.co.kr/';
-      chatBaseUrl = 'https://pet-chat.devlabs.co.kr/';
-      commonBaseUrl = 'https://common.devlabs.co.kr/';
+      baseUrl = dotenv.env['DEV_API_BASE_URL']!;
+      thumborHostUrl = dotenv.env['DEV_THUMBOR_HOST_URL']!;
+      thumborKey = dotenv.env['DEV_THUMBOR_KEY']!;
+      inspectS3BaseUrl = dotenv.env['DEV_INSPECT_S3_BASE_URL']!; //prd
+      updateS3BaseUrl = dotenv.env['DEV_UPDATE_S3_BASE_URL']!; //prd
+      walkBaseUrl = dotenv.env['DEV_WALK_BASE_URL']!;
+      walkGpsBaseUrl = dotenv.env['DEV_WALK_GPS_BASE_URL']!;
+      memberBaseUrl = dotenv.env['DEV_MEMBER_BASE_URL']!;
+      chatBaseUrl = dotenv.env['DEV_CHAT_BASE_URL']!;
+      commonBaseUrl = dotenv.env['DEV_COMMON_BASE_URL']!;
       chatWSBaseUrl = 'https://pet-chat-ws.devlabs.co.kr/ws/puppycat';
+
       break;
     case RunningMode.stg:
       print('stg');
-      baseUrl = 'https://api.pcstg.co.kr/';
-      thumborHostUrl = 'https://tb.pcstg.co.kr/';
-      thumborKey = 'Tjaqhvpt';
-      inspectS3BaseUrl = 'https://mnt.puppycat.co.kr/maintenance/prd'; //prd
-      updateS3BaseUrl = 'https://mnt.puppycat.co.kr/update/prd'; //prd
-      walkBaseUrl = 'https://walk-api.pcstg.co.kr/';
-      walkGpsBaseUrl = 'https://walk-gps.pcstg.co.kr/';
-      memberBaseUrl = 'https://member-api.pcstg.co.kr/';
-      chatBaseUrl = 'https://chat.pcstg.co.kr/';
-      commonBaseUrl = 'https://common.pcstg.co.kr/';
+      baseUrl = dotenv.env['STG_API_BASE_URL']!;
+      thumborHostUrl = dotenv.env['STG_THUMBOR_HOST_URL']!;
+      thumborKey = dotenv.env['STG_THUMBOR_KEY']!;
+      inspectS3BaseUrl = dotenv.env['STG_INSPECT_S3_BASE_URL']!; //prd
+      updateS3BaseUrl = dotenv.env['STG_UPDATE_S3_BASE_URL']!; //prd
+      walkBaseUrl = dotenv.env['STG_WALK_BASE_URL']!;
+      walkGpsBaseUrl = dotenv.env['STG_WALK_GPS_BASE_URL']!;
+      memberBaseUrl = dotenv.env['STG_MEMBER_BASE_URL']!;
+      chatBaseUrl = dotenv.env['STG_CHAT_BASE_URL']!;
+      commonBaseUrl = dotenv.env['STG_COMMON_BASE_URL']!;
       chatWSBaseUrl = 'https://ws.pcstg.co.kr/ws/puppycat';
 
       break;
     case RunningMode.prd:
       print('prd');
-      baseUrl = 'https://api.puppycat.co.kr/';
-      thumborHostUrl = 'https://tb.puppycat.co.kr/';
-      thumborKey = 'vjvlzotvldkfel';
-      inspectS3BaseUrl = 'https://mnt.puppycat.co.kr/maintenance/prd'; //prd
-      updateS3BaseUrl = 'https://mnt.puppycat.co.kr/update/prd'; //prd
-      walkBaseUrl = 'https://walk-api.puppycat.co.kr/';
-      walkGpsBaseUrl = 'https://walk-gps.puppycat.co.kr/';
-      memberBaseUrl = 'https://member-api.puppycat.co.kr/';
-      chatBaseUrl = 'https://chat.puppycat.co.kr/';
-      commonBaseUrl = 'https://common.puppycat.co.kr/';
+      baseUrl = dotenv.env['PRD_API_BASE_URL']!;
+      thumborHostUrl = dotenv.env['PRD_THUMBOR_HOST_URL']!;
+      thumborKey = dotenv.env['PRD_THUMBOR_KEY']!;
+      inspectS3BaseUrl = dotenv.env['PRD_INSPECT_S3_BASE_URL']!; //prd
+      updateS3BaseUrl = dotenv.env['PRD_UPDATE_S3_BASE_URL']!; //prd
+      walkBaseUrl = dotenv.env['PRD_WALK_BASE_URL']!;
+      walkGpsBaseUrl = dotenv.env['PRD_WALK_GPS_BASE_URL']!;
+      memberBaseUrl = dotenv.env['PRD_MEMBER_BASE_URL']!;
+      chatBaseUrl = dotenv.env['PRD_CHAT_BASE_URL']!;
+      commonBaseUrl = dotenv.env['PRD_COMMON_BASE_URL']!;
       chatWSBaseUrl = 'https://ws.pcstg.co.kr/ws/puppycat';
+
       break;
     default:
   }

@@ -47,7 +47,8 @@ def updateVersion(options)
 
 
   desc "Push a new beta build with Firebase App Distribution"
-  lane :firebase do
+  lane :firebase_android do
+    flutter_build_android
     gradle(task: "assemble",build_type: "release")
     firebase_app_distribution(
   	    app: ENV["APP_KEY"],
@@ -56,5 +57,29 @@ def updateVersion(options)
   		apk_path: ENV["APK_PATH_KEY"],
   		android_artifact_type: "APK",
       )
+    end
+
+  desc "Push a new beta build with Firebase App Distribution"
+  lane :firebase_one do
+    flutter_build_one
+    gradle(task: "assemble",build_type: "release")
+    firebase_app_distribution(
+    	app: ENV["APP_KEY"],
+    	firebase_cli_token: ENV["FIREBASE_CLI_TOKEN_KEY"],
+    	groups: "group",
+    	apk_path: ENV["APK_PATH_KEY"],
+    	android_artifact_type: "APK",
+      )
+    end
+
+
+  lane :flutter_build_android do
+        sh("cd", "..")
+        sh("flutter build apk --target lib/main_android.dart --release")
+    end
+
+  lane :flutter_build_one do
+        sh("cd", "..")
+        sh("flutter build apk --target lib/main_one.dart --release")
     end
 end

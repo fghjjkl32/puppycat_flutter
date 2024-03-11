@@ -18,7 +18,7 @@ class AuthRepository {
     _authService = AuthService(dio, baseUrl: memberBaseUrl);
   }
 
-  Future<String> getPassAuthUrl() async {
+  Future<String> getPassAuthUrl({required bool isEditProfile}) async {
     String appKey = await GetIt.I.get<UuidUtil>().getUUID();
     String token = EncryptUtil.getPassAPIEncrypt(appKey);
 
@@ -28,7 +28,7 @@ class AuthRepository {
     };
     print('pass url token : $token');
 
-    ResponseModel responseModel = await _authService.getPassAuthUrl(appKey: appKey, token: token);
+    ResponseModel responseModel = isEditProfile ? await _authService.getMyInfoPassAuthUrl(appKey: appKey, token: token) : await _authService.getPassAuthUrl(appKey: appKey, token: token);
 
     if (!responseModel.result) {
       throw APIException(

@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/services/login/social_login/social_login_service.dart';
@@ -11,7 +12,8 @@ class GoogleLoginService implements SocialLoginService {
     _googleSignIn = GoogleSignIn(
       // forceCodeForRefreshToken: true,
       // clientId: "14263543464-mt3majukl2io6fqllr24eh6egoc1fv5a.apps.googleusercontent.com",
-      serverClientId: "14263543464-mt3majukl2io6fqllr24eh6egoc1fv5a.apps.googleusercontent.com",
+
+      serverClientId: dotenv.env['GOOGLE_SERVER_CLIENT_ID']!,
       scopes: [
         'email',
         // 'https://www.googleapis.com/auth/contacts.readonly',

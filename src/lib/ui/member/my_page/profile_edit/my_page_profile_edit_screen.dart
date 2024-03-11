@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -47,6 +48,10 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
   final ImagePicker _picker = ImagePicker();
   XFile? selectedImage;
 
+  Uint8List? uint8List;
+
+  XFile? cropImage;
+
   bool isProfileEdit = false;
   bool isPhoneNumberEdit = false;
   bool isNextStep = false;
@@ -71,13 +76,41 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
     super.dispose();
   }
 
+  Future<XFile> uint8ListToXFile(Uint8List data, {String filename = 'temp_image'}) async {
+    // 임시 디렉토리를 찾습니다.
+    final Directory tempDir = await getTemporaryDirectory();
+    // 파일 경로를 생성합니다. (여기서는 임시 파일 이름을 사용합니다)
+    final String filePath = '${tempDir.path}/$filename.jpg';
+
+    // Uint8List 데이터를 파일에 씁니다.
+    final File file = File(filePath);
+    await file.writeAsBytes(data);
+
+    // 파일 경로로 XFile 객체를 생성합니다.
+    final XFile xFile = XFile(filePath);
+
+    return xFile;
+  }
+
+  void getXFileData(XFile file) async {
+    Uint8List fileData = await file.readAsBytes();
+    uint8List = await context.push("/cropImage", extra: {"uint8List": fileData});
+    if (uint8List != null) {
+      cropImage = await uint8ListToXFile(uint8List!);
+
+      setState(() {
+        isNextStep = true;
+        isProfileImageDelete = false;
+      });
+    }
+  }
+
   Future openGallery() async {
     selectedImage = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
 
-    setState(() {
-      isNextStep = true;
-      isProfileImageDelete = false;
-    });
+    if (selectedImage != null) {
+      getXFileData(selectedImage!);
+    }
   }
 
   void checkNextStep() {
@@ -269,7 +302,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         );
 
                         UserInformationItemModel editUserModel = editMyInfoModel.copyWith(
-                          profileImgUrl: selectedImage == null ? null : selectedImage!.path,
+                          profileImgUrl: cropImage == null ? null : cropImage!.path,
                           nick: nickController.text == "" ? editMyInfoModel.nick : nickController.text,
                           intro: introController.text,
                           phone: authModel == null ? editMyInfoModel.phone : authModel.phone,
@@ -279,7 +312,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
 
                         final result = await ref.read(editStateProvider.notifier).putMyInfo(
                               myInfoModel: editUserModel,
-                              file: selectedImage,
+                              file: cropImage,
                               beforeNick: myInfo.nick ?? 'unknown',
                               isProfileImageDelete: isProfileImageDelete,
                               isPhoneNumberEdit: isPhoneNumberEdit,
@@ -354,19 +387,19 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             childSaveLayer: true,
                             mask: Center(
                                 child: "${editMyInfoModel.profileImgUrl}" == ""
-                                    ? selectedImage == null
+                                    ? uint8List == null
                                         ? const Icon(
                                             Puppycat_social.icon_profile_large,
                                             size: 92,
                                             color: kPreviousNeutralColor500,
                                           )
-                                        : Image.file(
-                                            File(selectedImage!.path),
+                                        : Image.memory(
+                                            uint8List!,
                                             width: 135,
                                             height: 135,
                                             fit: BoxFit.cover,
                                           )
-                                    : selectedImage == null
+                                    : uint8List == null
                                         ? isProfileImageDelete
                                             ? const Icon(
                                                 Puppycat_social.icon_profile_large,
@@ -379,8 +412,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                 height: 135,
                                                 fit: BoxFit.cover,
                                               )
-                                        : Image.file(
-                                            File(selectedImage!.path),
+                                        : Image.memory(
+                                            uint8List!,
                                             width: 135,
                                             height: 135,
                                             fit: BoxFit.cover,
@@ -467,6 +500,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                       onTap: () {
                                         setState(() {
+                                          uint8List == null;
                                           selectedImage = null;
                                           isNextStep = true;
                                           isProfileImageDelete = true;
@@ -877,6 +911,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       ),
                                     );
                             }),
+                            // Text("${ref.watch(editStateProvider).authModel!}"),
                             const SizedBox(width: 8),
                             ref.watch(editStateProvider).authModel == null
                                 ? isPhoneNumberEdit
@@ -928,7 +963,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       )
                                 : Container(
                                     width: 56,
-                                    height: 32,
+                                    height: 44,
                                     decoration: const BoxDecoration(
                                       color: kPreviousNeutralColor300,
                                       borderRadius: BorderRadius.all(
@@ -1003,7 +1038,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.only(left: 5, right: 5)),
                                     ),
                                     onPressed: () {
-                                      ref.read(authStateProvider.notifier).getPassAuthUrl();
+                                      ref.read(authStateProvider.notifier).getPassAuthUrl(isEditProfile: true);
                                     },
                                     label: Text(
                                       '회원가입.휴대폰 인증'.tr(),

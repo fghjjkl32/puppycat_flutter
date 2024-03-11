@@ -8,6 +8,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 // import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +18,7 @@ import 'package:go_router/go_router.dart';
 // import 'package:location/location.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/flavor_config.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/package_info/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/config/router/router.dart';
@@ -47,8 +49,13 @@ class ScrollBehaviorModified extends ScrollBehavior {
   }
 }
 
-void main() async {
+void mainCommon() async {
+  print("FlavorConfig ${FlavorConfig.instance.values?.name}");
+  print("isAndroid ${FlavorConfig.isAndroid()}");
+
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load();
 
   // baseUrl = await Constants.getBaseUrl();
   // thumborHostUrl = await Constants.getThumborHostUrl();

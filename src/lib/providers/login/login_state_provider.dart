@@ -140,7 +140,7 @@ class LoginState extends _$LoginState {
         ///TODO
         ///기획은 로그아웃 시 HOME으로 이동 원함
         ///운영 확인 필요 (24 01 23)
-        ref.read(routerProvider).go('/home');
+        ref.read(routerProvider).pushReplacement('/home');
       }
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
