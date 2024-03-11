@@ -25,4 +25,8 @@ abstract class AbstractChatController {
   Future<void> disconnect();
 
   Future<bool> isConnected();
+
+  void setToken(String token);
+
+  Future<void> activate();
 }

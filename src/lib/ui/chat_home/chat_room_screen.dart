@@ -15,6 +15,7 @@ import 'package:pet_mobile_social_flutter/providers/chat/chat_msg_state_provider
 import 'package:pet_mobile_social_flutter/providers/chat/chat_room_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat_home/widget/chat_msg_item.dart';
+import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ChatRoomScreen extends ConsumerStatefulWidget {
@@ -44,9 +45,11 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   final TextEditingController _sendController = TextEditingController();
   final FocusNode _inputFocus = FocusNode();
   late Future _initChatFuture;
-  late ChatController _chatController;
+
+  // late ChatController _chatController;
   bool _scrolledUp = false;
   late ChatEnterModel? _chatEnterModel;
+  late ChatController? _chatController = ref.watch(chatControllerStateProvider);
 
   @override
   void initState() {
@@ -60,7 +63,9 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   @override
   void dispose() {
     print('1 - _chatController.disconnect();');
-    _chatController.disconnect();
+    // if (_chatController != null) {
+    //   _chatController!.disconnect();
+    // }
     super.dispose();
   }
 
@@ -77,45 +82,8 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       final targetMemberList = [widget.targetMemberUuid, myInfo.uuid ?? ''];
 
       final chatControllerProvider = ref.read(chatControllerStateProvider.notifier);
-      final chatController = await chatControllerProvider.connect(
-        chatEnterModel: _chatEnterModel!,
-        targetMemberList: targetMemberList,
-        onConnected: () {
-          if (_chatHistoryPagingController.itemList == null) {
-            print('_chatHistoryPagingController.itemList == null');
-            return;
-          }
 
-          if (_chatHistoryPagingController.itemList!.isEmpty) {
-            print('_chatHistoryPagingController.itemList.length <= 0');
-            return;
-          }
-
-          final lastChatModel = _chatHistoryPagingController.itemList!.first;
-          if (lastChatModel.type != 'REPORT') {
-            _chatController.read(msg: lastChatModel.msg, score: lastChatModel.score, memberUuid: myInfo.uuid ?? '');
-          }
-        },
-        onSubscribeCallBack: (chatMessageModel) {
-          ref.read(chatMessageStateProvider.notifier).addChatMessage(chatMessageModel);
-        },
-        onError: (dynamic data) async {
-          print('onError ${data.toString()}');
-          // _chatEnterModel = null;
-          // _initChat();
-          _chatEnterModel = await chatProviderNotifier.reEnterChatRoom(targetMemberUuid: widget.targetMemberUuid);
-          await chatControllerProvider.reConnection(token: _chatEnterModel!.generateToken).then((value) {
-            if (value) {
-              _chatController = ref.read(chatControllerStateProvider)!;
-            }
-          });
-        },
-      );
-
-      if (chatController != null) {
-        print('not run?');
-        _chatController = chatController;
-      }
+      await ref.read(chatControllerStateProvider.notifier).connect(chatEnterModel: _chatEnterModel!, targetMemberList: targetMemberList);
 
       return _chatEnterModel!;
     } catch (e) {
@@ -146,7 +114,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
       return;
     }
 
-    if (!await _chatController.isConnected()) {
+    if (_chatController == null || !await _chatController!.isConnected()) {
       context.push('/dialog/errorDialog', extra: '네트워크가 불안정합니다.');
       return;
     }
@@ -154,7 +122,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final myInfo = ref.read(myInfoStateProvider);
 
     final String profileImg = myInfo.profileImgUrl ?? '';
-    _chatController.send(msg, profileImg);
+    _chatController!.send(msg, profileImg);
 
     _sendController.clear();
     _inputFocus.unfocus();
@@ -290,119 +258,130 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             )
           : null,
       body: SafeArea(
-        child: FutureBuilder(
-          future: _initChatFuture,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text('Error ${snapshot.error}'),
-              );
+        child: DefaultOnWillPopScope(
+          onWillPop: () async {
+            if (_chatController != null) {
+              _chatController!.disconnect();
             }
 
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+            return true;
+          },
+          child: FutureBuilder(
+            future: _initChatFuture,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error ${snapshot.error}'),
+                );
+              }
 
-            ChatEnterModel chatEnterModel = snapshot.data;
+              if (!snapshot.hasData) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: PagedListView<int, ChatMessageModel>(
-                      pagingController: _chatHistoryPagingController,
-                      scrollController: _scrollController,
-                      reverse: true,
-                      builderDelegate: PagedChildBuilderDelegate<ChatMessageModel>(
-                        noItemsFoundIndicatorBuilder: (context) {
-                          return const SizedBox.shrink();
-                        },
-                        firstPageProgressIndicatorBuilder: (context) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                        itemBuilder: (context, item, index) {
-                          bool isViewDateBlock = ref.read(chatMessageStateProvider.notifier).checkViewDateBlock(index);
-                          bool isViewMsgTime = ref.read(chatMessageStateProvider.notifier).checkNeedViewTime(index);
-                          bool isConsecutively = ref.read(chatMessageStateProvider.notifier).checkConsecutively(index);
-                          bool isMine = item.isMine;
-                          bool isViewProfileImg = !isMine & !isConsecutively; //상대방이 보낸 메시지이면서 연속적이지 않는 메시지일 때
-                          double chatMsgBottomPadding = ref.read(chatMessageStateProvider.notifier).getChatMsgBottomPadding(index);
-                          // double chatMsgPadding = isViewMsgTime ? 16.0 : 2.0;
+              ChatEnterModel chatEnterModel = snapshot.data;
 
-                          // final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(item.dateTime) * 1000);
-                          //
-                          // if (index == 0) {
-                          //   print('last item $item');
-                          //   _chatController.read(msg: item.msg, score: item.score, memberUuid: myInfo.uuid ?? '');
-                          // }
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: PagedListView<int, ChatMessageModel>(
+                        pagingController: _chatHistoryPagingController,
+                        scrollController: _scrollController,
+                        reverse: true,
+                        builderDelegate: PagedChildBuilderDelegate<ChatMessageModel>(
+                          noItemsFoundIndicatorBuilder: (context) {
+                            return const SizedBox.shrink();
+                          },
+                          firstPageProgressIndicatorBuilder: (context) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                          itemBuilder: (context, item, index) {
+                            bool isViewDateBlock = ref.read(chatMessageStateProvider.notifier).checkViewDateBlock(index);
+                            bool isViewMsgTime = ref.read(chatMessageStateProvider.notifier).checkNeedViewTime(index);
+                            bool isConsecutively = ref.read(chatMessageStateProvider.notifier).checkConsecutively(index);
+                            bool isMine = item.isMine;
+                            bool isViewProfileImg = !isMine & !isConsecutively; //상대방이 보낸 메시지이면서 연속적이지 않는 메시지일 때
+                            double chatMsgBottomPadding = ref.read(chatMessageStateProvider.notifier).getChatMsgBottomPadding(index);
+                            // double chatMsgPadding = isViewMsgTime ? 16.0 : 2.0;
 
-                          return Padding(
-                            padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, chatMsgBottomPadding),
-                            child: Column(
-                              children: [
-                                isViewDateBlock ? _buildDateBlock(item.dateTime) : const SizedBox.shrink(),
-                                Row(
-                                  // mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
-                                  children: [
-                                    _buildProfile(isViewProfileImg, widget.profileImgUrl ?? ''),
-                                    Expanded(
-                                      child: AutoScrollTag(
-                                        key: UniqueKey(),
-                                        controller: _scrollController,
-                                        index: index,
-                                        child: ChatMessageItem(
-                                          chatMessageModel: item.copyWith(
-                                            isViewTime: isViewMsgTime,
-                                            isConsecutively: isConsecutively,
+                            // final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(item.dateTime) * 1000);
+                            //
+                            // if (index == 0) {
+                            //   print('last item $item');
+                            //   _chatController.read(msg: item.msg, score: item.score, memberUuid: myInfo.uuid ?? '');
+                            // }
+
+                            return Padding(
+                              padding: EdgeInsets.fromLTRB(0.0, 2.0, 0.0, chatMsgBottomPadding),
+                              child: Column(
+                                children: [
+                                  isViewDateBlock ? _buildDateBlock(item.dateTime) : const SizedBox.shrink(),
+                                  Row(
+                                    // mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+                                    children: [
+                                      _buildProfile(isViewProfileImg, widget.profileImgUrl ?? ''),
+                                      Expanded(
+                                        child: AutoScrollTag(
+                                          key: UniqueKey(),
+                                          controller: _scrollController,
+                                          index: index,
+                                          child: ChatMessageItem(
+                                            chatMessageModel: item.copyWith(
+                                              isViewTime: isViewMsgTime,
+                                              isConsecutively: isConsecutively,
+                                            ),
+                                            isError: false,
+                                            isSending: false,
+                                            isRedacted: false,
+                                            onReport: (chatMsgModel) async {
+                                              await ref
+                                                  .read(chatMessageStateProvider.notifier)
+                                                  .reportChatMessage(
+                                                    roomUuid: widget.roomUuid,
+                                                    message: chatMsgModel.msg,
+                                                    score: chatMsgModel.score,
+                                                    targetMemberUuid: widget.targetMemberUuid,
+                                                  )
+                                                  .then((value) {
+                                                if (value) {
+                                                  print('1 - report run?');
+                                                  if (_chatController != null) {
+                                                    _chatController!.report(
+                                                      msg: chatMsgModel.originData,
+                                                      score: chatMsgModel.score,
+                                                      memberUuid: myInfo.uuid ?? '',
+                                                    );
+                                                  }
+                                                }
+                                              });
+                                            },
                                           ),
-                                          isError: false,
-                                          isSending: false,
-                                          isRedacted: false,
-                                          onReport: (chatMsgModel) async {
-                                            await ref
-                                                .read(chatMessageStateProvider.notifier)
-                                                .reportChatMessage(
-                                                  roomUuid: widget.roomUuid,
-                                                  message: chatMsgModel.msg,
-                                                  score: chatMsgModel.score,
-                                                  targetMemberUuid: widget.targetMemberUuid,
-                                                )
-                                                .then((value) {
-                                              if (value) {
-                                                print('1 - report run?');
-                                                _chatController.report(
-                                                  msg: chatMsgModel.originData,
-                                                  score: chatMsgModel.score,
-                                                  memberUuid: myInfo.uuid ?? '',
-                                                );
-                                              }
-                                            });
-                                          },
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: _scrolledUp ? 0.0 : 2.0),
-                    child: _buildTextField(),
-                  ),
-                ],
-              ),
-            );
-          },
+                    Padding(
+                      padding: EdgeInsets.only(top: _scrolledUp ? 0.0 : 2.0),
+                      child: _buildTextField(),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

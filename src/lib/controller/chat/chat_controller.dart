@@ -84,4 +84,12 @@ class ChatController {
   Future<bool> isConnected() async {
     return _chatController.isConnected();
   }
+
+  void setToken(String token) {
+    _chatController.setToken(token);
+  }
+
+  Future<void> activate() async {
+    _chatController.activate();
+  }
 }

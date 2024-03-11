@@ -11,7 +11,6 @@ class StompController implements AbstractChatController {
   final String roomUuid;
   final String memberUuid;
   final List<String> targetMemberUuidList;
-  int _retryCount = 0;
 
   StompClient get client => _stompClient;
 
@@ -35,7 +34,6 @@ class StompController implements AbstractChatController {
       useSockJS: true,
       onConnect: (frame) {
         print('onCooooooooooonnected! $roomUuid');
-        _retryCount = 0;
         _stompClient.subscribe(
             destination: '/topic/chat/room/$roomUuid',
             callback: (frame) {
@@ -88,7 +86,6 @@ class StompController implements AbstractChatController {
       beforeConnect: () async {
         print('waiting to connect...');
         await Future.delayed(const Duration(milliseconds: 200));
-        _retryCount++;
 
         print('connecting... $token');
       },
@@ -172,5 +169,19 @@ class StompController implements AbstractChatController {
   @override
   Future<bool> isConnected() async {
     return _stompClient.isActive;
+  }
+
+  @override
+  void setToken(String token) {
+    this.token = token;
+    _stompClient.config.stompConnectHeaders?['token'] = token;
+  }
+
+  @override
+  Future<void> activate() async {
+    if (_stompClient.isActive) {
+      _stompClient.deactivate();
+    }
+    _stompClient.activate();
   }
 }
