@@ -18,7 +18,6 @@ String chatBaseUrl = dotenv.env['PRD_CHAT_BASE_URL']!;
 String commonBaseUrl = dotenv.env['PRD_COMMON_BASE_URL']!;
 String chatWSBaseUrl = 'https://pet-chat-ws.devlabs.co.kr/ws/puppycat';
 
-
 Future setRunningMode(RunningMode mode) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   print('mode $mode');
@@ -32,8 +31,8 @@ Future<RunningMode> getRunningMode() async {
 }
 
 Future initRunningMode() async {
-  final RunningMode mode = await getRunningMode();
-  // const RunningMode mode = RunningMode.dev;
+  // final RunningMode mode = await getRunningMode();
+  const RunningMode mode = RunningMode.stg;
 
   print('current mode : $mode');
   switch (mode) {

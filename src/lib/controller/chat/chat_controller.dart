@@ -60,8 +60,16 @@ class ChatController {
     _chatController.disconnect();
   }
 
-  Future<void> send(String msg, String? profileImg) async {
-    _chatController.send(msg: msg, profileImg: profileImg);
+  Future<void> send(
+    String msg,
+    String? profileImg,
+    String? msgQueueUuid,
+  ) async {
+    _chatController.send(
+      msg: msg,
+      profileImg: profileImg,
+      msgQueueUuid: msgQueueUuid,
+    );
   }
 
   Future<void> read({
@@ -76,6 +84,7 @@ class ChatController {
     required String msg,
     required String score,
     required String memberUuid,
+    String? msgQueueUuid,
   }) async {
     print('2 - report run?');
     _chatController.report(msg: msg, score: score, memberUuid: memberUuid);
@@ -83,5 +92,13 @@ class ChatController {
 
   Future<bool> isConnected() async {
     return _chatController.isConnected();
+  }
+
+  void setToken(String token) {
+    _chatController.setToken(token);
+  }
+
+  Future<void> activate() async {
+    _chatController.activate();
   }
 }

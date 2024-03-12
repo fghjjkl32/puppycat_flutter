@@ -11,7 +11,6 @@ class StompController implements AbstractChatController {
   final String roomUuid;
   final String memberUuid;
   final List<String> targetMemberUuidList;
-  int _retryCount = 0;
 
   StompClient get client => _stompClient;
 
@@ -35,7 +34,6 @@ class StompController implements AbstractChatController {
       useSockJS: true,
       onConnect: (frame) {
         print('onCooooooooooonnected! $roomUuid');
-        _retryCount = 0;
         _stompClient.subscribe(
             destination: '/topic/chat/room/$roomUuid',
             callback: (frame) {
@@ -60,6 +58,7 @@ class StompController implements AbstractChatController {
                   dateTime: msgMap['regDate'],
                   score: msgMap['score'],
                   originData: frame.body!.toString(),
+                  msgQueueUuid: msgMap['msgQueueUuid'] ?? '',
 
                   ///TODO
                   isEdited: false,
@@ -88,7 +87,6 @@ class StompController implements AbstractChatController {
       beforeConnect: () async {
         print('waiting to connect...');
         await Future.delayed(const Duration(milliseconds: 200));
-        _retryCount++;
 
         print('connecting... $token');
       },
@@ -112,6 +110,7 @@ class StompController implements AbstractChatController {
   Future<void> send({
     required String msg,
     String? profileImg,
+    String? msgQueueUuid,
   }) async {
     print('targetMemberUuidList $targetMemberUuidList');
     _stompClient.send(
@@ -119,6 +118,7 @@ class StompController implements AbstractChatController {
       body: json.encode({
         'type': 'TALK',
         'message': msg,
+        'msgQueueUuid': msgQueueUuid ?? '',
         'logTargetMemberUuidList': targetMemberUuidList,
         'senderMemberProfileImg': profileImg ?? '',
       }),
@@ -154,11 +154,13 @@ class StompController implements AbstractChatController {
     required String msg,
     required String score,
     required String memberUuid,
+    String? msgQueueUuid,
   }) async {
     print('msg $msg / score $score / memberUuid $memberUuid');
     Map<String, dynamic> msgMap = jsonDecode(msg);
     msgMap['type'] = 'REPORT';
     msgMap['actionMemberUuid'] = memberUuid;
+    msgMap['msgQueueUuid'] = msgQueueUuid;
 
     print('report msgMap $msgMap');
 
@@ -172,5 +174,20 @@ class StompController implements AbstractChatController {
   @override
   Future<bool> isConnected() async {
     return _stompClient.isActive;
+  }
+
+  @override
+  void setToken(String token) {
+    this.token = token;
+    _stompClient.config.stompConnectHeaders?['token'] = token;
+    _stompClient.config.webSocketConnectHeaders?['token'] = token;
+  }
+
+  @override
+  Future<void> activate() async {
+    if (_stompClient.isActive) {
+      _stompClient.deactivate();
+    }
+    _stompClient.activate();
   }
 }
