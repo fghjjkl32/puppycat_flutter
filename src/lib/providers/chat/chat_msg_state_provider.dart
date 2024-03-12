@@ -99,6 +99,7 @@ class ChatMessageState extends _$ChatMessageState {
           score: msgMap['score'],
           isRead: _checkReadState(msgMap['score']),
           originData: msg,
+          msgQueueUuid: msgMap['msgQueueUuid'] ?? '',
 
           ///TODO
           isEdited: false,

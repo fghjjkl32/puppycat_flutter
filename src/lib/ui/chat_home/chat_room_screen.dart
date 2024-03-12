@@ -83,7 +83,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
       final chatControllerProvider = ref.read(chatControllerStateProvider.notifier);
 
-      await ref.read(chatControllerStateProvider.notifier).connect(chatEnterModel: _chatEnterModel!, targetMemberList: targetMemberList);
+      _chatController = await ref.read(chatControllerStateProvider.notifier).connect(chatEnterModel: _chatEnterModel!, targetMemberList: targetMemberList);
 
       return _chatEnterModel!;
     } catch (e) {
@@ -122,7 +122,8 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final myInfo = ref.read(myInfoStateProvider);
 
     final String profileImg = myInfo.profileImgUrl ?? '';
-    _chatController!.send(msg, profileImg);
+    await ref.read(chatControllerStateProvider.notifier).sendMessage(msg, profileImg);
+    // _chatController!.send(msg, profileImg, '');
 
     _sendController.clear();
     _inputFocus.unfocus();
@@ -237,11 +238,25 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   @override
   Widget build(BuildContext context) {
     final myInfo = ref.read(myInfoStateProvider);
+    _chatController = ref.watch(chatControllerStateProvider);
+    // ref.listen(chatControllerStateProvider, (previous, next) {
+    //   print('chatControllerStateProvider listen');
+    // });
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.nick),
         backgroundColor: kPreviousNeutralColor100,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () async {
+            if (_chatController != null) {
+              // _chatController!.disconnect(true);
+              await ref.read(chatControllerStateProvider.notifier).disconnect(true);
+            }
+            context.pop();
+          },
+        ),
       ),
       floatingActionButton: _scrolledUp
           ? Padding(
@@ -261,7 +276,8 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
         child: DefaultOnWillPopScope(
           onWillPop: () async {
             if (_chatController != null) {
-              _chatController!.disconnect();
+              // _chatController!.disconnect(true);
+              await ref.read(chatControllerStateProvider.notifier).disconnect(true);
             }
 
             return true;
@@ -351,13 +367,10 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                                   .then((value) {
                                                 if (value) {
                                                   print('1 - report run?');
-                                                  if (_chatController != null) {
-                                                    _chatController!.report(
-                                                      msg: chatMsgModel.originData,
-                                                      score: chatMsgModel.score,
-                                                      memberUuid: myInfo.uuid ?? '',
-                                                    );
-                                                  }
+                                                  ref.read(chatControllerStateProvider.notifier).reportMessage(
+                                                        originMsg: chatMsgModel.originData,
+                                                        score: chatMsgModel.score,
+                                                      );
                                                 }
                                               });
                                             },

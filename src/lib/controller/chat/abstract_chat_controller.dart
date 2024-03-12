@@ -8,7 +8,7 @@ abstract class AbstractChatController {
     Function(dynamic)? onError,
   });
 
-  Future<void> send({required String msg, String? profileImg});
+  Future<void> send({required String msg, String? profileImg, String? msgQueueUuid});
 
   Future<void> read({
     required String msg,
@@ -20,6 +20,7 @@ abstract class AbstractChatController {
     required String msg,
     required String score,
     required String memberUuid,
+    String? msgQueueUuid,
   });
 
   Future<void> disconnect();

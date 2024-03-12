@@ -58,6 +58,7 @@ class StompController implements AbstractChatController {
                   dateTime: msgMap['regDate'],
                   score: msgMap['score'],
                   originData: frame.body!.toString(),
+                  msgQueueUuid: msgMap['msgQueueUuid'] ?? '',
 
                   ///TODO
                   isEdited: false,
@@ -109,6 +110,7 @@ class StompController implements AbstractChatController {
   Future<void> send({
     required String msg,
     String? profileImg,
+    String? msgQueueUuid,
   }) async {
     print('targetMemberUuidList $targetMemberUuidList');
     _stompClient.send(
@@ -116,6 +118,7 @@ class StompController implements AbstractChatController {
       body: json.encode({
         'type': 'TALK',
         'message': msg,
+        'msgQueueUuid': msgQueueUuid ?? '',
         'logTargetMemberUuidList': targetMemberUuidList,
         'senderMemberProfileImg': profileImg ?? '',
       }),
@@ -151,11 +154,13 @@ class StompController implements AbstractChatController {
     required String msg,
     required String score,
     required String memberUuid,
+    String? msgQueueUuid,
   }) async {
     print('msg $msg / score $score / memberUuid $memberUuid');
     Map<String, dynamic> msgMap = jsonDecode(msg);
     msgMap['type'] = 'REPORT';
     msgMap['actionMemberUuid'] = memberUuid;
+    msgMap['msgQueueUuid'] = msgQueueUuid;
 
     print('report msgMap $msgMap');
 
@@ -175,6 +180,7 @@ class StompController implements AbstractChatController {
   void setToken(String token) {
     this.token = token;
     _stompClient.config.stompConnectHeaders?['token'] = token;
+    _stompClient.config.webSocketConnectHeaders?['token'] = token;
   }
 
   @override
