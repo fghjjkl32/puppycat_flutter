@@ -192,8 +192,8 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                               itemBuilder: (BuildContext context, int index) {
                                                 return FavoriteItemWidget(
                                                   profileImage: i.imgMemberTagList![index].profileImgUrl,
-                                                  userName: i.imgMemberTagList![index].nick!,
-                                                  content: i.imgMemberTagList![index].intro!,
+                                                  userName: i.imgMemberTagList![index].nick ?? "알 수 없음",
+                                                  content: i.imgMemberTagList![index].intro ?? "",
                                                   isSpecialUser: i.imgMemberTagList![index].isBadge == 1,
                                                   isFollow: i.imgMemberTagList![index].followState == 1,
                                                   followerUuid: i.imgMemberTagList![index].memberUuid!,

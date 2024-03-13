@@ -68,54 +68,63 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
       child: Padding(
         padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 8, top: 8),
         child: Row(
-          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 10,
+            Expanded(
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: getProfileAvatar(widget.profileImage ?? "", 40, 40),
                   ),
-                  child: getProfileAvatar(widget.profileImage ?? "", 40, 40),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        widget.isSpecialUser
-                            ? Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/image/feed/icon/small_size/icon_special.png',
-                                    height: 13,
-                                  ),
-                                  const SizedBox(
-                                    width: 4,
-                                  ),
-                                ],
-                              )
-                            : Container(),
+                        Row(
+                          children: [
+                            widget.isSpecialUser
+                                ? Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/image/feed/icon/small_size/icon_special.png',
+                                        height: 13,
+                                      ),
+                                      const SizedBox(
+                                        width: 4,
+                                      ),
+                                    ],
+                                  )
+                                : Container(),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 4.0),
+                                child: Text(
+                                  widget.userName,
+                                  style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
                         Text(
-                          widget.userName,
-                          style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                          widget.content,
+                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      widget.content,
-                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
             Consumer(builder: (context, ref, child) {
-              return myInfo.uuid == widget.followerUuid
+              return myInfo.uuid == widget.followerUuid || widget.userName == "알 수 없음"
                   ? Container()
                   : isFollow
                       ? GestureDetector(
