@@ -93,6 +93,7 @@ dependencies:
   dio_smart_retry: ^5.0.0
 
   drift: ^2.9.0
+  sqlite3_flutter_libs: ^0.5.15
 
   #chat
   #  matrix: ^0.22.6

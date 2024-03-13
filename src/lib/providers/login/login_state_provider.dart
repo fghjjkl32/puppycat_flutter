@@ -110,7 +110,7 @@ class LoginState extends _$LoginState {
         router.pop();
       } else {
         print('router can pop? 2');
-        router.go('/home');
+        router.pushReplacement('/home');
       }
     }
   }

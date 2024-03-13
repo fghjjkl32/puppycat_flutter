@@ -146,7 +146,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                                     isCanClose: false,
                                                     color: kPreviousTextSubTitleColor.withOpacity(0.8),
                                                     textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
-                                                    text: tag.nick!,
+                                                    text: tag.nick ?? "알 수 없음",
                                                     onDelete: () {},
                                                   ),
                                                 )

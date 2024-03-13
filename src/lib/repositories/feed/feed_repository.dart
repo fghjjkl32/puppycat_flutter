@@ -659,7 +659,10 @@ class FeedRepository {
 
         // 태그의 상태를 결정하는 로직
         String status = "";
-        if (initialTag.username == '' && initialTag.memberUuid == '') {
+        if (initialTag.username == "알 수 없음") {
+          // "알 수 없음" 이름을 가진 태그는 무시합니다.
+          continue; // 다음 태그로 넘어갑니다.
+        } else if (initialTag.username == '' && initialTag.memberUuid == '') {
           status = "new"; // 새로운 태그
         } else if (initialTag.position != tag.position) {
           status = "modi"; // 위치가 수정된 태그
@@ -675,7 +678,7 @@ class FeedRepository {
     // 초기 태그 리스트에만 있는 태그를 찾아서 "status": "del"로 설정합니다.
     for (var initialTagImage in initialTagList) {
       for (var initialTag in initialTagImage.tag) {
-        if (!feedState.tagImage.any((ti) => ti.tag.any((t) => t.memberUuid == initialTag.memberUuid))) {
+        if (!feedState.tagImage.any((ti) => ti.tag.any((t) => t.memberUuid == initialTag.memberUuid)) || initialTag.username == "알 수 없음") {
           imgTagList.add({"imgIdx": initialTag.imageIndex, "memberUuid": initialTag.memberUuid, "width": initialTag.position.dx, "height": initialTag.position.dy, "status": "del"});
         }
       }

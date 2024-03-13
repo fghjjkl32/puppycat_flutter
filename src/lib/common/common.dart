@@ -136,6 +136,32 @@ Future<String> processMentionEditedText(String editedText, List<MentionListData>
   return Future.value(editedText);
 }
 
+List<InlineSpan> truncateInlineSpans(List<InlineSpan> spans, int length) {
+  List<InlineSpan> truncatedSpans = [];
+  int currentLength = 0;
+
+  for (InlineSpan span in spans) {
+    if (span is TextSpan) {
+      String text = span.text ?? "";
+      // 현재 스팬의 길이가 요구 길이를 넘지 않는 경우
+      if (currentLength + text.length <= length) {
+        truncatedSpans.add(span);
+        currentLength += text.length;
+      } else {
+        // 필요한 경우 텍스트를 잘라냄
+        int remainingLength = length - currentLength;
+        String truncatedText = text.substring(0, remainingLength);
+        truncatedSpans.add(TextSpan(text: truncatedText, style: span.style));
+        break; // 최대 길이에 도달했으므로 반복 중단
+      }
+    }
+
+    if (currentLength >= length) break; // 길이가 충분한 경우 종료
+  }
+
+  return truncatedSpans;
+}
+
 List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, String? oldMemberUuid) {
   List<InlineSpan> spans = [];
 
@@ -158,13 +184,13 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
         var mention = mentionList.firstWhere((m) => m.uuid == mentionMatched);
 
         spans.add(TextSpan(
-            text: '@' + (mention.memberState == 0 ? "공통.알 수 없음".tr() : (mention.nick ?? '')),
+            text: '@' + (mention.state == 0 ? "공통.알 수 없음".tr() : (mention.nick ?? '')),
             style: tagStyle,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 ref.read(myInfoStateProvider).uuid == mention.uuid
                     ? context.push("/member/myPage", extra: {"oldMemberUuid": oldMemberUuid!})
-                    : mention.memberState == 0
+                    : mention.state == 0
                         ? context.push("/member/userUnknown")
                         : context.push("/member/userPage", extra: {"nick": mention.nick, "memberUuid": mention.uuid, "oldMemberUuid": oldMemberUuid});
               }));
@@ -195,7 +221,7 @@ String replaceMentionsWithNicknamesInContentAsString(String content, List<Mentio
 
     if (mentionList.any((mention) => mention.uuid == matchedString)) {
       var mention = mentionList.firstWhere((m) => m.uuid == matchedString);
-      return '@' + (mention.memberState == 0 ? "공통.알 수 없음".tr() : mention.nick!);
+      return '@' + (mention.state == 0 ? "공통.알 수 없음".tr() : mention.nick!);
     } else {
       return '@' + matchedString;
     }
@@ -216,7 +242,7 @@ String replaceMentionsWithNicknamesInContentAsTextFieldString(String content, Li
 
     if (mentionList.any((mention) => mention.uuid == matchedString)) {
       var mention = mentionList.firstWhere((m) => m.uuid == matchedString);
-      return '@' + (mention.memberState == 0 ? "공통.알 수 없음".tr() : mention.nick!);
+      return '@' + (mention.state == 0 ? "공통.알 수 없음".tr() : mention.nick!);
     } else {
       return '@' + matchedString;
     }

@@ -21,16 +21,8 @@ class HomeRoute extends GoRouteData {
   }
 
   GoRoute createRoute() {
-    return GoRoute(
-        path: '/home',
-        name: 'home',
-        onExit: (BuildContext context) async {
-          bool backResult = onBackPressed();
-          return await Future.value(backResult);
-        },
-        builder: (context, state) => build(context, state),
-        routes: [
-          LoginRoute().createRoute(),
-        ]);
+    return GoRoute(path: '/home', name: 'home', builder: (context, state) => build(context, state), routes: [
+      LoginRoute().createRoute(),
+    ]);
   }
 }

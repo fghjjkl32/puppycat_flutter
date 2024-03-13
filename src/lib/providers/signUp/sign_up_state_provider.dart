@@ -55,7 +55,7 @@ class SignUpState extends _$SignUpState {
         // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.success;
         // ref.read(chatRegisterStateProvider.notifier).register(userModel);
 
-        ref.read(routerProvider).goNamed('signupComplete');
+        ref.read(routerProvider).push('/home/login/signup/signupComplete');
       }
       state = result;
       // state = SignUpStatus.failedAuth;
