@@ -91,7 +91,7 @@ String thumborUrl(String url) {
   final resultUrl = Thumbor(host: thumborHostUrl, key: thumborKey).buildImage(url);
 
   ///TODO: 이미지 사이즈 조절
-  resultUrl.resize(width: 300, height: 300);
+  // resultUrl.resize(width: 300, height: 300);
 
   return resultUrl.toUrl();
 }

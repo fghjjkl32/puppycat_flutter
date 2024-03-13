@@ -93,12 +93,13 @@ dependencies:
   dio_smart_retry: ^5.0.0
 
   drift: ^2.9.0
+  sqlite3_flutter_libs: ^0.5.15
 
   #chat
   #  matrix: ^0.22.6
-  flutter_slidable:
-    git:
-      url: https://github.com/engine-smkang-uxplus/flutter_slidable
+  flutter_slidable: ^3.0.1
+  #    git:
+  #      url: https://github.com/engine-smkang-uxplus/flutter_slidable
   flutter_gen: ^5.3.1
   flutter_app_badger: ^1.5.0
   swipe_to_action: ^0.2.0

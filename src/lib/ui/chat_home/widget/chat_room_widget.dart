@@ -37,64 +37,61 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
     _pagingController = ref.watch(chatRoomListStateProvider);
     final myInfo = ref.read(myInfoStateProvider);
 
-    return Column(
-      children: [
-        Expanded(
-          child: PagedListView<int, ChatRoomModel>(
-            pagingController: _pagingController,
-            builderDelegate: PagedChildBuilderDelegate<ChatRoomModel>(
-              noItemsFoundIndicatorBuilder: (context) {
-                return ChatEmptyWidget(
-                  nick: myInfo.nick,
-                );
-                // return const Text('empty');
-              },
-              itemBuilder: (context, item, index) {
-                return ChatRoomItem(
-                  roomModel: item,
-                  onPin: (isPin) async {
-                    await ref.read(chatRoomListStateProvider.notifier).pinChatRoom(roomUuid: item.uuid, isPin: isPin, isRefresh: true);
-                  },
-                  onFavorite: (isFavorite) async {
-                    await ref.read(chatFavoriteStateProvider.notifier).favoriteChatMember(targetMemberUuid: item.targetMemberUuid, isFavorite: isFavorite);
-                    await ref.read(chatRoomListStateProvider.notifier).updateChatRoom(roomUuid: item.uuid, isFavorite: !isFavorite);
-                  },
-                  onLeave: (roomModel) async {
-                    await ref.read(chatRoomListStateProvider.notifier).exitChatRoom(roomUuid: item.uuid);
-                    await ref.read(chatRoomListStateProvider.notifier).updateChatRoom(roomUuid: item.uuid, isDelete: true);
+    // return PagedListView<int, ChatRoomModel>(
+    return PagedSliverList<int, ChatRoomModel>(
+      // shrinkWrap: true,
+      pagingController: _pagingController,
+      // physics: const NeverScrollableScrollPhysics(),
+      builderDelegate: PagedChildBuilderDelegate<ChatRoomModel>(
+        noItemsFoundIndicatorBuilder: (context) {
+          return ChatEmptyWidget(
+            nick: myInfo.nick,
+          );
+          // return const Text('empty');
+        },
+        itemBuilder: (context, item, index) {
+          return ChatRoomItem(
+            roomModel: item,
+            onPin: (isPin) async {
+              await ref.read(chatRoomListStateProvider.notifier).pinChatRoom(roomUuid: item.uuid, isPin: isPin, isRefresh: true);
+            },
+            onFavorite: (isFavorite) async {
+              await ref.read(chatFavoriteStateProvider.notifier).favoriteChatMember(targetMemberUuid: item.targetMemberUuid, isFavorite: isFavorite);
+              await ref.read(chatRoomListStateProvider.notifier).updateChatRoom(roomUuid: item.uuid, isFavorite: !isFavorite);
+            },
+            onLeave: (roomModel) async {
+              await ref.read(chatRoomListStateProvider.notifier).exitChatRoom(roomUuid: item.uuid);
+              await ref.read(chatRoomListStateProvider.notifier).updateChatRoom(roomUuid: item.uuid, isDelete: true);
 
-                    //즐겨찾기 상태면 해제
-                    if (roomModel.favoriteState == 1) {
-                      await ref.read(chatFavoriteStateProvider.notifier).favoriteChatMember(targetMemberUuid: item.targetMemberUuid, isFavorite: true);
-                    }
-                    //고정 상태면 해제
-                    if (roomModel.fixState == 1) {
-                      await ref.read(chatRoomListStateProvider.notifier).pinChatRoom(roomUuid: item.uuid, isPin: true, isRefresh: false);
-                    }
-                  },
-                  onTap: () {
-                    EasyThrottle.throttle(
-                      'elevatedButtonThrottle',
-                      const Duration(
-                        milliseconds: 2500,
-                      ),
-                      () async {
-                        print('item.profileImgUrl ${item.profileImgUrl}');
-                        context.push('/chatHome/chatRoom', extra: {
-                          'roomUuid': item.roomId,
-                          'nick': item.nick,
-                          'profileImgUrl': item.profileImgUrl,
-                          'targetMemberUuid': item.targetMemberUuid,
-                        }).then((value) => ref.read(chatRoomListStateProvider).refresh());
-                      },
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ),
-      ],
+              //즐겨찾기 상태면 해제
+              if (roomModel.favoriteState == 1) {
+                await ref.read(chatFavoriteStateProvider.notifier).favoriteChatMember(targetMemberUuid: item.targetMemberUuid, isFavorite: true);
+              }
+              //고정 상태면 해제
+              if (roomModel.fixState == 1) {
+                await ref.read(chatRoomListStateProvider.notifier).pinChatRoom(roomUuid: item.uuid, isPin: true, isRefresh: false);
+              }
+            },
+            onTap: () {
+              EasyThrottle.throttle(
+                'elevatedButtonThrottle_${item.roomId}',
+                const Duration(
+                  milliseconds: 2000,
+                ),
+                () async {
+                  print('item.profileImgUrl ${item.profileImgUrl}');
+                  context.push('/chatHome/chatRoom', extra: {
+                    'roomUuid': item.roomId,
+                    'nick': item.nick,
+                    'profileImgUrl': item.profileImgUrl,
+                    'targetMemberUuid': item.targetMemberUuid,
+                  }).then((value) => ref.read(chatRoomListStateProvider).refresh());
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

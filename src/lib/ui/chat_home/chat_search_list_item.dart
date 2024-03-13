@@ -69,11 +69,14 @@ class _ChatSearchListItemState extends State<ChatSearchListItem> with TickerProv
                 children: [
                   Text(
                     widget.nick,
-                    style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor, letterSpacing: 0.2, height: 1.4),
+                    style: kBody14BoldStyle.copyWith(color: kTextPrimary, height: 1.4),
                   ),
                   Text(
                     widget.intro,
-                    style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor, letterSpacing: 0.2, height: 1.2),
+                    style: kBody12RegularStyle400.copyWith(color: kTextTertiary, height: 1.4),
+                    softWrap: false,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

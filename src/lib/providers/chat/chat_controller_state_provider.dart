@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/chat_controller.dart';
@@ -133,13 +132,14 @@ class ChatControllerState extends _$ChatControllerState {
       return;
     }
 
-    // final lastChatModel = chatHistoryPagingController.itemList!.first;
-    final lastChatModel = chatHistoryPagingController.itemList!.firstWhereOrNull((element) => element.type != 'REPORT');
-    if (lastChatModel != null) {
-      state?.read(msg: lastChatModel.msg, score: lastChatModel.score, memberUuid: myInfo.uuid ?? '');
-    }
+    final lastChatModel = chatHistoryPagingController.itemList!.first;
+    // final lastChatModel = chatHistoryPagingController.itemList!.firstWhereOrNull((element) => element.type != 'REPORT');
+    // print('lastChatModel $lastChatModel');
+    // if (lastChatModel != null) {
+    state?.read(msg: lastChatModel.msg, score: lastChatModel.score, memberUuid: myInfo.uuid ?? '');
+    // }
 
-    Future.delayed(Duration(milliseconds: 500));
+    // Future.delayed(Duration(milliseconds: 500));
     if (_chatMsgQueueMap.isNotEmpty) {
       _chatMsgQueueMap.forEach((key, value) {
         if (value['type'] == 'TALK') {

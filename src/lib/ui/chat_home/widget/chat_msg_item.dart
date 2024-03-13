@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/date_time_extension.dart';
@@ -120,16 +121,16 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
   void _updateBubbleColor(bool isHighLight) {
     setState(() {
       if (isMineXorReply) {
-        _bubbleColor = isHighLight ? kPrimaryColor400 : kPreviousPrimaryLightColor;
+        _bubbleColor = isHighLight ? kPrimaryColor300 : kPrimaryColor100;
       } else {
-        _bubbleColor = isHighLight ? kNeutralColor400 : kNeutralColor200;
+        _bubbleColor = isHighLight ? kNeutralColor300 : kNeutralColor100;
       }
     });
   }
 
   ///NOTE
   ///GPT Code
-  void _showMenu(BuildContext context, Offset position, bool isMine) {
+  void _showMenu(BuildContext context, Offset position, bool isMine, bool isReported) {
     final RenderBox overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
     final screenHeight = overlay.size.height;
 
@@ -202,7 +203,7 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
         ),
       ),
     ); //copy
-    if (!isMine) {
+    if (!isMine && !isReported) {
       menuItems.add(
         PopupMenuItem<ContextMenuType>(
           value: ContextMenuType.report,
@@ -435,12 +436,14 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
             "(?!\\n)(?:^|\\s)([#]([$detectionContentLetters]+))|$urlRegexContent",
             multiLine: true,
           ),
-      detectedStyle: kBody13RegularStyle.copyWith(color: kSecondaryColor500),
-      basicStyle: kBody13RegularStyle.copyWith(color: widget.isRedacted ? kPreviousTextBodyColor : kPreviousTextSubTitleColor),
+      detectedStyle: kBody14RegularStyle.copyWith(color: kTextTagSecondary, letterSpacing: 0.2),
+      basicStyle: kBody14RegularStyle.copyWith(color: widget.isRedacted ? kPreviousTextBodyColor : kTextSecondary),
       onTap: (tappedText) {
         ///TODO
         /// 해시태그 검색 페이지 이동
         /// 밖에서 함수 받아오기
+        print('tappedText : $tappedText');
+        context.push("/search/hashtag/${tappedText.replaceAll('#', '')}/0");
       },
     );
   }
@@ -521,7 +524,10 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
           chatMessageModel.isViewTime
               ? Text(
                   dateTime.timeOfDay(),
-                  style: kBadge10MediumStyle.copyWith(color: kNeutralColor500),
+                  style: kBody12RegularStyle.copyWith(
+                    color: kTextTertiary,
+                    letterSpacing: 0.2,
+                  ),
                 )
               : const SizedBox.shrink(),
           // Text(
@@ -534,7 +540,13 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
           isEdit
               ? Padding(
                   padding: const EdgeInsets.only(left: 4.0),
-                  child: Text('메시지.수정됨'.tr(), style: kBadge10MediumStyle.copyWith(color: kNeutralColor500)),
+                  child: Text(
+                    '메시지.수정됨'.tr(),
+                    style: kBody12RegularStyle.copyWith(
+                      color: kTextTertiary,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
                 )
               : const SizedBox.shrink(),
         ],
@@ -542,14 +554,25 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
     } else {
       rows = Row(
         children: [
-          isEdit ? Text('메시지.수정됨'.tr(), style: kBadge10MediumStyle.copyWith(color: kNeutralColor500)) : const SizedBox.shrink(),
+          isEdit
+              ? Text(
+                  '메시지.수정됨'.tr(),
+                  style: kBody12RegularStyle.copyWith(
+                    color: kTextTertiary,
+                    letterSpacing: 0.2,
+                  ),
+                )
+              : const SizedBox.shrink(),
           // const SizedBox(
           //   width: 4,
           // ),
           chatMessageModel.isViewTime
               ? Text(
                   dateTime.timeOfDay(),
-                  style: kBadge10MediumStyle.copyWith(color: kNeutralColor500),
+                  style: kBody12RegularStyle.copyWith(
+                    color: kTextTertiary,
+                    letterSpacing: 0.2,
+                  ),
                 )
               : const SizedBox.shrink(),
         ],
@@ -686,7 +709,12 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
               if (widget.onLongPress != null) {
                 widget.onLongPress!(_lastPointerDownPosition);
               } else {
-                _showMenu(context, _lastPointerDownPosition!, isMineXorReply);
+                _showMenu(
+                  context,
+                  _lastPointerDownPosition!,
+                  isMineXorReply,
+                  chatMessageModel.type == 'REPORT',
+                );
               }
             },
             nipWidth: 6,
@@ -707,11 +735,12 @@ class ChatMessageItemState extends ConsumerState<ChatMessageItem> with SingleTic
               ? Padding(
                   padding: const EdgeInsets.only(top: 2.0, left: 8, right: 8),
                   child: Align(
-                      alignment: isMineXorReply ? Alignment.centerRight : Alignment.centerLeft,
-                      child: Lottie.asset(
-                        chatMessageModel.reactions.first,
-                        repeat: false,
-                      )),
+                    alignment: isMineXorReply ? Alignment.centerRight : Alignment.centerLeft,
+                    child: Lottie.asset(
+                      chatMessageModel.reactions.first,
+                      repeat: false,
+                    ),
+                  ),
                 )
               : const SizedBox.shrink(),
         ],

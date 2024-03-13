@@ -20,6 +20,7 @@ import 'package:pet_mobile_social_flutter/providers/chat/chat_search_state_provi
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/chat_home/chat_search_list_item.dart';
+import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 
 class ChatSearchScreen extends ConsumerStatefulWidget {
   const ChatSearchScreen({super.key});
@@ -80,7 +81,11 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
               titleName: titleName,
               targetProfileImgUrl: targetProfileImgUrl,
             )
-            .then((value) => ref.read(chatRoomListStateProvider).refresh());
+            .then((value) {
+          ref.read(chatRoomListStateProvider).refresh();
+          _favoriteListPagingController.refresh();
+          _followListPagingController.refresh();
+        });
       },
     );
   }
@@ -104,7 +109,34 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
             Text(
               text,
               textAlign: TextAlign.center,
-              style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+              style: kBody13RegularStyle.copyWith(color: kTextTertiary, height: 1.4),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoChatTarget(String text) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 140.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/image/chat/empty_character_01_nopost_88_x2.png',
+              width: 88,
+              height: 88,
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            Text(
+              text,
+              textAlign: TextAlign.center,
+              style: kBody13RegularStyle.copyWith(color: kTextTertiary, height: 1.4),
             ),
           ],
         ),
@@ -120,7 +152,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
           noItemsFoundIndicatorBuilder: (context) {
             print('searchController.text.isEmpty ${searchController.text}');
             // if (searchController.text.isNotEmpty || searchController.text != '') {
-            return _buildNoItemsFound('유저를 찾을 수 없습니다'.tr());
+            return _buildNoItemsFound('유저를 찾을 수 없어요'.tr());
             // } else {
             //   return _buildPrevSearch();
             // }
@@ -206,7 +238,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
     return isViewEmptyPage
         ? Builder(builder: (context) {
             ref.read(chatFollowUserStateProvider).notifyPageRequestListeners(1);
-            return _buildNoItemsFound('메시지.검색해서 메시지 전송 상대를 찾아보세요'.tr());
+            return _buildNoChatTarget('메시지.팔로우가 없어요'.tr());
           })
         : CustomScrollView(
             slivers: [
@@ -217,7 +249,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
                   visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                   title: Text(
                     '메시지.즐겨찾기'.tr(),
-                    style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.2),
+                    style: kTitle16BoldStyle.copyWith(color: kTextPrimary, height: 1.2),
                   ),
                   onTap: () {
                     setState(() {
@@ -253,7 +285,7 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
                   visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                   title: Text(
                     '팔로잉'.tr(),
-                    style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.2),
+                    style: kTitle16BoldStyle.copyWith(color: kTextPrimary, height: 1.2),
                   ),
                   onTap: () {
                     setState(() {
@@ -363,8 +395,8 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
                           ),
                         ),
                       ),
-                hintText: "메시지.닉네임을 검색해주세요".tr(),
-                hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
+                hintText: "메시지.닉네임으로 검색해 보세요".tr(),
+                hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary, height: 1.2),
               ),
             ),
           ),
@@ -389,16 +421,25 @@ class ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(
             "메시지.메시지 상대 선택".tr(),
+            style: kTitle18BoldStyle.copyWith(color: kNeutralColor900, height: 1.4),
           ),
           leading: IconButton(
             onPressed: () {
               ref.read(chatUserSearchStateProvider.notifier).searchUser('');
+              ref.read(chatRoomListStateProvider).refresh();
               context.pop();
             },
             icon: const Icon(Icons.arrow_back),
           ),
         ),
-        body: _buildBody(),
+        body: DefaultOnWillPopScope(
+          onWillPop: () async {
+            ref.read(chatUserSearchStateProvider.notifier).searchUser('');
+            ref.read(chatRoomListStateProvider).refresh();
+            return true;
+          },
+          child: _buildBody(),
+        ),
       ),
     );
   }

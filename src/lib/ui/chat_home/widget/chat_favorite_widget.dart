@@ -71,7 +71,7 @@ class ChatFavoriteWidgetState extends ConsumerState<ChatFavoriteWidget> {
                   padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 8.0),
                   child: Text(
                     '메시지.즐겨찾기'.tr(),
-                    style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.2),
+                    style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.2, letterSpacing: 0.2),
                   ),
                 ),
               ),
@@ -135,14 +135,22 @@ class ChatFavoriteWidgetState extends ConsumerState<ChatFavoriteWidget> {
                               //         : const SizedBox.shrink(),
                               //   ],
                               // ),
-                              Text(
-                                item.nick,
-                                style: kBody11RegularStyle.copyWith(
-                                  color: kNeutralColor900,
-                                  height: 1.4,
-                                  letterSpacing: 0.2,
+                              const SizedBox(
+                                height: 6,
+                              ),
+                              SizedBox(
+                                width: 48,
+                                child: Text(
+                                  item.nick,
+                                  style: kBody11RegularStyle.copyWith(
+                                    color: kNeutralColor900,
+                                    height: 1,
+                                    letterSpacing: 0.2,
+                                    // leadingDistribution: TextLeadingDistribution.even,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
