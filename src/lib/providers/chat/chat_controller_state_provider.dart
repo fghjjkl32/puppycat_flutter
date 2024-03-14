@@ -202,7 +202,7 @@ class ChatControllerState extends _$ChatControllerState {
     Map<String, dynamic> chatTemp = {
       'type': 'TALK', // 'TALK', 'REPORT
       'msg': msg,
-      'profileImg': profileImg ?? '',
+      'profileImg': profileImg ?? myInfo.profileImgUrl ?? '',
     };
 
     _chatMsgQueueMap[uuid] = chatTemp;

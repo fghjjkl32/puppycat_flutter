@@ -28,29 +28,39 @@ class ChatRepository {
     int page = 1,
     int recordSize = 20,
   }) async {
-    ChatRoomResponseModel responseModel = await _chatService.getChatRoomList(page: page, recordSize: recordSize);
+    try {
+      print('1 getChatRoomList.data');
+      ChatRoomResponseModel responseModel = await _chatService.getChatRoomList(page: page, recordSize: recordSize);
+      print('1 getChatRoomList.data: ${responseModel.data}');
 
-    if (!responseModel.result) {
-      throw APIException(
-        msg: responseModel.message ?? '',
-        code: responseModel.code,
-        refer: 'ChatRepository',
-        caller: 'getChatRoomList',
-      );
+      if (!responseModel.result) {
+        throw APIException(
+          msg: responseModel.message ?? '',
+          code: responseModel.code,
+          refer: 'ChatRepository',
+          caller: 'getChatRoomList',
+        );
+      }
+      print('2 getChatRoomList.data: ${responseModel.data}');
+
+      if (responseModel.data == null) {
+        throw APIException(
+          msg: 'data is null',
+          code: responseModel.code,
+          refer: 'ChatRepository',
+          caller: 'getChatRoomList',
+        );
+      }
+
+      print('3 getChatRoomList.data: ${responseModel.data}');
+
+      final rooms = responseModel.data!;
+
+      return rooms;
+    } catch (e) {
+      print('getChatRoomList.error: $e');
+      throw e;
     }
-
-    if (responseModel.data == null) {
-      throw APIException(
-        msg: 'data is null',
-        code: responseModel.code,
-        refer: 'ChatRepository',
-        caller: 'getChatRoomList',
-      );
-    }
-
-    final rooms = responseModel.data!;
-
-    return rooms;
   }
 
   Future<ChatEnterModel> createRoom({

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bubble/bubble.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +26,7 @@ class ChatRoomScreen extends ConsumerStatefulWidget {
   final String targetMemberUuid;
   final String? profileImgUrl;
   final ChatEnterModel? chatEnterModel;
+  final int? userState;
 
   const ChatRoomScreen({
     super.key,
@@ -32,6 +35,7 @@ class ChatRoomScreen extends ConsumerStatefulWidget {
     required this.targetMemberUuid,
     this.profileImgUrl,
     this.chatEnterModel,
+    this.userState,
   });
 
   @override
@@ -50,6 +54,11 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   bool _scrolledUp = false;
   late ChatEnterModel? _chatEnterModel;
   late ChatController? _chatController = ref.watch(chatControllerStateProvider);
+
+  //TODO
+  //시나리오 테스트용 변수
+  bool _switchValue = false;
+  late Timer _timerForTest;
 
   @override
   void initState() {
@@ -162,6 +171,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12.0, 0.0, 12.0, 8.0),
             child: TextField(
+              enabled: widget.userState == 0 ? false : true,
               controller: _sendController,
               focusNode: _inputFocus,
               decoration: InputDecoration(
@@ -180,7 +190,12 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                   borderRadius: BorderRadius.circular(100.0),
                   gapPadding: 10.0,
                 ),
-                hintText: '메시지.메시지를 입력해 주세요'.tr(),
+                disabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1.0, color: kBorderPrimary),
+                  borderRadius: BorderRadius.circular(100.0),
+                  gapPadding: 10.0,
+                ),
+                hintText: widget.userState == 0 ? '메시지를 보낼 수 없습니다.' : '메시지.메시지를 입력해 주세요'.tr(),
                 hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                 contentPadding: const EdgeInsets.fromLTRB(20, 15, 12, 15),
                 suffixIcon: Padding(
@@ -292,6 +307,30 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
             context.pop();
           },
         ),
+        actions: [
+          ///NOTE
+          ///Test용 코드
+          Switch(
+              value: _switchValue,
+              onChanged: (value) async {
+                setState(() {
+                  _switchValue = value;
+                });
+
+                if (value) {
+                  _timerForTest = Timer.periodic(Duration(seconds: 1), (timer) async {
+                    await ref.read(chatControllerStateProvider.notifier).sendMessage(
+                          timer.tick.toString(),
+                          null,
+                        );
+                  });
+                } else {
+                  if (_timerForTest.isActive) {
+                    _timerForTest.cancel();
+                  }
+                }
+              }),
+        ],
       ),
       floatingActionButton: _scrolledUp
           ? Padding(
