@@ -43,6 +43,16 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
       pagingController: _pagingController,
       // physics: const NeverScrollableScrollPhysics(),
       builderDelegate: PagedChildBuilderDelegate<ChatRoomModel>(
+        firstPageErrorIndicatorBuilder: (context) {
+          return const Center(
+            child: Text('firstPageErrorIndicatorBuilder '),
+          );
+        },
+        newPageErrorIndicatorBuilder: (context) {
+          return const Center(
+            child: Text('newPageErrorIndicatorBuilder'),
+          );
+        },
         noItemsFoundIndicatorBuilder: (context) {
           return ChatEmptyWidget(
             nick: myInfo.nick,
@@ -85,6 +95,7 @@ class ChatRoomWidgetState extends ConsumerState<ChatRoomWidget> {
                     'nick': item.nick,
                     'profileImgUrl': item.profileImgUrl,
                     'targetMemberUuid': item.targetMemberUuid,
+                    'userState': item.userState,
                   }).then((value) => ref.read(chatRoomListStateProvider).refresh());
                 },
               );

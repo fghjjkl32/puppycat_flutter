@@ -37,13 +37,9 @@ class ChatRoomRoute extends GoRouteData {
             String nick = extraMap['nick'] ?? 'unknown';
             String? profileImgUrl = extraMap['profileImgUrl'];
             String targetMemberUuid = extraMap['targetMemberUuid'];
+            int userState = extraMap['userState'] ?? 1;
 
-            return ChatRoomScreen(
-              roomUuid: roomUuid,
-              nick: nick,
-              profileImgUrl: profileImgUrl,
-              targetMemberUuid: targetMemberUuid,
-            );
+            return ChatRoomScreen(roomUuid: roomUuid, nick: nick, profileImgUrl: profileImgUrl, targetMemberUuid: targetMemberUuid, userState: userState);
           } else {
             return const ChatHomeScreen();
           }
