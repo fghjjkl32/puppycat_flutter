@@ -114,7 +114,7 @@ class FeedWriteImageTagSearchNotifier extends StateNotifier<SearchDataListModel>
 
         state = state.copyWith(isLoading: true, isLoadMoreDone: false, isLoadMoreError: false);
 
-        final lists = await SearchRepository(dio: ref.read(dioProvider)).getMentionRecommendList(
+        final lists = await SearchRepository(dio: ref.read(dioProvider)).getImageTagRecommendList(
           page: state.page + 1,
         );
 

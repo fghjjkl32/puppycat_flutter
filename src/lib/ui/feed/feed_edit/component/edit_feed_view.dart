@@ -49,7 +49,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
 
       for (var tagData in imgData.imgMemberTagList!) {
         tags.add(Tag(
-          username: tagData.nick!,
+          username: tagData.nick ?? "알 수 없음",
           memberUuid: tagData.memberUuid!,
           position: Offset(tagData.width!, tagData.height!),
           imageIndex: tagData.imgIdx!,
@@ -82,6 +82,8 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
         ref.watch(feedWriteProvider.notifier).state = updatedState;
 
         List<TagImages> initialTagImages = feedDataToPostFeedState(widget.feedData);
+
+        ref.read(feedWriteCurrentTagCountProvider.notifier).state = initialTagImages[0].tag.length;
 
         ref.read(feedWriteProvider.notifier).initializeTags(initialTagImages);
       });

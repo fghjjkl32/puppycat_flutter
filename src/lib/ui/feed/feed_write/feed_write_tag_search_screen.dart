@@ -200,9 +200,9 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                                   context.pop();
                                 },
                                 child: TagUserItemWidget(
-                                  profileImage: lists[index].profileImgUrl!,
-                                  userName: lists[index].nick!,
-                                  content: lists[index].intro! == "" ? "피드.소개글이 없어요".tr() : lists[index].intro!,
+                                  profileImage: lists[index].profileImgUrl,
+                                  userName: lists[index].nick ?? "",
+                                  content: lists[index].intro == "" ? "피드.소개글이 없어요".tr() : lists[index].intro ?? "",
                                   isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
                                 ),
                               );
