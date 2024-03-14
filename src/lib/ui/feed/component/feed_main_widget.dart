@@ -146,8 +146,20 @@ class FeedMainWidget extends ConsumerWidget {
                     final style = kBody14RegularStyle.copyWith(color: kTextPrimary);
                     final maxWidth = constraints.maxWidth;
 
+                    final List<InlineSpan> originalSpans = replaceMentionsWithNicknamesInContent(
+                      feedData.contents!,
+                      feedData.mentionList!,
+                      context,
+                      kBody14RegularStyle.copyWith(color: kTextTagSecondary),
+                      ref,
+                      oldMemberUuid,
+                    );
+
                     final textPainter = TextPainter(
-                      text: TextSpan(text: feedData.contents, style: style),
+                      text: TextSpan(
+                        children: originalSpans,
+                        style: style,
+                      ),
                       maxLines: 2,
                       textDirection: TextDirection.ltr,
                     )..layout(maxWidth: maxWidth);
@@ -160,6 +172,8 @@ class FeedMainWidget extends ConsumerWidget {
                         textDirection: TextDirection.ltr,
                       )..layout();
 
+                      List<InlineSpan> spansToShow;
+
                       // 끝에서 "더보기"를 포함하기 위해 필요한 길이를 계산
                       int endIndex = textPainter
                           .getPositionForOffset(
@@ -167,18 +181,13 @@ class FeedMainWidget extends ConsumerWidget {
                           )
                           .offset;
 
+                      spansToShow = truncateInlineSpans(originalSpans, endIndex);
+
                       return RichText(
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              children: replaceMentionsWithNicknamesInContent(
-                                feedData.contents!.substring(0, endIndex),
-                                feedData.mentionList!,
-                                context,
-                                kBody14RegularStyle.copyWith(color: kTextTagSecondary),
-                                ref,
-                                oldMemberUuid,
-                              ),
+                              children: spansToShow,
                               style: style,
                             ),
                             TextSpan(

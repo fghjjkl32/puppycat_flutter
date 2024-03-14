@@ -31,6 +31,7 @@ import 'package:pet_mobile_social_flutter/providers/restrain/restrain_state_prov
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user_list/favorite_user_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user_list/popular_user_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/ui/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/components/refresh_loading_animation_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/feed_main_widget.dart';
@@ -195,160 +196,166 @@ class PuppyCatMainState extends ConsumerState<PuppyCatMain> with TickerProviderS
     bool isBigDevice = MediaQuery.of(context).size.width >= 345;
     final isLogined = ref.watch(loginStatementProvider);
 
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: isBigDevice
-              ? null
-              : PreferredSize(
-                  preferredSize: const Size.fromHeight(30.0),
-                  child: AppBar(
-                    automaticallyImplyLeading: false,
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.asset(
-                          'assets/image/logo/logo.png',
-                          width: 107,
-                          height: 39,
-                        ),
-                        _buttonWidget(),
-                      ],
-                    ),
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                  ),
-                ),
-          body: SafeArea(
-            bottom: false,
-            child: Consumer(builder: (context, ref, _) {
-              return FutureBuilder(
-                  future: _initTabController(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return const Center(
-                        child: Text('Error'),
-                      );
-                    }
-
-                    if (!snapshot.hasData) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-
-                    return DefaultTabController(
-                      length: isLogined ? 3 : 1,
-                      child: NestedScrollView(
-                        controller: scrollController,
-                        headerSliverBuilder: (context, innerBoxIsScrolled) {
-                          return [
-                            isBigDevice
-                                ? SliverAppBar(
-                                    pinned: true,
-                                    snap: false,
-                                    floating: true,
-                                    expandedHeight: 180.0,
-                                    centerTitle: false,
-                                    leading: null,
-                                    titleSpacing: 0,
-                                    backgroundColor: kPreviousNeutralColor100,
-                                    automaticallyImplyLeading: false,
-                                    title: Row(
-                                      children: [
-                                        const Spacer(),
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 4.0),
-                                          child: _buttonWidget(),
-                                        ),
-                                      ],
-                                    ),
-                                    flexibleSpace: FlexibleSpaceBar(
-                                      titlePadding: EdgeInsets.zero,
-                                      expandedTitleScale: 1.0,
-                                      centerTitle: false,
-                                      collapseMode: CollapseMode.pin,
-                                      title: _buildTabbar(innerBoxIsScrolled),
-                                      background: Container(
-                                        color: kPreviousNeutralColor100,
-                                        child: Stack(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                top: 12,
-                                                left: 16,
-                                              ),
-                                              child: Image.asset(
-                                                'assets/image/logo/logo.png',
-                                                width: 107,
-                                                height: 39,
-                                              ),
-                                            ),
-                                            _buildBackGround(),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : SliverAppBar(
-                                    pinned: true,
-                                    snap: false,
-                                    floating: true,
-                                    expandedHeight: 135.0,
-                                    centerTitle: false,
-                                    leading: null,
-                                    titleSpacing: 0,
-                                    backgroundColor: kPreviousNeutralColor100,
-                                    automaticallyImplyLeading: false,
-                                    flexibleSpace: FlexibleSpaceBar(
-                                      titlePadding: EdgeInsets.zero,
-                                      expandedTitleScale: 1.0,
-                                      centerTitle: false,
-                                      collapseMode: CollapseMode.pin,
-                                      title: _buildTabbar(innerBoxIsScrolled),
-                                      background: Container(
-                                        color: kPreviousNeutralColor100,
-                                        child: Stack(
-                                          children: [
-                                            _buildBackGround(),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                          ];
-                        },
-                        body: Stack(
-                          children: [
-                            TabBarView(
-                              controller: tabController,
-                              children: [
-                                _tab(_recentFeedListPagingController),
-                                if (isLogined) ...[
-                                  _tab(_followFeedListPagingController),
-                                  _tab(_myFeedListPagingController),
-                                ],
-                              ],
-                            ),
-                          ],
-                        ),
+    return WillPopScope(
+      onWillPop: () async {
+        bool backResult = onBackPressed();
+        return await Future.value(backResult);
+      },
+      child: Stack(
+        children: [
+          Scaffold(
+            appBar: isBigDevice
+                ? null
+                : PreferredSize(
+                    preferredSize: const Size.fromHeight(30.0),
+                    child: AppBar(
+                      automaticallyImplyLeading: false,
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Image.asset(
+                            'assets/image/logo/logo.png',
+                            width: 107,
+                            height: 39,
+                          ),
+                          _buttonWidget(),
+                        ],
                       ),
-                    );
-                  });
-            }),
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                    ),
+                  ),
+            body: SafeArea(
+              bottom: false,
+              child: Consumer(builder: (context, ref, _) {
+                return FutureBuilder(
+                    future: _initTabController(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      }
+
+                      if (!snapshot.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
+                      return DefaultTabController(
+                        length: isLogined ? 3 : 1,
+                        child: NestedScrollView(
+                          controller: scrollController,
+                          headerSliverBuilder: (context, innerBoxIsScrolled) {
+                            return [
+                              isBigDevice
+                                  ? SliverAppBar(
+                                      pinned: true,
+                                      snap: false,
+                                      floating: true,
+                                      expandedHeight: 180.0,
+                                      centerTitle: false,
+                                      leading: null,
+                                      titleSpacing: 0,
+                                      backgroundColor: kPreviousNeutralColor100,
+                                      automaticallyImplyLeading: false,
+                                      title: Row(
+                                        children: [
+                                          const Spacer(),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4.0),
+                                            child: _buttonWidget(),
+                                          ),
+                                        ],
+                                      ),
+                                      flexibleSpace: FlexibleSpaceBar(
+                                        titlePadding: EdgeInsets.zero,
+                                        expandedTitleScale: 1.0,
+                                        centerTitle: false,
+                                        collapseMode: CollapseMode.pin,
+                                        title: _buildTabbar(innerBoxIsScrolled),
+                                        background: Container(
+                                          color: kPreviousNeutralColor100,
+                                          child: Stack(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                  top: 12,
+                                                  left: 16,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/image/logo/logo.png',
+                                                  width: 107,
+                                                  height: 39,
+                                                ),
+                                              ),
+                                              _buildBackGround(),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : SliverAppBar(
+                                      pinned: true,
+                                      snap: false,
+                                      floating: true,
+                                      expandedHeight: 135.0,
+                                      centerTitle: false,
+                                      leading: null,
+                                      titleSpacing: 0,
+                                      backgroundColor: kPreviousNeutralColor100,
+                                      automaticallyImplyLeading: false,
+                                      flexibleSpace: FlexibleSpaceBar(
+                                        titlePadding: EdgeInsets.zero,
+                                        expandedTitleScale: 1.0,
+                                        centerTitle: false,
+                                        collapseMode: CollapseMode.pin,
+                                        title: _buildTabbar(innerBoxIsScrolled),
+                                        background: Container(
+                                          color: kPreviousNeutralColor100,
+                                          child: Stack(
+                                            children: [
+                                              _buildBackGround(),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                            ];
+                          },
+                          body: Stack(
+                            children: [
+                              TabBarView(
+                                controller: tabController,
+                                children: [
+                                  _tab(_recentFeedListPagingController),
+                                  if (isLogined) ...[
+                                    _tab(_followFeedListPagingController),
+                                    _tab(_myFeedListPagingController),
+                                  ],
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    });
+              }),
+            ),
           ),
-        ),
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          height: MediaQuery.of(context).padding.top,
-          child: GestureDetector(
-            excludeFromSemantics: true,
-            onTap: _handleStatusBarTap,
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: MediaQuery.of(context).padding.top,
+            child: GestureDetector(
+              excludeFromSemantics: true,
+              onTap: _handleStatusBarTap,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

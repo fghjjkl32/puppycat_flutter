@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -164,6 +165,9 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                         ),
                         child: TextField(
                           readOnly: !isLogined ? true : false,
+                          onTap: () {
+                            if (!isLogined) context.push("/home/login");
+                          },
                           focusNode: focusNode,
                           controller: controller,
                           onChanged: (text) {

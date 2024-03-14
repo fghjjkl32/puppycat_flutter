@@ -9,7 +9,6 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -70,7 +69,7 @@ class LoginScreen extends ConsumerWidget {
 
     print('current route 77 : ${ref.read(routerProvider).location()}');
 
-    return DefaultOnWillPopScope(
+    return WillPopScope(
       onWillPop: () async {
         print('loginscreen poppop');
         if (context.canPop()) {
