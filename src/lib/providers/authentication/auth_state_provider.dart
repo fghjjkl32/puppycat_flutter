@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/models/sign_up/sign_up_auth_model.dart';
 import 'package:pet_mobile_social_flutter/providers/api_error/api_error_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/dio/dio_wrap.dart';
@@ -13,7 +14,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_state_provider.g.dart';
 
-final passUrlProvider = StateProvider<String>((ref) => 'about:blank');
 final authModelProvider = StateProvider<SignUpAuthModel?>((ref) => null);
 // final tossTxIdProvider = StateProvider<String>((ref) => "");
 // final tossAccessTokenProvider = StateProvider<String>((ref) => "");
@@ -30,13 +30,12 @@ class AuthState extends _$AuthState {
   void getPassAuthUrl({required bool isEditProfile}) async {
     try {
       String passUrl = await _authRepository.getPassAuthUrl(isEditProfile: isEditProfile);
-      ref.read(passUrlProvider.notifier).state = passUrl;
+
+      final url = Uri.encodeComponent(passUrl);
+      ref.read(routerProvider).push('/webview/$url');
     } on APIException catch (apiException) {
       await ref.read(aPIErrorStateProvider.notifier).apiErrorProc(apiException);
-      ref.read(passUrlProvider.notifier).state = 'about:blank';
-    } catch (e) {
-      ref.read(passUrlProvider.notifier).state = 'about:blank';
-    }
+    } catch (e) {}
   }
 
   void setPassAuthData(String data) {

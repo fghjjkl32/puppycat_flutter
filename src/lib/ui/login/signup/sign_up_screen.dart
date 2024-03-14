@@ -16,8 +16,6 @@ import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_p
 import 'package:pet_mobile_social_flutter/ui/components/dialog/custom_dialog.dart';
 import 'package:pet_mobile_social_flutter/ui/login/signup/policy_checkbox_widget.dart';
 
-final _formKey = GlobalKey<FormState>();
-
 final checkButtonProvider = StateProvider((ref) => false);
 
 class SignUpScreen extends ConsumerStatefulWidget {
@@ -30,6 +28,8 @@ class SignUpScreen extends ConsumerStatefulWidget {
 }
 
 class SignUpScreenState extends ConsumerState<SignUpScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   TextEditingController nickController = TextEditingController();
   final RegExp _letterRegExp = RegExp(r'[가-힣a-zA-Z0-9_]');
   final FocusNode _nickFocusNode = FocusNode();
@@ -489,16 +489,6 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
         isValidNickName = true;
       }
     });
-
-    ref.listen(passUrlProvider, (previous, next) {
-      if (next == 'about:blank') {
-        return;
-      }
-      final url = Uri.encodeComponent(next);
-      // context.go('/webview/$url');
-      context.push('/webview/$url');
-    });
-
     ref.listen(signUpStateProvider, (previous, next) {
       if (next == SignUpStatus.failedAuth) {
         showDialog(

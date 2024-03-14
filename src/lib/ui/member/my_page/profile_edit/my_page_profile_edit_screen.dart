@@ -166,11 +166,6 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(passUrlProvider, (previous, next) {
-      final url = Uri.encodeComponent(next);
-      context.push('/webview/$url');
-    });
-
     final nickProvider = ref.watch(nickNameProvider);
     final myInfo = ref.watch(myInfoStateProvider);
     final UserInformationItemModel editMyInfoModel = ref.watch(editStateProvider).myInfoModel!;
