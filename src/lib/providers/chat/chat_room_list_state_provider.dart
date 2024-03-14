@@ -39,7 +39,6 @@ class ChatRoomListState extends _$ChatRoomListState {
     chatRoomList = chatRoomList.map((e) => e.copyWith(regDate: '${e.regDate}Z')).toList(); //끝에 Z를 붙여야 UTC로 인식
 
     final pagination = chatRoomDataListModel.params.pagination;
-
     _lastPage = pagination?.totalPageCount! ?? 0;
 
     return chatRoomList;
@@ -57,6 +56,14 @@ class ChatRoomListState extends _$ChatRoomListState {
       // List<ChatRoomModel> chatRoomList = chatRoomDataListModel.list;
       // chatRoomList = chatRoomList.map((e) => e.copyWith(regDate: '${e.regDate}Z')).toList();
       List<ChatRoomModel> chatRoomList = await _getChatRoomList(pageKey);
+
+      chatRoomList = chatRoomList.map((e) {
+        if (e.userState == 0) {
+          e = e.copyWith(nick: e.nick.isEmpty ? e.nick : '알 수 없음');
+        }
+
+        return e;
+      }).toList();
 
       print('chatRoomList $chatRoomList');
 
