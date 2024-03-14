@@ -1,4 +1,5 @@
 import 'package:bubble/bubble.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -117,8 +118,8 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
               GestureDetector(
                 onTap: () {
                   myInfo.uuid == widget.memberUuid
-                      ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
-                      : context.push("/member/userPage/${widget.name}/${widget.memberUuid}/${widget.oldMemberUuid}");
+                      ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid, "feedContentIdx": widget.contentIdx})
+                      : context.push("/member/userPage", extra: {"nick": widget.name, "memberUuid": widget.memberUuid, "oldMemberUuid": widget.oldMemberUuid, "feedContentIdx": widget.contentIdx});
                 },
                 child: getProfileAvatar(widget.profileImage ?? '', 30, 30),
               ),
@@ -138,7 +139,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                         },
                         child: Center(
                           child: Text(
-                            "이전 답글 더 보기",
+                            "댓글.이전 답글 더 보기".tr(),
                             style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ),
@@ -156,7 +157,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                         }
                       },
                       child: Bubble(
-                        isComment: true,
+                        // isComment: true,
                         radius: const Radius.circular(10),
                         elevation: 0,
                         alignment: Alignment.topLeft,
@@ -174,8 +175,9 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                   child: GestureDetector(
                                     onTap: () {
                                       myInfo.uuid == widget.memberUuid
-                                          ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
-                                          : context.push("/member/userPage/${widget.name}/${widget.memberUuid}/${widget.oldMemberUuid}");
+                                          ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid, "feedContentIdx": widget.contentIdx})
+                                          : context.push("/member/userPage",
+                                              extra: {"nick": widget.name, "memberUuid": widget.memberUuid, "oldMemberUuid": widget.oldMemberUuid, "feedContentIdx": widget.contentIdx});
                                     },
                                     child: Row(
                                       children: [
@@ -221,7 +223,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                       icon: const Icon(
                                                         Puppycat_social.icon_modify,
                                                       ),
-                                                      title: '수정하기',
+                                                      title: '댓글.수정하기'.tr(),
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                                       onTap: () async {
                                                         if (widget.onTapEditButton != null) {
@@ -234,7 +236,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                         Puppycat_social.icon_delete_small,
                                                         color: kPreviousErrorColor,
                                                       ),
-                                                      title: '삭제하기',
+                                                      title: '댓글.삭제하기'.tr(),
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                                       onTap: () async {
                                                         if (widget.onTapRemoveButton != null) {
@@ -253,7 +255,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                       icon: const Icon(
                                                         Puppycat_social.icon_user_block_ac,
                                                       ),
-                                                      title: '차단하기',
+                                                      title: '댓글.차단하기'.tr(),
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                                       onTap: () async {
                                                         context.pop();
@@ -269,7 +271,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                                       child: Column(
                                                                         children: [
                                                                           Text(
-                                                                            "‘${widget.name}’님을\n차단할까요?",
+                                                                            "댓글.차단 제목".tr(args: [widget.name]),
                                                                             style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                                                             textAlign: TextAlign.center,
                                                                           ),
@@ -277,7 +279,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                                             height: 8,
                                                                           ),
                                                                           Text(
-                                                                            "차단하게 되면 더 이상 서로의 피드를 보거나\n메시지 등을 보낼 수 없어요.\n차단 여부는 상대방에게 알리지 않아요.\n차단 풀기는 [마이페이지→설정→차단 유저 관리]에서\n얼마든지 가능해요.",
+                                                                            "댓글.차단 내용".tr(),
                                                                             style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                                             textAlign: TextAlign.center,
                                                                           ),
@@ -296,7 +298,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
 
                                                                         toast(
                                                                           context: context,
-                                                                          text: "'${widget.name.length > 8 ? '${widget.name.substring(0, 8)}...' : widget.name}'님을 차단했어요.",
+                                                                          text: "댓글.차단 완료".tr(args: [widget.name.length > 8 ? '${widget.name.substring(0, 8)}...' : widget.name]),
                                                                           type: ToastType.purple,
                                                                         );
                                                                       }
@@ -305,7 +307,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                                       context.pop();
                                                                     },
                                                                     confirmWidget: Text(
-                                                                      "차단하기",
+                                                                      "댓글.차단하기".tr(),
                                                                       style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
                                                                     ),
                                                                   );
@@ -318,7 +320,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                                         Puppycat_social.icon_report1,
                                                         color: kPreviousErrorColor,
                                                       ),
-                                                      title: '신고하기',
+                                                      title: '댓글.신고하기'.tr(),
                                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                                       onTap: () {
                                                         context.pop();
@@ -441,7 +443,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                 ),
                               ),
                               Text(
-                                '답글쓰기',
+                                '댓글.답글쓰기'.tr(),
                                 style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ],
@@ -469,7 +471,7 @@ class CommentDetailItemWidgetState extends ConsumerState<CommentDetailItemWidget
                                 ),
                               ),
                               Text(
-                                "답글 더 보기",
+                                "댓글.답글 더 보기".tr(),
                                 style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ],

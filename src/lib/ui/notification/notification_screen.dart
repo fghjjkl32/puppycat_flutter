@@ -14,7 +14,6 @@ import 'package:pet_mobile_social_flutter/controller/permission/permissions.dart
 import 'package:pet_mobile_social_flutter/models/notification/notification_list_item_model.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
-import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/notification/notification_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/setting/notice_list_state_provider.dart';
@@ -83,8 +82,8 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "알림함",
+          title: Text(
+            "알림함.알림함".tr(),
           ),
           leading: IconButton(
             onPressed: () {
@@ -116,32 +115,40 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "필수 혜택 정보를 알려 드릴까요?",
-                                  style: kBody11RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
+                                  "알림함.필수 혜택 정보를 알려 드릴까요?".tr(),
+                                  style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                                 const SizedBox(
                                   height: 2,
                                 ),
                                 Text(
-                                  "'${myInfo.nick!.length > 8 ? '${myInfo.nick?.substring(0, 8)}...' : myInfo.nick}'님에게 꼭 필요한 정보만 보내 드릴게요.",
-                                  style: kBody11RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
+                                  "알림함.님에게 꼭 필요한 정보만 보내 드릴게요".tr(args: ['${myInfo.nick!.length > 8 ? '${myInfo.nick?.substring(0, 8)}...' : myInfo.nick}']),
+                                  style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor, height: 1.4, letterSpacing: 0.2),
                                 ),
                               ],
                             ),
                             FlutterSwitch(
                               padding: 4,
-                              width: 38,
-                              height: 20,
+                              width: 50,
+                              height: 30,
                               activeColor: Theme.of(context).primaryColor,
                               inactiveColor: kPreviousNeutralColor500,
-                              toggleSize: 12.0,
+                              toggleSize: 24.0,
                               value: switchState['main_2'] == 1,
                               borderRadius: 50.0,
                               onToggle: (value) async {
                                 if (value) {
-                                  toast(context: context, text: '광고성 정보 수신을 ‘동의’했어요.', type: ToastType.purple, secondText: "수신 동의일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                  toast(
+                                      context: context,
+                                      text: '알림함.광고성 정보 수신을 ‘동의’했어요'.tr(),
+                                      type: ToastType.purple,
+                                      secondText: "알림함.수신 동의일".tr(args: [(DateFormat('yyyy-MM-dd').format(DateTime.now()))]));
                                 } else {
-                                  toast(context: context, text: '광고성 정보 수신을 ‘거부’했어요.', type: ToastType.grey, secondText: "수신 거부일: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}");
+                                  toast(
+                                      context: context,
+                                      text: '알림함.광고성 정보 수신을 ‘거부’했어요'.tr(),
+                                      type: ToastType.grey,
+                                      secondText: "알림함.수신 거부일".tr(args: [(DateFormat('yyyy-MM-dd').format(DateTime.now()))]));
                                 }
 
                                 _onTap('main_2', value);
@@ -210,7 +217,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                           : const BoxDecoration(),
                       child: Text(
                         itemTitle,
-                        style: kButton14BoldStyle.copyWith(
+                        style: kTitle16BoldStyle.copyWith(
                           color: selected ? kPreviousTextTitleColor : kPreviousNeutralColor500,
                         ),
                       ),
@@ -243,7 +250,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                       height: 12,
                                     ),
                                     Text(
-                                      '알림이 없어요.',
+                                      '알림함.알림이 없어요'.tr(),
                                       textAlign: TextAlign.center,
                                       style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                     ),
@@ -262,12 +269,10 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               profileImgUrl: (item.senderInfo?.isNotEmpty ?? false) ? item.senderInfo!.first.profileImgUrl : '',
                               isFollowed: item.followState == 1 ? true : false,
                               onTapFollowButton: (isFollowed) {
-                                if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                  if (isFollowed) {
-                                    ref.read(notificationListStateProvider.notifier).unSetFollow(item.senderUuid);
-                                  } else {
-                                    ref.read(notificationListStateProvider.notifier).setFollow(item.senderUuid);
-                                  }
+                                if (isFollowed) {
+                                  ref.read(notificationListStateProvider.notifier).unSetFollow(item.senderUuid);
+                                } else {
+                                  ref.read(notificationListStateProvider.notifier).setFollow(item.senderUuid);
                                 }
                               },
                               onTapProfileButton: () {
@@ -275,7 +280,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                     ? context.push("/member/myPage")
                                     : item.senderInfo?.first.nick == null
                                         ? context.push("/member/userUnknown")
-                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
+                                        : context.push("/member/userPage", extra: {"nick": item.senderInfo?.first.nick, "memberUuid": item.senderUuid, "oldMemberUuid": item.senderUuid});
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.new_contents) ||
@@ -297,11 +302,13 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
 
                                 Map<String, dynamic> extraMap = {
                                   'firstTitle': 'nickname',
-                                  'secondTitle': '피드',
+                                  'secondTitle': '알림함.피드'.tr(),
                                   'memberUuid': myInfo.uuid,
                                   'contentIdx': item.contentsIdx,
                                   'contentType': 'notificationContent',
                                 };
+
+                                ref.read(feedDetailParameterProvider.notifier).state = extraMap;
 
                                 await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('notificationContent', item.contentsIdx).then((value) {
                                   if (value == null) {
@@ -312,25 +319,24 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                 });
                               },
                               onLikeTap: (isLiked) {
-                                if (!ref.watch(likeApiIsLoadingStateProvider)) {
-                                  if (isLiked) {
-                                    ref.read(notificationListStateProvider.notifier).unSetFeedLike(item.contentsIdx);
-                                  } else {
-                                    ref.read(notificationListStateProvider.notifier).setFeedLike(item.contentsIdx);
-                                  }
-                                }
+                                ref.read(feedListStateProvider.notifier).toggleLike(
+                                      contentIdx: item.contentsIdx,
+                                    );
                               },
                               onCommentTap: () async {
                                 ///TODO
                                 ///route 정리 필요
                                 Map<String, dynamic> extraMap = {
                                   'firstTitle': 'nickname',
-                                  'secondTitle': '피드',
+                                  'secondTitle': '알림함.피드'.tr(),
                                   'memberUuid': myInfo.uuid,
                                   'contentIdx': item.contentsIdx,
                                   'contentType': 'notificationContent',
                                   'isRouteComment': true,
                                 };
+
+                                ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                                 await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('notificationContent', item.contentsIdx).then((value) {
                                   if (value == null) {
                                     return;
@@ -346,7 +352,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                     ? context.push("/member/myPage")
                                     : item.senderInfo?.first.nick == null
                                         ? context.push("/member/userUnknown")
-                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
+                                        : context.push("/member/userPage", extra: {"nick": item.senderInfo?.first.nick, "memberUuid": item.senderUuid, "oldMemberUuid": item.senderUuid});
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.new_comment) ||
@@ -366,13 +372,16 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                               onTap: () async {
                                 Map<String, dynamic> extraMap = {
                                   'firstTitle': 'nickname',
-                                  'secondTitle': '피드',
+                                  'secondTitle': '알림함.피드'.tr(),
                                   'memberUuid': myInfo.uuid,
                                   'contentIdx': item.contentsIdx,
                                   'contentType': 'notificationContent',
                                   'isRouteComment': true,
                                   'focusIdx': item.commentIdx,
                                 };
+
+                                ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                                 await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('notificationContent', item.contentsIdx).then((value) {
                                   // context.push("/feed/detail/nickname/피드/$loginMemberIdx/${item.contentsIdx}/notificationContent", extra: {
                                   //   "isRouteComment": true,
@@ -389,7 +398,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                     ? context.push("/member/myPage")
                                     : item.senderInfo?.first.nick == null
                                         ? context.push("/member/userUnknown")
-                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
+                                        : context.push("/member/userPage", extra: {"nick": item.senderInfo?.first.nick, "memberUuid": item.senderUuid, "oldMemberUuid": item.senderUuid});
                               },
                             );
                           } else if (item.subType == describeEnum(NotiSubType.notice) || item.subType == describeEnum(NotiSubType.event)) {
@@ -411,7 +420,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                                     ? context.push("/member/myPage")
                                     : item.senderInfo?.first.nick == null
                                         ? context.push("/member/userUnknown")
-                                        : context.push("/member/userPage/${item.senderInfo?.first.nick}/${item.senderUuid}/${item.senderUuid}");
+                                        : context.push("/member/userPage", extra: {"nick": item.senderInfo?.first.nick, "memberUuid": item.senderUuid, "oldMemberUuid": item.senderUuid});
                               },
                             );
                           } else {
@@ -434,7 +443,7 @@ class NotificationScreenState extends ConsumerState<NotificationScreen> with Sin
                           child: const Divider(),
                         ),
                         Text(
-                          "최근 30일간의 알림만 볼 수 있어요.",
+                          "알림함.최근 30일간의 알림만 볼 수 있어요".tr(),
                           style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ],

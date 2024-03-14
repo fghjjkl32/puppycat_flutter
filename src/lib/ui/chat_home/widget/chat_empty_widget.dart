@@ -50,13 +50,6 @@ class ChatEmptyWidgetState extends ConsumerState<ChatEmptyWidget> {
         ),
         Row(
           children: [
-            ElevatedButton(
-              onPressed: () async {
-                // final channel = await ref.read(chatBroadCastStateProvider);
-                // channel.sendBroadCast('testMsg');
-              },
-              child: const Text('test'),
-            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),

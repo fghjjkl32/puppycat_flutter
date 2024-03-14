@@ -1,10 +1,10 @@
 import 'package:channel_talk_flutter/channel_talk_flutter.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/package_info/package_info_util.dart';
@@ -71,8 +71,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "설정",
+          title: Text(
+            "설정.설정".tr(),
           ),
           leading: IconButton(
             onPressed: () {
@@ -91,7 +91,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 Puppycat_social.icon_bell,
                 size: 20,
               ),
-              title: '알림',
+              title: '설정.알림'.tr(),
               onPressed: () async {
                 print('isLogined $isLogined');
                 if (await Permissions.getNotificationPermissionState()) {
@@ -107,7 +107,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               child: Column(
                                 children: [
                                   Text(
-                                    "푸시 알림을 받으려면\n알림 접근 권한이 필요해요.",
+                                    "설정.푸시 알림 권한".tr(),
                                     style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                     textAlign: TextAlign.center,
                                   ),
@@ -115,7 +115,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                                     height: 4,
                                   ),
                                   Text(
-                                    "언제든지 설정을 바꿀 수 있어요.",
+                                    "설정.언제든지 설정을 바꿀 수 있어요".tr(),
                                     style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     textAlign: TextAlign.center,
                                   ),
@@ -130,11 +130,11 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               context.pop();
                             },
                             confirmWidget: Text(
-                              "설정 열기",
+                              "설정.설정 열기".tr(),
                               style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                             ),
                             cancelWidget: Text(
-                              "닫기",
+                              "설정.닫기".tr(),
                               style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ));
                       },
@@ -152,7 +152,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 Puppycat_social.icon_user_block_ac,
                 size: 20,
               ),
-              title: '차단 유저 관리',
+              title: '설정.차단 유저 관리'.tr(),
               onPressed: () {
                 !isLogined ? context.push("/home/login") : context.push("/setting/blockedUser");
               },
@@ -173,7 +173,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                     width: 10,
                   ),
                   Text(
-                    "이용약관",
+                    "설정.이용약관".tr(),
                     style: kBody14BoldStyle.copyWith(
                       color: kPreviousTextSubTitleColor,
                     ),
@@ -242,7 +242,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                     width: 10,
                   ),
                   Text(
-                    "기타",
+                    "설정.기타".tr(),
                     style: kBody14BoldStyle.copyWith(
                       color: kPreviousTextSubTitleColor,
                     ),
@@ -259,22 +259,22 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       Padding(
                         padding: const EdgeInsets.only(top: 20.0),
                         child: Text(
-                          '앱 권한 설정',
+                          '설정.앱 권한 설정'.tr(),
                           style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0, bottom: 4.0),
                         child: Text(
-                          '원활한 퍼피캣 앱 이용을 위해 접근 권한을 허용해 주세요.',
-                          style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                          '설정.원활한 퍼피캣 앱 이용을 위해 접근 권한을 허용해 주세요'.tr(),
+                          style: kTitle14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                           textAlign: TextAlign.center,
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: Text(
-                          '퍼피캣 이용에 꼭 필요한 접근 권한은\n 허용하지 않아도 퍼피캣을 이용하실 수 있지만,\n일부 서비스는 이용이 어려울 수 있어요.',
+                          '설정.퍼피캣 권한 안내'.tr(),
                           style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                           textAlign: TextAlign.center,
                         ),
@@ -284,42 +284,42 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         child: Divider(),
                       ),
                       Text(
-                        "카메라 (필수)",
+                        "설정.카메라 (필수)".tr(),
                         style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       const SizedBox(
                         height: 3,
                       ),
                       Text(
-                        "사진 촬영을 위해 필요한 권한이에요.",
+                        "설정.사진 촬영을 위해 필요한 권한이에요".tr(),
                         style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       Text(
-                        "저장 공간 (필수)",
+                        "설정.저장 공간 (필수)".tr(),
                         style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       const SizedBox(
                         height: 3,
                       ),
                       Text(
-                        "사진, 미디어, 파일 등을 사용 하기 위해 필요한 권한이에요.",
+                        "설정.사진, 미디어, 파일 등을 사용 하기 위해 필요한 권한이에요".tr(),
                         style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       Text(
-                        "알림 (필수)",
+                        "설정.알림 (필수)".tr(),
                         style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       const SizedBox(
                         height: 3,
                       ),
                       Text(
-                        "푸시 알림 수신을 위해 필요한 권한이에요.",
+                        "설정.푸시 알림 수신을 위해 필요한 권한이에요".tr(),
                         style: kBody12RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                       const SizedBox(
@@ -356,8 +356,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                '앱 권한 설정하러 가기',
-                                style: kBody14BoldStyle.copyWith(
+                                '설정.앱 권한 설정하러 가기'.tr(),
+                                style: kBody16MediumStyle.copyWith(
                                   color: kPreviousNeutralColor100,
                                 ),
                               ),
@@ -375,8 +375,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "앱 권한 설정",
-                      style: kBody13RegularStyle.copyWith(
+                      "설정.앱 권한 설정".tr(),
+                      style: kBody14RegularStyle.copyWith(
                         color: kPreviousTextSubTitleColor,
                       ),
                     ),
@@ -398,7 +398,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       content: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 24.0),
                         child: Text(
-                          "저장 공간을 정리할까요?",
+                          "설정.저장 공간을 정리할까요?".tr(),
                           style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ),
@@ -410,7 +410,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         context.pop();
                       },
                       confirmWidget: Text(
-                        "정리하기",
+                        "설정.정리하기".tr(),
                         style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                       ),
                     );
@@ -423,8 +423,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "저장 공간 정리",
-                      style: kBody13RegularStyle.copyWith(
+                      "설정.저장 공간 정리".tr(),
+                      style: kBody14RegularStyle.copyWith(
                         color: kPreviousTextSubTitleColor,
                       ),
                     ),
@@ -444,8 +444,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "최초 설치일",
-                    style: kBody13RegularStyle.copyWith(
+                    "설정.최초 설치일".tr(),
+                    style: kBody14RegularStyle.copyWith(
                       color: kPreviousTextSubTitleColor,
                     ),
                   ),
@@ -464,8 +464,8 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "앱 버전",
-                    style: kBody13RegularStyle.copyWith(
+                    "설정.앱 버전".tr(),
+                    style: kBody14RegularStyle.copyWith(
                       color: kPreviousTextSubTitleColor,
                     ),
                   ),
@@ -495,13 +495,13 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                         // lastestBuildVersion == GetIt.I<PackageInformationUtil>().appVersion
                         isOldVersion
                             ? Text(
-                                "구 버전 사용 중",
+                                "설정.구 버전 사용 중".tr(),
                                 style: kBadge10MediumStyle.copyWith(
                                   color: kPreviousTextBodyColor,
                                 ),
                               )
                             : Text(
-                                "최신 버전",
+                                "설정.최신 버전".tr(),
                                 style: kBadge10MediumStyle.copyWith(
                                   color: kPreviousTextBodyColor,
                                 ),
@@ -537,7 +537,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                     width: 10,
                   ),
                   Text(
-                    "고객지원",
+                    "설정.고객지원".tr(),
                     style: kBody14BoldStyle.copyWith(
                       color: kPreviousTextSubTitleColor,
                     ),
@@ -580,7 +580,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               height: 4,
                             ),
                             Text(
-                              "자주하는 질문",
+                              "설정.자주하는 질문".tr(),
                               style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
                           ],
@@ -613,7 +613,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               height: 4,
                             ),
                             Text(
-                              "1:1 채널톡",
+                              "설정.1:1 채널톡".tr(),
                               style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
                           ],
@@ -635,7 +635,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                               height: 4,
                             ),
                             Text(
-                              "공지사항",
+                              "설정.공지사항".tr(),
                               style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                             ),
                           ],
@@ -658,7 +658,7 @@ class MyPageSettingScreenState extends ConsumerState<MyPageSettingScreen> {
                       padding: const EdgeInsets.only(top: 60.0, bottom: 20),
                       child: Center(
                         child: Text(
-                          "로그아웃",
+                          "설정.로그아웃".tr(),
                           style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ),

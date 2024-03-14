@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -45,7 +46,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
     Future(() {
       final currentFollowState = ref.read(followUserStateProvider)[widget.followUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.followUuid, widget.isFollow);
+        ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followUuid, followState: widget.isFollow, isActionButton: false);
       }
     });
   }
@@ -58,7 +59,10 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
 
     return InkWell(
       onTap: () {
-        myInfo.uuid == widget.followUuid ? context.push("/member/myPage") : context.push("/member/userPage/${widget.userName}/${widget.followUuid}/${widget.oldMemberUuid}");
+        myInfo.uuid == widget.followUuid
+            ? context.push("/member/myPage")
+            : context.push("/member/userPage", extra: {"nick": widget.userName, "memberUuid": widget.followUuid, "oldMemberUuid": widget.oldMemberUuid});
+
         //TODO
         //Route 다시
       },
@@ -145,20 +149,12 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                     return isFollow
                         ? GestureDetector(
                             onTap: () async {
-                              if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                if (!isLogined) {
-                                  context.push("/home/login");
-                                } else {
-                                  final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                        followUuid: widget.followUuid,
-                                      );
-
-                                  if (result.result) {
-                                    setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followUuid, false);
-                                    });
-                                  }
-                                }
+                              if (!isLogined) {
+                                context.push("/home/login");
+                              } else {
+                                setState(() {
+                                  ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followUuid, followState: false, isActionButton: true);
+                                });
                               }
                             },
                             child: Container(
@@ -172,7 +168,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                               ),
                               child: Center(
                                 child: Text(
-                                  "팔로잉",
+                                  "회원.팔로잉".tr(),
                                   style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                                 ),
                               ),
@@ -180,20 +176,12 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                           )
                         : GestureDetector(
                             onTap: () async {
-                              if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                if (!isLogined) {
-                                  context.push("/home/login");
-                                } else {
-                                  final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                        followUuid: widget.followUuid,
-                                      );
-
-                                  if (result.result) {
-                                    setState(() {
-                                      ref.read(followUserStateProvider.notifier).setFollowState(widget.followUuid, true);
-                                    });
-                                  }
-                                }
+                              if (!isLogined) {
+                                context.push("/home/login");
+                              } else {
+                                setState(() {
+                                  ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followUuid, followState: true, isActionButton: true);
+                                });
                               }
                             },
                             child: Container(
@@ -207,7 +195,7 @@ class FollowingItemWidgetState extends ConsumerState<FollowingItemWidget> {
                               ),
                               child: Center(
                                 child: Text(
-                                  "팔로우",
+                                  "회원.팔로우".tr(),
                                   style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                 ),
                               ),

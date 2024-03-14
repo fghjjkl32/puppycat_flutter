@@ -35,7 +35,7 @@ class AdminSettingScreenState extends ConsumerState<AdminSettingScreen> {
 
     TokenController.clearTokens();
     print('myInfo $myInfo / isLogined $isLogined');
-    context.pushReplacementNamed("loginScreen");
+    context.goNamed("login");
     // else {
     //   if(_preRunMode == _selectMode) {
     //     ref.read(loginStateProvider.notifier).logout(

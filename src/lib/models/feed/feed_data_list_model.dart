@@ -18,6 +18,8 @@ class FeedDataListModel with _$FeedDataListModel {
     @Default(false) bool isLoadMoreError,
     @Default(false) bool isLoadMoreDone,
     @Default(0) int totalCount,
+    String? memberUuid,
+    String? nick,
   }) = _FeedDataListModel;
 
   factory FeedDataListModel.fromJson(Map<String, dynamic> json) => _$FeedDataListModelFromJson(json);

@@ -1,12 +1,14 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
+import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user/user_model.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
-import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -67,7 +69,7 @@ class LoginScreen extends ConsumerWidget {
 
     print('current route 77 : ${ref.read(routerProvider).location()}');
 
-    return DefaultOnWillPopScope(
+    return WillPopScope(
       onWillPop: () async {
         print('loginscreen poppop');
         if (context.canPop()) {
@@ -81,15 +83,15 @@ class LoginScreen extends ConsumerWidget {
         appBar: AppBar(
           // systemOverlayStyle: SystemUiOverlayStyle.dark,
           automaticallyImplyLeading: false,
-          title: Align(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                icon: Image.asset('assets/image/common/close.png'),
-                splashRadius: 20,
-                onPressed: () {
-                  context.pushReplacement("/home");
-                },
-              )),
+          leading: IconButton(
+            onPressed: () {
+              context.pushReplacement("/home");
+            },
+            icon: const Icon(
+              Puppycat_social.icon_close,
+              size: 40,
+            ),
+          ),
           backgroundColor: Colors.transparent,
         ),
         body: Center(
@@ -102,9 +104,9 @@ class LoginScreen extends ConsumerWidget {
                 height: 156,
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 12.0, bottom: 94),
+                padding: const EdgeInsets.only(top: 12.0, bottom: 84),
                 child: Text(
-                  'Close to you PUPPCAT\n더 가깝고🐱 더 사랑스럽개🐶',
+                  '로그인.인트로 문구'.tr(),
                   style: kTitle18BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4),
                   textAlign: TextAlign.center,
                 ),
@@ -122,21 +124,25 @@ class LoginScreen extends ConsumerWidget {
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                         ),
+                        elevation: MaterialStateProperty.all<double>(0),
                         backgroundColor: MaterialStateProperty.all<Color>(kKakaoLoginColor),
                       ),
                       onPressed: () {
                         ref.read(loginStateProvider.notifier).login(provider: 'kakao');
                       },
-                      label: Text(
-                        "카카오로 계속하기",
-                        style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
+                      label: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(
+                          "로그인.카카오로 계속하기".tr(),
+                          style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
+                        ),
                       ),
                       icon: Image.asset(
                         'assets/image/loginScreen/kakao_icon.png',
                         height: 20,
                         width: 20,
                       ),
-                    ),
+                    ).throttle(),
                   ),
                   SizedBox(
                     width: 264,
@@ -147,20 +153,24 @@ class LoginScreen extends ConsumerWidget {
                           RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                         ),
                         backgroundColor: MaterialStateProperty.all<Color>(kNaverLoginColor),
+                        elevation: MaterialStateProperty.all<double>(0),
                       ),
                       onPressed: () {
                         ref.read(loginStateProvider.notifier).login(provider: 'naver');
                       },
-                      label: Text(
-                        "네이버로 계속하기",
-                        style: kButton14MediumStyle.copyWith(color: kPreviousNeutralColor100),
+                      label: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(
+                          "로그인.네이버로 계속하기".tr(),
+                          style: kButton14MediumStyle.copyWith(color: kPreviousNeutralColor100),
+                        ),
                       ),
                       icon: Image.asset(
                         'assets/image/loginScreen/naver_icon.png',
                         height: 20,
                         width: 20,
                       ),
-                    ),
+                    ).throttle(),
                   ),
                   SizedBox(
                     width: 264,
@@ -170,6 +180,7 @@ class LoginScreen extends ConsumerWidget {
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                         ),
+                        elevation: MaterialStateProperty.all<double>(0),
                         backgroundColor: MaterialStateProperty.all<Color>(kGoogleLoginColor),
                         side: MaterialStateProperty.all<BorderSide>(
                           const BorderSide(
@@ -181,16 +192,19 @@ class LoginScreen extends ConsumerWidget {
                       onPressed: () {
                         ref.read(loginStateProvider.notifier).login(provider: 'google');
                       },
-                      label: Text(
-                        "구글로 계속하기",
-                        style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
+                      label: Padding(
+                        padding: const EdgeInsets.only(left: 9.0),
+                        child: Text(
+                          "로그인.구글로 계속하기".tr(),
+                          style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
+                        ),
                       ),
                       icon: Image.asset(
                         'assets/image/loginScreen/google_icon.png',
                         height: 20,
                         width: 20,
                       ),
-                    ),
+                    ).throttle(),
                   ),
                   SizedBox(
                     width: 264,
@@ -200,21 +214,25 @@ class LoginScreen extends ConsumerWidget {
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                         ),
+                        elevation: MaterialStateProperty.all<double>(0),
                         backgroundColor: MaterialStateProperty.all<Color>(kAppleLoginColor),
                       ),
                       onPressed: () async {
                         ref.read(loginStateProvider.notifier).login(provider: 'apple');
                       },
-                      label: Text(
-                        "애플로 계속하기",
-                        style: kButton14MediumStyle.copyWith(color: kPreviousNeutralColor100),
+                      label: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(
+                          "로그인.애플로 계속하기".tr(),
+                          style: kButton14MediumStyle.copyWith(color: kPreviousNeutralColor100),
+                        ),
                       ),
                       icon: Image.asset(
                         'assets/image/loginScreen/apple_icon.png',
                         height: 20,
                         width: 20,
                       ),
-                    ),
+                    ).throttle(),
                   ),
                 ],
               ),

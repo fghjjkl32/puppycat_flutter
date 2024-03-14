@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +9,8 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_button_selected_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_content_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_cropped_files_provider.dart';
@@ -36,7 +39,7 @@ class FeedEditScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     Text(
-                      "잠깐! 지금 나가면\n작성한 내용은 모두 사라져요.",
+                      "피드.피드 나가기 경고".tr(),
                       style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                       textAlign: TextAlign.center,
                     ),
@@ -58,11 +61,11 @@ class FeedEditScreen extends ConsumerWidget {
                 ref.read(mentionListProvider.notifier).state = [];
               },
               confirmWidget: Text(
-                "이어서 하기",
+                "피드.이어서 하기".tr(),
                 style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
               ),
               cancelWidget: Text(
-                "나가기",
+                "피드.나가기".tr(),
                 style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
               ),
             );
@@ -73,7 +76,9 @@ class FeedEditScreen extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('피드 수정'),
+          title: Text(
+            '피드.피드 수정'.tr(),
+          ),
           leading: IconButton(
             onPressed: () {
               showDialog(
@@ -85,7 +90,7 @@ class FeedEditScreen extends ConsumerWidget {
                       child: Column(
                         children: [
                           Text(
-                            "잠깐! 지금 나가면\n작성한 내용은 모두 사라져요.",
+                            "피드.피드 나가기 경고".tr(),
                             style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                             textAlign: TextAlign.center,
                           ),
@@ -107,11 +112,11 @@ class FeedEditScreen extends ConsumerWidget {
                       ref.read(mentionListProvider.notifier).state = [];
                     },
                     confirmWidget: Text(
-                      "이어서 하기",
+                      "피드.이어서 하기".tr(),
                       style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
                     ),
                     cancelWidget: Text(
-                      "나가기",
+                      "피드.나가기".tr(),
                       style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                     ),
                   );
@@ -126,8 +131,8 @@ class FeedEditScreen extends ConsumerWidget {
           actions: [
             TextButton(
               child: Text(
-                '등록',
-                style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
+                '피드.등록'.tr(),
+                style: kTitle14BoldStyle.copyWith(color: kPreviousPrimaryColor),
               ),
               onPressed: () async {
                 showDialog(
@@ -182,14 +187,34 @@ class FeedEditScreen extends ConsumerWidget {
                 context.pop();
 
                 if (result.result) {
-                  ref.read(feedWriteProvider.notifier).resetTag();
-                  ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
-                  ref.watch(feedEditContentProvider.notifier).state = TextEditingController(text: "");
-                  ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
-                  ref.read(hashtagListProvider.notifier).state = [];
-                  ref.read(mentionListProvider.notifier).state = [];
+                  if (ref.watch(feedWriteButtonSelectedProvider) == 0) {
+                    ref.read(feedListStateProvider.notifier).feedRefresh(
+                          contentIdx,
+                          "postKeepContents",
+                        );
 
-                  context.pushReplacement("/home");
+                    context.pop();
+                  } else {
+                    await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("myContent", contentIdx, isUpdateState: false).then((value) {
+                      if (value == null) {
+                        return;
+                      }
+
+                      ref.read(feedListStateProvider.notifier).editFeedRefresh(
+                            editData: value,
+                            contentIdx: contentIdx,
+                          );
+
+                      ref.read(feedWriteProvider.notifier).resetTag();
+                      ref.watch(feedWriteLocationInformationProvider.notifier).state = "";
+                      ref.watch(feedEditContentProvider.notifier).state = TextEditingController(text: "");
+                      ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
+                      ref.read(hashtagListProvider.notifier).state = [];
+                      ref.read(mentionListProvider.notifier).state = [];
+
+                      context.pop();
+                    });
+                  }
                 } else {
                   showDialog(
                     barrierDismissible: false,
@@ -201,14 +226,14 @@ class FeedEditScreen extends ConsumerWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  "피드 올리는데 문제가 생겼어요.",
+                                  "피드.피드 올리는데 문제가 생겼어요".tr(),
                                   style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                 ),
                                 const SizedBox(
                                   height: 4,
                                 ),
                                 Text(
-                                  "올리기를 다시 시도해 주세요.",
+                                  "피드.올리기를 다시 시도해 주세요".tr(),
                                   style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                   textAlign: TextAlign.center,
                                 ),
@@ -219,7 +244,7 @@ class FeedEditScreen extends ConsumerWidget {
                             context.pop();
                           },
                           confirmWidget: Text(
-                            "확인",
+                            "피드.확인".tr(),
                             style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                           ));
                     },

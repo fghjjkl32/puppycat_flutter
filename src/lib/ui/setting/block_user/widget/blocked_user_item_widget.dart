@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -89,7 +90,7 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
                 if (mounted) {
                   toast(
                     context: context,
-                    text: "'${widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName}'님 차단을 풀었어요.",
+                    text: "설정.차단을 풀었어요".tr(args: [(widget.userName.length > 8 ? '${widget.userName.substring(0, 8)}...' : widget.userName)]),
                     type: ToastType.grey,
                   );
                 }
@@ -99,15 +100,15 @@ class BlockUserItemWidgetState extends ConsumerState<BlockUserItemWidget> {
               width: 74,
               height: 32,
               decoration: const BoxDecoration(
-                color: kPreviousPrimaryLightColor,
+                color: kBackgroundSecondary,
                 borderRadius: BorderRadius.all(
                   Radius.circular(8.0),
                 ),
               ),
               child: Center(
                 child: Text(
-                  "차단 풀기",
-                  style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
+                  "설정.차단 풀기".tr(),
+                  style: kButton14MediumStyle.copyWith(color: kTextSecondary),
                 ),
               ),
             ),

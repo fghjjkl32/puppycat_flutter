@@ -1,12 +1,14 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/user_list/popular_user_list/popular_user_list_data.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/follow/follow_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
@@ -43,7 +45,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
     Future(() {
       final currentFollowState = ref.read(followUserStateProvider)[widget.memberUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
+        ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: false, isActionButton: false);
       }
     });
   }
@@ -85,7 +87,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                 onTap: () {
                   myInfo.uuid == widget.memberUuid
                       ? context.push("/member/myPage", extra: {"oldMemberUuid": widget.oldMemberUuid})
-                      : context.push("/member/userPage/${widget.userName}/${widget.memberUuid}/${widget.oldMemberUuid}");
+                      : context.push("/member/userPage", extra: {"nick": widget.userName, "memberUuid": widget.memberUuid, "oldMemberUuid": widget.oldMemberUuid});
                 },
                 child: Container(
                   child: Row(
@@ -136,25 +138,16 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                         padding: const EdgeInsets.only(right: 8.0),
                                         child: InkWell(
                                           onTap: () async {
-                                            if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                              if (!isLogined) {
-                                                context.push("/home/login");
-                                              } else {
-                                                final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                                      followUuid: widget.memberUuid,
-                                                    );
-
-                                                if (result.result) {
-                                                  setState(() {
-                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, false);
-                                                  });
-                                                }
-                                                print(ref.read(followUserStateProvider));
-                                              }
+                                            if (!isLogined) {
+                                              context.push("/home/login");
+                                            } else {
+                                              setState(() {
+                                                ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: false, isActionButton: true);
+                                              });
                                             }
                                           },
                                           child: Text(
-                                            "팔로잉",
+                                            "피드.팔로잉".tr(),
                                             style: kTitle14BoldStyle.copyWith(color: kPreviousNeutralColor500),
                                           ),
                                         ),
@@ -163,24 +156,16 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                                         padding: const EdgeInsets.only(right: 8.0),
                                         child: InkWell(
                                           onTap: () async {
-                                            if (!ref.watch(followApiIsLoadingStateProvider)) {
-                                              if (!isLogined) {
-                                                context.push("/home/login");
-                                              } else {
-                                                final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                                      followUuid: widget.memberUuid,
-                                                    );
-
-                                                if (result.result) {
-                                                  setState(() {
-                                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.memberUuid, true);
-                                                  });
-                                                }
-                                              }
+                                            if (!isLogined) {
+                                              context.push("/home/login");
+                                            } else {
+                                              setState(() {
+                                                ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.memberUuid, followState: true, isActionButton: true);
+                                              });
                                             }
                                           },
                                           child: Text(
-                                            "팔로우",
+                                            "피드.팔로우".tr(),
                                             style: kTitle14BoldStyle.copyWith(color: kTextActionPrimary),
                                           ),
                                         ),
@@ -191,7 +176,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               height: 3,
                             ),
                             Text(
-                              "팔로워 ${NumberFormat('###,###,###,###').format(widget.followCount)}",
+                              "피드.팔로워 카운트".tr(args: [NumberFormat('###,###,###,###').format(widget.followCount)]),
                               style: kBody12RegularStyle.copyWith(color: kTextTertiary),
                             ),
                           ],
@@ -200,23 +185,28 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     ],
                   ),
                 ),
-              ),
+              ).throttle(),
             ),
             if (widget.imageList.length == 1) ...[
               GestureDetector(
                 onTap: () async {
-                  await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!).then((value) {
+                  ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                  ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                  await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!, isUpdateState: false).then((value) {
                     if (value == null) {
                       return;
                     }
                     Map<String, dynamic> extraMap = {
                       'firstTitle': widget.userName,
-                      'secondTitle': "피드",
+                      'secondTitle': "피드.피드".tr(),
                       'memberUuid': widget.memberUuid,
                       'contentIdx': widget.imageList[0].idx!,
                       'contentType': "FollowCardContent",
                       'oldMemberUuid': widget.oldMemberUuid,
                     };
+
+                    ref.read(feedDetailParameterProvider.notifier).state = extraMap;
 
                     context.push('/feed/detail', extra: extraMap);
                   });
@@ -262,7 +252,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     ),
                   ],
                 ),
-              ),
+              ).throttle(),
             ] else if (widget.imageList.length == 2) ...[
               Row(
                 children: [
@@ -270,18 +260,23 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     flex: 1,
                     child: GestureDetector(
                       onTap: () async {
-                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!).then((value) {
+                        ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                        ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!, isUpdateState: false).then((value) {
                           if (value == null) {
                             return;
                           }
                           Map<String, dynamic> extraMap = {
                             'firstTitle': widget.userName,
-                            'secondTitle': "피드",
+                            'secondTitle': "피드.피드".tr(),
                             'memberUuid': widget.memberUuid,
                             'contentIdx': widget.imageList[0].idx!,
                             'contentType': "FollowCardContent",
                             'oldMemberUuid': widget.oldMemberUuid,
                           };
+
+                          ref.read(feedDetailParameterProvider.notifier).state = extraMap;
 
                           context.push('/feed/detail', extra: extraMap);
                         });
@@ -320,7 +315,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           ),
                         ],
                       ),
-                    ),
+                    ).throttle(),
                   ),
                   const SizedBox(
                     width: 1,
@@ -329,18 +324,23 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     flex: 1,
                     child: GestureDetector(
                       onTap: () async {
-                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[1].idx!).then((value) {
+                        ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                        ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[1].idx!, isUpdateState: false).then((value) {
                           if (value == null) {
                             return;
                           }
                           Map<String, dynamic> extraMap = {
                             'firstTitle': widget.userName,
-                            'secondTitle': "피드",
+                            'secondTitle': "피드.피드".tr(),
                             'memberUuid': widget.memberUuid,
                             'contentIdx': widget.imageList[1].idx!,
                             'contentType': "FollowCardContent",
                             'oldMemberUuid': widget.oldMemberUuid,
                           };
+
+                          ref.read(feedDetailParameterProvider.notifier).state = extraMap;
 
                           context.push('/feed/detail', extra: extraMap);
                         });
@@ -379,7 +379,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           ),
                         ],
                       ),
-                    ),
+                    ).throttle(),
                   ),
                 ],
               ),
@@ -390,18 +390,23 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                     flex: 10,
                     child: GestureDetector(
                       onTap: () async {
-                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!).then((value) {
+                        ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                        ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                        await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[0].idx!, isUpdateState: false).then((value) {
                           if (value == null) {
                             return;
                           }
                           Map<String, dynamic> extraMap = {
                             'firstTitle': widget.userName,
-                            'secondTitle': "피드",
+                            'secondTitle': "피드.피드".tr(),
                             'memberUuid': widget.memberUuid,
                             'contentIdx': widget.imageList[0].idx!,
                             'contentType': "FollowCardContent",
                             'oldMemberUuid': widget.oldMemberUuid,
                           };
+
+                          ref.read(feedDetailParameterProvider.notifier).state = extraMap;
 
                           context.push('/feed/detail', extra: extraMap);
                         });
@@ -440,7 +445,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                           ),
                         ],
                       ),
-                    ),
+                    ).throttle(),
                   ),
                   const SizedBox(
                     width: 1,
@@ -451,18 +456,23 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                       children: [
                         GestureDetector(
                           onTap: () async {
-                            await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[1].idx!).then((value) {
+                            ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                            ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                            await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[1].idx!, isUpdateState: false).then((value) {
                               if (value == null) {
                                 return;
                               }
                               Map<String, dynamic> extraMap = {
                                 'firstTitle': widget.userName,
-                                'secondTitle': "피드",
+                                'secondTitle': "피드.피드".tr(),
                                 'memberUuid': widget.memberUuid,
                                 'contentIdx': widget.imageList[1].idx!,
                                 'contentType': "FollowCardContent",
                                 'oldMemberUuid': widget.oldMemberUuid,
                               };
+
+                              ref.read(feedDetailParameterProvider.notifier).state = extraMap;
 
                               context.push('/feed/detail', extra: extraMap);
                             });
@@ -496,24 +506,29 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               ),
                             ],
                           ),
-                        ),
+                        ).throttle(),
                         const SizedBox(
                           height: 1,
                         ),
                         GestureDetector(
                           onTap: () async {
-                            await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[2].idx!).then((value) {
+                            ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+                            ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+
+                            await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState("FollowCardContent", widget.imageList[2].idx!, isUpdateState: false).then((value) {
                               if (value == null) {
                                 return;
                               }
                               Map<String, dynamic> extraMap = {
                                 'firstTitle': widget.userName,
-                                'secondTitle': "피드",
+                                'secondTitle': "피드.피드".tr(),
                                 'memberUuid': widget.memberUuid,
                                 'contentIdx': widget.imageList[2].idx!,
                                 'contentType': "FollowCardContent",
                                 'oldMemberUuid': widget.oldMemberUuid,
                               };
+
+                              ref.read(feedDetailParameterProvider.notifier).state = extraMap;
 
                               context.push('/feed/detail', extra: extraMap);
                             });
@@ -552,7 +567,7 @@ class FeedFollowCardWidgetState extends ConsumerState<FeedFollowCardWidget> {
                               ],
                             ),
                           ),
-                        ),
+                        ).throttle(),
                       ],
                     ),
                   ),

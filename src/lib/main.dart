@@ -8,6 +8,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 // import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +18,7 @@ import 'package:go_router/go_router.dart';
 // import 'package:location/location.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/flavor_config.dart';
 import 'package:pet_mobile_social_flutter/common/util/UUID/uuid_util.dart';
 import 'package:pet_mobile_social_flutter/common/util/package_info/package_info_util.dart';
 import 'package:pet_mobile_social_flutter/config/router/router.dart';
@@ -47,8 +49,13 @@ class ScrollBehaviorModified extends ScrollBehavior {
   }
 }
 
-void main() async {
+void mainCommon() async {
+  print("FlavorConfig ${FlavorConfig.instance.values?.name}");
+  print("isAndroid ${FlavorConfig.isAndroid()}");
+
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load();
 
   // baseUrl = await Constants.getBaseUrl();
   // thumborHostUrl = await Constants.getThumborHostUrl();
@@ -272,14 +279,14 @@ class CustomError extends StatelessWidget {
               height: 12,
             ),
             Text(
-              "요청하신 페이지를 찾을 수 없어요.",
+              "요청하신 페이지를 찾을 수 없어요".tr(),
               style: kTitle14BoldStyle.copyWith(color: kPreviousTextTitleColor),
             ),
             const SizedBox(
               height: 8,
             ),
             Text(
-              "입력한 주소가 잘못되었거나\n페이지를 찾을 수 없어요.",
+              "페이지를 찾을 수 없어요".tr(),
               style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
               textAlign: TextAlign.center,
             ),
@@ -313,7 +320,7 @@ class CustomError extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text(
-                        '홈으로 이동',
+                        '홈으로 이동'.tr(),
                         style: kBody14BoldStyle.copyWith(
                           color: kPreviousPrimaryColor,
                         ),

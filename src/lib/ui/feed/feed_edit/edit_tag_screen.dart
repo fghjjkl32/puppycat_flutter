@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +16,7 @@ import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_curren
 import 'package:pet_mobile_social_flutter/providers/feed_write/feed_write_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/appbar/defalut_on_will_pop_scope.dart';
 import 'package:pet_mobile_social_flutter/ui/components/toast/toast.dart';
+
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/widget/dot_indicator.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/feed_write/component/mention_tag_widget.dart';
@@ -59,7 +61,7 @@ class EditTagScreen extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    "유저 태그하기",
+                    "피드.유저 태그하기".tr(),
                     style: kTitle18BoldStyle.copyWith(color: kPreviousNeutralColor100),
                   ),
                   // "등록" 버튼을 정의합니다. 사용자가 이 버튼을 누르면 태그를 저장하고,
@@ -67,8 +69,8 @@ class EditTagScreen extends ConsumerWidget {
                   // 업데이트하고, 현재 스크린을 종료합니다.
                   TextButton(
                     child: Text(
-                      '등록',
-                      style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
+                      '피드.등록'.tr(),
+                      style: kTitle14BoldStyle.copyWith(color: kPreviousPrimaryColor),
                     ),
                     onPressed: () {
                       ref.read(feedWriteProvider.notifier).saveTag();
@@ -93,7 +95,7 @@ class EditTagScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 103),
               Text(
-                "태그 할 위치를 눌러보세요.",
+                "피드.태그 할 위치를 눌러보세요".tr(),
                 style: kBody14BoldStyle.copyWith(color: kPreviousNeutralColor100),
               ),
               const SizedBox(
@@ -211,7 +213,7 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
           if (newTagImage[existingIndex].tag.length >= 10) {
             toast(
               context: context,
-              text: '사진 당 태그는 10명까지 가능해요.',
+              text: '피드.사진 당 태그는 10명까지 가능해요'.tr(),
               type: ToastType.red,
             );
             return;

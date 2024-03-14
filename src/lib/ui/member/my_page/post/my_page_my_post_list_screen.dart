@@ -1,14 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/first_feed_detail_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/my_page/my_post/my_post_state_provider.dart';
@@ -83,8 +85,8 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "내 글 관리",
+          title: Text(
+            "회원.내 글 관리".tr(),
           ),
           leading: IconButton(
             onPressed: () {
@@ -110,7 +112,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "일상글",
+                          "회원.일상글".tr(),
                           style: kTitle16BoldStyle,
                         ),
                         const SizedBox(
@@ -131,7 +133,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "보관글",
+                          "회원.보관글".tr(),
                           style: kTitle16BoldStyle,
                         ),
                         const SizedBox(
@@ -190,7 +192,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                         height: 12,
                       ),
                       Text(
-                        '피드가 없어요.',
+                        '회원.피드가 없어요'.tr(),
                         textAlign: TextAlign.center,
                         style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
@@ -201,7 +203,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
             : Stack(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
+                    padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12, bottom: 70),
                     child: GridView.builder(
                       controller: myPostContentController,
                       gridDelegate: SliverQuiltedGridDelegate(
@@ -242,11 +244,14 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           onTap: () async {
                             Map<String, dynamic> extraMap = {
                               'firstTitle': 'null',
-                              'secondTitle': '일상글 피드',
+                              'secondTitle': '회원.일상글 피드'.tr(),
                               'memberUuid': myInfo.uuid,
                               'contentIdx': '${lists[index].idx}',
                               'contentType': 'myDetailContent',
                             };
+
+                            ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                             // final result = await context.push("/feed/detail/null/일상글 피드/${ref.read(userInfoProvider).userModel!.idx}/${lists[index].idx}/myDetailContent");
                             final result = await context.push('/feed/detail', extra: extraMap);
 
@@ -343,7 +348,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                               ),
                             ],
                           ),
-                        );
+                        ).throttle();
                       },
                     ),
                   ),
@@ -493,7 +498,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                                   if (result.result && mounted) {
                                                     toast(
                                                       context: context,
-                                                      text: '피드 보관 완료!',
+                                                      text: '회원.피드 보관 완료!'.tr(),
                                                       type: ToastType.purple,
                                                     );
                                                   }
@@ -501,7 +506,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                               );
                                             }
                                           : null,
-                                      child: const Text('보관하기'),
+                                      child: Text('회원.보관하기'.tr()),
                                     ),
                                   ),
                                 ),
@@ -537,7 +542,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                                   if (result.result && mounted) {
                                                     toast(
                                                       context: context,
-                                                      text: '피드 삭제 완료!',
+                                                      text: '회원.피드 삭제 완료!'.tr(),
                                                       type: ToastType.purple,
                                                     );
                                                   }
@@ -545,7 +550,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                               );
                                             }
                                           : null,
-                                      child: const Text('삭제하기'),
+                                      child: Text('회원.삭제하기'.tr()),
                                     ),
                                   ),
                                 ),
@@ -616,7 +621,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                         height: 12,
                       ),
                       Text(
-                        '피드가 없어요.\n보관한 피드가 여기에 표시됩니다.',
+                        '회원.보관한 피드 없음'.tr(),
                         textAlign: TextAlign.center,
                         style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                       ),
@@ -627,7 +632,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
             : Stack(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12),
+                    padding: const EdgeInsets.only(top: 10.0, left: 12, right: 12, bottom: 70),
                     child: GridView.builder(
                       controller: myKeepContentController,
                       gridDelegate: SliverQuiltedGridDelegate(
@@ -667,11 +672,14 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                           onTap: () async {
                             Map<String, dynamic> extraMap = {
                               'firstTitle': 'null',
-                              'secondTitle': '보관한 피드',
+                              'secondTitle': '회원.보관한 피드'.tr(),
                               'memberUuid': myInfo.uuid,
                               'contentIdx': '${lists[index].idx}',
                               'contentType': 'myKeepContent',
                             };
+
+                            ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                             await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myKeepContent', lists[index].idx).then((value) async {
                               if (value == null) {
                                 return;
@@ -773,7 +781,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                               ),
                             ],
                           ),
-                        );
+                        ).throttle();
                       },
                     ),
                   ),
@@ -910,13 +918,15 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                               if (result.result) {
                                                 toast(
                                                   context: context,
-                                                  text: '전체 공개가 완료되었어요.',
+                                                  text: '회원.전체 공개가 완료되었어요'.tr(),
                                                   type: ToastType.purple,
                                                 );
                                               }
                                             }
                                           : null,
-                                      child: const Text('전체 공개'),
+                                      child: Text(
+                                        '회원.전체 공개'.tr(),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -952,7 +962,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                                   if (result.result && mounted) {
                                                     toast(
                                                       context: context,
-                                                      text: '피드 삭제 완료!',
+                                                      text: '회원.피드 삭제 완료!'.tr(),
                                                       type: ToastType.purple,
                                                     );
                                                   }
@@ -960,7 +970,7 @@ class MyPageMyPostListScreenState extends ConsumerState<MyPageMyPostListScreen> 
                                               );
                                             }
                                           : null,
-                                      child: const Text('삭제하기'),
+                                      child: Text('회원.삭제하기'.tr()),
                                     ),
                                   ),
                                 ),

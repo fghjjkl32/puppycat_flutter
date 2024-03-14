@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
@@ -47,7 +49,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
 
       for (var tagData in imgData.imgMemberTagList!) {
         tags.add(Tag(
-          username: tagData.nick!,
+          username: tagData.nick ?? "알 수 없음",
           memberUuid: tagData.memberUuid!,
           position: Offset(tagData.width!, tagData.height!),
           imageIndex: tagData.imgIdx!,
@@ -80,6 +82,8 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
         ref.watch(feedWriteProvider.notifier).state = updatedState;
 
         List<TagImages> initialTagImages = feedDataToPostFeedState(widget.feedData);
+
+        ref.read(feedWriteCurrentTagCountProvider.notifier).state = initialTagImages[0].tag.length;
 
         ref.read(feedWriteProvider.notifier).initializeTags(initialTagImages);
       });
@@ -155,20 +159,20 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                                   color: kPreviousTextSubTitleColor,
                                 ),
                                 Text(
-                                  "유저 태그하기 ",
-                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                  "피드.유저 태그하기 띄어쓰기".tr(),
+                                  style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                                 ),
                                 Text(
                                   "(",
-                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                                  style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                                 ),
                                 Text(
                                   "${ref.watch(feedWriteCurrentTagCountProvider)}",
-                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                  style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                 ),
                                 Text(
                                   "/10)",
-                                  style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                                  style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                                 ),
                               ],
                             ),
@@ -241,7 +245,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                     maxLines: 6,
                     decoration: InputDecoration(
                         counterText: "",
-                        hintText: "내용을 입력해 주세요. (최대 500자)\n\n운영 정책에 위반되는 폭력/선정/욕설 등은\n'${myInfo.nick}'님에게 책임이 있으며 동의 없이 삭제될 수 있어요.",
+                        hintText: "피드.피드 힌트 텍스트".tr(args: ["${myInfo.nick}"]),
                         hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                         contentPadding: const EdgeInsets.all(16)),
                     // name: 'content',
@@ -259,8 +263,8 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "위치정보",
-                  style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+                  "피드.위치 정보".tr(),
+                  style: kTitle16BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                 ),
                 ref.watch(feedWriteLocationInformationProvider) == ""
                     ? Container()
@@ -271,8 +275,8 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 12, bottom: 8, top: 12, left: 12),
                           child: Text(
-                            "삭제",
-                            style: kBadge10MediumStyle.copyWith(color: kTextTertiary),
+                            "피드.삭제".tr(),
+                            style: kBody13RegularStyle.copyWith(color: kTextTertiary),
                           ),
                         ),
                       ),
@@ -297,7 +301,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                       builder: (_) => KpostalView(
                         useLocalServer: true,
                         localPort: 9723,
-                        kakaoKey: 'e70ed9e481a7927e0adc8647263bf6a5',
+                        kakaoKey: dotenv.env['KAKAO_JAVASCRIPT_APP_KEY']!,
                         callback: (Kpostal result) {
                           ref.watch(feedWriteLocationInformationProvider.notifier).state = result.buildingName == "" ? result.roadAddress : result.buildingName;
                         },
@@ -316,7 +320,7 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                         ? Padding(
                             padding: const EdgeInsets.only(left: 16.0),
                             child: Text(
-                              "위치를 추가해 주세요.",
+                              "피드.위치를 추가해 주세요".tr(),
                               style: kBody12RegularStyle.copyWith(color: kPreviousNeutralColor500),
                             ),
                           )
@@ -354,8 +358,8 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
           Padding(
             padding: const EdgeInsets.only(top: 20.0, bottom: 8.0, left: 12),
             child: Text(
-              "공개 범위",
-              style: kBody14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
+              "피드.공개 범위".tr(),
+              style: kTitle16BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
             ),
           ),
           Padding(
@@ -390,8 +394,8 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                             width: 9,
                           ),
                           Text(
-                            "전체 공개",
-                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 1 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
+                            "피드.전체 공개".tr(),
+                            style: kTitle14BoldStyle.copyWith(color: buttonSelected == 1 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
                           ),
                         ],
                       ),
@@ -429,8 +433,8 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                             width: 9,
                           ),
                           Text(
-                            "팔로우 공개",
-                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 2 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
+                            "피드.팔로우 공개".tr(),
+                            style: kTitle14BoldStyle.copyWith(color: buttonSelected == 2 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
                           ),
                         ],
                       ),
@@ -468,8 +472,8 @@ class PostFeedViewState extends ConsumerState<EditFeedView> {
                             width: 9,
                           ),
                           Text(
-                            "피드 보관",
-                            style: kBody12SemiBoldStyle.copyWith(color: buttonSelected == 0 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
+                            "피드.피드 보관".tr(),
+                            style: kTitle14BoldStyle.copyWith(color: buttonSelected == 0 ? kPreviousPrimaryColor : kPreviousTextBodyColor),
                           ),
                         ],
                       ),

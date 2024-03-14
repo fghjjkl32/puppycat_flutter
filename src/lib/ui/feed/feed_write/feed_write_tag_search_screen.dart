@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -66,8 +67,8 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text(
-          "유저 태그하기",
+        title: Text(
+          "피드.유저 태그하기".tr(),
         ),
         leading: IconButton(
           onPressed: () {
@@ -143,7 +144,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                                   ),
                                 ),
                               ),
-                        hintText: "닉네임으로 검색해 보세요.",
+                        hintText: "피드.닉네임으로 검색해 보세요".tr(),
                         hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                       ),
                     ),
@@ -171,7 +172,7 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                                     height: 12,
                                   ),
                                   Text(
-                                    userSearchController.text == "" ? '태그한 유저가 없어요.\n유저를 검색해서 태그해 보세요.' : '유저를 찾을 수 없어요.\n닉네임을 다시 확인해 주세요.',
+                                    userSearchController.text == "" ? '피드.태그한 유저 없음'.tr() : '피드.유저 없음'.tr(),
                                     textAlign: TextAlign.center,
                                     style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                   ),
@@ -199,9 +200,9 @@ class FeedWriteTagSearchScreenState extends ConsumerState<FeedWriteTagSearchScre
                                   context.pop();
                                 },
                                 child: TagUserItemWidget(
-                                  profileImage: lists[index].profileImgUrl!,
-                                  userName: lists[index].nick!,
-                                  content: lists[index].intro! == "" ? "소개글이 없어요." : lists[index].intro!,
+                                  profileImage: lists[index].profileImgUrl,
+                                  userName: lists[index].nick ?? "",
+                                  content: lists[index].intro == "" ? "피드.소개글이 없어요".tr() : lists[index].intro ?? "",
                                   isSpecialUser: lists[index].isBadge == null ? false : lists[index].isBadge! == 1,
                                 ),
                               );

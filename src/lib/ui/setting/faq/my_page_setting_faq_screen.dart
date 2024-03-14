@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:channel_talk_flutter/channel_talk_flutter.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -74,8 +75,8 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "자주하는 질문",
+          title: Text(
+            "설정.자주하는 질문".tr(),
           ),
           leading: IconButton(
             onPressed: () {
@@ -115,8 +116,8 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12.0),
                       child: Text(
-                        "1:1채널톡",
-                        style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
+                        "설정.1:1 채널톡".tr(),
+                        style: kTitle14BoldStyle.copyWith(color: kPreviousPrimaryColor),
                       ),
                     ),
                   ),
@@ -189,7 +190,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                                 ),
                               ),
                             ),
-                      hintText: "궁금한 내용을 검색해 보세요.",
+                      hintText: "설정.궁금한 내용을 검색해 보세요".tr(),
                       hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                     ),
                   ),
@@ -293,7 +294,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14.0),
                       child: Text(
                         itemModel.menuName ?? 'unknown',
-                        style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                        style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                       ),
                     ),
                   ),
@@ -303,7 +304,7 @@ class MyPageSettingFaqScreenState extends ConsumerState<MyPageSettingFaqScreen> 
                   Expanded(
                     child: Text(
                       itemModel.title ?? 'unknown',
-                      style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                      style: kBody14RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

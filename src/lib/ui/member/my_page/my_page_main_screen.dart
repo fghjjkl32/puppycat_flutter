@@ -2,14 +2,15 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -34,7 +35,6 @@ import 'package:pet_mobile_social_flutter/ui/components/refresh_loading_animatio
 import 'package:pet_mobile_social_flutter/ui/feed/comment/component/comment_custom_text_field.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/comment/component/widget/comment_detail_item_widget.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/widget/favorite_item_widget.dart';
-
 ///NOTE
 ///2023.11.14.
 ///산책하기 보류로 주석 처리
@@ -48,9 +48,11 @@ class MyPageMainScreen extends ConsumerStatefulWidget {
   const MyPageMainScreen({
     super.key,
     required this.oldMemberUuid,
+    required this.feedContentIdx,
   });
 
   final String oldMemberUuid;
+  final int feedContentIdx;
 
   @override
   MyPageMainState createState() => MyPageMainState();
@@ -93,6 +95,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
 
     ref.read(feedListStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
     ref.read(firstFeedDetailStateProvider.notifier).saveStateForUser(widget.oldMemberUuid);
+    ref.read(commentListStateProvider.notifier).saveStateForUser(widget.feedContentIdx);
 
     tabController = TabController(
       initialIndex: 0,
@@ -125,6 +128,8 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
   Future<bool> handleFocusLost() {
     feedListStateNotifier.getStateForUser(widget.oldMemberUuid);
     firstFeedStateNotifier.getStateForUser(widget.oldMemberUuid);
+    ref.read(commentListStateProvider.notifier).getStateForUser(widget.feedContentIdx);
+
     return Future.value(true);
   }
 
@@ -170,11 +175,13 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                               pinned: true,
                               floating: false,
                               backgroundColor: appBarColor,
-                              title: const Text('마이페이지'),
+                              title: Text('회원.마이페이지'.tr()),
                               leading: IconButton(
                                 onPressed: () {
                                   ref.read(firstFeedDetailStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
                                   ref.read(feedListStateProvider.notifier).getStateForUser(widget.oldMemberUuid);
+                                  ref.read(commentListStateProvider.notifier).getStateForUser(widget.feedContentIdx);
+
                                   context.pop();
                                 },
                                 icon: const Icon(
@@ -237,7 +244,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                     list.add(
                                       diaryPopUpMenuItem(
                                         'myActivity',
-                                        '내 활동',
+                                        '회원.내 활동'.tr(),
                                         const Icon(
                                           Puppycat_social.icon_myactive,
                                           size: 22,
@@ -253,7 +260,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                     list.add(
                                       diaryPopUpMenuItem(
                                         'postsManagement',
-                                        '내 글 관리',
+                                        '회원.내 글 관리'.tr(),
                                         const Icon(
                                           Puppycat_social.icon_mywrite,
                                           size: 22,
@@ -269,7 +276,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                     list.add(
                                       diaryPopUpMenuItem(
                                         'setting',
-                                        '설정',
+                                        '회원.설정'.tr(),
                                         const Icon(
                                           Puppycat_social.icon_set_small,
                                           size: 22,
@@ -350,7 +357,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없어요.',
+                                  '회원.피드가 없어요'.tr(),
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -394,11 +401,13 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
                           'firstTitle': '${ref.watch(myInformationStateProvider).nick}',
-                          'secondTitle': '피드',
+                          'secondTitle': '회원.피드'.tr(),
                           'memberUuid': ref.read(myInformationStateProvider).uuid ?? '',
                           'contentIdx': '${item.idx}',
                           'contentType': 'myContent',
                         };
+
+                        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
 
                         await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('myContent', item.idx).then((value) {
                           if (value == null) {
@@ -458,61 +467,71 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
 
                                         showCustomModalBottomSheet(
                                           context: context,
-                                          widget: Consumer(builder: (context, ref, child) {
-                                            return SizedBox(
-                                              height: 500,
-                                              child: PagedListView<int, ContentLikeUserListData>(
-                                                pagingController: _contentLikeUserPagingController,
-                                                builderDelegate: PagedChildBuilderDelegate<ContentLikeUserListData>(
-                                                  // animateTransitions: true,
-                                                  noItemsFoundIndicatorBuilder: (context) {
-                                                    // return const Text('No Comments');
-                                                    return Column(
-                                                      mainAxisSize: MainAxisSize.max,
-                                                      children: [
-                                                        Padding(
-                                                          padding: const EdgeInsets.symmetric(vertical: 100.0),
-                                                          child: Column(
-                                                            children: [
-                                                              Image.asset(
-                                                                'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                                                                width: 88,
-                                                                height: 88,
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 12,
-                                                              ),
-                                                              Text(
-                                                                "아직 '좋아요'가 없어요.",
-                                                                textAlign: TextAlign.center,
-                                                                style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                                                              ),
-                                                            ],
+                                          widget: CustomRefreshIndicator(
+                                            onRefresh: () {
+                                              return Future(() {
+                                                _contentLikeUserPagingController.refresh();
+                                              });
+                                            },
+                                            builder: (context, child, controller) {
+                                              return RefreshLoadingAnimationWidget(controller: controller, child: child);
+                                            },
+                                            child: Consumer(builder: (context, ref, child) {
+                                              return SizedBox(
+                                                height: 500,
+                                                child: PagedListView<int, ContentLikeUserListData>(
+                                                  pagingController: _contentLikeUserPagingController,
+                                                  builderDelegate: PagedChildBuilderDelegate<ContentLikeUserListData>(
+                                                    // animateTransitions: true,
+                                                    noItemsFoundIndicatorBuilder: (context) {
+                                                      // return const Text('No Comments');
+                                                      return Column(
+                                                        mainAxisSize: MainAxisSize.max,
+                                                        children: [
+                                                          Padding(
+                                                            padding: const EdgeInsets.symmetric(vertical: 100.0),
+                                                            child: Column(
+                                                              children: [
+                                                                Image.asset(
+                                                                  'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                                                  width: 88,
+                                                                  height: 88,
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 12,
+                                                                ),
+                                                                Text(
+                                                                  "회원.아직 '좋아요'가 없어요".tr(),
+                                                                  textAlign: TextAlign.center,
+                                                                  style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  },
-                                                  firstPageProgressIndicatorBuilder: (context) {
-                                                    // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
-                                                    return const Center(child: CircularProgressIndicator());
-                                                  },
-                                                  itemBuilder: (context, contentLikeUserItem, index) {
-                                                    return FavoriteItemWidget(
-                                                      profileImage: contentLikeUserItem.profileImgUrl,
-                                                      userName: contentLikeUserItem.nick!,
-                                                      content: contentLikeUserItem.intro!,
-                                                      isSpecialUser: contentLikeUserItem.isBadge == 1,
-                                                      isFollow: contentLikeUserItem.followState == 1,
-                                                      followerUuid: contentLikeUserItem.uuid!,
-                                                      contentsIdx: item.idx,
-                                                      oldMemberUuid: '',
-                                                    );
-                                                  },
+                                                        ],
+                                                      );
+                                                    },
+                                                    firstPageProgressIndicatorBuilder: (context) {
+                                                      // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+                                                      return const Center(child: CircularProgressIndicator());
+                                                    },
+                                                    itemBuilder: (context, contentLikeUserItem, index) {
+                                                      return FavoriteItemWidget(
+                                                        profileImage: contentLikeUserItem.profileImgUrl,
+                                                        userName: contentLikeUserItem.nick!,
+                                                        content: contentLikeUserItem.intro!,
+                                                        isSpecialUser: contentLikeUserItem.isBadge == 1,
+                                                        isFollow: contentLikeUserItem.followState == 1,
+                                                        followerUuid: contentLikeUserItem.uuid!,
+                                                        contentsIdx: item.idx,
+                                                        oldMemberUuid: '',
+                                                      );
+                                                    },
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          }),
+                                              );
+                                            }),
+                                          ),
                                         );
                                       },
                                       child: item.selfLike == 1
@@ -542,138 +561,151 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                           // ignore: use_build_context_synchronously
                                           showCustomModalBottomSheet(
                                             context: context,
-                                            widget: Consumer(builder: (context, ref, child) {
-                                              return GestureDetector(
-                                                onTap: () {
-                                                  FocusScope.of(context).requestFocus(FocusNode());
-                                                },
-                                                child: SizedBox(
-                                                  height: 500,
-                                                  child: Column(
-                                                    children: [
-                                                      Expanded(
-                                                        child: PagedListView<int, CommentData>(
-                                                          pagingController: _commentPagingController,
-                                                          builderDelegate: PagedChildBuilderDelegate<CommentData>(
-                                                            // animateTransitions: true,
-                                                            noItemsFoundIndicatorBuilder: (context) {
-                                                              // return const Text('No Comments');
-                                                              return Column(
-                                                                mainAxisSize: MainAxisSize.max,
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.symmetric(vertical: 100.0),
-                                                                    child: Column(
-                                                                      children: [
-                                                                        Image.asset(
-                                                                          'assets/image/chat/empty_character_01_nopost_88_x2.png',
-                                                                          width: 88,
-                                                                          height: 88,
-                                                                        ),
-                                                                        const SizedBox(
-                                                                          height: 12,
-                                                                        ),
-                                                                        Text(
-                                                                          '아직 댓글이 없어요.\n피드에 댓글을 남겨 보세요.',
-                                                                          textAlign: TextAlign.center,
-                                                                          style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
-                                                                        ),
-                                                                      ],
+                                            widget: CustomRefreshIndicator(
+                                              onRefresh: () {
+                                                return Future(() {
+                                                  ref.read(commentListStateProvider.notifier).getComments(item.idx);
+                                                });
+                                              },
+                                              builder: (context, child, controller) {
+                                                return RefreshLoadingAnimationWidget(controller: controller, child: child);
+                                              },
+                                              child: Consumer(builder: (context, ref, child) {
+                                                return GestureDetector(
+                                                  onTap: () {
+                                                    FocusScope.of(context).requestFocus(FocusNode());
+                                                  },
+                                                  child: SizedBox(
+                                                    height: 500,
+                                                    child: Column(
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Expanded(
+                                                          child: PagedListView<int, CommentData>(
+                                                            pagingController: _commentPagingController,
+                                                            builderDelegate: PagedChildBuilderDelegate<CommentData>(
+                                                              // animateTransitions: true,
+                                                              noItemsFoundIndicatorBuilder: (context) {
+                                                                // return const Text('No Comments');
+                                                                return Column(
+                                                                  mainAxisSize: MainAxisSize.max,
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.symmetric(vertical: 100.0),
+                                                                      child: Column(
+                                                                        children: [
+                                                                          Image.asset(
+                                                                            'assets/image/chat/empty_character_01_nopost_88_x2.png',
+                                                                            width: 88,
+                                                                            height: 88,
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            height: 12,
+                                                                          ),
+                                                                          Text(
+                                                                            '회원.댓글 빈리스트'.tr(),
+                                                                            textAlign: TextAlign.center,
+                                                                            style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
+                                                                          ),
+                                                                        ],
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                ],
-                                                              );
-                                                            },
-                                                            firstPageProgressIndicatorBuilder: (context) {
-                                                              // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
-                                                              return const Center(child: CircularProgressIndicator());
-                                                            },
-                                                            itemBuilder: (context, item, index) {
-                                                              return AutoScrollTag(
-                                                                key: UniqueKey(),
-                                                                controller: _autoScrollController,
-                                                                index: index,
-                                                                child: CommentDetailItemWidget(
+                                                                  ],
+                                                                );
+                                                              },
+                                                              firstPageProgressIndicatorBuilder: (context) {
+                                                                // ref.read(commentListStateProvider.notifier).getComments(_contentsIdx);
+                                                                return const Center(child: CircularProgressIndicator());
+                                                              },
+                                                              itemBuilder: (context, item, index) {
+                                                                return AutoScrollTag(
                                                                   key: UniqueKey(),
-                                                                  parentIdx: item.parentIdx,
-                                                                  commentIdx: item.idx,
-                                                                  profileImage: item.profileImgUrl ?? 'assets/image/feed/image/sample_image1.png',
-                                                                  name: item.nick,
-                                                                  comment: item.contents,
-                                                                  isSpecialUser: item.isBadge == 1,
-                                                                  time: DateTime.parse(item.regDate),
-                                                                  isReply: item.isReply,
-                                                                  likeCount: item.commentLikeCnt ?? 0,
-                                                                  // replies: item.childCommentData,
-                                                                  contentIdx: item.contentsIdx,
-                                                                  isLike: item.likeState == 1,
-                                                                  memberUuid: item.memberUuid,
-                                                                  mentionListData: item.mentionList ?? [],
-                                                                  oldMemberUuid: widget.oldMemberUuid,
-                                                                  isLastDisPlayChild: item.isLastDisPlayChild,
-                                                                  // remainChildCount: item.remainChildCount,
-                                                                  onMoreChildComment: (page) {
-                                                                    print('load more child comment');
-                                                                    ref.read(commentListStateProvider.notifier).getChildComments(
-                                                                          item.contentsIdx,
-                                                                          item.parentIdx,
-                                                                          item.idx,
-                                                                          page,
-                                                                          true,
-                                                                        );
-                                                                  },
-                                                                  pageNumber: item.pageNumber,
-                                                                  isDisplayPreviousMore: item.isDisplayPreviousMore,
-                                                                  onPrevMoreChildComment: (page) {
-                                                                    print('load prev more child comment');
-                                                                    ref.read(commentListStateProvider.notifier).getChildComments(
-                                                                          item.contentsIdx,
-                                                                          item.parentIdx,
-                                                                          item.idx,
-                                                                          page,
-                                                                          false,
-                                                                        );
-                                                                  },
-                                                                  onTapRemoveButton: () async {
-                                                                    final result = await ref.read(commentListStateProvider.notifier).deleteContents(
-                                                                          contentsIdx: item.contentsIdx,
-                                                                          commentIdx: item.idx,
-                                                                          parentIdx: item.parentIdx,
-                                                                        );
+                                                                  controller: _autoScrollController,
+                                                                  index: index,
+                                                                  child: CommentDetailItemWidget(
+                                                                    key: UniqueKey(),
+                                                                    parentIdx: item.parentIdx,
+                                                                    commentIdx: item.idx,
+                                                                    profileImage: item.profileImgUrl ?? 'assets/image/feed/image/sample_image1.png',
+                                                                    name: item.nick,
+                                                                    comment: item.contents,
+                                                                    isSpecialUser: item.isBadge == 1,
+                                                                    time: DateTime.parse(item.regDate),
+                                                                    isReply: item.isReply,
+                                                                    likeCount: item.commentLikeCnt ?? 0,
+                                                                    // replies: item.childCommentData,
+                                                                    contentIdx: item.contentsIdx,
+                                                                    isLike: item.likeState == 1,
+                                                                    memberUuid: item.memberUuid,
+                                                                    mentionListData: item.mentionList ?? [],
+                                                                    oldMemberUuid: widget.oldMemberUuid,
+                                                                    isLastDisPlayChild: item.isLastDisPlayChild,
+                                                                    // remainChildCount: item.remainChildCount,
+                                                                    onMoreChildComment: (page) {
+                                                                      print('load more child comment');
+                                                                      ref.read(commentListStateProvider.notifier).getChildComments(
+                                                                            item.contentsIdx,
+                                                                            item.parentIdx,
+                                                                            item.idx,
+                                                                            page,
+                                                                            true,
+                                                                          );
+                                                                    },
+                                                                    pageNumber: item.pageNumber,
+                                                                    isDisplayPreviousMore: item.isDisplayPreviousMore,
+                                                                    onPrevMoreChildComment: (page) {
+                                                                      print('load prev more child comment');
+                                                                      ref.read(commentListStateProvider.notifier).getChildComments(
+                                                                            item.contentsIdx,
+                                                                            item.parentIdx,
+                                                                            item.idx,
+                                                                            page,
+                                                                            false,
+                                                                          );
+                                                                    },
+                                                                    onTapRemoveButton: () async {
+                                                                      final result = await ref.read(commentListStateProvider.notifier).deleteContents(
+                                                                            contentsIdx: item.contentsIdx,
+                                                                            commentIdx: item.idx,
+                                                                            parentIdx: item.parentIdx,
+                                                                          );
 
-                                                                    if (result.result) {
+                                                                      if (result.result) {
+                                                                        context.pop();
+                                                                      }
+                                                                    },
+                                                                    onTapEditButton: () {
+                                                                      final commentHeaderState = ref.watch(commentHeaderProvider.notifier);
+
+                                                                      // context.pop();
+
+                                                                      commentHeaderState.addEditCommentHeader(item.contents, item.idx);
+
+                                                                      commentHeaderState.setHasInput(true);
+
+                                                                      ref.read(hashtagListProvider.notifier).state = getHashtagList(item.contents);
+                                                                      ref.read(mentionListProvider.notifier).state = item.mentionList ?? [];
+
+                                                                      commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(item.contents, item.mentionList ?? []));
                                                                       context.pop();
-                                                                    }
-                                                                  },
-                                                                  onTapEditButton: () {
-                                                                    final commentHeaderState = ref.watch(commentHeaderProvider.notifier);
-
-                                                                    // context.pop();
-
-                                                                    commentHeaderState.addEditCommentHeader(item.contents, item.idx);
-
-                                                                    commentHeaderState.setHasInput(true);
-
-                                                                    ref.read(hashtagListProvider.notifier).state = getHashtagList(item.contents);
-                                                                    ref.read(mentionListProvider.notifier).state = item.mentionList ?? [];
-
-                                                                    commentHeaderState.setControllerValue(replaceMentionsWithNicknamesInContentAsString(item.contents, item.mentionList ?? []));
-                                                                    context.pop();
-                                                                  },
-                                                                ),
-                                                              );
-                                                            },
+                                                                    },
+                                                                  ),
+                                                                );
+                                                              },
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      CommentCustomTextField(
-                                                        contentIdx: item.idx,
-                                                      ),
-                                                    ],
+                                                        CommentCustomTextField(
+                                                          contentIdx: item.idx,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            }),
+                                                );
+                                              }),
+                                            ),
                                           );
                                         },
                                         child: const Icon(
@@ -712,7 +744,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                           ],
                         ),
                       ),
-                    ),
+                    ).throttle(),
                   );
                 },
               ),
@@ -767,7 +799,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                   height: 12,
                                 ),
                                 Text(
-                                  '피드가 없어요.',
+                                  '회원.피드가 없어요'.tr(),
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -811,11 +843,14 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                       onTap: () async {
                         Map<String, dynamic> extraMap = {
                           'firstTitle': ref.read(myInformationStateProvider).nick ?? 'unknown',
-                          'secondTitle': '태그됨',
+                          'secondTitle': '회원.태그됨'.tr(),
                           'memberUuid': ref.read(myInfoStateProvider).uuid,
                           'contentIdx': '${item.idx}',
                           'contentType': 'myTagContent',
                         };
+
+                        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                         await ref
                             .read(firstFeedDetailStateProvider.notifier)
                             .getFirstFeedState(
@@ -866,7 +901,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                           ],
                         ),
                       ),
-                    ),
+                    ).throttle(),
                   );
                 },
               ),
@@ -967,7 +1002,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                           child: Row(
                             children: [
                               Text(
-                                "팔로워 ",
+                                "회원.팔로워 띄어쓰기".tr(),
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
@@ -979,7 +1014,7 @@ class MyPageMainState extends ConsumerState<MyPageMainScreen> with SingleTickerP
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
-                                "팔로잉 ",
+                                "회원.팔로잉 띄어쓰기".tr(),
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                               Text(
@@ -1201,7 +1236,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "일상글",
+                            "회원.일상글".tr(),
                             style: kTitle16BoldStyle,
                           ),
                           const SizedBox(
@@ -1222,7 +1257,7 @@ class TabBarDelegate extends SliverPersistentHeaderDelegate {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "태그됨",
+                            "회원.태그됨".tr(),
                             style: kTitle16BoldStyle,
                           ),
                           const SizedBox(

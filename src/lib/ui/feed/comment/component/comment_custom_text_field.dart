@@ -1,8 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multi_trigger_autocomplete/multi_trigger_autocomplete.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -79,7 +82,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                             Padding(
                               padding: const EdgeInsets.only(left: 12.0),
                               child: Text(
-                                "@${ref.watch(commentHeaderProvider).name} 님에게 답글 남기기",
+                                "댓글.답글 남기기".tr(args: [(ref.watch(commentHeaderProvider).name)]),
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ),
@@ -110,7 +113,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                             Padding(
                               padding: const EdgeInsets.only(left: 12.0),
                               child: Text(
-                                "댓글 수정",
+                                "댓글.댓글 수정".tr(),
                                 style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ),
@@ -162,6 +165,9 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                         ),
                         child: TextField(
                           readOnly: !isLogined ? true : false,
+                          onTap: () {
+                            if (!isLogined) context.push("/home/login");
+                          },
                           focusNode: focusNode,
                           controller: controller,
                           onChanged: (text) {
@@ -204,7 +210,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                             fillColor: Colors.transparent,
                             border: InputBorder.none,
                             counterText: "",
-                            hintText: !isLogined ? "로그인 하면 쓸 수 있어요." : '댓글을 남겨 보세요.',
+                            hintText: !isLogined ? "댓글.댓글 비로그인 텍스트필드".tr() : '댓글.댓글 로그인 텍스트필드'.tr(),
                             hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                             contentPadding: const EdgeInsets.all(16),
                             suffixIcon: ref.read(commentHeaderProvider).hasInput
@@ -268,7 +274,7 @@ class CommentCustomTextFieldState extends ConsumerState<CommentCustomTextField> 
                                       Puppycat_social.icon_send,
                                       color: kPreviousPrimaryColor,
                                     ),
-                                  )
+                                  ).throttle()
                                 : const Icon(
                                     Puppycat_social.icon_send,
                                     color: Colors.grey,

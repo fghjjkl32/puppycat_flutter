@@ -71,13 +71,13 @@ const kPreviousTextSubTitleColor = Color(0xff414348);
 const kPreviousTextBodyColor = Color(0xff98a0b0);
 
 //OpacityColor
-Color kOpacityPrimaryColor600 = kPrimaryColor600.withOpacity(80);
-Color kOpacityBlackColor900 = kBlackColor.withOpacity(75);
-Color kOpacityBlackColor500 = kBlackColor.withOpacity(30);
-Color kOpacityBlackColor50 = kBlackColor.withOpacity(3);
-Color kOpacityNeutralColor800 = kNeutralColor800.withOpacity(80);
-Color kOpacityNeutralColor500 = kNeutralColor500.withOpacity(80);
-Color kOpacityErrorColor = kErrorColor400.withOpacity(80);
+Color kOpacityPrimaryColor600 = kPrimaryColor600.withOpacity(0.8);
+Color kOpacityBlackColor900 = kBlackColor.withOpacity(0.75);
+Color kOpacityBlackColor500 = kBlackColor.withOpacity(0.3);
+Color kOpacityBlackColor50 = kBlackColor.withOpacity(0.03);
+Color kOpacityNeutralColor800 = kNeutralColor800.withOpacity(0.8);
+Color kOpacityNeutralColor500 = kNeutralColor500.withOpacity(0.8);
+Color kOpacityErrorColor = kErrorColor400.withOpacity(0.8);
 
 //Login Button Color
 const kKakaoLoginColor = Color(0xffffd84f);

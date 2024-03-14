@@ -1,8 +1,8 @@
 import 'package:channel_talk_flutter/channel_talk_flutter.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/restrain/restrain_item_model.dart';
@@ -43,7 +43,7 @@ class RestrainDialog extends ConsumerWidget {
               child: Column(
                 children: [
                   Text(
-                    "퍼피캣을\n이용할 수 없어요.",
+                    "공통.이용불가 제목".tr(),
                     style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                     textAlign: TextAlign.center,
                   ),
@@ -51,7 +51,7 @@ class RestrainDialog extends ConsumerWidget {
                     height: 8,
                   ),
                   Text(
-                    "궁금한 점이 있다면 1:1채널톡으로 알려주세요.",
+                    "공통.궁금한 점이 있다면 1:1채널톡으로 알려주세요".tr(),
                     style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     textAlign: TextAlign.center,
                   ),
@@ -70,7 +70,7 @@ class RestrainDialog extends ConsumerWidget {
                         child: Row(
                           children: [
                             Text(
-                              "제한 사유",
+                              "공통.제한 사유".tr(),
                               style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                               textAlign: TextAlign.center,
                             ),
@@ -102,7 +102,7 @@ class RestrainDialog extends ConsumerWidget {
                         child: Row(
                           children: [
                             Text(
-                              "제한 기간",
+                              "공통.제한 기간".tr(),
                               style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                               textAlign: TextAlign.center,
                             ),
@@ -110,7 +110,7 @@ class RestrainDialog extends ConsumerWidget {
                               width: 10,
                             ),
                             Text(
-                              '${restrainItemModel.date}일',
+                              '공통.제한 날짜'.tr(args: ["${restrainItemModel.date}"]),
                               style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
                               textAlign: TextAlign.center,
                             ),
@@ -155,7 +155,7 @@ class RestrainDialog extends ConsumerWidget {
                         ),
                         child: Center(
                           child: Text(
-                            "확인",
+                            "공통.확인".tr(),
                             style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                           ),
                         ),
@@ -182,7 +182,7 @@ class RestrainDialog extends ConsumerWidget {
                       },
                       child: Center(
                         child: Text(
-                          "1:1 채널톡",
+                          "공통.1:1 채널톡".tr(),
                           style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                         ),
                       ),

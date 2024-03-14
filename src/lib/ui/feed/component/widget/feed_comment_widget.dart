@@ -48,7 +48,9 @@ class FeedCommentWidget extends ConsumerWidget {
           children: [
             GestureDetector(
               onTap: () {
-                myInfo.uuid == memberUuid ? context.push("/member/myPage", extra: {"oldMemberUuid": oldMemberUuid}) : context.push("/member/userPage/$name/$memberUuid/$oldMemberUuid");
+                myInfo.uuid == memberUuid
+                    ? context.push("/member/myPage", extra: {"oldMemberUuid": oldMemberUuid})
+                    : context.push("/member/userPage", extra: {"nick": name, "memberUuid": memberUuid, "oldMemberUuid": oldMemberUuid});
               },
               child: getProfileAvatar(profileImage ?? "", 30, 30),
             ),
@@ -57,7 +59,7 @@ class FeedCommentWidget extends ConsumerWidget {
             ),
             Expanded(
               child: Bubble(
-                isComment: true,
+                // isComment: true,
                 radius: const Radius.circular(10),
                 elevation: 0,
                 alignment: Alignment.topLeft,

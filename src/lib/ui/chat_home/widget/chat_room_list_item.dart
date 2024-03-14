@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/common/util/extensions/date_time_extension.dart';
@@ -20,7 +19,7 @@ enum RoomContextMenuType {
 class ChatRoomItem extends ConsumerWidget {
   final void Function()? onTap;
   final void Function(Offset?)? onLongPress;
-  final void Function()? onLeave;
+  final void Function(ChatRoomModel)? onLeave;
   final void Function(bool)? onPin;
   final void Function(bool)? onFavorite;
 
@@ -64,88 +63,70 @@ class ChatRoomItem extends ConsumerWidget {
       return <PopupMenuEntry<RoomContextMenuType>>[
         PopupMenuItem<RoomContextMenuType>(
           value: RoomContextMenuType.pin,
-          child: SizedBox(
-            width: 212,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
-              child: Row(
-                children: [
-                  Text(
-                    roomModel.fixState == 1 ? '메시지.고정 해제'.tr() : '메시지.고정'.tr(),
-                    style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                  ),
-                  const Spacer(),
-                  roomModel.fixState == 1
-                      ? Image.asset(
-                          'assets/image/chat/icon_fix_ac.png',
-                          color: kPreviousTextSubTitleColor,
-                          width: 20,
-                          height: 20,
-                        )
-                      : Image.asset(
-                          'assets/image/chat/icon_fix_de.png',
-                          color: kPreviousTextSubTitleColor,
-                          width: 20,
-                          height: 20,
-                        ),
-                ],
+          child: Row(
+            children: [
+              Text(
+                roomModel.fixState == 1 ? '메시지.고정 해제'.tr() : '메시지.고정'.tr(),
+                style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
               ),
-            ),
+              const Spacer(),
+              roomModel.fixState == 1
+                  ? Image.asset(
+                      'assets/image/chat/icon_fix_ac.png',
+                      color: kPreviousTextSubTitleColor,
+                      width: 20,
+                      height: 20,
+                    )
+                  : Image.asset(
+                      'assets/image/chat/icon_fix_de.png',
+                      color: kPreviousTextSubTitleColor,
+                      width: 20,
+                      height: 20,
+                    ),
+            ],
           ),
         ),
         PopupMenuItem<RoomContextMenuType>(
           value: RoomContextMenuType.favorite,
-          child: SizedBox(
-            width: 212,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
-              child: Row(
-                children: [
-                  Text(
-                    roomModel.favoriteState == 1 ? '메시지.즐겨찾기 해제'.tr() : '메시지.즐겨찾기'.tr(),
-                    style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
-                  ),
-                  const Spacer(),
-                  roomModel.favoriteState == 1
-                      ? Image.asset(
-                          'assets/image/chat/icon_star_s_on.png',
-                          color: kPreviousTextSubTitleColor,
-                          width: 20,
-                          height: 20,
-                        )
-                      : Image.asset(
-                          'assets/image/chat/icon_star_s_off.png',
-                          color: kPreviousTextSubTitleColor,
-                          width: 20,
-                          height: 20,
-                        ),
-                ],
+          child: Row(
+            children: [
+              Text(
+                roomModel.favoriteState == 1 ? '메시지.즐겨찾기 해제'.tr() : '메시지.즐겨찾기'.tr(),
+                style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
               ),
-            ),
+              const Spacer(),
+              roomModel.favoriteState == 1
+                  ? Image.asset(
+                      'assets/image/chat/icon_star_s_on.png',
+                      color: kPreviousTextSubTitleColor,
+                      width: 20,
+                      height: 20,
+                    )
+                  : Image.asset(
+                      'assets/image/chat/icon_star_s_off.png',
+                      color: kPreviousTextSubTitleColor,
+                      width: 20,
+                      height: 20,
+                    ),
+            ],
           ),
         ),
         PopupMenuItem<RoomContextMenuType>(
           value: RoomContextMenuType.leave,
-          child: SizedBox(
-            width: 212,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
-              child: Row(
-                children: [
-                  Text(
-                    '메시지.나가기'.tr(),
-                    style: kBody12SemiBoldStyle.copyWith(color: kPreviousErrorColor),
-                  ),
-                  const Spacer(),
-                  Image.asset(
-                    'assets/image/chat/icon_exit.png',
-                    color: kPreviousErrorColor,
-                    width: 20,
-                    height: 20,
-                  ),
-                ],
+          child: Row(
+            children: [
+              Text(
+                '메시지.나가기'.tr(),
+                style: kBody12SemiBoldStyle.copyWith(color: kPreviousErrorColor),
               ),
-            ),
+              const Spacer(),
+              Image.asset(
+                'assets/image/chat/icon_exit.png',
+                color: kPreviousErrorColor,
+                width: 20,
+                height: 20,
+              ),
+            ],
           ),
         ),
       ];
@@ -188,7 +169,7 @@ class ChatRoomItem extends ConsumerWidget {
 
   void _onLeave() {
     if (onLeave != null) {
-      onLeave!();
+      onLeave!(roomModel);
     }
   }
 
@@ -206,55 +187,71 @@ class ChatRoomItem extends ConsumerWidget {
     var favoriteBackgroundColor = roomModel.favoriteState == 1 ? kPreviousTextBodyColor : kPreviousPrimaryColor;
     var favoriteForegroundColor = kNeutralColor100;
 
+    final sliderWidth = 60 / MediaQuery.sizeOf(context).width;
+
+    // print('roomModel $roomModel');
+    // final test = DateTime.fromMillisecondsSinceEpoch(int.parse(roomModel.lastMessage!.regDate) * 1000).toString().substring(0, 19) + 'Z';
+    // print('last reg date ${DateTime.parse(test).toLocal()}');
+    // print(
+    //     'roomModel.regDate ${roomModel.regDate} / DateTime.parse(roomModel.regDate).toLocal() ${DateTime.parse(roomModel.regDate).toLocal()} / ${DateTime.parse(roomModel.regDate).toLocal().millisecondsSinceEpoch}');
+
     return Slidable(
       key: const ValueKey(0),
       startActionPane: ActionPane(
-        extentRatio: 0.34.w,
+        extentRatio: sliderWidth * 2, //0.34,
         motion: const DrawerMotion(),
         children: [
-          SlidableAction(
+          CustomSlidableAction(
             onPressed: (_) async {
               _onPin();
             },
             backgroundColor: pinBackgroundColor,
             foregroundColor: pinForegroundColor,
-            icon: roomModel.fixState == 1
+            child: roomModel.fixState == 1
                 ? Image.asset(
                     'assets/image/chat/icon_fix_ac.png',
                     color: pinForegroundColor,
+                    width: 25,
+                    height: 25,
                   )
                 : Image.asset(
                     'assets/image/chat/icon_fix_de.png',
                     color: pinForegroundColor,
+                    width: 25,
+                    height: 25,
                   ),
-            label: roomModel.fixState == 1 ? '메시지.해제'.tr() : '메시지.고정'.tr(),
-            labelStyle: kBody11SemiBoldStyle.copyWith(height: 1.2),
+            // label: roomModel.fixState == 1 ? '메시지.해제'.tr() : '메시지.고정'.tr(),
+            // labelStyle: kBody11SemiBoldStyle.copyWith(height: 1.2),
           ),
-          SlidableAction(
+          CustomSlidableAction(
             onPressed: (_) async {
               _onFavorite();
             },
             backgroundColor: favoriteBackgroundColor,
             foregroundColor: favoriteForegroundColor,
-            icon: roomModel.favoriteState == 1
+            child: roomModel.favoriteState == 1
                 ? Image.asset(
                     'assets/image/chat/icon_star_s_on.png',
                     color: favoriteForegroundColor,
+                    width: 25,
+                    height: 25,
                   )
                 : Image.asset(
                     'assets/image/chat/icon_star_s_off.png',
                     color: favoriteForegroundColor,
+                    width: 25,
+                    height: 25,
                   ),
-            label: roomModel.favoriteState == 1 ? '메시지.해제'.tr() : '메시지.즐겨찾기'.tr(),
-            labelStyle: kBody11SemiBoldStyle.copyWith(height: 1.2),
+            // label: roomModel.favoriteState == 1 ? '메시지.해제'.tr() : '메시지.즐겨찾기'.tr(),
+            // labelStyle: kBody11SemiBoldStyle.copyWith(height: 1.2),
           ),
         ],
       ),
       endActionPane: ActionPane(
-        extentRatio: 0.15.w,
+        extentRatio: sliderWidth, //0.15,
         motion: const DrawerMotion(),
         children: [
-          SlidableAction(
+          CustomSlidableAction(
             onPressed: (_) async {
               ///TODO
               ///provider call -> leave
@@ -263,12 +260,14 @@ class ChatRoomItem extends ConsumerWidget {
             },
             backgroundColor: kPreviousErrorColor,
             foregroundColor: kPreviousNeutralColor100,
-            icon: Image.asset(
+            child: Image.asset(
               'assets/image/chat/icon_exit.png',
               color: kNeutralColor100,
+              width: 25,
+              height: 25,
             ),
-            label: '메시지.나가기'.tr(),
-            labelStyle: kBody11SemiBoldStyle.copyWith(height: 1.2),
+            // label: '메시지.나가기'.tr(),
+            // labelStyle: kBody11SemiBoldStyle.copyWith(height: 1.2),
           ),
         ],
       ),
@@ -304,7 +303,7 @@ class ChatRoomItem extends ConsumerWidget {
                         children: [
                           Text(
                             roomModel.nick,
-                            style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                            style: kBody14BoldStyle.copyWith(color: kNeutralColor900),
                           ),
                           Visibility(
                             visible: roomModel.fixState == 1,
@@ -316,10 +315,12 @@ class ChatRoomItem extends ConsumerWidget {
                           ),
                           const Spacer(),
                           Padding(
-                            padding: EdgeInsets.only(left: 4.0),
+                            padding: const EdgeInsets.only(left: 4.0),
                             child: Text(
-                              DateTime.parse(roomModel.regDate).localizedTimeDayDiff(),
-                              style: kBadge10MediumStyle.copyWith(color: kNeutralColor500),
+                              roomModel.lastMessage == null
+                                  ? DateTime.fromMillisecondsSinceEpoch(DateTime.parse(roomModel.regDate).toLocal().millisecondsSinceEpoch).localizedTimeDayDiff()
+                                  : DateTime.fromMillisecondsSinceEpoch(int.parse(roomModel.lastMessage!.regDate) * 1000).toLocal().localizedTimeDayDiff(),
+                              style: kBody12RegularStyle400.copyWith(color: kNeutralColor500),
                             ),
                           ),
                         ],
@@ -328,31 +329,33 @@ class ChatRoomItem extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              roomModel.lastMsg ?? '',
-                              style: kBody12RegularStyle400.copyWith(color: kPreviousTextBodyColor, height: 1.3),
+                              roomModel.lastMessage?.type == 'REPORT' ? '메시지.신고한 메시지입니다'.tr() : roomModel.lastMessage?.message ?? '메시지.채팅방이 개설 되었습니다'.tr(),
+                              style: roomModel.noReadCount > 0
+                                  ? kBody12ExtraBoldStyle.copyWith(color: kNeutralColor500, height: 1.3)
+                                  : kBody12RegularStyle400.copyWith(color: kNeutralColor500, height: 1.3),
                               softWrap: false,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const SizedBox(
-                            width: 32.0,
+                            width: 20.0,
                           ),
                           //TODO 수정 필요
-                          // if (roomModel.newCount > 0)
-                          //   Container(
-                          //     width: 20.w,
-                          //     height: 20.h,
-                          //     decoration: const BoxDecoration(color: kBadgeColor, shape: BoxShape.circle),
-                          //     child: Center(
-                          //       child: roomModel.newCount > 0
-                          //           ? Text(
-                          //               roomModel.newCount.toString(),
-                          //               style: kBadge8RegularStyle.copyWith(color: kNeutralColor100),
-                          //             )
-                          //           : const SizedBox.shrink(),
-                          //     ),
-                          //   ),
+                          if (roomModel.noReadCount > 0)
+                            Container(
+                              width: 20,
+                              height: 20,
+                              decoration: const BoxDecoration(color: kErrorColor400, shape: BoxShape.circle),
+                              child: Center(
+                                child: roomModel.noReadCount > 0
+                                    ? Text(
+                                        roomModel.noReadCount.toString(),
+                                        style: kBody12RegularStyle400.copyWith(color: kWhiteColor),
+                                      )
+                                    : const SizedBox.shrink(),
+                              ),
+                            ),
                         ],
                       ),
                     ],

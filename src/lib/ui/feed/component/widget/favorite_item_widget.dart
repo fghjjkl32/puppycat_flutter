@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -45,7 +46,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
     Future(() {
       final currentFollowState = ref.read(followUserStateProvider)[widget.followerUuid];
       if (currentFollowState == null) {
-        ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, widget.isFollow);
+        ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followerUuid, followState: widget.isFollow, isActionButton: false);
       }
     });
   }
@@ -60,81 +61,81 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
       onTap: () {
         myInfo.uuid == widget.followerUuid
             ? context.push("/member/myPage")
-            : context.push("/member/userPage/${widget.userName}/${widget.followerUuid}/${widget.oldMemberUuid == "" ? null : widget.oldMemberUuid}");
+            : context.push("/member/userPage", extra: {"nick": widget.userName, "memberUuid": widget.followerUuid, "oldMemberUuid": widget.oldMemberUuid == "" ? null : widget.oldMemberUuid});
         //TODO
         //Route 다시
       },
       child: Padding(
         padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 8, top: 8),
         child: Row(
-          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: 10,
+            Expanded(
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: getProfileAvatar(widget.profileImage ?? "", 40, 40),
                   ),
-                  child: getProfileAvatar(widget.profileImage ?? "", 40, 40),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        widget.isSpecialUser
-                            ? Row(
-                                children: [
-                                  Image.asset(
-                                    'assets/image/feed/icon/small_size/icon_special.png',
-                                    height: 13,
-                                  ),
-                                  const SizedBox(
-                                    width: 4,
-                                  ),
-                                ],
-                              )
-                            : Container(),
+                        Row(
+                          children: [
+                            widget.isSpecialUser
+                                ? Row(
+                                    children: [
+                                      Image.asset(
+                                        'assets/image/feed/icon/small_size/icon_special.png',
+                                        height: 13,
+                                      ),
+                                      const SizedBox(
+                                        width: 4,
+                                      ),
+                                    ],
+                                  )
+                                : Container(),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 4.0),
+                                child: Text(
+                                  widget.userName,
+                                  style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
                         Text(
-                          widget.userName,
-                          style: kBody14BoldStyle.copyWith(color: kPreviousTextTitleColor),
+                          widget.content,
+                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    Text(
-                      widget.content,
-                      style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
             Consumer(builder: (context, ref, child) {
-              return myInfo.uuid == widget.followerUuid
+              return myInfo.uuid == widget.followerUuid || widget.userName == "알 수 없음"
                   ? Container()
                   : isFollow
                       ? GestureDetector(
                           onTap: () async {
-                            if (!ref.watch(followApiIsLoadingStateProvider)) {
-                              if (!isLogined) {
-                                context.push("/home/login");
-                              } else {
-                                final result = await ref.watch(followStateProvider.notifier).deleteFollow(
-                                      followUuid: widget.followerUuid,
-                                    );
-
-                                if (result.result) {
-                                  setState(() {
-                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, false);
-                                  });
-                                }
-                              }
+                            if (!isLogined) {
+                              context.push("/home/login");
+                            } else {
+                              setState(() {
+                                ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followerUuid, followState: false, isActionButton: true);
+                              });
                             }
-
                             // setState(() {
                             //   isFollowing = false;
                             // });
@@ -165,7 +166,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             ),
                             child: Center(
                               child: Text(
-                                "팔로잉",
+                                "피드.팔로잉".tr(),
                                 style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                               ),
                             ),
@@ -173,22 +174,13 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                         )
                       : GestureDetector(
                           onTap: () async {
-                            if (!ref.watch(followApiIsLoadingStateProvider)) {
-                              if (!isLogined) {
-                                context.push("/home/login");
-                              } else {
-                                final result = await ref.watch(followStateProvider.notifier).postFollow(
-                                      followUuid: widget.followerUuid,
-                                    );
-
-                                if (result.result) {
-                                  setState(() {
-                                    ref.read(followUserStateProvider.notifier).setFollowState(widget.followerUuid, true);
-                                  });
-                                }
-                              }
+                            if (!isLogined) {
+                              context.push("/home/login");
+                            } else {
+                              setState(() {
+                                ref.read(followUserStateProvider.notifier).setFollowState(memberUuid: widget.followerUuid, followState: true, isActionButton: true);
+                              });
                             }
-
                             // if (ref.read(userInfoProvider).userModel == null) {
                             //   context.push("/home/login");
                             // } else {
@@ -222,7 +214,7 @@ class FavoriteItemWidgetState extends ConsumerState<FavoriteItemWidget> {
                             ),
                             child: Center(
                               child: Text(
-                                "팔로우",
+                                "피드.팔로우".tr(),
                                 style: kButton12BoldStyle.copyWith(color: kPreviousNeutralColor100),
                               ),
                             ),

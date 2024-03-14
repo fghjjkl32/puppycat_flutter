@@ -1,4 +1,5 @@
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -76,8 +78,8 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: const Text(
-              "해시태그",
+            title: Text(
+              "검색.해시태그".tr(),
             ),
             leading: IconButton(
               onPressed: () {
@@ -121,7 +123,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                   height: 12,
                                 ),
                                 Text(
-                                  "'${widget.searchWord}'에 대한 피드가 없어요",
+                                  "검색.에 대한 피드가 없어요".tr(args: [(widget.searchWord)]),
                                   textAlign: TextAlign.center,
                                   style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                 ),
@@ -183,6 +185,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                               return RefreshLoadingAnimationWidget(controller: controller, child: child);
                             },
                             child: GridView.builder(
+                              physics: const AlwaysScrollableScrollPhysics(),
                               controller: searchContentController,
                               gridDelegate: SliverQuiltedGridDelegate(
                                 crossAxisCount: 3,
@@ -228,10 +231,13 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                       'contentType': 'searchContent',
                                     };
 
+                                    ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
                                     await ref.read(firstFeedDetailStateProvider.notifier).getFirstFeedState('searchContent', lists[index].idx).then((value) {
                                       if (value == null) {
                                         return;
                                       }
+
                                       // context.push("/feed/detail/null/${widget.searchWord}/${ref.read(userInfoProvider).userModel?.idx}/${lists[index].idx}/searchContent");
                                       context.push('/feed/detail', extra: extraMap);
                                     });
@@ -272,7 +278,7 @@ class FeedSearchListScreenState extends ConsumerState<FeedSearchListScreen> with
                                       ),
                                     ],
                                   ),
-                                );
+                                ).throttle();
                               },
                             ),
                           ),

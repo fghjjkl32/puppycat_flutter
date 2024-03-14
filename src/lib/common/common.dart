@@ -1,6 +1,8 @@
 import 'package:app_install_date/app_install_date.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -54,13 +56,13 @@ double getViewportFractionCalculateValue(double width) {
 String displayedAt(DateTime time) {
   var milliSeconds = DateTime.now().difference(time).inMilliseconds;
   var seconds = milliSeconds / 1000;
-  if (seconds < 60) return '방금 전';
+  if (seconds < 60) return '방금 전'.tr();
   var minutes = seconds / 60;
-  if (minutes < 60) return '${minutes.floor()}분 전';
+  if (minutes < 60) return '분 전'.tr(args: ["${minutes.floor()}"]);
   var hours = minutes / 60;
-  if (hours < 24) return '${hours.floor()}시간 전';
+  if (hours < 24) return '시간 전'.tr(args: ["${hours.floor()}"]);
   var days = hours / 24;
-  if (days < 7) return '${days.floor()}일 전';
+  if (days < 7) return '일 전'.tr(args: ["${days.floor()}"]);
 
   return DateFormat('yyyy-MM-dd').format(time);
 }
@@ -86,7 +88,12 @@ String convertToJsonStringQuotes({required String raw}) {
 }
 
 String thumborUrl(String url) {
-  return Thumbor(host: thumborHostUrl, key: thumborKey).buildImage(url).toUrl();
+  final resultUrl = Thumbor(host: thumborHostUrl, key: thumborKey).buildImage(url);
+
+  ///TODO: 이미지 사이즈 조절
+  // resultUrl.resize(width: 300, height: 300);
+
+  return resultUrl.toUrl();
 }
 
 List<String> getHashtagList(textData) {
@@ -129,6 +136,32 @@ Future<String> processMentionEditedText(String editedText, List<MentionListData>
   return Future.value(editedText);
 }
 
+List<InlineSpan> truncateInlineSpans(List<InlineSpan> spans, int length) {
+  List<InlineSpan> truncatedSpans = [];
+  int currentLength = 0;
+
+  for (InlineSpan span in spans) {
+    if (span is TextSpan) {
+      String text = span.text ?? "";
+      // 현재 스팬의 길이가 요구 길이를 넘지 않는 경우
+      if (currentLength + text.length <= length) {
+        truncatedSpans.add(span);
+        currentLength += text.length;
+      } else {
+        // 필요한 경우 텍스트를 잘라냄
+        int remainingLength = length - currentLength;
+        String truncatedText = text.substring(0, remainingLength);
+        truncatedSpans.add(TextSpan(text: truncatedText, style: span.style));
+        break; // 최대 길이에 도달했으므로 반복 중단
+      }
+    }
+
+    if (currentLength >= length) break; // 길이가 충분한 경우 종료
+  }
+
+  return truncatedSpans;
+}
+
 List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<MentionListData> mentionList, BuildContext context, TextStyle tagStyle, WidgetRef ref, String? oldMemberUuid) {
   List<InlineSpan> spans = [];
 
@@ -149,18 +182,18 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
     if (mentionMatched.isNotEmpty) {
       if (mentionList.any((mention) => mention.uuid == mentionMatched)) {
         var mention = mentionList.firstWhere((m) => m.uuid == mentionMatched);
-        spans.add(WidgetSpan(
-          child: GestureDetector(
-            onTap: () {
-              ref.read(myInfoStateProvider).uuid == mention.uuid
-                  ? context.push("/member/myPage", extra: {"oldMemberUuid": oldMemberUuid!})
-                  : mention.memberState == 0
-                      ? context.push("/member/userUnknown")
-                      : context.push("/member/userPage/${mention.nick}/${mention.uuid}/$oldMemberUuid");
-            },
-            child: Text('@' + (mention.memberState == 0 ? "(알 수 없음)" : (mention.nick ?? '')), style: tagStyle),
-          ),
-        ));
+
+        spans.add(TextSpan(
+            text: '@' + (mention.state == 0 ? "공통.알 수 없음".tr() : (mention.nick ?? '')),
+            style: tagStyle,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                ref.read(myInfoStateProvider).uuid == mention.uuid
+                    ? context.push("/member/myPage", extra: {"oldMemberUuid": oldMemberUuid!})
+                    : mention.state == 0
+                        ? context.push("/member/userUnknown")
+                        : context.push("/member/userPage", extra: {"nick": mention.nick, "memberUuid": mention.uuid, "oldMemberUuid": oldMemberUuid});
+              }));
       } else {
         spans.add(TextSpan(text: '@' + mentionMatched));
       }
@@ -168,16 +201,7 @@ List<InlineSpan> replaceMentionsWithNicknamesInContent(String content, List<Ment
       if (hashtagMatched.contains('*')) {
         spans.add(TextSpan(text: '#' + hashtagMatched));
       } else {
-        spans.add(WidgetSpan(
-          child: GestureDetector(
-            onTap: () {
-              //TODO
-              //Route 다시
-              context.push("/search/hashtag/$hashtagMatched/$oldMemberUuid");
-            },
-            child: Text('#' + hashtagMatched, style: tagStyle),
-          ),
-        ));
+        spans.add(TextSpan(text: '#' + hashtagMatched, style: tagStyle, recognizer: TapGestureRecognizer()..onTap = () => context.push("/search/hashtag/$hashtagMatched/$oldMemberUuid")));
       }
     }
 
@@ -197,7 +221,7 @@ String replaceMentionsWithNicknamesInContentAsString(String content, List<Mentio
 
     if (mentionList.any((mention) => mention.uuid == matchedString)) {
       var mention = mentionList.firstWhere((m) => m.uuid == matchedString);
-      return '@' + (mention.memberState == 0 ? "(알 수 없음)" : mention.nick!);
+      return '@' + (mention.state == 0 ? "공통.알 수 없음".tr() : mention.nick!);
     } else {
       return '@' + matchedString;
     }
@@ -218,7 +242,7 @@ String replaceMentionsWithNicknamesInContentAsTextFieldString(String content, Li
 
     if (mentionList.any((mention) => mention.uuid == matchedString)) {
       var mention = mentionList.firstWhere((m) => m.uuid == matchedString);
-      return '@' + (mention.memberState == 0 ? "(알 수 없음)" : mention.nick!);
+      return '@' + (mention.state == 0 ? "공통.알 수 없음".tr() : mention.nick!);
     } else {
       return '@' + matchedString;
     }
@@ -258,7 +282,7 @@ bool onBackPressed() {
   if (currentBackPressTime == null || now.difference(currentBackPressTime!) > const Duration(seconds: 2)) {
     currentBackPressTime = now;
     Fluttertoast.showToast(
-      msg: "한번 더 누르시면 종료됩니다.",
+      msg: "공통.한번 더 누르시면 종료됩니다".tr(),
       gravity: ToastGravity.BOTTOM,
       backgroundColor: kPreviousNeutralColor500,
       fontSize: 14,
@@ -311,9 +335,9 @@ void onTapHide({
     if (result.result && context.mounted) {
       toast(
         context: context,
-        text: '피드를 숨겼어요.',
+        text: '공통.피드를 숨겼어요'.tr(),
         type: ToastType.purple,
-        buttonText: "되돌리기",
+        buttonText: "공통.되돌리기".tr(),
         buttonOnTap: () async {
           final result = await ref.watch(feedListStateProvider.notifier).deleteHide(
                 contentType: contentType,
@@ -323,7 +347,7 @@ void onTapHide({
           if (result.result && context.mounted) {
             toast(
               context: context,
-              text: '피드를 되돌렸어요.',
+              text: '공통.피드를 되돌렸어요'.tr(),
               type: ToastType.purple,
             );
           }
@@ -341,9 +365,9 @@ void onTapReport({
 }) async {
   toast(
     context: context,
-    text: '신고 접수 완료!',
+    text: '공통.신고 접수 완료!'.tr(),
     type: ToastType.purple,
-    buttonText: "되돌리기",
+    buttonText: "공통.되돌리기".tr(),
     buttonOnTap: () async {
       final result = reportType
           ? await ref.read(commentListStateProvider.notifier).deleteCommentReport(
@@ -358,7 +382,7 @@ void onTapReport({
       if (result.result && context.mounted) {
         toast(
           context: context,
-          text: '신고 접수를 취소했어요.',
+          text: '공통.신고 접수를 취소했어요'.tr(),
           type: ToastType.grey,
         );
       }

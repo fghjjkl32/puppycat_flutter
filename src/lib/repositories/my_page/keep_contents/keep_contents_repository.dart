@@ -55,6 +55,7 @@ class KeepContentsRepository {
         code: responseModel.code,
         refer: 'KeepContentsRepository',
         caller: 'getMyKeepContentDetail',
+        arguments: [responseModel.data],
       );
     }
 

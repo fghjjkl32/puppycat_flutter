@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
@@ -10,8 +10,8 @@ import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/models/feed/feed_data.dart';
-import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/login/login_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:pet_mobile_social_flutter/ui/components/bottom_sheet/widget/show_custom_modal_bottom_sheet.dart';
 import 'package:pet_mobile_social_flutter/ui/feed/component/widget/dot_indicator.dart';
@@ -87,14 +87,11 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
             _isTagVisible.value = !_isTagVisible.value;
           },
           onDoubleTap: () {
-            if (!ref.watch(likeApiIsLoadingStateProvider)) {
-              widget.isLike
-                  ? null
-                  : ref.watch(feedListStateProvider.notifier).postLike(
-                        contentIdx: widget.contentIdx,
-                        contentType: widget.contentType,
-                      );
-            }
+            widget.isLike
+                ? null
+                : ref.watch(feedListStateProvider.notifier).toggleLike(
+                      contentIdx: widget.contentIdx,
+                    );
           },
           child: CarouselSlider(
             options: CarouselOptions(
@@ -141,13 +138,15 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                           return isTagVisible
                                               ? GestureDetector(
                                                   onTap: () {
-                                                    myInfo.uuid == tag.memberUuid ? context.push("/member/myPage") : context.push("/member/userPage/${tag.nick!}/${tag.memberUuid}/${tag.memberUuid}");
+                                                    myInfo.uuid == tag.memberUuid
+                                                        ? context.push("/member/myPage")
+                                                        : context.push("/member/userPage", extra: {"nick": tag.nick!, "memberUuid": tag.memberUuid, "oldMemberUuid": tag.memberUuid});
                                                   },
                                                   child: MentionTagWidget(
                                                     isCanClose: false,
                                                     color: kPreviousTextSubTitleColor.withOpacity(0.8),
                                                     textStyle: kBody11RegularStyle.copyWith(color: kPreviousNeutralColor100),
-                                                    text: tag.nick!,
+                                                    text: tag.nick ?? "알 수 없음",
                                                     onDelete: () {},
                                                   ),
                                                 )
@@ -182,7 +181,7 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                               bottom: 10.0,
                                             ),
                                             child: Text(
-                                              "태그된 대상",
+                                              "피드.태그된 대상".tr(),
                                               style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                             ),
                                           ),
@@ -193,8 +192,8 @@ class FeedImageDetailWidgetState extends ConsumerState<FeedImageDetailWidget> wi
                                               itemBuilder: (BuildContext context, int index) {
                                                 return FavoriteItemWidget(
                                                   profileImage: i.imgMemberTagList![index].profileImgUrl,
-                                                  userName: i.imgMemberTagList![index].nick!,
-                                                  content: i.imgMemberTagList![index].intro!,
+                                                  userName: i.imgMemberTagList![index].nick ?? "알 수 없음",
+                                                  content: i.imgMemberTagList![index].intro ?? "",
                                                   isSpecialUser: i.imgMemberTagList![index].isBadge == 1,
                                                   isFollow: i.imgMemberTagList![index].followState == 1,
                                                   followerUuid: i.imgMemberTagList![index].memberUuid!,

@@ -1,11 +1,10 @@
 import 'package:drift/drift.dart' hide Column;
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
@@ -176,7 +175,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                         ),
                       ),
                     ),
-              hintText: "프로필이나 피드를 검색해 보세요.",
+              hintText: "검색.프로필이나 피드를 검색해 보세요".tr(),
               hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
             ),
           ),
@@ -205,15 +204,15 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                 ),
                 tabs: [
                   Text(
-                    "전체",
+                    "검색.전체".tr(),
                     style: kTitle16BoldStyle,
                   ),
                   Text(
-                    "프로필",
+                    "검색.프로필".tr(),
                     style: kTitle16BoldStyle,
                   ),
                   Text(
-                    "해시태그",
+                    "검색.해시태그".tr(),
                     style: kTitle16BoldStyle,
                   ),
                   // Text(
@@ -242,7 +241,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 80.0),
                                     child: Text(
-                                      "'${_searchController.text}'에 대한\n검색 결과가 없어요.",
+                                      "검색.검색 결과가 없어요".tr(args: [_searchController.text]),
                                       textAlign: TextAlign.center,
                                       style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
@@ -267,7 +266,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                         bottom: 6,
                                       ),
                                       child: Text(
-                                        "지금 많이 찾고 있어요!",
+                                        "검색.지금 많이 찾고 있어요!".tr(),
                                         style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                                       ),
                                     ),
@@ -315,7 +314,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                   ),
                                                   Text(
                                                     bestList[index].searchWord!,
-                                                    style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                                    style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                                                   ),
                                                 ],
                                               ),
@@ -353,7 +352,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
                                                       Text(
-                                                        "프로필",
+                                                        "검색.프로필".tr(),
                                                         style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                                                       ),
                                                       GestureDetector(
@@ -361,8 +360,8 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                           DefaultTabController.of(context).animateTo(1);
                                                         },
                                                         child: Text(
-                                                          "전체보기",
-                                                          style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                                                          "검색.전체보기".tr(),
+                                                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                         ),
                                                       ),
                                                     ],
@@ -431,7 +430,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
                                                       Text(
-                                                        "해시태그",
+                                                        "검색.해시태그".tr(),
                                                         style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                                                       ),
                                                       GestureDetector(
@@ -439,8 +438,8 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                           DefaultTabController.of(context).animateTo(2);
                                                         },
                                                         child: Text(
-                                                          "전체보기",
-                                                          style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                                                          "검색.전체보기".tr(),
+                                                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                         ),
                                                       ),
                                                     ],
@@ -476,7 +475,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 80.0),
                                     child: Text(
-                                      "'${_searchController.text}'에 대한\n검색 결과가 없어요.",
+                                      "검색.검색 결과가 없어요".tr(args: [_searchController.text]),
                                       textAlign: TextAlign.center,
                                       style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
@@ -501,7 +500,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                         bottom: 6,
                                       ),
                                       child: Text(
-                                        "지금 많이 찾고 있어요!",
+                                        "검색.지금 많이 찾고 있어요!".tr(),
                                         style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                                       ),
                                     ),
@@ -597,7 +596,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(vertical: 80.0),
                                     child: Text(
-                                      "'${_searchController.text}'에 대한\n검색 결과가 없어요.",
+                                      "검색.검색 결과가 없어요".tr(args: [_searchController.text]),
                                       textAlign: TextAlign.center,
                                       style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                     ),
@@ -622,7 +621,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                         bottom: 6,
                                       ),
                                       child: Text(
-                                        "지금 많이 찾고 있어요!",
+                                        "검색.지금 많이 찾고 있어요!".tr(),
                                         style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                                       ),
                                     ),
@@ -717,7 +716,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                     height: 12,
                                   ),
                                   Text(
-                                    '최근 검색어가 없어요.',
+                                    '검색.최근 검색어가 없어요'.tr(),
                                     textAlign: TextAlign.center,
                                     style: kBody13RegularStyle.copyWith(color: kPreviousTextBodyColor, height: 1.4, letterSpacing: 0.2),
                                   ),
@@ -745,7 +744,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "최근 검색어",
+                                          "검색.최근 검색어".tr(),
                                           style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                                         ),
                                         GestureDetector(
@@ -770,7 +769,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         Text(
-                                                          "최근 검색어를\n모두 삭제할까요?",
+                                                          "검색.모두 삭제할까요?".tr(),
                                                           style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                                         ),
                                                       ],
@@ -795,7 +794,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                           ),
                                                           child: Center(
                                                             child: Text(
-                                                              "닫기",
+                                                              "검색.닫기".tr(),
                                                               style: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                                             ),
                                                           ),
@@ -824,7 +823,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                                           ),
                                                           child: Center(
                                                             child: Text(
-                                                              "삭제하기",
+                                                              "검색.삭제하기".tr(),
                                                               style: kButton14BoldStyle.copyWith(color: kPreviousNeutralColor100),
                                                             ),
                                                           ),
@@ -837,7 +836,7 @@ class SearchScreenState extends ConsumerState<SearchScreen> {
                                             );
                                           },
                                           child: Text(
-                                            "전체 삭제",
+                                            "검색.전체 삭제".tr(),
                                             style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
                                           ),
                                         ),

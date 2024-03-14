@@ -3,6 +3,8 @@ import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/config/router/router.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_message_controller.dart';
 import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message_payload.dart';
+import 'package:pet_mobile_social_flutter/providers/chat/chat_room_list_state_provider.dart';
+import 'package:pet_mobile_social_flutter/providers/feed/detail/feed_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/setting/notice_list_state_provider.dart';
 import 'package:pet_mobile_social_flutter/providers/user/my_info_state_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,6 +24,7 @@ class FirebaseState extends _$FirebaseState {
     await fireBaseMessageController.init();
 
     fireBaseMessageController.setBackgroundMessageOnTapHandler((payload) => navigatorHandler(payload));
+    fireBaseMessageController.setForegroundMessageOnTapHandler((payload) => updateChatRoomList(payload));
 
     state = fireBaseMessageController;
   }
@@ -30,6 +33,22 @@ class FirebaseState extends _$FirebaseState {
     if (state.initData != null) {
       navigatorHandler(state.initData!);
     }
+  }
+
+  void updateChatRoomList(FirebaseCloudMessagePayload payload) {
+    PushType pushType = PushType.values.firstWhere((element) => payload.type == describeEnum(element), orElse: () => PushType.unknown);
+
+    if (pushType != PushType.chatting) {
+      return;
+    }
+
+    // ref.read(chatRoomListStateProvider).refresh();
+    // Map<String, dynamic> chatMap = jsonDecode(payload.chat ?? '{}');
+    ref.read(chatRoomListStateProvider.notifier).updateChatRoom(
+          roomUuid: payload.chat?.roomUuid ?? '',
+          isUpdate: true,
+          chatData: payload.chat,
+        );
   }
 
   void navigatorHandler(FirebaseCloudMessagePayload payload) {
@@ -58,6 +77,9 @@ class FirebaseState extends _$FirebaseState {
           'contentIdx': payload.contentsIdx,
           'contentType': 'notificationContent',
         };
+
+        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
         router.push('/feed/detail', extra: extraMap);
         // router.push("/feed/detail/Contents/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent");
         break;
@@ -75,6 +97,9 @@ class FirebaseState extends _$FirebaseState {
           'contentIdx': payload.contentsIdx,
           'contentType': 'notificationContent',
         };
+
+        ref.read(feedDetailParameterProvider.notifier).state = extraMap;
+
         router.push('/feed/detail', extra: extraMap);
         // router.push("/feed/detail/nickname/피드/${myInfo.uuid}/${payload.contentsIdx}/notificationContent", extra: {
         //   "isRouteComment": true,
@@ -89,6 +114,20 @@ class FirebaseState extends _$FirebaseState {
         router.push("/setting/notice", extra: {
           "contentsIdx": payload.contentsIdx,
         });
+        break;
+      case PushType.chatting:
+        if (payload.chat == null) {
+          break;
+        }
+        // final Map<String, dynamic> chatData = jsonDecode(payload.chat!);
+
+        print('payload $payload');
+
+        ref.read(chatRoomListStateProvider.notifier).enterChatRoom(
+              targetMemberUuid: payload.chat?.senderMemberUuid ?? '',
+              titleName: payload.chat?.senderNick ?? 'unknown',
+              targetProfileImgUrl: payload.chat?.targetMemberUuid ?? '',
+            );
         break;
       case PushType.unknown:
         return;

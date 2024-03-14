@@ -1,9 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-// import 'package:flutter_gen/gen_l10n/l10n.dart';
-import 'package:intl/intl.dart';
-
 /// Provides extra functionality for formatting the time.
 extension DateTimeExtension on DateTime {
   bool operator <(DateTime other) {
@@ -94,6 +91,7 @@ extension DateTimeExtension on DateTime {
   }
 
   String localizedTimeDayDiff() {
+    print('this time : $this');
     final now = DateTime.now();
     final targetDT = DateTime(year, month, day, hour, minute, second, millisecond, microsecond);
 
@@ -105,6 +103,8 @@ extension DateTimeExtension on DateTime {
     int hours = difference.inHours.abs();
     int minutes = difference.inMinutes.abs();
     int seconds = difference.inSeconds.abs();
+
+    print('days $days / hours $hours / minutes $minutes / seconds $seconds');
 
     if (sameDay) {
       if (hours > 0) {
@@ -124,6 +124,9 @@ extension DateTimeExtension on DateTime {
       if (days > 30) {
         return '${year.toString()}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
       } else {
+        if (days <= 0) {
+          days = 1;
+        }
         return '$days${'메시지.일 전'.tr()}';
       }
     }

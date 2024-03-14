@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,7 +35,7 @@ class FeedWriteScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     Text(
-                      "잠깐! 지금 나가면\n작성한 내용은 모두 사라져요.",
+                      "피드.피드 나가기 경고".tr(),
                       style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                       textAlign: TextAlign.center,
                     ),
@@ -54,11 +55,11 @@ class FeedWriteScreen extends ConsumerWidget {
                 ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
               },
               confirmWidget: Text(
-                "이어서 하기",
+                "피드.이어서 하기".tr(),
                 style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
               ),
               cancelWidget: Text(
-                "나가기",
+                "피드.나가기".tr(),
                 style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
               ),
             );
@@ -69,7 +70,7 @@ class FeedWriteScreen extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('새로운 피드'),
+          title: Text('피드.새로운 피드'.tr()),
           leading: IconButton(
             onPressed: () {
               showDialog(
@@ -81,7 +82,7 @@ class FeedWriteScreen extends ConsumerWidget {
                       child: Column(
                         children: [
                           Text(
-                            "잠깐! 지금 나가면\n작성한 내용은 모두 사라져요.",
+                            "피드.피드 나가기 경고".tr(),
                             style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                             textAlign: TextAlign.center,
                           ),
@@ -101,11 +102,11 @@ class FeedWriteScreen extends ConsumerWidget {
                       ref.watch(feedWriteCroppedFilesProvider.notifier).removeAll();
                     },
                     confirmWidget: Text(
-                      "이어서 하기",
+                      "피드.이어서 하기".tr(),
                       style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
                     ),
                     cancelWidget: Text(
-                      "나가기",
+                      "피드.나가기".tr(),
                       style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                     ),
                   );
@@ -120,8 +121,8 @@ class FeedWriteScreen extends ConsumerWidget {
           actions: [
             TextButton(
               child: Text(
-                '등록',
-                style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
+                '피드.등록'.tr(),
+                style: kTitle14BoldStyle.copyWith(color: kPreviousPrimaryColor),
               ),
               onPressed: () async {
                 showDialog(
@@ -178,14 +179,14 @@ class FeedWriteScreen extends ConsumerWidget {
                             child: Column(
                               children: [
                                 Text(
-                                  "피드 올리는데 문제가 생겼어요.",
+                                  "피드.피드 올리는데 문제가 생겼어요".tr(),
                                   style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                 ),
                                 const SizedBox(
                                   height: 4,
                                 ),
                                 Text(
-                                  "올리기를 다시 시도해 주세요.",
+                                  "피드.올리기를 다시 시도해 주세요".tr(),
                                   style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                   textAlign: TextAlign.center,
                                 ),
@@ -196,7 +197,7 @@ class FeedWriteScreen extends ConsumerWidget {
                             context.pop();
                           },
                           confirmWidget: Text(
-                            "확인",
+                            "피드.확인".tr(),
                             style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                           ));
                     },

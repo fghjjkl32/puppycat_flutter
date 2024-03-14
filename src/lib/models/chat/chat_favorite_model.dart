@@ -56,7 +56,6 @@ class ChatFavoriteModel with _$ChatFavoriteModel {
   factory ChatFavoriteModel({
     required String regDateTz,
     required String memberUuid,
-    @JsonKey(name: 'result_cd') required String resultCd,
     required String regDate,
     required int sort,
     required int type,
@@ -66,6 +65,7 @@ class ChatFavoriteModel with _$ChatFavoriteModel {
     required int state,
     required int idx,
     required int maxUser,
+    required String intro,
   }) = _ChatFavoriteModel;
 
   factory ChatFavoriteModel.fromJson(Map<String, dynamic> json) => _$ChatFavoriteModelFromJson(json);

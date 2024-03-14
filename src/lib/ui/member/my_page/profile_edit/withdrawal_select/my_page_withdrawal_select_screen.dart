@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,8 +41,8 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text(
-            "회원 탈퇴",
+          title: Text(
+            "회원.회원 탈퇴".tr(),
           ),
           leading: IconButton(
             onPressed: () {
@@ -64,14 +65,14 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "혹시 서비스에 불편함이 있으셨나요?",
+                      "회원.혹시 서비스에 불편함이 있으셨나요?".tr(),
                       style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
                     const SizedBox(
                       height: 2,
                     ),
                     Text(
-                      "탈퇴 사유를 남겨 주시면 더 발전하는 퍼피캣이 되겠습니다.",
+                      "회원.탈퇴 사유를 남겨 주시면 더 발전하는 퍼피캣이 되겠습니다".tr(),
                       style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                     ),
                     const SizedBox(
@@ -132,7 +133,7 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                                 width: 40,
                               ),
                               Text(
-                                "너무 아쉬워요... 정말 탈퇴하시나요?",
+                                "회원.정말 탈퇴하시나요?".tr(),
                                 style: kBody12SemiBoldStyle.copyWith(color: kPreviousTextTitleColor),
                               ),
                             ],
@@ -163,7 +164,7 @@ class MyPageWithdrawalSelectScreenState extends ConsumerState<MyPageWithdrawalSe
                         child: Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Text(
-                            '다음',
+                            '회원.다음'.tr(),
                             style: kBody14BoldStyle.copyWith(color: code == 0 || (code == 7 && directInputText!.isEmpty) ? kPreviousTextSubTitleColor : kPreviousNeutralColor100),
                           ),
                         ),

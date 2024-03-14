@@ -2,6 +2,7 @@ import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
+import 'package:pet_mobile_social_flutter/common/util/extensions/buttons_extension.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 
@@ -122,11 +123,11 @@ class NotificationCommentItem extends StatelessWidget {
                         children: [
                           Text(
                             notificationType,
-                            style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                           Text(
                             regDate,
-                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ],
                       ),
@@ -202,6 +203,6 @@ class NotificationCommentItem extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ).throttle();
   }
 }

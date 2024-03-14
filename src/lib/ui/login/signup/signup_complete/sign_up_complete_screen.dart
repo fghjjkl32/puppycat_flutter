@@ -16,6 +16,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final userModel = ref.read(signUpUserInfoProvider);
     return Scaffold(
       body: SafeArea(
         child: PopScope(
@@ -29,7 +30,6 @@ class SignUpCompleteScreen extends ConsumerWidget {
             ///NOTE
             ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
             ///로그인 페이지 이동 초기화
-            final userModel = ref.read(signUpUserInfoProvider);
             ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel, enableRoutePop: false);
             // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
             ref.read(authStateProvider.notifier).state = false;
@@ -52,16 +52,21 @@ class SignUpCompleteScreen extends ConsumerWidget {
                       height: 12,
                     ),
                     Text(
-                      '회원가입.퍼피캣의 가족이 되신 걸 환영해요'.tr(),
-                      style: kTitle14BoldStyle.copyWith(height: 1.4, color: kPreviousTextTitleColor),
+                      '회원가입.회원가입 완료!'.tr(),
+                      style: kTitle18BoldStyle.copyWith(height: 1.4, color: kPreviousTextTitleColor),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      '회원가입.회원가입 환영 메시지'.tr(args: [userModel!.nick]),
+                      style: kTitle18BoldStyle.copyWith(height: 1.3, color: kPreviousTextTitleColor),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(
                       height: 8,
                     ),
                     Text(
-                      '회원가입.회원가입 환영 메시지'.tr(),
-                      style: kBody12RegularStyle.copyWith(height: 1.3, color: kPreviousTextBodyColor),
+                      "회원가입.퍼피캣과 함께 일상을 공유해 보세요!".tr(),
+                      style: kBody13RegularStyle.copyWith(height: 1.3, color: kPreviousTextBodyColor),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -79,7 +84,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                         ///NOTE
                         ///여기 고치면 아래 주석 검색해서 거기도 고쳐야하는지 봐야함
                         ///로그인 페이지 이동 초기화
-                        final userModel = ref.read(signUpUserInfoProvider);
+
                         ref.read(loginStateProvider.notifier).loginByUserModel(userModel: userModel, enableRoutePop: false);
                         // ref.read(signUpRouteStateProvider.notifier).state = SignUpRoute.none;
                         ref.read(authStateProvider.notifier).state = false;
@@ -94,7 +99,7 @@ class SignUpCompleteScreen extends ConsumerWidget {
                         elevation: 0,
                       ),
                       child: Text(
-                        '회원가입.퍼피캣 이용하기'.tr(),
+                        '회원가입.퍼피캣 시작하기'.tr(),
                         style: kButton14BoldStyle,
                       ),
                     ),

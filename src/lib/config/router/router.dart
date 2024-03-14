@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/bottom_sheet_route.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/chat_home_route.dart';
+import 'package:pet_mobile_social_flutter/config/router/routes/crop_image_route.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/dialog_route.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/feed_route.dart';
 import 'package:pet_mobile_social_flutter/config/router/routes/home_route.dart';
@@ -98,13 +99,12 @@ GoRouter router(Ref ref) {
       DialogRoute().createRoute(),
       ToastRoute().createRoute(),
       ChatHomeRoute().createRoute(),
+      CropImageRoute().createRoute(),
     ],
     redirect: (BuildContext context, GoRouterState state) {
       const homeLocation = '/home';
       const loginLocation = '/home/login';
       const splashLocation = '/splash';
-      const signUpLocation = '$loginLocation/signup/:authType';
-      const signUpCompleteLocation = '$signUpLocation/signupComplete';
       const maintenanceLocation = '/maintenance';
       const forceUpdateLocation = '/bottomSheet/forceUpdateBottomSheet';
       const recommendUpdateLocation = '/bottomSheet/recommendUpdateBottomSheet';

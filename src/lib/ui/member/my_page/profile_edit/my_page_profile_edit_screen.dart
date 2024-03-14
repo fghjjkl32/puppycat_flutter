@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -47,6 +48,10 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
   final ImagePicker _picker = ImagePicker();
   XFile? selectedImage;
 
+  Uint8List? uint8List;
+
+  XFile? cropImage;
+
   bool isProfileEdit = false;
   bool isPhoneNumberEdit = false;
   bool isNextStep = false;
@@ -71,13 +76,41 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
     super.dispose();
   }
 
+  Future<XFile> uint8ListToXFile(Uint8List data, {String filename = 'temp_image'}) async {
+    // 임시 디렉토리를 찾습니다.
+    final Directory tempDir = await getTemporaryDirectory();
+    // 파일 경로를 생성합니다. (여기서는 임시 파일 이름을 사용합니다)
+    final String filePath = '${tempDir.path}/$filename.jpg';
+
+    // Uint8List 데이터를 파일에 씁니다.
+    final File file = File(filePath);
+    await file.writeAsBytes(data);
+
+    // 파일 경로로 XFile 객체를 생성합니다.
+    final XFile xFile = XFile(filePath);
+
+    return xFile;
+  }
+
+  void getXFileData(XFile file) async {
+    Uint8List fileData = await file.readAsBytes();
+    uint8List = await context.push("/cropImage", extra: {"uint8List": fileData});
+    if (uint8List != null) {
+      cropImage = await uint8ListToXFile(uint8List!);
+
+      setState(() {
+        isNextStep = true;
+        isProfileImageDelete = false;
+      });
+    }
+  }
+
   Future openGallery() async {
     selectedImage = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
 
-    setState(() {
-      isNextStep = true;
-      isProfileImageDelete = false;
-    });
+    if (selectedImage != null) {
+      getXFileData(selectedImage!);
+    }
   }
 
   void checkNextStep() {
@@ -158,7 +191,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                 child: Column(
                   children: [
                     Text(
-                      "잠깐! 지금 나가면\n수정한 내용이 저장되지 않아요.",
+                      "회원.정보 수정 나가기 경고".tr(),
                       textAlign: TextAlign.center,
                       style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                     ),
@@ -174,11 +207,11 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                 ref.watch(editStateProvider.notifier).resetState();
               },
               confirmWidget: Text(
-                "이어서 하기",
+                "회원.이어서 하기".tr(),
                 style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
               ),
               cancelWidget: Text(
-                "닫기",
+                "회원.닫기".tr(),
                 style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
               ),
             );
@@ -190,8 +223,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: const Text(
-              "내 정보 수정",
+            title: Text(
+              "회원.내 정보 수정".tr(),
             ),
             leading: IconButton(
               onPressed: () {
@@ -204,7 +237,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         child: Column(
                           children: [
                             Text(
-                              "잠깐! 지금 나가면\n수정한 내용이 저장되지 않아요.",
+                              "회원.정보 수정 나가기 경고".tr(),
                               textAlign: TextAlign.center,
                               style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                             ),
@@ -220,11 +253,11 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         ref.watch(editStateProvider.notifier).resetState();
                       },
                       confirmWidget: Text(
-                        "이어서 하기",
+                        "회원.이어서 하기".tr(),
                         style: kButton14MediumStyle.copyWith(color: kTextActionPrimary),
                       ),
                       cancelWidget: Text(
-                        "닫기",
+                        "회원.닫기".tr(),
                         style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                       ),
                     );
@@ -269,7 +302,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                         );
 
                         UserInformationItemModel editUserModel = editMyInfoModel.copyWith(
-                          profileImgUrl: selectedImage == null ? null : selectedImage!.path,
+                          profileImgUrl: cropImage == null ? null : cropImage!.path,
                           nick: nickController.text == "" ? editMyInfoModel.nick : nickController.text,
                           intro: introController.text,
                           phone: authModel == null ? editMyInfoModel.phone : authModel.phone,
@@ -279,7 +312,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
 
                         final result = await ref.read(editStateProvider.notifier).putMyInfo(
                               myInfoModel: editUserModel,
-                              file: selectedImage,
+                              file: cropImage,
                               beforeNick: myInfo.nick ?? 'unknown',
                               isProfileImageDelete: isProfileImageDelete,
                               isPhoneNumberEdit: isPhoneNumberEdit,
@@ -328,7 +361,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       }
                     : null,
                 child: Text(
-                  '완료',
+                  '회원.완료'.tr(),
                   style: kButton12BoldStyle.copyWith(
                     color: isTotalNextStep ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                   ),
@@ -354,19 +387,19 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             childSaveLayer: true,
                             mask: Center(
                                 child: "${editMyInfoModel.profileImgUrl}" == ""
-                                    ? selectedImage == null
+                                    ? uint8List == null
                                         ? const Icon(
                                             Puppycat_social.icon_profile_large,
                                             size: 92,
                                             color: kPreviousNeutralColor500,
                                           )
-                                        : Image.file(
-                                            File(selectedImage!.path),
+                                        : Image.memory(
+                                            uint8List!,
                                             width: 135,
                                             height: 135,
                                             fit: BoxFit.cover,
                                           )
-                                    : selectedImage == null
+                                    : uint8List == null
                                         ? isProfileImageDelete
                                             ? const Icon(
                                                 Puppycat_social.icon_profile_large,
@@ -379,8 +412,8 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                 height: 135,
                                                 fit: BoxFit.cover,
                                               )
-                                        : Image.file(
-                                            File(selectedImage!.path),
+                                        : Image.memory(
+                                            uint8List!,
                                             width: 135,
                                             height: 135,
                                             fit: BoxFit.cover,
@@ -404,7 +437,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       icon: const Icon(
                                         Puppycat_social.icon_photo,
                                       ),
-                                      title: '앨범에서 선택하기',
+                                      title: '회원.앨범에서 선택하기'.tr(),
                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                                       onTap: () async {
                                         context.pop();
@@ -422,7 +455,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                       child: Column(
                                                         children: [
                                                           Text(
-                                                            "피드를 올리거나 프로필을 설정하려면\n사진 권한이 필요해요.",
+                                                            "회원.사진권한".tr(),
                                                             style: kBody16BoldStyle.copyWith(color: kPreviousTextTitleColor),
                                                             textAlign: TextAlign.center,
                                                           ),
@@ -430,7 +463,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                             height: 4,
                                                           ),
                                                           Text(
-                                                            "언제든지 설정을 바꿀 수 있어요.",
+                                                            "회원.언제든지 설정을 바꿀 수 있어요".tr(),
                                                             style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                                                             textAlign: TextAlign.center,
                                                           ),
@@ -445,11 +478,11 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                                       context.pop();
                                                     },
                                                     confirmWidget: Text(
-                                                      "설정 열기",
+                                                      "회원.설정 열기".tr(),
                                                       style: kButton14MediumStyle.copyWith(color: kPreviousPrimaryColor),
                                                     ),
                                                     cancelWidget: Text(
-                                                      "닫기",
+                                                      "회원.닫기".tr(),
                                                       style: kButton14MediumStyle.copyWith(color: kPreviousTextSubTitleColor),
                                                     ));
                                               },
@@ -463,10 +496,11 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                         Puppycat_social.icon_delete_small,
                                         color: kPreviousErrorColor,
                                       ),
-                                      title: '프로필 사진 삭제하기',
+                                      title: '회원.프로필 사진 삭제하기'.tr(),
                                       titleStyle: kButton14BoldStyle.copyWith(color: kPreviousErrorColor),
                                       onTap: () {
                                         setState(() {
+                                          uint8List == null;
                                           selectedImage = null;
                                           isNextStep = true;
                                           isProfileImageDelete = true;
@@ -525,14 +559,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.only(top: 32, left: 12.0, bottom: 8),
                         child: Text(
-                          "프로필 정보",
+                          "회원.프로필 정보".tr(),
                           style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 24.0, bottom: 8),
                         child: Text(
-                          "닉네임",
+                          "회원.닉네임".tr(),
                           style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
@@ -544,107 +578,104 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                           children: [
                             isProfileEdit
                                 ? Expanded(
-                                    child: SizedBox(
-                                      height: 44,
-                                      child: Form(
-                                        key: _formKey,
-                                        child: TextFormField(
-                                          controller: nickController,
-                                          focusNode: _nickFocusNode,
-                                          decoration: nickProvider != NickNameStatus.valid
-                                              ? InputDecoration(
-                                                  hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
-                                                  hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
-                                                  errorStyle: kBody11RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
-                                                  errorText: getNickDescription(nickProvider),
-                                                  errorBorder: const OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      width: 1,
-                                                      color: kPreviousErrorColor,
-                                                    ),
+                                    child: Form(
+                                      key: _formKey,
+                                      child: TextFormField(
+                                        controller: nickController,
+                                        focusNode: _nickFocusNode,
+                                        decoration: nickProvider != NickNameStatus.valid
+                                            ? InputDecoration(
+                                                hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
+                                                hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
+                                                errorStyle: kBody11RegularStyle.copyWith(color: kPreviousErrorColor, fontWeight: FontWeight.w400, height: 1.2),
+                                                errorText: getNickDescription(nickProvider),
+                                                errorBorder: const OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    width: 1,
+                                                    color: kPreviousErrorColor,
                                                   ),
-                                                  errorMaxLines: 2,
-                                                  counterText: '',
-                                                  isDense: true,
-                                                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                                                )
-                                              : InputDecoration(
-                                                  hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
-                                                  hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
-                                                  errorText: '회원가입.사용 가능한 닉네임입니다'.tr(),
-                                                  errorStyle: kBody11RegularStyle.copyWith(color: kPreviousPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
-                                                  errorBorder: const OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      width: 1,
-                                                      color: kPreviousPrimaryColor,
-                                                    ),
-                                                  ),
-                                                  focusedErrorBorder: const OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      width: 1,
-                                                      color: kPreviousPrimaryColor,
-                                                    ),
-                                                  ),
-                                                  errorMaxLines: 2,
-                                                  counterText: '',
-                                                  isDense: true,
-                                                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                                                 ),
-                                          style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
-                                          maxLength: 20,
-                                          autovalidateMode: AutovalidateMode.always,
-                                          inputFormatters: [
-                                            FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                                          ],
-                                          onChanged: (value) {
-                                            checkNextStep();
-                                            if (value.isNotEmpty) {
-                                              if (value.length > 1) {
-                                                setState(() {
-                                                  ref.read(checkButtonProvider.notifier).state = true;
-                                                  isNextStep = true;
-                                                });
-                                              }
-                                              if (value == editMyInfoModel.nick) {
-                                                setState(() {
-                                                  ref.read(checkButtonProvider.notifier).state = false;
-                                                });
-                                              }
-                                            } else {
+                                                errorMaxLines: 2,
+                                                counterText: '',
+                                                isDense: true,
+                                                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                              )
+                                            : InputDecoration(
+                                                hintText: '회원가입.닉네임을 입력해 주세요'.tr(),
+                                                hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
+                                                errorText: '회원가입.사용 가능한 닉네임입니다'.tr(),
+                                                errorStyle: kBody11RegularStyle.copyWith(color: kPreviousPrimaryColor, fontWeight: FontWeight.w400, height: 1.2),
+                                                errorBorder: const OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    width: 1,
+                                                    color: kPreviousPrimaryColor,
+                                                  ),
+                                                ),
+                                                focusedErrorBorder: const OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    width: 1,
+                                                    color: kPreviousPrimaryColor,
+                                                  ),
+                                                ),
+                                                errorMaxLines: 2,
+                                                counterText: '',
+                                                isDense: true,
+                                                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                              ),
+                                        style: kBody13RegularStyle.copyWith(color: kPreviousTextSubTitleColor),
+                                        maxLength: 20,
+                                        autovalidateMode: AutovalidateMode.always,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                                        ],
+                                        onChanged: (value) {
+                                          checkNextStep();
+                                          if (value.isNotEmpty) {
+                                            if (value.length > 1) {
                                               setState(() {
-                                                ref.read(checkButtonProvider.notifier).state = false;
-                                                isNextStep = false;
+                                                ref.read(checkButtonProvider.notifier).state = true;
+                                                isNextStep = true;
                                               });
                                             }
-                                            ref.read(nickNameProvider.notifier).state = NickNameStatus.nonValid;
-                                          },
-                                          validator: (value) {
-                                            if (value != null) {
-                                              if (value.isNotEmpty) {
-                                                if (_letterRegExp.allMatches(value).length != value.length) {
-                                                  Future(() {
-                                                    ref.watch(nickNameProvider.notifier).state = NickNameStatus.invalidLetter;
-                                                  });
-                                                  return getNickDescription(NickNameStatus.invalidLetter);
-                                                } else if (value.isNotEmpty && value.length < 2) {
-                                                  Future(() {
-                                                    ref.watch(nickNameProvider.notifier).state = NickNameStatus.minLength;
-                                                  });
-                                                  return getNickDescription(NickNameStatus.minLength);
-                                                } else {
-                                                  isCheckableNickName = true;
-                                                  return null;
-                                                }
+                                            if (value == editMyInfoModel.nick) {
+                                              setState(() {
+                                                ref.read(checkButtonProvider.notifier).state = false;
+                                              });
+                                            }
+                                          } else {
+                                            setState(() {
+                                              ref.read(checkButtonProvider.notifier).state = false;
+                                              isNextStep = false;
+                                            });
+                                          }
+                                          ref.read(nickNameProvider.notifier).state = NickNameStatus.nonValid;
+                                        },
+                                        validator: (value) {
+                                          if (value != null) {
+                                            if (value.isNotEmpty) {
+                                              if (_letterRegExp.allMatches(value).length != value.length) {
+                                                Future(() {
+                                                  ref.watch(nickNameProvider.notifier).state = NickNameStatus.invalidLetter;
+                                                });
+                                                return getNickDescription(NickNameStatus.invalidLetter);
+                                              } else if (value.isNotEmpty && value.length < 2) {
+                                                Future(() {
+                                                  ref.watch(nickNameProvider.notifier).state = NickNameStatus.minLength;
+                                                });
+                                                return getNickDescription(NickNameStatus.minLength);
+                                              } else {
+                                                isCheckableNickName = true;
+                                                return null;
                                               }
                                             }
-                                            return null;
-                                          },
-                                          onSaved: (val) {
-                                            if (isCheckableNickName) {
-                                              ref.read(signUpStateProvider.notifier).checkNickName(val!);
-                                            }
-                                          },
-                                        ),
+                                          }
+                                          return null;
+                                        },
+                                        onSaved: (val) {
+                                          if (isCheckableNickName) {
+                                            ref.read(signUpStateProvider.notifier).checkNickName(val!);
+                                          }
+                                        },
                                       ),
                                     ),
                                   )
@@ -689,7 +720,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                         ),
                                         child: Center(
                                           child: Text(
-                                            "중복확인",
+                                            "회원.중복확인".tr(),
                                             style: kButton12BoldStyle.copyWith(
                                               color: ref.watch(checkButtonProvider) ? kPreviousPrimaryColor : kPreviousTextBodyColor,
                                             ),
@@ -716,7 +747,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       ),
                                       child: Center(
                                         child: Text(
-                                          "변경",
+                                          "회원.변경".tr(),
                                           style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                                         ),
                                       ),
@@ -728,7 +759,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.only(left: 24.0, bottom: 8, top: 8),
                         child: Text(
-                          "한 줄 소개",
+                          "회원.한 줄 소개".tr(),
                           style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
@@ -741,7 +772,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                             maxLength: 30,
                             decoration: InputDecoration(
                               counterText: "",
-                              hintText: "${editMyInfoModel.intro == "" ? '나를 간단하게 소개해 주세요.' : editMyInfoModel.intro}",
+                              hintText: "${editMyInfoModel.intro == "" ? '회원.나를 간단하게 소개해 주세요'.tr() : editMyInfoModel.intro}",
                               hintStyle: kBody14RegularStyle.copyWith(color: kTextTertiary),
                               contentPadding: const EdgeInsets.all(16),
                             ),
@@ -758,14 +789,14 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.only(top: 16, left: 12.0, bottom: 8),
                         child: Text(
-                          "로그인 정보",
+                          "회원.로그인 정보".tr(),
                           style: kTitle16ExtraBoldStyle.copyWith(color: kPreviousTextTitleColor),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 24.0, bottom: 8),
                         child: Text(
-                          "이메일",
+                          "회원.이메일".tr(),
                           style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
@@ -804,7 +835,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.only(left: 24.0, bottom: 8, top: 8),
                         child: Text(
-                          "이름",
+                          "회원.이름".tr(),
                           style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
@@ -831,7 +862,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                       Padding(
                         padding: const EdgeInsets.only(left: 24.0, bottom: 8, top: 8),
                         child: Text(
-                          "휴대폰 번호",
+                          "회원.휴대폰 번호".tr(),
                           style: kBody13BoldStyle.copyWith(color: kPreviousTextSubTitleColor),
                         ),
                       ),
@@ -880,6 +911,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       ),
                                     );
                             }),
+                            // Text("${ref.watch(editStateProvider).authModel!}"),
                             const SizedBox(width: 8),
                             ref.watch(editStateProvider).authModel == null
                                 ? isPhoneNumberEdit
@@ -900,7 +932,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           ),
                                           child: Center(
                                             child: Text(
-                                              "취소",
+                                              "회원.취소".tr(),
                                               style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                                             ),
                                           ),
@@ -923,7 +955,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                           ),
                                           child: Center(
                                             child: Text(
-                                              "변경",
+                                              "회원.변경".tr(),
                                               style: kButton12BoldStyle.copyWith(color: kPreviousPrimaryColor),
                                             ),
                                           ),
@@ -931,7 +963,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       )
                                 : Container(
                                     width: 56,
-                                    height: 32,
+                                    height: 44,
                                     decoration: const BoxDecoration(
                                       color: kPreviousNeutralColor300,
                                       borderRadius: BorderRadius.all(
@@ -940,7 +972,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                     ),
                                     child: Center(
                                       child: Text(
-                                        "인증완료",
+                                        "회원.인증완료".tr(),
                                         style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                                       ),
                                     ),
@@ -1006,7 +1038,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                                       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(const EdgeInsets.only(left: 5, right: 5)),
                                     ),
                                     onPressed: () {
-                                      ref.read(authStateProvider.notifier).getPassAuthUrl();
+                                      ref.read(authStateProvider.notifier).getPassAuthUrl(isEditProfile: true);
                                     },
                                     label: Text(
                                       '회원가입.휴대폰 인증'.tr(),
@@ -1028,7 +1060,7 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
                               context.push("/member/myPage/profileEdit/withdrawalSelect");
                             },
                             child: Text(
-                              "회원 탈퇴",
+                              "회원.회원 탈퇴".tr(),
                               style: kButton12BoldStyle.copyWith(color: kPreviousTextBodyColor),
                             ),
                           ),

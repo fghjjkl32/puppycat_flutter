@@ -67,12 +67,12 @@ class NotificationFollowItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "새로운 팔로우",
-                          style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                          "알림함.새로운 팔로우".tr(),
+                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                         Text(
                           regDate,
-                          style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                          style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                         ),
                       ],
                     ),
@@ -89,7 +89,7 @@ class NotificationFollowItem extends StatelessWidget {
                                 text: name.length > 13 ? '${name.substring(0, 13)}...' : name,
                                 style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor),
                               ),
-                              const TextSpan(text: '님이 나를 팔로우했어요.'),
+                              TextSpan(text: '알림함.님이 나를 팔로우했어요'.tr()),
                             ],
                           ),
                         ),

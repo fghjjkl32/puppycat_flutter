@@ -50,7 +50,8 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
     final isLogined = ref.read(loginStatementProvider);
 
     return PopupMenuButton(
-      offset: Offset(0, 40),
+      offset: Offset(0, 46),
+      shape: const TooltipShape(),
       padding: EdgeInsets.zero,
       onSelected: (id) {
         setState(() {
@@ -74,14 +75,14 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
           showLottieAnimation = false;
         });
       },
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(16.0),
-          bottomRight: Radius.circular(16.0),
-          topLeft: Radius.circular(16.0),
-          topRight: Radius.circular(16.0),
-        ),
-      ),
+      // shape: const RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.only(
+      //     bottomLeft: Radius.circular(16.0),
+      //     bottomRight: Radius.circular(16.0),
+      //     topLeft: Radius.circular(16.0),
+      //     topRight: Radius.circular(16.0),
+      //   ),
+      // ),
       itemBuilder: (context) {
         Future.delayed(Duration.zero, () {
           setState(() {
@@ -216,4 +217,56 @@ class PopupMenuWithReddotState extends ConsumerState<PopupMenuWithReddot> with W
       ),
     );
   }
+}
+
+class TooltipShape extends ShapeBorder {
+  const TooltipShape();
+
+  final BorderSide _side = BorderSide.none;
+  final BorderRadiusGeometry _borderRadius = BorderRadius.zero;
+
+  @override
+  EdgeInsetsGeometry get dimensions => EdgeInsets.all(_side.width);
+
+  @override
+  Path getInnerPath(
+    Rect rect, {
+    TextDirection? textDirection,
+  }) {
+    final Path path = Path();
+
+    path.addRRect(
+      _borderRadius.resolve(textDirection).toRRect(rect).deflate(_side.width),
+    );
+
+    return path;
+  }
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    final Path path = Path();
+    final RRect rrect = _borderRadius.resolve(textDirection).toRRect(rect);
+
+    path.moveTo(0, 10);
+    path.quadraticBezierTo(0, 0, 10, 0);
+    path.lineTo(rrect.width - 35, 0);
+    path.lineTo(rrect.width - 20, -10);
+    path.lineTo(rrect.width - 20, 0);
+    path.quadraticBezierTo(rrect.width, 0, rrect.width, 10);
+    path.lineTo(rrect.width, rrect.height - 10);
+    path.quadraticBezierTo(rrect.width, rrect.height, rrect.width - 10, rrect.height);
+    path.lineTo(10, rrect.height);
+    path.quadraticBezierTo(0, rrect.height, 0, rrect.height - 10);
+
+    return path;
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {}
+
+  @override
+  ShapeBorder scale(double t) => RoundedRectangleBorder(
+        side: _side.scale(t),
+        borderRadius: _borderRadius * t,
+      );
 }

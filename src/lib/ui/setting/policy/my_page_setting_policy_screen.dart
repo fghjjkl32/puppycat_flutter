@@ -1,10 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 // import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dart';
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
@@ -63,7 +63,7 @@ class MyPageSettingPolicyScreenState extends ConsumerState<MyPageSettingPolicySc
       ref.read(policyDetailStateProvider.notifier).getPoliciesDetail(widget.idx, tempList[0]);
 
       policyDateList = tempList.map((date) {
-        return "현행 시행 일자 : ${DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(date))}";
+        return "설정.현행 시행 일자".tr(args: [(DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(date)))]);
       }).toList();
 
       dropdownValue = policyDateList.isNotEmpty ? policyDateList[0] : "";
@@ -71,7 +71,7 @@ class MyPageSettingPolicyScreenState extends ConsumerState<MyPageSettingPolicySc
       ref.read(policyDetailStateProvider.notifier).getPoliciesDetail(widget.idx, widget.dateList![0]);
 
       policyDateList = widget.dateList!.map((date) {
-        return "현행 시행 일자 : ${DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(date))}";
+        return "설정.현행 시행 일자".tr(args: [(DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(date)))]);
       }).toList();
 
       dropdownValue = policyDateList.isNotEmpty ? policyDateList[0] : "";

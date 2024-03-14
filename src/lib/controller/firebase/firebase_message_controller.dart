@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/controller/notification/notification_controller.dart';
@@ -5,6 +7,7 @@ import 'package:pet_mobile_social_flutter/models/firebase/firebase_cloud_message
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print('onMessageOpenedApp ${message.toMap().toString()}');
   // await EasyLocalization.ensureInitialized();
   // final controller = EasyLocalizationController(
   //   saveLocale: true,
@@ -77,9 +80,9 @@ class FireBaseMessageController {
     // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
     //   print('onMessageOpenedApp $message');
     // });
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('onMessage ${message.toMap().toString()}');
-    });
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   print('onMessage ${message.toMap().toString()}');
+    // });
     //
     // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
     //   print('onMessageOpenedApp $message');
@@ -106,6 +109,7 @@ class FireBaseMessageController {
 
   void setBackgroundMessageOnTapHandler(Function(FirebaseCloudMessagePayload payload) handler) {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('onMessageOpenedApp ${message.toMap().toString()}');
       if (message.notification != null) {
         Map<String, dynamic> notificationMap = message.notification!.toMap();
         if (message.data.isNotEmpty) {
@@ -114,6 +118,9 @@ class FireBaseMessageController {
         String? imageUrl = message.notification?.android?.imageUrl ?? message.notification?.apple?.imageUrl;
         notificationMap['imageUrl'] = imageUrl ?? '';
         print(notificationMap);
+        if (notificationMap.containsKey('chat')) {
+          notificationMap['chat'] = jsonDecode(notificationMap['chat']);
+        }
         handler(FirebaseCloudMessagePayload.fromJson(notificationMap));
       }
     });
@@ -121,8 +128,21 @@ class FireBaseMessageController {
 
   void setForegroundMessageOnTapHandler(Function(FirebaseCloudMessagePayload payload) handler) {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (message.data.isNotEmpty) {
-        handler(FirebaseCloudMessagePayload.fromJson(message.data));
+      print('onMessage ${message.toMap().toString()}');
+      if (message.notification != null) {
+        Map<String, dynamic> notificationMap = message.notification!.toMap();
+        if (message.data.isNotEmpty) {
+          notificationMap.addAll(message.data);
+        }
+        String? imageUrl = message.notification?.android?.imageUrl ?? message.notification?.apple?.imageUrl;
+        notificationMap['imageUrl'] = imageUrl ?? '';
+        print(notificationMap);
+        if (notificationMap.containsKey('chat')) {
+          notificationMap['chat'] = jsonDecode(notificationMap['chat']);
+        }
+
+        print('notificationMap chat ${notificationMap['chat'].runtimeType}');
+        handler(FirebaseCloudMessagePayload.fromJson(notificationMap));
       }
     });
   }

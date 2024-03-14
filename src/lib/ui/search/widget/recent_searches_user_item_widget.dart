@@ -47,7 +47,10 @@ class RecentSearchesUserItemWidgetState extends ConsumerState<RecentSearchesUser
 
     return InkWell(
       onTap: () {
-        myInfo.uuid == widget.memberUuid ? context.push("/member/myPage") : context.push("/member/userPage/${widget.userName}/${widget.memberUuid}/${widget.memberUuid}");
+        myInfo.uuid == widget.memberUuid
+            ? context.push("/member/myPage")
+            : context.push("/member/userPage", extra: {"nick": widget.userName, "memberUuid": widget.memberUuid, "oldMemberUuid": widget.memberUuid});
+
         //TODO
         //Route 다시
       },

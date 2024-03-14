@@ -8,7 +8,7 @@ class ChatSearchListItem extends StatefulWidget {
   final String nick;
   final String intro;
   final String profileImgUrl;
-  final Function? onTab;
+  final Future<void> Function()? onTab;
   final Function? onTabProfileImg;
 
   const ChatSearchListItem({
@@ -50,7 +50,7 @@ class _ChatSearchListItemState extends State<ChatSearchListItem> with TickerProv
     return InkWell(
       onTap: () {
         if (widget.onTab != null) {
-          widget.onTab!(widget.memberUuid);
+          widget.onTab!();
         }
       },
       child: Padding(
@@ -69,11 +69,14 @@ class _ChatSearchListItemState extends State<ChatSearchListItem> with TickerProv
                 children: [
                   Text(
                     widget.nick,
-                    style: kBody13BoldStyle.copyWith(color: kPreviousTextTitleColor, letterSpacing: 0.2, height: 1.4),
+                    style: kBody14BoldStyle.copyWith(color: kTextPrimary, height: 1.4),
                   ),
                   Text(
                     widget.intro,
-                    style: kBody11RegularStyle.copyWith(color: kPreviousTextBodyColor, letterSpacing: 0.2, height: 1.2),
+                    style: kBody12RegularStyle400.copyWith(color: kTextTertiary, height: 1.4),
+                    softWrap: false,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

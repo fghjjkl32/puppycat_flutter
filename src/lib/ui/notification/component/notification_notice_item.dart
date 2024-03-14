@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_mobile_social_flutter/common/common.dart';
 import 'package:pet_mobile_social_flutter/config/theme/color_data.dart';
@@ -69,12 +70,12 @@ class NotificationNoticeItem extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "공지",
-                            style: kBody11SemiBoldStyle.copyWith(color: kPreviousTextBodyColor),
+                            "알림함.공지".tr(),
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                           Text(
                             regDate,
-                            style: kBadge10MediumStyle.copyWith(color: kPreviousTextBodyColor),
+                            style: kBody12RegularStyle.copyWith(color: kPreviousTextBodyColor),
                           ),
                         ],
                       ),

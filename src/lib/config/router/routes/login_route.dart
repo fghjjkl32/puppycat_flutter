@@ -43,7 +43,7 @@ class SignupCompleteRoute extends GoRouteData {
       path: 'signupComplete',
       name: 'signupComplete',
       builder: (_, state) {
-        return const SignUpCompleteScreen();
+        return SignUpCompleteScreen();
       },
     );
   }
