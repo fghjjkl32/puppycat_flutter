@@ -70,6 +70,7 @@ class StompController implements AbstractChatController {
                   isViewTime: true,
                 );
                 if (msgMap['type'] == 'TALK') {
+                  // || msgMap['type'] == 'REPORT') {
                   read(msg: msgMap['message'] ?? '', score: msgMap['score'] ?? '', memberUuid: memberUuid);
                 }
                 onSubscribeCallBack(chatMessageModel);

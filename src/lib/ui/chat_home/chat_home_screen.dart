@@ -31,7 +31,7 @@ class ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
         appBar: AppBar(
           title: Text(
             '메시지.메시지'.tr(),
-            style: kTitle18BoldStyle.copyWith(color: kPreviousTextTitleColor, height: 1.4),
+            style: kTitle18BoldStyle.copyWith(color: kTextPrimary, height: 1.4),
           ),
           backgroundColor: kWhiteColor,
           actions: [
@@ -44,10 +44,17 @@ class ChatHomeScreenState extends ConsumerState<ChatHomeScreen> {
             ),
           ],
         ),
-        body: const Column(
-          children: [
-            ChatFavoriteWidget(),
-            Expanded(child: ChatRoomWidget()),
+        body: CustomScrollView(
+          slivers: [
+            // ChatFavoriteWidget(),
+            SliverToBoxAdapter(
+              child: ChatFavoriteWidget(),
+            ),
+            // SliverFillRemaining(
+            //   hasScrollBody: false,
+            //   child: ChatRoomWidget(),
+            // ),
+            ChatRoomWidget(),
           ],
         ),
       ),
