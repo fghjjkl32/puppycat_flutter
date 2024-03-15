@@ -318,7 +318,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 });
 
                 if (value) {
-                  _timerForTest = Timer.periodic(Duration(seconds: 1), (timer) async {
+                  _timerForTest = Timer.periodic(Duration(milliseconds: 100), (timer) async {
                     await ref.read(chatControllerStateProvider.notifier).sendMessage(
                           timer.tick.toString(),
                           null,
