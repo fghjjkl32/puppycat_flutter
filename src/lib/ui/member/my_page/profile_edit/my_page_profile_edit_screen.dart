@@ -28,8 +28,6 @@ import 'package:pet_mobile_social_flutter/ui/components/dialog/custom_dialog.dar
 import 'package:pet_mobile_social_flutter/ui/login/signup/sign_up_screen.dart';
 import 'package:widget_mask/widget_mask.dart';
 
-final _formKey = GlobalKey<FormState>();
-
 class MyPageProfileEditScreen extends ConsumerStatefulWidget {
   const MyPageProfileEditScreen({super.key});
 
@@ -38,6 +36,8 @@ class MyPageProfileEditScreen extends ConsumerStatefulWidget {
 }
 
 class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   TextEditingController nickController = TextEditingController();
   TextEditingController introController = TextEditingController();
 
@@ -166,11 +166,6 @@ class MyPageProfileEditScreenState extends ConsumerState<MyPageProfileEditScreen
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(passUrlProvider, (previous, next) {
-      final url = Uri.encodeComponent(next);
-      context.push('/webview/$url');
-    });
-
     final nickProvider = ref.watch(nickNameProvider);
     final myInfo = ref.watch(myInfoStateProvider);
     final UserInformationItemModel editMyInfoModel = ref.watch(editStateProvider).myInfoModel!;

@@ -2,7 +2,7 @@ name: pet_mobile_social_flutter
 description: pet_mobile_social_flutter
 publish_to: 'none'
 
-version: 0.1.6+25
+version: 0.1.7+26
 scripts:
   codegen: flutter pub run build_runner build
 
@@ -158,6 +158,8 @@ dependencies:
   crop_your_image: ^1.0.2
   stomp_dart_client: ^1.0.3
   ios_willpop_transition_theme: ^0.0.6
+
+  teledart: ^0.6.1
 
 dev_dependencies:
   flutter_test:
