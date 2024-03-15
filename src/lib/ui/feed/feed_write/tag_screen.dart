@@ -212,8 +212,8 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
         RenderBox box = context.findRenderObject() as RenderBox; // 현재 위젯의 렌더링 박스
 
         // 탭된 위치를 상대적인 이미지 위치로 변환합니다.
-        final Offset localPosition = box.globalToLocal(details.globalPosition);
         final RenderBox imageBox = widget.imageKey.currentContext!.findRenderObject() as RenderBox;
+        final Offset localPosition = imageBox.globalToLocal(details.globalPosition);
         final Size displayedImageSize = imageBox.size;
 
         final double xRatio = localPosition.dx / displayedImageSize.width;
@@ -255,14 +255,11 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
       },
       child: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              child: Image.file(
-                widget.image,
-                key: widget.imageKey,
-              ),
+          ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            child: Image.file(
+              widget.image,
+              key: widget.imageKey,
             ),
           ),
           // 태그된 위치에 태그를 표시합니다.
@@ -307,15 +304,18 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
       },
       // 드래그가 끝났을 때 호출되는 함수입니다.
       onDragEnd: (dragDetails) {
-        RenderBox box = context.findRenderObject() as RenderBox; // 현재 위젯의 위치와 크기 정보를 가져옵니다.
+        // RenderBox box = context.findRenderObject() as RenderBox; // 현재 위젯의 위치와 크기 정보를 가져옵니다.
         RenderBox imageBox = widget.imageKey.currentContext!.findRenderObject() as RenderBox; // 이미지 위젯의 위치와 크기 정보를 가져옵니다.
 
         // 이미지의 높이와 너비에서 여백을 고려하여 조정합니다.
         double imageHeight = imageBox.size.height - 40;
         double imageWidth = imageBox.size.width - 50;
 
+        print('imageBox ${imageBox.size}');
+        print('imageWidth $imageWidth / imageHeight $imageHeight');
+
         // 드래그가 끝난 지점의 상대 위치를 계산합니다.
-        Offset localPosition = box.globalToLocal(dragDetails.offset);
+        Offset localPosition = imageBox.globalToLocal(dragDetails.offset);
 
         print(" localPosition.dx ${localPosition.dx}");
         print(" localPosition.dy ${localPosition.dy}");
@@ -324,13 +324,13 @@ class _TaggableImageState extends ConsumerState<TaggableImage> with AutomaticKee
         double xPos = localPosition.dx;
         double yPos = localPosition.dy;
 
-        if (xPos < 10) xPos = 10;
+        if (xPos < 0) xPos = 0;
         if (yPos < 0) yPos = 0;
         if (xPos > imageWidth) xPos = imageWidth;
         if (yPos > imageHeight) yPos = imageHeight;
 
-        print("xPos / _imageSize!.width ${xPos / _imageSize!.width}");
-        print("xPos / _imageSize!.width ${yPos / _imageSize!.height}");
+        print("xPos $xPos / _imageSize!.width ${xPos / _imageSize!.width}");
+        print("yPos $yPos / _imageSize!.height ${yPos / _imageSize!.height}");
 
         // 새 위치를 기준으로 태그 객체를 업데이트합니다.
         final newTag = tag.copyWith(position: Offset(xPos / _imageSize!.width, yPos / _imageSize!.height));
