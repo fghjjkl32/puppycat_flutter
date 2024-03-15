@@ -65,6 +65,8 @@ const kErrorColor300 = Color(0xffF7646D);
 const kErrorColor200 = Color(0xffFD858C);
 const kErrorColor100 = Color(0xffFFBCC0);
 
+const kPositive = Color(0xffFF6161);
+
 //Text Color
 const kPreviousTextTitleColor = Color(0xff292a2a);
 const kPreviousTextSubTitleColor = Color(0xff414348);
@@ -123,6 +125,7 @@ const kIconSecondary = kNeutralColor500;
 const kIconTertiary = kWhiteColor;
 const kIconDisable = kNeutralColor300;
 const kIconDistructive = kErrorColor400;
+const kIconPositive = kPositive;
 
 Color kOpacityPrimary = kOpacityPrimaryColor600;
 Color kOpacityNeutralPrimary = kOpacityNeutralColor500;

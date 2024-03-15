@@ -344,16 +344,23 @@ class ChatRoomItem extends ConsumerWidget {
                           //TODO 수정 필요
                           if (roomModel.noReadCount > 0)
                             Container(
-                              width: 20,
+                              width: roomModel.noReadCount > 99 ? 28 : 20,
                               height: 20,
-                              decoration: const BoxDecoration(color: kErrorColor400, shape: BoxShape.circle),
+                              decoration: roomModel.noReadCount > 99
+                                  ? BoxDecoration(
+                                      color: kIconPositive,
+                                      // shape: BoxShape.circle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    )
+                                  : BoxDecoration(
+                                      color: kIconPositive,
+                                      shape: BoxShape.circle,
+                                    ),
                               child: Center(
-                                child: roomModel.noReadCount > 0
-                                    ? Text(
-                                        roomModel.noReadCount > 99 ? '99+' : roomModel.noReadCount.toString(),
-                                        style: kBody12RegularStyle400.copyWith(color: kWhiteColor),
-                                      )
-                                    : const SizedBox.shrink(),
+                                child: Text(
+                                  roomModel.noReadCount > 99 ? '99+' : roomModel.noReadCount.toString(),
+                                  style: kBody12RegularStyle400.copyWith(color: kWhiteColor),
+                                ),
                               ),
                             ),
                         ],
