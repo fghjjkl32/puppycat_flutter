@@ -62,9 +62,7 @@ class ChatControllerState extends _$ChatControllerState {
       // _onConnected = onConnected;
       // _onSubscribeCallBack = onSubscribeCallBack;
       // _onError = onError;
-      print('1 targetMemberList $targetMemberList');
       _targetMemberList = targetMemberList;
-      print('2 targetMemberList $_targetMemberList');
       // if (!isConnect) {
       //   return null;
       // }
@@ -142,16 +140,23 @@ class ChatControllerState extends _$ChatControllerState {
     // Future.delayed(Duration(milliseconds: 500));
     if (_chatMsgQueueMap.isNotEmpty) {
       _chatMsgQueueMap.forEach((key, value) {
+        print('key $key / value ${value['msg']}]');
         if (value['type'] == 'TALK') {
           state?.send(value['msg'], value['profileImg'], key);
         } else if (value['type'] == 'REPORT') {
           state?.report(msg: value['msg'], score: value['score'], memberUuid: value['memberUuid'], msgQueueUuid: key);
+        } else if (value['type'] == 'READ') {
+          state?.read(msg: value['msg'], score: value['score'], memberUuid: value['memberUuid']);
         }
       });
     }
   }
 
   void _onSubscribeCallBack(ChatMessageModel chatMessageModel) {
+    if (chatMessageModel.type == 'TALK') {
+      readMessage(msg: chatMessageModel.msg, score: chatMessageModel.score, memberUuid: myInfo.uuid ?? '');
+    }
+
     if (_chatMsgQueueMap.containsKey(chatMessageModel.msgQueueUuid)) {
       _chatMsgQueueMap.remove(chatMessageModel.msgQueueUuid);
     }
@@ -196,7 +201,7 @@ class ChatControllerState extends _$ChatControllerState {
 
   Future<void> sendMessage(String msg, String? profileImg) async {
     final uuid = UuidUtil().generateUuid(v5Key: '$msg${myInfo.uuid}');
-    print('msg uuid $uuid / ${uuid.replaceAll('-', '')}');
+    print('msg $msg / uuid $uuid');
     uuid.replaceAll('-', '');
 
     Map<String, dynamic> chatTemp = {
@@ -242,5 +247,25 @@ class ChatControllerState extends _$ChatControllerState {
       score: score,
       memberUuid: myInfo.uuid ?? '',
     );
+  }
+
+  Future<void> readMessage({
+    required String msg,
+    required String score,
+    required String memberUuid,
+  }) async {
+    final uuid = UuidUtil().generateUuid(v5Key: '$score${myInfo.uuid}');
+    uuid.replaceAll('-', '');
+
+    Map<String, dynamic> chatTemp = {
+      'type': 'READ', // 'TALK', 'REPORT, 'READ'
+      'msg': '',
+      'score': score,
+      'memberUuid': myInfo.uuid ?? '',
+    };
+
+    _chatMsgQueueMap[uuid.replaceAll('-', '')] = chatTemp;
+
+    await state?.read(msg: msg, score: score, memberUuid: memberUuid);
   }
 }

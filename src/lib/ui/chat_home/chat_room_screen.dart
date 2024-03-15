@@ -59,6 +59,7 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
   //시나리오 테스트용 변수
   bool _switchValue = false;
   late Timer _timerForTest;
+  int _testCount = 0;
 
   @override
   void initState() {
@@ -318,9 +319,11 @@ class ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                 });
 
                 if (value) {
+                  _testCount = 0;
                   _timerForTest = Timer.periodic(Duration(milliseconds: 100), (timer) async {
+                    _testCount = _testCount + 1;
                     await ref.read(chatControllerStateProvider.notifier).sendMessage(
-                          timer.tick.toString(),
+                          _testCount.toString(),
                           null,
                         );
                   });

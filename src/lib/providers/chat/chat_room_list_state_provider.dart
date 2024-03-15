@@ -34,6 +34,7 @@ class ChatRoomListState extends _$ChatRoomListState {
   }
 
   Future<List<ChatRoomModel>> _getChatRoomList(int pageKey) async {
+    print('_getChatRoomList $pageKey');
     var chatRoomDataListModel = await _chatRepository.getChatRoomList(page: pageKey);
     List<ChatRoomModel> chatRoomList = chatRoomDataListModel.list;
     chatRoomList = chatRoomList.map((e) => e.copyWith(regDate: '${e.regDate}Z')).toList(); //끝에 Z를 붙여야 UTC로 인식
@@ -207,6 +208,13 @@ class ChatRoomListState extends _$ChatRoomListState {
     // FirebaseCloudMessagePayload? payload,
   }) async {
     try {
+      if (state.itemList == null) {
+        if (isUpdate) {
+          state.refresh();
+        }
+        return false;
+      }
+      print('updateChatRoom $roomUuid');
       List<ChatRoomModel> currentRoomList = state.itemList!;
 
       final targetRoomIdx = currentRoomList.indexWhere((element) => element.uuid == roomUuid);

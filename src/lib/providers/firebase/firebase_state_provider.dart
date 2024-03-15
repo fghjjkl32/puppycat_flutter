@@ -44,12 +44,11 @@ class FirebaseState extends _$FirebaseState {
 
     // ref.read(chatRoomListStateProvider).refresh();
     // Map<String, dynamic> chatMap = jsonDecode(payload.chat ?? '{}');
-
-    // ref.read(chatRoomListStateProvider.notifier).updateChatRoom(
-    //       roomUuid: payload.chat?.roomUuid ?? '',
-    //       isUpdate: true,
-    //       chatData: payload.chat,
-    //     );
+    ref.read(chatRoomListStateProvider.notifier).updateChatRoom(
+          roomUuid: payload.chat?.roomUuid ?? '',
+          isUpdate: true,
+          chatData: payload.chat,
+        );
   }
 
   void navigatorHandler(FirebaseCloudMessagePayload payload) {

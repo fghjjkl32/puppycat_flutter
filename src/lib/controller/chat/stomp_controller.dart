@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:get_it/get_it.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/abstract_chat_controller.dart';
 import 'package:pet_mobile_social_flutter/controller/chat/stomp_handler.dart';
+import 'package:pet_mobile_social_flutter/controller/telegram/telegram_controller.dart';
 import 'package:pet_mobile_social_flutter/models/chat/chat_msg_model.dart';
 import 'package:stomp_dart_client/stomp.dart';
 
@@ -13,6 +15,8 @@ class StompController implements AbstractChatController {
   final List<String> targetMemberUuidList;
 
   StompClient get client => _stompClient;
+
+  TelegramBot telegramBot = GetIt.I<TelegramBot>();
 
   StompController({
     required this.token,
@@ -38,8 +42,10 @@ class StompController implements AbstractChatController {
             destination: '/topic/chat/room/$roomUuid',
             callback: (frame) {
               print('received msg : ${frame.body!.toString()}');
+
               if (onSubscribeCallBack != null) {
                 Map<String, dynamic> msgMap = jsonDecode(frame.body!.toString());
+                // telegramBot.sendMessage('received msg : ${msgMap.toString()}');
 
                 String userId = msgMap['senderMemberUuid'] ?? '';
                 if (msgMap['type'] == 'READ') {
@@ -69,10 +75,10 @@ class StompController implements AbstractChatController {
                   isConsecutively: false,
                   isViewTime: true,
                 );
-                if (msgMap['type'] == 'TALK') {
-                  // || msgMap['type'] == 'REPORT') {
-                  read(msg: msgMap['message'] ?? '', score: msgMap['score'] ?? '', memberUuid: memberUuid);
-                }
+                // if (msgMap['type'] == 'TALK') {
+                //   // || msgMap['type'] == 'REPORT') {
+                //   read(msg: msgMap['message'] ?? '', score: msgMap['score'] ?? '', memberUuid: memberUuid);
+                // }
                 onSubscribeCallBack(chatMessageModel);
               }
             });
@@ -82,7 +88,10 @@ class StompController implements AbstractChatController {
         }
       },
       onDisconnect: (reason) => print('socket disconnect $reason'),
-      onDebugMessage: (value) => print('socket debug msg $value'),
+      onDebugMessage: (value) {
+        print('socket debug msg $value');
+        // telegramBot.sendMessage('$value');
+      },
       onStompError: onError ?? (frame) => print('socket error $frame'),
       onWebSocketError: (dynamic error) => print('socket error $error'),
       beforeConnect: () async {
@@ -114,17 +123,22 @@ class StompController implements AbstractChatController {
     String? msgQueueUuid,
   }) async {
     print('targetMemberUuidList $targetMemberUuidList');
+
+    String body = json.encode({
+      'type': 'TALK',
+      'message': msg,
+      'msgQueueUuid': msgQueueUuid ?? '',
+      'logTargetMemberUuidList': targetMemberUuidList,
+      'senderMemberProfileImg': profileImg ?? '',
+    });
+
     _stompClient.send(
       destination: '/app/chat/message',
-      body: json.encode({
-        'type': 'TALK',
-        'message': msg,
-        'msgQueueUuid': msgQueueUuid ?? '',
-        'logTargetMemberUuidList': targetMemberUuidList,
-        'senderMemberProfileImg': profileImg ?? '',
-      }),
+      body: body,
       headers: {'token': token},
     );
+
+    // telegramBot.sendMessage('send message $body');
   }
 
   @override
@@ -138,16 +152,20 @@ class StompController implements AbstractChatController {
       print('stomp client is not active');
       return;
     }
+
+    String body = json.encode({
+      'type': 'READ',
+      'message': msg,
+      'score': score,
+      'readMemberUuid': memberUuid,
+    });
     _stompClient.send(
       destination: '/app/chat/read/message',
-      body: json.encode({
-        'type': 'READ',
-        'message': msg,
-        'score': score,
-        'readMemberUuid': memberUuid,
-      }),
+      body: body,
       headers: {'token': token},
     );
+
+    // telegramBot.sendMessage('read message $body');
   }
 
   @override

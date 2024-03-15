@@ -350,7 +350,7 @@ class ChatRoomItem extends ConsumerWidget {
                               child: Center(
                                 child: roomModel.noReadCount > 0
                                     ? Text(
-                                        roomModel.noReadCount.toString(),
+                                        roomModel.noReadCount > 99 ? '99+' : roomModel.noReadCount.toString(),
                                         style: kBody12RegularStyle400.copyWith(color: kWhiteColor),
                                       )
                                     : const SizedBox.shrink(),
