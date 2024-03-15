@@ -159,6 +159,8 @@ dependencies:
   stomp_dart_client: ^1.0.3
   ios_willpop_transition_theme: ^0.0.6
 
+  teledart: ^0.6.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
