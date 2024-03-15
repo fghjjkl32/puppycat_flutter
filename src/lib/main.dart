@@ -27,6 +27,7 @@ import 'package:pet_mobile_social_flutter/config/theme/puppycat_social_icons.dar
 import 'package:pet_mobile_social_flutter/config/theme/text_data.dart';
 import 'package:pet_mobile_social_flutter/config/theme/theme_data.dart';
 import 'package:pet_mobile_social_flutter/controller/firebase/firebase_options.dart';
+import 'package:pet_mobile_social_flutter/controller/telegram/telegram_controller.dart';
 
 InAppLocalhostServer localhostServer = InAppLocalhostServer(port: 9723);
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -98,6 +99,12 @@ void mainCommon() async {
   await GetIt.I<PackageInformationUtil>().init();
 
   GetIt.I.registerSingleton<CookieJar>(CookieJar());
+
+  GetIt.I.registerSingleton<TelegramBot>(TelegramBot());
+  final telegramBot = GetIt.I<TelegramBot>();
+  await telegramBot.initialize();
+  // await telegramBot.sendMessage('Start Puppycat App');
+  // await GetIt.I<TelegramBot>().initialize();
 
   runApp(
     ProviderScope(
